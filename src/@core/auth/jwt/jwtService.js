@@ -109,7 +109,7 @@ export default class JwtService {
   updateslipCatogory(uid,...args) {
     return axios.put(`${this.jwtConfig.slipCategory}${uid}`, ...args)
   }
-  deleteslipCatogory(uid,...args) {
+  deleteslipCatogory(uid) {
     return axios.delete(`${this.jwtConfig.slipCategory}${uid}`)
   }
 

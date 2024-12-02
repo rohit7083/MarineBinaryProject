@@ -5,48 +5,48 @@ import { useState } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
 const ModalConfig = [
-  {
-    id: 1,
-    title: 'Primary',
-    modalColor: 'modal-primary',
-    btnColor: 'primary'
-  },
+  // {
+  //   id: 1,
+  //   title: 'Primary',
+  //   modalColor: 'modal-primary',
+  //   btnColor: 'primary'
+  // },
   {
     id: 2,
     title: 'Secondary',
     modalColor: 'modal-secondary',
     btnColor: 'secondary'
   },
-  {
-    id: 3,
-    title: 'Success',
-    modalColor: 'modal-success',
-    btnColor: 'success'
-  },
-  {
-    id: 4,
-    title: 'Danger',
-    modalColor: 'modal-danger',
-    btnColor: 'danger'
-  },
-  {
-    id: 5,
-    title: 'Warning',
-    modalColor: 'modal-warning',
-    btnColor: 'warning'
-  },
-  {
-    id: 6,
-    title: 'Info',
-    modalColor: 'modal-info',
-    btnColor: 'info'
-  },
-  {
-    id: 7,
-    title: 'Dark',
-    modalColor: 'modal-dark',
-    btnColor: 'dark'
-  }
+  // {
+  //   id: 3,
+  //   title: 'Success',
+  //   modalColor: 'modal-success',
+  //   btnColor: 'success'
+  // },
+  // {
+  //   id: 4,
+  //   title: 'Danger',
+  //   modalColor: 'modal-danger',
+  //   btnColor: 'danger'
+  // },
+  // {
+  //   id: 5,
+  //   title: 'Warning',
+  //   modalColor: 'modal-warning',
+  //   btnColor: 'warning'
+  // },
+  // {
+  //   id: 6,
+  //   title: 'Info',
+  //   modalColor: 'modal-info',
+  //   btnColor: 'info'
+  // },
+  // {
+  //   id: 7,
+  //   title: 'Dark',
+  //   modalColor: 'modal-dark',
+  //   btnColor: 'dark'
+  // }
 ]
 
 const ModalTheme = () => {
@@ -87,7 +87,8 @@ const ModalTheme = () => {
         </Modal>
       </div>
     )
-  })
+  }
+)
 
   return <div className='demo-inline-spacing'>{renderModal}</div>
 }

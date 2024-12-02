@@ -104,7 +104,7 @@ const Login = () => {
             }
           ])
           // navigate(getHomeRouteForLoggedInUser(data.role))
-          navigate('/dashboard/ecommerce'); 
+          navigate('/dashboard/SlipList'); 
                    toast(t => (
             <ToastContent t={t} role={data.role || 'admin'} name={data.fullName || data.username || 'John Doe'} />
           ))

@@ -32,11 +32,17 @@ export default [
     badge: 'light-warning',
     badgeText: '2',
     children: [
+      // {
+      //   id: 'SlipCategory',
+      //   title: 'SlipCategory',
+      //   icon: <Circle size={12} />,
+      //   navLink: '/dashboard/SlipCategory'
+      // },
       {
-        id: 'SlipCategory',
-        title: 'SlipCategory',
+        id: 'SlipList',
+        title: 'SlipList',
         icon: <Circle size={12} />,
-        navLink: '/dashboard/SlipCategory'
+        navLink: '/dashboard/SlipList'
       },
       {
         id: 'SlipDetails',
@@ -44,12 +50,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipDetails'
       },
-      // {
-      //   id: 'SlipLogin',
-      //   title: 'SlipLogin',
-      //   icon: <Circle size={12} />,
-      //   navLink: '/dashboard/SlipLogin'
-      // },
+     
     
     ]
   }

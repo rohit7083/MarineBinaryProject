@@ -11,13 +11,17 @@
 //   CardTitle,
 //   CardBody,
 // } from "reactstrap";
-// import { Badge } from "reactstrap";
+// import { Badge } from 'reactstrap'
 
-// import toast from "react-hot-toast";
+// import toast from 'react-hot-toast'
 
-// import useJwt from "@src/auth/jwt/useJwt";
+// import useJwt from '@src/auth/jwt/useJwt'
+// import { useNavigate } from "react-router-dom";
 
 // function Index() {
+
+//   let navigate = useNavigate();
+
 //   const [error, setError] = useState({
 //     shipTypeName: false,
 //     dimensions: false,
@@ -87,15 +91,15 @@
 //       };
 
 //       try {
-        
 //         await useJwt.postslipCatogory(payload);
 //         alert("Form Submited");
+//         navigate("/dashboard/SlipList");
 //       } catch (error) {
 //         console.log(error);
 //         const { response } = error;
 //         const { data, status } = response;
-//         if (status == 400) {
-//           alert(data.content);
+//         if (status === 400) {
+//           setErrorMessage(data.content); // Set API error message
 //         }
 //       }
 //     }
@@ -120,17 +124,26 @@
 //       </CardHeader>
 
 //       <CardBody>
+//         {/* Display API error message above the form */}
+//         {errorMessage && (
+//           <Row className="mb-1">
+//             <Col sm="12">
+//               <Badge color='light-danger'>{errorMessage}</Badge>
+//             </Col>
+//           </Row>
+//         )}
+
 //         <Form onSubmit={handleSubmit}>
+//           {/* Category Input */}
 //           <Row className="mb-1">
 //             <Label sm="3" for="cat"></Label>
 //             <Col sm="9">
-//               <Badge color="light-danger">error</Badge>
-
-//               {/* {error.shipTypeName && <Badge color="light-danger">error</Badge>} */}
+//               {error.shipTypeName && (
+//                 <Badge color='light-danger'>Category is required</Badge>
+//               )}
 //             </Col>
 //           </Row>
 
-//           {/* Category Input */}
 //           <Row className="mb-1">
 //             <Label sm="3" for="cat">
 //               Category
@@ -152,11 +165,7 @@
 
 //           {/* Dimension Input (Height, Width, Length) */}
 //           <Row className="mb-1">
-//             <Label
-//               sm="3"
-//               for="exampleCustomSwitch"
-//               className="form-check-label"
-//             >
+//             <Label sm="3" for="exampleCustomSwitch" className="form-check-label">
 //               Height/Width/Length
 //             </Label>
 //             <Col sm="9">
@@ -164,9 +173,9 @@
 //                 <Input
 //                   type="checkbox"
 //                   id="cb-height"
-//                   name="h"
+//                   name="Height"
 //                   onChange={handleCheckBox}
-//                   checked={selected.dimensions["h"] !== undefined}
+//                   checked={selected.dimensions["Height"] !== undefined}
 //                 />
 //                 <Label for="cb-height" className="form-check-label">
 //                   Height
@@ -176,9 +185,9 @@
 //                 <Input
 //                   type="checkbox"
 //                   id="cb-width"
-//                   name="w"
+//                   name="Width"
 //                   onChange={handleCheckBox}
-//                   checked={selected.dimensions["w"] !== undefined}
+//                   checked={selected.dimensions["Width"] !== undefined}
 //                 />
 //                 <Label for="cb-width" className="form-check-label">
 //                   Width
@@ -188,9 +197,9 @@
 //                 <Input
 //                   type="checkbox"
 //                   id="cb-length"
-//                   name="l"
+//                   name="Length"
 //                   onChange={handleCheckBox}
-//                   checked={selected.dimensions["l"] !== undefined}
+//                   checked={selected.dimensions["Length"] !== undefined}
 //                 />
 //                 <Label for="cb-length" className="form-check-label">
 //                   Length
@@ -203,9 +212,6 @@
 //               )}
 //             </Col>
 //           </Row>
-
-//           {/* Error message */}
-//           {errorMessage && <div className="text-danger">{errorMessage}</div>}
 
 //           {/* Submit Button */}
 //           <Row>
@@ -232,38 +238,62 @@
 // export default Index;
 
 import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  Button,
-  Col,
-  Input,
-  Label,
-  Row,
-  Form,
   Card,
   CardHeader,
   CardTitle,
   CardBody,
+  Form,
+  Row,
+  Col,
+  Label,
+  Input,
+  Button,
+  Badge,
 } from "reactstrap";
-import { Badge } from 'reactstrap'
+import useJwt from "@src/auth/jwt/useJwt";
+// Assuming you are using toast for notifications
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-import toast from 'react-hot-toast'
-
-import useJwt from '@src/auth/jwt/useJwt'
-
+const MySwal = withReactContent(Swal);
 function Index() {
+  let navigate = useNavigate();
+  let { uid } = useParams(); // Fetch `uid` from the route params
+
   const [error, setError] = useState({
     shipTypeName: false,
     dimensions: false,
   });
 
   const [selected, setSelected] = useState({
-    shipTypeName: "", // Tracks selected category
-    dimensions: {}, // Tracks selected dimensions (h, w, l)
+    shipTypeName: "",
+    dimensions: new Set(),
   });
 
-  const [errorMessage, setErrorMessage] = useState(""); // For displaying API error messages
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Handles changes to input fields (like category)
+  // Fetch existing data when editing
+  useEffect(() => {
+    if (uid) {
+      const fetchSlipCategory = async () => {
+        try {
+          const { data } = await useJwt.getslipCatogory(uid);
+          setSelected({
+            shipTypeName: data.shipTypeName || "",
+            dimensions: new Set(data.dimensions || []), // Assuming dimensions is an array
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          alert.error("Failed to fetch data");
+        }
+      };
+
+      fetchSlipCategory();
+    }
+  }, [uid]);
+
   const handleChange = ({ target }) => {
     const { name, value } = target;
     setSelected((prev) => ({ ...prev, [name]: value }));
@@ -272,11 +302,11 @@ function Index() {
   const handleCheckBox = ({ target }) => {
     const { checked, name } = target;
     setSelected((prevData) => {
-      const newDimensions = { ...prevData.dimensions };
+      const newDimensions = new Set(prevData.dimensions);
       if (checked) {
-        newDimensions[name] = name;
+        newDimensions.add(name);
       } else {
-        delete newDimensions[name];
+        newDimensions.delete(name);
       }
       return {
         ...prevData,
@@ -285,12 +315,10 @@ function Index() {
     });
   };
 
-  // Form validation function
   const validate = () => {
     let isValid = true;
     const errorState = { ...error };
 
-    // Validate if category is provided
     if (!selected.shipTypeName) {
       errorState.shipTypeName = true;
       isValid = false;
@@ -298,8 +326,7 @@ function Index() {
       errorState.shipTypeName = false;
     }
 
-    // Validate if at least one dimension is selected
-    if (Object.keys(selected.dimensions).length === 0) {
+    if (selected.dimensions.size === 0) {
       errorState.dimensions = true;
       isValid = false;
     } else {
@@ -310,24 +337,53 @@ function Index() {
     return isValid;
   };
 
-  // Submit form data
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       const payload = {
         shipTypeName: selected.shipTypeName,
-        dimensions: Object.values(selected.dimensions).filter(Boolean),
+        dimensions: Array.from(selected.dimensions), // Convert Set back to array
       };
 
       try {
-        await useJwt.postslipCatogory(payload);
-        alert("Form Submited");
+        if (uid) {
+          // Update existing entry
+          await useJwt.updateslipCatogory(uid, payload);
+          return MySwal.fire({
+            title: "Successfully Updated",
+            text: " Your Category Updated Successfully",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          });
+        } else {
+          await useJwt.postslipCatogory(payload);
+          try {
+            MySwal.fire({
+              title: "Created Successfully",
+              text: "Your Category Created Successfully",
+              icon: "success",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+              buttonsStyling: false,
+            }).then(() => {
+              // Navigate after Swal closes
+              navigate("/dashboard/SlipList");
+            });
+          } catch (error) {
+            console.error("Error creating category:", error);
+            // Handle the error if needed, e.g., show an error Swal
+          }
+        }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         const { response } = error;
-        const { data, status } = response;
+        const { data, status } = response || {};
         if (status === 400) {
-          setErrorMessage(data.content); // Set API error message
+          setErrorMessage(data?.content || "Failed to submit the form");
         }
       }
     }
@@ -336,44 +392,34 @@ function Index() {
   const resetForm = () => {
     setSelected({
       shipTypeName: "",
-      dimensions: {},
+      dimensions: new Set(),
     });
     setError({
       shipTypeName: false,
       dimensions: false,
     });
-    setErrorMessage(""); // Clear error message on reset
+    setErrorMessage("");
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h4">Slip Category</CardTitle>
+        <CardTitle tag="h4">
+          {uid ? "Edit Slip Category" : "Add Slip Category"}
+        </CardTitle>
       </CardHeader>
-
       <CardBody>
-        {/* Display API error message above the form */}
         {errorMessage && (
           <Row className="mb-1">
             <Col sm="12">
-              <Badge color='light-danger'>{errorMessage}</Badge>
+              <Badge color="light-danger">{errorMessage}</Badge>
             </Col>
           </Row>
         )}
 
         <Form onSubmit={handleSubmit}>
-          {/* Category Input */}
           <Row className="mb-1">
-            <Label sm="3" for="cat"></Label>
-            <Col sm="9">
-              {error.shipTypeName && (
-                <Badge color='light-danger'>Category is required</Badge>
-              )}
-            </Col>
-          </Row>
-
-          <Row className="mb-1">
-            <Label sm="3" for="cat">
+            <Label sm="3" for="shipTypeName">
               Category
             </Label>
             <Col sm="9">
@@ -390,49 +436,23 @@ function Index() {
               )}
             </Col>
           </Row>
-
-          {/* Dimension Input (Height, Width, Length) */}
           <Row className="mb-1">
-            <Label sm="3" for="exampleCustomSwitch" className="form-check-label">
+            <Label sm="3" className="form-check-label">
               Height/Width/Length
             </Label>
             <Col sm="9">
-              <div className="form-check form-check-inline">
-                <Input
-                  type="checkbox"
-                  id="cb-height"
-                  name="h"
-                  onChange={handleCheckBox}
-                  checked={selected.dimensions["h"] !== undefined}
-                />
-                <Label for="cb-height" className="form-check-label">
-                  Height
-                </Label>
-              </div>
-              <div className="form-check form-check-inline">
-                <Input
-                  type="checkbox"
-                  id="cb-width"
-                  name="w"
-                  onChange={handleCheckBox}
-                  checked={selected.dimensions["w"] !== undefined}
-                />
-                <Label for="cb-width" className="form-check-label">
-                  Width
-                </Label>
-              </div>
-              <div className="form-check form-check-inline">
-                <Input
-                  type="checkbox"
-                  id="cb-length"
-                  name="l"
-                  onChange={handleCheckBox}
-                  checked={selected.dimensions["l"] !== undefined}
-                />
-                <Label for="cb-length" className="form-check-label">
-                  Length
-                </Label>
-              </div>
+              {["Height", "Width", "Length"].map((dim) => (
+                <div className="form-check form-check-inline" key={dim}>
+                  <Input
+                    type="checkbox"
+                    id={`cb-${dim.toLowerCase()}`}
+                    name={dim}
+                    onChange={handleCheckBox}
+                    checked={selected.dimensions.has(dim)}
+                  />
+                  <Label for={`cb-${dim.toLowerCase()}`}>{dim}</Label>
+                </div>
+              ))}
               {error.dimensions && (
                 <div className="text-danger">
                   Please select at least one dimension
@@ -441,11 +461,10 @@ function Index() {
             </Col>
           </Row>
 
-          {/* Submit Button */}
           <Row>
             <Col className="d-flex" md={{ size: 9, offset: 3 }}>
               <Button className="me-1" color="primary" type="submit">
-                Submit
+                {uid ? "Update" : "Submit"}
               </Button>
               <Button
                 outline
