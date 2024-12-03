@@ -113,6 +113,21 @@ export default class JwtService {
     return axios.delete(`${this.jwtConfig.slipCategory}${uid}`)
   }
 
+  // ===================== Slip Details 
+
+  postslipDetail(...args) {
+    return axios.post(this.jwtConfig.slipDetail, ...args)
+  }
+  getslipDetail() {
+    return axios.get(this.jwtConfig.slipDetailGet)
+  }
+  updateslipDetail(uid,...args) {
+    return axios.put(`${this.jwtConfig.slipDetail}${uid}`, ...args)
+  }
+  deleteslipDetail(uid) {
+    return axios.delete(`${this.jwtConfig.slipDetail}${uid}`)
+  }
+
   refreshToken() {
     return axios.post(this.jwtConfig.refreshEndpoint, {
       refreshToken: this.getRefreshToken()

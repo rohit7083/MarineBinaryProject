@@ -26,9 +26,8 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import ModalTheme from "../../components/modal/ModalThemes";
 
-// ** Vars
+
 const states = [
   "success",
   "danger",

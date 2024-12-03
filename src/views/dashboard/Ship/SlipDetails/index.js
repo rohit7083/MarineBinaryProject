@@ -1,459 +1,7 @@
-// import React, { useState, useEffect } from "react";
-// import Select from "react-select";
-
-// // ** Utils
-// import { selectThemeColors } from "@utils";
-// import {
-//   Card,
-//   CardHeader,
-//   CardTitle,
-//   CardBody,
-//   Col,
-//   Input,
-//   Form,
-//   Button,
-//   Label,
-//   Row,
-//   FormFeedback,
-// } from "reactstrap";
-// import "./index.css";
-// import useJwt from "@src/auth/jwt/useJwt";
-
-// function ShipDetails() {
-//   const [userData, setUserData] = useState({
-//     name: "",
-//     // type: "",
-//     w: "",
-//     h: "",
-//     l: "",
-//     electricSwitch: false, // Initially set to false
-//     waterSwitch: false, // Initially set to false
-//     addon: "",
-//     anualPrice: "",
-//     monthlyPrice: "",
-//     electricDetails: "", // Initialize electricDetails as an empty string
-//   });
-
-//   const [selectedOption, setSelectedOption] = useState(null); // Default to null, no selection
-//   const [shipTypeNames, setShipTypeNames] = useState([]);
-//   const [selectedCategory, setSelectedCategory] = useState(null); // Store selected option for the single dropdown
-
-//   // Handle dropdown selection change
-//   const handleSelectChange = ( selectedOption) => {
-//     setSelectedCategory(selectedOption);
-//   };
-
-//   const [errors, setErrors] = useState({});
-//   const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
-
-//   // Handle input changes
-//   const handleChange = ({ target }) => {
-//     const { name, value, checked, type } = target;
-
-//     // If it's a switch input (Electric or Water), update boolean state
-//     if (type === "checkbox") {
-//       setUserData((prev) => ({ ...prev, [name]: checked }));
-//     } else {
-//       // Handle Ship Name Validation
-//       if (name === "name") {
-//         const namePattern = /^[A-Za-z0-9\s]*$/; // Only letters, numbers, and spaces
-//         if (!namePattern.test(value)) {
-//           setErrors((prev) => ({
-//             ...prev,
-//             name: "Ship name can only contain letters, numbers, and spaces.",
-//           }));
-//         } else {
-//           setErrors((prev) => ({
-//             ...prev,
-//             name: "",
-//           }));
-//         }
-//       }
-//       setUserData((prev) => ({ ...prev, [name]: value }));
-//     }
-//   };
-
-//   // Handle form submission
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     // Validate before submitting
-//     const validationErrors = validate();
-//     setErrors(validationErrors);
-
-//     if (Object.keys(validationErrors).length === 0) {
-//       console.log("Form Submitted Successfully: ", userData);
-//     } else {
-//       console.log("Validation failed. Please fix the errors.");
-//     }
-//   };
-
-//   // Validation function
-//   const validate = () => {
-//     const newErrors = {};
-//     const regex = /^[A-Za-z0-9]+$/; // Regex for alphanumeric only for name
-//     const addonRegex = /^[A-Za-z.-]+$/; // Regex for add-on (letters, periods, and hyphens)
-
-//     // Validate Name
-//     if (!userData.name) {
-//       newErrors.name = "Slip Name is required";
-//     } else if (!regex.test(userData.name)) {
-//       newErrors.name = "Slip Name should contain only letters and numbers";
-//     } else if (slipNames.includes(userData.name)) {
-//       newErrors.name = "Slip Name must be unique";
-//     }
-
-//     // Validate Width
-//     if (!userData.w) {
-//       newErrors.w = "Width is required";
-//     }
-
-//     // Validate Height
-//     if (!userData.h) {
-//       newErrors.h = "Height is required";
-//     }
-
-//     // Validate Length
-//     if (userData.type === "Covered" && !userData.l) {
-//       newErrors.l = "Length is required";
-//     }
-
-//     // Validate Add-on
-//     if (userData.addon && !addonRegex.test(userData.addon)) {
-//       newErrors.addon = "Add-on can only contain letters, periods, and hyphens";
-//     }
-
-//     // Validate Annual Price
-//     if (!userData.anualPrice) {
-//       newErrors.anualPrice = "Annual Price is required";
-//     }
-
-//     // Validate Monthly Price
-//     if (!userData.monthlyPrice) {
-//       newErrors.monthlyPrice = "Monthly Price is required";
-//     }
-
-//     // Validate Electric Details if Electric is enabled
-//     if (userData.electricSwitch && !userData.electricDetails) {
-//       newErrors.electricDetails =
-//         "Electric Details are required when Electric is enabled";
-//     }
-
-//     return newErrors;
-//   };
-
-//   // Fetch category data from API when component mounts
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const payload = {}; // Add any necessary payload if required
-//         const response = await useJwt.getslipCatogory(payload);
-//         // Extract shipTypeName and set as dropdown option
-//         const options = response.data.content.result.map((item) => ({
-//           value: item.shipTypeName,
-//           label: item.shipTypeName,
-//         }));
-
-//         setShipTypeNames(options);
-//       } catch (error) {
-//         console.error("Error fetching category:", error);
-//         console.log(error);
-//         const { response } = error;
-//         const { data, status } = response;
-//         if (status == 400) {
-//           alert(data.content);
-//         }
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   return (
-//     <>
-//       <Card>
-//         <CardHeader>
-//           <CardTitle tag="h4">Slip Details</CardTitle>
-//         </CardHeader>
-
-//         <CardBody>
-//           <Form onSubmit={handleSubmit}>
-//             <Row className="mb-1">
-//               <Label sm="3" for="name">
-//                 Slip Name
-//                 <span style={{ color: "red" }}>*</span>
-//               </Label>
-//               <Col sm="9">
-//                 <Input
-//                   type="text"
-//                   value={userData.name}
-//                   onChange={handleChange}
-//                   name="name"
-//                   id="name"
-//                   placeholder="Slip Name"
-//                   invalid={!!errors.name}
-//                 />
-//                 {errors.name && <FormFeedback>{errors.name}</FormFeedback>}
-//               </Col>
-//             </Row>
-
-//             <Row className="mb-1">
-//               <Label sm="3" for="electricSwitch">
-//                 Category
-//                 <span style={{ color: "red" }}>*</span>
-//               </Label>
-
-//               <Col className="mb-1" md="6" sm="12">
-//                 <Select
-//                   // theme={selectThemeColors} // Optional, use for custom styles
-//                   className="react-select"
-//                   classNamePrefix="select"
-//                   value={selectedCategory} // The selected option is directly used as the value
-//                   name="selectType"
-//                   options={shipTypeNames}// Pass all shipTypeNames as options in a single dropdown
-//                   isClearable
-//                   onChange={handleSelectChange} // Handle change for single dropdown
-//                 />
-//                 <FormFeedback>{errors.type}</FormFeedback>
-//               </Col>
-//             </Row>
-
-//             <Row className="mb-1">
-//               <Label sm="3" for="w">
-//                 Width
-//                 <span style={{ color: "red" }}>*</span>
-//               </Label>
-//               <Col sm="9">
-//                 <Input
-//                   type="text"
-//                   value={userData.w}
-//                   onChange={handleChange}
-//                   name="w"
-//                   id="w"
-//                   placeholder="Width"
-//                   invalid={!!errors.w}
-//                 />
-//                 <FormFeedback>{errors.w}</FormFeedback>
-//               </Col>
-//             </Row>
-
-//             <Row className="mb-1">
-//               <Label sm="3" for="h">
-//                 Height
-//                 <span style={{ color: "red" }}>*</span>
-//               </Label>
-//               <Col sm="9">
-//                 <Input
-//                   type="text"
-//                   value={userData.h}
-//                   onChange={handleChange}
-//                   name="h"
-//                   id="h"
-//                   placeholder="Height"
-//                   invalid={!!errors.h}
-//                 />
-//                 <FormFeedback>{errors.h}</FormFeedback>
-//               </Col>
-//             </Row>
-//               <Row className="mb-1">
-//                 <Label sm="3" for="l">
-//                   Length
-//                   <span style={{ color: "red" }}>*</span>
-//                 </Label>
-//                 <Col sm="9">
-//                   <Input
-//                     type="text"
-//                     value={userData.l}
-//                     onChange={handleChange}
-//                     name="l"
-//                     id="l"
-//                     placeholder="Length"
-//                     invalid={!!errors.l}
-//                   />
-//                   <FormFeedback>{errors.l}</FormFeedback>
-//                 </Col>
-//               </Row>
-            
-//             {/* Electric Switch Field */}
-//             <Row className="mb-1">
-//               <Label sm="3" for="electricSwitch">
-//                 Electric (Yes/No)
-//               </Label>
-//               <Col sm="9">
-//                 <div className="form-check form-switch d-flex align-items-center">
-//                   {/* "No" label to the left */}
-//                   <Label
-//                     className="me-0"
-//                     htmlFor="electricSwitch"
-//                     style={{ textAlign: "left" }}
-//                   >
-//                     No
-//                   </Label>
-
-//                   {/* Toggle switch */}
-//                   <Input
-//                     type="switch"
-//                     name="electricSwitch"
-//                     id="electricSwitch"
-//                     checked={userData.electricSwitch}
-//                     onChange={handleChange}
-//                     style={{ margin: 0 }}
-//                   />
-
-//                   {/* "Yes" label to the right */}
-//                   <Label
-//                     className="ms-0"
-//                     htmlFor="electricSwitch"
-//                     style={{ textAlign: "left" }}
-//                   >
-//                     Yes
-//                   </Label>
-//                 </div>
-//               </Col>
-//             </Row>
-
-//             {/* Water Switch Field */}
-//             <Row className="mb-1">
-//               <Label sm="3" for="waterSwitch">
-//                 Water (Yes/No)
-//               </Label>
-//               <Col sm="9">
-//                 <div className="form-check form-switch d-flex align-items-center">
-//                   {/* "No" label to the left */}
-//                   <Label
-//                     className="me-0"
-//                     htmlFor="waterSwitch"
-//                     style={{ textAlign: "left" }}
-//                   >
-//                     No
-//                   </Label>
-
-//                   {/* Toggle switch */}
-//                   <Input
-//                     type="switch"
-//                     name="waterSwitch"
-//                     id="waterSwitch"
-//                     checked={userData.waterSwitch}
-//                     onChange={handleChange}
-//                     style={{ margin: 0 }}
-//                   />
-
-//                   {/* "Yes" label to the right */}
-//                   <Label
-//                     className="ms-0"
-//                     htmlFor="waterSwitch"
-//                     style={{ textAlign: "left" }}
-//                   >
-//                     Yes
-//                   </Label>
-//                 </div>
-//               </Col>
-//             </Row>
-
-//             {userData.electricSwitch && (
-//               <Row className="mb-1">
-//                 <Label sm="3" for="electricDetails">
-//                   AMPS
-//                 </Label>
-//                 <Col sm="9">
-//                   <Input
-//                     type="text"
-//                     value={userData.electricDetails}
-//                     onChange={handleChange}
-//                     name="electricDetails"
-//                     id="electricDetails"
-//                     placeholder="AMPS"
-//                     invalid={!!errors.electricDetails}
-//                   />
-//                   <FormFeedback>{errors.electricDetails}</FormFeedback>
-//                 </Col>
-//               </Row>
-//             )}
-
-//             <Row className="mb-1">
-//               <Label sm="3" for="addon">
-//                 Add-on
-//               </Label>
-//               <Col sm="9">
-//                 <Input
-//                   type="text"
-//                   value={userData.addon}
-//                   onChange={handleChange}
-//                   name="addon"
-//                   id="addon"
-//                   placeholder="Add-on"
-//                   invalid={!!errors.addon}
-//                 />
-//                 <FormFeedback>{errors.addon}</FormFeedback>
-//               </Col>
-//             </Row>
-
-//             <Row className="mb-1">
-//               <Label sm="3" for="anualPrice">
-//                 Annual Price
-//                 <span style={{ color: "red" }}>*</span>
-//               </Label>
-//               <Col sm="9">
-//                 <Input
-//                   type="number"
-//                   value={userData.anualPrice}
-//                   onChange={handleChange}
-//                   name="anualPrice"
-//                   id="anualPrice"
-//                   placeholder="Annual Price"
-//                   invalid={!!errors.anualPrice}
-//                 />
-//                 <FormFeedback>{errors.anualPrice}</FormFeedback>
-//               </Col>
-//             </Row>
-
-//             <Row className="mb-1">
-//               <Label sm="3" for="monthlyPrice">
-//                 Monthly Price
-//                 <span style={{ color: "red" }}>*</span>
-//               </Label>
-//               <Col sm="9">
-//                 <Input
-//                   type="number"
-//                   value={userData.monthlyPrice}
-//                   onChange={handleChange}
-//                   name="monthlyPrice"
-//                   id="monthlyPrice"
-//                   placeholder="Monthly Price"
-//                   invalid={!!errors.monthlyPrice}
-//                 />
-//                 <FormFeedback>{errors.monthlyPrice}</FormFeedback>
-//               </Col>
-//             </Row>
-
-//             <Row>
-//               <Col className="d-flex" md={{ size: 9, offset: 3 }}>
-//                 <Button className="me-1" color="primary" type="submit">
-//                   Submit
-//                 </Button>
-//                 <Button outline color="secondary" type="reset">
-//                   Reset
-//                 </Button>
-//               </Col>
-//             </Row>
-//           </Form>
-//         </CardBody>
-//       </Card>
-//     </>
-//   );
-// }
-
-// export default ShipDetails;
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 
 // ** Utils
-import { selectThemeColors } from "@utils";
 import {
   Card,
   CardHeader,
@@ -469,96 +17,43 @@ import {
 } from "reactstrap";
 import "./index.css";
 import useJwt from "@src/auth/jwt/useJwt";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { useNavigate, useParams } from "react-router-dom";
 
+const MySwal = withReactContent(Swal);
 function ShipDetails() {
   const [userData, setUserData] = useState({
-    name: "",
-    w: "",
-    h: "",
-    l: "",
-    electricSwitch: false,
-    waterSwitch: false,
-    addon: "",
-    anualPrice: "",
-    monthlyPrice: "",
-    electricDetails: "",
+    slipName: "",
+    electric: false,
+    water: false,
+    addOn: "",
+    marketAnnualPrice: "",
+    marketMonthlyPrice: "",
+    amps: "",
   });
-
-  const [selectedOption, setSelectedOption] = useState(null);
+  
+  const [selectedOption, setSelectedOption] = useState(null); // Default to null, no selection
   const [shipTypeNames, setShipTypeNames] = useState([]);
-  const [dimensions, setDimensions] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [errors, setErrors] = useState({});
-  const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]);
+  const [selectedCategory, setSelectedCategory] = useState(null); // Store selected option for the single dropdown
+  const [dimensions, setDimensions] = useState([]); // Dimensions for the selected category
 
-  // Fetch ship types
-  useEffect(() => {
-      // if (selectedCategory) {
-      //   const fetchDimensions = async () => {
-      //     try {
-      //       const response = await useJwt.getslipCatogory();
-      //       // Assuming response.data.content.result is an array of categories with dimensions
-
-
-      //       const categoryDimensions = response.data.content.result.find(
-      //         (item) => item.shipTypeName === selectedCategory.value
-      //       );
-    
-      //       // Set dimensions for the selected category (only if dimensions exist)
-      //       if (categoryDimensions) {
-      //         setDimensions({
-      //           width: categoryDimensions.width || "",
-      //           height: categoryDimensions.height || "",
-      //           length: categoryDimensions.length || "",
-      //         });
-      //       } else {
-      //         setDimensions({});
-      //       }
-      //     } catch (error) {
-      //       console.error("Error fetching dimensions:", error);
-      //     }
-      //   };
-      //   fetchDimensions();
-      // }
-    
-    
-    
-    const fetchData = async () => {
-      try {
-        const response = await useJwt.getslipCatogory({});
-        // console.log(response);
-        
-        const options = response.data.content.result.map((item) => ({
-          id:item.id,
-          value: item.shipTypeName,
-          label: item.shipTypeName,
-        }));
-        console.log(options);
-        
-        setShipTypeNames(options);
-      } catch (error) {
-        console.error("Error fetching category:", error);
-      }
-    };
-    fetchData();
-
-  }, [selectedCategory]);
-
- 
-
-  const handleSelectChange = (selectedOption) => {
-    setSelectedCategory(selectedOption);
-    setUserData((prev) => ({
-      ...prev,
-      w: "", // Reset width, height, and length when category changes
-      h: "",
-      l: "",
-    }));
+  // Handle dropdown selection change
+  const handleSelectChange = (option) => {
+    setSelectedCategory(option);
+    setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
 
+  let navigate = useNavigate();
+
+  const [errors, setErrors] = useState({});
+  const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
+
+  // Handle input changes
   const handleChange = ({ target }) => {
     const { name, value, checked, type } = target;
 
+    // If it's a switch input (Electric or Water), update boolean state
     if (type === "checkbox") {
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
@@ -568,208 +63,422 @@ function ShipDetails() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     const validationErrors = validate();
     setErrors(validationErrors);
+    
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Form Submitted Successfully:", userData);
+      // Submit form logic here...
+      console.log("Form Submitted Successfully: ", userData);
+      try {
+        // Construct payload and call the API
+        const payload = {
+          slipName: userData.slipName,
+          electric: userData.electric,
+          water: userData.water,
+          addOn: userData.addOn,
+          amps: parseFloat(userData.amps),
+          marketAnnualPrice: parseFloat(userData.marketAnnualPrice) || 0,
+          marketMonthlyPrice: parseFloat(userData.marketMonthlyPrice) || 0,
+          slipCategoryUid: selectedCategory?.value,
+          dimensions: dimensions.reduce((acc, dim) => {
+            acc[dim] = parseFloat(userData[dim]) || 0;
+            return acc;
+          }, {}),
+        };
+  
+        const response = await useJwt.postslipDetail(payload);
+        console.log("API Response:", response);
+        try {
+         MySwal.fire({
+            title: "Successfully Created",
+            text: " Your Slip Details Created Successfully",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+  
+          }).then(()=>{
+            navigate("/dashboard/SlipDetailList");
+
+          })
+        } catch (error) {
+          console.log(error);
+          
+        }
+        
+
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        return MySwal.fire({
+          title: 'Error!',
+          text: 'An error occurred while submitting the form.',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        })
+      
+
+      }
     } else {
       console.log("Validation failed. Please fix the errors.");
     }
   };
-
+   
   const validate = () => {
     const newErrors = {};
-    if (!userData.name) {
-      newErrors.name = "Slip Name is required";
+    const alphanumericRegex = /^[A-Za-z0-9]+$/; // Alphanumeric for slipName
+    const alphabeticRegex = /^[A-Za-z.-]+$/; // Alphabetic with periods and hyphens for add-on
+    
+    // Validate Slip Name
+    if (!userData.slipName) {
+      newErrors.slipName = "Slip Name is required";
+    } else if (!alphanumericRegex.test(userData.slipName)) {
+      newErrors.slipName = "Slip Name should contain only letters and numbers";
+    } else if (slipNames.includes(userData.slipName)) {
+      newErrors.slipName = "Slip Name must be unique";
     }
-    if (!userData.w) {
-      newErrors.w = "Width is required";
+    
+    // Validate Category
+    if (!selectedCategory) {
+      newErrors.category = "Category is required";
     }
-    if (!userData.h) {
-      newErrors.h = "Height is required";
+  
+    // Validate Dimensions
+    dimensions.forEach((dim) => {
+      if (!userData[dim]) {
+        newErrors[dim] = `${dim.toUpperCase()} is required`;
+      }
+    });
+  
+    // Validate Add-On
+    if (userData.addOn && !alphabeticRegex.test(userData.addOn)) {
+      newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
     }
-    if (userData.type === "Covered" && !userData.l) {
-      newErrors.l = "Length is required";
+  
+    // Validate Annual Price
+    if (!userData.marketAnnualPrice) {
+      newErrors.marketAnnualPrice = "Annual Price is required";
+    } else if (isNaN(userData.marketAnnualPrice)) {
+      newErrors.marketAnnualPrice = "Annual Price must be a number";
     }
-    if (!userData.anualPrice) {
-      newErrors.anualPrice = "Annual Price is required";
+  
+    // Validate Monthly Price
+    if (!userData.marketMonthlyPrice) {
+      newErrors.marketMonthlyPrice = "Monthly Price is required";
+    } else if (isNaN(userData.marketMonthlyPrice)) {
+      newErrors.marketMonthlyPrice = "Monthly Price must be a number";
     }
-    if (!userData.monthlyPrice) {
-      newErrors.monthlyPrice = "Monthly Price is required";
+ 
+  
+
+  // Validate AMPS if Electric is enabled
+  if (userData.electric) {
+    if (!userData.amps) {
+      newErrors.amps = "AMPS is required when Electric is enabled";
+    } else if (isNaN(userData.amps)) {
+      newErrors.amps = "AMPS must be a number";
     }
+  }
     return newErrors;
   };
+  
+  // Fetch category data from API when component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const payload = {}; // Add any necessary payload if required
+        const response = await useJwt.getslipCatogory(payload);
+        // Extract shipTypeName and set as dropdown option
+        const options = response.data.content.result.map((item) => ({
+          value: item.uid,
+          label: item.shipTypeName,
+          dimensions: item.dimensions, // Store dimensions for each category
+
+        }));
+        console.log(options);
+
+        setShipTypeNames(options);
+      } catch (error) {
+        console.error("Error fetching category:", error);
+        const { response } = error;
+        const { data, status } = response;
+        if (status == 400) {
+          alert(data.content);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+  const resetForm = () => {
+    setUserData({
+      dimensions: new Set(),
+      slipName: "",
+      electric: false,
+      water: false,
+      addOn: "",
+      marketAnnualPrice: "",
+      marketMonthlyPrice: "",
+      amps: "",
+    });
+    setErrors({
+      slipName: "",
+      electric: false,
+      water: false,
+      addOn: "",
+      marketAnnualPrice: "",
+      marketMonthlyPrice: "",
+      amps: "",
+      dimensions: false,
+    });
+    setErrorMessage("");
+  };
+
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle tag="h4">Slip Details</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <Form onSubmit={handleSubmit}>
-          <Row className="mb-1">
-            <Label sm="3" for="name">
-              Slip Name
-              <span style={{ color: "red" }}>*</span>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle tag="h4">Slip Details</CardTitle>
+        </CardHeader>
+
+        <CardBody>
+          <Form onSubmit={handleSubmit}>
+            <Row className="mb-1">
+              <Label sm="3" for="name">
+                Slip Name
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="text"
+                  value={userData.slipName}
+                  onChange={handleChange}
+                  name="slipName"
+                  id="slipName"
+                  placeholder="Slip Name"
+                  invalid={!!errors.slipName}
+                />
+                {errors.slipName && <FormFeedback>{errors.slipName}</FormFeedback>}
+              </Col>
+            </Row>
+
+            <Row className="mb-1">
+            <Label sm="3" for="category">
+              Category<span style={{ color: "red" }}>*</span>
             </Label>
             <Col sm="9">
-              <Input
-                type="text"
-                value={userData.name}
-                onChange={handleChange}
-                name="name"
-                id="name"
-                placeholder="Slip Name"
-                invalid={!!errors.name}
-              />
-              {errors.name && <FormFeedback>{errors.name}</FormFeedback>}
-            </Col>
-          </Row>
-
-          <Row className="mb-1">
-            <Label sm="3" for="electricSwitch">
-              Category
-              <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Col className="mb-1" md="6" sm="12">
               <Select
-                className="react-select"
-                classNamePrefix="select"
                 value={selectedCategory}
-                name="selectType"
+                onChange={handleSelectChange}
                 options={shipTypeNames}
                 isClearable
-                onChange={handleSelectChange}
+                placeholder="Select Category"
+                className={errors.category ? "is-invalid" : ""}
               />
-            </Col>
-          </Row>
-          {selectedCategory && dimensions && (
-  <>
-    {dimensions.width && (
-      <Row className="mb-1">
-        <Label sm="3" for="w">
-          Width
-          <span style={{ color: "red" }}>*</span>
-        </Label>
-        <Col sm="9">
-          <Input
-            type="text"
-            value={userData.w}
-            onChange={handleChange}
-            name="w"
-            id="w"
-            placeholder="Width"
-            invalid={!!errors.w}
-          />
-          {errors.w && <FormFeedback>{errors.w}</FormFeedback>}
-        </Col>
-      </Row>
-    )}
-
-    {dimensions.height && (
-      <Row className="mb-1">
-        <Label sm="3" for="h">
-          Height
-          <span style={{ color: "red" }}>*</span>
-        </Label>
-        <Col sm="9">
-          <Input
-            type="text"
-            value={userData.h}
-            onChange={handleChange}
-            name="h"
-            id="h"
-            placeholder="Height"
-            invalid={!!errors.h}
-          />
-          {errors.h && <FormFeedback>{errors.h}</FormFeedback>}
-        </Col>
-      </Row>
-    )}
-
-    {dimensions.length && (
-      <Row className="mb-1">
-        <Label sm="3" for="l">
-          Length
-          <span style={{ color: "red" }}>*</span>
-        </Label>
-        <Col sm="9">
-          <Input
-            type="text"
-            value={userData.l}
-            onChange={handleChange}
-            name="l"
-            id="l"
-            placeholder="Length"
-            invalid={!!errors.l}
-          />
-          {errors.l && <FormFeedback>{errors.l}</FormFeedback>}
-        </Col>
-      </Row>
-    )}
-  </>
-)}
-
-          <Row className="mb-1">
-            <Label sm="3" for="addon">
-              Add-on
-            </Label>
-            <Col sm="9">
-              <Input
-                type="text"
-                value={userData.addon}
-                onChange={handleChange}
-                name="addon"
-                id="addon"
-                placeholder="Add-on"
-                invalid={!!errors.addon}
-              />
-              {errors.addon && <FormFeedback>{errors.addon}</FormFeedback>}
+              {errors.category && (
+                <div className="invalid-feedback d-block">{errors.category}</div>
+              )}
             </Col>
           </Row>
 
-          <Row className="mb-1">
-            <Label sm="3" for="anualPrice">
-              Annual Price
-              <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Col sm="9">
-              <Input
-                type="number"
-                value={userData.anualPrice}
-                onChange={handleChange}
-                name="anualPrice"
-                id="anualPrice"
-                placeholder="Annual Price"
-                invalid={!!errors.anualPrice}
-              />
-              {errors.anualPrice && <FormFeedback>{errors.anualPrice}</FormFeedback>}
-            </Col>
-          </Row>
+            {dimensions.map((dim) => (
+            <Row className="mb-1" key={dim}>
+              <Label sm="3" for={dim}>
+                {dim.toLowerCase()}
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="text"
+                  value={userData[dim] || ""}
+                  onChange={handleChange}
+                  name={dim}
+                  id={dim}
+                  placeholder={`Enter ${dim.toLowerCase()}`}
+                  invalid={!!errors[dim]}
+                />
+                {errors[dim] && <FormFeedback>{errors[dim]}</FormFeedback>}
+              </Col>
+            </Row>
+          ))}
+            
+            {/* Electric Switch Field */}
+            <Row className="mb-1">
+              <Label sm="3" for="electric">
+                Electric (Yes/No)
+              </Label>
+              <Col sm="9">
+                <div className="form-check form-switch d-flex align-items-center">
+                  {/* "No" label to the left */}
+                  <Label
+                    className="me-0"
+                    htmlFor="electric"
+                    style={{ textAlign: "left" }}
+                  >
+                    No
+                  </Label>
 
-          <Row className="mb-1">
-            <Label sm="3" for="monthlyPrice">
-              Monthly Price
-              <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Col sm="9">
-              <Input
-                type="number"
-                value={userData.monthlyPrice}
-                onChange={handleChange}
-                name="monthlyPrice"
-                id="monthlyPrice"
-                placeholder="Monthly Price"
-                invalid={!!errors.monthlyPrice}
-              />
-              {errors.monthlyPrice && <FormFeedback>{errors.monthlyPrice}</FormFeedback>}
-            </Col>
-          </Row>
+                  {/* Toggle switch */}
+                  <Input
+                    type="switch"
+                    name="electric"
+                    id="electric"
+                    checked={userData.electric}
+                    onChange={handleChange}
+                    style={{ margin: 0 }}
+                  />
 
-          <Button type="submit">Submit</Button>
-        </Form>
-      </CardBody>
-    </Card>
+                  {/* "Yes" label to the right */}
+                  <Label
+                    className="ms-0"
+                    htmlFor="electric"
+                    style={{ textAlign: "left" }}
+                  >
+                    Yes
+                  </Label>
+                </div>
+              </Col>
+            </Row>
+
+            {/* Water Switch Field */}
+            <Row className="mb-1">
+              <Label sm="3" for="water">
+                Water (Yes/No)
+              </Label>
+              <Col sm="9">
+                <div className="form-check form-switch d-flex align-items-center">
+                  {/* "No" label to the left */}
+                  <Label
+                    className="me-0"
+                    htmlFor="water"
+                    style={{ textAlign: "left" }}
+                  >
+                    No
+                  </Label>
+
+                  {/* Toggle switch */}
+                  <Input
+                    type="switch"
+                    name="water"
+                    id="water"
+                    checked={userData.water}
+                    onChange={handleChange}
+                    style={{ margin: 0 }}
+                  />
+
+                  {/* "Yes" label to the right */}
+                  <Label
+                    className="ms-0"
+                    htmlFor="water"
+                    style={{ textAlign: "left" }}
+                  >
+                    Yes
+                  </Label>
+                </div>
+              </Col>
+            </Row>
+
+            {userData.electric && (
+              <Row className="mb-1">
+                <Label sm="3" for="amps">
+                  AMPS
+                </Label>
+                <Col sm="9">
+                  <Input
+                    type="text"
+                    value={userData.amps}
+                    onChange={handleChange}
+                    name="amps"
+                    id="amps"
+                    placeholder="AMPS"
+                    invalid={!!errors.amps}
+                  />
+                  <FormFeedback>{errors.amps}</FormFeedback>
+                </Col>
+              </Row>
+            )}
+
+            <Row className="mb-1">
+              <Label sm="3" for="addOn">
+                Add-on
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="text"
+                  value={userData.addOn}
+                  onChange={handleChange}
+                  name="addOn"
+                  id="addOn"
+                  placeholder="Add-on"
+                  invalid={!!errors.addOn}
+                />
+                <FormFeedback>{errors.addOn}</FormFeedback>
+              </Col>
+            </Row>
+
+            <Row className="mb-1">
+              <Label sm="3" for="marketAnnualPrice">
+               Market Annual Price
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="number"
+                  value={userData.marketAnnualPrice}
+                  onChange={handleChange}
+                  name="marketAnnualPrice"
+                  id="marketAnnualPrice"
+                  placeholder="Annual Price"
+                  invalid={!!errors.marketAnnualPrice}
+                />
+                <FormFeedback>{errors.marketAnnualPrice}</FormFeedback>
+              </Col>
+            </Row>
+
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Market Monthly Price
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="number"
+                  value={userData.marketMonthlyPrice}
+                  onChange={handleChange}
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder="Monthly Price"
+                  invalid={!!errors.marketMonthlyPrice}
+                />
+                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col className="d-flex" md={{ size: 9, offset: 3 }}>
+                <Button className="me-1" color="primary" type="submit">
+                  Submit
+                </Button>
+                <Button outline 
+                onClick={resetForm}
+                
+                color="secondary" type="reset">
+                  Reset
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </CardBody>
+      </Card>
+    </>
   );
 }
 

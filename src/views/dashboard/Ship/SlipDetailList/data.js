@@ -26,7 +26,6 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import ModalTheme from "../../components/modal/ModalThemes";
 
 // ** Vars
 const states = [
@@ -360,21 +359,64 @@ export const serverSideColumns = [
 
   {
     sortable: true,
-    name: "Slip Category",
+    name: "Slip Name",
     minWidth: "150px",
-    selector: (row) => row.shipTypeName,
+    selector: (row) => row.slipName,
   },
   {
     sortable: true,
-    name: "Dimentions",
+    name: "Category",
     minWidth: "150px",
-    selector: (row) => row.dimensions,
+    selector: (row) => row.category.shipTypeName,
   },
+  // {
+  //   sortable: true,
+  //   name: "dimensions",
+  //   minWidth: "150px",
+  //   selector: (row) => row.dim,
+  // },
+  {
+    sortable: true,
+    name: "Electric",
+    minWidth: "150px",
+    selector: (row) => row.electric ? "Yes" : "No", 
 
+
+  },
+  {
+    sortable: true,
+    name: "water",
+    minWidth: "150px",
+    selector: (row) =>row.water ? "Yes" : "No", 
+  },
+  {
+    sortable: true,
+    name: "AMPS",
+    minWidth: "150px",
+    selector: (row) => row.amps,
+  },
+  {
+    sortable: true,
+    name: " Add-on",
+    minWidth: "150px",
+    selector: (row) => row.addOn,
+  },
+  {
+    sortable: true,
+    name: "Market Annual Price",
+    minWidth: "150x",
+    selector: (row) => row.marketAnnualPrice,
+  },
+  {
+    sortable: true,
+    name: "Market Monthly Price",
+    minWidth: "150px",
+    selector: (row) => row.marketMonthlyPrice,
+  },
   {
     name: "Actions",
     sortable: true,
-    minWidth: "175px",
+    minWidth: "150px",
     cell: (row) => {
       const [data, setData] = useState([]);
 
@@ -397,7 +439,7 @@ export const serverSideColumns = [
           if (result.value) {
             try {
               // Call delete API
-              const response = await useJwt.deleteslipCatogory(uid);
+              const response = await useJwt.deleteslipDetail(uid);
               if (response.status === 204) {
                 setData((prevData) =>
                   prevData.filter((item) => item.uid !== uid)
@@ -411,7 +453,9 @@ export const serverSideColumns = [
                     confirmButton: "btn btn-success",
                   },
                 });
-                window.location.reload(true);
+                setTimeout(() => {
+                    window.location.reload(true);
+                  }, 2000); // 2000ms = 2 seconds
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -431,7 +475,7 @@ export const serverSideColumns = [
       };
 
       const handle = async() => {
-        console.log(row.shipTypeName);
+        // console.log(uid);
       
 
       };
@@ -440,12 +484,9 @@ export const serverSideColumns = [
         <div className="d-flex">
           {/* Edit Button */}
           <Link
-            to={{
-              pathname: `/dashboard/SlipCategory/${row.uid}`,
-              state: { shipTypeName: row.shipTypeName } // Passing the data
-            }}
-          >
-            <span onClick={() => handle(row)}>
+           to={`/dashboard/SlipDetails/${row.uid}`}>
+
+            <span >
               <Edit2 className="me-2" />
             </span>
           </Link>
@@ -470,7 +511,7 @@ export const advSearchColumns = [
     name: "shipTypeName",
     sortable: true,
     minWidth: "200px",
-    selector: (row) => row.shipTypeName,
+    selector: (row) => row.slipName,
   },
   {
     name: "Email",

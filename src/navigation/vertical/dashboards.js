@@ -45,10 +45,10 @@ export default [
         navLink: '/dashboard/SlipList'
       },
       {
-        id: 'SlipDetails',
-        title: 'SlipDetails',
+        id: 'SlipDetailList',
+        title: 'SlipDetailList',
         icon: <Circle size={12} />,
-        navLink: '/dashboard/SlipDetails'
+        navLink: '/dashboard/SlipDetailList'
       },
      
     
