@@ -10,7 +10,7 @@ import SocialLinks from './steps-with-validation/SocialLinks'
 import PersonalInfo from './steps-with-validation/PersonalInfo'
 import AccountDetails from './steps-with-validation/AccountDetails'
 
-const WizardHorizontal = () => {
+const index = () => {
   // ** Ref
   const ref = useRef(null)
 
@@ -19,26 +19,26 @@ const WizardHorizontal = () => {
 
   const steps = [
     {
-      id: 'account-details',
-      title: 'Account Details22222',
-      subtitle: 'Enter Your Account Details.',
+      id: 'Vessel-details',
+      title: 'Vessel details',
+      subtitle: 'Enter Your Vessels Details.',
       content: <AccountDetails stepper={stepper} />
     },
     {
-      id: 'personal-info',
-      title: 'Personal Info',
-      subtitle: 'Add Personal Info',
+      id: 'Member-info',
+      title: 'Member Details',
+      subtitle: 'Add Member Info',
       content: <PersonalInfo stepper={stepper} />
     },
     {
-      id: 'step-address',
-      title: 'Address',
-      subtitle: 'Add Address',
+      id: 'Payment',
+      title: 'Payment Details',
+      subtitle: 'Add Payment',
       content: <Address stepper={stepper} />
     },
     {
       id: 'social-links',
-      title: 'Social Links',
+      title: 'Document Details',
       subtitle: 'Add Social Links',
       content: <SocialLinks stepper={stepper} />
     }
@@ -51,4 +51,6 @@ const WizardHorizontal = () => {
   )
 }
 
-export default WizardHorizontal
+export default index
+
+

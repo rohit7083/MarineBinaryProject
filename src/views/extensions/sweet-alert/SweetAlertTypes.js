@@ -79,13 +79,13 @@ const SweetAlertTypes = () => {
           "success" and "info".
         </CardText>
         <div className='demo-inline-spacing'>
-          {/* <Button color='success' onClick={handleSuccess} outline>
+         <Button color='success' onClick={handleSuccess} outline>
             Success
-          </Button> */}
+          </Button> 
           <Button color='danger' onClick={handleError} outline>
             Error
           </Button>
-          {/* <Button color='warning' onClick={handleWarning} outline>
+           <Button color='warning' onClick={handleWarning} outline>
             Warning
           </Button>
           <Button color='info' onClick={handleInfo} outline>
@@ -93,7 +93,7 @@ const SweetAlertTypes = () => {
           </Button>
           <Button onClick={handleQuestion} outline>
             Question
-          </Button> */}
+          </Button> 
         </div>
       </CardBody>
     </Card>

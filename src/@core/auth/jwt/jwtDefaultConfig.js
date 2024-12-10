@@ -16,6 +16,8 @@ export default {
   slipDetail:"/slipDetail/",
   slipDetailGet:"/slipDetail",
 
+  slipAssignment:"/slipAssignment/",
+  slipAssignmentGet:"/slipAssignmentGet",
 
   // ** Value of this property will be used as key to store JWT token in storage
   storageTokenKeyName: 'accessToken',

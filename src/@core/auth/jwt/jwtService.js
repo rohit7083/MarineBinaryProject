@@ -127,6 +127,14 @@ export default class JwtService {
   deleteslipDetail(uid) {
     return axios.delete(`${this.jwtConfig.slipDetail}${uid}`)
   }
+  // ==================== Slip assigne
+
+  postslipAssignment(...args) {
+    return axios.post(this.jwtConfig.slipAssignment, ...args)
+  }
+  getslipAssignment() {
+    return axios.get(this.jwtConfig.slipAssignmentGet)
+  }
 
   refreshToken() {
     return axios.post(this.jwtConfig.refreshEndpoint, {
