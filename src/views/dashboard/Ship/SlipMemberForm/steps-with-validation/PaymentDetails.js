@@ -1,8 +1,6 @@
 // ** React Imports
 import { Fragment } from "react";
-import { useState } from "react";
-// ** Third Party Components
-import Cleave from "cleave.js/react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
@@ -11,17 +9,15 @@ import Flatpickr from "react-flatpickr";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
-
+import useJwt from "@src/auth/jwt/useJwt";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
+import PersonalInfo from "./MemberDetails";
 
-const Address = ({ stepper }) => {
-  const [picker, setPicker] = useState(new Date());
-  const [nextPayment, setnextPayment] = useState(new Date());
-
+const Address = ({ stepper, combinedData, setCombinedData }) => {
   const colourOptions = [
-    { value: "Annually", label: "Annually" },
-    { value: "Monthly", label: "Monthly" },
+    { value: "yearly", label: "yearly" },
+    { value: "monthly", label: "monthly" },
   ];
 
   const colourOptions2 = [
@@ -65,9 +61,49 @@ const Address = ({ stepper }) => {
     value: currentYear + i,
     label: (currentYear + i).toString(),
   }));
-
+  const [picker, setPicker] = useState(new Date());
+  const [nextPayment, setnextPayment] = useState(new Date());
   const [availableMonths, setAvailableMonths] = useState(months); // Initially show all months
   const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [showOTPFields, setShowOTPFields] = useState(false);
+  const [discounttoggle, setDiscountToggle] = useState(false);
+  const [otpVisible, setOtpVisible] = useState(false); // Tracks OTP button visibility
+  const [discountTypee, setdiscountTypee] = useState(null);
+  const [otp, setOtp] = useState("");
+  const [paymentType, setPaymentType] = useState(null);
+  const [marketPrices, setMarketPrices] = useState(null);
+  const [calculatedDiscount, setCalculatedDiscount] = useState(0); // For storing calculated discount value
+  // const [rentalPrice, setRentalPrice] = useState(""); // State to store rental price
+
+  // Handle changes in the "Paid In" dropdown
+  const handlePaidInChange = (option) => {
+    console.log("Option selected:", option);
+    if (option?.value === "monthly") {
+      // setRentalPrice(slipDetail.marketMonthlyPrice); // Update rental price to monthly value
+      setValue('MonYear',slipDetail.marketMonthlyPrice);
+
+      console.log(
+        "Updated Rental Price (Monthly):",
+        slipDetail.marketMonthlyPrice
+      );
+    } else if (option?.value === "yearly") {
+      // setRentalPrice(slipDetail.marketAnnualPrice); // Update rental price to yearly value
+      setValue('MonYear',slipDetail.marketAnnualPrice);
+
+      console.log(
+        "Updated Rental Price (Yearly):",
+        slipDetail.marketAnnualPrice
+      );
+    } else {
+      // setRentalPrice(""); // Clear rental price if no valid option
+      console.log("Cleared Rental Price");
+    }
+  };
+
+  // Log rentalPrice whenever it updates
+  // useEffect(() => {
+  //   console.log("Rental Price updated:", rentalPrice);
+  // }, [rentalPrice]);
 
   // Handle year change
   const handleYearChange = (year) => {
@@ -89,13 +125,6 @@ const Address = ({ stepper }) => {
     setValue("cardExpiryMonth", null);
   };
 
-  const [showOTPFields, setShowOTPFields] = useState(false);
-  const [discounttoggle, setDiscountToggle] = useState(false);
-  const [otpVisible, setOtpVisible] = useState(false); // Tracks OTP button visibility
-  const [discountTypee, setdiscountTypee] = useState(null);
-  const [otp, setOtp] = useState("");
-  const [PaymentType, setPaymentType] = useState(null);
-
   const handleOTPClick = () => {
     setOtpVisible(true); // Show OTP state
     // Handle OTP button click (can trigger OTP API here)
@@ -115,184 +144,31 @@ const Address = ({ stepper }) => {
 
   const handleDisType = (selectMyType) => {
     // console.log(selectMyType);
-    console.log(selectMyType.value);
     setdiscountTypee(selectMyType.label);
     // setValue('discountType', selectedOption?.value || '');
   };
 
-  const handlePaymentType = (selectPayType) => {
-    // console.log(selectMyType);
-    console.log(selectPayType.value);
-    setPaymentType(selectPayType.label);
+  const handlePaymentType = (selectedOption) => {
+    // Ensure that we are getting the correct value
+    const selectedType = selectedOption?.value; // Extract the value
+
+    if (selectedType) {
+      setPaymentType(selectedType); // Update the payment type state
+      console.log(selectedType); // Log the selected payment type (this should no longer be undefined)
+    }
   };
-
-  const defaultValues = {
-    PaymentType: "", // For conditional validation
-    cardSwipeTransactionId: "", // For Card Swipe Transaction ID
-    contractDate: "", // Assuming it's nullable or optional
-    // paidIn: {
-    //   value: "", // Nested object field
-    // },
-    pincode: "", // For Monthly Value
-    Userotp: "", // For User OTP
-    // discountType: {
-    //   value: "", // Nested object field
-    // },
-    discountAmount: 0, // Default to 0 or a positive value
-    calDisAmount: 0, // Default to 0 or a positive value
-    finalPayment: 0, // Default to 0 or a positive value
-    renewalDate: "", // Assuming it's a nullable date
-    nextPaymentDate: "", // Assuming it's a nullable date
-    paymentMode: {
-      value: "", // Nested object field
-    },
-    cardType: "", // Default card type
-    cardNumber: "", // Placeholder for card number (16 digits)
-    nameOnCard: "", // Placeholder for card holder's name
-    cardCvv: "", // Placeholder for 3-digit CVV
-    cardExpiryYear: "", // Placeholder for expiry year
-    cardExpiryMonth: "", // Placeholder for expiry month
-    address: "", // Placeholder for address
-    city: "", // Placeholder for city
-    state: "", // Placeholder for state
-    country: "", // Placeholder for country
-    pinCode: "", // Placeholder for 6-digit pincode
-
-    // Bank Details (if PaymentType is Cheque)
-    bankName: "", // Placeholder for bank name
-    nameOnAccount: "", // Placeholder for account name
-    routingNumber: "", // Placeholder for routing number
-    accountNumber: "", // Placeholder for account number
-    chequeNumber: "", // Placeholder for cheque number
-  };
-
-  const PaymentValidationSchema = yup.object().shape({
-    // contractDate: yup.date().required("Contract Date is required"),
-    paidIn: yup
-      .object()
-      .shape({
-        value: yup.string().required("Paid In is required"),
-      })
-      .nullable()
-      .required("Paid In is required"),
-    pincode: yup.string().required("Monthly Value is required"),
-    Userotp: yup.string().required("Userotp Value is required"),
-
-    discountType: yup.object().shape({
-      value: yup.string().required("Discount type is required"),
-    }),
-    discountAmount: yup
-      .number()
-      .positive("Discount amount must be positive")
-      .required("Discount amount is required"),
-    calDisAmount: yup
-      .number()
-      .positive("Calculated discount amount must be positive")
-      .required("Calculated discount amount is required"),
-    finalPayment: yup
-      .number()
-      .positive("Final payment must be positive")
-      .required("Total amount is required"),
-    renewalDate: yup
-      .date()
-      .required("Renewal Date is required")
-      .nullable()
-      .min(new Date(), "Renewal Date cannot be in the past"), // Optional: Prevent selecting a date in the past
-    nextPaymentDate: yup.date().required("Next Payment Date is required"),
-    PaymentType: yup.string().required("Payment Type is required"),
-
-    cardType: yup.string().required("Card Type is required"),
-    cardNumber: yup
-      .string()
-      .matches(/^\d{16}$/, "Card Number must be 16 digits")
-      .required("Card Number is required"),
-    nameOnCard: yup.string().required("Card Holder's Name is required"),
-    cardCvv: yup
-      .string()
-      .matches(/^\d{3}$/, "CVV must be 3 digits")
-      .required("Card CVV is required"),
-    cardExpiryYear: yup.string().required("Card Expiry Year is required"),
-    cardExpiryMonth: yup.string().required("Card Expiry Month is required"),
-
-    address: yup.string().required("Address is required"),
-    city: yup.string().required("City is required"),
-    state: yup.string().required("State is required"),
-    country: yup.string().required("Country is required"),
-
-    pinCode: yup
-      .string()
-      .matches(/^\d{6}$/, "Pincode must be 6 digits")
-      .required("Pincode is required"),
-
-    // Bank Name validation for text input
-    bankName: yup
-      .string()
-      .required("Bank Name is required")
-      .matches(
-        /^[a-zA-Z\s-]+$/,
-        "Bank Name must contain only alphabetic characters, hyphens, and spaces"
-      ),
-
-    nameOnAccount: yup
-      .string()
-      .required("Account Name is required")
-      .matches(
-        /^[a-zA-Z\s-]+$/,
-        "Account Name must contain only alphabetic characters, hyphens, and spaces"
-      ),
-
-    routingNumber: yup
-      .string()
-      .matches(/^\d{9}$/, "Routing Number must be exactly 9 digits")
-      .when("PaymentType", {
-        is: "Cheque",
-        then: (schema) => schema.required("Routing Number is required"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
-
-    accountNumber: yup
-      .string()
-      .matches(/^\d+$/, "Account Number must be a valid number")
-      .when("PaymentType", {
-        is: "Cheque",
-        then: (schema) => schema.required("Account Number is required"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
-
-    chequeNumber: yup
-      .string()
-      .matches(/^\d+$/, "Cheque Number must be a valid number")
-      .when("PaymentType", {
-        is: "Cheque",
-        then: yup.string().required("Cheque Number is required"),
-        otherwise: yup.string().notRequired(),
-      }),
-
-    cardSwipeTransactionId: yup.string().required("Transaction ID is required"),
-  });
-
-  const {
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    getValues,
-  } = useForm({
-    defaultValues,
-
-    resolver: yupResolver(PaymentValidationSchema),
-  });
 
   const [MonYearValue, setMonYearValue] = useState(0);
   const handleMonYear = (e) => {
     let MonthlyAnnual = e.target.value;
+console.log(e.target.value);
 
     setMonYearValue(MonthlyAnnual);
+    
   };
 
   const totalAmount = MonYearValue;
-  const [calculatedDiscount, setCalculatedDiscount] = useState(0); // For storing calculated discount value
+// console.log(totalAmount,"total amount");
 
   const handleFinalValue = (e) => {
     const finalAmount = e.target.value;
@@ -318,26 +194,192 @@ const Address = ({ stepper }) => {
 
   const handleFlatChange = (e) => {
     const amount = e.target.value;
-    console.log(amount);
+    // console.log(amount);
     setValue("calDisAmount", amount); // Update the calculated field
 
     setValue("finalPayment", totalAmount - amount); // Update the calculated field
   };
 
-  const onSubmit = (data) => {
-    if (Object.values(data).every((field) => field.length > 0)) {
-      stepper.next();
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: "manual",
-            message: `Please enter a valid ${key}`,
-          });
-        }
-      }
+  const validateContractDate = (value) => {
+    const contractDate = new Date(value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to midnight for comparison
+    if (isNaN(contractDate)) {
+      return "Invalid Contract Date";
+    }
+    if (contractDate < today) {
+      return "Contract Date cannot be in the past";
+    }
+    return true;
+  };
+
+  // Custom validation for checking if value is a number
+  const validateNumber = (value) => {
+    if (isNaN(value)) {
+      return "This field must be a number";
+    }
+    return true;
+  };
+
+  const validPainIn = (value) => {
+    if (isNaN(value)) {
+      return "This Feild Is required";
     }
   };
+
+  // Validate if the value is a positive number
+  const validatePositiveNumber = (value) => {
+    if (value <= 0) {
+      return "Value must be positive";
+    }
+    return true;
+  };
+
+  // Validate card number to ensure it contains exactly 16 digits
+  const validateCardNumber = (value) => {
+    if (!/^\d{16}$/.test(value)) {
+      return "Card Number must be 16 digits";
+    }
+    return true;
+  };
+
+  // Validate CVV for 3 or 4 digits
+  const validateCardCvv = (value) => {
+    if (!/^\d{3,4}$/.test(value)) {
+      return "CVV must be 3 or 4 digits";
+    }
+    return true;
+  };
+
+  const validateCardSwipeTransactionId = (value) => {
+    if (!value) {
+      return "Card Swipe Transaction ID is required";
+    }
+    if (value.length < 6) {
+      return "Transaction ID must be at least 6 characters";
+    }
+    return true;
+  };
+
+  const validateFutureDate = (value, fieldName) => {
+    const today = new Date();
+    const selectedDate = new Date(value);
+    if (selectedDate <= today) {
+      // Manually set error if the date is in the past
+      setError(fieldName, {
+        type: "manual",
+        message: "The date must be in the future",
+      });
+      return false;
+    } else {
+      // Clear any previous errors
+      clearErrors(fieldName);
+      return true;
+    }
+  };
+
+  // const defaultValues={
+  //   contractDate: "17-12-2024 ",
+  //     paidIn: "",
+  //     MonYear: "2000",
+  //     slipName: "yourSlip",
+  //     distype: false,
+  //     discountType: "Flat",
+  //     discountAmount: "200",
+  //     calDisAmount: "200",
+  //     finalPayment: "1800",
+  //     renewalDate: "26-8-2024",
+  //     nextPaymentDate: "6-1-2029",
+
+  // cardType: "",
+  // cardNumber: "",
+  // nameOnCard: "",
+  // cardCvv: "",
+  // cardExpiryYear: "",
+  // cardExpiryMonth: "",
+  // address: "",
+  // city: "",
+  // state:"",
+  // country: "",
+  // pinCode: "",
+
+  // bankName: "",
+  // nameOnAccount: "",
+  // routingNumber: "",
+  // accountNumber: "",
+  // chequeNumber: "",
+
+  // cardSwipeTransactionId: "",
+  // }
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({
+    // defaultValues,
+    defaultValues: combinedData.paymentInfo, // Initialize with existing data
+  });
+
+  const onSubmit = (data) => {
+    const cleanData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([key, value]) => value !== undefined && value !== null
+      )
+    );
+    console.log(cleanData);
+
+    if (Object.keys(errors).length === 0) {
+      console.log(data); // Display data only if no errors
+    } else {
+      console.log("Validation failed", errors); // Log errors
+    }
+
+    setCombinedData((prev) => ({
+      ...prev,
+      paymentInfo: data,
+    }));
+    stepper.next();
+  };
+  const [slipDetail, setSlipDetail] = useState({});
+
+  useEffect(() => {
+    console.log(errors);
+    console.log(combinedData);
+
+    // Fetch the API data when the component mounts
+    const fetchMarketPrices = async () => {
+      try {
+        const response = await useJwt.getslipDetail();
+        // console.log("API Response:", response.data.content.result);
+
+        const selectedSlip = response.data.content.result.find(
+          (item) => item.id === combinedData.selectedSlipId
+        );
+        if (selectedSlip) {
+          console.log("Selected Slip:", selectedSlip);
+          setSlipDetail({
+            marketAnnualPrice: selectedSlip.marketAnnualPrice,
+            marketMonthlyPrice: selectedSlip.marketMonthlyPrice,
+          });
+        } else {
+          console.error(
+            "No slip found for the given ID:",
+            combinedData.selectedSlipId
+          );
+        }
+        // console.log("selected",selectedSlip.marketAnnualPrice);
+      } catch (error) {
+        console.error("Error fetching market prices:", error);
+      }
+    };
+    fetchMarketPrices();
+  }, [errors, combinedData.selectedSlipId]);
+  // console.log("slipDetail",slipDetail);
 
   return (
     <Fragment>
@@ -351,20 +393,30 @@ const Address = ({ stepper }) => {
             <Label className="form-label" for="hf-picker">
               Contract Date <span style={{ color: "red" }}>*</span>
             </Label>
-            <Flatpickr
-              value={picker}
-              id="hf-picker"
+            <Controller
               name="contractDate"
-              className="form-control"
-              onChange={(date) => setPicker(date)}
-              options={{
-                altInput: true,
-                altFormat: "F j, Y",
-                dateFormat: "Y-m-d",
+              control={control}
+              rules={{
+                required: "Contract Date is required",
+                validate: validateContractDate,
               }}
-              style={{ color: "black" }} // Apply black color
+              render={({ field }) => (
+                <Flatpickr
+                  id="contractDate"
+                  className={`form-control ${
+                    errors.contractDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                    minDate: "today", // Disable all dates before today
+                  }}
+                  value={field.value}
+                  onChange={(date) => field.onChange(date[0])} // Update value in the form
+                />
+              )}
             />
-
             {errors.contractDate && (
               <FormFeedback>{errors.contractDate.message}</FormFeedback>
             )}
@@ -376,16 +428,26 @@ const Address = ({ stepper }) => {
             </Label>
             <Controller
               control={control}
+              rules={{
+                required: "Paid In is required",
+              }}
               name="paidIn"
               render={({ field }) => (
                 <Select
+                  {...field}
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
-                  {...field}
                   isClearable
                   options={colourOptions}
-                  invalid={!!errors.paidIn}
+                  value={colourOptions.find(
+                    (option) => option.value === field.value
+                  )} // Match selected option
+                  onChange={(option) => {
+                    field.onChange(option ? option.value : "");
+                    handlePaidInChange(option); // Update rental price
+                  }}
+                  isInvalid={!!errors.paidIn}
                 />
               )}
             />
@@ -398,17 +460,22 @@ const Address = ({ stepper }) => {
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="landmark">
-              Monthly Value
+              Rental Price 
               <span style={{ color: "red" }}>*</span>
             </Label>
 
             <Controller
               id="MonYear"
               name="MonYear"
+              rules={{
+                required: "Monthly Value is required",
+                validate: validateNumber,
+              }}
               control={control}
               render={({ field }) => (
                 <Input
-                  placeholder="658921"
+                  placeholder=""
+                  readOnly  
                   invalid={errors.MonYear && true}
                   {...field}
                   onChange={(e) => {
@@ -418,11 +485,9 @@ const Address = ({ stepper }) => {
                 />
               )}
             />
-            {errors.pincode && (
-              <FormFeedback>{errors.pincode.message}</FormFeedback>
-            )}
-          </Col>
-        </Row>
+
+           </Col>
+          </Row>
 
         <div className="content-header">
           <h5 className="mb-0 my-2">Discount</h5>
@@ -521,42 +586,54 @@ const Address = ({ stepper }) => {
           )}
         </Row>
 
-        <Row className="my-2">
+        <Row>
           <Col md="4" className="mb-1">
             <Label className="form-label" for="hf-picker">
-              Discount type <span style={{ color: "red" }}>*</span>
+              Discount Type <span style={{ color: "red" }}>*</span>
             </Label>
             <Controller
               control={control}
               name="discountType"
+              rules={{
+                required: "discountType is required",
+              }}
               render={({ field }) => (
                 <Select
+                  {...field}
                   theme={selectThemeColors}
                   className="react-select"
                   classNamePrefix="select"
-                  {...field}
                   isClearable
                   options={colourOptions2}
-                  invalid={!!errors.discountType}
-                  onChange={handleDisType}
+                  value={colourOptions2.find(
+                    (option) => option.value === field.value
+                  )} // Match selected option
+                  onChange={(option) => {
+                    field.onChange(option ? option.value : ""); // Pass only the value
+                    handleDisType(option); // Perform additional logic if needed
+                  }}
                 />
               )}
             />
-
             {errors.discountType && (
               <FormFeedback>{errors.discountType.message}</FormFeedback>
             )}
           </Col>
+
           <Col md="4" className="mb-1">
             <Label className="form-label" for="hf-picker">
               {discountTypee == "Flat" ? "Discount Amount" : "Discount %"}
             </Label>
             <Controller
-              id="discountAmount"
               name="discountAmount"
+              rules={{
+                required: "Discount Type is required",
+                validate: validatePositiveNumber,
+              }}
               control={control}
               render={({ field }) => (
                 <Input
+                
                   placeholder={
                     discountTypee == "Flat"
                       ? "Enter Discount Amount"
@@ -565,7 +642,8 @@ const Address = ({ stepper }) => {
                   invalid={errors.discountAmount && true}
                   {...field}
                   onChange={(e) => {
-                    field.onChange(e);
+                    const value = e.target.value;
+                    field.onChange(value); // Sync with React Hook Form
                     if (discountTypee === "Percentage")
                       handlePercentageChange(e);
                     if (discountTypee === "Flat") handleFlatChange(e);
@@ -585,6 +663,10 @@ const Address = ({ stepper }) => {
             <Controller
               id="calDisAmount"
               name="calDisAmount"
+              rules={{
+                required: "Discount Amount is required",
+                validate: validateNumber,
+              }}
               control={control}
               render={({ field }) => (
                 <Input
@@ -603,6 +685,7 @@ const Address = ({ stepper }) => {
             )}
           </Col>
         </Row>
+
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="landmark">
@@ -613,6 +696,10 @@ const Address = ({ stepper }) => {
               id="finalPayment"
               name="finalPayment"
               control={control}
+              rules={{
+                required: "Final Payment is required",
+                validate: validateNumber,
+              }}
               render={({ field }) => (
                 <Input
                   placeholder="Final Amount"
@@ -632,34 +719,36 @@ const Address = ({ stepper }) => {
             )}
           </Col>
         </Row>
+
         <Row>
           <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
               Renewal Date <span style={{ color: "red" }}>*</span>
             </Label>
-            <Flatpickr
-              value={picker}
-              id="hf-picker"
+            <Controller
               name="renewalDate"
-              className="form-control"
-              onChange={(date) => setPicker(date)}
-              options={{
-                altInput: true,
-                altFormat: "F j, Y",
-                dateFormat: "Y-m-d",
-                disable: [
-                  (date) => {
-                    // Disable today's date
-                    const today = new Date();
-                    return (
-                      date.getDate() === today.getDate() &&
-                      date.getMonth() === today.getMonth() &&
-                      date.getFullYear() === today.getFullYear()
-                    );
-                  },
-                ],
-              }}
-              style={{ color: "black" }}
+              control={control}
+              rules={{
+                required: "ReNewal date is required",
+
+                validate: validateFutureDate,
+              }} // Apply custom validation for future date
+              render={({ field }) => (
+                <Flatpickr
+                  id="hf-picker"
+                  className={`form-control ${
+                    errors.renewalDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                    minDate: "today", // Disable past dates
+                  }}
+                  value={field.value}
+                  onChange={(date) => field.onChange(date[0])} // Set the selected date
+                />
+              )}
             />
             {errors.renewalDate && (
               <FormFeedback>{errors.renewalDate.message}</FormFeedback>
@@ -670,32 +759,32 @@ const Address = ({ stepper }) => {
             <Label className="form-label" for="hf-picker">
               Next Payment Date <span style={{ color: "red" }}>*</span>
             </Label>
-            <Flatpickr
-              value={nextPayment}
-              id="hf-picker"
+            <Controller
               name="nextPaymentDate"
-              className="form-control"
-              onChange={(date) => setnextPayment(date)}
-              options={{
-                altInput: true,
-                altFormat: "F j, Y",
-                dateFormat: "Y-m-d",
-                disable: [
-                  (date) => {
-                    // Disable today's date
-                    const today = new Date();
-                    return (
-                      date.getDate() === today.getDate() &&
-                      date.getMonth() === today.getMonth() &&
-                      date.getFullYear() === today.getFullYear()
-                    );
-                  },
-                ],
-              }}
-              style={{ color: "black" }}
+              control={control}
+              rules={{
+                required: "Next Payment date is required",
+                validate: validateFutureDate,
+              }} // Apply custom validation for future date
+              render={({ field }) => (
+                <Flatpickr
+                  id="hf-picker"
+                  className={`form-control ${
+                    errors.nextPaymentDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                    minDate: "today", // Disable past dates
+                  }}
+                  value={field.value}
+                  onChange={(date) => field.onChange(date[0])} // Update value in the form
+                />
+              )}
             />
-            {errors.address && (
-              <FormFeedback>{errors.address.message}</FormFeedback>
+            {errors.nextPaymentDate && (
+              <FormFeedback>{errors.nextPaymentDate.message}</FormFeedback>
             )}
           </Col>
         </Row>
@@ -705,31 +794,49 @@ const Address = ({ stepper }) => {
             <Label className="form-label" for="hf-picker">
               Payment Mode <span style={{ color: "red" }}>*</span>
             </Label>
-            <Select
-              theme={selectThemeColors}
-              className="react-select"
-              classNamePrefix="select"
-              // defaultValue={colourOptions[0]}
-              name="paymentMode"
-              options={colourOptions3}
-              onChange={handlePaymentType}
-              isClearable
+
+            <Controller
+              name="PaymentType"
+              control={control}
+              rules={{
+                required: "Payment Mode is required",
+              }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={colourOptions3}
+                  className={`react-select ${
+                    errors.PaymentType ? "is-invalid" : ""
+                  }`}
+                  onChange={(selectedOption) => {
+                    const value = selectedOption ? selectedOption.value : "";
+                    field.onChange(value); // Update React Hook Form with the value
+                    handlePaymentType(selectedOption); // Run your custom function with the full option
+                  }}
+                  value={colourOptions3.find(
+                    (option) => option.value === field.value
+                  )} // To set the selected option correctly
+                />
+              )}
             />
 
-            {errors.paymentMode && (
-              <FormFeedback>{errors.paymentMode.message}</FormFeedback>
+            {errors.PaymentType && (
+              <FormFeedback className="d-block">
+                {errors.PaymentType.value?.message ||
+                  errors.PaymentType.message}
+              </FormFeedback>
             )}
           </Col>
         </Row>
 
         {/* // ===================== credit card  */}
 
-        {PaymentType == "Credit Card" && (
+        {paymentType === "Credit Card" && (
           <>
             <Row>
               <div className="content-header">
                 <h5 className="mb-0 my-2">Credit Card Details</h5>
-                <small>Fill Credit card Details</small>
+                <small>Fill Credit Card Details</small>
               </div>
             </Row>
 
@@ -740,15 +847,28 @@ const Address = ({ stepper }) => {
                 </Label>
                 <Controller
                   name="cardType"
+                  rules={{
+                    required: "Card Type is required",
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
                       options={colourOptions4}
                       placeholder="Select Card Type"
-                      isClearable
-                      className="react-select"
+                      className={`react-select ${
+                        errors.cardType ? "is-invalid" : ""
+                      }`}
                       classNamePrefix="select"
+                      isClearable
+                      // Set the selected value
+                      value={colourOptions4.find(
+                        (option) => option.value === field.value
+                      )}
+                      // Extract the `value` on change
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
                     />
                   )}
                 />
@@ -756,19 +876,24 @@ const Address = ({ stepper }) => {
                   <FormFeedback>{errors.cardType.message}</FormFeedback>
                 )}
               </Col>
+
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="payment-card-number">
                   Card Number <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   name="cardNumber"
+                  rules={{
+                    required: "Card Number is required",
+                    validate: validateCardNumber,
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
-                      type="cardNumber"
-                      placeholder="Enter Account Number"
-                      invalid={!!errors.cardNumber} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      type="text"
+                      placeholder="Enter Card Number"
+                      invalid={!!errors.cardNumber}
+                      {...field}
                     />
                   )}
                 />
@@ -783,20 +908,18 @@ const Address = ({ stepper }) => {
                 <Label className="form-label" for="card-holder-name">
                   Card Holder's Name <span style={{ color: "red" }}>*</span>
                 </Label>
-
                 <Controller
                   name="nameOnCard"
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter Account Number"
-                      invalid={!!errors.nameOnCard} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      placeholder="Enter Card Holder's Name"
+                      invalid={!!errors.nameOnCard}
+                      {...field}
                     />
                   )}
                 />
-
                 {errors.nameOnCard && (
                   <FormFeedback>{errors.nameOnCard.message}</FormFeedback>
                 )}
@@ -808,12 +931,16 @@ const Address = ({ stepper }) => {
                 <Controller
                   name="cardCvv"
                   control={control}
+                  rules={{
+                    required: "CVV is required",
+                    validate: validateCardCvv,
+                  }}
                   render={({ field }) => (
                     <Input
                       type="text"
                       placeholder="Enter CVV Number"
-                      invalid={!!errors.cardCvv} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      invalid={!!errors.cardCvv}
+                      {...field}
                     />
                   )}
                 />
@@ -831,18 +958,29 @@ const Address = ({ stepper }) => {
                 <Controller
                   name="cardExpiryYear"
                   control={control}
-                  defaultValue={null}
-                  rules={{ required: "Year is required" }}
+                  rules={{
+                    required: "Expiry Year is required",
+                    min: new Date().getFullYear(),
+                    message: "Expiry Year cannot be in the past",
+                  }}
                   render={({ field }) => (
                     <Select
                       {...field}
                       options={years}
                       placeholder="Select Year"
-                      className="react-select"
+                      className={`react-select ${
+                        errors.cardExpiryYear ? "is-invalid" : ""
+                      }`}
                       classNamePrefix="select"
                       isClearable
-                      onChange={handleYearChange} // Handle year change
-                      value={years.find((year) => year.value === field.value)} // Set the selected year value
+                      // Set the selected value
+                      value={years.find(
+                        (option) => option.value === field.value
+                      )}
+                      // Extract the `value` on change
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
                     />
                   )}
                 />
@@ -858,16 +996,30 @@ const Address = ({ stepper }) => {
                 <Controller
                   name="cardExpiryMonth"
                   control={control}
-                  defaultValue={null}
-                  rules={{ required: "Month is required" }}
+                  rules={{
+                    required: "Expiry Month is required",
+                    min: 1,
+                    max: 12,
+                    message: "Expiry Month must be between 1 and 12",
+                  }}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={availableMonths} // Use the dynamically updated available months
+                      options={availableMonths}
                       placeholder="Select Month"
-                      className="react-select"
+                      className={`react-select ${
+                        errors.cardExpiryMonth ? "is-invalid" : ""
+                      }`}
                       classNamePrefix="select"
                       isClearable
+                      // Set the selected value
+                      value={availableMonths.find(
+                        (option) => option.value === field.value
+                      )}
+                      // Extract the `value` on change
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
                     />
                   )}
                 />
@@ -876,21 +1028,25 @@ const Address = ({ stepper }) => {
                 )}
               </Col>
             </Row>
+
+            {/* Address Fields */}
             <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="address">
                   Address <span style={{ color: "red" }}>*</span>
                 </Label>
-
                 <Controller
-                  name="nameOnCard"
+                  name="address"
                   control={control}
+                  rules={{
+                    required: "Address is required",
+                  }}
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter address "
-                      invalid={!!errors.nameOnCard} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      placeholder="Enter Address"
+                      invalid={!!errors.address}
+                      {...field}
                     />
                   )}
                 />
@@ -904,13 +1060,16 @@ const Address = ({ stepper }) => {
                 </Label>
                 <Controller
                   name="city"
+                  rules={{
+                    required: "City is required",
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter city "
-                      invalid={!!errors.city} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      placeholder="Enter City"
+                      invalid={!!errors.city}
+                      {...field}
                     />
                   )}
                 />
@@ -927,13 +1086,16 @@ const Address = ({ stepper }) => {
                 </Label>
                 <Controller
                   name="state"
+                  rules={{
+                    required: "State is required",
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter state "
-                      invalid={!!errors.state} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      placeholder="Enter State"
+                      invalid={!!errors.state}
+                      {...field}
                     />
                   )}
                 />
@@ -943,18 +1105,20 @@ const Address = ({ stepper }) => {
               </Col>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="country">
-                  Country
-                  <span style={{ color: "red" }}>*</span>
+                  Country <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   name="country"
+                  rules={{
+                    required: "Country is required",
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter country "
-                      invalid={!!errors.country} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      placeholder="Enter Country"
+                      invalid={!!errors.country}
+                      {...field}
                     />
                   )}
                 />
@@ -967,20 +1131,24 @@ const Address = ({ stepper }) => {
             <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="pincode">
-                  Pincode
-                  <span style={{ color: "red" }}>*</span>
+                  Pincode <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   name="pinCode"
+                  rules={{
+                    required: "Pincode is required",
+                    pattern: {
+                      value: /^\d{6}$/,
+                      message: "Pincode must be exactly 6 digits",
+                    },
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="text"
                       placeholder="Enter Pincode"
-                      invalid={!!errors.pinCode} // Highlights field in case of error
-
+                      invalid={!!errors.pinCode}
                       {...field}
-
                     />
                   )}
                 />
@@ -994,7 +1162,7 @@ const Address = ({ stepper }) => {
 
         {/* //* ============================ Bank Details   */}
 
-        {PaymentType == "Cheque" && (
+        {paymentType === "Cheque" && (
           <>
             <div className="content-header">
               <h5 className="mb-0 my-2">Bank Details</h5>
@@ -1002,90 +1170,109 @@ const Address = ({ stepper }) => {
             </div>
             <Row>
               <Col md="6" className="mb-1">
-                <Label className="form-label" for="payment-input-name">
-                  Bank Name
-                  <span style={{ color: "red" }}>*</span>
+                <Label className="form-label" for="bankName">
+                  Bank Name <span style={{ color: "red" }}>*</span>
                 </Label>
-
                 <Controller
                   control={control}
+                  rules={{
+                    required: "Bank Name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Bank Name must be at least 3 characters",
+                    },
+                  }}
                   name="bankName"
                   render={({ field }) => (
                     <Input
                       type="text"
                       placeholder="Enter Bank Name"
-                      invalid={errors.bankName && true}
+                      invalid={!!errors.bankName}
                       {...field}
                     />
                   )}
                 />
                 {errors.bankName && (
-                  <FormFeedback>{errors.bankName.message}</FormFeedback> // Displays the error message
+                  <FormFeedback>{errors.bankName.message}</FormFeedback>
                 )}
               </Col>
 
               <Col md="6" className="mb-1">
-                <Label className="form-label" for="hf-picker">
-                  Account Name
-                  <span style={{ color: "red" }}>*</span>
+                <Label className="form-label" for="nameOnAccount">
+                  Account Name <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   name="nameOnAccount"
                   control={control}
+                  rules={{
+                    required: "Account Name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Account Name must be at least 3 characters",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
                       type="text"
                       placeholder="Enter Account Name"
-                      invalid={!!errors.nameOnAccount} // Highlights field in case of error
-                      {...field} // This will bind the input to react-hook-form
+                      invalid={!!errors.nameOnAccount}
+                      {...field}
                     />
                   )}
                 />
                 {errors.nameOnAccount && (
-                  <FormFeedback>{errors.nameOnAccount.message}</FormFeedback> // Show the validation message
+                  <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
                 )}
               </Col>
             </Row>
 
             <Row>
               <Col md="4" className="mb-1">
-                <Label className="form-label" for="hf-picker">
-                  Rounting Number
-                  <span style={{ color: "red" }}>*</span>
+                <Label className="form-label" for="routingNumber">
+                  Routing Number <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   name="routingNumber"
+                  rules={{
+                    required: "Routing Number is required",
+                    validate: validateNumber,
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="number"
-                      placeholder="Enter Account Number"
-                      id="payment-routingNumber"
-                      invalid={!!errors.routingNumber} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      placeholder="Enter Routing Number"
+                      invalid={!!errors.routingNumber}
+                      {...field}
                     />
                   )}
                 />
-
                 {errors.routingNumber && (
                   <FormFeedback>{errors.routingNumber.message}</FormFeedback>
                 )}
               </Col>
+
               <Col md="4" className="mb-1">
-                <Label className="form-label" for="hf-picker">
-                  Account Number
-                  <span style={{ color: "red" }}>*</span>
+                <Label className="form-label" for="accountNumber">
+                  Account Number <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   name="accountNumber"
+                  rules={{
+                    required: "Account Number is required",
+                    validate: validateNumber,
+                    minLength: {
+                      value: 10,
+                      message: "Account Number must be at least 10 digits",
+                    },
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
                       type="number"
                       placeholder="Enter Account Number"
-                      id="payment-account-number"
-                      invalid={!!errors.accountNumber} // Highlights field in case of error
-                      {...field} // Binds the field to react-hook-form
+                      invalid={!!errors.accountNumber}
+                      {...field}
                     />
                   )}
                 />
@@ -1095,21 +1282,22 @@ const Address = ({ stepper }) => {
               </Col>
 
               <Col md="4" className="mb-1">
-                <Label className="form-label" for="hf-picker">
-                  Cheque Number
-                  <span style={{ color: "red" }}>*</span>
+                <Label className="form-label" for="chequeNumber">
+                  Cheque Number <span style={{ color: "red" }}>*</span>
                 </Label>
-
                 <Controller
                   name="chequeNumber"
                   control={control}
+                  rules={{
+                    required: "Cheque Number is required",
+                    validate: validateNumber,
+                  }}
                   render={({ field }) => (
                     <Input
                       type="number"
                       placeholder="Enter Cheque Number"
-                      id="payment-cvv"
-                      invalid={!!errors.chequeNumber} // Highlights the field if there's an error
-                      {...field} // Binds the input field to React Hook Form
+                      invalid={!!errors.chequeNumber}
+                      {...field}
                     />
                   )}
                 />
@@ -1120,21 +1308,27 @@ const Address = ({ stepper }) => {
             </Row>
           </>
         )}
+
         {/* ===================== card Swipe */}
-        {PaymentType == "Card Swipe" && (
+
+        {paymentType === "Card Swipe" && (
           <>
             <Row>
               <Col md="12" className="mb-1">
-                <Label className="form-label" for="hf-picker">
+                <Label className="form-label" for="cardSwipeTransactionId">
                   Card Swipe Transaction ID
                   <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="cardSwipeTransactionId"
                   name="cardSwipeTransactionId"
+                  rules={{
+                    validate: validateCardSwipeTransactionId, // Custom validation function
+                  }}
                   control={control}
                   render={({ field }) => (
                     <Input
+                      type="text"
                       placeholder="Enter Transaction ID"
                       invalid={!!errors.cardSwipeTransactionId}
                       {...field}

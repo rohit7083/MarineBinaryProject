@@ -199,7 +199,7 @@ function Index() {
           </Row>
           <Row className="mb-1">
             <Label sm="3" className="form-check-label">
-              Height/Width/Length
+                Dimensions
             </Label>
             <Col sm="9">
               {["height", "width", "length"].map((dim) => (

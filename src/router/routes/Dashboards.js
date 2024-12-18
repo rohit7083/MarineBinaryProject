@@ -9,6 +9,7 @@ const DashboardSlipDetails = lazy(()=> import('../../views/dashboard/Ship/SlipDe
 const DashboardSlipList = lazy(()=> import('../../views/dashboard/Ship/SlipList'))
 const DashboardSlipDetailList = lazy(()=> import('../../views/dashboard/Ship/SlipDetailList'))
 const DashboardSlipMemberForm = lazy(()=> import('../../views/dashboard/Ship/SlipMemberForm'))
+const DashboardUI = lazy(()=> import('../../views/dashboard/Ship/UI'))
 
 const DashboardRoutes = [
   {
@@ -49,6 +50,10 @@ const DashboardRoutes = [
   }, {
     path: '/dashboard/SlipMemberForm',
     element: <DashboardSlipMemberForm />
+  }, 
+  {
+    path: '/dashboard/UI',
+    element: <DashboardUI />
   }, 
   
 ]

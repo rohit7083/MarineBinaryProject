@@ -136,6 +136,10 @@ export default class JwtService {
     return axios.get(this.jwtConfig.slipAssignmentGet)
   }
 
+  generateOTP() {
+    return axios.get(this.jwtConfig.generateOTP)
+  }
+
   refreshToken() {
     return axios.post(this.jwtConfig.refreshEndpoint, {
       refreshToken: this.getRefreshToken()

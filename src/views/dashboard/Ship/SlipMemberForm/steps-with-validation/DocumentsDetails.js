@@ -29,7 +29,7 @@ const schema = yup.object().shape({
   }),
 });
 
-const SocialLinks = () => {
+const SocialLinks = ({stepper}) => {
   // ** States
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
