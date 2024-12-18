@@ -74,18 +74,29 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
   const [marketPrices, setMarketPrices] = useState(null);
   const [calculatedDiscount, setCalculatedDiscount] = useState(0); // For storing calculated discount value
   // const [rentalPrice, setRentalPrice] = useState(""); // State to store rental price
-
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({
+    // defaultValues,
+    defaultValues: combinedData.paymentInfo, // Initialize with existing data
+  });
   // Handle changes in the "Paid In" dropdown
   const handlePaidInChange = (option) => {
-    console.log("Option selected:", option);
+    // console.log("Option selected:", option);
     if (option?.value === "monthly") {
       // setRentalPrice(slipDetail.marketMonthlyPrice); // Update rental price to monthly value
       setValue('MonYear',slipDetail.marketMonthlyPrice);
 
-      console.log(
-        "Updated Rental Price (Monthly):",
-        slipDetail.marketMonthlyPrice
-      );
+      // console.log(
+      //   "Updated Rental Price (Monthly):",
+      //   slipDetail.marketMonthlyPrice
+      // );
     } else if (option?.value === "yearly") {
       // setRentalPrice(slipDetail.marketAnnualPrice); // Update rental price to yearly value
       setValue('MonYear',slipDetail.marketAnnualPrice);
@@ -127,6 +138,14 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
 
   const handleOTPClick = () => {
     setOtpVisible(true); // Show OTP state
+
+    try {
+      if (setOtpVisible === true) {
+        
+      }
+    } catch (error) {
+      
+    }
     // Handle OTP button click (can trigger OTP API here)
     setShowOTPFields(true);
   };
@@ -154,20 +173,22 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
 
     if (selectedType) {
       setPaymentType(selectedType); // Update the payment type state
-      console.log(selectedType); // Log the selected payment type (this should no longer be undefined)
+      // console.log(selectedType); // Log the selected payment type (this should no longer be undefined)
     }
   };
 
-  const [MonYearValue, setMonYearValue] = useState(0);
-  const handleMonYear = (e) => {
-    let MonthlyAnnual = e.target.value;
-console.log(e.target.value);
+  // const [MonYearValue, setMonYearValue] = useState(0);
+    // Watch the value of MonYear
+    const monYearValue = watch("MonYear");
 
-    setMonYearValue(MonthlyAnnual);
-    
-  };
+    // const handleMonYear = (e) => {
+    //   console.log("Updated value:", e.target.value);
+    //   console.log(monYearValue);
+      
+    // };
+  
 
-  const totalAmount = MonYearValue;
+  const totalAmount = monYearValue  ;
 // console.log(totalAmount,"total amount");
 
   const handleFinalValue = (e) => {
@@ -312,18 +333,7 @@ console.log(e.target.value);
   // cardSwipeTransactionId: "",
   // }
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm({
-    // defaultValues,
-    defaultValues: combinedData.paymentInfo, // Initialize with existing data
-  });
+ 
 
   const onSubmit = (data) => {
     const cleanData = Object.fromEntries(
@@ -334,7 +344,7 @@ console.log(e.target.value);
     console.log(cleanData);
 
     if (Object.keys(errors).length === 0) {
-      console.log(data); // Display data only if no errors
+      // console.log(data); // Display data only if no errors
     } else {
       console.log("Validation failed", errors); // Log errors
     }
@@ -361,7 +371,7 @@ console.log(e.target.value);
           (item) => item.id === combinedData.selectedSlipId
         );
         if (selectedSlip) {
-          console.log("Selected Slip:", selectedSlip);
+          // console.log("Selected Slip:", selectedSlip);
           setSlipDetail({
             marketAnnualPrice: selectedSlip.marketAnnualPrice,
             marketMonthlyPrice: selectedSlip.marketMonthlyPrice,

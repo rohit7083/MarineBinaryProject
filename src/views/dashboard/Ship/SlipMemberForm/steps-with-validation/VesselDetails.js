@@ -68,7 +68,7 @@ const AccountDetails = ({ stepper, combinedData, setCombinedData }) => {
               dimensions: item.dimensions, // Store dimensions in the option
             }));
             setSlipNames(options);
-            console.log("vessel response",options);
+            // console.log("vessel response",options);
             
           } catch (error) {
             console.error("Error fetching slip details:", error);
