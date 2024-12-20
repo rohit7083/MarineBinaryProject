@@ -610,19 +610,19 @@ const PersonalInfo = ({ stepper, combinedData, setCombinedData }) => {
     postalCode: yup
       .string()
       .required("Postal Code is required")
-      .matches(/^[0-9]{5,6}$/, "Postal Code must be exactly 5 Or 6 digits"),
+      .matches(/^[0-9]{5}$/, "Postal Code must be exactly 5 digits"),
   });
-  const defaultValues = {
-    lastName: "sonawane",
-    firstName: "rohan",
-    emailId: "rohan@gmail.com",
-    phoneNumber: "0123654789",
-    address: "earth",
-    city: "nashik",
-    state: "maharastra",
-    country: "india",
-    postalCode: "412563",
-  };
+  // const defaultValues = {
+  //   lastName: "sonawane",
+  //   firstName: "rohan",
+  //   emailId: "rohan@gmail.com",
+  //   phoneNumber: "0123654789",
+  //   address: "earth",
+  //   city: "nashik",
+  //   state: "maharastra",
+  //   country: "india",
+  //   postalCode: "412563",
+  // };
   const {
     control,
     handleSubmit,
@@ -630,22 +630,22 @@ const PersonalInfo = ({ stepper, combinedData, setCombinedData }) => {
   } = useForm({
     resolver: yupResolver(SignupSchema),
     // defaultValues,
-    defaultValues: combinedData.personalInfo, // Initialize with existing data
+    defaultValues: combinedData.member, // Initialize with existing data
   });
 
   const onSubmit = (data) => {
     setCombinedData((prev) => ({
       ...prev,
-      personalInfo: data,
+      member: data,
     }));
     stepper.next();
   };
 
-  useEffect(() => {
-    // console.log("Combined Data:", JSON.stringify(combinedData, null, 2));
-    console.log(combinedData);
-    console.log(errors);
-  }, [errors, combinedData]);
+  // useEffect(() => {
+  //   // console.log("Combined Data:", JSON.stringify(combinedData, null, 2));
+  //   // console.log(combinedData);
+  //   // console.log(errors);
+  // }, []);
 
   return (
     <Fragment>
@@ -917,7 +917,7 @@ const PersonalInfo = ({ stepper, combinedData, setCombinedData }) => {
           </Col>
         </Row>
         {/* Add other fields similarly */}
-        <div className="d-flex justify-content-between">
+        {/* <div className="d-flex justify-content-between">
           <Button
             type="button"
             color="primary"
@@ -932,14 +932,50 @@ const PersonalInfo = ({ stepper, combinedData, setCombinedData }) => {
               Previous
             </span>
           </Button>
+          <Button type="reset" color="primary" className="btn-next">
+                <span className="align-middle d-sm-inline-block d-none">Reset</span>
+              </Button>
           <Button type="submit" color="primary" className="btn-next">
+             
             <span className="align-middle d-sm-inline-block d-none">Next</span>
             <ArrowRight
               size={14}
               className="align-middle ms-sm-25 ms-0"
             ></ArrowRight>
           </Button>
-        </div>
+        </div> */}
+
+
+
+
+<div className="d-flex justify-content-center gap-3">
+<Button
+            type="button"
+            color="primary"
+            className="btn-prev"
+            onClick={() => stepper.previous()}
+          >
+            <ArrowLeft
+              size={14}
+              className="align-middle me-sm-25 me-0"
+            ></ArrowLeft>
+            <span className="align-middle d-sm-inline-block d-none">
+              Previous
+            </span>
+          </Button>
+
+  <Button type="reset" color="primary" className="btn-next">
+    <span className="align-middle d-sm-inline-block d-none">Reset</span>
+  </Button>
+
+  <Button type="submit" color="primary" className="btn-next">
+    <span className="align-middle d-sm-inline-block d-none">Next</span>
+    <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+  </Button>
+</div>
+
+
+
       </Form>
     </Fragment>
   );

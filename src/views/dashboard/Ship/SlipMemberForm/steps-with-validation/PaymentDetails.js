@@ -13,11 +13,15 @@ import useJwt from "@src/auth/jwt/useJwt";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import PersonalInfo from "./MemberDetails";
+import GenrateOtp from "./GenrateOtp";
+import { format } from "date-fns";
 
-const Address = ({ stepper, combinedData, setCombinedData }) => {
+const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButtonEnabled  }) => {
   const colourOptions = [
-    { value: "yearly", label: "yearly" },
-    { value: "monthly", label: "monthly" },
+    { value: null, label: "select" },
+    { value: "Monthly", label: "Monthly" },
+    { value: "Annual", label: "Annual" },
+
   ];
 
   const colourOptions2 = [
@@ -26,10 +30,10 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
   ];
 
   const colourOptions3 = [
-    { value: "Credit Card", label: "Credit Card" },
-    { value: "Card Swipe", label: "Card Swipe" },
-    { value: "Cash", label: "Cash" },
-    { value: "Cheque", label: "Cheque" },
+    { value: "1", label: "Credit Card" },
+    { value: "2", label: "Card Swipe" },
+    { value: "3", label: "Cash" },
+    { value: "4", label: "Cheque" },
   ];
 
   const colourOptions4 = [
@@ -65,15 +69,16 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
   const [nextPayment, setnextPayment] = useState(new Date());
   const [availableMonths, setAvailableMonths] = useState(months); // Initially show all months
   const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [showOTPFields, setShowOTPFields] = useState(false);
   const [discounttoggle, setDiscountToggle] = useState(false);
   const [otpVisible, setOtpVisible] = useState(false); // Tracks OTP button visibility
   const [discountTypee, setdiscountTypee] = useState(null);
   const [otp, setOtp] = useState("");
-  const [paymentType, setPaymentType] = useState(null);
+  const [paymentMode, setpaymentMode] = useState(null);
   const [marketPrices, setMarketPrices] = useState(null);
   const [calculatedDiscount, setCalculatedDiscount] = useState(0); // For storing calculated discount value
   // const [rentalPrice, setRentalPrice] = useState(""); // State to store rental price
+  const [show, setShow] = useState(false);
+  const [cardType, setCardType] = useState("");
   const {
     control,
     handleSubmit,
@@ -84,37 +89,40 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
     formState: { errors },
   } = useForm({
     // defaultValues,
-    defaultValues: combinedData.paymentInfo, // Initialize with existing data
+    defaultValues: combinedData.slipPayment, // Initialize with existing data
   });
+
+  const [Verifyotp, setVerifyotp] = useState(false); // Track OTP verification state
+
+  // Callback function to set OTP verification status
+  const handleOTPVerified = () => {
+    setVerifyotp(true); // Set OTP as verified
+  };
+
+
+
+
+
+
+
   // Handle changes in the "Paid In" dropdown
   const handlePaidInChange = (option) => {
     // console.log("Option selected:", option);
-    if (option?.value === "monthly") {
-      // setRentalPrice(slipDetail.marketMonthlyPrice); // Update rental price to monthly value
-      setValue('MonYear',slipDetail.marketMonthlyPrice);
+    if (option?.value === "Monthly") {
+      setValue("rentalPrice", slipDetail.marketMonthlyPrice);
+    } else if (option?.value === "Annual") {
+      // setRentalPrice(slipDetail.marketAnnualPrice); // Update rental price to Annual value
+      setValue("rentalPrice", slipDetail.marketAnnualPrice);
 
       // console.log(
-      //   "Updated Rental Price (Monthly):",
-      //   slipDetail.marketMonthlyPrice
+      //   "Updated Rental Price (Annual):",
+      //   slipDetail.marketAnnualPrice
       // );
-    } else if (option?.value === "yearly") {
-      // setRentalPrice(slipDetail.marketAnnualPrice); // Update rental price to yearly value
-      setValue('MonYear',slipDetail.marketAnnualPrice);
-
-      console.log(
-        "Updated Rental Price (Yearly):",
-        slipDetail.marketAnnualPrice
-      );
     } else {
-      // setRentalPrice(""); // Clear rental price if no valid option
+      setRentalPrice(""); // Clear rental price if no valid option
       console.log("Cleared Rental Price");
     }
   };
-
-  // Log rentalPrice whenever it updates
-  // useEffect(() => {
-  //   console.log("Rental Price updated:", rentalPrice);
-  // }, [rentalPrice]);
 
   // Handle year change
   const handleYearChange = (year) => {
@@ -136,19 +144,6 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
     setValue("cardExpiryMonth", null);
   };
 
-  const handleOTPClick = () => {
-    setOtpVisible(true); // Show OTP state
-
-    try {
-      if (setOtpVisible === true) {
-        
-      }
-    } catch (error) {
-      
-    }
-    // Handle OTP button click (can trigger OTP API here)
-    setShowOTPFields(true);
-  };
   const handleDiscount = (event) => {
     // Handle OTP button click (can trigger OTP API here)
     const isToggled = event.target.checked;
@@ -157,7 +152,6 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
     if (!isToggled) {
       // Reset all states if toggled to "No"
       setOtpVisible(false);
-      setShowOTPFields(false);
     }
   };
 
@@ -167,29 +161,28 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
     // setValue('discountType', selectedOption?.value || '');
   };
 
-  const handlePaymentType = (selectedOption) => {
+  const handlepaymentMode = (selectedOption) => {
     // Ensure that we are getting the correct value
-    const selectedType = selectedOption?.value; // Extract the value
+    const selectedType = selectedOption?.label; // Extract the value
 
     if (selectedType) {
-      setPaymentType(selectedType); // Update the payment type state
-      // console.log(selectedType); // Log the selected payment type (this should no longer be undefined)
+      setpaymentMode(selectedType); // Update the  paymentMode state
+      // console.log(selectedType); // Log the selected  paymentMode (this should no longer be undefined)
     }
   };
 
   // const [MonYearValue, setMonYearValue] = useState(0);
-    // Watch the value of MonYear
-    const monYearValue = watch("MonYear");
+  // Watch the value of rentalPrice
+  const rentalPriceValue = watch("rentalPrice");
 
-    // const handleMonYear = (e) => {
-    //   console.log("Updated value:", e.target.value);
-    //   console.log(monYearValue);
-      
-    // };
-  
+  // const handleMonYear = (e) => {
+  //   console.log("Updated value:", e.target.value);
+  //   console.log(monYearValue);
 
-  const totalAmount = monYearValue  ;
-// console.log(totalAmount,"total amount");
+  // };
+
+  const totalAmount = rentalPriceValue;
+  // console.log(totalAmount,"total amount");
 
   const handleFinalValue = (e) => {
     const finalAmount = e.target.value;
@@ -285,18 +278,18 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
   const validateFutureDate = (value, fieldName) => {
     const today = new Date();
     const selectedDate = new Date(value);
-    if (selectedDate <= today) {
-      // Manually set error if the date is in the past
-      setError(fieldName, {
-        type: "manual",
-        message: "The date must be in the future",
-      });
-      return false;
-    } else {
-      // Clear any previous errors
-      clearErrors(fieldName);
-      return true;
-    }
+    // if (selectedDate <= today) {
+    //   // Manually set error if the date is in the past
+    //   errors(fieldName, {
+    //     type: "manual",
+    //     message: "The date must be in the future",
+    //   });
+    //   return false;
+    // } else {
+    //   // Clear any previous errors
+    //   // clearErrors(fieldName);
+    //   return true;
+    // }
   };
 
   // const defaultValues={
@@ -333,32 +326,93 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
   // cardSwipeTransactionId: "",
   // }
 
- 
+  // const onSubmit = async (data) => {
+  //   const cleanData = Object.fromEntries(
+  //     Object.entries(data).filter(
+  //       ([key, value]) => value !== undefined && value !== null
+  //     )
+  //   );
+  //   console.log(cleanData);
 
-  const onSubmit = (data) => {
-    const cleanData = Object.fromEntries(
-      Object.entries(data).filter(
-        ([key, value]) => value !== undefined && value !== null
-      )
-    );
-    console.log(cleanData);
+  //   if (Object.keys(errors).length === 0) {
+  //       try {
+  //         // const response = await useJwt.postslipAssignment();
+  //        console.log(data);
 
-    if (Object.keys(errors).length === 0) {
-      // console.log(data); // Display data only if no errors
-    } else {
-      console.log("Validation failed", errors); // Log errors
-    }
+  //       } catch (error) {
+  //         console.error("Error fetching market prices:", error);
+  //       }
+  //     }
 
+  //    else {
+  //     console.log("Validation failed", errors); // Log errors
+  //   }
+
+  //   setCombinedData((prev) => ({
+  //     ...prev,
+  //     slipPayment: data,
+  //   }));
+  //   stepper.next();
+  // };
+
+  //   const onSubmit = async (data) => {
+
+  //     setCombinedData((prev) => ({
+  //       ...prev,
+  //       slipPayment: data,
+  //     }));
+  //     // Merge final step data
+  //     // const cleanData = Object.fromEntries(
+  // //       Object.entries(data).filter(
+  // //         ([key, value]) => value !== undefined && value !== null
+  // //       )
+  // //     );
+  // // console.log("clean data", cleanData);
+
+  // try {
+  //   const response = await useJwt.postslipAssignment(combinedData);
+  //   console.log("API Response:", response);
+  // } catch (error) {
+  //   console.error("Error submitting data:", error);
+  // }
+
+  // // console.log("combinedData",combinedData);
+
+  //   };
+
+  const onSubmit = async (data) => {
+    // {{debugger}}
+    // Clean the data to remove invalid values
+    // const data=Object.keys(combinedData).reduce((obj,key)=>{
+    //   if(typeof combinedData[key]=='object'){
+    //     obj={...obj,...combinedData[key]}
+
+    //   }else if(combinedData[key]){
+    //     obj={...obj,[key]:combinedData[key]}
+    //   }
+    //   return obj
+    // },{})
+
+    //  console.log({data})
     setCombinedData((prev) => ({
       ...prev,
-      paymentInfo: data,
+
+      slipPayment: data,
     }));
-    stepper.next();
+    console.log("payment data 3rd for", data);
+
+    try {
+      const response = await useJwt.postslipAssignment(combinedData); // Send cleaned data
+      console.log("API Response:", response);
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
   };
+
   const [slipDetail, setSlipDetail] = useState({});
 
   useEffect(() => {
-    console.log(errors);
+    // console.log(errors);
     console.log(combinedData);
 
     // Fetch the API data when the component mounts
@@ -368,7 +422,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
         // console.log("API Response:", response.data.content.result);
 
         const selectedSlip = response.data.content.result.find(
-          (item) => item.id === combinedData.selectedSlipId
+          (item) => item.id === combinedData.slipDetailId
         );
         if (selectedSlip) {
           // console.log("Selected Slip:", selectedSlip);
@@ -379,7 +433,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
         } else {
           console.error(
             "No slip found for the given ID:",
-            combinedData.selectedSlipId
+            combinedData.slipDetailId
           );
         }
         // console.log("selected",selectedSlip.marketAnnualPrice);
@@ -388,7 +442,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
       }
     };
     fetchMarketPrices();
-  }, [errors, combinedData.selectedSlipId]);
+  }, [errors, combinedData.slipDetailId]);
   // console.log("slipDetail",slipDetail);
 
   return (
@@ -418,12 +472,15 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
                   }`}
                   options={{
                     altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
+                    altFormat: "Y-m-d", // Format for display
+                    dateFormat: "Y-m-d", // Ensures the value is in YYYY-MM-DD format
                     minDate: "today", // Disable all dates before today
                   }}
                   value={field.value}
-                  onChange={(date) => field.onChange(date[0])} // Update value in the form
+                  onChange={(date) => {
+                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
+                    field.onChange(formattedDate); // Update value in the form
+                  }}
                 />
               )}
             />
@@ -454,7 +511,9 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
                     (option) => option.value === field.value
                   )} // Match selected option
                   onChange={(option) => {
-                    field.onChange(option ? option.value : "");
+                    const selectedValue = option ? option.value : "";
+
+                    field.onChange(selectedValue);
                     handlePaidInChange(option); // Update rental price
                   }}
                   isInvalid={!!errors.paidIn}
@@ -470,13 +529,12 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="landmark">
-              Rental Price 
+              Rental Price
               <span style={{ color: "red" }}>*</span>
             </Label>
 
             <Controller
-              id="MonYear"
-              name="MonYear"
+              name="rentalPrice"
               rules={{
                 required: "Monthly Value is required",
                 validate: validateNumber,
@@ -485,19 +543,18 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
               render={({ field }) => (
                 <Input
                   placeholder=""
-                  readOnly  
-                  invalid={errors.MonYear && true}
+                  readOnly
+                  invalid={errors.rentalPrice && true}
                   {...field}
                   onChange={(e) => {
-                    handleMonYear(e); // Call the handler if needed
+                    handlerentalPrice(e); // Call the handler if needed
                     field.onChange(e); // Update the react-hook-form value
                   }}
                 />
               )}
             />
-
-           </Col>
-          </Row>
+          </Col>
+        </Row>
 
         <div className="content-header">
           <h5 className="mb-0 my-2">Discount</h5>
@@ -513,7 +570,6 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
               className="my-2 form-check form-switch d-flex "
               style={{ marginLeft: "-47px" }}
             >
-              {/* "No" label to the left */}
               <Label
                 className="me-1"
                 htmlFor="distype"
@@ -522,7 +578,6 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
                 No
               </Label>
 
-              {/* Toggle switch */}
               <Input
                 type="switch"
                 name="distype"
@@ -531,7 +586,6 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
                 style={{ margin: 0 }}
               />
 
-              {/* "Yes" label to the right */}
               <Label
                 className="ms-1"
                 htmlFor="distype"
@@ -541,62 +595,19 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
               </Label>
             </div>
           </Col>
-          {discounttoggle && !otpVisible && (
+          {discounttoggle && (
             <Col md="auto" className="mb-1 my-3">
-              <Button.Ripple color="primary" onClick={handleOTPClick}>
-                OTP
-              </Button.Ripple>
-
-              {errors.landmark && (
-                <FormFeedback>{errors.landmark.message}</FormFeedback>
-              )}
+              <GenrateOtp
+                combinedData={combinedData}
+                setCombinedData={setCombinedData}
+                buttonEnabled={buttonEnabled}
+                setButtonEnabled={setButtonEnabled}
+              />
             </Col>
           )}
-          {showOTPFields && discounttoggle && otpVisible && (
-            <>
-              {/* Centered OTP Input */}
-              <Col md="auto" className="mb-1 my-3">
-                <Controller
-                  name="Userotp"
-                  id="Userotp"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      placeholder="Enter OTP"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      invalid={errors.pincode && true}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.Userotp && (
-                  <FormFeedback>{errors.Userotp.message}</FormFeedback>
-                )}
-              </Col>
-
-              {/* Centered Verify OTP Button */}
-              <Col md="auto" className="mb-1 my-3">
-                <Button.Ripple color="success" name="otpVerify">
-                  Verify OTP
-                </Button.Ripple>
-              </Col>
-
-              <p className="">
-                <span>Didn’t get the code?</span>{" "}
-                <a href="/" onClick={(e) => e.preventDefault()}>
-                  Resend
-                </a>{" "}
-                <span>or</span>{" "}
-                <a href="/" onClick={(e) => e.preventDefault()}>
-                  Call us
-                </a>
-              </p>
-            </>
-          )}
         </Row>
-
-        <Row>
+{buttonEnabled && (
+      <Row>
           <Col md="4" className="mb-1">
             <Label className="form-label" for="hf-picker">
               Discount Type <span style={{ color: "red" }}>*</span>
@@ -643,7 +654,6 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
               control={control}
               render={({ field }) => (
                 <Input
-                
                   placeholder={
                     discountTypee == "Flat"
                       ? "Enter Discount Amount"
@@ -695,7 +705,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
             )}
           </Col>
         </Row>
-
+ )}
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="landmark">
@@ -751,12 +761,15 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
                   }`}
                   options={{
                     altInput: true,
-                    altFormat: "F j, Y",
+                    altFormat: "Y-m-d",
                     dateFormat: "Y-m-d",
                     minDate: "today", // Disable past dates
                   }}
                   value={field.value}
-                  onChange={(date) => field.onChange(date[0])} // Set the selected date
+                  onChange={(date) => {
+                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
+                    field.onChange(formattedDate); // Update value in the form
+                  }}
                 />
               )}
             />
@@ -784,12 +797,15 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
                   }`}
                   options={{
                     altInput: true,
-                    altFormat: "F j, Y",
+                    altFormat: "Y-m-d",
                     dateFormat: "Y-m-d",
                     minDate: "today", // Disable past dates
                   }}
                   value={field.value}
-                  onChange={(date) => field.onChange(date[0])} // Update value in the form
+                  onChange={(date) => {
+                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
+                    field.onChange(formattedDate); // Update value in the form
+                  }}
                 />
               )}
             />
@@ -806,22 +822,22 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
             </Label>
 
             <Controller
-              name="PaymentType"
+              name="paymentMode"
               control={control}
               rules={{
-                required: "Payment Mode is required",
+                required: "payment Mode  is required",
               }}
               render={({ field }) => (
                 <Select
                   {...field}
                   options={colourOptions3}
                   className={`react-select ${
-                    errors.PaymentType ? "is-invalid" : ""
+                    errors.paymentMode ? "is-invalid" : ""
                   }`}
                   onChange={(selectedOption) => {
                     const value = selectedOption ? selectedOption.value : "";
                     field.onChange(value); // Update React Hook Form with the value
-                    handlePaymentType(selectedOption); // Run your custom function with the full option
+                    handlepaymentMode(selectedOption); // Run your custom function with the full option
                   }}
                   value={colourOptions3.find(
                     (option) => option.value === field.value
@@ -830,10 +846,10 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
               )}
             />
 
-            {errors.PaymentType && (
+            {errors.paymentMode && (
               <FormFeedback className="d-block">
-                {errors.PaymentType.value?.message ||
-                  errors.PaymentType.message}
+                {errors.paymentMode.value?.message ||
+                  errors.paymentMode.message}
               </FormFeedback>
             )}
           </Col>
@@ -841,7 +857,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
 
         {/* // ===================== credit card  */}
 
-        {paymentType === "Credit Card" && (
+        {paymentMode === "Credit Card" && (
           <>
             <Row>
               <div className="content-header">
@@ -1172,7 +1188,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
 
         {/* //* ============================ Bank Details   */}
 
-        {paymentType === "Cheque" && (
+        {paymentMode === "Cheque" && (
           <>
             <div className="content-header">
               <h5 className="mb-0 my-2">Bank Details</h5>
@@ -1321,7 +1337,7 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
 
         {/* ===================== card Swipe */}
 
-        {paymentType === "Card Swipe" && (
+        {paymentMode === "Card Swipe" && (
           <>
             <Row>
               <Col md="12" className="mb-1">
@@ -1371,7 +1387,9 @@ const Address = ({ stepper, combinedData, setCombinedData }) => {
             </span>
           </Button>
           <Button type="submit" color="primary" className="btn-next">
-            <span className="align-middle d-sm-inline-block d-none">Next</span>
+            <span className="align-middle d-sm-inline-block d-none">
+              Submit
+            </span>
             <ArrowRight
               size={14}
               className="align-middle ms-sm-25 ms-0"

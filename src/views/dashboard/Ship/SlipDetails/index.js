@@ -241,6 +241,12 @@ function ShipDetails() {
     setErrorMessage("");
   };
 
+  const optionsForDays=
+    [
+      { value: "Flat", label: "Flat" },
+      { value: "Percentage", label: "Percentage" },
+    ];
+  
 
   return (
     <>
@@ -462,6 +468,259 @@ function ShipDetails() {
               </Col>
             </Row>
 
+
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+               Charges for 7 Days Type
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+              
+              <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Percentage
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Flat
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder="Enter Amount"
+                />           
+                 </div>
+
+              {errors.category && (
+                <div className="invalid-feedback d-block">{errors.category}</div>
+              )}
+           
+              </Col>
+            </Row>
+
+
+            {/* <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Over Due Charges for 7 Days
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder="Monthly Price"
+                />
+                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+              </Col>
+            </Row> */}
+
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Charges for 15 Days Type
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+              
+              <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Percentage
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Flat
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder=""
+                />           
+                 </div>
+
+              {errors.category && (
+                <div className="invalid-feedback d-block">{errors.category}</div>
+              )}
+           
+              </Col>
+            </Row>
+{/* 
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+             Charges for 15 Days 
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder="Monthly Price"
+                />
+                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+              </Col>
+            </Row> */}
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Charges for 30 Days Type
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+              
+              <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Percentage
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Flat
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder=""
+                />           
+                 </div>
+
+              {errors.category && (
+                <div className="invalid-feedback d-block">{errors.category}</div>
+              )}
+           
+              </Col>
+            </Row>
+            {/* <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Over Due Charges for 30 Days
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder="Monthly Price"
+                />
+                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+              </Col>
+            </Row> */}
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Notice Type                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+              
+              <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Percentage
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Flat
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder=""
+                />           
+                 </div>
+
+              {errors.category && (
+                <div className="invalid-feedback d-block">{errors.category}</div>
+              )}
+           
+              </Col>
+            </Row>
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+              Notice
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+              <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Percentage
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Flat
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder=""
+                />           
+                 </div>
+
+                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+              </Col>
+            </Row>
+          
+            <Row className="mb-1">
+              <Label sm="3" for="marketMonthlyPrice">
+                Auction
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+              <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Percentage
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+              <Input type='checkbox' id='basic-cb-unchecked' />
+              <Label for='basic-cb-unchecked' className='form-check-label'>
+                Flat
+              </Label>
+            </div>
+            <div className='form-check form-check-inline'>
+
+                <Input
+                  type="number"
+                  name="marketMonthlyPrice"
+                  id="marketMonthlyPrice"
+                  placeholder="Auctions"
+                />           
+                 </div>
+
+                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+              </Col>
+            </Row>
+         
             <Row>
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>
                 <Button className="me-1" color="primary" type="submit">

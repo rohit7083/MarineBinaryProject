@@ -72,60 +72,15 @@ import VesselDetails from "./steps-with-validation/VesselDetails";
 const Index = () => {
   const ref = useRef(null);
   const [stepper, setStepper] = useState(null);
+  const [buttonEnabled, setButtonEnabled] = useState(false); // Button state
 
   // Shared state for all steps
   const [combinedData, setCombinedData] = useState({
-    personalInfo: {
-      lastName: "",
-      firstName: "",
-      emailId: "",
-      phoneNumber: "",
-      address: "",
-      city: "",
-      state: "",
-      country: "",
-      postalCode: "",
+    member: {
     },
-    vesselInfo: {
-      vesselName: "",
-      vesselRegistrationNumber: "",
-      height: "",
-      slipName: "",
-      width: "",
-      length: "",
+    vessel: {
     },
-    paymentInfo: {
-      contractDate: "",
-      paidIn: "",
-      MonYear: "",
-      distype: false,
-      discountType: "",
-      discountAmount: "",
-      calDisAmount: "",
-      finalPayment: "",
-      renewalDate: "",
-      nextPaymentDate: "",
-      paymentType: "",
-
-      cardType: "",
-      cardNumber: "",
-      nameOnCard: "",
-      cardCvv: "",
-      cardExpiryYear: "",
-      cardExpiryMonth: "",
-      address: "",
-      city: "",
-      state:"",
-      country: "",
-      pinCode: "",
-
-      bankName: "",
-      nameOnAccount: "",
-      routingNumber: "",
-      accountNumber: "",
-      chequeNumber: "",
-
-      cardSwipeTransactionId: "",
+    slipPayment: {
     },
   });
 
@@ -145,18 +100,18 @@ const Index = () => {
         />
       ),
     },
-    // {
-    //   id: "Member-info",
-    //   title: "Member Details",
-    //   subtitle: "Add Member Info",
-    //   content: (
-    //     <MemberDetails
-    //       stepper={stepper}
-    //       combinedData={combinedData}
-    //       setCombinedData={setCombinedData}
-    //     />
-    //   ),
-    // },
+    {
+      id: "Member-info",
+      title: "Member Details",
+      subtitle: "Add Member Info",
+      content: (
+        <MemberDetails
+          stepper={stepper}
+          combinedData={combinedData}
+          setCombinedData={setCombinedData}
+        />
+      ),
+    },
     {
       id: "Payment",
       title: "Payment Details",
@@ -166,7 +121,10 @@ const Index = () => {
           stepper={stepper}
           combinedData={combinedData}
           setCombinedData={setCombinedData}
+          buttonEnabled={buttonEnabled} 
+          setButtonEnabled={setButtonEnabled} 
         />
+      
       ),
     },
     {

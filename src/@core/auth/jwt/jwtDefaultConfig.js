@@ -18,11 +18,11 @@ export default {
 
   slipAssignment:"/slipAssignment/",
   slipAssignmentGet:"/slipAssignmentGet",
-  generateOTP:"/slipAssignment/generate",
-  verifyOTP:"/slipAssignment/verify/8JlwIOAIgEg8H5M8buETFayNUQPMMKEh8n7Kb-RE2BVUkREUJr-1E-HtikQHII4k0R-H06hxQPHS9dr_38txUwta7JSuaK1terk0wDle8Mss9awwgCMDQbmv4y1Ld1nttuyqZ_YHmfKA8jw2AWgSl5x54x-CCpoFjIm8JdE3B4k=",
+  postOTP:"/slipAssignment/generate",
+  verifyOTP:"/slipAssignment/verify/",
   
 
-  // ** Value of this property will be used as key to store JWT token in storage
+  // Value of this property will be used as key to store JWT token in storage
   storageTokenKeyName: 'accessToken',
   storageRefreshTokenKeyName: 'refreshToken'
 }
