@@ -27,7 +27,6 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-
 const states = [
   "success",
   "danger",
@@ -429,19 +428,21 @@ export const serverSideColumns = [
         });
       };
 
-      const handle = async() => {
+      const handle = async () => {
         console.log(row.shipTypeName);
-      
-
+        console.log(row.dimensions);
+        console.log("Passing to Link:", row.shipTypeName, row.dimensions);
       };
 
       return (
         <div className="d-flex">
-          {/* Edit Button */}
           <Link
             to={{
-              pathname: `/dashboard/SlipCategory/${row.uid}`,
-              state: { shipTypeName: row.shipTypeName } // Passing the data
+              pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path
+              state: {
+                shipTypeName: row.shipTypeName, // Pass the shipTypeName
+                dimensions: row.dimensions, // Pass the dimensions (make sure it's an array)
+              },
             }}
           >
             <span onClick={() => handle(row)}>

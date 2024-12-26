@@ -13,13 +13,14 @@ export default {
   slipCategory:"/slipCategory/",
   slipCategoryGet:"/slipCategory",
 
-  slipDetail:"/slipDetail/",
-  slipDetailGet:"/slipDetail",
+  slip:"/slip/",
+  slipGet:"/slip",
 
-  slipAssignment:"/slipAssignment/",
+  sVessel:"/sVessel/",
   slipAssignmentGet:"/slipAssignmentGet",
   postOTP:"/slipAssignment/generate",
   verifyOTP:"/slipAssignment/verify/",
+  slipDocument:"/slipDocument/",
   
 
   // Value of this property will be used as key to store JWT token in storage

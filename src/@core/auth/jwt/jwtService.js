@@ -115,22 +115,22 @@ export default class JwtService {
 
   // ===================== Slip Details 
 
-  postslipDetail(...args) {
-    return axios.post(this.jwtConfig.slipDetail, ...args)
+  postslip(...args) {
+    return axios.post(this.jwtConfig.slip, ...args)
   }
-  getslipDetail() {
-    return axios.get(this.jwtConfig.slipDetailGet)
+  getslip() {
+    return axios.get(this.jwtConfig.slipGet)
   }
-  updateslipDetail(uid,...args) {
-    return axios.put(`${this.jwtConfig.slipDetail}${uid}`, ...args)
+  updateslip(uid,...args) {
+    return axios.put(`${this.jwtConfig.slip}${uid}`, ...args)
   }
-  deleteslipDetail(uid) {
-    return axios.delete(`${this.jwtConfig.slipDetail}${uid}`)
+  deleteslip(uid) {
+    return axios.delete(`${this.jwtConfig.slip}${uid}`)
   }
   // ==================== Slip assigne
 
-  postslipAssignment(...args) {
-    return axios.post(this.jwtConfig.slipAssignment, ...args)
+  postsVessel(...args) {
+    return axios.post(this.jwtConfig.sVessel, ...args)
   }
   getslipAssignment() {
     return axios.get(this.jwtConfig.slipAssignmentGet)
@@ -143,6 +143,9 @@ export default class JwtService {
   verifyOTP(token, ...data) {
     return axios.post(this.jwtConfig.verifyOTP+token, ...data)
 
+  }
+  slipDocument(uid,...args) {
+    return axios.post(this.jwtConfig.slipDocument+uid, ...args)
   }
 
   refreshToken() {

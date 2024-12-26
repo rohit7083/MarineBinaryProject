@@ -12,6 +12,7 @@ import {
   Archive,
   Trash,
   Edit2,
+  Eye,
 } from "react-feather";
 import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
@@ -379,15 +380,13 @@ export const serverSideColumns = [
     sortable: true,
     name: "Electric",
     minWidth: "150px",
-    selector: (row) => row.electric ? "Yes" : "No", 
-
-
+    selector: (row) => (row.electric ? "Yes" : "No"),
   },
   {
     sortable: true,
     name: "water",
     minWidth: "150px",
-    selector: (row) =>row.water ? "Yes" : "No", 
+    selector: (row) => (row.water ? "Yes" : "No"),
   },
   {
     sortable: true,
@@ -410,7 +409,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Market Monthly Price",
-    minWidth: "150px",
+    minWidth: "190px",
     selector: (row) => row.marketMonthlyPrice,
   },
   {
@@ -439,7 +438,7 @@ export const serverSideColumns = [
           if (result.value) {
             try {
               // Call delete API
-              const response = await useJwt.deleteslipDetail(uid);
+              const response = await useJwt.deleteslip(uid);
               if (response.status === 204) {
                 setData((prevData) =>
                   prevData.filter((item) => item.uid !== uid)
@@ -454,8 +453,8 @@ export const serverSideColumns = [
                   },
                 });
                 setTimeout(() => {
-                    window.location.reload(true);
-                  }, 2000); // 2000ms = 2 seconds
+                  window.location.reload(true);
+                }, 2000); // 2000ms = 2 seconds
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -474,19 +473,21 @@ export const serverSideColumns = [
         });
       };
 
-      const handle = async() => {
-        // console.log(uid);
-      
-
-      };
 
       return (
         <div className="d-flex">
+          <span style={{ cursor: "pointer" }}>
+            <Eye size={25}className="me-2"/>
+          </span>
+
           {/* Edit Button */}
           <Link
-           to={`/dashboard/SlipDetails/${row.uid}`}>
-
-            <span >
+            to={{
+              pathname: `/dashboard/SlipDetails/${row.uid}`, // Ensure this is the correct path
+              state: {},
+            }}
+          >
+            <span>
               <Edit2 className="me-2" />
             </span>
           </Link>

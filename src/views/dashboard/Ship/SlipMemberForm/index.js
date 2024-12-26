@@ -72,20 +72,7 @@ import VesselDetails from "./steps-with-validation/VesselDetails";
 const Index = () => {
   const ref = useRef(null);
   const [stepper, setStepper] = useState(null);
-  const [buttonEnabled, setButtonEnabled] = useState(false); // Button state
-
-  // Shared state for all steps
-  const [combinedData, setCombinedData] = useState({
-    member: {
-    },
-    vessel: {
-    },
-    slipPayment: {
-    },
-  });
-
-
-
+  
   // Wizard steps configuration
   const steps = [
     {
@@ -95,49 +82,48 @@ const Index = () => {
       content: (
         <VesselDetails
           stepper={stepper}
-          combinedData={combinedData}
-          setCombinedData={setCombinedData}
-        />
-      ),
-    },
-    {
-      id: "Member-info",
-      title: "Member Details",
-      subtitle: "Add Member Info",
-      content: (
-        <MemberDetails
-          stepper={stepper}
-          combinedData={combinedData}
-          setCombinedData={setCombinedData}
-        />
-      ),
-    },
-    {
-      id: "Payment",
-      title: "Payment Details",
-      subtitle: "Add Payment",
-      content: (
-        <PaymentDetails
-          stepper={stepper}
-          combinedData={combinedData}
-          setCombinedData={setCombinedData}
-          buttonEnabled={buttonEnabled} 
-          setButtonEnabled={setButtonEnabled} 
-        />
-      
-      ),
-    },
-    {
-      id: "DocumentsDetails",
-      title: "Document Details",
-      subtitle: "Add Documents",
-      content: (
-        <DocumentsDetails
-          stepper={stepper}
          
         />
       ),
     },
+    // {
+    //   id: "Member-info",
+    //   title: "Member Details",
+    //   subtitle: "Add Member Info",
+    //   content: (
+    //     <MemberDetails
+    //       stepper={stepper}
+    //       combinedData={combinedData}
+    //       setCombinedData={setCombinedData}
+    //     />
+    //   ),
+    // },
+    // {
+    //   id: "Payment",
+    //   title: "Payment Details",
+    //   subtitle: "Add Payment",
+    //   content: (
+    //     <PaymentDetails
+    //       stepper={stepper}
+    //       combinedData={combinedData}
+    //       setCombinedData={setCombinedData}
+    //       buttonEnabled={buttonEnabled} 
+    //       setButtonEnabled={setButtonEnabled} 
+    //     />
+      
+    //   ),
+    // },
+    // {
+    //   id: "DocumentsDetails",
+    //   title: "Document Details",
+    //   subtitle: "Add Documents",
+    //   content: (
+    //     <DocumentsDetails
+    //       stepper={stepper}
+         
+    //     />
+    //   ),
+    // },
   ];
 
   return (

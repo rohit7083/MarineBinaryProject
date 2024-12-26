@@ -17,11 +17,13 @@ import useJwt from "@src/auth/jwt/useJwt";
 // Assuming you are using toast for notifications
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { useLocation } from "react-router-dom";
 
 const MySwal = withReactContent(Swal);
 function Index() {
   let navigate = useNavigate();
   let { uid } = useParams(); // Fetch `uid` from the route params
+  const location = useLocation(); // Use location hook to get the passed state
 
   const [error, setError] = useState({
     shipTypeName: false,
@@ -37,14 +39,22 @@ function Index() {
 
   // Fetch existing data when editing
   useEffect(() => {
+    console.log("Location state:", location.state);
+
     if (uid) {
       const fetchSlipCategory = async () => {
+  
+
         try {
           const { data } = await useJwt.getslipCatogory(uid);
-          setSelected({
-            shipTypeName: data.shipTypeName || "",
-            dimensions: new Set(data.dimensions || []), // Assuming dimensions is an array
-          });
+          const { result } = data.content;
+          if (result.length) {
+            const details = result.find((d) => d.uid === uid);
+            setSelected({
+              shipTypeName: details.shipTypeName || "",
+              dimensions: new Set(details.dimensions || []), // Assuming dimensions is an array
+            });
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
           alert.error("Failed to fetch data");
@@ -118,7 +128,9 @@ function Index() {
               confirmButton: "btn btn-primary",
             },
             buttonsStyling: false,
-          });
+          }).then(() => {
+            navigate("/dashboard/SlipList");
+          })
         } else {
           await useJwt.postslipCatogory(payload);
           try {
@@ -199,7 +211,7 @@ function Index() {
           </Row>
           <Row className="mb-1">
             <Label sm="3" className="form-check-label">
-                Dimensions
+              Dimensions
             </Label>
             <Col sm="9">
               {["height", "width", "length"].map((dim) => (
