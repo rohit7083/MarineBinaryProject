@@ -12,6 +12,8 @@ import {
   Archive,
   Trash,
   Edit2,
+  Eye,
+
 } from "react-feather";
 import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
@@ -436,6 +438,11 @@ export const serverSideColumns = [
 
       return (
         <div className="d-flex">
+          {/* View Button */}
+          <span style={{ cursor: "pointer" }}>
+            <Eye size={25} className="me-2" />
+          </span>
+
           <Link
             to={{
               pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path

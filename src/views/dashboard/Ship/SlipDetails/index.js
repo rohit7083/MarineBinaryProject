@@ -173,7 +173,7 @@ function ShipDetails() {
 
           overDueChagesForAuction: selections.overDueChagesForAuction,
         };
-        console.log("dim", dimensions);
+        console.log("payload", payload);
 
         if (uid) {
           // Update existing entry

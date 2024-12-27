@@ -32,38 +32,59 @@ const DataTableServerSide = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // const dataToRender = () => {
+  //   const limit = currentPage * rowsPerPage;
+  //   const start = limit - rowsPerPage;
+  //   console.log({
+  //     data: data.slice(start, limit),
+  //     default: data,
+  //     limit,
+  //     start,
+  //   });
+  //   return store.data
+  //     .filter((item) => {
+  //       const slipNameMatch = item.slipName.toLowerCase().includes(searchValue.toLowerCase());
+  //       const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
+  //       const categoryMatch = item.category.shipTypeName.toLowerCase().includes(searchValue.toLowerCase());
+
+  //       return slipNameMatch || idMatch || categoryMatch;
+  //     })
+  //     .slice(start, limit);
+  // };
+
+
   const dataToRender = () => {
     const limit = currentPage * rowsPerPage;
     const start = limit - rowsPerPage;
-    console.log({
-      data: data.slice(start, limit),
-      default: data,
-      limit,
-      start,
-    });
-    return store.data
-      .filter((item) => {
-        const slipNameMatch = item.slipName
-          .toLowerCase()
-          .includes(searchValue.toLowerCase());
-        const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
-        const categoryMatch = item.category.shipTypeName
-          .toLowerCase()
-          .includes(searchValue.toLowerCase());
 
-        return slipNameMatch || idMatch || categoryMatch;
-      })
-      .slice(start, limit);
-  };
+    // console.log({
+    //     data: data.slice(start, limit),
+    //     default: data,
+    //     limit,
+    //     start,
+    // });
+
+    return store.data
+        .filter((item) => {
+            const slipNameMatch = item.slipName?.toLowerCase().includes(searchValue.toLowerCase()) || false;
+            const idMatch = item.id?.toString().includes(searchValue) || false;
+            // const categoryMatch = item.category.shipTypeName.toLowerCase().includes(searchValue.toLowerCase()) || false;
+            const categoryMatch = 
+            item.category?.shipTypeName?.toLowerCase().includes(searchValue.toLowerCase()) || false;
+          
+            return slipNameMatch || idMatch || categoryMatch;
+        })
+        .slice(start, limit);
+};
 
   const handlePagination = (page) => {
-    // dispatch(
-    //         getData({
-    //           page: page.selected + 1,
-    //           perPage: rowsPerPage,
-    //           q: searchValue,
-    //         })
-    //       );
+    dispatch(
+            getData({
+              page: page.selected + 1,
+              perPage: rowsPerPage,
+              q: searchValue,
+            })
+          );
     console.log(page);
 
     setCurrentPage(page.selected + 1);
@@ -105,13 +126,13 @@ const DataTableServerSide = () => {
     const query = e.target.value;
     setSearchValue(query);
 
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage: rowsPerPage,
-    //     q: query, // Send the search query to the API (which should handle filtering)
-    //   })
-    // );
+    dispatch(
+      getData({
+        page: currentPage,
+        perPage: rowsPerPage,
+        q: query, // Send the search query to the API (which should handle filtering)
+      })
+    );
   };
 
   useEffect(() => {
@@ -122,20 +143,20 @@ const DataTableServerSide = () => {
         const { result } = data.content;
         setData(result);
         setLoading(true); // Set loading to true when data fetching starts
-        // await dispatch(
-        //             getData({
-        //               page: currentPage,
-        //               perPage: rowsPerPage,
-        //               q: searchValue, // Apply search query
-        //             })
-        //           );
+        await dispatch(
+                    getData({
+                      page: currentPage,
+                      perPage: rowsPerPage,
+                      q: searchValue, // Apply search query
+                    })
+                  );
       } catch (e) {
         console.log(e);
       } finally {
         setLoading(false); // Set loading to false when data fetching completes
       }
     })();
-  }, []);
+  }, [dispatch, currentPage, rowsPerPage, searchValue]);
 
   return (
     <Fragment>
@@ -279,7 +300,7 @@ export default memo(DataTableServerSide);
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
-//         const response = await useJwt.getslipDetail(); // Assuming this fetches all categories
+//         const response = await useJwt.getslip(); // Assuming this fetches all categories
 //         setData(response.data); //
 //         setLoading(true); // Set loading to true when data fetching starts
 //         await dispatch(

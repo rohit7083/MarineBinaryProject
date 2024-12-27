@@ -115,6 +115,7 @@ function Index() {
         shipTypeName: selected.shipTypeName,
         dimensions: Array.from(selected.dimensions), // Convert Set back to array
       };
+console.log(payload);
 
       try {
         if (uid) {

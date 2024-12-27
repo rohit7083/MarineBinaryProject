@@ -75,17 +75,17 @@ const Index = () => {
   
   // Wizard steps configuration
   const steps = [
-    {
-      id: "Vessel-details",
-      title: "Vessel Details",
-      subtitle: "Enter Your Vessel Details.",
-      content: (
-        <VesselDetails
-          stepper={stepper}
+    // {
+    //   id: "Vessel-details",
+    //   title: "Vessel Details",
+    //   subtitle: "Enter Your Vessel Details.",
+    //   content: (
+    //     <VesselDetails
+    //       stepper={stepper}
          
-        />
-      ),
-    },
+    //     />
+    //   ),
+    // },
     // {
     //   id: "Member-info",
     //   title: "Member Details",
@@ -98,21 +98,17 @@ const Index = () => {
     //     />
     //   ),
     // },
-    // {
-    //   id: "Payment",
-    //   title: "Payment Details",
-    //   subtitle: "Add Payment",
-    //   content: (
-    //     <PaymentDetails
-    //       stepper={stepper}
-    //       combinedData={combinedData}
-    //       setCombinedData={setCombinedData}
-    //       buttonEnabled={buttonEnabled} 
-    //       setButtonEnabled={setButtonEnabled} 
-    //     />
+    {
+      id: "Payment",
+      title: "Payment Details",
+      subtitle: "Add Payment",
+      content: (
+        <PaymentDetails
+          stepper={stepper}
+        />
       
-    //   ),
-    // },
+      ),
+    },
     // {
     //   id: "DocumentsDetails",
     //   title: "Document Details",

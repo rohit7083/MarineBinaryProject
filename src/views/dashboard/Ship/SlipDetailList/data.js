@@ -368,8 +368,9 @@ export const serverSideColumns = [
     sortable: true,
     name: "Category",
     minWidth: "150px",
-    selector: (row) => row.category.shipTypeName,
+    selector: (row) => row.category?.shipTypeName || "N/A", // Fallback to "N/A" if shipTypeName is undefined
   },
+  
   // {
   //   sortable: true,
   //   name: "dimensions",

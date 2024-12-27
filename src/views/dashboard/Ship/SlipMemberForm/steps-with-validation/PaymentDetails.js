@@ -89,7 +89,6 @@ const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButt
     formState: { errors },
   } = useForm({
     // defaultValues,
-    defaultValues: combinedData.slipPayment, // Initialize with existing data
   });
 
   const [Verifyotp, setVerifyotp] = useState(false); // Track OTP verification state
@@ -442,7 +441,7 @@ const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButt
       }
     };
     fetchMarketPrices();
-  }, [errors, combinedData.slipDetailId]);
+  }, [errors]);
   // console.log("slipDetail",slipDetail);
 
   return (

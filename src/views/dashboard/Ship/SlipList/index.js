@@ -216,17 +216,36 @@ const DataTableServerSide = () => {
   const [tableData, setTableData] = useState([]);
   const [data, setData] = useState([]);
 
+  const dataToRender = () => {
+    const limit = currentPage * rowsPerPage;
+    const start = limit - rowsPerPage;
+    // console.log({
+    //   data: data.slice(start, limit),
+    //   default: data,
+    //   limit,
+    //   start,
+    // });
+    return store.data
+      .filter((item) => {
+        const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
+        const categoryMatch = item.shipTypeName
+          .toLowerCase()
+          .includes(searchValue.toLowerCase());
 
+        return  categoryMatch || idMatch ;
+      })
+      .slice(start, limit);
+  };
 
   // ** Function to handle filter
   const handleFilter = (e) => {
-    setSearchValue(e.target.value);
-
+    const query = e.target.value;
+    setSearchValue(query);
     dispatch(
       getData({
         page: currentPage,
         perPage: rowsPerPage,
-        q: e.target.value,
+        q: query,
       })
     );
   };
@@ -245,14 +264,16 @@ const DataTableServerSide = () => {
 
   // ** Function to handle per page
   const handlePerPage = (e) => {
-    dispatch(
-      getData({
-        page: currentPage,
-        perPage: parseInt(e.target.value),
-        q: searchValue,
-      })
-    );
-    setRowsPerPage(parseInt(e.target.value));
+    const perPage = parseInt(e.target.value);
+
+    // dispatch(
+    //   getData({
+    //     page: currentPage,
+    //     perPage: parseInt(e.target.value),
+    //     q: searchValue,
+    //   })
+    // );
+    // setRowsPerPage(parseInt(e.target.value));
   };
 
   useEffect(() => {
@@ -281,7 +302,7 @@ const DataTableServerSide = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Math.ceil(store.total / rowsPerPage);
+    const count = Math.ceil(data.length / rowsPerPage);
 
     return (
       <ReactPaginate
@@ -310,23 +331,7 @@ const DataTableServerSide = () => {
   };
 
   // ** Table data to render
-  const dataToRender = () => {
-    const filters = {
-      q: searchValue,
-    };
-
-    const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0;
-    });
-
-    if (store.data.length > 0) {
-      return store.data;
-    } else if (store.data.length === 0 && isFiltered) {
-      return [];
-    } else {
-      return store.allData.slice(0, rowsPerPage);
-    }
-  };
+  
   const [loading, setLoading] = useState(true); // Add loading state
 
   return (
