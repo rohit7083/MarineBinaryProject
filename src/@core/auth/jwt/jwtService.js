@@ -1,7 +1,7 @@
 import axios from 'axios'
 import jwtDefaultConfig from './jwtDefaultConfig'
 
-axios.defaults.baseURL="http://192.168.29.190:8001"
+axios.defaults.baseURL="http://192.168.29.190:8000"
 
 
 
@@ -127,11 +127,29 @@ export default class JwtService {
   deleteslip(uid) {
     return axios.delete(`${this.jwtConfig.slip}${uid}`)
   }
-  // ==================== Slip assigne
+  // ==================== 4 Steps Slip Member Form
 
   postsVessel(...args) {
     return axios.post(this.jwtConfig.sVessel, ...args)
   }
+  updateVessel(uid,...args) {
+    return axios.put(`${this.jwtConfig.sVessel}${uid}`, ...args)
+  }
+  getVessel(uid="") {
+    return axios.get(this.jwtConfig.sVesselGet+"/"+uid)
+  }
+
+
+
+  postsMember(...args) {
+    return axios.post(this.jwtConfig.sMember, ...args)
+  }
+
+
+
+
+  
+
   getslipAssignment() {
     return axios.get(this.jwtConfig.slipAssignmentGet)
   }

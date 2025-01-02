@@ -1,0 +1,14 @@
+try {
+
+      if(payload.uid){
+        alert("update");
+      }
+      else{
+        // {{debugger}}
+        const {data}=await useJwt.postsVessel(payload);
+        const {uid}=data
+      
+        const {content} = await useJwt.getVessel(uid);
+        reset(...(content || []));
+        
+      }

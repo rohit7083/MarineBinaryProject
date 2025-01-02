@@ -1,132 +1,75 @@
-// // ** React Imports
-// import { useRef, useState } from 'react'
-
-// // ** Custom Components
-// import Wizard from '@components/wizard'
-
-// // ** Steps
-// import Address from './steps-with-validation/Address'
-// import SocialLinks from './steps-with-validation/SocialLinks'
-// import PersonalInfo from './steps-with-validation/PersonalInfo'
-// import AccountDetails from './steps-with-validation/AccountDetails'
-
-// const index = () => {
-
- 
-  
-//   // ** Ref
-//   const ref = useRef(null)
-
-//   // ** State
-//   const [stepper, setStepper] = useState(null)
-//   const steps = [
-//     {
-//       id: 'Vessel-details',
-//       title: 'Vessel details',
-//       subtitle: 'Enter Your Vessels Details.',
-//       content: <AccountDetails  stepper={stepper} />    
-
-//     },
-//     {
-//       id: 'Member-info',
-//       title: 'Member Details',
-//       subtitle: 'Add Member Info',
-//       content: <PersonalInfo 
-//       stepper={stepper} />
-//     },
-//     {
-//       id: 'Payment',
-//       title: 'Payment Details',
-//       subtitle: 'Add Payment',
-//       content: <Address stepper={stepper} />
-//     },
-//     {
-//       id: 'social-links',
-//       title: 'Document Details',
-//       subtitle: 'Add Social Links',
-//       content: <SocialLinks stepper={stepper} />
-//     }
-
-//   ]
-
-//   return (
-//     <div className='horizontal-wizard'>
-//       <Wizard instance={el => setStepper(el)} ref={ref} steps={steps} />
-//     </div>
-//   )
-// }
-
-// export default index
-// ** React Imports
-
-// // ** Custom Components
-import Wizard from '@components/wizard'
-
-// ** Steps
 import React, { useState, useRef } from "react";
 import PaymentDetails from "./steps-with-validation/PaymentDetails";
 import DocumentsDetails from "./steps-with-validation/DocumentsDetails";
 import MemberDetails from "./steps-with-validation/MemberDetails";
 import VesselDetails from "./steps-with-validation/VesselDetails";
 
-const Index = () => {
+// ** Custom Components
+import Wizard from "@components/wizard";
+
+// ** Icons Imports
+import { FileText, User, MapPin, Link } from "react-feather";
+
+const WizardModern = () => {
+  // ** Ref
   const ref = useRef(null);
+
+  // ** State
   const [stepper, setStepper] = useState(null);
-  
-  // Wizard steps configuration
+  const [slipId, setSlipId] = useState(null); // Store slipId state in parent
+
   const steps = [
-    // {
-    //   id: "Vessel-details",
-    //   title: "Vessel Details",
-    //   subtitle: "Enter Your Vessel Details.",
-    //   content: (
-    //     <VesselDetails
-    //       stepper={stepper}
-         
-    //     />
-    //   ),
-    // },
-    // {
-    //   id: "Member-info",
-    //   title: "Member Details",
-    //   subtitle: "Add Member Info",
-    //   content: (
-    //     <MemberDetails
-    //       stepper={stepper}
-    //       combinedData={combinedData}
-    //       setCombinedData={setCombinedData}
-    //     />
-    //   ),
-    // },
     {
-      id: "Payment",
-      title: "Payment Details",
-      subtitle: "Add Payment",
+      id: "Vessel-details",
+      title: "Vessel Details",
+      subtitle: "Enter Your Vessel Details.",
+      icon: <FileText size={18} />,
       content: (
-        <PaymentDetails
+        <VesselDetails
           stepper={stepper}
+          setSlipId={setSlipId}
+          type="wizard-modern"
         />
-      
+      ),
+    },
+    {
+      id: "Member-info",
+      title: "Member Details",
+      subtitle: "Add Member Info",
+      icon: <User size={18} />,
+      content: (
+        <MemberDetails stepper={stepper} slipId={slipId} type="wizard-modern" />
       ),
     },
     // {
-    //   id: "DocumentsDetails",
-    //   title: "Document Details",
-    //   subtitle: "Add Documents",
-    //   content: (
-    //     <DocumentsDetails
-    //       stepper={stepper}
-         
-    //     />
-    //   ),
+    //   id: "Payment",
+    //   title: "Payment Details",
+    //   subtitle: "Add Payment",
+    //   icon: <MapPin size={18} />,
+    //   content: <PaymentDetails stepper={stepper} type="wizard-modern" />,
     // },
+    {
+      id: "DocumentsDetails",
+      title: "Document Details",
+      subtitle: "Add Documents",
+      icon: <Link size={18} />,
+      content: <DocumentsDetails stepper={stepper} type="wizard-modern" />,
+    },
   ];
 
   return (
-    <div className="horizontal-wizard">
-      <Wizard ref={ref} instance={(el) => setStepper(el)} steps={steps} />
+    <div className="modern-horizontal-wizard">
+      <Wizard
+        type="modern-horizontal"
+        ref={ref}
+        steps={steps}
+        options={{
+          linear: false,
+        }}
+        instance={(el) => setStepper(el)}
+      />
     </div>
   );
 };
 
-export default Index;
+export default WizardModern;

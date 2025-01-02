@@ -8,7 +8,7 @@ import { Form, Label, Input, Row, Col, Button, FormFeedback } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-const AccountDetails = ({ stepper }) => {
+const AccountDetails = ({ stepper, setSlipId }) => {
   const MySwal = withReactContent(Swal);
 
   const [VesselData, setVesselData] = useState();
@@ -72,13 +72,14 @@ const AccountDetails = ({ stepper }) => {
         }));
 
         setSlipNames(options);
-        // console.log(" response from useeffect ",slipNames.value);
+        console.log(" response from useeffect ",options);
         // console.log(" response from useeffect ",selectedSlipname.value);
       } catch (error) {
         console.error("Error fetching slip details:", error);
         alert("An unexpected error occurred");
       }
     };
+
     fetchData();
   }, [selectedSlipname]);
 
@@ -100,7 +101,7 @@ const AccountDetails = ({ stepper }) => {
       } else if (key === "length") {
         acc["vesselLength"] = data[key];
       } else if (key === "slipName") {
-        acc["slipId"] = data[key];
+        acc["slipId"] = data[key]; // Set slipId to the value of slipName
       } else {
         acc[key] = data[key]; // Keep other keys as they are
       }
@@ -111,6 +112,8 @@ const AccountDetails = ({ stepper }) => {
       ...renamedData,
       // slipId: selectedSlipname.value,
     };
+    setSlipId(payload.slipId);
+    
     try {
       await useJwt.postsVessel(payload);
       // console.log("API Response:", response);

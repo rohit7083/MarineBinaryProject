@@ -26,7 +26,7 @@ const DataTableServerSide = () => {
   const store = useSelector((state) => state.dataTables);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
   const [tableData, setTableData] = useState([]);
   const [data, setData] = useState([]);

@@ -9,7 +9,12 @@ const DashboardSlipDetails = lazy(()=> import('../../views/dashboard/Ship/SlipDe
 const DashboardSlipList = lazy(()=> import('../../views/dashboard/Ship/SlipList'))
 const DashboardSlipDetailList = lazy(()=> import('../../views/dashboard/Ship/SlipDetailList'))
 const DashboardSlipMemberForm = lazy(()=> import('../../views/dashboard/Ship/SlipMemberForm'))
-const DashboardUI = lazy(()=> import('../../views/dashboard/Ship/UI'))
+const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/SlipMemberList'))
+const DashboardSlipView = lazy(()=> import('../../views/dashboard/Ship/SlipView'))
+const DashboardSlipLogin = lazy(()=> import('../../views/dashboard/Ship/UserAuth/SlipLogin'))
+const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
+const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
+const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
 
 const DashboardRoutes = [
   {
@@ -51,10 +56,40 @@ const DashboardRoutes = [
     path: '/dashboard/SlipMemberForm',
     element: <DashboardSlipMemberForm />
   }, 
+
   {
-    path: '/dashboard/UI',
-    element: <DashboardUI />
-  }, 
+    path: '/dashboard/SlipMemberList',
+    element: <DashboardSlipMemberList />
+  },
+  {
+    path: '/dashboard/SlipView',
+    element: <DashboardSlipView />
+  },
+  {
+    path: '/dashboard/UserAuth/SlipLogin',
+    element: <DashboardSlipLogin />
+  },
+  {
+    path: '/dashboard/UserAuth/Registeruser',
+    element: <DashboardRegisteruser />
+  },
+  {
+    path: '/dashboard/UserAuth/forgetPass',
+    element: <DashboardforgetPass />
+  },
+  {
+      path: '/dashboard/UserAuth/emailOTP',
+      element: <DashboardemailOTP />
+    },
+
+
+
+
+
+  // {
+  //   path: '/dashboard/UI',
+  //   element: <DashboardUI />
+  // }, 
   
 ]
 

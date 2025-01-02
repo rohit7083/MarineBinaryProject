@@ -40,27 +40,38 @@ export default [
       // },
       {
         id: 'SlipList',
-        title: 'SlipList',
+        title: 'Slip Category List',
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipList'
       },
       {
         id: 'SlipDetailList',
-        title: 'SlipDetailList',
+        title: 'Slip List',
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipDetailList'
       },
       {
         id: 'SlipMemberForm',
-        title: 'SlipMemberForm',
+        title: 'Slip Member Form',
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipMemberForm'
-      },
-      {
-        id: 'UI',
-        title: 'UI',
+      },  {
+        id: 'SlipMemberList',
+        title: 'Slip Member List',
         icon: <Circle size={12} />,
-        navLink: '/dashboard/UI'
+        navLink: '/dashboard/SlipMemberList'
+      },
+      // {
+      //   id: 'UI',
+      //   title: 'UI',
+      //   icon: <Circle size={12} />,
+      //   navLink: '/dashboard/UI'
+      // },
+      {
+        id: 'SlipLogin',
+        title: 'Slip Login',
+        icon: <Circle size={12} />,
+        navLink: '/dashboard/UserAuth/SlipLogin'
       },
      
       

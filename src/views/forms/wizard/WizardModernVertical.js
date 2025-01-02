@@ -23,7 +23,7 @@ const WizardModernVertical = () => {
   const steps = [
     {
       id: 'account-details',
-      title: 'Account Details',
+      title: 'Account Details0000',
       subtitle: 'Enter Your Account Details.',
       icon: <FileText size={18} />,
       content: <AccountDetails stepper={stepper} type='modern-vertical' />

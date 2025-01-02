@@ -13,6 +13,7 @@ import {
   Trash,
   Edit2,
   Eye,
+
 } from "react-feather";
 import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
@@ -28,7 +29,6 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-// ** Vars
 const states = [
   "success",
   "danger",
@@ -354,69 +354,27 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Id",
-    minWidth: "150px",
+    minWidth: " 50px",
     selector: (row) => row.id,
   },
 
   {
     sortable: true,
     name: "Slip Name",
-    minWidth: "150px",
-    selector: (row) => row.slipName,
+    minWidth: "50px",
+    selector: (row) => row.shipTypeName,
   },
   {
     sortable: true,
-    name: "Category",
-    minWidth: "150px",
-    selector: (row) => row.category?.shipTypeName || "N/A", // Fallback to "N/A" if shipTypeName is undefined
+    name: "Vessel Type",
+    minWidth: "50px",
+    selector: (row) => row.dimensions,
   },
-  
-  // {
-  //   sortable: true,
-  //   name: "dimensions",
-  //   minWidth: "150px",
-  //   selector: (row) => row.dim,
-  // },
-  {
-    sortable: true,
-    name: "Electric",
-    minWidth: "150px",
-    selector: (row) => (row.electric ? "Yes" : "No"),
-  },
-  {
-    sortable: true,
-    name: "water",
-    minWidth: "150px",
-    selector: (row) => (row.water ? "Yes" : "No"),
-  },
-  {
-    sortable: true,
-    name: "AMPS",
-    minWidth: "150px",
-    selector: (row) => row.amps,
-  },
-  {
-    sortable: true,
-    name: " Add-on",
-    minWidth: "150px",
-    selector: (row) => row.addOn,
-  },
-  {
-    sortable: true,
-    name: "Market Annual Price",
-    minWidth: "150x",
-    selector: (row) => row.marketAnnualPrice,
-  },
-  {
-    sortable: true,
-    name: "Market Monthly Price",
-    minWidth: "190px",
-    selector: (row) => row.marketMonthlyPrice,
-  },
+
   {
     name: "Actions",
     sortable: true,
-    minWidth: "150px",
+    minWidth: "   75px",
     cell: (row) => {
       const [data, setData] = useState([]);
 
@@ -439,7 +397,7 @@ export const serverSideColumns = [
           if (result.value) {
             try {
               // Call delete API
-              const response = await useJwt.deleteslip(uid);
+              const response = await useJwt.deleteslipCatogory(uid);
               if (response.status === 204) {
                 setData((prevData) =>
                   prevData.filter((item) => item.uid !== uid)
@@ -453,9 +411,7 @@ export const serverSideColumns = [
                     confirmButton: "btn btn-success",
                   },
                 });
-                setTimeout(() => {
-                  window.location.reload(true);
-                }, 2000); // 2000ms = 2 seconds
+                window.location.reload(true);
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -474,25 +430,29 @@ export const serverSideColumns = [
         });
       };
 
+      const handle = async () => {
+        console.log(row.shipTypeName);
+        console.log(row.dimensions);
+        console.log("Passing to Link:", row.shipTypeName, row.dimensions);
+      };
 
       return (
         <div className="d-flex">
-          <Link to={{
-            // pathname: `/dashboard/SlipMemberList/${row.uid}`,
-            pathname: `/dashboard/SlipView`,
-          }}>
+          {/* View Button */}
           <span style={{ cursor: "pointer" }}>
-            <Eye size={25}className="me-2"/>
-          </span></Link>
+            <Eye size={25} className="me-2" />
+          </span>
 
-          {/* Edit Button */}
           <Link
             to={{
-              pathname: `/dashboard/SlipDetails/${row.uid}`, // Ensure this is the correct path
-              state: {},
+              pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path
+              state: {
+                shipTypeName: row.shipTypeName, // Pass the shipTypeName
+                dimensions: row.dimensions, // Pass the dimensions (make sure it's an array)
+              },
             }}
           >
-            <span>
+            <span onClick={() => handle(row)}>
               <Edit2 className="me-2" />
             </span>
           </Link>
@@ -517,7 +477,7 @@ export const advSearchColumns = [
     name: "shipTypeName",
     sortable: true,
     minWidth: "200px",
-    selector: (row) => row.slipName,
+    selector: (row) => row.shipTypeName,
   },
   {
     name: "Email",

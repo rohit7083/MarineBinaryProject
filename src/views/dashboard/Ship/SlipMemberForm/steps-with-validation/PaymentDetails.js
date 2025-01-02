@@ -16,12 +16,17 @@ import PersonalInfo from "./MemberDetails";
 import GenrateOtp from "./GenrateOtp";
 import { format } from "date-fns";
 
-const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButtonEnabled  }) => {
+const Address = ({
+  stepper,
+  combinedData,
+  setCombinedData,
+  buttonEnabled,
+  setButtonEnabled,
+}) => {
   const colourOptions = [
     { value: null, label: "select" },
     { value: "Monthly", label: "Monthly" },
     { value: "Annual", label: "Annual" },
-
   ];
 
   const colourOptions2 = [
@@ -97,12 +102,6 @@ const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButt
   const handleOTPVerified = () => {
     setVerifyotp(true); // Set OTP as verified
   };
-
-
-
-
-
-
 
   // Handle changes in the "Paid In" dropdown
   const handlePaidInChange = (option) => {
@@ -412,7 +411,6 @@ const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButt
 
   useEffect(() => {
     // console.log(errors);
-    console.log(combinedData);
 
     // Fetch the API data when the component mounts
     const fetchMarketPrices = async () => {
@@ -430,10 +428,6 @@ const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButt
             marketMonthlyPrice: selectedSlip.marketMonthlyPrice,
           });
         } else {
-          console.error(
-            "No slip found for the given ID:",
-            combinedData.slipDetailId
-          );
         }
         // console.log("selected",selectedSlip.marketAnnualPrice);
       } catch (error) {
@@ -605,106 +599,107 @@ const Address = ({ stepper, combinedData, setCombinedData ,buttonEnabled,setButt
             </Col>
           )}
         </Row>
-{buttonEnabled && (
-      <Row>
-          <Col md="4" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Discount Type <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              control={control}
-              name="discountType"
-              rules={{
-                required: "discountType is required",
-              }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  theme={selectThemeColors}
-                  className="react-select"
-                  classNamePrefix="select"
-                  isClearable
-                  options={colourOptions2}
-                  value={colourOptions2.find(
-                    (option) => option.value === field.value
-                  )} // Match selected option
-                  onChange={(option) => {
-                    field.onChange(option ? option.value : ""); // Pass only the value
-                    handleDisType(option); // Perform additional logic if needed
-                  }}
-                />
+        {buttonEnabled && (
+          <Row>
+            <Col md="4" className="mb-1">
+              <Label className="form-label" for="hf-picker">
+                Discount Type <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                control={control}
+                name="discountType"
+                rules={{
+                  required: "discountType is required",
+                }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    theme={selectThemeColors}
+                    className="react-select"
+                    classNamePrefix="select"
+                    isClearable
+                    options={colourOptions2}
+                    value={colourOptions2.find(
+                      (option) => option.value === field.value
+                    )} // Match selected option
+                    onChange={(option) => {
+                      field.onChange(option ? option.value : ""); // Pass only the value
+                      handleDisType(option); // Perform additional logic if needed
+                    }}
+                  />
+                )}
+              />
+              {errors.discountType && (
+                <FormFeedback>{errors.discountType.message}</FormFeedback>
               )}
-            />
-            {errors.discountType && (
-              <FormFeedback>{errors.discountType.message}</FormFeedback>
-            )}
-          </Col>
+            </Col>
 
-          <Col md="4" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              {discountTypee == "Flat" ? "Discount Amount" : "Discount %"}
-            </Label>
-            <Controller
-              name="discountAmount"
-              rules={{
-                required: "Discount Type is required",
-                validate: validatePositiveNumber,
-              }}
-              control={control}
-              render={({ field }) => (
-                <Input
-                  placeholder={
-                    discountTypee == "Flat"
-                      ? "Enter Discount Amount"
-                      : "Enter Percentage %"
-                  }
-                  invalid={errors.discountAmount && true}
-                  {...field}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    field.onChange(value); // Sync with React Hook Form
-                    if (discountTypee === "Percentage")
-                      handlePercentageChange(e);
-                    if (discountTypee === "Flat") handleFlatChange(e);
-                  }}
-                />
+            <Col md="4" className="mb-1">
+              <Label className="form-label" for="hf-picker">
+                {discountTypee == "Flat" ? "Discount Amount" : "Discount %"}
+              </Label>
+              <Controller
+                name="discountAmount"
+                rules={{
+                  required: "Discount Type is required",
+                  validate: validatePositiveNumber,
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    placeholder={
+                      discountTypee == "Flat"
+                        ? "Enter Discount Amount"
+                        : "Enter Percentage %"
+                    }
+                    invalid={errors.discountAmount && true}
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value); // Sync with React Hook Form
+                      if (discountTypee === "Percentage")
+                        handlePercentageChange(e);
+                      if (discountTypee === "Flat") handleFlatChange(e);
+                    }}
+                  />
+                )}
+              />
+              {errors.discountAmount && (
+                <FormFeedback>{errors.discountAmount.message}</FormFeedback>
               )}
-            />
-            {errors.discountAmount && (
-              <FormFeedback>{errors.discountAmount.message}</FormFeedback>
-            )}
-          </Col>
-          <Col md="4" className="mb-1">
-            <Label className="form-label" for="landmark">
-              Calculate Discount Amount <span style={{ color: "red" }}>*</span>
-            </Label>
+            </Col>
+            <Col md="4" className="mb-1">
+              <Label className="form-label" for="landmark">
+                Calculate Discount Amount{" "}
+                <span style={{ color: "red" }}>*</span>
+              </Label>
 
-            <Controller
-              id="calDisAmount"
-              name="calDisAmount"
-              rules={{
-                required: "Discount Amount is required",
-                validate: validateNumber,
-              }}
-              control={control}
-              render={({ field }) => (
-                <Input
-                  value={getValues("calDisAmount") || ""}
-                  style={{ color: "#000" }}
-                  placeholder="After DisCount value"
-                  readOnly
-                  invalid={errors.calDisAmount && true}
-                  {...field}
-                />
+              <Controller
+                id="calDisAmount"
+                name="calDisAmount"
+                rules={{
+                  required: "Discount Amount is required",
+                  validate: validateNumber,
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    value={getValues("calDisAmount") || ""}
+                    style={{ color: "#000" }}
+                    placeholder="After DisCount value"
+                    readOnly
+                    invalid={errors.calDisAmount && true}
+                    {...field}
+                  />
+                )}
+              />
+
+              {errors.calDisAmount && (
+                <FormFeedback>{errors.calDisAmount.message}</FormFeedback>
               )}
-            />
-
-            {errors.calDisAmount && (
-              <FormFeedback>{errors.calDisAmount.message}</FormFeedback>
-            )}
-          </Col>
-        </Row>
- )}
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="landmark">

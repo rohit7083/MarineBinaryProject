@@ -1,6 +1,8 @@
 // ** Auth Endpoints
 export default {
-  loginEndpoint: '/auth/login',
+  loginEndpoint: '/jwt/login',
+// loginEndpoint: '/login',
+
   registerEndpoint: '/jwt/register',
   refreshEndpoint: '/jwt/refresh-token',
   logoutEndpoint: '/jwt/logout',
@@ -17,6 +19,10 @@ export default {
   slipGet:"/slip",
 
   sVessel:"/sVessel/",
+  sVesselGet:"/sVessel",
+  sMember:"/sMember/",
+
+
   slipAssignmentGet:"/slipAssignmentGet",
   postOTP:"/slipAssignment/generate",
   verifyOTP:"/slipAssignment/verify/",

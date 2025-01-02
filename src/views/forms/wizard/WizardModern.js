@@ -23,7 +23,7 @@ const WizardModern = () => {
   const steps = [
     {
       id: 'account-details',
-      title: 'Account Details',
+      title: 'Account Details000',
       subtitle: 'Enter Your Account Details.',
       icon: <FileText size={18} />,
       content: <AccountDetails stepper={stepper} type='wizard-modern' />

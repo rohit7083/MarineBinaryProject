@@ -354,27 +354,27 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Id",
-    minWidth: "150px",
+    minWidth: " 50px",
     selector: (row) => row.id,
   },
 
   {
     sortable: true,
     name: "Slip Category",
-    minWidth: "150px",
+    minWidth: "50px",
     selector: (row) => row.shipTypeName,
   },
   {
     sortable: true,
     name: "Dimentions",
-    minWidth: "150px",
+    minWidth: "50px",
     selector: (row) => row.dimensions,
   },
 
   {
     name: "Actions",
     sortable: true,
-    minWidth: "175px",
+    minWidth: "   75px",
     cell: (row) => {
       const [data, setData] = useState([]);
 
