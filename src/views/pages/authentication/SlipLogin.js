@@ -1,4 +1,6 @@
-// ** React Imports
+
+//   // ============================ Original Code ======================================
+// // ** React Imports
 // import { useContext } from 'react'
 // import { Link, useNavigate } from 'react-router-dom'
 
@@ -10,7 +12,7 @@
 // import toast from 'react-hot-toast'
 // import { useDispatch } from 'react-redux'
 // import { useForm, Controller } from 'react-hook-form'
-// import { Facebook, Twitter, Mail, GitHub, HelpCircle, Coffee, X } from 'react-feather'
+// import { Facebook, Twitter, Mail, GitHub, X } from 'react-feather'
 
 // // ** Actions
 // import { handleLogin } from '@store/authentication'
@@ -36,8 +38,7 @@
 //   Button,
 //   CardText,
 //   CardTitle,
-//   FormFeedback,
-//   UncontrolledTooltip
+//   FormFeedback
 // } from 'reactstrap'
 
 // // ** Illustrations Imports
@@ -47,27 +48,12 @@
 // // ** Styles
 // import '@styles/react/pages/page-authentication.scss'
 
-// const ToastContent = ({ t, name, role }) => {
-//   return (
-//     <div className='d-flex'>
-//       <div className='me-1'>
-//         <Avatar size='sm' color='success' icon={<Coffee size={12} />} />
-//       </div>
-//       <div className='d-flex flex-column'>
-//         <div className='d-flex justify-content-between'>
-//           <h6>{name}</h6>
-//           <X size={12} className='cursor-pointer' onClick={() => toast.dismiss(t.id)} />
-//         </div>
-//         <span>You have successfully logged in as an {role} user to Vuexy. Now you can start to explore. Enjoy!</span>
-//       </div>
-//     </div>
-//   )
-// }
-
+// // Default Form Values
 // const defaultValues = {
-//   password: 'sneha@123',
-//   loginEmail: 'sneha@binarysoftech.co.in'
-// }
+//     password: 'admin',
+//     loginEmail: 'admin@demo.com'
+//   }
+  
 
 // const Login = () => {
 //   // ** Hooks
@@ -75,150 +61,180 @@
 //   const dispatch = useDispatch()
 //   const navigate = useNavigate()
 //   const ability = useContext(AbilityContext)
+
+//   // ** React Hook Form Setup
 //   const {
 //     control,
-//     setError,
 //     handleSubmit,
 //     formState: { errors }
-//   } = useForm({ defaultValues })
+//   } = useForm({
+//     defaultValues
+//   })
 
 //   const source = skin === 'dark' ? illustrationsDark : illustrationsLight
 
-//   const onSubmit = (data) => {
-//     if (Object.values(data).every(field => field.length > 0)) {
-//       useJwt
-//         .login({ emailId: data.loginEmail, password: data.password })
-//         .then(res => {
-//           // debugger
-//           const data = { ...{...res.data.content.profile,ability:[
-//             {
-//               action: 'manage',
-//               subject: 'all'
-//             }
-//           ]}, accessToken: res.data.content.access, refreshToken: res.data.content.refresh }
-//           dispatch(handleLogin(data))
-//           ability.update(  [
-//             {
-//               action: 'manage',
-//               subject: 'all'
-//             }
-//           ])
-//           // navigate(getHomeRouteForLoggedInUser(data.role))
-//           navigate('/dashboard/SlipList'); 
-//                    toast(t => (
-//             <ToastContent t={t} role={data.role || '  admin'} name={data.fullName || data.username || 'John Doe'} />
-//           ))
+//   // Form Validation logic
+//   const validateEmail = value => {
+//     return value.length === 0 ? "Email is required" : !/\S+@\S+\.\S+/.test(value) ? "Invalid email format" : true
+//   }
+
+//   const validatePassword = value => {
+//     return value.length === 0 ? "Password is required" :
+//      value.length < 3 ?
+//       "Password must be at least 6 characters" :
+//        true
+//   }
+
+// //   const onSubmit = async(data) => {
+// //     console.log("Submit data", data)
+
+// //     try {
+// //       // await useJwt.login(data);
+
+// //     } catch (error) {
+// //       console.error("Error logging in:", error)
+// //       toast.error("An unexpected error occurred")
+      
+// //     }
+// //   }
+
+
+// const onSubmit = data => {
+//   if (Object.values(data).every(field => field.length > 0)) {
+//     useJwt
+//       .login({ email: data.loginEmail, password: data.password })
+//       .then(res => {
+//         const data = { ...res.data.userData, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken }
+//         dispatch(handleLogin(data))
+//         ability.update(res.data.userData.ability)
+//         navigate(getHomeRouteForLoggedInUser(data.role))
+//         toast(t => (
+//           <ToastContent t={t} role={data.role || 'admin'} name={data.fullName || data.username || 'John Doe'} />
+//         ))
+//       })
+//       .catch(err => setError('loginEmail', {
+//           type: 'manual',
+//           message: err.response.data.error
 //         })
-//         .catch(err => setError('loginEmail', {
-//             type: 'manual',
-//             message: err.response.data.error
-//           })
-//         )
-//     } else {
-//       for (const key in data) {
-//         if (data[key].length === 0) {
-//           setError(key, {
-//             type: 'manual'
-//           })
-//         }
+//       )
+//       console.log("Data", data);
+      
+//   } else {
+//     for (const key in data) {
+//       if (data[key].length === 0) {
+//         setError(key, {
+//           type: 'manual'
+//         })
 //       }
 //     }
 //   }
-
-
+// }
 //   return (
 //     <div className='auth-wrapper auth-cover'>
-//     <Row className='auth-inner m-0'>
-//       <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
-//         <svg viewBox='0 0 139 95' version='1.1' height='28'>
-//           {/* SVG Logo here */}
-//         </svg>
-//         <h2 className='brand-text text-primary ms-1'>Slip Login</h2>
-//       </Link>
-//       <Col className='d-flex align-items-center auth-bg px-2 p-lg-5' lg='4' sm='12'>
-//         <Col className='px-xl-2 mx-auto' sm='8' md='6' lg='12'>
-//           <CardTitle tag='h2' className='fw-bold mb-1'>
-//             Login 👋
-//           </CardTitle>
-//           <CardText className='mb-2'></CardText>
-//           <Form className='auth-login-form mt-2' onSubmit={handleSubmit(onSubmit)}>
-//             <div className='mb-1'>
-//               <Label className='form-label' for='login-email'>
-//                 Email
-//               </Label>
-//               <Controller
-//                 id='loginEmail'
-//                 name='loginEmail'
-//                 control={control}
-//                 rules={{
-//                   required: 'Email is required',
-//                   pattern: {
-//                     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-//                     message: 'Invalid email address',
-//                   }
-//                 }}
-//                 render={({ field }) => (
-//                   <Input
-//                     autoFocus
-//                     type='email'
-//                     placeholder='john@example.com'
-//                     invalid={errors.loginEmail && true}
-//                     {...field}
-//                   />
-//                 )}
-//               />
-//               {errors.loginEmail && <FormFeedback>{errors.loginEmail.message}</FormFeedback>}
-//             </div>
-//             <div className='mb-1'>
-//               <div className='d-flex justify-content-between'>
-//                 <Label className='form-label' for='login-password'>
-//                   Password
-//                 </Label>
-//                 <Link to='/forgot-password'>
-//                   <small>Forgot Password?</small>
-//                 </Link>
-//               </div>
-//               <Controller
-//                 id='password'
-//                 name='password'
-//                 control={control}
-//                 rules={{
-//                   required: 'Password is required',
-//                   minLength: {
-//                     value: 6,
-//                     message: 'Password must be at least 6 characters',
-//                   }
-//                 }}
-//                 render={({ field }) => (
-//                   <InputPasswordToggle
-//                     className='input-group-merge'
-//                     invalid={errors.password && true}
-//                     {...field}
-//                   />
-//                 )}
-//               />
-//               {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
-//             </div>
-//             <div className='form-check mb-1'>
-//               <Input type='checkbox' id='remember-me' />
-//               <Label className='form-check-label' for='remember-me'>
-//                 Remember Me
-//               </Label>
-//             </div>
-//             <Button type='submit' color='primary' block>
-//               Sign in
-//             </Button>
-//           </Form>
-//           <p className='text-center mt-2'>
-//             <span className='me-25'>New on our platform?</span>
-//             <Link to='/register'>
-//               <span>Create an account</span>
-//             </Link>
-//           </p>
+//       <Row className='auth-inner m-0'>
+//         <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
+//           <svg viewBox='0 0 139 95' version='1.1' height='28'>
+//             {/* SVG content */}
+//           </svg>
+//           <h2 className='brand-text text-primary ms-1'>Vuexy</h2>
+//         </Link>
+//         <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
+//           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
+//             <img className='img-fluid' src={source} alt='Login Cover' />
+//           </div>
 //         </Col>
-//       </Col>
-//     </Row>
-//   </div>
+//         <Col className='d-flex align-items-center auth-bg px-2 p-lg-5' lg='4' sm='12'>
+//           <Col className='px-xl-2 mx-auto' sm='8' md='6' lg='12'>
+//             <CardTitle tag='h2' className='fw-bold mb-1'>
+//               Login 👋
+//             </CardTitle>
+//             <CardText className='mb-2'>Please sign-in to your account and start the adventure</CardText>
+
+//             <form className='auth-login-form mt-2' onSubmit={handleSubmit(onSubmit)}>
+//               <div className='mb-1'>
+//                 <Label className='form-label' for='login-email'>
+//                   Email
+//                 </Label>
+//                 <Controller
+//                   id='loginEmail'
+//                   name='loginEmail'
+//                   control={control}
+//                   rules={{ validate: validateEmail }}
+//                   render={({ field }) => (
+//                     <Input
+//                       autoFocus
+//                       type='email'
+//                       placeholder='Enter Email'
+//                       invalid={errors.loginEmail}
+//                       {...field}
+//                     />
+//                   )}
+//                 />
+//                 {errors.loginEmail && <FormFeedback>{errors.loginEmail.message}</FormFeedback>}
+//               </div>
+//               <div className='mb-1'>
+//                 <div className='d-flex justify-content-between'>
+//                   <Label className='form-label' for='login-password'>
+//                     Password
+//                   </Label>
+//                   <Link to='/SlipEmailForReset'>
+//                     <small>Forgot Password?</small>
+//                   </Link>
+//                 </div>
+//                 <Controller
+//                   id='password'
+//                   name='password'
+//                   control={control}
+//                   rules={{ validate: validatePassword }}
+//                   render={({ field }) => (
+//                     <InputPasswordToggle className='input-group-merge' invalid={errors.password} {...field} />
+//                   )}
+//                 />
+//                 {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+//               </div>
+//               <div className='form-check mb-1'>
+//                 <Input type='checkbox' id='remember-me' />
+//                 <Label className='form-check-label' for='remember-me'>
+//                   Remember Me
+//                 </Label>
+//               </div>
+//               <Link to='/SlipEmailOTP'>
+// {/* <Link to='../dashboard/ecommerce'> */}
+//               <Button type='submit' color='primary' block>
+//                 Sign in
+//               </Button>
+//               </Link>
+
+//             </form>
+//             <p className='text-center mt-2'>
+//               <span className='me-25'>New on our platform?</span>
+//               <Link to='/SlipRegister'>
+//                 <span>Create an account</span>
+//               </Link>
+//             </p>
+//             <div className='divider my-2'>
+//               <div className='divider-text'>or</div>
+//             </div>
+//             <div className='auth-footer-btn d-flex justify-content-center'>
+//               <Button color='facebook'>
+//                 <Link to=''>
+//                   <Facebook size={14} />
+//                 </Link>
+//               </Button>
+//               <Button color='twitter'>
+//                 <Twitter size={14} />
+//               </Button>
+//               <Button color='google'>
+//                 <Mail size={14} />
+//               </Button>
+//               <Button className='me-0' color='github'>
+//                 <GitHub size={14} />
+//               </Button>
+//             </div>
+//           </Col>
+//         </Col>
+//       </Row>
+//     </div>
 //   )
 // }
 
@@ -226,8 +242,13 @@
 
 
 
+
+// ===========================================
+
+
+
 // ** React Imports
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 // ** Custom Hooks
@@ -330,6 +351,8 @@ const Login = () => {
             message: err.response.data.error
           })
         )
+        console.log("Data", data);
+        
     } else {
       for (const key in data) {
         if (data[key].length === 0) {
@@ -341,6 +364,7 @@ const Login = () => {
     }
   }
 
+  
   return (
     <div className='auth-wrapper auth-cover'>
       <Row className='auth-inner m-0'>
@@ -393,7 +417,7 @@ const Login = () => {
               </g>
             </g>
           </svg>
-          <h2 className='brand-text text-primary ms-1'>Vuexy</h2>
+          <h2 className='brand-text text-primary ms-1'>Duplicate Login</h2>
         </Link>
         <Col className='d-none d-lg-flex align-items-center p-5' lg='8' sm='12'>
           <div className='w-100 d-lg-flex align-items-center justify-content-center px-5'>
@@ -403,7 +427,7 @@ const Login = () => {
         <Col className='d-flex align-items-center auth-bg px-2 p-lg-5' lg='4' sm='12'>
           <Col className='px-xl-2 mx-auto' sm='8' md='6' lg='12'>
             <CardTitle tag='h2' className='fw-bold mb-1'>
-              Welcome to Vuexy! 👋
+            Duplicate Login 👋
             </CardTitle>
             <CardText className='mb-2'>Please sign-in to your account and start the adventure</CardText>
             <Alert color='primary'>

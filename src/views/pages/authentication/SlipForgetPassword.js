@@ -138,7 +138,7 @@ const ResetPasswordBasic = () => {
 
             <p className='text-center mt-2'>
               <span>Didn’t get the code?</span>{' '}
-              <a href='/dashboard/UserAuth/emailOTP' onClick={(e) => e.preventDefault()}>
+              <a href='/SlipEmailOTP' onClick={(e) => e.preventDefault()}>
                 Resend
               </a>{' '}
               <span>or</span>{' '}
@@ -147,7 +147,7 @@ const ResetPasswordBasic = () => {
               </a>
             </p>
             <p className='text-center mt-2'>
-              <Link to='/dashboard/UserAuth/SlipLogin'>
+              <Link to='/SlipLogin'>
                 <ChevronLeft className='rotate-rtl me-25' size={14} />
                 <span className='align-middle'>Back to login</span>
               </Link>

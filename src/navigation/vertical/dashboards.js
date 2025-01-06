@@ -61,18 +61,19 @@ export default [
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipMemberList'
       },
+      
       // {
       //   id: 'UI',
       //   title: 'UI',
       //   icon: <Circle size={12} />,
       //   navLink: '/dashboard/UI'
       // },
-      {
-        id: 'SlipLogin',
-        title: 'Slip Login',
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/UserAuth/SlipLogin'
-      },
+      // {
+      //   id: 'SlipLogin',
+      //   title: 'Slip Login',
+      //   icon: <Circle size={12} />,
+      //   navLink: '/dashboard/UserAuth/SlipLogin'
+      // },
      
       
     ]

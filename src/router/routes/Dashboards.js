@@ -11,12 +11,15 @@ const DashboardSlipDetailList = lazy(()=> import('../../views/dashboard/Ship/Sli
 const DashboardSlipMemberForm = lazy(()=> import('../../views/dashboard/Ship/SlipMemberForm'))
 const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/SlipMemberList'))
 const DashboardSlipView = lazy(()=> import('../../views/dashboard/Ship/SlipView'))
-const DashboardSlipLogin = lazy(()=> import('../../views/dashboard/Ship/UserAuth/SlipLogin'))
-const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
-const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
-const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
-
+// const DashboardSlipLogin = lazy(()=> import('../../views/dashboard/Ship/UserAuth/SlipLogin'))
+// const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
+// const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
+// const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
+// const DashboardemailForReset= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailForReset'))
 const DashboardRoutes = [
+ 
+  
+ 
   {
     path: '/dashboard/analytics',
     element: <DashboardAnalytics />
@@ -65,25 +68,28 @@ const DashboardRoutes = [
     path: '/dashboard/SlipView',
     element: <DashboardSlipView />
   },
-  {
-    path: '/dashboard/UserAuth/SlipLogin',
-    element: <DashboardSlipLogin />
-  },
-  {
-    path: '/dashboard/UserAuth/Registeruser',
-    element: <DashboardRegisteruser />
-  },
-  {
-    path: '/dashboard/UserAuth/forgetPass',
-    element: <DashboardforgetPass />
-  },
-  {
-      path: '/dashboard/UserAuth/emailOTP',
-      element: <DashboardemailOTP />
-    },
+  // {
+  //   path: '/dashboard/UserAuth/SlipLogin',
+  //   element: <DashboardSlipLogin />
+  // },
+  // {
+  //   path: '/dashboard/UserAuth/Registeruser',
+  //   element: <DashboardRegisteruser />
+  // },
+  // {
+  //   path: '/dashboard/UserAuth/forgetPass',
+  //   element: <DashboardforgetPass />
+  // },
+  // {
+  //     path: '/dashboard/UserAuth/emailOTP',
+  //     element: <DashboardemailOTP />
+  //   },
 
 
-
+    // {
+    //   path: '/dashboard/UserAuth/emailForReset',
+    //   element: <DashboardemailForReset />
+    // },
 
 
   // {

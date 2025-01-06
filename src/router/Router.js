@@ -18,7 +18,8 @@ import { getRoutes } from './routes'
 
 // ** Components
 const Error = lazy(() => import('../views/pages/misc/Error'))
-const Login = lazy(() => import('../views/pages/authentication/Login'))
+// const Login = lazy(() => import('../views/pages/authentication/Login'))
+const SlipLogin= lazy(() => import('../views/pages/authentication/SlipLogin'))
 const NotAuthorized = lazy(() => import('../views/pages/misc/NotAuthorized'))
 
 const Router = () => {
@@ -31,7 +32,7 @@ const Router = () => {
     if (user) {
       return getHomeRouteForLoggedInUser(user.role)
     } else {
-      return '/login'
+      return '/SlipLogin'
     }
   }
 
@@ -42,10 +43,11 @@ const Router = () => {
       element: <Navigate replace to={getHomeRoute()} />
     },
     {
-      path: '/login',
+      path: '/SlipLogin',
       element: <BlankLayout />,
-      children: [{ path: '/login', element: <Login /> }]
+      children: [{ path: '/SlipLogin', element: <SlipLogin /> }]
     },
+   
     {
       path: '/auth/not-auth',
       element: <BlankLayout />,

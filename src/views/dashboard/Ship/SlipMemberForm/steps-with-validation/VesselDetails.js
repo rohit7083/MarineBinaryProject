@@ -31,6 +31,7 @@ const AccountDetails = ({ stepper, setSlipId }) => {
   //     [name]: value,
   //   });
   // };
+  
   const handleSlipChange = (option) => {
     setSelectedSlipname(option);
     setDimensions(option?.dimensions || {}); // Update dimensions based on selected slip

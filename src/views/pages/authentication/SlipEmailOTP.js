@@ -1,19 +1,13 @@
 // ** React Imports
 import { Link } from 'react-router-dom'
 
-// ** Icons Imports
-import { ChevronLeft } from 'react-feather'
-
-// ** Custom Components
-import InputPassword from '@components/input-password-toggle'
-
 // ** Reactstrap Imports
-import { Card, CardBody, CardTitle, CardText, Form, Label, Button } from 'reactstrap'
+import { Card, CardBody, CardTitle, CardText, Button, Form, Input } from 'reactstrap'
 
 // ** Styles
 import '@styles/react/pages/page-authentication.scss'
 
-const ResetPasswordBasic = () => {
+const TwoStepsBasic = () => {
   return (
     <div className='auth-wrapper auth-basic px-2'>
       <div className='auth-inner my-2'>
@@ -70,32 +64,36 @@ const ResetPasswordBasic = () => {
               </svg>
               <h2 className='brand-text text-primary ms-1'>Vuexy</h2>
             </Link>
-            <CardTitle tag='h4' className='mb-1'>
-              Reset Password 🔒
+            <CardTitle tag='h2' className='fw-bolder mb-1'>
+              Verify OTP For Login 💬
             </CardTitle>
-            <CardText className='mb-2'>Your new password must be different from previously used passwords</CardText>
-            <Form className='auth-reset-password-form mt-2' onSubmit={e => e.preventDefault()}>
-              <div className='mb-1'>
-                <Label className='form-label' for='new-password'>
-                  New Password
-                </Label>
-                <InputPassword className='input-group-merge' id='new-password' autoFocus />
+            <CardText className='mb-75'>
+              We sent a verification code to your Register Email. Enter the code from the Email in the field below.
+            </CardText>
+            <CardText className='fw-bolder mb-2'>******hit@gmail.com</CardText>
+            <Form className='mt-2' onSubmit={e => e.preventDefault()}>
+              <h6>Type your 6 digit security code</h6>
+              <div className='auth-input-wrapper d-flex align-items-center justify-content-between'>
+                <Input autoFocus maxLength='1' className='auth-input height-50 text-center numeral-mask mx-25 mb-1' />
+                <Input maxLength='1' className='auth-input height-50 text-center numeral-mask mx-25 mb-1' />
+                <Input maxLength='1' className='auth-input height-50 text-center numeral-mask mx-25 mb-1' />
+                <Input maxLength='1' className='auth-input height-50 text-center numeral-mask mx-25 mb-1' />
+                <Input maxLength='1' className='auth-input height-50 text-center numeral-mask mx-25 mb-1' />
+                <Input maxLength='1' className='auth-input height-50 text-center numeral-mask mx-25 mb-1' />
               </div>
-              <div className='mb-1'>
-                <Label className='form-label' for='confirm-password'>
-                  Confirm Password
-                </Label>
-                <InputPassword className='input-group-merge' id='confirm-password' />
-              </div>
-              <Button color='primary' block>
-                Set New Password
-              </Button>
             </Form>
+            <Button block tag={Link} to='/' color='primary'>
+              Login
+            </Button>
             <p className='text-center mt-2'>
-              <Link to='/pages/login-basic'>
-                <ChevronLeft className='rotate-rtl me-25' size={14} />
-                <span className='align-middle'>Back to login</span>
-              </Link>
+              <span>Didn’t get the code?</span>{' '}
+              <a href='' onClick={e => e.preventDefault()}>
+                Resend
+              </a>{' '}
+              <span>or</span>{' '}
+              <a href='/' onClick={e => e.preventDefault()}>
+                Call us
+              </a>
             </p>
           </CardBody>
         </Card>
@@ -104,4 +102,4 @@ const ResetPasswordBasic = () => {
   )
 }
 
-export default ResetPasswordBasic
+export default TwoStepsBasic
