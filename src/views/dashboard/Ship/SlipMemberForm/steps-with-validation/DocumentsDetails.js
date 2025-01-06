@@ -281,7 +281,9 @@ import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Row, Col, Label, Card, CardBody, CardTitle } from 'reactstrap';
+import { ArrowLeft, ArrowRight } from "react-feather";
+
+import { Button, Row, Col, Label, Card, CardBody, CardTitle,Form  } from 'reactstrap';
 import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Validation Schema
@@ -324,7 +326,7 @@ const schema = yup.object().shape({
     }),
 });
 
-const FileUploadForm = () => {
+const FileUploadForm = ({ stepper}) => {
   const [uploadedFiles, setUploadedFiles] = useState({
     contractFile: null,
     identityDocumentFile: null,
@@ -452,7 +454,7 @@ const FileUploadForm = () => {
 
   return (
     <Fragment>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardBody>
             <CardTitle tag="h5">Upload Documents</CardTitle>
@@ -464,12 +466,33 @@ const FileUploadForm = () => {
             </Row>
           </CardBody>
         </Card>
-        <div className="d-flex justify-content-end mt-3">
-          <Button type="submit" color="primary">
-            Submit
+        <div className="d-flex justify-content-between">
+        <Button
+            type="button"
+            color="primary"
+            className="btn-prev"
+            onClick={() => stepper.previous()}
+          >
+            <ArrowLeft
+              size={14}
+              className="align-middle me-sm-25 me-0"
+            ></ArrowLeft>
+            <span className="align-middle d-sm-inline-block d-none">
+              Previous
+            </span>
           </Button>
-        </div>
-      </form>
+
+          {/* Submit and Reset Button Group */}
+           
+
+            <Button type="submit" color="primary" className="btn-next">
+              <span className="align-middle d-sm-inline-block d-none">
+                Next
+              </span>
+              <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+            </Button>
+          </div>
+      </Form>
     </Fragment>
   );
 };

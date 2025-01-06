@@ -87,7 +87,8 @@ const AccountDetails = ({ stepper, setSlipId }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors }, reset
+    reset,
+    formState: { errors }
   } = useForm({
     resolver: yupResolver(getValidationSchema(dimensions)),
     // defaultValues
@@ -147,10 +148,6 @@ const AccountDetails = ({ stepper, setSlipId }) => {
     // console.log("vessel dimensions ", payload);
   };
 
-  const resetForm = () => {
-    reset();
-    
-  };
 
   return (
     <Fragment>
@@ -260,22 +257,24 @@ const AccountDetails = ({ stepper, setSlipId }) => {
             </Col>
           ))}
         </Row>
-        <div className="d-flex justify-content-end gap-3">
-          <Button type="reset" color="primary" className="btn-next">
-            <span
-              className="align-middle d-sm-inline-block d-none"
-              onClick={resetForm}
-            >
-              Reset
-            </span>
-          </Button>
+        <div className="d-flex justify-content-end">
+          
 
-          <Button type="submit" color="primary" className="btn-next">
-            <span className="align-middle d-sm-inline-block d-none">
-              Submit
-            </span>
-            <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
-          </Button>
+          {/* Submit and Reset Button Group */}
+          <div className="d-flex">
+            <Button type="reset" color="primary" onClick={()=>reset()} className="btn-reset me-2">
+              <span className="align-middle d-sm-inline-block d-none">
+                Reset
+              </span>
+            </Button>
+
+            <Button type="submit" color="primary" className="btn-next">
+              <span className="align-middle d-sm-inline-block d-none">
+                Next
+              </span>
+              <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+            </Button>
+          </div>
         </div>
       </form>
     </Fragment>

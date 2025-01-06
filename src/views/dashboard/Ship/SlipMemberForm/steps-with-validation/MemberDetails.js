@@ -91,14 +91,16 @@ const PersonalInfo = ({ stepper, slipId }) => {
   const {
     control,
     handleSubmit,
+    watch,
+    reset,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(SignupSchema),
   });
 
-  const handleUpdateVesselDetails = async () => {
-   
-}
+  
+
 
   const onSubmit = async (data) => {
     const payload = {
@@ -139,10 +141,12 @@ const PersonalInfo = ({ stepper, slipId }) => {
     // console.log("vessel dimensions ", payload);
   };
 
-  // useEffect(() => {
-  //   console.log("c Data:", slipId);
+  useEffect(() => {
+    // const allValues = watch();
+    // const values = getValues()
+    // console.log(values);
 
-  // }, [slipId]);
+  }, );
 
   return (
     <Fragment>
@@ -444,14 +448,16 @@ const PersonalInfo = ({ stepper, slipId }) => {
         </Row>
         {/* Add other fields similarly */}
         <div className="d-flex justify-content-between">
-          <Button
+        <Button
             type="button"
             color="primary"
             className="btn-prev"
-            // onClick={() => stepper.previous()}
-            onClick={handleUpdateVesselDetails}
+            onClick={() => stepper.previous()}
           >
-            <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
+            <ArrowLeft
+              size={14}
+              className="align-middle me-sm-25 me-0"
+            ></ArrowLeft>
             <span className="align-middle d-sm-inline-block d-none">
               Previous
             </span>
@@ -459,7 +465,7 @@ const PersonalInfo = ({ stepper, slipId }) => {
 
           {/* Submit and Reset Button Group */}
           <div className="d-flex">
-            <Button type="reset" color="primary" className="btn-reset me-2">
+            <Button type="reset" color="primary" onClick={()=>reset()} className="btn-reset me-2">
               <span className="align-middle d-sm-inline-block d-none">
                 Reset
               </span>

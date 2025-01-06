@@ -41,13 +41,13 @@ const WizardModern = () => {
         <MemberDetails stepper={stepper} slipId={slipId} type="wizard-modern" />
       ),
     },
-    // {
-    //   id: "Payment",
-    //   title: "Payment Details",
-    //   subtitle: "Add Payment",
-    //   icon: <MapPin size={18} />,
-    //   content: <PaymentDetails stepper={stepper} type="wizard-modern" />,
-    // },
+    {
+      id: "Payment",
+      title: "Payment Details",
+      subtitle: "Add Payment",
+      icon: <MapPin size={18} />,
+      content: <PaymentDetails stepper={stepper} type="wizard-modern" />,
+    },
     {
       id: "DocumentsDetails",
       title: "Document Details",

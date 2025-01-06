@@ -1,0 +1,74 @@
+import { useState } from 'react';
+import { Card, CardHeader } from 'reactstrap';  // Adjust imports as needed
+import { Edit2, ChevronDown } from 'react-feather';  // Correct named imports
+import DataTable from 'react-data-table-component';  // Ensure you have this imported
+import SlipDetails from '../../SlipDetails/index';  // Ensure SlipDetails is imported
+
+const UserProjectsList = () => {
+  const [edit, setEdit] = useState(false);
+
+  const handleEdit = () => {
+    alert("edit clicked");
+    setEdit(true);
+  };
+
+  // Define the columns
+  const columns = [
+    {
+      name: 'Project Name',
+      selector: row => row.projectName,
+      sortable: true,
+    },
+    {
+      name: 'Status',
+      selector: row => row.status,
+      sortable: true,
+    },
+    {
+      name: 'Start Date',
+      selector: row => row.startDate,
+      sortable: true,
+    },
+    // Add more columns as needed
+  ];
+
+  // Define the projects data
+  const projectsArr = [
+    {
+      projectName: 'Project A',
+      status: 'Completed',
+      startDate: '2024-01-01',
+    },
+    {
+      projectName: 'Project B',
+      status: 'In Progress',
+      startDate: '2024-02-01',
+    },
+    // Add more projects as needed
+  ];
+
+  return (
+    <Card>
+      <CardHeader tag="h4" className="d-flex justify-content-between align-items-center">
+        <span>Slip Details View</span>
+        <Edit2 size={20} style={{ cursor: 'pointer' }} onClick={handleEdit} />
+      </CardHeader>
+      <div className="react-dataTable user-view-account-projects">
+        {edit ? 
+          <SlipDetails /> : 
+          <DataTable
+            noHeader
+            responsive
+            columns={columns}  // Ensure columns is defined
+            data={projectsArr}  // Ensure projectsArr is defined
+            className="react-dataTable"
+            sortIcon={<ChevronDown size={10} />}
+          />
+        }
+      </div>
+    </Card>
+  );
+};
+
+export default UserProjectsList;
+

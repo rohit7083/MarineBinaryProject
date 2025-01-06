@@ -102,6 +102,8 @@ export default class JwtService {
     return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
 
+  // ==================== Slip Category 
+
   postslipCatogory(...args) {
     return axios.post(this.jwtConfig.slipCategory, ...args);
   }
@@ -129,7 +131,7 @@ export default class JwtService {
   deleteslip(uid) {
     return axios.delete(`${this.jwtConfig.slip}${uid}`);
   }
-  // ==================== 4 Steps Slip Member Form
+  // ==================== Slip Vessel 
 
   postsVessel(...args) {
     return axios.post(this.jwtConfig.sVessel, ...args);
@@ -140,22 +142,29 @@ export default class JwtService {
   getVessel(uid = "") {
     return axios.get(this.jwtConfig.sVesselGet + "/" + uid);
   }
+  // ==================== Slip Member 
 
   postsMember(...args) {
     return axios.post(this.jwtConfig.sMember, ...args);
   }
 
-  // =================== Register User
+  // ==================== Slip Payment
+
+
+  // =================== Register 
 
   registerUser(...args) {
     return axios.post(this.jwtConfig.registerUser, ...args);
   }
+
+  // =================== Login 
+
   login(...args) {
     // return axios.post(this.jwtConfig.login, ...args);
   return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
 
-  // ==========================
+  // ===================
 
   getslipAssignment() {
     return axios.get(this.jwtConfig.slipAssignmentGet);

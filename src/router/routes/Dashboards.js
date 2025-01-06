@@ -10,12 +10,12 @@ const DashboardSlipList = lazy(()=> import('../../views/dashboard/Ship/SlipList'
 const DashboardSlipDetailList = lazy(()=> import('../../views/dashboard/Ship/SlipDetailList'))
 const DashboardSlipMemberForm = lazy(()=> import('../../views/dashboard/Ship/SlipMemberForm'))
 const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/SlipMemberList'))
-const DashboardSlipView = lazy(()=> import('../../views/dashboard/Ship/SlipView'))
 // const DashboardSlipLogin = lazy(()=> import('../../views/dashboard/Ship/UserAuth/SlipLogin'))
 // const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
 // const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
 // const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
 // const DashboardemailForReset= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailForReset'))
+const DashboardSlipView=lazy(()=> import('../../views/dashboard/Ship/SlipDetails/SlipView'))
 const DashboardRoutes = [
  
   
@@ -86,10 +86,12 @@ const DashboardRoutes = [
   //   },
 
 
-    // {
-    //   path: '/dashboard/UserAuth/emailForReset',
-    //   element: <DashboardemailForReset />
-    // },
+   
+
+     {
+      path: '/dashboard/SlipView',
+      element: <DashboardSlipView />
+    },
 
 
   // {

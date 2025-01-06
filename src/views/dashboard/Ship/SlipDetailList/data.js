@@ -477,13 +477,25 @@ export const serverSideColumns = [
 
       return (
         <div className="d-flex">
-          <Link to={{
+          {/* <Link to={{
             // pathname: `/dashboard/SlipMemberList/${row.uid}`,
             pathname: `/dashboard/SlipView`,
           }}>
           <span style={{ cursor: "pointer" }}>
             <Eye size={25}className="me-2"/>
-          </span></Link>
+          </span></Link> */}
+
+          <span style={{ cursor: "pointer" }}>
+  <Link
+    to={{
+      pathname: `/dashboard/SlipView/${row.uid}`,
+      state: { slipData: row }, // Pass full data
+    }}
+  >
+    <Eye size={25} className="me-2" />
+  </Link>
+</span>
+
 
           {/* Edit Button */}
           <Link

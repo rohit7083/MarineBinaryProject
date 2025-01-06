@@ -735,7 +735,7 @@ const Address = ({
         </Row>
 
         <Row>
-          <Col md="6" className="mb-1">
+          {/* <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
               Renewal Date <span style={{ color: "red" }}>*</span>
             </Label>
@@ -770,7 +770,55 @@ const Address = ({
             {errors.renewalDate && (
               <FormFeedback>{errors.renewalDate.message}</FormFeedback>
             )}
-          </Col>
+          </Col> */}
+
+<Col md="6" className="mb-1">
+  <Label className="form-label" for="hf-picker">
+    Renewal Date <span style={{ color: "red" }}>*</span>
+  </Label>
+  <Controller
+    name="renewalDate"
+    control={control}
+    rules={{
+      required: "Renewal date is required",
+      validate: (value) => {
+        const selectedDate = new Date(value);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); // Calculate tomorrow's date
+        tomorrow.setHours(0, 0, 0, 0); // Normalize time to midnight
+        
+        if (selectedDate < tomorrow) {
+          return "Renewal date cannot be today or in the past.";
+        }
+        
+        return true;
+      },
+    }}
+    render={({ field }) => (
+      <Flatpickr
+        id="hf-picker"
+        className={`form-control ${
+          errors.renewalDate ? "is-invalid" : ""
+        }`}
+        options={{
+          altInput: true,
+          altFormat: "Y-m-d",
+          dateFormat: "Y-m-d",
+          minDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Tomorrow's date as the minimum date
+        }}
+        value={field.value}
+        onChange={(date) => {
+          const formattedDate = date[0]?.toISOString().split("T")[0]; // Format date to 'YYYY-MM-DD'
+          field.onChange(formattedDate); // Update form value
+        }}
+      />
+    )}
+  />
+  {errors.renewalDate && (
+    <FormFeedback>{errors.renewalDate.message}</FormFeedback>
+  )}
+</Col>
+
 
           <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
@@ -1380,7 +1428,14 @@ const Address = ({
               Previous
             </span>
           </Button>
+          <div className="d-flex">
+            <Button type="reset" color="primary" onClick={()=>reset()} className="btn-reset me-2">
+              <span className="align-middle d-sm-inline-block d-none">
+                Reset
+              </span>
+            </Button>
           <Button type="submit" color="primary" className="btn-next">
+         
             <span className="align-middle d-sm-inline-block d-none">
               Submit
             </span>
@@ -1389,6 +1444,7 @@ const Address = ({
               className="align-middle ms-sm-25 ms-0"
             ></ArrowRight>
           </Button>
+        </div>
         </div>
       </Form>
     </Fragment>
