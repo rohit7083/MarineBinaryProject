@@ -43,14 +43,15 @@ export default class JwtService {
         const originalRequest = config;
 
         // ** if (status === 401) {
-        if (response && response.status === 401) {
+        if (response && response.status === 403) {
+          window.location = "/Login";
           if (!this.isAlreadyFetchingAccessToken) {
             this.isAlreadyFetchingAccessToken = true;
             this.refreshToken().then((r) => {
               this.isAlreadyFetchingAccessToken = false;
 
               // ** Update accessToken in localStorage
-              this.setToken(r.data.accessToken);
+              this.setToken(r.data.token);
               this.setRefreshToken(r.data.refreshToken);
 
               this.onAccessTokenFetched(r.data.accessToken);
@@ -98,11 +99,11 @@ export default class JwtService {
     localStorage.setItem(this.jwtConfig.storageRefreshTokenKeyName, value);
   }
 
-  login(...args) {
-    return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  }
+  // login(...args) {
+  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  // }
 
-  // ==================== Slip Category 
+  // ==================== Slip Category
 
   postslipCatogory(...args) {
     return axios.post(this.jwtConfig.slipCategory, ...args);
@@ -131,7 +132,7 @@ export default class JwtService {
   deleteslip(uid) {
     return axios.delete(`${this.jwtConfig.slip}${uid}`);
   }
-  // ==================== Slip Vessel 
+  // ==================== Slip Vessel
 
   postsVessel(...args) {
     return axios.post(this.jwtConfig.sVessel, ...args);
@@ -142,7 +143,7 @@ export default class JwtService {
   getVessel(uid = "") {
     return axios.get(this.jwtConfig.sVesselGet + "/" + uid);
   }
-  // ==================== Slip Member 
+  // ==================== Slip Member
 
   postsMember(...args) {
     return axios.post(this.jwtConfig.sMember, ...args);
@@ -150,20 +151,59 @@ export default class JwtService {
 
   // ==================== Slip Payment
 
+  // =================== Register
 
-  // =================== Register 
+  // registerUser(...args) {
+  //   return axios.post(this.jwtConfig.registerUser, ...args);
+  // }
 
-  registerUser(...args) {
-    return axios.post(this.jwtConfig.registerUser, ...args);
-  }
-
-  // =================== Login 
+  // =================== Login
 
   login(...args) {
-    // return axios.post(this.jwtConfig.login, ...args);
-  return axios.post(this.jwtConfig.loginEndpoint, ...args);
+    return axios.post(this.jwtConfig.login, ...args);
+    // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
 
+  sendEmail(...args) {
+    return axios.post(this.jwtConfig.sendEmail, ...args);
+  }
+
+  createPass(token = "", ...args) {
+    return axios.post(this.jwtConfig.createPass + token, ...args);
+  }
+
+  verifyAccount(token = "", ...args) {
+    return axios.post(this.jwtConfig.verifyAccount + token, ...args);
+  }
+
+  resend_Otp(token = "") {
+    return axios.get(this.jwtConfig.resend_Otp + token);
+  }
+  resend_OtpCall(token = "") {
+    return axios.get(this.jwtConfig.resend_OtpCall + token);
+  }
+
+  generate() {
+    return axios.post(this.jwtConfig.generate);
+  }
+
+  verifyQr(...args) {
+    return axios.post(this.jwtConfig.verifyQr, ...args);
+  }
+
+  disable(){
+    return axios.post(this.jwtConfig.disable);
+
+  }
+  mobileOtp(token="", ...args){
+    return axios.post(this.jwtConfig.mobileOtp+token , ...args);
+
+  }
+
+  status(){
+    return axios.get(this.jwtConfig.status);
+
+  }
   // ===================
 
   getslipAssignment() {

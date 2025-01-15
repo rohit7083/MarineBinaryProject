@@ -147,7 +147,7 @@ const ResetPasswordBasic = () => {
               </a>
             </p>
             <p className='text-center mt-2'>
-              <Link to='/dashboard/UserAuth/SlipLogin'>
+              <Link to='/dashboard/UserAuth/Login'>
                 <ChevronLeft className='rotate-rtl me-25' size={14} />
                 <span className='align-middle'>Back to login</span>
               </Link>

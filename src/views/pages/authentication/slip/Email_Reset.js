@@ -1,13 +1,86 @@
 // ** React Imports
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Reactstrap Imports
 import { Card, Input, CardBody, CardTitle, CardText, Button } from "reactstrap";
+import useJwt from "@src/auth/jwt/useJwt";
+
+// ** React Hook Form Imports
+import { useForm, Controller } from "react-hook-form";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
+import { useState } from "react";
 
 const VerifyEmailBasic = () => {
+  // Initialize the useForm hook
+  const navigate = useNavigate();
+  const [btn, setBtn] = useState(false);
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
+  const [msz, setMsz] = useState(null);
+  // Submit handler
+  const onSubmit = async (data) => {
+    // console.log("Submitted Data: ", data);
+
+    try {
+      const res = await useJwt.sendEmail(data);
+      // console.log(res);
+      // console.log(res.status);
+
+      if (res.status === 200) {
+        setMsz(
+          <span style={{ color: "green", fontWeight: "bold" }}>
+            {res.data.content}
+          </span>
+        );
+        setBtn(true);
+
+        setTimeout(() => {
+          setBtn(false);
+          navigate("/Forget_password");
+          setBtn(false);
+        }, 2000);
+      }
+    } catch (error) {
+      // console.log(error.response);
+
+      if (error.response) {
+        const { status, data } = error.response;
+        const errorMessage = data.content;
+
+        switch (status) {
+          case 400:
+            setMsz(<span style={{ color: "red" }}>{data.content}</span>);
+            break;
+          case 401:
+            setMsz(errorMessage);
+            // navigate("/login");
+            break;
+          case 403:
+            setMsz(errorMessage);
+            break;
+          case 500:
+            setMsz(
+              <span style={{ color: "red" }}>
+                Something went wrong on our end. Please try again later
+              </span>
+            );
+                        break;
+          default:
+            setMsz(errorMessage);
+        }
+      }
+
+      
+      
+    }
+  };
+
   return (
     <div className="auth-wrapper auth-basic px-2">
       <div className="auth-inner my-2">
@@ -97,15 +170,48 @@ const VerifyEmailBasic = () => {
               Verify your email ✉️
             </CardTitle>
             <CardText className="mb-2">
-              We've sent a link to your email address Please follow the link
+              We've sent a link to your email address. Please follow the link
               inside to continue.
-              <Input className="mt-2" type="email" placeholder="Enter Email" />
             </CardText>
-            <Link to="/SlipForgetPassword">
-              <Button block color="primary">
+            <span className="text-danger">
+              <strong>{msz}</strong>
+              {console.log(msz)}
+            </span>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Controller
+                name="emailId" // Removed trailing space
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, // Supports longer TLDs
+                    message: "Enter a valid email",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className={`mt-2 ${errors.emailId ? "is-invalid" : ""}`}
+                    type="email"
+                    placeholder="Enter Email"
+                  />
+                )}
+              />
+              {errors.emailId && (
+                <span className="text-danger">{errors.emailId.message}</span>
+              )}
+
+              <Button
+                type="submit"
+                disabled={btn}
+                block
+                color="primary"
+                className="mt-2"
+              >
                 Send
               </Button>
-            </Link>
+            </form>
           </CardBody>
         </Card>
       </div>

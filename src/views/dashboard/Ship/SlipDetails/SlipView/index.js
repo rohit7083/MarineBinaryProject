@@ -95,7 +95,7 @@ const UserProjectsList = () => {
   const [edit, setEdit] = useState(false);
 
   const handleEdit = () => {
-    alert("edit clicked");
+    // alert("edit clicked");
     setEdit(true);
   };
 

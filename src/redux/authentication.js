@@ -6,11 +6,24 @@ import useJwt from '@src/auth/jwt/useJwt'
 
 const config = useJwt.jwtConfig
 
+// const initialUser = () => {
+//   const item = window.localStorage.getItem('userData')
+//   //** Parse stored json or if none return initialValue
+//   return item ? JSON.parse(item) : {}
+// }
+
 const initialUser = () => {
-  const item = window.localStorage.getItem('userData')
-  //** Parse stored json or if none return initialValue
-  return item ? JSON.parse(item) : {}
-}
+  const item = window.localStorage.getItem('userData');
+  try {
+    // Parse the JSON string or return an empty object if invalid
+    return item ? JSON.parse(item) : {};
+  } catch (error) {
+    console.error('Error parsing JSON from localStorage:', error);
+    // Clear the invalid data and return an empty object
+    localStorage.removeItem('userData');
+    return {};
+  }
+};
 
 export const authSlice = createSlice({
   name: 'authentication',

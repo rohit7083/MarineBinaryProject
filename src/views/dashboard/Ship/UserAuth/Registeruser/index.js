@@ -371,7 +371,7 @@ const RegisterCover = () => {
             </form>
             <p className="text-center mt-2">
               <span className="me-25">Already have an account?</span>
-              <Link to="/dashboard/UserAuth/SlipLogin">
+              <Link to="/dashboard/UserAuth/Login">
                 <span>Sign in instead</span>
               </Link>
             </p>

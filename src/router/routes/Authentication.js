@@ -1,7 +1,7 @@
 // ** React Imports
 import { lazy } from 'react'
 
-const SlipLogin = lazy(() => import('../../views/pages/authentication/SlipLogin'))
+const Login = lazy(() => import('../../views/pages/authentication/slip/Login'))
 const LoginBasic = lazy(() => import('../../views/pages/authentication/LoginBasic'))
 const LoginCover = lazy(() => import('../../views/pages/authentication/LoginCover'))
 
@@ -22,14 +22,19 @@ const VerifyEmailCover = lazy(() => import('../../views/pages/authentication/Ver
 
 // const TwoStepsBasic = lazy(() => import('../../views/pages/authentication/TwoStepsBasic'))
 const TwoStepsCover = lazy(() => import('../../views/pages/authentication/TwoStepsCover'))
-const SlipEmailForReset = lazy(()=> import('../../views/pages/authentication/SlipEmailForReset'))
-const SlipEmailOTP = lazy(()=> import('../../views/pages/authentication/SlipEmailOTP'))
-const SlipForgetPassword = lazy(()=> import('../../views/pages/authentication/SlipForgetPassword'))
+const Email_Reset = lazy(()=> import('../../views/pages/authentication/slip/Email_Reset'))
+const EmailOTP = lazy(()=> import('../../views/pages/authentication/slip/EmailOTP'))
+const Mobile_OTP = lazy(()=> import('../../views/pages/authentication/slip/Mobile_OTP'))
+
+// const Forget_password = lazy(()=> import('../../views/pages/authentication/Forget_password'))
 const SlipRegister = lazy(()=> import('../../views/pages/authentication/SlipRegister'))
+// const ForgotPassword = lazy(()=> import('../../views/pages/authentication/ForgotPassword'))
+const Forget_password = lazy(()=> import('../../views/pages/authentication/slip/Forget_password'))
+// const twoStep_auth=lazy(()=>import('../../views/pages/authentication/slip/twoStep_auth'))
 const AuthenticationRoutes = [
   {
-    path: '/SlipLogin',
-    element: <SlipLogin />,
+    path: '/Login',
+    element: <Login />,
     meta: {
       layout: 'blank',
       publicRoute: true,
@@ -37,8 +42,18 @@ const AuthenticationRoutes = [
     }
   },
   {
-    path: '/SlipEmailForReset',
-    element: <SlipEmailForReset />,
+    path: '/reset-password/:uid',
+    element: <Forget_password />,
+    meta: {
+      layout: 'blank',
+      publicRoute: true,
+      // restricted: true
+    }
+  },
+  
+  {
+    path: '/Email_Reset',
+    element: <Email_Reset />,
     meta: {
       layout: 'blank',
       publicRoute: true,
@@ -46,8 +61,8 @@ const AuthenticationRoutes = [
     }
   },
   {
-    path: '/SlipEmailOTP',
-    element: <SlipEmailOTP />,
+    path: '/EmailOTP',
+    element: <EmailOTP />,
     meta: {
       layout: 'blank',
       publicRoute: true,
@@ -55,8 +70,17 @@ const AuthenticationRoutes = [
     }
   },
   {
-    path: '/SlipForgetPassword',
-    element: <SlipForgetPassword />,
+    path: '/Mobile_OTP',
+    element: <Mobile_OTP/>,
+    meta: {
+      layout: 'blank',
+      publicRoute: true,
+      restricted: true
+    }
+  },
+  {
+    path: '/Forget_password',
+    element: <Forget_password />,
     meta: {
       layout: 'blank',
       publicRoute: true,
@@ -72,6 +96,15 @@ const AuthenticationRoutes = [
       restricted: true
     }
   },
+  // {
+  //   path: '/twoStep_auth',
+  //   element: <twoStep_auth />,
+  //   meta: {
+  //     layout: 'blank',
+  //     publicRoute: true,
+  //     restricted: true
+  //   }
+  // },
   {
     path: '/pages/login-basic',
     element: <LoginBasic />,

@@ -19,11 +19,14 @@ import { getRoutes } from './routes'
 // ** Components
 const Error = lazy(() => import('../views/pages/misc/Error'))
 // const Login = lazy(() => import('../views/pages/authentication/Login'))
-const SlipLogin= lazy(() => import('../views/pages/authentication/SlipLogin'))
+const Login= lazy(() => import('../views/pages/authentication/slip/Login'))
 const NotAuthorized = lazy(() => import('../views/pages/misc/NotAuthorized'))
-
+const Email_Reset=lazy(()=>import('../views/pages/authentication/slip/Email_Reset'))
+const EmailOTP=lazy(()=>import('../views/pages/authentication/slip/EmailOTP'))
+const Mobile_OTP=lazy(()=>import('../views/pages/authentication/slip/Mobile_OTP'))
+const Forget_password=lazy(()=>import('../views/pages/authentication/slip/Forget_password'))
 const Router = () => {
-  // ** Hooks
+  
   const { layout } = useLayout()
 
   const allRoutes = getRoutes(layout)
@@ -32,7 +35,7 @@ const Router = () => {
     if (user) {
       return getHomeRouteForLoggedInUser(user.role)
     } else {
-      return '/SlipLogin'
+      return '/Login'
     }
   }
 
@@ -43,9 +46,24 @@ const Router = () => {
       element: <Navigate replace to={getHomeRoute()} />
     },
     {
-      path: '/SlipLogin',
+      path: '/Login',
       element: <BlankLayout />,
-      children: [{ path: '/SlipLogin', element: <SlipLogin /> }]
+      children: [{ path: '/Login', element: <Login /> }]
+    },
+    {
+      path: '/Email_Reset',
+      element: <BlankLayout />,
+      children: [{ path: '/Email_Reset', element: <Email_Reset /> }]
+    },
+    {
+      path: '/Mobile_OTP',
+      element: <BlankLayout />,
+      children: [{ path: '/Mobile_OTP', element: <Mobile_OTP /> }]
+    },
+    {
+      path: '/EmailOTP',
+      element: <BlankLayout />,
+      children: [{ path: '/EmailOTP', element: <EmailOTP /> }]
     },
    
     {
