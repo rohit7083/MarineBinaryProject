@@ -1,12 +1,13 @@
 // ** React Imports
 import { Link, useNavigate } from "react-router-dom";
-
+import { Spinner } from "reactstrap";
 // ** Reactstrap Imports
 import { Card, Input, CardBody, CardTitle, CardText, Button } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
-
+import React from 'react'
 // ** React Hook Form Imports
 import { useForm, Controller } from "react-hook-form";
+import { UncontrolledAlert } from "reactstrap";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
@@ -16,21 +17,26 @@ const VerifyEmailBasic = () => {
   // Initialize the useForm hook
   const navigate = useNavigate();
   const [btn, setBtn] = useState(false);
-
+  const [resToken, setResToken] = useState(null);
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm();
   const [msz, setMsz] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   // Submit handler
   const onSubmit = async (data) => {
     // console.log("Submitted Data: ", data);
+    setLoading(true); // Set loading to true before API call
 
     try {
       const res = await useJwt.sendEmail(data);
-      // console.log(res);
+      console.log(res);
+
       // console.log(res.status);
+      setResToken(res.data.token);
 
       if (res.status === 200) {
         setMsz(
@@ -42,7 +48,9 @@ const VerifyEmailBasic = () => {
 
         setTimeout(() => {
           setBtn(false);
-          navigate("/Forget_password");
+          navigate("/Login", {
+            state: { resettoken: res.data.token },
+          });
           setBtn(false);
         }, 2000);
       }
@@ -55,9 +63,9 @@ const VerifyEmailBasic = () => {
 
         switch (status) {
           case 400:
-            setMsz(<span style={{ color: "red" }}>{data.content}</span>);
+            setMsz(<span style={{ color: "red" }}>{errorMessage}</span>);
             break;
-          case 401:
+          case 401: 
             setMsz(errorMessage);
             // navigate("/login");
             break;
@@ -70,16 +78,20 @@ const VerifyEmailBasic = () => {
                 Something went wrong on our end. Please try again later
               </span>
             );
-                        break;
+            break;
           default:
             setMsz(errorMessage);
         }
       }
-
-      
-      
+    }
+    finally {
+      setLoading(false); // Set loading to false after API call is complete
     }
   };
+  const handleDismiss = () => {
+    setMsz(null); // Reset the message when the alert is dismissed
+  };
+
 
   return (
     <div className="auth-wrapper auth-basic px-2">
@@ -173,10 +185,17 @@ const VerifyEmailBasic = () => {
               We've sent a link to your email address. Please follow the link
               inside to continue.
             </CardText>
-            <span className="text-danger">
-              <strong>{msz}</strong>
-              {console.log(msz)}
-            </span>
+
+            {msz && (
+                <React.Fragment>
+                  <UncontrolledAlert color="danger" onClick={handleDismiss}>
+                    <div className="alert-body">
+                    <strong>{msz}</strong>
+                    </div>
+                  </UncontrolledAlert>
+                </React.Fragment>
+              )}
+         
             <form onSubmit={handleSubmit(onSubmit)}>
               <Controller
                 name="emailId" // Removed trailing space
@@ -209,7 +228,8 @@ const VerifyEmailBasic = () => {
                 color="primary"
                 className="mt-2"
               >
-                Send
+                                {loading ? <Spinner size="sm" /> : "Send"}
+                
               </Button>
             </form>
           </CardBody>

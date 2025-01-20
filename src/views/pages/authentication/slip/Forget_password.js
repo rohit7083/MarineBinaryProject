@@ -1,11 +1,12 @@
 // ** React Imports
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 // ** Icons Imports
 import { ChevronLeft } from "react-feather";
 import useJwt from "@src/auth/jwt/useJwt";
-
+import { Spinner } from "reactstrap";
 // ** React Hook Form
+
 import { useForm, Controller } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -26,7 +27,7 @@ import InputPassword from "@components/input-password-toggle";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ResetPasswordBasic = () => {
   const {
@@ -36,12 +37,13 @@ const ResetPasswordBasic = () => {
     formState: { errors },
   } = useForm();
   const [msz, setMsz] = useState(null);
-  // const password = watch("password");
+  const [loading, setLoading] = useState(false);
+  const [urlToken, seturlToken] = useState(null);
   const MySwal = withReactContent(Swal);
+const navigate=useNavigate();
+  // const { uid: token } = useParams();
 
-  const { uid: token } = useParams();
-
-  console.log({ token });
+  // console.log({ token });
 
   const handleResendOTP = async () => {
     try {
@@ -61,6 +63,29 @@ const ResetPasswordBasic = () => {
     }
   };
 
+  const sendOtp = async () => {
+
+    const path = window.location.pathname;
+    // Split the path into parts
+    const parts = path.split("/");
+    // Extract the last part as the token
+    const token = parts[parts.length - 1];
+    // console.log("Token:", token);
+    seturlToken(parts[parts.length - 1]);
+
+    try {
+      const otpRes = await useJwt.sendOtp(token);
+      console.log(otpRes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    sendOtp();
+  }, []);
+
+
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     const otpString = data.otp.join(""); // Join the OTP digits
@@ -68,14 +93,17 @@ const ResetPasswordBasic = () => {
     const { password, confirmPassword } = data; // Extract password and confirmPassword from form data
 
     try {
-      const res = await useJwt.createPass(token, {
+      setLoading(true); // Set loading to true before API call
+      console.log(urlToken);
+
+      const res = await useJwt.createPass(urlToken, {
         otp,
         password,
         confirmPassword,
       });
 
       console.log(res);
-
+// {{debugger}}
       if (res.status == 200 || res.status == 201) {
         return MySwal.fire({
           title: "Successfully ",
@@ -86,16 +114,16 @@ const ResetPasswordBasic = () => {
           },
           buttonsStyling: false,
         }).then(() => {
-          navigate("/dashboard/ecommerce");
+          navigate("/Login");
         });
       }
     } catch (error) {
-      console.log(error.response);
+      console.log(error);
 
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = data.content;
-        
+
         switch (status) {
           case 400:
             setMsz(errorMessage);
@@ -114,6 +142,8 @@ const ResetPasswordBasic = () => {
             setMsz(errorMessage);
         }
       }
+    } finally {
+      setLoading(false); // Set loading to false after API call is complete
     }
   };
 
@@ -270,7 +300,7 @@ const ResetPasswordBasic = () => {
               </div>
 
               <Button color="primary" block type="submit">
-                Set New Password
+                {loading ? <Spinner size="sm" /> : "Set New Password"}
               </Button>
             </form>
 

@@ -34,8 +34,12 @@ export default {
   verifyQr: "/googleAuthenticatorQR/verify-qr",
   disable: "/googleAuthenticatorQR/disable",
   mobileOtp:"/auth/verify_accountForAuth/",
-status:"/googleAuthenticatorQR/status",
+  status:"/googleAuthenticatorQR/status",
+  sendOtp:"/auth/user/send_otp/",
 
+  //roles and permissions
+  userpermission:"/userpermission/",  
+  permission:"/permission",
 
   slipAssignmentGet: "/slipAssignmentGet",
   postOTP: "/slipAssignment/generate",

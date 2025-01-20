@@ -25,7 +25,7 @@ const TwoStepsCover = lazy(() => import('../../views/pages/authentication/TwoSte
 const Email_Reset = lazy(()=> import('../../views/pages/authentication/slip/Email_Reset'))
 const EmailOTP = lazy(()=> import('../../views/pages/authentication/slip/EmailOTP'))
 const Mobile_OTP = lazy(()=> import('../../views/pages/authentication/slip/Mobile_OTP'))
-
+const Login_password= lazy(()=> import('../../views/pages/authentication/slip/Login_password'))
 // const Forget_password = lazy(()=> import('../../views/pages/authentication/Forget_password'))
 const SlipRegister = lazy(()=> import('../../views/pages/authentication/SlipRegister'))
 // const ForgotPassword = lazy(()=> import('../../views/pages/authentication/ForgotPassword'))
@@ -41,8 +41,19 @@ const AuthenticationRoutes = [
       restricted: true
     }
   },
+
+
   {
-    path: '/reset-password/:uid',
+    path: '/Login_password',
+    element: <Login_password/>,
+    meta: {
+      layout: 'blank',
+      publicRoute: true,
+      restricted: true
+    }
+  },
+  {
+    path: '/reset_password/:token',
     element: <Forget_password />,
     meta: {
       layout: 'blank',
@@ -78,6 +89,7 @@ const AuthenticationRoutes = [
       restricted: true
     }
   },
+ 
   {
     path: '/Forget_password',
     element: <Forget_password />,

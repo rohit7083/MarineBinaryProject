@@ -78,9 +78,7 @@ const Login = () => {
   const [locationLoader, setlocationLoader] = useState(true);
   const [show, setShow] = useState(false);
   const [location, setLocation] = useState(null);
-  const [ip, setIP] = useState(null);
-  const [isPassword, setIspassword] = useState(false);
-
+  const [ip,setIP]=useState(null);
   const {
     control,
     handleSubmit,
@@ -106,19 +104,23 @@ const Login = () => {
   };
 
   const checkLocationAccess = () => {
-    try {
-      const response = axios
-        .get("https://api.ipify.org/?format=json:")
-        .then((response) => {
-          setIP(response.data);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching IP address:", error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+
+try {
+  const response=axios.get("https://api.ipify.org/?format=json:")
+  .then((response) => {
+    setIP(response.data);
+    console.log(response.data);
+    
+  })
+  .catch((error) => {
+    console.error('Error fetching IP address:', error);
+  });
+
+} catch (error) {
+  console.log(error);
+  
+}
+
 
     if (!navigator.geolocation) {
       setMessage("location is not supported by your browser");
@@ -153,46 +155,18 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     data.location = location;
-    data.ip = ip;
+data.ip=ip;
     if (Object.values(data).every((field) => field.length > 0)) {
       // console.log("Submitted Data:", data);
       setLoading(true); // Set loading to true before API call
 
       try {
-
-
-
-  const res = await useJwt.login({
-
-   
-      ip: ip,
-    location: location,
-    emailId: data.emailId,
-    
-    ...(!isPassword ? {
-    isPassword:isPassword,
-    }:
-    
-    {isPassword:isPassword,
-      password: data.password}) ,
-  });
-
-
-
-  // const res = await useJwt.login({
-  //   ...(isPassword
-  //     ? {
-  //         isPassword: true,
-  //         password: data.password,
-  //       }
-  //     : {
-  //         ip: ip,
-  //         location: location,
-  //         emailId: data.emailId,
-  //         isPassword: false,
-  //       }),
-  // });
-  
+        const res = await useJwt.login({
+          ip:ip,
+          location: location,
+          emailId: data.emailId,
+          password: data.password,
+        });
 
         console.log("API Response Full:", res);
         console.log("API Response Content:", res.data?.content);
@@ -316,7 +290,7 @@ const Login = () => {
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
 
-          <h2 className="brand-text text-primary ms-1">Marina</h2>
+          <h2 className="brand-text text-primary ms-1">Vuexy</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -344,14 +318,10 @@ const Login = () => {
                   </UncontrolledAlert>
                 </React.Fragment>
               )}
-              {isPassword === true && (
-                <>
-                  {loginAttempt == 3 && (
-                    <p className="text-danger">
-                      Login Attempt : <strong>{loginAttempt}/3</strong>
-                    </p>
-                  )}
-                </>
+              {loginAttempt == 3 && (
+                <p className="text-danger">
+                  Login Attempt : <strong>{loginAttempt}/3</strong>
+                </p>
               )}
             </CardText>
 
@@ -371,7 +341,6 @@ const Login = () => {
                     <Input
                       autoFocus
                       type="email"
-                      {...(isPassword === true && { readOnly: true })}
                       placeholder="Enter Email"
                       invalid={!!errors.emailId}
                       {...field}
@@ -382,84 +351,77 @@ const Login = () => {
                   <FormFeedback>{errors.emailId.message}</FormFeedback>
                 )}
               </div>
-              {isPassword === true && (
-                <div>
-                  <div className="mb-1">
-                    <div className="d-flex justify-content-between">
-                      <Label className="form-label" for="login-password">
-                        Password
-                      </Label>
-                      <Link to="/Email_Reset">
-                        <small>Forgot Password?</small>
-                      </Link>
-                    </div>
-                    <Controller
-                      id="password"
-                      name="password"
-                      control={control}
-                      rules={{ validate: validatePassword }}
-                      render={({ field }) => (
-                        <InputPasswordToggle
-                          className="input-group-merge"
-                          invalid={errors.password}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.password && (
-                      <FormFeedback>{errors.password.message}</FormFeedback>
-                    )}
-                  </div>
-                  <div className="mb-1">
-                    {loginAttempt >= 1 && (
-                      <Controller
-                        name="captcha"
-                        control={control}
-                        rules={{
-                          required: "Captcha is required.", // Validation message
-                        }}
-                        render={({ field }) => (
-                          <div>
-                            <ReCAPTCHA
-                              sitekey="6LfxZqoqAAAAAHn7n2rN_PJtVu18uUebEmzCs8vr" // Replace with your actual site key
-                              onChange={(value) => {
-                                setValue("captcha", value, {
-                                  shouldValidate: true,
-                                }); // Update value and trigger validation
-                                field.onChange(value); // React Hook Form integration
-                              }}
-                            />
-                            {errors.captcha && (
-                              <FormFeedback
-                                style={{ color: "red", display: "block" }}
-                              >
-                                {errors.captcha.message}
-                              </FormFeedback>
-                            )}
-                          </div>
-                        )}
-                      />
-                    )}
-                  </div>
-                  <div className="form-check mb-1">
-                    <Input type="checkbox" id="remember-me" />
-                    <Label className="form-check-label" for="remember-me">
-                      Remember Me
-                    </Label>
-                  </div>
+              {/* <div className="mb-1">
+                <div className="d-flex justify-content-between">
+                  <Label className="form-label" for="login-password">
+                    Password
+                  </Label>
+                  <Link to="/Email_Reset">
+                    <small>Forgot Password?</small>
+                  </Link>
                 </div>
-              )}
+                <Controller
+                  id="password"
+                  name="password"
+                  control={control}
+                  rules={{ validate: validatePassword }}
+                  render={({ field }) => (
+                    <InputPasswordToggle
+                      className="input-group-merge"
+                      invalid={errors.password}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <FormFeedback>{errors.password.message}</FormFeedback>
+                )}
+              </div> */}
+              <div className="mb-1">
+                {loginAttempt >= 1 && (
+                  <Controller
+                    name="captcha"
+                    control={control}
+                    rules={{
+                      required: "Captcha is required.", // Validation message
+                    }}
+                    render={({ field }) => (
+                      <div>
+                        <ReCAPTCHA
+                          sitekey="6LfxZqoqAAAAAHn7n2rN_PJtVu18uUebEmzCs8vr" // Replace with your actual site key
+                          onChange={(value) => {
+                            setValue("captcha", value, {
+                              shouldValidate: true,
+                            }); // Update value and trigger validation
+                            field.onChange(value); // React Hook Form integration
+                          }}
+                        />
+                        {errors.captcha && (
+                          <FormFeedback
+                            style={{ color: "red", display: "block" }}
+                          >
+                            {errors.captcha.message}
+                          </FormFeedback>
+                        )}
+                      </div>
+                    )}
+                  />
+                )}
+              </div>
+              <div className="form-check mb-1">
+                <Input type="checkbox" id="remember-me" />
+                <Label className="form-check-label" for="remember-me">
+                  Remember Me
+                </Label>
+              </div>
+
               <Button
                 type="submit"
                 color="primary"
                 disabled={!locationEnabled}
                 block
               >
-                {loading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  `${isPassword === true ? "Login " : "Next > "}`
-                )}
+                {loading ? <Spinner size="sm" /> : "Next"}
               </Button>
             </form>
           </Col>

@@ -18,7 +18,8 @@ const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/Sli
 
 const DashboardSlipView=lazy(()=> import('../../views/dashboard/Ship/SlipDetails/SlipView'))
 const Dashboarddash=lazy(()=> import('../../views/dashboard/dash'))
-
+const Dashboardroles=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/roles'))
+const Dashboardcreateuser=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/createuser'))
 const DashboardRoutes = [
  
   
@@ -31,6 +32,17 @@ const DashboardRoutes = [
     path: '/dashboard/ecommerce',
     element: <DashboardEcommerce />
   },
+  
+  {
+    path: '/dashboard/user_rolls/roles-permissions/roles',
+    element: <Dashboardroles />
+  },
+  {
+    path: '/dashboard/user_rolls/roles-permissions/createuser',
+    element: <Dashboardcreateuser/>
+  },
+
+
   {
     path: '/dashboard/Ship',
     element: <DashboardShip />

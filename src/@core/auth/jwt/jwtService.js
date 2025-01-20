@@ -163,13 +163,17 @@ export default class JwtService {
     return axios.post(this.jwtConfig.login, ...args);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
+  sendOtp(token="") {
+    return axios.get(this.jwtConfig.sendOtp+token);
+    // return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  }
 
   sendEmail(...args) {
     return axios.post(this.jwtConfig.sendEmail, ...args);
   }
 
-  createPass(token = "", ...args) {
-    return axios.post(this.jwtConfig.createPass + token, ...args);
+  createPass(resettoken = "", ...args) {
+    return axios.post(this.jwtConfig.createPass + resettoken, ...args);
   }
 
   verifyAccount(token = "", ...args) {
@@ -204,7 +208,17 @@ export default class JwtService {
     return axios.get(this.jwtConfig.status);
 
   }
-  // ===================
+  // =================== roles and permissions 
+
+  userpermission(){
+    return axios.post(this.jwtConfig.userpermission);
+
+  }
+  permission(){
+    return axios.get(this.jwtConfig.permission);
+
+  }
+
 
   getslipAssignment() {
     return axios.get(this.jwtConfig.slipAssignmentGet);

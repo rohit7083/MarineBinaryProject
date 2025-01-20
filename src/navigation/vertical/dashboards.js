@@ -24,6 +24,12 @@ export default [
   //   ]
   // }
 // ,
+    {
+        id: 'dashboard',
+        title: 'dashboard',
+        icon: <Circle size={12} />,
+        navLink: '/dashboard/dash'
+      },
   {
     id: 'Slip',
     title: 'Slip',
@@ -32,12 +38,7 @@ export default [
     badge: 'light-warning',
     badgeText: '2',
     children: [
-      // {
-      //   id: 'SlipCategory',
-      //   title: 'SlipCategory',
-      //   icon: <Circle size={12} />,
-      //   navLink: '/dashboard/SlipCategory'
-      // },
+    
       {
         id: 'SlipList',
         title: 'Slip Category List',
@@ -60,23 +61,39 @@ export default [
         title: 'Slip Member List',
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipMemberList'
-      },
-      
-      // {
-      //   id: 'UI',
-      //   title: 'UI',
-      //   icon: <Circle size={12} />,
-      //   navLink: '/dashboard/UI'
-      // },
-      // {
-      //   id: 'Login',
-      //   title: 'Slip Login',
-      //   icon: <Circle size={12} />,
-      //   navLink: '/dashboard/UserAuth/Login'
-      // },
-     
+      }, 
       
     ]
   }
+,
+  
+  {
+    id: 'Users Management',
+    title: 'Users Management',
+    icon: <Circle size={12} />,
+    // navLink: '/dashboard/create-user',
+    badge: 'light-warning',
+    badgeText: '2',
+    children: [
+    {
+      
+        id: 'Create User',
+        title: 'Rolls & Permission',
+        icon: <Circle size={12} />,
+        navLink: '/dashboard/user_rolls/roles-permissions/roles'
+     
+    },
+    {
+      
+      id: 'permissions',
+      title: 'Users',
+      icon: <Circle size={12} />,
+      navLink: '/dashboard/user_rolls/roles-permissions/createuser'
+      
+  },
+  ]
+    
+}
+  
 ]
 

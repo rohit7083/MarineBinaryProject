@@ -118,6 +118,44 @@ const DefaultAlert = () => {
         }
       } catch (error) {
         console.log(error);
+        if (error.response) {
+          const { status, data } = error.response;
+          const errorMessage = data.error;
+          // setMessage(errorMessage);
+  
+          switch (status) {
+            case 400:
+              setMessage(errorMessage);
+              break;
+            case 401:
+              // setMessage(<span style={{ color: "red" }}>Time Out</span>);
+              return MySwal.fire({
+                title: "Time Out ",
+                text: " Please Login Again",
+                icon: "error",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
+              });
+  
+              break;
+            case 403:
+              setMessage(errorMessage);
+              break;
+            case 500:
+              setMessage(
+                <span style={{ color: "red" }}>
+                  Something went wrong on our end. Please try again later
+                </span>
+              );
+              break;
+            default:
+              setMessage(errorMessage);
+          }
+        }
+        console.log({ error });
+      
       }
     })();
 
