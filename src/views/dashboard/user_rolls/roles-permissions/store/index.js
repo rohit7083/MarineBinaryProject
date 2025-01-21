@@ -1,18 +1,42 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
+import useJwt from "@src/auth/jwt/useJwt";
 // ** Axios Imports
 import axios from 'axios'
 
-export const getData = createAsyncThunk('permissions/getData', async params => {
-  const response = await axios.get('/apps/permissions/data', { params })
-  return {
-    total: response.data.total,
-    params: response.data.params,
-    allData: response.data.allData,
-    data: response.data.permissions
+// export const getData = createAsyncThunk('permissions/getData', async params => {
+//   const response = await axios.get('/apps/permissions/data', { params })
+//   return {
+//     total: response.data.total,
+//     params: response.data.params,
+//     allData: response.data.allData,
+//     data: response.data.permissions
+//   }
+// })
+
+
+
+
+
+export const getData = createAsyncThunk('permissions/getData', async (params, { rejectWithValue }) => {
+  try {
+    // Call your custom API method
+    const response = await useJwt.userpermission(params);
+
+    // Assuming the structure of `response` matches the original template
+    return {
+      total: response.data.total,
+      params: response.data.params,
+      allData: response.data.allData,
+      data: response.data.permissions,
+    };
+  } catch (error) {
+    // Handle errors gracefully
+    return rejectWithValue(error.response?.data || 'Something went wrong');
   }
-})
+});
+
+
 
 export const addPermission = createAsyncThunk(
   'permissions/addPermission',

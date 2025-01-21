@@ -421,6 +421,8 @@ import {
 } from 'reactstrap';
 import { User, Mail, Smartphone, Lock } from 'react-feather';
 import { Controller, useForm } from 'react-hook-form';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/bootstrap.css";
 
 const RoleCards = () => {
   const [show, setShow] = useState(false);
@@ -433,17 +435,17 @@ const RoleCards = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    if (
-      data.firstName &&
-      data.lastName &&
-      data.emailId &&
-      data.mobileNumber &&
-      data.password
-    ) {
+  const onSubmit = async(data) => {
+   
       console.log('Form Data:', data);
-      setShow(false); // Close modal
-    }
+    
+      try {
+        const res=await useJwt.createUser(data); 
+        console.log(res);
+        
+      } catch (error) {
+        console.error(error);
+      }
   };
 
   const handleModalClosed = () => {
@@ -560,7 +562,7 @@ const RoleCards = () => {
               </Col>
             </Row>
 
-            <Row className="mb-2"> {/* Reduced margin */}
+            {/* <Row className="mb-2"> 
               <Label sm="3" for="mobileNumber">
                 Mobile
               </Label>
@@ -589,7 +591,59 @@ const RoleCards = () => {
                   <small className="text-danger">{errors.mobileNumber.message}</small>
                 )}
               </Col>
-            </Row>
+            </Row> */}
+
+
+
+
+<Row className="mb-2">
+  <Label sm="3" for="mobileNumber">
+    Mobile
+  </Label>
+  <Col sm="9">
+    <InputGroup className="input-group-merge">
+      
+      <Controller
+        name="mobileNumber"
+        control={control}
+        defaultValue=""
+        rules={{
+          required: 'Mobile number is required',
+          validate: (value) =>
+            value && value.length >= 10 ? true : 'Invalid mobile number', // Custom validation for phone length
+        }}
+        render={({ field: { onChange, value } }) => (
+          <PhoneInput
+            country={'us'} // Default country code
+            value={value}
+            onChange={(phone) => onChange(phone)}
+            inputProps={{
+              name: 'mobileNumber',
+              required: true,
+              className: 'form-control',
+            }}
+            containerStyle={{
+              width: '100%', // Ensures it spans the full width
+            }}
+            inputStyle={{
+              height: '38px', // Matches standard input height
+              border: '1px solid #ced4da', // Matches default input border
+              borderRadius: '0 .375rem .375rem 0', // Matches default border-radius
+              paddingLeft: '63px', // Padding for proper spacing
+              width: '100%', // Ensures consistent width
+            }}
+          />
+        )}
+      />
+    </InputGroup>
+    {errors.mobileNumber && (
+      <small className="text-danger">{errors.mobileNumber.message}</small>
+    )}
+  </Col>
+</Row>
+
+
+
 
             <Row className="mb-2"> {/* Reduced margin */}
               <Label sm="3" for="password">

@@ -24,24 +24,24 @@ export const columns = [
     cell: ({ id }) => id,
     selector: row => row.id
   }, {
-    name: 'Name',
+    name: 'Role Name',
     sortable: true,
-    minWidth: '450px',
-    cell: ({ name }) => name,
-    selector: row => row.name
+    minWidth: '250px',
+    cell: ({ roleName }) => roleName,
+    selector: row => row.roleName
   },
   {
     sortable: true,
-    minWidth: '450px',
-    name: 'Assigned To',
-    cell: ({ assignedTo }) => {
-      if (assignedTo) {
-        return assignedTo.map((assignee, index) => {
-          const isLastBadge = assignedTo[assignedTo.length - 1] === index
+    minWidth: '250px',
+    name: 'Role Permissions',
+    cell: ({ permissionIds }) => {
+      if (permissionIds) {
+        return permissionIds.map((permissionIds, index) => {
+          const isLastBadge = permissionIds[permissionIds.length - 1] === index
           return (
-            <Link key={`${assignee}-${index}`} to='/apps/user/list' className={classnames({ 'me-50': !isLastBadge })}>
-              <Badge pill color={colors[assignee]} className='text-capitalize'>
-                {assignee.replace('-', ' ')}
+            <Link key={`${permissionIds}-${index}`} to='' className={classnames({ 'me-50': !isLastBadge })}>
+              <Badge pill color={colors[permissionIds]} className='text-capitalize'>
+                {permissionIds.replace('-', ' ')}
               </Badge>
             </Link>
           )

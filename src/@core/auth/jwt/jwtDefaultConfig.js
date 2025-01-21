@@ -1,6 +1,6 @@
 // ** Auth Endpoints
 export default {
-  // loginEndpoint: '/jwt/login',
+  loginEndpoint: '/jwt/login',
   // loginEndpoint: '/login',
 
   registerEndpoint: "/jwt/register",
@@ -24,7 +24,7 @@ export default {
 
   // user Registraion and login
   registerUser: "/auth/user/create",
-  login: "/auth/login",
+  // login: "/auth/login",
   verifyAccount: "/auth/verify_account/",
   sendEmail: "/auth/user/reset_password",
   createPass: "/auth/user/create_password/",
@@ -39,7 +39,11 @@ export default {
 
   //roles and permissions
   userpermission:"/userpermission/",  
+  userpermission:"/userpermission",  
+
   permission:"/permission",
+
+  createUser:"/auth/user/create",
 
   slipAssignmentGet: "/slipAssignmentGet",
   postOTP: "/slipAssignment/generate",

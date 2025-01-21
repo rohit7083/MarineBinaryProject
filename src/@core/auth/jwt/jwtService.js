@@ -160,8 +160,8 @@ export default class JwtService {
   // =================== Login
 
   login(...args) {
-    return axios.post(this.jwtConfig.login, ...args);
-    // return axios.post(this.jwtConfig.loginEndpoint, ...args);
+    // return axios.post(this.jwtConfig.login, ...args);
+    return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
   sendOtp(token="") {
     return axios.get(this.jwtConfig.sendOtp+token);
@@ -210,8 +210,18 @@ export default class JwtService {
   }
   // =================== roles and permissions 
 
+  createUser(payload){
+    return axios.post(this.jwtConfig.createUser , payload);
+
+  }
+
+  userpermission(payload){
+    return axios.post(this.jwtConfig.userpermission , payload);
+
+  }
+
   userpermission(){
-    return axios.post(this.jwtConfig.userpermission);
+    return axios.get(this.jwtConfig.userpermission);
 
   }
   permission(){
