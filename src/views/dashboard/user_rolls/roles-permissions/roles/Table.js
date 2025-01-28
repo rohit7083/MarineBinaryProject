@@ -76,7 +76,7 @@ const CustomHeader = ({
               type="text"
               value={searchTerm}
               id="search-permission"
-              className="ms-50 w-100" 
+              className="ms-50 w-100"
               onChange={(e) => handleFilter(e.target.value)}
             />
           </div>
@@ -127,17 +127,20 @@ const Table = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // ** Get data on mount
+ 
   useEffect(() => {
-    dispatch(
-      getData({
-        assignedTo,
-        q: searchTerm,
-        page: currentPage,
-        perPage: rowsPerPage,
-      })
-    );
-  }, [dispatch, store.data.length]);
+    const fetchdata = async () => {
+      try {
+        // const response = await useJwt.userpermission();
+
+        // Assuming the structure of `response` matches the original template
+      } catch (error) {
+        // Handle errors gracefully
+        console.log(error);
+      }
+    };
+    fetchdata();
+  });
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
@@ -219,21 +222,21 @@ const Table = () => {
 
   // ** Table data to render
   const dataToRender = () => {
-    const filters = {
-      q: searchTerm,
-    };
+    // const filters = {
+    //   q: searchTerm,
+    // };
 
-    const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0;
-    });
+    // const isFiltered = Object.keys(filters).some(function (k) {
+    //   return filters[k].length > 0;
+    // });
 
-    if (store.data.length > 0) {
-      return store.data;
-    } else if (store.data.length === 0 && isFiltered) {
-      return [];
-    } else {
-      return store.allData.slice(0, rowsPerPage);
-    }
+    // if (store.data.length > 0) {
+    //   return store.data;
+    // } else if (store.data.length === 0 && isFiltered) {
+    //   return [];
+    // } else {
+    //   return store.allData.slice(0, rowsPerPage);
+    // }
   };
 
   const handleEditClick = (data) => {

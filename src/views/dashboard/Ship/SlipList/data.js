@@ -439,10 +439,11 @@ export const serverSideColumns = [
       return (
         <div className="d-flex">
           {/* View Button */}
-          <span style={{ cursor: "pointer" }}>
-            <Eye size={25} className="me-2" />
+          <Link>         <span style={{ margin: "0.5rem", cursor: "pointer" }}>
+          <Eye className="font-medium-3 text-body" />
           </span>
-
+          </Link>
+ 
           <Link
             to={{
               pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path
@@ -452,19 +453,20 @@ export const serverSideColumns = [
               },
             }}
           >
-            <span onClick={() => handle(row)}>
-              <Edit2 className="me-2" />
+            <span  style={{ margin: "0.5rem", cursor: "pointer"}} onClick={() => handle(row)}>
+              <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
 
-          {/* Delete Button */}
+          <Link>
           <span
             color="danger"
-            style={{ cursor: "pointer", color: "red" }}
+            style={{ margin: "0.5rem", cursor: "pointer"}}
             onClick={() => handleDelete(row.uid)}
           >
-            <Trash2 size={20} />
+              <Trash className="font-medium-3 text-body" />
           </span>
+          </Link>
         </div>
       );
     },

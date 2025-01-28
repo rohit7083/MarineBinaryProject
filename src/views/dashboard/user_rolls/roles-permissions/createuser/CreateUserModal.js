@@ -1,4 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import {
   Row,
   Col,
@@ -21,7 +23,7 @@ import Select from "react-select";
 import { selectThemeColors } from "@utils";
 
 import { parsePhoneNumberFromString } from "libphonenumber-js";
-const RoleCards = () => {
+const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
 
@@ -35,6 +37,7 @@ const RoleCards = () => {
   const [countryCode, setCountryCode] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [allRoleName, setallRoleName] = useState(null);
+  const MySwal = withReactContent(Swal);
 
   // Helper function to extract country code and mobile number
   const extractCountryCodeAndNumber = (value) => {
@@ -73,16 +76,17 @@ const RoleCards = () => {
         uid: data.userRoles, // `data.userRoles` contains the selected role UID
       },
     };
-
     console.log("Transformed Data:", transformedData);
 
-    try {
-      const res = await useJwt.createUser(transformedData);
-      console.log(res);
-      if (res.status === 201) {
+    if (uid) {
+      // {{debugger}}
+      const res = await useJwt.updateSubuser(uid, transformedData);
+      console.log(" Add role res:", res);
+
+      if (res.status === 200) {
         MySwal.fire({
-          title: "Successfully Created",
-          text: " User Created Successfully",
+          title: "Successfully Updated",
+          text: " User Updated Successfully",
           icon: "success",
           customClass: {
             confirmButton: "btn btn-primary",
@@ -96,7 +100,7 @@ const RoleCards = () => {
       } else {
         MySwal.fire({
           title: "Failed",
-          text: " User Created Failed",
+          text: "Your Role Created Failed",
           icon: "error",
           customClass: {
             confirmButton: "btn btn-primary",
@@ -107,8 +111,38 @@ const RoleCards = () => {
         });
         console.error("Failed to add role:", res.message || res);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      const res2 = await useJwt.createUser(transformedData);
+      console.log("updated res:", res2);
+
+      if (res2.status === 201) {
+        MySwal.fire({
+          title: "Successfully Added",
+          text: " Your Role Name Added Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          setShow(false);
+          reset();
+          // navigate("/");
+        });
+      } else {
+        MySwal.fire({
+          title: "Failed",
+          text: "Your Role Created Failed",
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          // navigate("/dashboard/SlipList");
+        });
+        console.error("Failed to add role:", res2.message || res2);
+      }
     }
   };
 
@@ -136,23 +170,58 @@ const RoleCards = () => {
 
   const handleModalClosed = () => {
     setModalType("Add New");
-    reset(); // Reset form values
+    reset();
   };
+  useEffect(() => {
+    // Check if it's an edit mode
+    if (uid && row) {
+      const {
+        firstName,
+        lastName,
+        emailId,
+        mobileNumber,
+        userRoles,
+        countryCode,
+        password,
+      } = row;
 
+      reset({
+        firstName,
+        lastName,
+        emailId,
+        mobileNumber: `${countryCode}${mobileNumber}`, 
+        userRoles: userRoles?.uid || null, 
+        password, // Leave password blank
+      });
+      setMobileNumber(`${countryCode}${mobileNumber}`); // Ensure PhoneInput gets the value
+      setCountryCode(countryCode); // Optionally track the country code separately
+
+      setModalType("Edit");
+    } else {
+      // Reset the form for new user creation
+      reset({
+        firstName: "",
+        lastName: "",
+        emailId: "",
+        mobileNumber: "",
+        userRoles: null,
+        password: "",
+      });
+      setMobileNumber(""); // Clear PhoneInput
+      setCountryCode(""); // Clear country code
+
+      setModalType("Add New");
+    }
+  }, [uid, row, reset]);
+
+
+
+  useEffect(() => {
+    setShow(propShow);
+    console.log(row);
+  }, [propShow]);
   return (
     <Fragment>
-      <Row className="px-2 mt-1">
-        <Button
-          color="primary"
-          className="text-nowrap mb-1"
-          onClick={() => {
-            setModalType("Add New");
-            setShow(true);
-          }}
-        >
-          Create User +
-        </Button>
-      </Row>
       <Modal
         isOpen={show}
         onClosed={handleModalClosed}
@@ -163,7 +232,7 @@ const RoleCards = () => {
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
             <h1>{modalType} Add Users</h1>
-            <p>Add new user</p>
+            <p>{uid ? "Update User" : "Add new user"}</p>
           </div>
 
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -181,11 +250,8 @@ const RoleCards = () => {
                       theme={selectThemeColors}
                       className="react-select"
                       classNamePrefix="select"
-                      options={allRoleName} // Pass as options
+                      options={allRoleName || []} // Ensure it's an array
                       isClearable
-                      // value={allRoleName.find(option => option.value === field.value) || null} // Match value
-                      // onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)} // Map onChange
-
                       value={
                         (allRoleName || []).find(
                           (option) => option.value === field.value
@@ -309,7 +375,9 @@ const RoleCards = () => {
                   <Controller
                     name="mobileNumber"
                     control={control}
-                    defaultValue=""
+                    // defaultValue=""
+                    defaultValue={mobileNumber} // Set defaultValue to the prefilled mobile number
+
                     rules={{
                       required: "Mobile number is required",
                       validate: (value) =>
@@ -320,8 +388,13 @@ const RoleCards = () => {
                     render={({ field: { onChange, value } }) => (
                       <PhoneInput
                         country={"us"} // Default country code
-                        value={value}
-                        onChange={(phone) => onChange(phone)}
+                        // value={value}
+                        value={value || mobileNumber} // Use `value` from the form or prefilled value
+
+                        onChange={(phone) => {
+                          onChange(phone); // Update react-hook-form's value
+                          setMobileNumber(phone); // Update internal state
+                        }}
                         inputProps={{
                           name: "mobileNumber",
                           required: true,
@@ -364,13 +437,13 @@ const RoleCards = () => {
                     name="password"
                     control={control}
                     defaultValue=""
-                    rules={{
-                      required: "Password is required",
-                      minLength: {
-                        value: 6,
-                        message: "Password must be at least 6 characters long",
-                      },
-                    }}
+                    // rules={{
+                    //   required: "Password is required",
+                    //   minLength: {
+                    //     value: 6,
+                    //     message: "Password must be at least 6 characters long",
+                    //   },
+                    // }}
                     render={({ field }) => (
                       <Input
                         type="password"
@@ -391,7 +464,7 @@ const RoleCards = () => {
             <Row>
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>
                 <Button className="me-1" color="primary" type="submit">
-                  Submit
+                  {uid ? "Update" : "Submit"}
                 </Button>
                 <Button
                   outline
@@ -410,4 +483,4 @@ const RoleCards = () => {
   );
 };
 
-export default RoleCards;
+export default CreateuserModal;

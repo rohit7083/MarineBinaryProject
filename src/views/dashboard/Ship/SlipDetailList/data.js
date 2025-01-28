@@ -370,7 +370,7 @@ export const serverSideColumns = [
     minWidth: "150px",
     selector: (row) => row.category?.shipTypeName || "N/A", // Fallback to "N/A" if shipTypeName is undefined
   },
-  
+
   // {
   //   sortable: true,
   //   name: "dimensions",
@@ -474,7 +474,6 @@ export const serverSideColumns = [
         });
       };
 
-
       return (
         <div className="d-flex">
           {/* <Link to={{
@@ -485,38 +484,38 @@ export const serverSideColumns = [
             <Eye size={25}className="me-2"/>
           </span></Link> */}
 
-          <span style={{ cursor: "pointer" }}>
-  <Link
-    to={{
-      pathname: `/dashboard/SlipView/${row.uid}`,
-      state: { slipData: row }, // Pass full data
-    }}
-  >
-    <Eye size={25} className="me-2" />
-  </Link>
-</span>
-
+            <Link 
+            style={{margin: "0.5rem"}}
+              to={{
+                pathname: `/dashboard/SlipView/${row.uid}`,
+                state: { slipData: row }, // Pass full data
+              }}
+            >
+            <Eye className="font-medium-3 text-body" />
+            </Link>
 
           {/* Edit Button */}
-          <Link
+          <Link             style={{margin: "0.5rem"}}
+
             to={{
               pathname: `/dashboard/SlipDetails/${row.uid}`, // Ensure this is the correct path
               state: {},
             }}
           >
             <span>
-              <Edit2 className="me-2" />
+              <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
 
-          {/* Delete Button */}
-          <span
+<Link             style={{margin: "0.5rem"}}
+>          <span
             color="danger"
             style={{ cursor: "pointer", color: "red" }}
             onClick={() => handleDelete(row.uid)}
           >
-            <Trash2 size={20} />
+              <Trash className="font-medium-3 text-body" />
           </span>
+          </Link>
         </div>
       );
     },

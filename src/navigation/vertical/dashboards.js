@@ -78,7 +78,7 @@ export default [
     {
       
         id: 'Create User',
-        title: 'Rolls & Permission',
+        title: 'Roles & Permissions',
         icon: <Circle size={12} />,
         navLink: '/dashboard/user_rolls/roles-permissions/roles'
      

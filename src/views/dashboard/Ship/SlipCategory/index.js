@@ -40,14 +40,13 @@ function Index() {
   // Fetch existing data when editing
   useEffect(() => {
     console.log("Location state:", location.state);
-
     if (uid) {
       const fetchSlipCategory = async () => {
-  
-
         try {
           const { data } = await useJwt.getslipCatogory(uid);
           const { result } = data.content;
+          console.log(result,"result");
+          
           if (result.length) {
             const details = result.find((d) => d.uid === uid);
             setSelected({
@@ -115,7 +114,7 @@ function Index() {
         shipTypeName: selected.shipTypeName,
         dimensions: Array.from(selected.dimensions), // Convert Set back to array
       };
-console.log(payload);
+      console.log(payload);
 
       try {
         if (uid) {
@@ -131,7 +130,7 @@ console.log(payload);
             buttonsStyling: false,
           }).then(() => {
             navigate("/dashboard/SlipList");
-          })
+          });
         } else {
           await useJwt.postslipCatogory(payload);
           try {

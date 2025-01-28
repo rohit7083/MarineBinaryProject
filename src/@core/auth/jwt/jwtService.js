@@ -18,16 +18,34 @@ export default class JwtService {
 
     // ** Request Interceptor
     axios.interceptors.request.use(
-      (config) => {
+      async (config) => {
         // ** Get token from localStorage
-        const accessToken = this.getToken();
+        const accessToken =  this.getToken();
+        
+        // ** Get Location
+        const location = await this.getLocation();
+
+        // ** Get IP
+        const ipResponse = await fetch("https://api.ipify.org?format=json");
+        const ipData = await ipResponse.json();
+        const userIp = ipData.ip;
+
+        if (location && userIp) {
+          config.headers["X-IP"] = userIp;
+          config.headers["X-Location"] = Object.values(location).join(",");
+        }
 
         // ** If token is present add it to request's Authorization Header
+        // {{debugger}}
         if (accessToken) {
+          console.log("Access Token:", accessToken);
+
           // ** eslint-disable-next-line no-param-reassign
-          config.headers.Authorization = `${
-            this.jwtConfig.tokenType
-          } ${accessToken.slice(1, -1)}`;
+          // config.headers.Authorization = `${
+          //   this.jwtConfig.tokenType
+          // } ${accessToken.slice(1, -1)}`; 
+
+          config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken.slice(1, -1)}`;
         }
         return config;
       },
@@ -72,6 +90,28 @@ export default class JwtService {
       }
     );
   }
+
+  async getLocation() {
+    try {
+      if (!navigator.geolocation) {
+        throw new Error("Geolocation is not supported by your browser.");
+      }
+
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+
+      const location = {
+        lat: position.coords.latitude,
+        long: position.coords.longitude,
+      };
+
+      console.log("Location fetched:", location);
+      return location;
+    } catch (error) {
+      console.error("Error fetching location:", error.message);
+      throw error;
+    }}
 
   onAccessTokenFetched(accessToken) {
     this.subscribers = this.subscribers.filter((callback) =>
@@ -149,7 +189,6 @@ export default class JwtService {
     return axios.post(this.jwtConfig.sMember, ...args);
   }
 
-  // ==================== Slip Payment
 
   // =================== Register
 
@@ -159,11 +198,18 @@ export default class JwtService {
 
   // =================== Login
 
-  login(...args) {
-    // return axios.post(this.jwtConfig.login, ...args);
-    return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  verifyEmail(...args) {
+    return axios.post(this.jwtConfig.verifyEmail, ...args);
+    // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
+
+  loginPassword(token, ...args){
+    return axios.post(this.jwtConfig.loginPassword+token, ...args);
+
+  }
+
   sendOtp(token="") {
+    // {{debugger}}
     return axios.get(this.jwtConfig.sendOtp+token);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
@@ -215,13 +261,13 @@ export default class JwtService {
 
   }
 
-  userpermission(payload){
-    return axios.post(this.jwtConfig.userpermission , payload);
+  userpermissionPost(...data){
+    return axios.post(this.jwtConfig.userpermissionPost , ...data);
 
-  }
+  } 
 
-  userpermission(){
-    return axios.get(this.jwtConfig.userpermission);
+  userpermission(params=""){
+    return axios.get(this.jwtConfig.userpermission+params);
 
   }
   permission(){
@@ -229,6 +275,24 @@ export default class JwtService {
 
   }
 
+  deleteRole(uid) {
+    return axios.delete(`${this.jwtConfig.deleteRole}${uid}`);
+  }
+
+  updateRole(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateRole}${uid}`, ...args);
+  }
+  getallSubuser() {
+    return axios.get(this.jwtConfig.getallSubuser);
+  }
+
+  updateSubuser(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateSubuser}${uid}`, ...args);
+  }
+
+  deleteSubUser(uid) {
+    return axios.delete(`${this.jwtConfig.deleteSubUser}${uid}`);
+  }
 
   getslipAssignment() {
     return axios.get(this.jwtConfig.slipAssignmentGet);

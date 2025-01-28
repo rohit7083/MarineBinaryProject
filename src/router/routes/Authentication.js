@@ -1,7 +1,7 @@
 // ** React Imports
 import { lazy } from 'react'
 
-const Login = lazy(() => import('../../views/pages/authentication/slip/Login'))
+const loginEmail = lazy(() => import('../../views/pages/authentication/slip/LoginEmail'))
 const LoginBasic = lazy(() => import('../../views/pages/authentication/LoginBasic'))
 const LoginCover = lazy(() => import('../../views/pages/authentication/LoginCover'))
 
@@ -25,7 +25,7 @@ const TwoStepsCover = lazy(() => import('../../views/pages/authentication/TwoSte
 const Email_Reset = lazy(()=> import('../../views/pages/authentication/slip/Email_Reset'))
 const EmailOTP = lazy(()=> import('../../views/pages/authentication/slip/EmailOTP'))
 const Mobile_OTP = lazy(()=> import('../../views/pages/authentication/slip/Mobile_OTP'))
-const Login_password= lazy(()=> import('../../views/pages/authentication/slip/Login_password'))
+const LoginPassword= lazy(()=> import('../../views/pages/authentication/slip/LoginPassword'))
 // const Forget_password = lazy(()=> import('../../views/pages/authentication/Forget_password'))
 const SlipRegister = lazy(()=> import('../../views/pages/authentication/SlipRegister'))
 // const ForgotPassword = lazy(()=> import('../../views/pages/authentication/ForgotPassword'))
@@ -33,8 +33,8 @@ const Forget_password = lazy(()=> import('../../views/pages/authentication/slip/
 // const twoStep_auth=lazy(()=>import('../../views/pages/authentication/slip/twoStep_auth'))
 const AuthenticationRoutes = [
   {
-    path: '/Login',
-    element: <Login />,
+    path: '/login',
+    element: <loginEmail />,
     meta: {
       layout: 'blank',
       publicRoute: true,
@@ -44,8 +44,8 @@ const AuthenticationRoutes = [
 
 
   {
-    path: '/Login_password',
-    element: <Login_password/>,
+    path: '/login_password',
+    element: <LoginPassword/>,
     meta: {
       layout: 'blank',
       publicRoute: true,
@@ -91,7 +91,7 @@ const AuthenticationRoutes = [
   },
  
   {
-    path: '/Forget_password',
+    path: '/forget-password',
     element: <Forget_password />,
     meta: {
       layout: 'blank',

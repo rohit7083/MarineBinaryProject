@@ -30,27 +30,27 @@ export const columns = [
     cell: ({ roleName }) => roleName,
     selector: row => row.roleName
   },
-  {
-    sortable: true,
-    minWidth: '250px',
-    name: 'Role Permissions',
-    cell: ({ permissionIds }) => {
-      if (permissionIds) {
-        return permissionIds.map((permissionIds, index) => {
-          const isLastBadge = permissionIds[permissionIds.length - 1] === index
-          return (
-            <Link key={`${permissionIds}-${index}`} to='' className={classnames({ 'me-50': !isLastBadge })}>
-              <Badge pill color={colors[permissionIds]} className='text-capitalize'>
-                {permissionIds.replace('-', ' ')}
-              </Badge>
-            </Link>
-          )
-        })
-      } else {
-        return null
-      }
-    }
-  },
+  // {
+  //   sortable: true,
+  //   minWidth: '250px',
+  //   name: 'Role Permissions',
+  //   cell: ({ permissionIds }) => {
+  //     if (permissionIds) {
+  //       return permissionIds.map((permissionIds, index) => {
+  //         const isLastBadge = permissionIds[permissionIds.length - 1] === index
+  //         return (
+  //           <Link key={`${permissionIds}-${index}`} to='' className={classnames({ 'me-50': !isLastBadge })}>
+  //             <Badge pill color={colors[permissionIds]} className='text-capitalize'>
+  //               {permissionIds.replace('-', ' ')}
+  //             </Badge>
+  //           </Link>
+  //         )
+  //       })
+  //     } else {
+  //       return null
+  //     }
+  //   }
+  // },
   // {
   //   sortable: true,
   //   minWidth: '350px',

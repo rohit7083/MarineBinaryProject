@@ -48,7 +48,7 @@ const VerifyEmailBasic = () => {
 
         setTimeout(() => {
           setBtn(false);
-          navigate("/Login", {
+          navigate("/login_password", {
             state: { resettoken: res.data.token },
           });
           setBtn(false);

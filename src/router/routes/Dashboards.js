@@ -18,12 +18,17 @@ const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/Sli
 
 const DashboardSlipView=lazy(()=> import('../../views/dashboard/Ship/SlipDetails/SlipView'))
 const Dashboarddash=lazy(()=> import('../../views/dashboard/dash'))
-const Dashboardroles=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/roles'))
+const Dashboardroles=lazy(()=> import('../../views/dashboard/user-rolls'))
+// const Dashboardroles=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/roles'))
+const DashboardRoleModal=lazy(()=>(import('../../views/dashboard/user_rolls/roles-permissions/roles/Role_modal')))
 const Dashboardcreateuser=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/createuser'))
 const DashboardRoutes = [
  
-  
  
+  {
+    path: '/dashboard/user_rolls/roles-permissions/roles/Role_modal',
+    element: <DashboardRoleModal />
+  },
   {
     path: '/dashboard/analytics',
     element: <DashboardAnalytics />

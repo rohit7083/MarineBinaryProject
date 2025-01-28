@@ -20,7 +20,10 @@ import {
 // ** Third Party Components
 import { Copy, Info } from "react-feather";
 import { useForm, Controller, set } from "react-hook-form";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { permissionList } from "./fakedb";
+// import Role_modal from "./Role_modal";
 
 const actions = ["View", "Create", "Update", "Delete"];
 
@@ -33,6 +36,7 @@ const RoleCards = () => {
   const [checkroles, setCheckRoles] = useState([]);
   const [CheckActions, setCheckActions] = useState([]);
   const [selectAll, setSelectAll] = useState(false); // State to track "Select All"
+  const MySwal = withReactContent(Swal);
 
   const {
     reset,
@@ -41,7 +45,7 @@ const RoleCards = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: { roleName: "" } });
+  } = useForm({ defaultValues: { roleName: "", permission: "" } });
 
   const handleCheckboxChange = (role, action) => {
     console.log("Role:", role, "Action:", action);
@@ -74,9 +78,10 @@ const RoleCards = () => {
   };
 
   const fetchRoles = async () => {
+    // {{debugger}}
     try {
       const res = await useJwt.permission();
-      console.log("API Response:", res);
+      console.log("permission Response:", res);
 
       if (res.status === 200) {
         // Extract UIDs for the selected role and action based on the criteria
@@ -121,7 +126,8 @@ const RoleCards = () => {
     setSelectedPermissions(updatedPermissions);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    // {{debugger}}
     const selectedUIDs = [];
 
     // Loop over selectedPermissions to collect UIDs of selected actions
@@ -139,10 +145,40 @@ const RoleCards = () => {
       permissionIds: selectedUIDs,
     };
     console.log("payload", payload);
-
     try {
-      const res = useJwt.userpermission(payload);
-      console.log("User permisions Response:", res);
+      // {{debugger}}
+      const res = await useJwt.userpermissionPost(payload);
+      console.log(" Add role res:", res);
+
+      if (res.status === 201) {
+        MySwal.fire({
+          title: "Successfully Added",
+          text: " Your Role Name Added Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          setShow(false);
+          reset({ roleName: "", permissions: {} });
+
+          // navigate("/");
+        });
+      } else {
+        MySwal.fire({
+          title: "Failed",
+          text: "Your Role Created Failed",
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          // navigate("/dashboard/SlipList");
+        });
+        console.error("Failed to add role:", res.message || res);
+      }
     } catch (error) {
       console.log("Error:", error);
     }
@@ -150,10 +186,21 @@ const RoleCards = () => {
 
   // ** useEffect to fetch roles on component mount
   useEffect(() => {
-    fetchRoles();
-  }, []);
 
-  
+    // permissionList
+
+      // Extract UIDs for the selected role and action based on the criteria
+      const selectedUIDs = permissionList.content.result.map((item) => item.uid);
+      // console.log("Selected UIDs:", selectedUIDs);
+
+      // Set roles (module names) from the API response
+      const fetchedRoles = Array.from(
+        new Set(permissionList.content.result.map((role) => role.moduleName))
+      );
+      setRoles(fetchedRoles || []);
+      setsetAction(permissionList.content.result);
+    // fetchRoles();
+  }, []);
 
   const onReset = () => {
     setShow(false);
@@ -164,6 +211,8 @@ const RoleCards = () => {
     setModalType("Add New");
     setValue("roleName");
   };
+
+ 
 
   return (
     <Fragment>
@@ -196,6 +245,11 @@ const RoleCards = () => {
           </div>
 
           <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
+
+
+
+
+
             <Col xs={12}>
               <Label className="form-label" for="roleName">
                 Role Name
@@ -219,12 +273,14 @@ const RoleCards = () => {
                 <FormFeedback>Please enter a valid role name</FormFeedback>
               )}
             </Col>
-             <Col xs={12}>
+
+
+
+
+            <Col xs={12}>
               <h4 className="mt-2 pt-50">Role Permissions</h4>
 
-          
-
-            <Table className="table-flush-spacing" responsive>
+              <Table className="table-flush-spacing" responsive>
                 <tbody>
                   <tr>
                     <td className="text-nowrap fw-bolder">
@@ -290,8 +346,18 @@ const RoleCards = () => {
                     </small>
                   )}
                 </tbody>
-              </Table> 
+              </Table>
             </Col>
+
+
+
+
+
+
+
+
+
+
             <Col className="text-center mt-2" xs={12}>
               <Button type="submit" color="primary" className="me-1">
                 Submit
@@ -303,6 +369,7 @@ const RoleCards = () => {
           </Row>
         </ModalBody>
       </Modal>
+
     </Fragment>
   );
 };

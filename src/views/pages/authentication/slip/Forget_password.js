@@ -1,11 +1,12 @@
 // ** React Imports
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-
+import React from "react";
 // ** Icons Imports
 import { ChevronLeft } from "react-feather";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Spinner } from "reactstrap";
 // ** React Hook Form
+import { UncontrolledAlert } from "reactstrap";
 
 import { useForm, Controller } from "react-hook-form";
 import Swal from "sweetalert2";
@@ -38,10 +39,12 @@ const ResetPasswordBasic = () => {
   } = useForm();
   const [msz, setMsz] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [urlToken, seturlToken] = useState(null);
+
   const MySwal = withReactContent(Swal);
-const navigate=useNavigate();
-  // const { uid: token } = useParams();
+  const navigate = useNavigate();
+  const { token } = useParams();
+
+  // console
 
   // console.log({ token });
 
@@ -63,17 +66,11 @@ const navigate=useNavigate();
     }
   };
 
-  const sendOtp = async () => {
-
-    const path = window.location.pathname;
-    // Split the path into parts
-    const parts = path.split("/");
-    // Extract the last part as the token
-    const token = parts[parts.length - 1];
-    // console.log("Token:", token);
-    seturlToken(parts[parts.length - 1]);
-
+  const sendOtp = async (
+    // token = "RUyaPXYJ2oEmV7UDg7FP8L1O1kiVsK_xHdN9lq8ygq4dqPdLfBI0K824PyjVwsBc96UZzQPETqqPxUSjf3NOObwivdcJC2-viSel_mRt3e4="
+  ) => {
     try {
+     
       const otpRes = await useJwt.sendOtp(token);
       console.log(otpRes);
     } catch (error) {
@@ -85,7 +82,6 @@ const navigate=useNavigate();
     sendOtp();
   }, []);
 
-
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     const otpString = data.otp.join(""); // Join the OTP digits
@@ -94,16 +90,15 @@ const navigate=useNavigate();
 
     try {
       setLoading(true); // Set loading to true before API call
-      console.log(urlToken);
 
-      const res = await useJwt.createPass(urlToken, {
+      const res = await useJwt.createPass(token, {
         otp,
         password,
         confirmPassword,
       });
 
       console.log(res);
-// {{debugger}}
+      // {{debugger}}
       if (res.status == 200 || res.status == 201) {
         return MySwal.fire({
           title: "Successfully ",
@@ -123,6 +118,7 @@ const navigate=useNavigate();
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = data.content;
+        console.log("errormsx", errorMessage);
 
         switch (status) {
           case 400:
@@ -135,9 +131,9 @@ const navigate=useNavigate();
           case 403:
             setMsz(errorMessage);
             break;
-          // case 500:
-          //   setMsz(errorMessage);
-          //   break;
+          case 500:
+            setMsz(errorMessage);
+            break;
           default:
             setMsz(errorMessage);
         }
@@ -235,9 +231,15 @@ const navigate=useNavigate();
                     />
                   ))}
                 </div>
-                <p className="text-danger">
-                  <strong>{msz}</strong>
-                </p>
+                {msz && (
+                  <React.Fragment>
+                    <UncontrolledAlert color="danger">
+                      <div className="alert-body">
+                        <span className="text-danger fw-bold">{msz}</span>
+                      </div>
+                    </UncontrolledAlert>
+                  </React.Fragment>
+                )}
                 {errors.otp && (
                   <small className="text-danger">{errors.otp.message}</small>
                 )}

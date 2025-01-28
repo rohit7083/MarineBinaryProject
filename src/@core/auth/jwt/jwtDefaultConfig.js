@@ -1,6 +1,6 @@
 // ** Auth Endpoints
 export default {
-  loginEndpoint: '/jwt/login',
+  // loginEndpoint: "/jwt/login",
   // loginEndpoint: '/login',
 
   registerEndpoint: "/jwt/register",
@@ -10,7 +10,6 @@ export default {
   // ** This will be prefixed in authorization header with token
   // ? e.g. Authorization: Bearer <token>
   tokenType: "Bearer",
-
   // ** Admin Endpoint
   slipCategory: "/slipCategory/",
   slipCategoryGet: "/slipCategory",
@@ -24,7 +23,7 @@ export default {
 
   // user Registraion and login
   registerUser: "/auth/user/create",
-  // login: "/auth/login",
+  login: "/auth/login",
   verifyAccount: "/auth/verify_account/",
   sendEmail: "/auth/user/reset_password",
   createPass: "/auth/user/create_password/",
@@ -33,18 +32,28 @@ export default {
   generate: "/googleAuthenticatorQR/generate",
   verifyQr: "/googleAuthenticatorQR/verify-qr",
   disable: "/googleAuthenticatorQR/disable",
-  mobileOtp:"/auth/verify_accountForAuth/",
-  status:"/googleAuthenticatorQR/status",
-  sendOtp:"/auth/user/send_otp/",
+  mobileOtp: "/auth/verify_accountForAuth/",
+  status: "/googleAuthenticatorQR/status",
+  sendOtp: "/auth/user/send_otp/",
+
+  // verify Email and Login api
+  verifyEmail:"/auth/verifyEmail",
+  loginPassword:"/auth/login/",
 
   //roles and permissions
-  userpermission:"/userpermission/",  
-  userpermission:"/userpermission",  
+  userpermissionPost: "/userpermission/",
+  userpermission: "/userpermission",
 
-  permission:"/permission",
+  permission: "/permission",
 
-  createUser:"/auth/user/create",
+  deleteRole: "/userpermission/",
+  updateRole: "/userpermission/",
 
+  createUser: "/sub_user/",
+  getallSubuser: "/sub_user",
+  deleteSubUser: "/sub_user/",
+  updateSubuser: "/sub_user/",
+  
   slipAssignmentGet: "/slipAssignmentGet",
   postOTP: "/slipAssignment/generate",
   verifyOTP: "/slipAssignment/verify/",

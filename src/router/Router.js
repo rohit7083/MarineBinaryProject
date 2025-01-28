@@ -19,12 +19,13 @@ import { getRoutes } from './routes'
 // ** Components
 const Error = lazy(() => import('../views/pages/misc/Error'))
 // const Login = lazy(() => import('../views/pages/authentication/Login'))
-const Login= lazy(() => import('../views/pages/authentication/slip/Login'))
+const LoginEmail= lazy(() => import('../views/pages/authentication/slip/LoginEmail'))
 const NotAuthorized = lazy(() => import('../views/pages/misc/NotAuthorized'))
 const Email_Reset=lazy(()=>import('../views/pages/authentication/slip/Email_Reset'))
 const EmailOTP=lazy(()=>import('../views/pages/authentication/slip/EmailOTP'))
 const Mobile_OTP=lazy(()=>import('../views/pages/authentication/slip/Mobile_OTP'))
 const Forget_password=lazy(()=>import('../views/pages/authentication/slip/Forget_password'))
+const LoginPassword=lazy(()=>import('../views/pages/authentication/slip/LoginPassword'))
 const Router = () => {
   
   const { layout } = useLayout()
@@ -35,7 +36,7 @@ const Router = () => {
     if (user) {
       return getHomeRouteForLoggedInUser(user.role)
     } else {
-      return '/Login'
+      return '/login'
     }
   }
 
@@ -46,9 +47,14 @@ const Router = () => {
       element: <Navigate replace to={getHomeRoute()} />
     },
     {
-      path: '/Login',
+      path: '/login',
       element: <BlankLayout />,
-      children: [{ path: '/Login', element: <Login /> }]
+      children: [{ path: '/login', element: <LoginEmail /> }]
+    },
+    {
+      path: '/login_password',
+      element: <BlankLayout />,
+      children: [{ path: '/login_password', element: <LoginPassword/> }]
     },
     {
       path: '/Email_Reset',
@@ -56,9 +62,9 @@ const Router = () => {
       children: [{ path: '/Email_Reset', element: <Email_Reset /> }]
     },
     {
-      path: '/Mobile_OTP',
+      path: '/mobile_otp',
       element: <BlankLayout />,
-      children: [{ path: '/Mobile_OTP', element: <Mobile_OTP /> }]
+      children: [{ path: '/mobile_otp', element: <Mobile_OTP /> }]
     },
     {
       path: '/EmailOTP',
