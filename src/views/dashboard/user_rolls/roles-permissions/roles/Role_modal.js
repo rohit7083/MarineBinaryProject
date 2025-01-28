@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useJwt from "@src/auth/jwt/useJwt";
+import React from "react";
+import { UncontrolledAlert } from "reactstrap";
 import {
   Row,
   Col,
@@ -32,6 +34,8 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
   const [selectAll, setSelectAll] = useState(false);
   const [permissionData, setPermissionData] = useState({});
   const MySwal = withReactContent(Swal);
+  const[Errmessage,setMessage]=useState("");
+  
 
   const {
     control,
@@ -75,6 +79,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
     });
     console.log("Submitted Data:", data);
 
+    try{
     if (uid) {
       // {{debugger}}
       const res = await useJwt.updateRole(uid, data);
@@ -97,7 +102,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         }).then(() => {
           setShow(false);
           reset();
-          // navigate("/");
+          navigate("/dashboard/user_rolls/roles-permissions/roles");
         });
       } else {
         MySwal.fire({
@@ -112,6 +117,37 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
           // navigate("/dashboard/SlipList");
         });
         console.error("Failed to add role:", res.message || res);
+      }
+    }}catch (error) {
+      console.error(
+        "Login Error Details:",
+        error.response || error.message || error
+      );
+
+      if (error.response) {
+        const { status, detail } = error.response.data;
+        const errorMessage =detail;
+        setMessage(errorMessage);
+        // console.log("errorMessage",errorMessage);
+
+      
+        switch (status) {
+          case 400:
+            setMessage(errorMessage);
+            break;
+          case 401:
+            setMessage(errorMessage);
+            // navigate("/login");
+            break;
+          case 403:
+            setMessage(errorMessage);
+            break;
+            case 500:
+              setMessage(errorMessage);
+              break;
+          default:
+            setMessage(errorMessage);
+        }
       }
     }
   };
@@ -206,6 +242,15 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         <div className="text-center mb-4">
           <h1>{modalType} Role</h1>
           <p>{uid ? "Update Roles" : "Create Roles"}</p>
+          {Errmessage && (
+                <React.Fragment>
+                  <UncontrolledAlert color="danger">
+                    <div className="alert-body">
+                      <span className="text-danger fw-bold">{Errmessage}</span>
+                    </div>
+                  </UncontrolledAlert>
+                </React.Fragment>
+              )}
         </div>
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>

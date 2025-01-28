@@ -1,4 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
+import React from "react";
+import { UncontrolledAlert } from "reactstrap";
 import {
   Row,
   Col,
@@ -35,7 +37,7 @@ const RoleCards = () => {
   const [countryCode, setCountryCode] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [allRoleName, setallRoleName] = useState(null);
-
+const[Errmessage,setMessage]=useState("");
   // Helper function to extract country code and mobile number
   const extractCountryCodeAndNumber = (value) => {
     const code = value.slice(0, value.length - 10);
@@ -91,7 +93,7 @@ const RoleCards = () => {
         }).then(() => {
           setShow(false);
           reset();
-          // navigate("/");
+          navigate("/dashboard/user_rolls/roles-permissions/createuser");
         });
       } else {
         MySwal.fire({
@@ -108,7 +110,36 @@ const RoleCards = () => {
         console.error("Failed to add role:", res.message || res);
       }
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Login Error Details:",
+        error.response || error.message || error
+      );
+
+      if (error.response) {
+        const { status, content } = error.response.data;
+        const errorMessage =content;
+        setMessage(errorMessage);
+        // console.log("errorMessage",errorMessage);
+
+      
+        switch (status) {
+          case 400:
+            setMessage(errorMessage);
+            break;
+          case 401:
+            setMessage(errorMessage);
+            // navigate("/login");
+            break;
+          case 403:
+            setMessage(errorMessage);
+            break;
+            case 500:
+              setMessage(errorMessage);
+              break;
+          default:
+            setMessage(errorMessage);
+        }
+      }
     }
   };
 
@@ -163,9 +194,17 @@ const RoleCards = () => {
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
             <h1>{modalType} Add Users</h1>
-            <p>Add new user</p>
+            {/* <p>Add new user</p> */}
+          {Errmessage && (
+                <React.Fragment>
+                  <UncontrolledAlert color="danger">
+                    <div className="alert-body">
+                      <span className="text-danger fw-bold">{Errmessage}</span>
+                    </div>
+                  </UncontrolledAlert>
+                </React.Fragment>
+              )}
           </div>
-
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row className="mb-2">
               <Label sm="3" for="roleName">

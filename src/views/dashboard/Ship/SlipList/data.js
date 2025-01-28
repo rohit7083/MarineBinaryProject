@@ -13,7 +13,6 @@ import {
   Trash,
   Edit2,
   Eye,
-
 } from "react-feather";
 import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
@@ -364,13 +363,21 @@ export const serverSideColumns = [
     minWidth: "50px",
     selector: (row) => row.shipTypeName,
   },
+
+
   {
     sortable: true,
-    name: "Dimentions",
+    name: "Dimensions",
     minWidth: "50px",
-    selector: (row) => row.dimensions,
-  },
-
+    selector: (row) =>
+      row.dimensions && row.dimensions.length > 0
+        ? row.dimensions.join("   |   ")
+        : "N/A",
+  }
+  
+  
+  ,
+ 
   {
     name: "Actions",
     sortable: true,
@@ -438,12 +445,11 @@ export const serverSideColumns = [
 
       return (
         <div className="d-flex">
-          {/* View Button */}
-          <Link>         <span style={{ margin: "0.5rem", cursor: "pointer" }}>
+          {/* <Link>         <span style={{ margin: "0.5rem", cursor: "pointer" }}>
           <Eye className="font-medium-3 text-body" />
           </span>
-          </Link>
- 
+          </Link> */}
+
           <Link
             to={{
               pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path
@@ -453,19 +459,22 @@ export const serverSideColumns = [
               },
             }}
           >
-            <span  style={{ margin: "0.5rem", cursor: "pointer"}} onClick={() => handle(row)}>
+            <span
+              style={{ margin: "0.5rem", cursor: "pointer" }}
+              onClick={() => handle(row)}
+            >
               <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
 
           <Link>
-          <span
-            color="danger"
-            style={{ margin: "0.5rem", cursor: "pointer"}}
-            onClick={() => handleDelete(row.uid)}
-          >
+            <span
+              color="danger"
+              style={{ margin: "0.5rem", cursor: "pointer" }}
+              onClick={() => handleDelete(row.uid)}
+            >
               <Trash className="font-medium-3 text-body" />
-          </span>
+            </span>
           </Link>
         </div>
       );

@@ -13,6 +13,8 @@ import {
   Button,
   Badge,
 } from "reactstrap";
+import { UncontrolledAlert } from "reactstrap";
+
 import useJwt from "@src/auth/jwt/useJwt";
 // Assuming you are using toast for notifications
 import Swal from "sweetalert2";
@@ -45,8 +47,8 @@ function Index() {
         try {
           const { data } = await useJwt.getslipCatogory(uid);
           const { result } = data.content;
-          console.log(result,"result");
-          
+          console.log(result, "result");
+
           if (result.length) {
             const details = result.find((d) => d.uid === uid);
             setSelected({
@@ -182,13 +184,20 @@ function Index() {
         </CardTitle>
       </CardHeader>
       <CardBody>
-        {errorMessage && (
-          <Row className="mb-1">
-            <Col sm="12">
-              <Badge color="light-danger">{errorMessage}</Badge>
-            </Col>
-          </Row>
-        )}
+        <Row className="mb-1">
+          <Label sm="3" for="shipTypeName"></Label>
+          <Col sm="9">
+            {errorMessage && (
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">{errorMessage}</span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
+          </Col>
+        </Row>
 
         <Form onSubmit={handleSubmit}>
           <Row className="mb-1">

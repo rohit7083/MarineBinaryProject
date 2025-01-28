@@ -374,85 +374,7 @@ function ShipDetails() {
     return newErrors;
   };
 
-  // Fetch category data from API when component mounts
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const payload = {}; // Add any necessary payload if required
-  //       const response = await useJwt.getslipCatogory(payload);
-  //       // Extract shipTypeName and set as dropdown option
-  //       const options = response.data.content.result.map((item) => ({
-  //         value: item.uid,
-  //         label: item.shipTypeName,
-  //         dimensions: item.dimensions, // Store dimensions for each category
-  //       }));
-  //       console.log(options);
-
-  //       setShipTypeNames(options);
-  //     } catch (error) {
-  //       console.error("Error fetching category:", error);
-  //       const { response } = error;
-  //       const { data, status } = response;
-  //       if (status == 400) {
-  //         alert(data.content);
-  //       }
-  //     }
-  //   };
-  //   if (uid) {
-  //     const fetchDetailsForUpdate = async () => {
-  //       try {
-  //         const { data } = await useJwt.getslipDetail(uid);
-  //         const { result } = data.content;
-
-  //         if (result.length) {
-  //           const details = result.find((d) => d.uid === uid);
-  //           setUserData({
-  //             slipName: details.slipName,
-  //             electric: details.electric,
-  //             water: details.water,
-  //             addOn: details.addOn,
-  //             marketAnnualPrice: details.marketAnnualPrice,
-  //             marketMonthlyPrice: details.marketMonthlyPrice,
-  //             amps: details.amps,
-  //             overDueAmountFor7Days: details.overDueAmountFor7Days,
-
-  //             overDueAmountFor15Days: details.overDueAmountFor15Days,
-
-  //             overDueAmountFor30Days: details.overDueAmountFor30Days,
-
-  //             overDueAmountForNotice: details.overDueAmountForNotice,
-
-  //             overDueAmountForAuction: details.overDueAmountForAuction,
-  //           });
-
-  //           setSelectedCategory({
-  //             // value: item.uid,
-  //             // label: item.shipTypeName,
-  //             // dimensions: item.dimensions,
-  //           });
-  //           console.log("selectedCategory",selectedCategory);
-
-  //           setSelections({
-  //             overDueChargesFor7Days:details.overDueChargesFor7Days,
-  //             overDueChargesFor15Days:details.overDueChargesFor15Days,
-  //             overDueChargesFor30Days:details.overDueChargesFor30Days,
-  //             overDueChargesForNotice:details.overDueChargesForNotice,
-  //             overDueChagesForAuction:details.overDueChagesForAuction,
-  //           });
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //         alert.error("Failed to fetch data");
-  //       }
-  //     };
-  //     fetchDetailsForUpdate();
-
-  //   }
-
-  //   fetchData();
-
-  // }, [uid]);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -584,7 +506,20 @@ function ShipDetails() {
             {uid ? "Edit Slip Details" : "Add Slip Details"}
           </CardTitle>
         </CardHeader>
-
+        {/* <Row className="mb-1">
+          <Label sm="3" for="shipTypeName"></Label>
+          <Col sm="9">
+            {errorMessage && (
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">{errorMessage}</span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
+          </Col>
+        </Row> */}
         <CardBody>
           <Form onSubmit={handleSubmit}>
             <Row className="mb-1">

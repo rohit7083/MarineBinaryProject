@@ -85,7 +85,7 @@ const DashboardRoutes = [
     element: <DashboardSlipMemberList />
   },
   {
-    path: '/dashboard/SlipView',
+    path: '/dashboard/SlipView/:uid',
     element: <DashboardSlipView />
   },
   // {

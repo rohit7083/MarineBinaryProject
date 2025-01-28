@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import React from "react";
+import { UncontrolledAlert } from "reactstrap";
 import withReactContent from "sweetalert2-react-content";
 import {
   Row,
@@ -37,6 +39,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [countryCode, setCountryCode] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [allRoleName, setallRoleName] = useState(null);
+  const[Errmessage,setMessage]=useState("");
+  
   const MySwal = withReactContent(Swal);
 
   // Helper function to extract country code and mobile number
@@ -78,6 +82,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
     };
     console.log("Transformed Data:", transformedData);
 
+
+
     if (uid) {
       // {{debugger}}
       const res = await useJwt.updateSubuser(uid, transformedData);
@@ -95,7 +101,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         }).then(() => {
           setShow(false);
           reset();
-          // navigate("/");
+          navigate("/dashboard/user_rolls/roles-permissions/createuser");
         });
       } else {
         MySwal.fire({

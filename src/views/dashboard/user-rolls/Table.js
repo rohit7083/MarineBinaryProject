@@ -1,7 +1,7 @@
 // ** React Imports
 import { Fragment, useState, useEffect, memo } from "react";
 import { debounce } from "lodash";
-
+import { Spinner } from "reactstrap";
 // ** Table Columns
 
 // ** Third Party Components
@@ -38,8 +38,8 @@ const DataTableServerSide = () => {
   const [RowData, setRowData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [dataUid, setDataUid] = useState(null);
-  const [datarow, setDatarow] = useState(null); 
-
+  const [datarow, setDatarow] = useState(null);
+const [loading,setLoading]=useState(true);
   const [tableData, setTableData] = useState({
     count: 0,
     results: [],
@@ -53,12 +53,15 @@ const DataTableServerSide = () => {
       const { data } = await useJwt.userpermission(
         `?offset=${offset}&limit=${limit}`
       );
-
+setLoading(true);
       const { content } = data;
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
+    }
+    finally{
+      setLoading(false);
     }
   }
 
@@ -81,19 +84,16 @@ const DataTableServerSide = () => {
   //   setCurrentPage(1);
   // };
 
-
-
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
-  
+
   const handleFilter = (value) => {
     setSearchTerm(value);
-  
+
     if (value) {
       const filteredResults = tableData.results.filter((row) =>
         row.roleName.toLowerCase().includes(value.toLowerCase())
-        
       );
-  
+
       // Update table data with filtered results
       setTableData((prev) => ({
         ...prev,
@@ -104,8 +104,6 @@ const DataTableServerSide = () => {
       fetchTableData((currentPage - 1) * rowsPerPage, rowsPerPage);
     }
   };
-  
-
 
   // ** Function to handle Pagination and get data
   const handlePagination = (page) => {
@@ -124,9 +122,6 @@ const DataTableServerSide = () => {
     // )
     // setRowsPerPage(parseInt(e.target.value))
   };
-
-  
-
 
   const handleDelete = async (uid) => {
     return MySwal.fire({
@@ -303,7 +298,7 @@ const DataTableServerSide = () => {
                   id="search-permission"
                   className="ms-50 w-100"
                   onChange={(e) => debouncedFilter(e.target.value)}
-                  />
+                />
               </div>
               <div>
                 <RoleCards />
@@ -311,21 +306,26 @@ const DataTableServerSide = () => {
             </div>
           </Col>
         </Row>
-        <div className="react-dataTable">
-          <DataTable
-            noHeader
-            pagination
-            paginationServer
-            className="react-dataTable"
-            columns={columns}
-            sortIcon={<ChevronDown size={10} />}
-            paginationComponent={CustomPagination}
-            data={dataToRender()}
-          />
-        </div>
+        {loading ? (
+          <div className="text-center">
+    <Spinner className="me-25 spinner-border" color="primary" style={{width: '4rem', height: '4rem' }} />
+    </div>
+        ) : (
+          <div className="react-dataTable">
+            <DataTable
+              noHeader
+              pagination
+              paginationServer
+              className="react-dataTable"
+              columns={columns}
+              sortIcon={<ChevronDown size={10} />}
+              paginationComponent={CustomPagination}
+              data={dataToRender()}
+            />
+          </div>
+        )}
       </Card>
       <Role_modal show={showModal} uid={dataUid} row={datarow} />
-
     </Fragment>
   );
 };

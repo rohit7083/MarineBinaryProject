@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import React from "react";
+import { UncontrolledAlert } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 import {
   Row,
@@ -28,6 +30,8 @@ import { permissionList } from "./fakedb";
 const actions = ["View", "Create", "Update", "Delete"];
 
 const RoleCards = () => {
+  const[Errmessage,setMessage]=useState("");
+  
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
   const [roles, setRoles] = useState([]);
@@ -163,7 +167,7 @@ const RoleCards = () => {
           setShow(false);
           reset({ roleName: "", permissions: {} });
 
-          // navigate("/");
+          navigate("/dashboard/user_rolls/roles-permissions/roles");
         });
       } else {
         MySwal.fire({
@@ -180,7 +184,37 @@ const RoleCards = () => {
         console.error("Failed to add role:", res.message || res);
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.error(
+        "Login Error Details:",
+        error.response || error.message || error
+      );
+
+      if (error.response) {
+        const { status, content } = error.response.data;
+        const errorMessage =content;
+        setMessage(errorMessage);
+        // console.log("errorMessage",errorMessage);
+
+      
+        switch (status) {
+          case 400:
+            setMessage(errorMessage);
+            break;
+          case 401:
+            setMessage(errorMessage);
+            // navigate("/login");
+            break;
+          case 403:
+            setMessage(errorMessage);
+            break;
+            case 500:
+              setMessage(errorMessage);
+              break;
+          default:
+            setMessage(errorMessage);
+        }
+      }
+    
     }
   };
 
@@ -242,6 +276,15 @@ const RoleCards = () => {
           <div className="text-center mb-4">
             <h1>{modalType} Role</h1>
             <p>Set role permissions</p>
+              {Errmessage && (
+                            <React.Fragment>
+                              <UncontrolledAlert color="danger">
+                                <div className="alert-body">
+                                  <span className="text-danger fw-bold">{Errmessage}</span>
+                                </div>
+                              </UncontrolledAlert>
+                            </React.Fragment>
+                          )}
           </div>
 
           <Row tag="form" onSubmit={handleSubmit(onSubmit)}>

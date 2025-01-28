@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import { debounce } from "lodash";
-
+import { Spinner } from "reactstrap";
 import withReactContent from "sweetalert2-react-content";
 import useJwt from "@src/auth/jwt/useJwt";
 import Createuser from "./Createuser";
@@ -26,7 +26,7 @@ const CustomTable = ({ data }) => {
     count: 0,
     results: [],
   });
-
+const [loading,setLoading]=useState(true);
   // ** Get data on mount
   const MySwal = withReactContent(Swal);
 
@@ -35,12 +35,15 @@ const CustomTable = ({ data }) => {
       const { data } = await useJwt.getallSubuser(
         `?offset=${offset}&limit=${limit}`
       );
-
+setLoading(true);
       const { content } = data;
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
+    }
+    finally{
+      setLoading(false);
     }
   }
 
@@ -315,7 +318,11 @@ const CustomTable = ({ data }) => {
           </Col>
         </Row>
       </div>
-
+{loading ?(
+  <div className="text-center">
+<Spinner className="me-25 spinner-border" color="primary" style={{width: '4rem', height: '4rem' }}/>
+  </div>
+):(
       <div className="react-dataTable">
         <DataTable
           noHeader
@@ -331,6 +338,7 @@ const CustomTable = ({ data }) => {
           data={dataToRender()}
         />
       </div>
+      )}
       <CreateuserModal show={showModal} uid={dataUid} row={datarow} />
     </>
   );
