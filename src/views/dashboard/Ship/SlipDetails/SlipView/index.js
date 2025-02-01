@@ -22,6 +22,7 @@ import withReactContent from "sweetalert2-react-content";
 import { useNavigate, useParams } from "react-router-dom";
 import { parse } from "@babel/core/lib/parse";
 import { useLocation } from "react-router-dom";
+import { colors } from "@mui/material";
 
 const MySwal = withReactContent(Swal);
 function ShipDetails() {
@@ -88,6 +89,7 @@ function ShipDetails() {
 
   const [errors, setErrors] = useState({});
   const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
+  const [View, SetView] = useState(true);
 
   // Handle input changes
   const handleChange = ({ target }) => {
@@ -142,7 +144,7 @@ function ShipDetails() {
               orderedDimensions.height = unorderedDimensions.height;
             if ("width" in unorderedDimensions)
               orderedDimensions.width = unorderedDimensions.width;
-           
+
             // Add any remaining dimensions
             for (const [key, value] of Object.entries(unorderedDimensions)) {
               if (!(key in orderedDimensions)) {
@@ -374,7 +376,6 @@ function ShipDetails() {
     return newErrors;
   };
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -456,6 +457,10 @@ function ShipDetails() {
       fetchDetailsForUpdate();
     }
 
+    if (uid) {
+      SetView(true);
+    }
+
     fetchData();
   }, [uid]);
 
@@ -498,13 +503,34 @@ function ShipDetails() {
     { value: "Percentage", label: "Percentage" },
   ];
 
+  const handleEditBtn = () => {
+    SetView(false);
+  };
+
+  const handleViewbtn = () => {
+    SetView(true);
+  };
+
+  const getReadOnlyStyle = () => {
+    return View
+      ? {
+          color: "#000",
+          backgroundColor: "#fff",
+          opacity: 1,
+        }
+      : {};
+  };
+
   return (
     <>
       <Card>
-        <CardHeader className='border-bottom'>
-        <CardTitle tag='h4'> {uid ? "Edit Slip Details" : "Add Slip Details"}
-        </CardTitle>
+        <CardHeader className="border-bottom">
+          <CardTitle tag="h5">
+            {" "}
+            {View ? "View Details" : "Edit Details"}
+          </CardTitle>
         </CardHeader>
+        
         {/* <Row className="mb-1">
           <Label sm="3" for="shipTypeName"></Label>
           <Col sm="9">
@@ -520,18 +546,30 @@ function ShipDetails() {
           </Col>
         </Row> */}
 
-<div className='d-flex align-items-end mt-75 ms-1'>
-              <div>
-                <Button className='mb-75 me-75' size='sm' color='primary'>
-                  Edit
-                </Button>
-                <Button className='mb-75' color='secondary' size='sm' outline >
-                  Reset
-                </Button>
-              </div>
-            </div>
+        <div className="d-flex align-items-end mt-75 ms-1">
+          <div>
+            <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleEditBtn}
+              color="primary"
+            >
+              Edit
+            </Button>
+          </div>
+          <div>
+            <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleViewbtn}
+              color="primary"
+            >
+              View
+            </Button>
+          </div>
+        </div>
 
-        <CardBody className='py-2 my-25' >
+        <CardBody className="py-2 my-25">
           <Form onSubmit={handleSubmit}>
             <Row className="mb-1">
               <Label sm="3" for="name">
@@ -541,10 +579,11 @@ function ShipDetails() {
               <Col sm="9">
                 <Input
                   type="text"
+                  style={getReadOnlyStyle()}
                   value={userData.slipName}
                   onChange={handleChange}
                   name="slipName"
-                  readOnly={!!uid} // Conditionally set readOnly based on uid
+                  readOnly={View} // Conditionally set readOnly based on uid
                   id="slipName"
                   placeholder="Enter Slip Name"
                   invalid={!!errors.slipName}
@@ -565,7 +604,8 @@ function ShipDetails() {
                   onChange={handleSelectChange}
                   name="category"
                   options={shipTypeNames}
-                  isDisabled={!!uid}
+                  // isDisabled={!!uid}
+                  isDisabled={View}
                   isClearable
                   placeholder="Select Category"
                   className={errors.category ? "is-invalid" : ""}
@@ -590,10 +630,10 @@ function ShipDetails() {
                     type="text"
                     value={userData[dim] || ""}
                     onChange={handleChange}
+                    style={getReadOnlyStyle()}
                     name={dim}
                     id={dim}
-                    readOnly={!!uid}
-
+                    readOnly={View}
                     placeholder={`Enter ${dim.toLowerCase()}`}
                     invalid={!!errors[dim]}
                   />
@@ -608,12 +648,15 @@ function ShipDetails() {
                 Electric (Yes/No)
               </Label>
               <Col sm="9">
-                <div className="form-check form-switch d-flex align-items-center">
+                <div
+                  className="form-check form-switch d-flex align-items-center"
+                  style={{ margin: " 0px -55px" }}
+                >
                   {/* "No" label to the left */}
                   <Label
-                    className="me-0"
+                    className=" px-1"
                     htmlFor="electric"
-                    style={{ textAlign: "left" }}
+                    style={{ textAlign: "right" }}
                   >
                     No
                   </Label>
@@ -625,13 +668,13 @@ function ShipDetails() {
                     id="electric"
                     checked={userData.electric}
                     onChange={handleChange}
-                    style={{ margin: 0 }}
-                    disabled={!!uid}
+                    style={{ margin: 0, opacity: 1 }}
+                    disabled={View}
                   />
 
                   {/* "Yes" label to the right */}
                   <Label
-                    className="ms-0"
+                    className="px-1"
                     htmlFor="electric"
                     style={{ textAlign: "left" }}
                   >
@@ -647,10 +690,13 @@ function ShipDetails() {
                 Water (Yes/No)
               </Label>
               <Col sm="9">
-                <div className="form-check form-switch d-flex align-items-center">
+                <div
+                  className="form-check form-switch d-flex align-items-center"
+                  style={{ margin: " 0px -55px" }}
+                >
                   {/* "No" label to the left */}
                   <Label
-                    className="me-0"
+                    className="px-1"
                     htmlFor="water"
                     style={{ textAlign: "left" }}
                   >
@@ -662,16 +708,15 @@ function ShipDetails() {
                     type="switch"
                     name="water"
                     id="water"
-                    disabled={!!uid}
-
+                    disabled={View}
                     checked={userData.water}
                     onChange={handleChange}
-                    style={{ margin: 0 }}
+                    style={{ margin: 0, opacity: 1 }}
                   />
 
                   {/* "Yes" label to the right */}
                   <Label
-                    className="ms-0"
+                    className="px-1"
                     htmlFor="water"
                     style={{ textAlign: "left" }}
                   >
@@ -692,9 +737,9 @@ function ShipDetails() {
                     value={userData.amps}
                     onChange={handleChange}
                     name="amps"
+                    style={getReadOnlyStyle()}
                     id="amps"
-                    readOnly={!!uid}
-
+                    readOnly={View}
                     placeholder="Enter AMPS"
                     invalid={!!errors.amps}
                   />
@@ -714,8 +759,8 @@ function ShipDetails() {
                   onChange={handleChange}
                   name="addOn"
                   id="addOn"
-                  readOnly={!!uid}
-
+                  style={getReadOnlyStyle()}
+                  readOnly={View}
                   placeholder="Enter Add-on"
                   invalid={!!errors.addOn}
                 />
@@ -734,8 +779,8 @@ function ShipDetails() {
                   value={userData.marketAnnualPrice}
                   onChange={handleChange}
                   name="marketAnnualPrice"
-                  readOnly={!!uid}
-
+                  style={getReadOnlyStyle()}
+                  readOnly={View}
                   id="marketAnnualPrice"
                   placeholder="Enter Annual Price"
                   invalid={!!errors.marketAnnualPrice}
@@ -755,8 +800,8 @@ function ShipDetails() {
                   value={userData.marketMonthlyPrice}
                   onChange={handleChange}
                   name="marketMonthlyPrice"
-                  readOnly={!!uid}
-
+                  style={getReadOnlyStyle()}
+                  readOnly={View}
                   id="marketMonthlyPrice"
                   placeholder="Enter Monthly Price"
                   invalid={!!errors.marketMonthlyPrice}
@@ -766,7 +811,7 @@ function ShipDetails() {
             </Row>
 
             <Row className="mb-1">
-              <Label sm="3" for="marketMonthlyPrice">
+              <Label sm="3" style={{ opacity: 1 }} for="marketMonthlyPrice">
                 7 Days Charges
                 <span style={{ color: "red" }}>*</span>
               </Label>
@@ -774,9 +819,10 @@ function ShipDetails() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
+                    disabled={View}
+                    style={{ opacity: 1 }}
                     name="overDueChargesFor7Days"
                     value="Percentage"
-
                     id="Percentage"
                     checked={selections.overDueChargesFor7Days === "Percentage"}
                     onChange={() =>
@@ -787,17 +833,21 @@ function ShipDetails() {
                     }
                     invalid={!!errors.overDueChargesFor7Days}
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Percentage
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
+                    style={{ opacity: 1 }}
                     name="overDueChargesFor7Days"
                     value="Flat"
-                    readOnly={!!uid}
-
+                    disabled={View}
                     id="Flat"
                     checked={selections.overDueChargesFor7Days === "Flat"}
                     onChange={() =>
@@ -805,15 +855,19 @@ function ShipDetails() {
                     }
                     invalid={!!errors.overDueChargesFor7Days}
                   />{" "}
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Flat
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
                     type="number"
-                    readOnly={!!uid}
-
+                    readOnly={View}
+                    style={getReadOnlyStyle()}
                     name="overDueAmountFor7Days"
                     value={userData.overDueAmountFor7Days || ""}
                     onChange={(e) =>
@@ -830,10 +884,6 @@ function ShipDetails() {
               </Col>
             </Row>
 
-
-
-
-
             <Row className="mb-1">
               <Label sm="3" for="">
                 15 Days Charges
@@ -843,8 +893,8 @@ function ShipDetails() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
-                    readOnly={!!uid}
-
+                    disabled={View}
+                    style={{ opacity: 1 }}
                     checked={
                       selections.overDueChargesFor15Days === "Percentage"
                     }
@@ -857,15 +907,19 @@ function ShipDetails() {
                     name="overDueChargesFor15Days"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Percentage
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
-                    readOnly={!!uid}
-
+                    style={{ opacity: 1 }}
+                    disabled={View}
                     checked={selections.overDueChargesFor15Days === "Flat"}
                     onChange={() =>
                       handleSelectTypeChange("overDueChargesFor15Days", "Flat")
@@ -873,16 +927,20 @@ function ShipDetails() {
                     name="overDueChargesFor15Days "
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Flat
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                                      readOnly={!!uid}
-
+                    readOnly={View}
                     type="number"
                     name="overDueAmountFor15Days"
+                    style={getReadOnlyStyle()}
                     value={userData.overDueAmountFor15Days || ""}
                     onChange={(e) =>
                       setUserData({
@@ -909,8 +967,8 @@ function ShipDetails() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
-                    readOnly={!!uid}
-
+                    style={{ opacity: 1 }}
+                    disabled={View}
                     checked={
                       selections.overDueChargesFor30Days === "Percentage"
                     }
@@ -923,13 +981,19 @@ function ShipDetails() {
                     name="overDueChargesFor30Days"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Percentage
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
+                    style={{ opacity: 1 }}
+                    disabled={View}
                     checked={selections.overDueChargesFor30Days === "Flat"}
                     onChange={() =>
                       handleSelectTypeChange("overDueChargesFor30Days", "Flat")
@@ -937,16 +1001,19 @@ function ShipDetails() {
                     name="overDueChargesFor30Days"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Flat
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
                     type="number"
-
-                    readOnly={!!uid}
-
+                    readOnly={View}
+                    style={getReadOnlyStyle()}
                     name="overDueAmountFor30Days"
                     placeholder="Enter 30 Days Charges"
                     value={userData.overDueAmountFor30Days || ""}
@@ -973,8 +1040,8 @@ function ShipDetails() {
               <Col sm="9">
                 <div className="form-check form-check-inline">
                   <Input
-                                      readOnly={!!uid}
-
+                    style={{ opacity: 1 }}
+                    disabled={View}
                     type="radio"
                     checked={
                       selections.overDueChargesForNotice === "Percentage"
@@ -988,14 +1055,18 @@ function ShipDetails() {
                     name="overDueChargesForNotice"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Percentage
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                                      readOnly={!!uid}
-
+                    disabled={View}
+                    style={{ opacity: 1 }}
                     type="radio"
                     checked={selections.overDueChargesForNotice === "Flat"}
                     onChange={() =>
@@ -1004,14 +1075,18 @@ function ShipDetails() {
                     name="overDueChargesForNotice"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Flat
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                                      readOnly={!!uid}
-
+                    readOnly={View}
+                    style={getReadOnlyStyle()}
                     type="number"
                     name="overDueAmountForNotice"
                     value={userData.overDueAmountForNotice || ""}
@@ -1039,8 +1114,8 @@ function ShipDetails() {
               <Col sm="9">
                 <div className="form-check form-check-inline">
                   <Input
-                                      readOnly={!!uid}
-
+                    disabled={View}
+                    style={{ opacity: 1 }}
                     type="radio"
                     checked={
                       selections.overDueChagesForAuction === "Percentage"
@@ -1054,15 +1129,19 @@ function ShipDetails() {
                     name="overDueChagesForAuction"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Percentage
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                                      readOnly={!!uid}
-
+                    disabled={View}
                     type="radio"
+                    style={{ opacity: 1 }}
                     checked={selections.overDueChagesForAuction === "Flat"}
                     onChange={() =>
                       handleSelectTypeChange("overDueChagesForAuction", "Flat")
@@ -1070,15 +1149,19 @@ function ShipDetails() {
                     name="overDueChagesForAuction"
                     id="basic-cb-unchecked"
                   />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
+                  <Label
+                    for="basic-cb-unchecked"
+                    style={{ opacity: 1 }}
+                    className="form-check-label"
+                  >
                     Flat
                   </Label>
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
                     type="number"
-                    readOnly={!!uid}
-
+                    style={getReadOnlyStyle()}
+                    readOnly={View}
                     name="overDueAmountForAuction"
                     placeholder="Enter Auction Charges"
                     value={userData.overDueAmountForAuction || ""}
@@ -1099,11 +1182,18 @@ function ShipDetails() {
 
             <Row>
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>
-                <Button className="me-1" color="primary" type="submit">
+                <Button
+                  className="me-1"
+                  color="primary"
+                  disabled={View}
+                  // onClick={hadleOnclick}
+                  type="submit"
+                >
                   {uid ? "Update" : "Submit"}
                 </Button>
                 <Button
                   outline
+                  disabled={View}
                   onClick={resetForm}
                   color="secondary"
                   type="reset"

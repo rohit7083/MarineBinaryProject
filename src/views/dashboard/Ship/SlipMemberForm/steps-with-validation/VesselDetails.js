@@ -8,6 +8,8 @@ import { Form, Label, Input, Row, Col, Button, FormFeedback } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { UncontrolledAlert } from "reactstrap";
+
 const AccountDetails = ({ stepper, setSlipId }) => {
   const MySwal = withReactContent(Swal);
 
@@ -15,26 +17,16 @@ const AccountDetails = ({ stepper, setSlipId }) => {
   const [selectedSlipname, setSelectedSlipname] = useState(null);
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
+  const [errMsz, seterrMsz] = useState("");
+const[loadinng,setLoading]=useState(false);
 
-  // const defaultValues={
-  //   vesselName: "abc",
-  //   vesselRegistrationNumber: "abc123",
-  //   vesselHeight: "2",
-  //   slipName: "",
-  //   vesselWidth: "3",
-  //   // vesselLength: "",
-  // }
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setVesselData({
-  //     ...VesselData,
-  //     [name]: value,
-  //   });
-  // };
-  
   const handleSlipChange = (option) => {
+    // setDimensions({});
+
     setSelectedSlipname(option);
-    setDimensions(option?.dimensions || {}); // Update dimensions based on selected slip
+    setDimensions(option?.dimensions || {});
+    console.log("count");
+    // setTrackOnchnage(true);
   };
 
   const getValidationSchema = (dimensions) =>
@@ -65,19 +57,34 @@ const AccountDetails = ({ stepper, setSlipId }) => {
     // for slipname
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await useJwt.getslip({});
         const options = response.data.content.result.map((item) => ({
           value: item.id,
           label: item.slipName,
-          dimensions: item.dimensions, // Store dimensions in the option
+          dimensions: item.dimensions,
+          isAssigned: item.isAssigned,
         }));
+        console.log(response);
 
-        setSlipNames(options);
-        console.log(" response from useeffect ",options);
+        const UnassigneOption = response.data.content.result
+          .filter((item) => !item.isAssigned)
+          .map((item) => ({
+            value: item.id,
+            label: item.slipName,
+            dimensions: item.dimensions,
+          }));
+        console.log("unassigneOptions", UnassigneOption);
+
+        setSlipNames(UnassigneOption);
+        console.log(" response from useeffect ", options);
         // console.log(" response from useeffect ",selectedSlipname.value);
       } catch (error) {
         console.error("Error fetching slip details:", error);
         alert("An unexpected error occurred");
+      }
+      finally{
+        setLoading(false);
       }
     };
 
@@ -88,7 +95,9 @@ const AccountDetails = ({ stepper, setSlipId }) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors },
+    setValue,
+    watch,
   } = useForm({
     resolver: yupResolver(getValidationSchema(dimensions)),
     // defaultValues
@@ -115,7 +124,7 @@ const AccountDetails = ({ stepper, setSlipId }) => {
       // slipId: selectedSlipname.value,
     };
     setSlipId(payload.slipId);
-    
+
     try {
       await useJwt.postsVessel(payload);
       // console.log("API Response:", response);
@@ -134,27 +143,108 @@ const AccountDetails = ({ stepper, setSlipId }) => {
       });
     } catch (error) {
       console.error("Error submitting vessel details:", error);
-      return MySwal.fire({
-        title: "Error!",
-        text: "An error occurred while submitting the form.",
-        icon: "error",
-        customClass: {
-          confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-      });
+
+      if (error.response && error.response.data) {
+        const { status, content } = error.response.data;
+        console.log(content);
+
+        switch (status) {
+          case 400:
+            seterrMsz(content);
+
+            break;
+          case 401:
+            seterrMsz(content);
+            // navigate("/login");
+            break;
+          case 403:
+            seterrMsz(content);
+            break;
+          case 500:
+            seterrMsz(content);
+
+            break;
+          default:
+            seterrMsz(content);
+        }
+      }
     }
 
-    // console.log("vessel dimensions ", payload);
+    // if (uid) {
+
+    //     try {
+    //     const res= await useJwt.updateVessel(uid,payload);
+    //       console.log("updated Response:", response);
+    //       return MySwal.fire({
+    //         title: "Successfully Updated",
+    //         text: " Your Vessel Details Updated Successfully",
+    //         icon: "success",
+    //         customClass: {
+    //           confirmButton: "btn btn-primary",
+    //         },
+    //         buttonsStyling: false,
+    //       }).then(() => {
+    //         if (Object.keys(errors).length === 0) {
+    //           stepper.next();
+    //         }
+    //       });
+    //     } catch (error) {
+    //       console.error("Error submitting vessel details:", error);
+    //       const { status, content } = error.response.data;
+    //       console.log(content);
+
+    //       switch (status) {
+    //         case 400:
+    //           seterrMsz(content);
+
+    //           break;
+    //         case 401:
+    //           seterrMsz(content);
+    //           // navigate("/login");
+    //           break;
+    //         case 403:
+    //           seterrMsz(content);
+    //           break;
+    //         case 500:
+    //           seterrMsz(content);
+
+    //           break;
+    //         default:
+    //           seterrMsz(content);
+    //       }
+    //     }
+    //   }
   };
 
-
+  useEffect(() => {
+    if (watch("slipName")) {
+      // setValue("height");
+      // setValue("length");
+      // setValue("width");
+    
+      setValue("height", "");  // Setting height to an empty string
+      setValue("length", "");  // Setting length to an empty string
+      setValue("width", "");   // Setting width to an empty string
+      
+    }
+  }, [watch("slipName")]);
   return (
     <Fragment>
       <div className="content-header">
         <h5 className="mb-0">Vessel Details</h5>
         <small className="text-muted">Enter Your Vessel Details.</small>
       </div>
+
+      {errMsz && (
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">{errMsz}</span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col md="6" className="mb-1">
@@ -231,6 +321,7 @@ const AccountDetails = ({ stepper, setSlipId }) => {
             )}
           </Col>
           {/* Dynamically Render Dimension Fields */}
+          {console.log(dimensions)}
           {Object.keys(dimensions).map((dimKey) => (
             <Col key={dimKey} md="6" className="mb-1">
               <Label className="form-label" for={dimKey}>
@@ -258,11 +349,14 @@ const AccountDetails = ({ stepper, setSlipId }) => {
           ))}
         </Row>
         <div className="d-flex justify-content-end">
-          
-
           {/* Submit and Reset Button Group */}
           <div className="d-flex">
-            <Button type="reset" color="primary" onClick={()=>reset()} className="btn-reset me-2">
+            <Button
+              type="reset"
+              color="primary"
+              onClick={() => reset()}
+              className="btn-reset me-2"
+            >
               <span className="align-middle d-sm-inline-block d-none">
                 Reset
               </span>

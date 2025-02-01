@@ -3,7 +3,7 @@
 import { useContext, Fragment, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
+import { ChevronLeft } from "react-feather";
 // ** Custom Hooks
 import { useSkin } from "@hooks/useSkin";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -51,7 +51,7 @@ import axios from "axios";
 
 // Default Form Values
 const defaultValues = {
-  password: "000111",
+  password: "12345",
 };
 
 const Login = () => {
@@ -335,6 +335,12 @@ const Login = () => {
               >
                 {loading ? <Spinner size="sm" /> : "Login "}
               </Button>
+              <p className="text-center mt-2">
+              <Link to="/Login">
+                <ChevronLeft className="rotate-rtl me-25" size={14} />
+                <span className="align-middle">Back to login</span>
+              </Link>
+            </p>
             </form>
           </Col>
         </Col>

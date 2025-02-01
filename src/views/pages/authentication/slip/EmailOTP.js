@@ -3,6 +3,9 @@ import { Navigate, useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import React from "react";
+import { Alert } from "reactstrap";
+import { UncontrolledAlert } from "reactstrap";
 // ** Reactstrap Imports
 import {
   Card,
@@ -11,6 +14,9 @@ import {
   CardText,
   Button,
   Form,
+  Row,
+  Label,
+  Col,
   Input,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -30,7 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 // ** Utils
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
-import Index  from '../../../dashboard/dash'
+import Index from "../../../dashboard/dash";
 /*
  [
           {
@@ -84,15 +90,16 @@ const TwoStepsBasic = () => {
   };
   const onSubmit = async (formData) => {
     try {
-      setLoading(true); 
+      setLoading(true);
+      // {{debugger}}
       const token = userData?.token;
       const otpString = formData.otp.join("");
       const otp = parseInt(otpString, 10);
-
+      console.log(token);
       const res = await useJwt.verifyAccount(token, { otp });
       console.log(res);
       // setAuthStatus(res.data.profile.TwoNf);
-    
+
       const data = {
         ...{
           ...res.data.profile,
@@ -118,12 +125,12 @@ const TwoStepsBasic = () => {
       console.log({ error });
       if (error.response) {
         const { status, data } = error.response;
-        const errorMessage = data.content;
+        const errorMessage = error.response.data.message;
         // setMessage(errorMessage);
 
         switch (status) {
           case 400:
-            setMessage(<span style={{ color: "red" }}>{data.content}</span>);
+            setMessage(errorMessage);
             break;
           case 401:
             setMessage(errorMessage);
@@ -328,6 +335,22 @@ const TwoStepsBasic = () => {
               </svg>
               <h2 className="brand-text text-primary ms-1">Vuexy</h2>
             </Link>
+
+            <Row className="mb-1">
+              <Label sm="3" for=""></Label>
+              <Col sm="12">
+                {message && (
+                  <React.Fragment>
+                    <UncontrolledAlert color="danger">
+                      <div className="alert-body">
+                        <span className="text-danger fw-bold">{message}</span>
+                      </div>
+                    </UncontrolledAlert>
+                  </React.Fragment>
+                )}
+              </Col>
+            </Row>
+
             <CardTitle tag="h2" className="fw-bolder mb-1">
               Verify OTP For Login 💬
             </CardTitle>

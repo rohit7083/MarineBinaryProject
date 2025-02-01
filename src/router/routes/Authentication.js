@@ -71,8 +71,17 @@ const AuthenticationRoutes = [
       restricted: true
     }
   },
+  // {
+  //   path: '/verify_account/:token',
+  //   element: <EmailOTP />,
+  //   meta: {
+  //     layout: 'blank',
+  //     publicRoute: true,
+  //     restricted: true
+  //   }
+  // },
   {
-    path: '/EmailOTP',
+    path: '/email_Otp',
     element: <EmailOTP />,
     meta: {
       layout: 'blank',

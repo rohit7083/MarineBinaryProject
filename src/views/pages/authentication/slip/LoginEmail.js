@@ -51,7 +51,7 @@ import axios from "axios";
 // Default Form Values
 const defaultValues = {
   // password: "101010",
-  emailId: "mandewalsneha@gmail.com",
+  emailId: "sidd31son@gmail.com",
 };
 
 //  [
@@ -206,9 +206,9 @@ const handleRemove = async () => {
             </CardTitle>
 
             <CardText className="mb-2">
-               <Button.Ripple color="dark" type="submit" onClick={handleRemove}>
+               {/* <Button.Ripple color="dark" type="submit" onClick={handleRemove}>
                       Remove{" "}
-                    </Button.Ripple>
+                    </Button.Ripple> */}
               Please sign-in to your account and start the adventure
               <br />
               {message && (

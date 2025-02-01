@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-
+import { UncontrolledAlert } from "reactstrap";
 // ** Utils
 import {
   Card,
@@ -57,6 +57,7 @@ function ShipDetails() {
   const [shipTypeNames, setShipTypeNames] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null); // Store selected option for the single dropdown
   const [dimensions, setDimensions] = useState([]); // Dimensions for the selected category
+  const [Message,setMessage]=useState("");
   const [selections, setSelections] = useState({
     overDueChargesFor7Days: "",
     overDueChargesFor15Days: "",
@@ -210,16 +211,47 @@ function ShipDetails() {
         }
       } catch (error) {
         console.error("Error submitting form:", error);
-        return MySwal.fire({
-          title: "Error!",
-          text: "An error occurred while submitting the form.",
-          icon: "error",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        });
+        // return MySwal.fire({
+        //   title: "Error!",
+        //   text: "An error occurred while submitting the form.",
+        //   icon: "error",
+        //   customClass: {
+        //     confirmButton: "btn btn-primary",
+        //   },
+        //   buttonsStyling: false,
+        // });
+      
+        if (error.response) {
+          const {  content } = error.response.data;
+          const {status} = error.response;
+          // setMessage(errorMessage);
+  
+          switch (status) {
+            case 400:
+              setMessage(content);
+              break;
+            case 401:
+              setMessage(content);
+              // navigate("/login");
+              break;
+            case 403:
+              setMessage(content);
+              break;
+            case 500:
+              setMessage(
+                <span style={{ color: "red" }}>
+                  Something went wrong on our end. Please try again later
+                </span>
+              );
+              break;
+            default:
+              setMessage(content);
+          }
+        } 
+      
+      
       }
+     
     } else {
       console.log("Validation failed. Please fix the errors.");
     }
@@ -506,22 +538,24 @@ function ShipDetails() {
             {uid ? "Edit Slip Details" : "Add Slip Details"}
           </CardTitle>
         </CardHeader>
-        {/* <Row className="mb-1">
-          <Label sm="3" for="shipTypeName"></Label>
-          <Col sm="9">
-            {errorMessage && (
-              <React.Fragment>
-                <UncontrolledAlert color="danger">
-                  <div className="alert-body">
-                    <span className="text-danger fw-bold">{errorMessage}</span>
-                  </div>
-                </UncontrolledAlert>
-              </React.Fragment>
-            )}
-          </Col>
-        </Row> */}
+
+        
+
         <CardBody>
           <Form onSubmit={handleSubmit}>
+          <Row className="mb-1">
+              <Label sm="3" for=""></Label>               <Col sm="12"> 
+                {Message && (
+                  <React.Fragment>
+                    <UncontrolledAlert color="danger">
+                      <div className="alert-body">
+                        <span className="text-danger fw-bold">Error - {Message}</span>
+                      </div>
+                    </UncontrolledAlert>
+                  </React.Fragment>
+                )}
+               </Col>
+            </Row>
             <Row className="mb-1">
               <Label sm="3" for="name">
                 Slip Name

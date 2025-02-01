@@ -71,6 +71,7 @@ const Router = () => {
       element: <BlankLayout />,
       children: [{ path: '/EmailOTP', element: <EmailOTP /> }]
     },
+    
    
     {
       path: '/auth/not-auth',

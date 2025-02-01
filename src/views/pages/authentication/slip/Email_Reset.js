@@ -4,7 +4,7 @@ import { Spinner } from "reactstrap";
 // ** Reactstrap Imports
 import { Card, Input, CardBody, CardTitle, CardText, Button } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
-import React from 'react'
+import React from "react";
 // ** React Hook Form Imports
 import { useForm, Controller } from "react-hook-form";
 import { UncontrolledAlert } from "reactstrap";
@@ -40,10 +40,15 @@ const VerifyEmailBasic = () => {
 
       if (res.status === 200) {
         setMsz(
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            {res.data.content}
-          </span>
+          <React.Fragment>
+            <UncontrolledAlert color="success" onClick={handleDismiss}>
+              <div className="alert-body">
+                <strong>{res.data.content}</strong>
+              </div>
+            </UncontrolledAlert>
+          </React.Fragment>
         );
+
         setBtn(true);
 
         setTimeout(() => {
@@ -65,7 +70,7 @@ const VerifyEmailBasic = () => {
           case 400:
             setMsz(<span style={{ color: "red" }}>{errorMessage}</span>);
             break;
-          case 401: 
+          case 401:
             setMsz(errorMessage);
             // navigate("/login");
             break;
@@ -83,15 +88,13 @@ const VerifyEmailBasic = () => {
             setMsz(errorMessage);
         }
       }
-    }
-    finally {
+    } finally {
       setLoading(false); // Set loading to false after API call is complete
     }
   };
   const handleDismiss = () => {
     setMsz(null); // Reset the message when the alert is dismissed
   };
-
 
   return (
     <div className="auth-wrapper auth-basic px-2">
@@ -187,15 +190,15 @@ const VerifyEmailBasic = () => {
             </CardText>
 
             {msz && (
-                <React.Fragment>
-                  <UncontrolledAlert color="danger" onClick={handleDismiss}>
-                    <div className="alert-body">
+              <React.Fragment>
+                <UncontrolledAlert color="danger" onClick={handleDismiss}>
+                  <div className="alert-body">
                     <strong>{msz}</strong>
-                    </div>
-                  </UncontrolledAlert>
-                </React.Fragment>
-              )}
-         
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)}>
               <Controller
                 name="emailId" // Removed trailing space
@@ -228,8 +231,7 @@ const VerifyEmailBasic = () => {
                 color="primary"
                 className="mt-2"
               >
-                                {loading ? <Spinner size="sm" /> : "Send"}
-                
+                {loading ? <Spinner size="sm" /> : "Send"}
               </Button>
             </form>
           </CardBody>

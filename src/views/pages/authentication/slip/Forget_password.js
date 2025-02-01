@@ -66,15 +66,14 @@ const ResetPasswordBasic = () => {
     }
   };
 
-  const sendOtp = async (
-    // token = "RUyaPXYJ2oEmV7UDg7FP8L1O1kiVsK_xHdN9lq8ygq4dqPdLfBI0K824PyjVwsBc96UZzQPETqqPxUSjf3NOObwivdcJC2-viSel_mRt3e4="
-  ) => {
+  const sendOtp = async () => {
     try {
-     
+      // {{debugger}}
       const otpRes = await useJwt.sendOtp(token);
       console.log(otpRes);
     } catch (error) {
       console.log(error);
+      console.log("failed to get otp");
     }
   };
 

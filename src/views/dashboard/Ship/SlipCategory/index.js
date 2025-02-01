@@ -186,7 +186,7 @@ function Index() {
       <CardBody>
         <Row className="mb-1">
           <Label sm="3" for="shipTypeName"></Label>
-          <Col sm="9">
+          <Col sm="12">
             {errorMessage && (
               <React.Fragment>
                 <UncontrolledAlert color="danger">

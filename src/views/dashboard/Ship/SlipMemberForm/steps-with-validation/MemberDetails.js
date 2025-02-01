@@ -20,7 +20,9 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 const PersonalInfo = ({ stepper, slipId }) => {
   const MySwal = withReactContent(Swal);
-
+  const [fullname, setFullname] = useState([]);
+  const [selectedFullName, setSelectedFullName] = useState(null);
+  const [SelectedDetails, setSelectedDetails] = useState(null);
   const SignupSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -77,30 +79,37 @@ const PersonalInfo = ({ stepper, slipId }) => {
       .required("Postal Code is required")
       .matches(/^[0-9]{5}$/, "Postal Code must be exactly 5 digits"),
   });
-  // const defaultValues = {
-  //   lastName: "sonawane",
-  //   firstName: "rohan",
-  //   emailId: "rohan@gmail.com",
-  //   phoneNumber: "0123654789",
-  //   address: "earth",
-  //   city: "nashik",
-  //   state: "maharastra",
-  //   country: "india",
-  //   postalCode: "412563",
-  // };
+
   const {
     control,
     handleSubmit,
     watch,
     reset,
-    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(SignupSchema),
   });
 
-  
+    const handleMemberChange = (option) => {
+      setSelectedFullName(option);
+      if (option?.details) {
+        console.log("Selected Member Details:", option.details);
+      }
+      setSelectedDetails(option.details);
+      setValue("firstName", option.details.firstName || "");
+      setValue("lastName", option.details.lastName || "");
+      setValue("emailId", option.details.emailId || "");
+      setValue("phoneNumber", option.details.phoneNumber || "");
+      setValue("address", option.details.address || "");
+      setValue("city", option.details.city || "");
+      setValue("state", option.details.state || "");
+      setValue("postalCode", option.details.postalCode || "");
+      setValue("secondaryGuestName", option.details.secondaryGuestName || "");
+      setValue("secondaryEmail", option.details.secondaryEmail || "");
+      setValue("country", option.details.country || "");
 
+    };
 
   const onSubmit = async (data) => {
     const payload = {
@@ -141,12 +150,26 @@ const PersonalInfo = ({ stepper, slipId }) => {
     // console.log("vessel dimensions ", payload);
   };
 
-  useEffect(() => {
-    // const allValues = watch();
-    // const values = getValues()
-    // console.log(values);
+  const fetchData = async () => {
+    try {
+      const response = await useJwt.getslip({});
+      const options = response.data.content.result.map((item) => ({
+        value: item.member?.uid,
+        label: `${item.member?.firstName} ${item.member?.lastName}`,
+        details: item.member,
+      }));
 
-  }, );
+      console.log("Fetched Options:", options);
+
+      setFullname(options);
+    } catch (error) {
+      console.error("Error fetching slip details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <Fragment>
@@ -162,24 +185,24 @@ const PersonalInfo = ({ stepper, slipId }) => {
               {/* <span style={{ color: "red" }}>*</span> */}
             </Label>
             <Controller
-              name="slipName"
+              name="uid"
               control={control}
               render={({ field }) => (
                 <Select
                   {...field}
-                  // value={selectedSlipname}
-                  // onChange={(option) => {
-                  //   field.onChange(option?.value);
-                  //   handleSlipChange(option); // Handle slip change
-                  // }}
-                  // options={slipNames}
+                  value={selectedFullName}
+                  onChange={(option) => {
+                    field.onChange(option?.value);
+                    handleMemberChange(option); // Handle slip change
+                  }}
+                  options={fullname}
                   isClearable
                   placeholder="Select Slip Name"
                 />
               )}
             />
-            {errors.slipName && (
-              <FormFeedback>{errors.slipName.message}</FormFeedback>
+            {errors.uid && (
+              <FormFeedback>{errors.uid.message}</FormFeedback>
             )}
           </Col>
         </Row>
@@ -448,7 +471,7 @@ const PersonalInfo = ({ stepper, slipId }) => {
         </Row>
         {/* Add other fields similarly */}
         <div className="d-flex justify-content-between">
-        <Button
+          <Button
             type="button"
             color="primary"
             className="btn-prev"
@@ -465,7 +488,12 @@ const PersonalInfo = ({ stepper, slipId }) => {
 
           {/* Submit and Reset Button Group */}
           <div className="d-flex">
-            <Button type="reset" color="primary" onClick={()=>reset()} className="btn-reset me-2">
+            <Button
+              type="reset"
+              color="primary"
+              onClick={() => reset()}
+              className="btn-reset me-2"
+            >
               <span className="align-middle d-sm-inline-block d-none">
                 Reset
               </span>
