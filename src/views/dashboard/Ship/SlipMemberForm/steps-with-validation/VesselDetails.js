@@ -4,29 +4,38 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
-import { Form, Label, Input, Row, Col, Button, FormFeedback } from "reactstrap";
+import {
+  Form,
+  Label,
+  Input,
+  Row,
+  Col,
+  Button,
+  FormFeedback,
+  Spinner,
+} from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { UncontrolledAlert } from "reactstrap";
+import { useParams } from "react-router-dom";
 
 const AccountDetails = ({ stepper, setSlipId }) => {
   const MySwal = withReactContent(Swal);
 
-  const [VesselData, setVesselData] = useState();
+  const params = useParams();
+
   const [selectedSlipname, setSelectedSlipname] = useState(null);
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
   const [errMsz, seterrMsz] = useState("");
-const[loadinng,setLoading]=useState(false);
+  const [loadinng, setLoading] = useState(false);
+  const [vesselData, setVesselData] = useState([]);
 
   const handleSlipChange = (option) => {
-    // setDimensions({});
-
     setSelectedSlipname(option);
     setDimensions(option?.dimensions || {});
     console.log("count");
-    // setTrackOnchnage(true);
   };
 
   const getValidationSchema = (dimensions) =>
@@ -54,42 +63,9 @@ const[loadinng,setLoading]=useState(false);
     });
 
   useEffect(() => {
-    // for slipname
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await useJwt.getslip({});
-        const options = response.data.content.result.map((item) => ({
-          value: item.id,
-          label: item.slipName,
-          dimensions: item.dimensions,
-          isAssigned: item.isAssigned,
-        }));
-        console.log(response);
-
-        const UnassigneOption = response.data.content.result
-          .filter((item) => !item.isAssigned)
-          .map((item) => ({
-            value: item.id,
-            label: item.slipName,
-            dimensions: item.dimensions,
-          }));
-        console.log("unassigneOptions", UnassigneOption);
-
-        setSlipNames(UnassigneOption);
-        console.log(" response from useeffect ", options);
-        // console.log(" response from useeffect ",selectedSlipname.value);
-      } catch (error) {
-        console.error("Error fetching slip details:", error);
-        alert("An unexpected error occurred");
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [selectedSlipname]);
+    console.clear();
+    console.log(vesselData);
+  }, [vesselData]);
 
   const {
     control,
@@ -100,7 +76,6 @@ const[loadinng,setLoading]=useState(false);
     watch,
   } = useForm({
     resolver: yupResolver(getValidationSchema(dimensions)),
-    // defaultValues
   });
 
   const onSubmit = async (data) => {
@@ -121,13 +96,13 @@ const[loadinng,setLoading]=useState(false);
 
     const payload = {
       ...renamedData,
-      // slipId: selectedSlipname.value,
     };
     setSlipId(payload.slipId);
 
     try {
+      setLoading(true);
+
       await useJwt.postsVessel(payload);
-      // console.log("API Response:", response);
       return MySwal.fire({
         title: "Successfully Created",
         text: " Your Vessel Details Created Successfully",
@@ -168,8 +143,9 @@ const[loadinng,setLoading]=useState(false);
             seterrMsz(content);
         }
       }
+    } finally {
+      setLoading(false);
     }
-
     // if (uid) {
 
     //     try {
@@ -218,17 +194,14 @@ const[loadinng,setLoading]=useState(false);
 
   useEffect(() => {
     if (watch("slipName")) {
-      // setValue("height");
-      // setValue("length");
-      // setValue("width");
-    
-      setValue("height", "");  // Setting height to an empty string
-      setValue("length", "");  // Setting length to an empty string
-      setValue("width", "");   // Setting width to an empty string
-      
+      setValue("height", "");
+      setValue("length", "");
+      setValue("width", "");
     }
   }, [watch("slipName")]);
+
   return (
+
     <Fragment>
       <div className="content-header">
         <h5 className="mb-0">Vessel Details</h5>
@@ -260,7 +233,7 @@ const[loadinng,setLoading]=useState(false);
                   value={selectedSlipname}
                   onChange={(option) => {
                     field.onChange(option?.value);
-                    handleSlipChange(option); // Handle slip change
+                    handleSlipChange(option);
                   }}
                   options={slipNames}
                   isClearable
@@ -283,8 +256,6 @@ const[loadinng,setLoading]=useState(false);
                 <Input
                   type="text"
                   placeholder="Enter Vessel Name"
-                  // onChange={handleChange}
-                  // value={VesselData.vesselName}
                   invalid={errors.vesselName && true}
                   {...field}
                 />
@@ -307,8 +278,6 @@ const[loadinng,setLoading]=useState(false);
                 <Input
                   type="text"
                   placeholder="Enter Registration Number"
-                  // onChange={handleChange}
-                  // value={VesselData.vesselRegistrationNumber}
                   invalid={errors.vesselRegistrationNumber && true}
                   {...field}
                 />
@@ -320,8 +289,7 @@ const[loadinng,setLoading]=useState(false);
               </FormFeedback>
             )}
           </Col>
-          {/* Dynamically Render Dimension Fields */}
-          {console.log(dimensions)}
+
           {Object.keys(dimensions).map((dimKey) => (
             <Col key={dimKey} md="6" className="mb-1">
               <Label className="form-label" for={dimKey}>
@@ -336,8 +304,6 @@ const[loadinng,setLoading]=useState(false);
                     type="number"
                     placeholder={`Enter Vessel ${dimKey}`}
                     invalid={errors[dimKey] && true}
-                    // onChange={handleChange}
-
                     {...field}
                   />
                 )}
@@ -349,7 +315,6 @@ const[loadinng,setLoading]=useState(false);
           ))}
         </Row>
         <div className="d-flex justify-content-end">
-          {/* Submit and Reset Button Group */}
           <div className="d-flex">
             <Button
               type="reset"
@@ -364,9 +329,11 @@ const[loadinng,setLoading]=useState(false);
 
             <Button type="submit" color="primary" className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
-                Next
+                {loadinng ? <Spinner size="sm" /> : "Next"}
               </span>
-              <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+              {loadinng ? null : (
+                <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+              )}
             </Button>
           </div>
         </div>
@@ -376,3 +343,31 @@ const[loadinng,setLoading]=useState(false);
 };
 
 export default AccountDetails;
+
+/*
+  const options = response.data.content.result.map((item) => ({
+          value: item.id,
+          label: item.slipName,
+          dimensions: item.dimensions,
+          isAssigned: item.isAssigned,
+        }));
+        console.log(response);
+
+        const UnassigneOption = response.data.content.result
+          .filter((item) => !item.isAssigned)
+          .map((item) => ({
+            value: item.id,
+            label: item.slipName,
+            dimensions: item.dimensions,
+          }));
+        console.log("unassigneOptions", UnassigneOption);
+
+        setSlipNames(UnassigneOption);
+        console.log(" response from useeffect ", options);
+
+        const filteredData = response.data.content.result.filter(
+          (item) => item.uid === uid // Match uid
+        ).map((item) => ({
+          vessel: item.vessel, 
+        }));
+*/

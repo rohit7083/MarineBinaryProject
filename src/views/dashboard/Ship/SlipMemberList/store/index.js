@@ -41,7 +41,7 @@ import axios from 'axios'
 
 // ** Fetch data from your new API
 export const getData = createAsyncThunk('datatables/getData', async (params) => {
-  const response = await axios.get('http://192.168.29.190:8001/slipCategory', { params })
+  const response = await axios.get('http://192.168.29.190:8000/slip', { params })
   return { allData: response.data.content.result, data: response.data.content.result, totalPages: response.data.total, params }
 })
 

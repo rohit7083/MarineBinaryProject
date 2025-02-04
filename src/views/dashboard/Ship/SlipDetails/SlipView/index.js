@@ -394,7 +394,9 @@ function ShipDetails() {
         const { response } = error;
         const { data, status } = response;
         if (status == 400) {
-          alert(data.content);
+          // alert(data.content);
+          console.log(data.content);
+          
         }
       }
 

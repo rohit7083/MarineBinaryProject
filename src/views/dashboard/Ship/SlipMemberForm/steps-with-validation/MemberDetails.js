@@ -9,7 +9,8 @@ import { ArrowLeft, ArrowRight } from "react-feather";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
-
+import React from "react";
+import { Spinner, UncontrolledAlert } from "reactstrap";
 // ** Utils
 import { selectThemeColors } from "@utils";
 // ** Reactstrap Imports
@@ -23,6 +24,9 @@ const PersonalInfo = ({ stepper, slipId }) => {
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const [ErrMsz, setErrMsz] = useState("");
+  const[loading,setLoading]=useState(false);
   const SignupSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -91,25 +95,27 @@ const PersonalInfo = ({ stepper, slipId }) => {
     resolver: yupResolver(SignupSchema),
   });
 
-    const handleMemberChange = (option) => {
-      setSelectedFullName(option);
-      if (option?.details) {
-        console.log("Selected Member Details:", option.details);
-      }
-      setSelectedDetails(option.details);
-      setValue("firstName", option.details.firstName || "");
-      setValue("lastName", option.details.lastName || "");
-      setValue("emailId", option.details.emailId || "");
-      setValue("phoneNumber", option.details.phoneNumber || "");
-      setValue("address", option.details.address || "");
-      setValue("city", option.details.city || "");
-      setValue("state", option.details.state || "");
-      setValue("postalCode", option.details.postalCode || "");
-      setValue("secondaryGuestName", option.details.secondaryGuestName || "");
-      setValue("secondaryEmail", option.details.secondaryEmail || "");
-      setValue("country", option.details.country || "");
+  const handleMemberChange = (option) => {
+    setSelectedFullName(option);
+    if (option?.details) {
+      console.log("Selected Member Details:", option.details);
+    }
+    setSelectedDetails(option.details);
 
-    };
+    setValue("firstName", option.details.firstName || "");
+    setValue("lastName", option.details.lastName || "");
+    setValue("emailId", option.details.emailId || "");
+    setValue("phoneNumber", option.details.phoneNumber || "");
+    setValue("address", option.details.address || "");
+    setValue("city", option.details.city || "");
+    setValue("state", option.details.state || "");
+    setValue("postalCode", option.details.postalCode || "");
+    setValue("secondaryGuestName", option.details.secondaryGuestName || "");
+    setValue("secondaryEmail", option.details.secondaryEmail || "");
+    setValue("country", option.details.country || "");
+
+    setVisible(true);
+  };
 
   const onSubmit = async (data) => {
     const payload = {
@@ -119,11 +125,12 @@ const PersonalInfo = ({ stepper, slipId }) => {
     console.log("Submitted Data:", payload);
 
     try {
+      setLoading(true);
       await useJwt.postsMember(payload);
       // console.log("API Response:", response);
       return MySwal.fire({
         title: "Successfully Created",
-        text: " Your Vessel Details Created Successfully",
+        text: " Slip Member created sucessfully",
         icon: "success",
         customClass: {
           confirmButton: "btn btn-primary",
@@ -136,40 +143,88 @@ const PersonalInfo = ({ stepper, slipId }) => {
       });
     } catch (error) {
       console.error("Error submitting vessel details:", error);
-      return MySwal.fire({
-        title: "Error!",
-        text: "An error occurred while submitting the form.",
-        icon: "error",
-        customClass: {
-          confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-      });
+
+      if (error.response && error.response.data) {
+        const { status } = error.response;
+        const { content } = error.response.data;
+        console.log(content);
+
+        switch (status) {
+          case 400:
+          case 401:
+          case 403:
+          case 404:
+          case 500:
+            setErrMsz(content);
+            break;
+          default:
+            setErrMsz(content);
+        }
+      }
+    }
+    finally{
+      setLoading(false);
     }
 
-    // console.log("vessel dimensions ", payload);
   };
 
   const fetchData = async () => {
     try {
       const response = await useJwt.getslip({});
-      const options = response.data.content.result.map((item) => ({
-        value: item.member?.uid,
-        label: `${item.member?.firstName} ${item.member?.lastName}`,
-        details: item.member,
-      }));
 
-      console.log("Fetched Options:", options);
+      // Filter out items where member or both firstName & lastName are missing
+      const options = response.data.content.result
+        .filter(
+          (item) =>
+            item.member && (item.member.firstName || item.member.lastName)
+        )
+        .map((item) => ({
+          value: item.member?.uid,
+          label: `${item.member?.firstName || ""} ${
+            item.member?.lastName || ""
+          }`.trim(),
+          details: item.member,
+        }));
+
+      // console.log("Filtered Options:", options);
 
       setFullname(options);
     } catch (error) {
       console.error("Error fetching slip details:", error);
+      if (error.response && error.response.data) {
+        const { status } = error.response;
+        const { content } = error.response.data;
+        console.log(content);
+
+        switch (status) {
+          case 400:
+          case 401:
+          case 403:
+          case 404:
+          case 500:
+            setErrMsz(content);
+            break;
+          default:
+            setErrMsz(content);
+        }
+      }
+    
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const getReadOnlyStyle = () => {
+    return visible
+      ? {
+          color: "#000",
+          backgroundColor: "#fff",
+          opacity: 1,
+        }
+      : {};
+  };
 
   return (
     <Fragment>
@@ -178,6 +233,16 @@ const PersonalInfo = ({ stepper, slipId }) => {
         <small>Enter Your Personal Info.</small>
       </div>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        {ErrMsz && (
+          <React.Fragment>
+            <UncontrolledAlert color="danger">
+              <div className="alert-body">
+                <span className="text-danger fw-bold">{ErrMsz}</span>
+              </div>
+            </UncontrolledAlert>
+          </React.Fragment>
+        )}
+
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="slipName">
@@ -201,9 +266,7 @@ const PersonalInfo = ({ stepper, slipId }) => {
                 />
               )}
             />
-            {errors.uid && (
-              <FormFeedback>{errors.uid.message}</FormFeedback>
-            )}
+            {errors.uid && <FormFeedback>{errors.uid.message}</FormFeedback>}
           </Col>
         </Row>
 
@@ -220,6 +283,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   {...field}
                   placeholder="Enter First Name"
                   invalid={errors.firstName && true}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -239,6 +304,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   {...field}
                   placeholder="Enter Last Name"
                   invalid={errors.lastName && true}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -263,6 +330,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Email "
                   invalid={errors.emailId && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -285,6 +354,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Mobile Number"
                   invalid={errors.phoneNumber && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -308,6 +379,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Address "
                   invalid={errors.address && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -330,6 +403,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter City Name"
                   invalid={errors.city && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -352,6 +427,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter State Name"
                   invalid={errors.state && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -374,6 +451,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Country"
                   invalid={errors.country && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -397,6 +476,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Postal Code"
                   invalid={errors.postalCode && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -418,6 +499,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Secondary Guest Name"
                   invalid={errors.secondaryGuestName && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -440,6 +523,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Secondary Email"
                   invalid={errors.secondaryEmail && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -461,6 +546,8 @@ const PersonalInfo = ({ stepper, slipId }) => {
                   placeholder="Enter Secondary Phone Number"
                   invalid={errors.secondaryPhoneNumber && true}
                   {...field}
+                  readOnly={visible}
+                  style={getReadOnlyStyle()}
                 />
               )}
             />
@@ -501,9 +588,9 @@ const PersonalInfo = ({ stepper, slipId }) => {
 
             <Button type="submit" color="primary" className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
-                Next
+               {loading ? <Spinner size= "sm"  />:"Next"} 
               </span>
-              <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+            {loading ?null:<ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />}
             </Button>
           </div>
         </div>

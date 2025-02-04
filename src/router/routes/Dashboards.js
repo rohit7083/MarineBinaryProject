@@ -79,6 +79,10 @@ const DashboardRoutes = [
     path: '/dashboard/SlipMemberForm',
     element: <DashboardSlipMemberForm />
   }, 
+  {
+    path: '/dashboard/SlipMemberForm/:uid',
+    element: <DashboardSlipMemberForm />
+  }, 
 
   {
     path: '/dashboard/SlipMemberList',
@@ -88,25 +92,7 @@ const DashboardRoutes = [
     path: '/dashboard/SlipView/:uid',
     element: <DashboardSlipView />
   },
-  // {
-  //   path: '/dashboard/UserAuth/Login',
-  //   element: <DashboardSlipLogin />
-  // },
-  // {
-  //   path: '/dashboard/UserAuth/Registeruser',
-  //   element: <DashboardRegisteruser />
-  // },
-  // {
-  //   path: '/dashboard/UserAuth/forgetPass',
-  //   element: <DashboardforgetPass />
-  // },
-  // {
-  //     path: '/dashboard/UserAuth/emailOTP',
-  //     element: <DashboardemailOTP />
-  //   },
-
-
-   
+    
 
      {
       path: '/dashboard/SlipView',

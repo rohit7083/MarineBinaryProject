@@ -51,12 +51,13 @@ export default [
         icon: <Circle size={12} />,
         navLink: '/dashboard/SlipDetailList'
       },
-      {
-        id: 'SlipMemberForm',
-        title: 'Slip Member Form',
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/SlipMemberForm'
-      },  {
+      // {
+      //   id: 'SlipMemberForm',
+      //   title: 'Slip Member Form',
+      //   icon: <Circle size={12} />,
+      //   navLink: '/dashboard/SlipMemberForm'
+      // },
+        {
         id: 'SlipMemberList',
         title: 'Slip Member List',
         icon: <Circle size={12} />,

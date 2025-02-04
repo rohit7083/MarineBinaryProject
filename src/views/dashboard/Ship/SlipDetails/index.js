@@ -137,12 +137,13 @@ function ShipDetails() {
 
             // Explicitly reorder dimensions to prioritize 'height' over 'width'
             const orderedDimensions = {};
-            if ("length" in unorderedDimensions)
-              orderedDimensions.length = unorderedDimensions.length;
             if ("height" in unorderedDimensions)
               orderedDimensions.height = unorderedDimensions.height;
             if ("width" in unorderedDimensions)
               orderedDimensions.width = unorderedDimensions.width;
+            if ("length" in unorderedDimensions)
+              orderedDimensions.length = unorderedDimensions.length;
+          
            
             // Add any remaining dimensions
             for (const [key, value] of Object.entries(unorderedDimensions)) {

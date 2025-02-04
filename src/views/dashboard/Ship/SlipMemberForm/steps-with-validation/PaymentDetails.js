@@ -410,32 +410,30 @@ const Address = ({
   const [slipDetail, setSlipDetail] = useState({});
 
   useEffect(() => {
-    // console.log(errors);
-
-    // Fetch the API data when the component mounts
+  
     const fetchMarketPrices = async () => {
       try {
-        const response = await useJwt.getslipDetail();
-        // console.log("API Response:", response.data.content.result);
+      const response = await useJwt.getslip({});
+     console.log("payment Details", response);
 
-        const selectedSlip = response.data.content.result.find(
-          (item) => item.id === combinedData.slipDetailId
-        );
-        if (selectedSlip) {
+        // const selectedSlip = response.data.content.result.find(
+        //   (item) => item.id === combinedData.slipDetailId
+        // );
+        // if (selectedSlip) {
           // console.log("Selected Slip:", selectedSlip);
-          setSlipDetail({
-            marketAnnualPrice: selectedSlip.marketAnnualPrice,
-            marketMonthlyPrice: selectedSlip.marketMonthlyPrice,
-          });
-        } else {
-        }
+          // setSlipDetail({
+          //   marketAnnualPrice: selectedSlip.marketAnnualPrice,
+          //   marketMonthlyPrice: selectedSlip.marketMonthlyPrice,
+          // });
+        // } else {
+        // }
         // console.log("selected",selectedSlip.marketAnnualPrice);
       } catch (error) {
         console.error("Error fetching market prices:", error);
       }
     };
     fetchMarketPrices();
-  }, [errors]);
+  }, []);
   // console.log("slipDetail",slipDetail);
 
   return (

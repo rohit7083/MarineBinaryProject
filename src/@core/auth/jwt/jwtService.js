@@ -38,7 +38,7 @@ export default class JwtService {
         // ** If token is present add it to request's Authorization Header
         // {{debugger}}
         if (accessToken) {
-          console.log("Access Token:", accessToken);
+          // console.log("Access Token:", accessToken);
 
           // ** eslint-disable-next-line no-param-reassign
           // config.headers.Authorization = `${
@@ -163,8 +163,8 @@ export default class JwtService {
   postslip(...args) {
     return axios.post(this.jwtConfig.slip, ...args);
   }
-  getslip() {
-    return axios.get(this.jwtConfig.slipGet);
+  getslip(id="") {
+    return axios.get(`${this.jwtConfig.slipGet}${id?"/"+id:''}`);
   }
   updateslip(uid, ...args) {
     return axios.put(`${this.jwtConfig.slip}${uid}`, ...args);

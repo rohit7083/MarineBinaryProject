@@ -13,7 +13,6 @@ import {
   Trash,
   Edit2,
   Eye,
-
 } from "react-feather";
 import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
@@ -29,6 +28,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+// ** Vars
 const states = [
   "success",
   "danger",
@@ -47,6 +47,13 @@ const status = {
   5: { title: "Applied", color: "light-info" },
 };
 
+const PaymentTypes = {
+  1: "CreditCard",
+  2: "CardSwipe",
+  3: "Cash",
+  4: "Cheque21",
+  5: "ChequeACH",
+};
 // ** Table Zero Config Column
 export const basicColumns = [
   {
@@ -354,34 +361,81 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Id",
-    minWidth: " 50px",
+    minWidth: "100px",
     selector: (row) => row.id,
   },
-
+ 
   {
     sortable: true,
     name: "Slip Name",
-    minWidth: "50px",
-    selector: (row) => row.shipTypeName,
+    minWidth: "150px",
+    selector: (row) => row.slipName,
   },
   {
     sortable: true,
-    name: "Vessel Type",
-    minWidth: "50px",
-    selector: (row) => row.dimensions,
+    name: "Category",
+    minWidth: "150px",
+    selector: (row) => row.category?.shipTypeName || "N/A", 
   },
+  {
+    sortable: true,
+    name: "Name",
+    minWidth: "150px",
+    selector: (row) => `${row.member?.firstName || ""} ${row.member?.lastName || ""}`
 
+  },
+  {
+    sortable: true,
+    name: "Email",
+    minWidth: "250px",
+    selector: (row) =>row.member?.emailId,
+  },
+  {
+    sortable: true,
+    name: "Mobile No",
+    minWidth: "150px",
+    selector: (row) => row.member?.phoneNumber,
+  },
+  {
+    sortable: true,
+    name: "Payment",
+    minWidth: "150px",
+    selector: (row) => row.payment?.find((p) => p.finalPayment)?.finalPayment,
+  },
+  {
+    sortable: true,
+    name: "Contract Date",
+    minWidth: "150px",
+    selector: (row) => row.payment?.find((p) => p.contractDate)?.contractDate,
+  },
+  {
+    sortable: true,
+    name: " Next Payment Date",
+    minWidth: "200px",
+    selector: (row) =>
+      row.payment?.find((p) => p.nextPaymentDate)?.nextPaymentDate,
+  },
+  {
+    sortable: true,
+    name: "Contract Type",
+    minWidth: "150x",
+    selector: (row) => {
+      // const paymentMode = row.payment?.find((p) => p.paymentMode)?.paymentMode;
+      // return PaymentTypes[paymentMode] || "";
+      const paymentMode = row.payment?.find((p) => p.paidIn)?.paidIn;
+    },
+  },
+  
   {
     name: "Actions",
     sortable: true,
-    minWidth: "   75px",
+    minWidth: "150px",
     cell: (row) => {
       const [data, setData] = useState([]);
 
       const MySwal = withReactContent(Swal);
 
       const handleDelete = async (uid) => {
-        // Show confirmation modal
         return MySwal.fire({
           title: "Are you sure?",
           text: "You won't be able to revert this!",
@@ -397,7 +451,7 @@ export const serverSideColumns = [
           if (result.value) {
             try {
               // Call delete API
-              const response = await useJwt.deleteslipCatogory(uid);
+              const response = await useJwt.deleteslip(uid);
               if (response.status === 204) {
                 setData((prevData) =>
                   prevData.filter((item) => item.uid !== uid)
@@ -411,7 +465,9 @@ export const serverSideColumns = [
                     confirmButton: "btn btn-success",
                   },
                 });
-                window.location.reload(true);
+                setTimeout(() => {
+                  window.location.reload(true);
+                }, 2000); // 2000ms = 2 seconds
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -430,41 +486,42 @@ export const serverSideColumns = [
         });
       };
 
-      const handle = async () => {
-        console.log(row.shipTypeName);
-        console.log(row.dimensions);
-        console.log("Passing to Link:", row.shipTypeName, row.dimensions);
-      };
-
       return (
         <div className="d-flex">
-          {/* View Button */}
-          <span style={{ cursor: "pointer" }}>
-            <Eye size={25} className="me-2" />
-          </span>
+       
 
           <Link
+            style={{ margin: "0.5rem" }}
             to={{
-              pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path
-              state: {
-                shipTypeName: row.shipTypeName, // Pass the shipTypeName
-                dimensions: row.dimensions, // Pass the dimensions (make sure it's an array)
-              },
+              pathname: `/dashboard/SlipView/${row.uid}`,
             }}
           >
-            <span onClick={() => handle(row)}>
-              <Edit2 className="me-2" />
+            <Eye className="font-medium-3 text-body" />
+          </Link>
+
+          {/* Edit Button */}
+          <Link
+            style={{ margin: "0.5rem" }}
+            to={{
+              pathname: `/dashboard/SlipMemberForm/${row.uid}`, // Ensure this is the correct path
+              state: {},
+            }}
+          >
+            <span>
+              <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
 
-          {/* Delete Button */}
-          <span
-            color="danger"
-            style={{ cursor: "pointer", color: "red" }}
-            onClick={() => handleDelete(row.uid)}
-          >
-            <Trash2 size={20} />
-          </span>
+          <Link style={{ margin: "0.5rem" }}>
+            {" "}
+            <span
+              color="danger"
+              style={{ cursor: "pointer", color: "red" }}
+              onClick={() => handleDelete(row.uid)}
+            >
+              <Trash className="font-medium-3 text-body" />
+            </span>
+          </Link>
         </div>
       );
     },
@@ -477,7 +534,7 @@ export const advSearchColumns = [
     name: "shipTypeName",
     sortable: true,
     minWidth: "200px",
-    selector: (row) => row.shipTypeName,
+    selector: (row) => row.slipName,
   },
   {
     name: "Email",
