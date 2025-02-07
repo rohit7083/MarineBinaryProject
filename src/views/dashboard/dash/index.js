@@ -204,9 +204,9 @@ const DefaultAlert = () => {
           </Alert>
         )}
       </React.Fragment>
-      <Button.Ripple color="dark" type="submit" onClick={handleRemove}>
+      {/* <Button.Ripple color="dark" type="submit" onClick={handleRemove}>
         Remove{" "}
-      </Button.Ripple>
+      </Button.Ripple> */}
 
       <Modal
         isOpen={show}

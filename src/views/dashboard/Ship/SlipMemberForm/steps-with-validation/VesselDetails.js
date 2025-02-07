@@ -20,53 +20,16 @@ import withReactContent from "sweetalert2-react-content";
 import { UncontrolledAlert } from "reactstrap";
 import { useParams } from "react-router-dom";
 
-const AccountDetails = ({ stepper, setSlipId }) => {
+const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
   const MySwal = withReactContent(Swal);
 
-  const params = useParams();
+  // const { uid } = useParams();
 
-  const [selectedSlipname, setSelectedSlipname] = useState(null);
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
   const [errMsz, seterrMsz] = useState("");
   const [loadinng, setLoading] = useState(false);
-  const [vesselData, setVesselData] = useState([]);
-
-  const handleSlipChange = (option) => {
-    setSelectedSlipname(option);
-    setDimensions(option?.dimensions || {});
-    console.log("count");
-  };
-
-  const getValidationSchema = (dimensions) =>
-    yup.object().shape({
-      slipName: yup.string().required("Slip Name is required"),
-      vesselName: yup
-        .string()
-        .required("Vessel Name is required")
-        .matches(
-          /^[a-zA-Z\s-]+$/,
-          "Vessel Name must contain only alphabetic characters, hyphens, and spaces"
-        ),
-      vesselRegistrationNumber: yup
-        .string()
-        .required("Registration Number is required"),
-
-      ...Object.keys(dimensions).reduce((acc, key) => {
-        acc[key] = yup
-          .number()
-          .required(`${key} is required`)
-          .max(dimensions[key], `${key} cannot exceed ${dimensions[key]}`)
-          .min(1, `${key} must be at least 1`); // Ensure minimum value is 1
-        return acc;
-      }, {}),
-    });
-
-  useEffect(() => {
-    console.clear();
-    console.log(vesselData);
-  }, [vesselData]);
-
+  const [validateDimension, setValidateDimension] = useState(null);
   const {
     control,
     handleSubmit,
@@ -74,48 +37,97 @@ const AccountDetails = ({ stepper, setSlipId }) => {
     formState: { errors },
     setValue,
     watch,
-  } = useForm({
-    resolver: yupResolver(getValidationSchema(dimensions)),
-  });
+  } = useForm({});
+
+  async function fetchForm() {
+    try {
+      const response = await useJwt.getslip();
+
+      const { result } = response.data.content;
+      console.log("result from the vessel ", result);
+
+      const falseOptions = result.map((item) => ({
+        isAssigned: item.isAssigned,
+      }));
+// {{debugger}}
+      // if (!falseOptions) {
+        setSlipNames(() =>
+          result.map(({ slipName: label, id: value, dimensions }) => ({
+            label,
+            value,
+            dimensions,
+          }))
+        );
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (Object.keys(formData)?.length) {
+      const data = { ...formData };
+
+      reset(data);
+    }
+  }, [reset, formData]);
+
+  useEffect(() => {
+    fetchForm();
+  }, []);
 
   const onSubmit = async (data) => {
-    const renamedData = Object.keys(data).reduce((acc, key) => {
-      if (key === "width") {
-        acc["vesselWidth"] = data[key];
-      } else if (key === "height") {
-        acc["vesselHeight"] = data[key];
-      } else if (key === "length") {
-        acc["vesselLength"] = data[key];
-      } else if (key === "slipName") {
-        acc["slipId"] = data[key]; // Set slipId to the value of slipName
-      } else {
-        acc[key] = data[key]; // Keep other keys as they are
-      }
-      return acc;
-    }, {});
+    // {{debugger}}
+    const finaleData = {};
+    const { dimensions } = data.slipName;
 
-    const payload = {
-      ...renamedData,
-    };
-    setSlipId(payload.slipId);
+    Object.keys(dimensions).map(
+      (key) => (finaleData[key] = data.dimensionVal[key])
+    );
+    delete data.dimensionVal;
+    finaleData.slipId = data.slipName.value;
+    setSlipIID(finaleData.slipId);
+    // finaleData.slipName = data.slipName.label;
+    finaleData.vesselRegistrationNumber = data.vesselRegistrationNumber;
+    finaleData.vesselName = data.vesselName;
+    finaleData.uid = data.uid ? data.uid : "";
 
     try {
       setLoading(true);
 
-      await useJwt.postsVessel(payload);
-      return MySwal.fire({
-        title: "Successfully Created",
-        text: " Your Vessel Details Created Successfully",
-        icon: "success",
-        customClass: {
-          confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-      }).then(() => {
-        if (Object.keys(errors).length === 0) {
-          stepper.next();
-        }
-      });
+      if (slipId) {
+        setLoading(true);
+        await useJwt.updateVessel(finaleData.uid, finaleData);
+        return MySwal.fire({
+          title: "Successfully updated",
+          text: " Your Vessel Details Update Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      } else {
+        setLoading(true);
+        await useJwt.postsVessel(finaleData);
+        return MySwal.fire({
+          title: "Successfully Created",
+          text: " Your Vessel Details Created Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      }
     } catch (error) {
       console.error("Error submitting vessel details:", error);
 
@@ -146,65 +158,57 @@ const AccountDetails = ({ stepper, setSlipId }) => {
     } finally {
       setLoading(false);
     }
-    // if (uid) {
-
-    //     try {
-    //     const res= await useJwt.updateVessel(uid,payload);
-    //       console.log("updated Response:", response);
-    //       return MySwal.fire({
-    //         title: "Successfully Updated",
-    //         text: " Your Vessel Details Updated Successfully",
-    //         icon: "success",
-    //         customClass: {
-    //           confirmButton: "btn btn-primary",
-    //         },
-    //         buttonsStyling: false,
-    //       }).then(() => {
-    //         if (Object.keys(errors).length === 0) {
-    //           stepper.next();
-    //         }
-    //       });
-    //     } catch (error) {
-    //       console.error("Error submitting vessel details:", error);
-    //       const { status, content } = error.response.data;
-    //       console.log(content);
-
-    //       switch (status) {
-    //         case 400:
-    //           seterrMsz(content);
-
-    //           break;
-    //         case 401:
-    //           seterrMsz(content);
-    //           // navigate("/login");
-    //           break;
-    //         case 403:
-    //           seterrMsz(content);
-    //           break;
-    //         case 500:
-    //           seterrMsz(content);
-
-    //           break;
-    //         default:
-    //           seterrMsz(content);
-    //       }
-    //     }
-    //   }
   };
 
-  useEffect(() => {
-    if (watch("slipName")) {
-      setValue("height", "");
-      setValue("length", "");
-      setValue("width", "");
-    }
-  }, [watch("slipName")]);
+  const renderField = (fields) => {
+    // {{debugger}}
+
+    if (!fields) return null;
+
+    return Object.keys(fields).map((dimKey) => (
+      <Col key={dimKey} md="6" className="mb-1">
+        <Label className="form-label" htmlFor={dimKey}>
+          {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+          <span style={{ color: "red" }}>*</span>
+        </Label>
+        <Controller
+          name={`dimensionVal.${dimKey}`}
+          control={control}
+          rules={{
+            valueAsNumber: true,
+            validate: (value) =>
+              parseInt(value) <= watch("slipName").dimensions[dimKey] ||
+              `Value must be less than ${watch("slipName").dimensions[dimKey]}`, // Custom validation
+          }}
+          render={({ field, fieldState }) => (
+            <div>
+              <Input
+                type="number"
+                placeholder={`Enter Vessel ${dimKey}`}
+                invalid={!!fieldState?.error}
+                {...field}
+              />
+              {fieldState?.error && (
+                <p className="text-danger">{fieldState?.error?.message}</p>
+              )}
+            </div>
+          )}
+        />
+
+        {/* {errors?.[dimKey] && (
+      <FormFeedback>{errors.$[dimKey]?.message}</FormFeedback>
+    )} */}
+      </Col>
+    ));
+  };
 
   return (
-
     <Fragment>
+     
       <div className="content-header">
-        <h5 className="mb-0">Vessel Details</h5>
+        <h5 className="mb-0">
+          {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}
+        </h5>
         <small className="text-muted">Enter Your Vessel Details.</small>
       </div>
 
@@ -217,6 +221,10 @@ const AccountDetails = ({ stepper, setSlipId }) => {
           </UncontrolledAlert>
         </React.Fragment>
       )}
+       {loadinng ? (
+         <Spinner size="lg" />
+      ):(
+        <>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
@@ -230,17 +238,13 @@ const AccountDetails = ({ stepper, setSlipId }) => {
               render={({ field }) => (
                 <Select
                   {...field}
-                  value={selectedSlipname}
-                  onChange={(option) => {
-                    field.onChange(option?.value);
-                    handleSlipChange(option);
-                  }}
                   options={slipNames}
                   isClearable
                   placeholder="Select Slip Name"
                 />
               )}
             />
+
             {errors.slipName && (
               <FormFeedback>{errors.slipName.message}</FormFeedback>
             )}
@@ -289,30 +293,7 @@ const AccountDetails = ({ stepper, setSlipId }) => {
               </FormFeedback>
             )}
           </Col>
-
-          {Object.keys(dimensions).map((dimKey) => (
-            <Col key={dimKey} md="6" className="mb-1">
-              <Label className="form-label" for={dimKey}>
-                {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Controller
-                name={dimKey}
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    type="number"
-                    placeholder={`Enter Vessel ${dimKey}`}
-                    invalid={errors[dimKey] && true}
-                    {...field}
-                  />
-                )}
-              />
-              {errors[dimKey] && (
-                <FormFeedback>{errors[dimKey]?.message}</FormFeedback>
-              )}
-            </Col>
-          ))}
+          {renderField(watch("slipName")?.dimensions)}
         </Row>
         <div className="d-flex justify-content-end">
           <div className="d-flex">
@@ -338,36 +319,10 @@ const AccountDetails = ({ stepper, setSlipId }) => {
           </div>
         </div>
       </form>
+      </>
+    )}
     </Fragment>
   );
 };
 
 export default AccountDetails;
-
-/*
-  const options = response.data.content.result.map((item) => ({
-          value: item.id,
-          label: item.slipName,
-          dimensions: item.dimensions,
-          isAssigned: item.isAssigned,
-        }));
-        console.log(response);
-
-        const UnassigneOption = response.data.content.result
-          .filter((item) => !item.isAssigned)
-          .map((item) => ({
-            value: item.id,
-            label: item.slipName,
-            dimensions: item.dimensions,
-          }));
-        console.log("unassigneOptions", UnassigneOption);
-
-        setSlipNames(UnassigneOption);
-        console.log(" response from useeffect ", options);
-
-        const filteredData = response.data.content.result.filter(
-          (item) => item.uid === uid // Match uid
-        ).map((item) => ({
-          vessel: item.vessel, 
-        }));
-*/

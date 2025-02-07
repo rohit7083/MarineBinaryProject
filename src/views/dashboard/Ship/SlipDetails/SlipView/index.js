@@ -79,11 +79,15 @@ function ShipDetails() {
       [name]: value,
     }));
   };
+  
+  
   // Handle dropdown selection change
   const handleSelectChange = (option) => {
     setSelectedCategory(option);
     setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
+
+
 
   let navigate = useNavigate();
 

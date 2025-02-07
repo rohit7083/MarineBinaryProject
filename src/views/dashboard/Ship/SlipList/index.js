@@ -275,8 +275,8 @@ const DataTableServerSide = () => {
   sortIcon={<ChevronDown size={10} />}
   paginationComponent={CustomPagination}
   data={dataToRender()}
-  customStyles={customStyles}  // Apply alternating row colors
-  striped  // Enables row striping
+  customStyles={customStyles} 
+  striped 
 />
 </div>
         )}

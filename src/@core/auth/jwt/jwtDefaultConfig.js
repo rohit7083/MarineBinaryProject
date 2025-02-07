@@ -19,8 +19,10 @@ export default {
 
   sVessel: "/sVessel/",
   sVesselGet: "/sVessel",
+  retriveVessel:'/sVessel/',
   sMember: "/sMember/",
-
+retriveMember:"/sMember/",
+UpdateMember:'/sMember/',
   // user Registraion and login
   registerUser: "/auth/user/create",
   login: "/auth/login",
@@ -55,7 +57,7 @@ export default {
   updateSubuser: "/sub_user/",
   
   slipAssignmentGet: "/slipAssignmentGet",
-  postOTP: "/slipAssignment/generate",
+  GenerateOtp: "/sPayment/generate",
   verifyOTP: "/slipAssignment/verify/",
   slipDocument: "/slipDocument/",
 

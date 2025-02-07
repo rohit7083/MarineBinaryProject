@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
@@ -15,18 +15,21 @@ import { Spinner, UncontrolledAlert } from "reactstrap";
 import { selectThemeColors } from "@utils";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
-// import { useLocation } from "react-router-dom";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
-const PersonalInfo = ({ stepper, slipId }) => {
+const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
+
+  console.log("memberformData :" ,formData)
+
   const MySwal = withReactContent(Swal);
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
   const [visible, setVisible] = useState(false);
   const [ErrMsz, setErrMsz] = useState("");
-  const[loading,setLoading]=useState(false);
+
+  const [loading, setLoading] = useState(false);
   const SignupSchema = yup.object().shape({
     firstName: yup
       .string()
@@ -95,6 +98,19 @@ const PersonalInfo = ({ stepper, slipId }) => {
     resolver: yupResolver(SignupSchema),
   });
 
+
+
+// prefilled value when u want to edit 
+
+  useEffect(()=>{
+    if (Object.keys(formData)?.length) {
+      const data={...formData};
+      reset(data);
+    }
+  },[reset,formData])
+
+
+
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
     if (option?.details) {
@@ -115,20 +131,45 @@ const PersonalInfo = ({ stepper, slipId }) => {
     setValue("country", option.details.country || "");
 
     setVisible(true);
+
   };
 
   const onSubmit = async (data) => {
+    // {{debugger}}
     const payload = {
       ...data,
-      slipId: slipId,
+      slipId:slipIID,
     };
+
+    
     console.log("Submitted Data:", payload);
 
     try {
+
+      
+
       setLoading(true);
+      if(slipId){
+
+        
+        await useJwt.UpdateMember(formData.uid, payload);
+        return MySwal.fire({
+          title: "Successfully updated",
+          text: " Your Vessel Details Update Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      }else{
       await useJwt.postsMember(payload);
-      // console.log("API Response:", response);
-      return MySwal.fire({
+      console.log("API Response:", response);
+       MySwal.fire({
         title: "Successfully Created",
         text: " Slip Member created sucessfully",
         icon: "success",
@@ -141,6 +182,7 @@ const PersonalInfo = ({ stepper, slipId }) => {
           stepper.next();
         }
       });
+    }
     } catch (error) {
       console.error("Error submitting vessel details:", error);
 
@@ -161,16 +203,14 @@ const PersonalInfo = ({ stepper, slipId }) => {
             setErrMsz(content);
         }
       }
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
-
   };
 
   const fetchData = async () => {
     try {
-      const response = await useJwt.getslip({});
+      const response = await useJwt.getslip();
 
       // Filter out items where member or both firstName & lastName are missing
       const options = response.data.content.result
@@ -208,13 +248,12 @@ const PersonalInfo = ({ stepper, slipId }) => {
             setErrMsz(content);
         }
       }
-    
     }
   };
 
-  useEffect(() => {
+  useEffect(()=>{
     fetchData();
-  }, []);
+  },[])
 
   const getReadOnlyStyle = () => {
     return visible
@@ -588,9 +627,11 @@ const PersonalInfo = ({ stepper, slipId }) => {
 
             <Button type="submit" color="primary" className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
-               {loading ? <Spinner size= "sm"  />:"Next"} 
+                {loading ? <Spinner size="sm" /> : "Next"}
               </span>
-            {loading ?null:<ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />}
+              {loading ? null : (
+                <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+              )}
             </Button>
           </div>
         </div>

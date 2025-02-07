@@ -262,3 +262,622 @@
   };
 
   export default AccountDetails;
+
+
+
+
+  const formData={
+    active
+: 
+true
+addOn
+: 
+"Wi.Fi"
+amps
+: 
+111
+category
+: 
+{id: 2, uid: 'c6bebfc1-3d26-42cf-9271-9ebc9a972ded', createdAt: '2025-02-03T07:03:51.761632', updatedAt: '2025-02-03T07:03:51.760548', createdBy: {…}, …}
+createdAt
+: 
+"2025-02-04T07:46:55.635251"
+createdBy
+: 
+{uid: '8cad8227-8f80-407e-94ec-1871fa9ee400', name: 'Sneha'}
+dimensions
+: 
+{length: 11, width: 5}
+electric
+: 
+true
+id
+: 
+4
+isAssigned
+: 
+true
+isDelete
+: 
+false
+marketAnnualPrice
+: 
+3000
+marketMonthlyPrice
+: 
+300
+member
+: 
+{id: 4, uid: '4c2e4056-4a2a-4666-b658-890cd7645955', createdAt: '2025-02-04T07:55:13.635893', updatedAt: '2025-02-04T07:55:13.615887', createdBy: {…}, …}
+memberId
+: 
+null
+overDueAmountFor7Days
+: 
+7
+overDueAmountFor15Days
+: 
+15
+overDueAmountFor30Days
+: 
+30
+overDueAmountForAuction
+: 
+45
+overDueAmountForNotice
+: 
+40
+overDueChagesForAuction
+: 
+"Flat"
+overDueChargesFor7Days
+: 
+"Flat"
+overDueChargesFor15Days
+: 
+"Percentage"
+overDueChargesFor30Days
+: 
+"Flat"
+overDueChargesForNotice
+: 
+"Percentage"
+payment
+: 
+(2) [{…}, {…}]
+slipCategoryUid
+: 
+null
+slipName
+: 
+"A4"
+stepStatus
+: 
+2
+uid
+: 
+"a4009cb5-6e34-47b9-81cf-6cdb3f793eb3"
+updatedAt
+: 
+"2025-02-04T09:05:50.011891"
+updatedBy
+: 
+{uid: '8cad8227-8f80-407e-94ec-1871fa9ee400', name: 'Sneha'}
+vessel
+: 
+{id: 4, uid: 'fca0117a-1b63-4465-99b9-a0af89b3c697', createdAt: '2025-02-04T07:49:22.6858', updatedAt: '2025-02-04T07:49:22.6858', createdBy: {…}, …}
+water
+: 
+false
+  }
+
+
+
+
+
+  import React, { useState, useEffect, Fragment } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import useJwt from "@src/auth/jwt/useJwt";
+import Select from "react-select";
+import {
+  Form,
+  Label,
+  Input,
+  Row,
+  Col,
+  Button,
+  FormFeedback,
+  Spinner,
+} from "reactstrap";
+import { ArrowLeft, ArrowRight } from "react-feather";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { UncontrolledAlert } from "reactstrap";
+import { useParams } from "react-router-dom";
+
+const AccountDetails = ({ stepper, setSlipId, formData = {}, vuid }) => {
+  const MySwal = withReactContent(Swal);
+
+  const { uid } = useParams();
+
+  const [selectedSlipname, setSelectedSlipname] = useState(null);
+  const [slipNames, setSlipNames] = useState([]);
+  const [dimensions, setDimensions] = useState({});
+  const [errMsz, seterrMsz] = useState("");
+  const [loadinng, setLoading] = useState(false);
+  const [vesselData, setVesselData] = useState([]);
+  const [dimensions2, setDimensions2] = useState({});
+  // const getValidationSchema = (dimensions) =>
+  //   yup.object().shape({
+  //     slipName: yup.string().required("Slip Name is required"),
+  //     vesselName: yup
+  //       .string()
+  //       .required("Vessel Name is required")
+  //       .matches(
+  //         /^[a-zA-Z\s-]+$/,
+  //         "Vessel Name must contain only alphabetic characters, hyphens, and spaces"
+  //       ),
+  //     vesselRegistrationNumber: yup
+  //       .string()
+  //       .required("Registration Number is required"),
+
+  //     ...Object.keys(dimensions).reduce((acc, key) => {
+  //       acc[key] = yup
+  //         .number()
+  //         .required(`${key} is required`)
+  //         .max(dimensions[key], `${key} cannot exceed ${dimensions[key]}`)
+  //         .min(1, `${key} must be at least 1`); // Ensure minimum value is 1
+  //       return acc;
+  //     }, {}),
+  //   });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm({
+    // resolver: yupResolver(getValidationSchema(dimensions)),
+  });
+
+  useEffect(() => {
+    // console.log("vuid",vuid);
+
+    const fetchSlipNames = async () => {
+      try {
+        const response = await useJwt.getslip();
+
+        const options = response.data.content.result.map((item) => ({
+          value: item.id,
+          label: item.slipName,
+          dimensions: item.dimensions,
+          isAssigned: item.isAssigned,
+        }));
+        console.log("optionsoptions", options);
+
+        // getting false slipnames
+        const UnassigneOption = response.data.content.result
+          .filter((item) => !item.isAssigned)
+          .map((item) => ({
+            value: item.id,
+            label: item.slipName,
+            dimensions: item.dimensions,
+          }));
+        console.log("unassigneOptions", UnassigneOption);
+
+        setSlipNames(UnassigneOption);
+        console.log(" response from useeffect ", options);
+
+        const filteredData = response.data.content.result
+          .filter(
+            (item) => item.uid === uid // Match uid
+          )
+          .map((item) => ({
+            vessel: item.vessel,
+          }));
+
+        // console.log("FilterData".filteredData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchSlipNames();
+  }, []);
+
+  // useEffect(() => {
+  //   if (uid && formData) {
+  //     setValue("slipNameRead", formData?.slipName || "");
+
+  //     setDimensions2(formData.dimensions);
+  //     setValue("dimensions", formData.dimensions);
+
+  //     setValue("vesselName", formData?.vessel?.vesselName || "");
+  //     setValue(
+  //       "vesselRegistrationNumber",
+  //       formData?.vessel?.vesselRegistrationNumber || ""
+  //     );
+  //   }
+  // }, [uid, slipNames, formData, setValue]);
+
+  useEffect(() => {
+    if (uid && formData) {
+      // Set values from formData into the form
+      setValue("slipNameRead", formData?.slipName || "");
+
+      // Handle dimensions transformation
+      setDimensions2(formData.dimensions);
+
+      setValue("dimensions", {
+        ...(formData.dimensions?.length !== undefined && {
+          vesselLength: formData.dimensions.length,
+        }),
+        ...(formData.dimensions?.width !== undefined && {
+          vesselWidth: formData.dimensions.width,
+        }),
+        ...(formData.dimensions?.height !== undefined && {
+          vesselHeight: formData.dimensions.height,
+        }),
+      });
+
+      // Set vessel details
+      setValue("vesselName", formData?.vessel?.vesselName || "");
+      setValue(
+        "vesselRegistrationNumber",
+        formData?.vessel?.vesselRegistrationNumber || ""
+      );
+
+      
+    }
+  }, [uid, formData, setValue]);
+
+  const handleSlipChange = (option) => {
+    setSelectedSlipname(option);
+    setDimensions(option?.dimensions || {});
+  };
+
+  useEffect(() => {
+    console.clear();
+    console.log(vesselData);
+  }, [vesselData]);
+
+  const onSubmit = async (data) => {
+    // alert('dsffg');
+     const renamedData = Object.keys(data).reduce((acc, key) => {
+      if (key === "width") {
+        acc["vesselWidth"] = data[key];
+      } else if (key === "height") {
+        acc["vesselHeight"] = data[key];
+      } else if (key === "length") {
+        acc["vesselLength"] = data[key];
+      } else if (key === "slipName") {
+        acc["slipId"] = data[key]; // Set slipId to the value of slipName
+      } else {
+        acc[key] = data[key]; // Keep other keys as they are
+      }
+      return acc;
+    }, {});
+
+    // const payload = {
+    //   ...renamedData,
+    // };
+    const payload = {
+      slipId: formData?.id,
+      vesselName: formData?.vessel?.vesselName || "",
+      vesselRegistrationNumber: formData?.vessel?.vesselRegistrationNumber || "",
+      ...(formData.dimensions?.length !== undefined && { vesselLength: formData.dimensions.length }),
+      ...(formData.dimensions?.width !== undefined && { vesselWidth: formData.dimensions.width }),
+      ...(formData.dimensions?.height !== undefined && { vesselHeight: formData.dimensions.height })
+    };
+    setSlipId(payload.slipId);
+
+    try {
+      setLoading(true);
+
+      if (!!vuid) {
+        await useJwt.updateVessel(vuid, payload);
+        return MySwal.fire({
+          title: "Successfully Created",
+          text: " Your Vessel Details Created Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      } else {
+        setLoading(true);
+        await useJwt.postsVessel(payload);
+        return MySwal.fire({
+          title: "Successfully Created",
+          text: " Your Vessel Details Created Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting vessel details:", error);
+
+      if (error.response && error.response.data) {
+        const { status, content } = error.response.data;
+        console.log(content);
+
+        switch (status) {
+          case 400:
+            seterrMsz(content);
+
+            break;
+          case 401:
+            seterrMsz(content);
+            // navigate("/login");
+            break;
+          case 403:
+            seterrMsz(content);
+            break;
+          case 500:
+            seterrMsz(content);
+
+            break;
+          default:
+            seterrMsz(content);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (watch("slipName")) {
+      setValue("height", "");
+      setValue("length", "");
+      setValue("width", "");
+    }
+  }, [watch("slipName")]);
+
+  return (
+    <Fragment>
+      <div className="content-header">
+        <h5 className="mb-0">
+          {uid ? "Update Vessel Details" : "Vessel Details"}{" "}
+        </h5>
+        <small className="text-muted">Enter Your Vessel Details.</small>
+      </div>
+
+      {errMsz && (
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">{errMsz}</span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Row>
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="slipName">
+              Slip Name <span style={{ color: "red" }}>*</span>
+            </Label>
+
+            {uid ? (
+              <>
+                <Controller
+                  control={control}
+                  name="slipNameRead"
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      readOnly={true}
+                      invalid={errors.slipNameRead && true}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.slipNameRead && (
+                  <FormFeedback>{errors.slipNameRead.message}</FormFeedback>
+                )}
+              </>
+            ) : (
+              <>
+                <Controller
+                  name="slipName"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      value={selectedSlipname}
+                      onChange={(option) => {
+                        field.onChange(option?.value);
+                        handleSlipChange(option);
+                      }}
+                      options={slipNames}
+                      isClearable
+                      placeholder="Select Slip Name"
+                    />
+                  )}
+                />
+
+                {errors.slipName && (
+                  <FormFeedback>{errors.slipName.message}</FormFeedback>
+                )}
+              </>
+            )}
+          </Col>
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="vesselName">
+              Vessel Name <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              control={control}
+              name="vesselName"
+              render={({ field }) => (
+                <Input
+                  type="text"
+                  placeholder="Enter Vessel Name"
+                  invalid={errors.vesselName && true}
+                  {...field}
+                />
+              )}
+            />
+            {errors.vesselName && (
+              <FormFeedback>{errors.vesselName.message}</FormFeedback>
+            )}
+          </Col>
+        </Row>
+        <Row>
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="vesselRegistrationNumber">
+              Vessel Registration Number <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              control={control}
+              name="vesselRegistrationNumber"
+              render={({ field }) => (
+                <Input
+                  type="text"
+                  placeholder="Enter Registration Number"
+                  invalid={errors.vesselRegistrationNumber && true}
+                  {...field}
+                />
+              )}
+            />
+            {errors.vesselRegistrationNumber && (
+              <FormFeedback>
+                {errors.vesselRegistrationNumber.message}
+              </FormFeedback>
+            )}
+          </Col>
+
+          {Object.keys(uid ? dimensions2 : dimensions).map((dimKey) => (
+            <Col key={dimKey} md="6" className="mb-1">
+              <Label className="form-label" htmlFor={dimKey}>
+                {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name={`dimensions.${dimKey}`}
+                control={control}
+                defaultValue={(uid ? dimensions2 : dimensions)[dimKey] || ""}
+                render={({ field }) => (
+                  <Input
+                    type="number"
+                    placeholder={`Enter Vessel ${dimKey}`}
+                    invalid={!!errors?.dimensions?.[dimKey]}
+                    {...field}
+                  />
+                )}
+              />
+              {errors?.dimensions?.[dimKey] && (
+                <FormFeedback>
+                  {errors.dimensions[dimKey]?.message}
+                </FormFeedback>
+              )}
+            </Col>
+          ))}
+
+          {/* {uid ? (
+            <>
+              {" "}
+              {Object.keys(dimentions2).map((dimKey) => (
+                <Col key={dimKey} md="6" className="mb-1">
+                  <Label className="form-label" for={dimKey}>
+                    {"Vessel " +
+                      dimKey.charAt(0).toUpperCase() +
+                      dimKey.slice(1)}{" "}
+                    <span style={{ color: "red" }}>*</span>
+                  </Label>
+                  <Controller
+                    name={dimKey}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="number"
+                        placeholder={`Enter Vessel ${dimKey}`}
+                        invalid={errors[dimKey] && true}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors[dimKey] && (
+                    <FormFeedback>{errors[dimKey]?.message}</FormFeedback>
+                  )}
+                </Col>
+              ))}
+            </>
+          ) : (
+            <>
+              {" "}
+              {Object.keys(dimensions).map((dimKey) => (
+                <Col key={dimKey} md="6" className="mb-1">
+                  <Label className="form-label" for={dimKey}>
+                    {"Vessel " +
+                      dimKey.charAt(0).toUpperCase() +
+                      dimKey.slice(1)}{" "}
+                    <span style={{ color: "red" }}>*</span>
+                  </Label>
+                  <Controller
+                    name={dimKey}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="number"
+                        placeholder={`Enter Vessel ${dimKey}`}
+                        invalid={errors[dimKey] && true}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors[dimKey] && (
+                    <FormFeedback>{errors[dimKey]?.message}</FormFeedback>
+                  )}
+                </Col>
+              ))}
+            </>
+          )} */}
+        </Row>
+        <div className="d-flex justify-content-end">
+          <div className="d-flex">
+            <Button
+              type="reset"
+              color="primary"
+              onClick={() => reset()}
+              className="btn-reset me-2"
+            >
+              <span className="align-middle d-sm-inline-block d-none">
+                Reset
+              </span>
+            </Button>
+
+            <Button type="submit" color="primary" className="btn-next">
+              <span className="align-middle d-sm-inline-block d-none">
+                {loadinng ? <Spinner size="sm" /> : "Next"}
+              </span>
+              {loadinng ? null : (
+                <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </form>
+    </Fragment>
+  );
+};
+
+export default AccountDetails;

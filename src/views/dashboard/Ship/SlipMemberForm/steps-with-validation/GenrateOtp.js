@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
 
-const GenrateOtp = ({ combinedData ,buttonEnabled,setButtonEnabled}) => {
+const GenrateOtp = ({ combinedData, buttonEnabled, setButtonEnabled }) => {
   // ** States
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(100);
@@ -28,24 +28,24 @@ const GenrateOtp = ({ combinedData ,buttonEnabled,setButtonEnabled}) => {
 
   const handleOTP = async () => {
     try {
-      const payload = {
-        slipDetailId: combinedData.slipDetailId, // Ensure this is a number
-      };
-      const response = await useJwt.postOTP(payload); // Adjust this method to send the payload
+      // const payload = {
+      //   slipDetailId: combinedData.slipDetailId, // Ensure this is a number
+      // };
+      const response = await useJwt.GenerateOtp(payload); // Adjust this method to send the payload
       const token = response.data.content;
       setAccessTokenOtp(token);
-      setShow(true); // Open the modal on successful OTP generation
-      setTime(100); // Reset the timer
+      setShow(true);
+      setTime(100);
     } catch (error) {
       console.error("Error generating OTP:", error);
-      alert("Failed to generate OTP. Please try again.");
+      console.log("Failed to generate OTP. Please try again.");
     }
   };
 
   const handleVerifyOTP = async (data) => {
     try {
       if (!accessTokenotp) {
-        alert("Access token is missing. Please regenerate OTP.");
+        console.log("Access token is missing. Please regenerate OTP.");
         return;
       }
 
@@ -53,12 +53,12 @@ const GenrateOtp = ({ combinedData ,buttonEnabled,setButtonEnabled}) => {
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
 
       // If verification is successful, enable the button
-      alert("OTP Verified Successfully!");
+      console.log("OTP Verified Successfully!");
       setButtonEnabled(true);
       setShow(false); // Close the modal
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      alert("Failed to verify OTP. Please try again.");
+      console.log("Failed to verify OTP. Please try again.");
     }
   };
 

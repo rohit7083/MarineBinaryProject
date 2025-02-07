@@ -361,7 +361,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Id",
-    minWidth: "100px",
+    minWidth: "170px",
     selector: (row) => row.id,
   },
  
@@ -405,13 +405,13 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Contract Date",
-    minWidth: "150px",
+    minWidth: "200px",
     selector: (row) => row.payment?.find((p) => p.contractDate)?.contractDate,
   },
   {
     sortable: true,
     name: " Next Payment Date",
-    minWidth: "200px",
+    minWidth: "250px",
     selector: (row) =>
       row.payment?.find((p) => p.nextPaymentDate)?.nextPaymentDate,
   },
@@ -503,7 +503,7 @@ export const serverSideColumns = [
           <Link
             style={{ margin: "0.5rem" }}
             to={{
-              pathname: `/dashboard/SlipMemberForm/${row.uid}`, // Ensure this is the correct path
+              pathname: `/dashboard/SlipMemberForm/${row?.uid}`, // Ensure this is the correct path
               state: {},
             }}
           >

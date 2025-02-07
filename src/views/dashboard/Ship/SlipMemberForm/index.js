@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import PaymentDetails from "./steps-with-validation/PaymentDetails";
 import DocumentsDetails from "./steps-with-validation/DocumentsDetails";
 import MemberDetails from "./steps-with-validation/MemberDetails";
@@ -20,22 +20,56 @@ const WizardModern = () => {
 
   // ** State
   const [stepper, setStepper] = useState(null);
-  const [slipId, setSlipId] = useState(null);
-  const [formDetails, setFormDetails] = useState({
-    vsDetails: {
-      slipId: 0,
-      vesselName: "",
-      vesselRegistrationNumber: "",
-      vesselWidth: 0,
-      vesselHeight: 0,
-    },
-    mmDetails: {},
-    pyDetails: {},
-    dcDetails: {},
+const [slipIID,setSlipIID]=useState("");
+  const [formData, setFormData] = useState({
+    vessel: {},
+    member: {},
+    payment: {},
   });
-
   // ** Hooks
-  const params = useParams();
+  const { uid } = useParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // {{debugger}}  
+        const response = await useJwt.getslip(uid);
+        const { content } = response.data;
+        const { vessel, member, payment } = content;
+        console.log("Cntent",content);
+        
+        //vessel details 
+        vessel.slipName = {
+          label: vessel.slipName,
+          value: content.id,
+          dimensions: content.dimensions,
+        };
+        vessel.dimensionVal = {};
+
+        Object.keys(content.dimensions).map(
+          (key) => (vessel.dimensionVal[key] = vessel[key])
+        );
+
+        console.log({vessel})
+
+        //member details
+          
+
+        setFormData({
+          vessel: { ...vessel },
+          member,
+          payment: payment ? { ...payment } : {},
+        });
+      } catch (error) {
+        console.log("Error fetching slip details:", error);
+      }
+    };
+
+    if (uid) fetchData();
+  }, [uid]);
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const steps = [
     {
@@ -46,8 +80,11 @@ const WizardModern = () => {
       content: (
         <VesselDetails
           stepper={stepper}
-          setSlipId={setSlipId}
           type="wizard-modern"
+          formData={{ ...formData.vessel }}
+          slipId={uid}
+          setSlipIID={setSlipIID}
+
         />
       ),
     },
@@ -57,7 +94,13 @@ const WizardModern = () => {
       subtitle: "Add Member Info",
       icon: <User size={18} />,
       content: (
-        <MemberDetails stepper={stepper} slipId={slipId} type="wizard-modern" />
+        <MemberDetails
+          formData={{ ...formData.member }}
+          slipId={uid}
+          stepper={stepper}
+          type="wizard-modern"
+          slipIID={slipIID}
+        />
       ),
     },
     {
@@ -65,57 +108,24 @@ const WizardModern = () => {
       title: "Payment Details",
       subtitle: "Add Payment",
       icon: <MapPin size={18} />,
-      content: <PaymentDetails stepper={stepper} type="wizard-modern" />,
+      content: (
+        <PaymentDetails
+          formData={{ ...formData.payment }}
+          slipId={uid}
+          stepper={stepper}
+          slipIID={slipIID}
+          type="wizard-modern"
+        />
+      ),
     },
     {
       id: "DocumentsDetails",
       title: "Document Details",
       subtitle: "Add Documents",
       icon: <Link size={18} />,
-      content: <DocumentsDetails stepper={stepper} type="wizard-modern" />,
+      content: <DocumentsDetails stepper={stepper} type="wizard-modern" slipIID={slipIID} />,
     },
   ];
-
-  useEffect(() => {
-    const fetchData = async () => {
-      
-      try {
-        const response = await useJwt.getslip(params.uid);
-        const { content } = response.data;
-        const { vess } = content;
-
-        const tempKey = { ...formDetails };
-
-        const { vsDetails, mmDetails, pyDetails, dcDetails } = tempKey;
-
-        const updatedDetails = [vsDetails, mmDetails, pyDetails, dcDetails].map(
-          (obj) => {
-            let newObj = { ...obj };
-            Object.keys(newObj).forEach((key) => {
-              newObj[key] = content[key] ? content[key] : "";
-            });
-            return newObj;
-          }
-        );
-
-        [
-          tempKey.vsDetails,
-          tempKey.mmDetails,
-          tempKey.pyDetails,
-          tempKey.dcDetails,
-        ] = updatedDetails;
-
-        setFormDetails(tempKey);
-
-        console.log("Updated vsDetails:", tempKey.vsDetails);
-      } catch (error) {
-        console.error("Error fetching slip details:", error);
-        alert("An unexpected error occurred");
-      }
-    };
-
-    if (params.uid) fetchData();
-  }, []);
 
   return (
     <div className="modern-horizontal-wizard">

@@ -32,6 +32,30 @@ const DataTableServerSide = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: "#333", // Dark header background
+        color: "#fff", // White text
+        fontSize: "16px",
+        fontWeight: "bold",
+      },
+    },
+    headCells: {
+      style: {
+        color: "#fff", // White text for header cells
+      },
+    },
+    rows: {
+      style: {
+        backgroundColor: "#f8f9fa", // Light color for default row
+      },
+      stripedStyle: {
+        backgroundColor: "#ffffff", // Slightly different light color for alternating rows
+      },
+    },
+  };
+
   // const dataToRender = () => {
   //   const limit = currentPage * rowsPerPage;
   //   const start = limit - rowsPerPage;
@@ -204,7 +228,7 @@ const DataTableServerSide = () => {
             <Spinner className="me-25 " color="primary" />
           </div>
         ) : (
-          <div className="react-dataTable">
+          <div className="react-dataTable" style={{ marginTop: "2rem" }}>
             <DataTable
               noHeader
               pagination
@@ -214,6 +238,8 @@ const DataTableServerSide = () => {
               sortIcon={<ChevronDown size={10} />}
               paginationComponent={CustomPagination}
               data={dataToRender()}
+              customStyles={customStyles}
+              striped
             />
           </div>
         )}

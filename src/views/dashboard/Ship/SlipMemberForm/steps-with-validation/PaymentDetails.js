@@ -15,11 +15,10 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import PersonalInfo from "./MemberDetails";
 import GenrateOtp from "./GenrateOtp";
 import { format } from "date-fns";
-
+import React from "react";
+import { UncontrolledAlert } from "reactstrap";
 const Address = ({
   stepper,
-  combinedData,
-  setCombinedData,
   buttonEnabled,
   setButtonEnabled,
 }) => {
@@ -61,29 +60,33 @@ const Address = ({
     { value: "11", label: "November" },
     { value: "12", label: "December" },
   ];
-
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed
+  const currentMonth = new Date().getMonth() + 1;
 
-  // Generate year options for the next 30 years
   const years = Array.from({ length: 30 }, (_, i) => ({
     value: currentYear + i,
     label: (currentYear + i).toString(),
   }));
-  const [picker, setPicker] = useState(new Date());
+
+    const [picker, setPicker] = useState(new Date());
   const [nextPayment, setnextPayment] = useState(new Date());
-  const [availableMonths, setAvailableMonths] = useState(months); // Initially show all months
+  const [availableMonths, setAvailableMonths] = useState(months);
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [discounttoggle, setDiscountToggle] = useState(false);
-  const [otpVisible, setOtpVisible] = useState(false); // Tracks OTP button visibility
+  const [otpVisible, setOtpVisible] = useState(false);
   const [discountTypee, setdiscountTypee] = useState(null);
   const [otp, setOtp] = useState("");
   const [paymentMode, setpaymentMode] = useState(null);
   const [marketPrices, setMarketPrices] = useState(null);
-  const [calculatedDiscount, setCalculatedDiscount] = useState(0); // For storing calculated discount value
-  // const [rentalPrice, setRentalPrice] = useState(""); // State to store rental price
+  const [calculatedDiscount, setCalculatedDiscount] = useState(0);
+  const [rentalPrice, setRentalPrice] = useState("");
   const [show, setShow] = useState(false);
   const [cardType, setCardType] = useState("");
+  const [slipDetail, setSlipDetail] = useState({});
+  const [Verifyotp, setVerifyotp] = useState(false);
+  const[loading,setLoading]=useState(false);
+  const[errMsz,setErrMsz]= useState("");
+  
   const {
     control,
     handleSubmit,
@@ -96,18 +99,18 @@ const Address = ({
     // defaultValues,
   });
 
-  const [Verifyotp, setVerifyotp] = useState(false); // Track OTP verification state
+ 
 
-  // Callback function to set OTP verification status
   const handleOTPVerified = () => {
     setVerifyotp(true); // Set OTP as verified
   };
 
   // Handle changes in the "Paid In" dropdown
   const handlePaidInChange = (option) => {
-    // console.log("Option selected:", option);
     if (option?.value === "Monthly") {
       setValue("rentalPrice", slipDetail.marketMonthlyPrice);
+      console.log("price ",slipDetail.marketMonthlyPrice);
+      
     } else if (option?.value === "Annual") {
       // setRentalPrice(slipDetail.marketAnnualPrice); // Update rental price to Annual value
       setValue("rentalPrice", slipDetail.marketAnnualPrice);
@@ -290,150 +293,61 @@ const Address = ({
     // }
   };
 
-  // const defaultValues={
-  //   contractDate: "17-12-2024 ",
-  //     paidIn: "",
-  //     MonYear: "2000",
-  //     slipName: "yourSlip",
-  //     distype: false,
-  //     discountType: "Flat",
-  //     discountAmount: "200",
-  //     calDisAmount: "200",
-  //     finalPayment: "1800",
-  //     renewalDate: "26-8-2024",
-  //     nextPaymentDate: "6-1-2029",
-
-  // cardType: "",
-  // cardNumber: "",
-  // nameOnCard: "",
-  // cardCvv: "",
-  // cardExpiryYear: "",
-  // cardExpiryMonth: "",
-  // address: "",
-  // city: "",
-  // state:"",
-  // country: "",
-  // pinCode: "",
-
-  // bankName: "",
-  // nameOnAccount: "",
-  // routingNumber: "",
-  // accountNumber: "",
-  // chequeNumber: "",
-
-  // cardSwipeTransactionId: "",
-  // }
-
-  // const onSubmit = async (data) => {
-  //   const cleanData = Object.fromEntries(
-  //     Object.entries(data).filter(
-  //       ([key, value]) => value !== undefined && value !== null
-  //     )
-  //   );
-  //   console.log(cleanData);
-
-  //   if (Object.keys(errors).length === 0) {
-  //       try {
-  //         // const response = await useJwt.postslipAssignment();
-  //        console.log(data);
-
-  //       } catch (error) {
-  //         console.error("Error fetching market prices:", error);
-  //       }
-  //     }
-
-  //    else {
-  //     console.log("Validation failed", errors); // Log errors
-  //   }
-
-  //   setCombinedData((prev) => ({
-  //     ...prev,
-  //     slipPayment: data,
-  //   }));
-  //   stepper.next();
-  // };
-
-  //   const onSubmit = async (data) => {
-
-  //     setCombinedData((prev) => ({
-  //       ...prev,
-  //       slipPayment: data,
-  //     }));
-  //     // Merge final step data
-  //     // const cleanData = Object.fromEntries(
-  // //       Object.entries(data).filter(
-  // //         ([key, value]) => value !== undefined && value !== null
-  // //       )
-  // //     );
-  // // console.log("clean data", cleanData);
-
-  // try {
-  //   const response = await useJwt.postslipAssignment(combinedData);
-  //   console.log("API Response:", response);
-  // } catch (error) {
-  //   console.error("Error submitting data:", error);
-  // }
-
-  // // console.log("combinedData",combinedData);
-
-  //   };
-
   const onSubmit = async (data) => {
-    // {{debugger}}
-    // Clean the data to remove invalid values
-    // const data=Object.keys(combinedData).reduce((obj,key)=>{
-    //   if(typeof combinedData[key]=='object'){
-    //     obj={...obj,...combinedData[key]}
-
-    //   }else if(combinedData[key]){
-    //     obj={...obj,[key]:combinedData[key]}
-    //   }
-    //   return obj
-    // },{})
-
-    //  console.log({data})
-    setCombinedData((prev) => ({
-      ...prev,
-
-      slipPayment: data,
-    }));
+   
     console.log("payment data 3rd for", data);
 
     try {
-      const response = await useJwt.postslipAssignment(combinedData); // Send cleaned data
+      setLoading(true);
+      const response = await useJwt.postslipAssignment(); // Send cleaned data
       console.log("API Response:", response);
     } catch (error) {
       console.error("Error submitting data:", error);
+      if (error.response && error.response.data) {
+        const { status, content } = error.response.data;
+        console.log(content);
+
+        switch (status) {
+          case 400:
+            setErrMsz(content);
+
+            break;
+          case 401:
+            setErrMsz(content);
+            // navigate("/login");
+            break;
+          case 403:
+            setErrMsz(content);
+            break;
+          case 500:
+            setErrMsz(content);
+
+            break;
+          default:
+            setErrMsz(content);
+        }
+      }
+    }finally{
+      setLoading(true);
     }
   };
 
-  const [slipDetail, setSlipDetail] = useState({});
-
-  useEffect(() => {
-  
-    const fetchMarketPrices = async () => {
-      try {
-      const response = await useJwt.getslip({});
-     console.log("payment Details", response);
-
-        // const selectedSlip = response.data.content.result.find(
-        //   (item) => item.id === combinedData.slipDetailId
-        // );
-        // if (selectedSlip) {
-          // console.log("Selected Slip:", selectedSlip);
-          // setSlipDetail({
-          //   marketAnnualPrice: selectedSlip.marketAnnualPrice,
-          //   marketMonthlyPrice: selectedSlip.marketMonthlyPrice,
-          // });
-        // } else {
-        // }
-        // console.log("selected",selectedSlip.marketAnnualPrice);
-      } catch (error) {
-        console.error("Error fetching market prices:", error);
-      }
-    };
-    fetchMarketPrices();
-  }, []);
+  // useEffect(() => {
+  //   const fetchMarketPrices = async () => {
+  //     try {
+  //       const response = await useJwt.getslip();
+  //       const pydata=response.data.content.result.map((item) =>({
+  //         marketAnnualPrice:item.marketAnnualPrice,
+  //         marketMonthlyPrice:item.marketMonthlyPrice,
+  //       }))
+  //       setSlipDetail(pydata);
+  //       console.log("payment Details", pydata);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchMarketPrices();
+  // }, []);
   // console.log("slipDetail",slipDetail);
 
   return (
@@ -442,7 +356,19 @@ const Address = ({
         <h5 className="mb-0">Payment</h5>
         <small>Enter Your Payment Details.</small>
       </div>
+
+      {errMsz && (
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">{errMsz}</span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
+
       <Form onSubmit={handleSubmit(onSubmit)}>
+
         <Row>
           <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
@@ -589,8 +515,6 @@ const Address = ({
           {discounttoggle && (
             <Col md="auto" className="mb-1 my-3">
               <GenrateOtp
-                combinedData={combinedData}
-                setCombinedData={setCombinedData}
                 buttonEnabled={buttonEnabled}
                 setButtonEnabled={setButtonEnabled}
               />
@@ -770,53 +694,54 @@ const Address = ({
             )}
           </Col> */}
 
-<Col md="6" className="mb-1">
-  <Label className="form-label" for="hf-picker">
-    Renewal Date <span style={{ color: "red" }}>*</span>
-  </Label>
-  <Controller
-    name="renewalDate"
-    control={control}
-    rules={{
-      required: "Renewal date is required",
-      validate: (value) => {
-        const selectedDate = new Date(value);
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1); // Calculate tomorrow's date
-        tomorrow.setHours(0, 0, 0, 0); // Normalize time to midnight
-        
-        if (selectedDate < tomorrow) {
-          return "Renewal date cannot be today or in the past.";
-        }
-        
-        return true;
-      },
-    }}
-    render={({ field }) => (
-      <Flatpickr
-        id="hf-picker"
-        className={`form-control ${
-          errors.renewalDate ? "is-invalid" : ""
-        }`}
-        options={{
-          altInput: true,
-          altFormat: "Y-m-d",
-          dateFormat: "Y-m-d",
-          minDate: new Date(new Date().setDate(new Date().getDate() + 1)), // Tomorrow's date as the minimum date
-        }}
-        value={field.value}
-        onChange={(date) => {
-          const formattedDate = date[0]?.toISOString().split("T")[0]; // Format date to 'YYYY-MM-DD'
-          field.onChange(formattedDate); // Update form value
-        }}
-      />
-    )}
-  />
-  {errors.renewalDate && (
-    <FormFeedback>{errors.renewalDate.message}</FormFeedback>
-  )}
-</Col>
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Renewal Date <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              name="renewalDate"
+              control={control}
+              rules={{
+                required: "Renewal date is required",
+                validate: (value) => {
+                  const selectedDate = new Date(value);
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1); // Calculate tomorrow's date
+                  tomorrow.setHours(0, 0, 0, 0); // Normalize time to midnight
 
+                  if (selectedDate < tomorrow) {
+                    return "Renewal date cannot be today or in the past.";
+                  }
+
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <Flatpickr
+                  id="hf-picker"
+                  className={`form-control ${
+                    errors.renewalDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "Y-m-d",
+                    dateFormat: "Y-m-d",
+                    minDate: new Date(
+                      new Date().setDate(new Date().getDate() + 1)
+                    ), // Tomorrow's date as the minimum date
+                  }}
+                  value={field.value}
+                  onChange={(date) => {
+                    const formattedDate = date[0]?.toISOString().split("T")[0]; // Format date to 'YYYY-MM-DD'
+                    field.onChange(formattedDate); // Update form value
+                  }}
+                />
+              )}
+            />
+            {errors.renewalDate && (
+              <FormFeedback>{errors.renewalDate.message}</FormFeedback>
+            )}
+          </Col>
 
           <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
@@ -828,7 +753,7 @@ const Address = ({
               rules={{
                 required: "Next Payment date is required",
                 validate: validateFutureDate,
-              }} // Apply custom validation for future date
+              }} 
               render={({ field }) => (
                 <Flatpickr
                   id="hf-picker"
@@ -895,7 +820,7 @@ const Address = ({
           </Col>
         </Row>
 
-        {/* // ===================== credit card  */}
+      {/*   ===================== credit card =============================  */}
 
         {paymentMode === "Credit Card" && (
           <>
@@ -1226,7 +1151,7 @@ const Address = ({
           </>
         )}
 
-        {/* //* ============================ Bank Details   */}
+        {/* //* ============================ Bank Details =========================  */}
 
         {paymentMode === "Cheque" && (
           <>
@@ -1375,7 +1300,7 @@ const Address = ({
           </>
         )}
 
-        {/* ===================== card Swipe */}
+        {/* ===================== card Swipe ==========================*/}
 
         {paymentMode === "Card Swipe" && (
           <>
@@ -1427,22 +1352,29 @@ const Address = ({
             </span>
           </Button>
           <div className="d-flex">
-            <Button type="reset" color="primary" onClick={()=>reset()} className="btn-reset me-2">
+            <Button
+              type="reset"
+              color="primary"
+              onClick={() => reset()}
+              className="btn-reset me-2"
+            >
               <span className="align-middle d-sm-inline-block d-none">
                 Reset
               </span>
             </Button>
-          <Button type="submit" color="primary" className="btn-next">
-         
-            <span className="align-middle d-sm-inline-block d-none">
-              Submit
-            </span>
-            <ArrowRight
-              size={14}
-              className="align-middle ms-sm-25 ms-0"
-            ></ArrowRight>
-          </Button>
-        </div>
+            <Button type="submit" color="primary" className="btn-next">
+              <span className="align-middle d-sm-inline-block d-none">
+               
+               {loading ? <Spinner size="sm" /> :"Submit" } 
+              </span>
+             {loading ? null:(
+              <ArrowRight
+                size={14}
+                className="align-middle ms-sm-25 ms-0"
+              ></ArrowRight>
+            )}
+            </Button>
+          </div>
         </div>
       </Form>
     </Fragment>

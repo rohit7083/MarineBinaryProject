@@ -106,7 +106,7 @@ export default class JwtService {
         long: position.coords.longitude,
       };
 
-      console.log("Location fetched:", location);
+    
       return location;
     } catch (error) {
       console.error("Error fetching location:", error.message);
@@ -166,6 +166,7 @@ export default class JwtService {
   getslip(id="") {
     return axios.get(`${this.jwtConfig.slipGet}${id?"/"+id:''}`);
   }
+ 
   updateslip(uid, ...args) {
     return axios.put(`${this.jwtConfig.slip}${uid}`, ...args);
   }
@@ -180,8 +181,11 @@ export default class JwtService {
   updateVessel(uid, ...args) {
     return axios.put(`${this.jwtConfig.sVessel}${uid}`, ...args);
   }
-  getVessel(uid = "") {
-    return axios.get(this.jwtConfig.sVesselGet + "/" + uid);
+  getVessel(uid="") {
+    return axios.get(this.jwtConfig.sVesselGet,"/"+uid);
+  }
+  retriveVessel(uid="") {
+    return axios.get(this.jwtConfig.retriveVessel+uid);
   }
   // ==================== Slip Member
 
@@ -189,7 +193,13 @@ export default class JwtService {
     return axios.post(this.jwtConfig.sMember, ...args);
   }
 
-
+  retriveMember(uid="") {
+    return axios.get(this.jwtConfig.retriveMember+uid);
+  }
+  
+  UpdateMember(uid, ...args) {
+    return axios.put(`${this.jwtConfig.UpdateMember}${uid}`, ...args);
+  }
   // =================== Register
 
   // registerUser(...args) {
@@ -298,8 +308,8 @@ export default class JwtService {
     return axios.get(this.jwtConfig.slipAssignmentGet);
   }
 
-  postOTP(payload) {
-    return axios.post(this.jwtConfig.postOTP, payload);
+  GenerateOtp(payload) {
+    return axios.post(this.jwtConfig.GenerateOtp, payload);
   }
 
   verifyOTP(token, ...data) {
