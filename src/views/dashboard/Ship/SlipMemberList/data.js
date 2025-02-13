@@ -368,7 +368,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Slip Name",
-    minWidth: "150px",
+    minWidth: "200px",
     selector: (row) => row.slipName,
   },
   {

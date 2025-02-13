@@ -1,6 +1,7 @@
 // ** React Imports
 import { Fragment } from 'react'
 import React from 'react';
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import Table from './Table'
 // import RoleCards from './RoleCards'
 import { useEffect } from 'react';

@@ -250,7 +250,7 @@ const RoleCards = () => {
 
   return (
     <Fragment>
-      <Row className="px-2 mt-1">
+      <Row className="px-2">
         <Button
           color="primary"
           className="text-nowrap mb-1"

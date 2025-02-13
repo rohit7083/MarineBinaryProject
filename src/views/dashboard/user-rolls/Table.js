@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect, memo } from "react";
 import { debounce } from "lodash";
 import { Spinner } from "reactstrap";
 // ** Table Columns
-
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
 import { ChevronDown, Edit2, Trash } from "react-feather";
@@ -19,8 +19,9 @@ import {
   Label,
   Row,
   Col,
+  Button,
 } from "reactstrap";
-
+import { Link } from "react-router-dom";
 // ** Jwt Class
 import useJwt from "@src/auth/jwt/useJwt";
 
@@ -39,7 +40,7 @@ const DataTableServerSide = () => {
   const [showModal, setShowModal] = useState(false);
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
-const [loading,setLoading]=useState(true);
+  const [loading, setLoading] = useState(true);
   const [tableData, setTableData] = useState({
     count: 0,
     results: [],
@@ -53,14 +54,13 @@ const [loading,setLoading]=useState(true);
       const { data } = await useJwt.userpermission(
         `?offset=${offset}&limit=${limit}`
       );
-setLoading(true);
+      setLoading(true);
       const { content } = data;
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   }
@@ -264,52 +264,57 @@ setLoading(true);
   return (
     <Fragment>
       <Card>
-        <Row
-          className="text-nowrap w-100 g-0 permission-header"
-          style={{ marginBottom: 0 }}
-        >
-          <Col xs={12} lg={4} className="d-flex align-items-center">
-            <div className="d-flex align-items-center justify-content-center justify-content-lg-start">
-              <label htmlFor="rows-per-page">Show</label>
+        <CardHeader className="border-bottom">
+          <CardTitle tag="h4">Roles Details</CardTitle>
+          <RoleCards />
+        </CardHeader>
+        <Row className="mx-0 mt-1 mb-50">
+          <Col sm="6">
+            <div className="d-flex align-items-center">
+              <Label for="sort-select">show</Label>
               <Input
-                className="mx-50"
+                className="dataTable-select"
                 type="select"
-                id="rows-per-page"
+                id="sort-select"
                 value={rowsPerPage}
                 onChange={handlePerPage}
-                style={{ width: "5rem" }}
               >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
+                <option value={7}>7</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={75}>75</option>
+                <option value={100}>100</option>
               </Input>
-              <label htmlFor="rows-per-page">Entries</label>
+              <Label for="sort-select">entries</Label>
             </div>
           </Col>
-          <Col xs={12} lg={8}>
-            <div className="d-flex align-items-center justify-content-lg-end justify-content-start flex-md-nowrap flex-wrap mt-lg-0 mt-1">
-              <div className="d-flex align-items-center me-1">
-                <label className="mb-0" htmlFor="search-permission">
-                  Search:
-                </label>
-                <Input
-                  type="text"
-                  value={searchTerm}
-                  id="search-permission"
-                  className="ms-50 w-100"
-                  onChange={(e) => debouncedFilter(e.target.value)}
-                />
-              </div>
-              <div>
-                <RoleCards />
-              </div>
-            </div>
+
+          <Col
+            className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1"
+            sm="6"
+          >
+            <Label className="me-1" for="search-input">
+              Search
+            </Label>
+            <Input
+              className="dataTable-filter"
+              type="text"
+              bsSize="sm"
+              id="search-input"
+              value={searchValue}
+              onChange={handleFilter}
+            />
           </Col>
         </Row>
         {loading ? (
           <div className="text-center">
-    <Spinner className="me-25 spinner-border" color="primary" style={{width: '4rem', height: '4rem' }} />
-    </div>
+            <Spinner
+              className="me-25 spinner-border"
+              color="primary"
+              style={{ width: "4rem", height: "4rem" }}
+            />
+          </div>
         ) : (
           <div className="react-dataTable">
             <DataTable

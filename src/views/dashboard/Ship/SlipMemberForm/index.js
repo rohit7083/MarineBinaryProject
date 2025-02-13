@@ -21,6 +21,8 @@ const WizardModern = () => {
   // ** State
   const [stepper, setStepper] = useState(null);
 const [slipIID,setSlipIID]=useState("");
+const[memberID,setMemberID]=useState(null);
+
   const [formData, setFormData] = useState({
     vessel: {},
     member: {},
@@ -29,6 +31,8 @@ const [slipIID,setSlipIID]=useState("");
   // ** Hooks
   const { uid } = useParams();
   useEffect(() => {
+    console.log(memberID,"memb");
+    
     const fetchData = async () => {
       try {
         // {{debugger}}  
@@ -71,6 +75,7 @@ const [slipIID,setSlipIID]=useState("");
     console.log(formData);
   }, [formData]);
 
+  // {{debugger}}
   const steps = [
     {
       id: "Vessel-details",
@@ -100,6 +105,7 @@ const [slipIID,setSlipIID]=useState("");
           stepper={stepper}
           type="wizard-modern"
           slipIID={slipIID}
+          setMemberID={setMemberID}
         />
       ),
     },
@@ -114,6 +120,7 @@ const [slipIID,setSlipIID]=useState("");
           slipId={uid}
           stepper={stepper}
           slipIID={slipIID}
+          memberID={memberID}
           type="wizard-modern"
         />
       ),

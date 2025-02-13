@@ -77,9 +77,7 @@ export default class JwtService {
           }
           const retryOriginalRequest = new Promise((resolve) => {
             this.addSubscriber((accessToken) => {
-              // ** Make sure to assign accessToken according to your response.
-              // ** Check: https://pixinvent.ticksy.com/ticket/2413870
-              // ** Change Authorization header
+             
               originalRequest.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`;
               resolve(this.axios(originalRequest));
             });
@@ -94,7 +92,11 @@ export default class JwtService {
   async getLocation() {
     try {
       if (!navigator.geolocation) {
+
+        localStorage.setItem("locationEnabled","false")
+        window.location.reload()
         throw new Error("Geolocation is not supported by your browser.");
+
       }
 
       const position = await new Promise((resolve, reject) => {
@@ -105,10 +107,15 @@ export default class JwtService {
         lat: position.coords.latitude,
         long: position.coords.longitude,
       };
+      localStorage.setItem("locationEnabled", "true");
 
     
       return location;
     } catch (error) {
+      localStorage.setItem("locationEnabled", "false");
+    
+      window.location.reload()
+
       console.error("Error fetching location:", error.message);
       throw error;
     }}
@@ -200,6 +207,13 @@ export default class JwtService {
   UpdateMember(uid, ...args) {
     return axios.put(`${this.jwtConfig.UpdateMember}${uid}`, ...args);
   }
+
+  // =================== Payment
+
+  createPayment(...args) {
+    return axios.post(this.jwtConfig.createPayment, ...args);
+  }
+
   // =================== Register
 
   // registerUser(...args) {
@@ -207,8 +221,8 @@ export default class JwtService {
   // }
 
   // =================== Login
-
   verifyEmail(...args) {
+    // {{debugger}}
     return axios.post(this.jwtConfig.verifyEmail, ...args);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }

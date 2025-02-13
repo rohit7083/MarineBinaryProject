@@ -435,11 +435,11 @@ function ShipDetails() {
     if (uid) {
       const fetchDetailsForUpdate = async () => {
         try {
-          const { data } = await useJwt.getslip(uid);
-          const { result } = data.content;
-
-          if (result.length) {
-            const details = result.find((d) => d.uid === uid);
+          const resp = await useJwt.getslip(uid);
+          const details =resp.data.content;
+          console.log(details);
+          
+          if (details && details.uid === uid) {
             setUserData({
               slipName: details.slipName,
               electric: details.electric,
@@ -483,7 +483,6 @@ function ShipDetails() {
           }
         } catch (error) {
           console.error("Error fetching data:", error);
-          alert.error("Failed to fetch data");
         }
       };
       fetchDetailsForUpdate();

@@ -2,7 +2,6 @@ import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import React from "react";
 import { UncontrolledAlert } from "reactstrap";
-import withReactContent from "sweetalert2-react-content";
 import {
   Row,
   Col,
@@ -23,7 +22,7 @@ import "react-phone-input-2/lib/bootstrap.css";
 import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
-
+import withReactContent from "sweetalert2-react-content";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [show, setShow] = useState(false);
@@ -39,8 +38,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [countryCode, setCountryCode] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [allRoleName, setallRoleName] = useState(null);
-  const[Errmessage,setMessage]=useState("");
-  
+  const [Errmessage, setMessage] = useState("");
+
   const MySwal = withReactContent(Swal);
 
   // Helper function to extract country code and mobile number
@@ -51,21 +50,6 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   };
 
   const onSubmit = async (data) => {
-    // {{debugger}}
-    // const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
-
-    // // Add country code and mobile number to the data object
-    // const updatedData = {
-    //   ...data,
-    //   countryCode: `+${code}`,
-    //   mobileNumber: number,
-    // };
-
-    // setCountryCode(code);
-    // setMobileNumber(number);
-
-    // console.log("Updated Data:", updatedData);
-
     const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
 
     // Transform the data into the required format
@@ -81,18 +65,15 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       },
     };
     console.log("Transformed Data:", transformedData);
+    console.log(number);
 
-
-
-    if (uid) {
-      // {{debugger}}
-      const res = await useJwt.updateSubuser(uid, transformedData);
-      console.log(" Add role res:", res);
-
-      if (res.status === 200) {
+    try {
+      if (uid) {
+        const res = await useJwt.updateSubuser(uid, transformedData);
+        console.log("Add role res:", res);
         MySwal.fire({
           title: "Successfully Updated",
-          text: " User Updated Successfully",
+          text: "User Updated Successfully",
           icon: "success",
           customClass: {
             confirmButton: "btn btn-primary",
@@ -104,27 +85,18 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
           navigate("/dashboard/user_rolls/roles-permissions/createuser");
         });
       } else {
-        MySwal.fire({
-          title: "Failed",
-          text: "Your Role Created Failed",
-          icon: "error",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          // navigate("/dashboard/SlipList");
-        });
-        console.error("Failed to add role:", res.message || res);
-      }
-    } else {
-      const res2 = await useJwt.createUser(transformedData);
-      console.log("updated res:", res2);
+        {
+          {
+            debugger;
+          }
+        }
+        const res2 = await useJwt.createUser(transformedData);
+        console.log("updated res:", res2);
+console.log("data is created",data);
 
-      if (res2.status === 201) {
         MySwal.fire({
           title: "Successfully Added",
-          text: " Your Role Name Added Successfully",
+          text: "Your Role Name Added Successfully",
           icon: "success",
           customClass: {
             confirmButton: "btn btn-primary",
@@ -133,22 +105,11 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         }).then(() => {
           setShow(false);
           reset();
-          // navigate("/");
+          navigate("/dashboard/user_rolls/roles-permissions/createuser");
         });
-      } else {
-        MySwal.fire({
-          title: "Failed",
-          text: "Your Role Created Failed",
-          icon: "error",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          // navigate("/dashboard/SlipList");
-        });
-        console.error("Failed to add role:", res2.message || res2);
       }
+    } catch (error) {
+      console.error("Error occurred:", error);
     }
   };
 
@@ -195,8 +156,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         firstName,
         lastName,
         emailId,
-        mobileNumber: `${countryCode}${mobileNumber}`, 
-        userRoles: userRoles?.uid || null, 
+        mobileNumber: `${countryCode}${mobileNumber}`,
+        userRoles: userRoles?.uid || null,
         password, // Leave password blank
       });
       setMobileNumber(`${countryCode}${mobileNumber}`); // Ensure PhoneInput gets the value
@@ -219,8 +180,6 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       setModalType("Add New");
     }
   }, [uid, row, reset]);
-
-
 
   useEffect(() => {
     setShow(propShow);
@@ -383,7 +342,6 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                     control={control}
                     // defaultValue=""
                     defaultValue={mobileNumber} // Set defaultValue to the prefilled mobile number
-
                     rules={{
                       required: "Mobile number is required",
                       validate: (value) =>
@@ -396,7 +354,6 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                         country={"us"} // Default country code
                         // value={value}
                         value={value || mobileNumber} // Use `value` from the form or prefilled value
-
                         onChange={(phone) => {
                           onChange(phone); // Update react-hook-form's value
                           setMobileNumber(phone); // Update internal state

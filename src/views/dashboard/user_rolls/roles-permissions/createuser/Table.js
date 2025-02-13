@@ -135,6 +135,12 @@ setLoading(true);
       selector: (row) => row.mobileNum,
     },
     {
+      name: "Country code",
+      sortable: true,
+      minWidth: "250px",
+      selector: (row) => row.countryCode,
+    },
+    {
       name: "Roll Name",
       sortable: true,
       minWidth: "250px",

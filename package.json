@@ -46,6 +46,7 @@
     "jquery": "^3.6.0",
     "jsonwebtoken": "8.5.1",
     "libphonenumber-js": "^1.11.18",
+    "lucide-react": "^0.475.0",
     "mdb-react-ui-kit": "^9.0.0",
     "moment": "^2.29.3",
     "nouislider": "^15.5.0",

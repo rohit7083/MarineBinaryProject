@@ -36,7 +36,7 @@ export default [
     icon: <Circle size={12} />,
     navLink: '/dashboard/Ship',
     badge: 'light-warning',
-    badgeText: '2',
+    // badgeText: '2',
     children: [
     
       {
@@ -74,7 +74,7 @@ export default [
     icon: <Circle size={12} />,
     // navLink: '/dashboard/create-user',
     badge: 'light-warning',
-    badgeText: '2',
+    // badgeText: '2',
     children: [
     {
       

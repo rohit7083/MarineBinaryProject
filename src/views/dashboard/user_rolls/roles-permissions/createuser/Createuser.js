@@ -14,6 +14,8 @@ import {
   InputGroupText,
   Label,
 } from "reactstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { User, Mail, Smartphone, Lock } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
@@ -26,6 +28,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 const RoleCards = () => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
+const MySwal = withReactContent(Swal);
 
   const {
     reset,
@@ -46,20 +49,7 @@ const[Errmessage,setMessage]=useState("");
   };
 
   const onSubmit = async (data) => {
-    // {{debugger}}
-    // const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
-
-    // // Add country code and mobile number to the data object
-    // const updatedData = {
-    //   ...data,
-    //   countryCode: `+${code}`,
-    //   mobileNumber: number,
-    // };
-
-    // setCountryCode(code);
-    // setMobileNumber(number);
-
-    // console.log("Updated Data:", updatedData);
+  
 
     const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
 
@@ -79,7 +69,10 @@ const[Errmessage,setMessage]=useState("");
     console.log("Transformed Data:", transformedData);
 
     try {
+
       const res = await useJwt.createUser(transformedData);
+      console.log("data is created ",data);
+      
       console.log(res);
       if (res.status === 201) {
         MySwal.fire({

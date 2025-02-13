@@ -54,7 +54,6 @@ function ShipDetails() {
     overDueAmountForAuction: "",
     overDueChagesForAuction: "",
   });
-
   const [shipTypeNames, setShipTypeNames] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null); // Store selected option for the single dropdown
   const [dimensions, setDimensions] = useState([]); // Dimensions for the selected category
@@ -79,15 +78,12 @@ function ShipDetails() {
       [name]: value,
     }));
   };
-  
-  
+
   // Handle dropdown selection change
   const handleSelectChange = (option) => {
     setSelectedCategory(option);
     setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
-
-
 
   let navigate = useNavigate();
 
@@ -380,84 +376,86 @@ function ShipDetails() {
     return newErrors;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const payload = {}; // Add any necessary payload if required
-        const response = await useJwt.getslipCatogory(payload);
-        // Extract shipTypeName and set as dropdown option
-        const options = response.data.content.result.map((item) => ({
-          value: item.uid,
-          label: item.shipTypeName,
-          dimensions: item.dimensions, // Store dimensions for each category
-        }));
+  const fetchData = async () => {
+    try {
+      const payload = {}; // Add any necessary payload if required
+      const response = await useJwt.getslipCatogory(payload);
+console.log(response);
 
-        setShipTypeNames(options);
-      } catch (error) {
-        console.error("Error fetching category:", error);
-        const { response } = error;
-        const { data, status } = response;
-        if (status == 400) {
-          // alert(data.content);
-          console.log(data.content);
-          
-        }
+      const options = response.data.content.result.map((item) => ({
+        value: item.uid,
+        label: item.shipTypeName,
+        dimensions: item.dimensions, // Store dimensions for each category
+      }));
+
+      setShipTypeNames(options);
+    } catch (error) {
+      console.error("Error fetching category:", error);
+      const { response } = error;
+      const { data, status } = response;
+      if (status == 400) {
+        console.log(data.content);
       }
+    }
 
-      console.log("Category", selectedCategory);
-    };
+    console.log("Category", selectedCategory);
+  };
+  useEffect(() => {
+   fetchData();
+
     if (uid) {
       const fetchDetailsForUpdate = async () => {
         try {
-          const { data } = await useJwt.getslip(uid);
-          const { result } = data.content;
 
-          if (result.length) {
-            const details = result.find((d) => d.uid === uid);
-            setUserData({
-              slipName: details.slipName,
-              electric: details.electric,
-              water: details.water,
-              addOn: details.addOn,
-              marketAnnualPrice: details.marketAnnualPrice,
-              marketMonthlyPrice: details.marketMonthlyPrice,
-              amps: details.amps,
-              overDueAmountFor7Days: details.overDueAmountFor7Days,
+          const resp = await useJwt.getslip(uid);
+          // const { result } = content;
 
-              overDueAmountFor15Days: details.overDueAmountFor15Days,
+          const result =resp.data.content;
+          console.log(result);
+          
+          // {{debugger}}
+          if (result) {
 
-              overDueAmountFor30Days: details.overDueAmountFor30Days,
-
-              overDueAmountForNotice: details.overDueAmountForNotice,
-
-              overDueAmountForAuction: details.overDueAmountForAuction,
+            if (result && result.uid === uid) {
+              setUserData({
+              slipName: result.slipName,
+              electric: result.electric,
+              water: result.water,
+              addOn: result.addOn,
+              marketAnnualPrice: result.marketAnnualPrice,
+              marketMonthlyPrice: result.marketMonthlyPrice,
+              amps: result.amps,
+              overDueAmountFor7Days: result.overDueAmountFor7Days,
+              overDueAmountFor15Days: result.overDueAmountFor15Days,
+              overDueAmountFor30Days: result.overDueAmountFor30Days,
+              overDueAmountForNotice: result.overDueAmountForNotice,
+              overDueAmountForAuction: result.overDueAmountForAuction,
             });
-
-            setDimensions(Object.keys(details.dimensions) || []);
-            setUserData((pre) => ({ ...pre, ...details.dimensions }));
+          }
+            setDimensions(Object.keys(result.dimensions) || []);
+            setUserData((pre) => ({ ...pre, ...result.dimensions }));
 
             setSelectedCategory({
-              value: details.category.uid,
-              label: details.category.shipTypeName,
-              dimensions: details.dimensions,
+              value: result.category.uid,
+              label: result.category.shipTypeName,
+              dimensions: result.dimensions,
             });
-            console.log("details", details);
+            console.log("result", result);
 
             console.log("selectedCategory", {
-              dimensions: details.dimensions,
+              dimensions: result.dimensions,
             });
 
             setSelections({
-              overDueChargesFor7Days: details.overDueChargesFor7Days,
-              overDueChargesFor15Days: details.overDueChargesFor15Days,
-              overDueChargesFor30Days: details.overDueChargesFor30Days,
-              overDueChargesForNotice: details.overDueChargesForNotice,
-              overDueChagesForAuction: details.overDueChagesForAuction,
+              overDueChargesFor7Days: result.overDueChargesFor7Days,
+              overDueChargesFor15Days: result.overDueChargesFor15Days,
+              overDueChargesFor30Days: result.overDueChargesFor30Days,
+              overDueChargesForNotice: result.overDueChargesForNotice,
+              overDueChagesForAuction: result.overDueChagesForAuction,
             });
           }
         } catch (error) {
           console.error("Error fetching data:", error);
-          alert.error("Failed to fetch data");
         }
       };
       fetchDetailsForUpdate();
@@ -536,7 +534,7 @@ function ShipDetails() {
             {View ? "View Details" : "Edit Details"}
           </CardTitle>
         </CardHeader>
-        
+
         {/* <Row className="mb-1">
           <Label sm="3" for="shipTypeName"></Label>
           <Col sm="9">
@@ -563,7 +561,7 @@ function ShipDetails() {
               Edit
             </Button>
           </div>
-          <div>
+          {/* <div>
             <Button
               className="mb-75 me-75"
               size="sm"
@@ -572,7 +570,7 @@ function ShipDetails() {
             >
               View
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <CardBody className="py-2 my-25">

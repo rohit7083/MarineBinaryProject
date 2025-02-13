@@ -487,7 +487,7 @@ const FileUploadForm = ({ stepper}) => {
 
             <Button type="submit" color="primary" className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
-                Next
+                Submit
               </span>
               <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
             </Button>

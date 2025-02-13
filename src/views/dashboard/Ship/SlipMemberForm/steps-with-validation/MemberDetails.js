@@ -18,9 +18,8 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
-const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
-
-  console.log("memberformData :" ,formData)
+const PersonalInfo = ({ stepper, slipIID, formData, slipId ,setMemberID }) => {
+  console.log("memberformData :", formData);
 
   const MySwal = withReactContent(Swal);
   const [fullname, setFullname] = useState([]);
@@ -98,18 +97,14 @@ const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
     resolver: yupResolver(SignupSchema),
   });
 
+  // prefilled value when u want to edit
 
-
-// prefilled value when u want to edit 
-
-  useEffect(()=>{
+  useEffect(() => {
     if (Object.keys(formData)?.length) {
-      const data={...formData};
+      const data = { ...formData };
       reset(data);
     }
-  },[reset,formData])
-
-
+  }, [reset, formData]);
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
@@ -131,31 +126,29 @@ const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
     setValue("country", option.details.country || "");
 
     setVisible(true);
-
   };
 
   const onSubmit = async (data) => {
     // {{debugger}}
     const payload = {
       ...data,
-      slipId:slipIID,
+      slipId: slipIID,
     };
-
-    
     console.log("Submitted Data:", payload);
 
     try {
+      if (slipId) {
+        setLoading(true);
 
-      
+      const res=  await useJwt.UpdateMember(formData.uid, payload);
+      // ** set here
+      setMemberID(res.data.id);
+      console.log(res.data.id);
+      console.log(res);
 
-      setLoading(true);
-      if(slipId){
-
-        
-        await useJwt.UpdateMember(formData.uid, payload);
-        return MySwal.fire({
+         MySwal.fire({
           title: "Successfully updated",
-          text: " Your Vessel Details Update Successfully",
+          text: " Your Member Details Update Successfully",
           icon: "success",
           customClass: {
             confirmButton: "btn btn-primary",
@@ -166,23 +159,30 @@ const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
             stepper.next();
           }
         });
-      }else{
-      await useJwt.postsMember(payload);
-      console.log("API Response:", response);
-       MySwal.fire({
-        title: "Successfully Created",
-        text: " Slip Member created sucessfully",
-        icon: "success",
-        customClass: {
-          confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-      }).then(() => {
-        if (Object.keys(errors).length === 0) {
-          stepper.next();
-        }
-      });
-    }
+      } else {
+        setLoading(true);
+
+      const res=  await useJwt.postsMember(payload);
+      // ** set here
+      const memberid=res.data.id;
+      setMemberID(memberid);
+      console.log(memberid);
+      console.log(res);
+
+        await MySwal.fire({
+          title: "Successfully Created",
+          text: " Your Member Details Created Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      }
     } catch (error) {
       console.error("Error submitting vessel details:", error);
 
@@ -226,7 +226,7 @@ const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
           details: item.member,
         }));
 
-      // console.log("Filtered Options:", options);
+      console.log("Filtered response:", response);
 
       setFullname(options);
     } catch (error) {
@@ -251,9 +251,9 @@ const PersonalInfo = ({ stepper, slipIID,formData,slipId }) => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchData();
-  },[])
+  }, []);
 
   const getReadOnlyStyle = () => {
     return visible

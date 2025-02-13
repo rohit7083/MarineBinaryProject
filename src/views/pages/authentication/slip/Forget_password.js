@@ -156,7 +156,7 @@ const ResetPasswordBasic = () => {
               <svg viewBox="0 0 139 95" version="1.1" height="28">
                 {/* Add SVG content here */}
               </svg>
-              <h2 className="brand-text text-primary ms-1">Vuexy</h2>
+              <h2 className="brand-text text-primary">Longcove Marina</h2>
             </Link>
 
             <CardTitle tag="h4" className="mb-1">

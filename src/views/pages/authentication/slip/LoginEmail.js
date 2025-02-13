@@ -103,7 +103,11 @@ const handleRemove = async () => {
     }
   };
 
+  // const isLoacationEnabled=localStorage.getItem("locationEnabled");
+  // console.log("isLocationEnabled",isLoacationEnabled);
+  
   const onSubmit = async (data) => {
+    // {{debugger}}
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
         // {{debugger}}
@@ -125,7 +129,7 @@ const handleRemove = async () => {
         if (error.response) {
           const { status, data } = error.response;
           const LoginAttempt = data.content.LoginAttempt;
-          const errorMessage = data.message;
+          const errorMessage = data.content;
           setMessage(errorMessage);
           console.log("failed");
 
@@ -178,17 +182,62 @@ const handleRemove = async () => {
   };
 
    
+  useEffect(()=>{
+    const isLoacationEnabled=localStorage.getItem("locationEnabled");
+if (isLoacationEnabled === true || isLoacationEnabled === "true" ) {
+  setShow(false);
+  console.log(isLoacationEnabled);
+  
+}   
+else{
+  setShow(true);
+  console.log(isLoacationEnabled);
+
+} 
+  },[])
   
 
 
 
   return (
     <div className="auth-wrapper auth-cover">
+
+       <Fragment>
+              <Modal
+                isOpen={show}
+                toggle={() => setShow(!show)}
+                className="modal-dialog-centered"
+              >
+                <ModalHeader
+                  className="bg-transparent"
+                  toggle={() => setShow(!show)}
+                ></ModalHeader>
+                <ModalBody className="px-sm-5 mx-50 pb-5">
+                  <h1 className="text-center mb-1">Turn On Your Location</h1>
+                  <Row
+                    tag="form"
+                    className="gy-1 gx-2 mt-75"
+                    onSubmit={handleSubmit(onSubmit)}
+                  >
+                    <img src="src/views/pages/authentication/Images/locationguide.png" />
+      
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        setShow(!show);
+                      }}
+                    >
+                      OK
+                    </Button>
+                  </Row>
+                </ModalBody>
+              </Modal>
+            </Fragment>
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
 
-          <h2 className="brand-text text-primary ms-1">Marin</h2>
+          <h2 className="brand-text text-primary ms-1">Longcove Marina</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -202,7 +251,7 @@ const handleRemove = async () => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Login 👋
+             Login - Email 👋
             </CardTitle>
 
             <CardText className="mb-2">

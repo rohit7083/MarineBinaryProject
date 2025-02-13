@@ -32,29 +32,29 @@ const DataTableServerSide = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const customStyles = {
-    headRow: {
-      style: {
-        backgroundColor: "#333", // Dark header background
-        color: "#fff", // White text
-        fontSize: "16px",
-        fontWeight: "bold",
-      },
-    },
-    headCells: {
-      style: {
-        color: "#fff", // White text for header cells
-      },
-    },
-    rows: {
-      style: {
-        backgroundColor: "#f8f9fa", // Light color for default row
-      },
-      stripedStyle: {
-        backgroundColor: "#ffffff", // Slightly different light color for alternating rows
-      },
-    },
-  };
+  // const customStyles = {
+  //   headRow: {
+  //     style: {
+  //       backgroundColor: "#333", // Dark header background
+  //       color: "#fff", // White text
+  //       fontSize: "16px",
+  //       fontWeight: "bold",
+  //     },
+  //   },
+  //   headCells: {
+  //     style: {
+  //       color: "#fff", // White text for header cells
+  //     },
+  //   },
+  //   rows: {
+  //     style: {
+  //       backgroundColor: "#f8f9fa", // Light color for default row
+  //     },
+  //     stripedStyle: {
+  //       backgroundColor: "#ffffff", // Slightly different light color for alternating rows
+  //     },
+  //   },
+  // };
 
   // const dataToRender = () => {
   //   const limit = currentPage * rowsPerPage;
@@ -238,7 +238,7 @@ const DataTableServerSide = () => {
               sortIcon={<ChevronDown size={10} />}
               paginationComponent={CustomPagination}
               data={dataToRender()}
-              customStyles={customStyles}
+              // customStyles={customStyles}
               striped
             />
           </div>

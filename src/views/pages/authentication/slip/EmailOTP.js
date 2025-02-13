@@ -333,7 +333,7 @@ const TwoStepsBasic = () => {
                   </g>
                 </g>
               </svg>
-              <h2 className="brand-text text-primary ms-1">Vuexy</h2>
+              <h2 className="brand-text text-primary ms-1">Longcove Marina</h2>
             </Link>
 
             <Row className="mb-1">

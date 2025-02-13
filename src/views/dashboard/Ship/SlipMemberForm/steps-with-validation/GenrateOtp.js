@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
+import { Send } from "react-feather";
 import {
   Row,
   Col,
@@ -14,23 +15,27 @@ import {
 } from "reactstrap";
 import { useForm, Controller } from "react-hook-form";
 
-const GenrateOtp = ({ combinedData, buttonEnabled, setButtonEnabled }) => {
+import { Alert } from "reactstrap";
+import { ThumbsUp } from "react-feather";
+const GenrateOtp = ({ setotpVerify, memberId, slipIID }) => {
   // ** States
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(100);
   const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
+  const [verify, setVerify] = useState(false);
   const {
     control,
     handleSubmit,
     setError,
     formState: { errors },
   } = useForm();
-
+  // {{debugger}}
   const handleOTP = async () => {
     try {
-      // const payload = {
-      //   slipDetailId: combinedData.slipDetailId, // Ensure this is a number
-      // };
+      const payload = {
+        slipId: slipIID,
+        memberId: memberId,
+      };
       const response = await useJwt.GenerateOtp(payload); // Adjust this method to send the payload
       const token = response.data.content;
       setAccessTokenOtp(token);
@@ -49,13 +54,16 @@ const GenrateOtp = ({ combinedData, buttonEnabled, setButtonEnabled }) => {
         return;
       }
 
-      const payload = { otp: data.Userotp };
-      const response = await useJwt.verifyOTP(accessTokenotp, payload);
+      // {{debugger}}
+      const payload = { otp: parseInt(data.Userotp) };
 
-      // If verification is successful, enable the button
+      const response = await useJwt.verifyOTP(accessTokenotp, payload);
+      setVerify(true);
+      console.log(response);
+      setShow(false);
+      setotpVerify(true);
       console.log("OTP Verified Successfully!");
-      setButtonEnabled(true);
-      setShow(false); // Close the modal
+      // setButtonEnabled(true);
     } catch (error) {
       console.error("Error verifying OTP:", error);
       console.log("Failed to verify OTP. Please try again.");
@@ -81,14 +89,21 @@ const GenrateOtp = ({ combinedData, buttonEnabled, setButtonEnabled }) => {
 
   return (
     <Fragment>
-      {/* OTP Button */}
-      <Button
-        color="primary"
-        onClick={handleOTP}
-        disabled={buttonEnabled} // Disable after successful verification
-      >
-        {buttonEnabled ? "Verified" : "Generate OTP"}
-      </Button>
+      {verify ? (
+        <React.Fragment>
+          <Alert color="success">
+            <div className="alert-body "style={{ marginTop: '-10px' }}>
+              <span className="ms-1">OTP Verified Successfully ! </span>
+              <ThumbsUp size={15} />
+            </div>
+          </Alert>
+        </React.Fragment>
+      ) : (
+        <Button color="primary" onClick={handleOTP}>
+          <Send className="me-1" size={20} />
+          Generate otp
+        </Button>
+      )}
 
       {/* OTP Modal */}
       <Modal
@@ -117,9 +132,17 @@ const GenrateOtp = ({ combinedData, buttonEnabled, setButtonEnabled }) => {
                   name="Userotp"
                   id="Userotp"
                   control={control}
-                  rules={{ required: "OTP is required" }}
+                  rules={{
+                    required: "OTP is required",
+                    maxLength: {
+                      value: 6,
+                      message: "OTP must be 6 digits",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
+                      type="text" // Change to text
+                      maxLength={6} // Limit input to 6 characters
                       placeholder="Enter OTP"
                       invalid={errors.Userotp && true}
                       {...field}

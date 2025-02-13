@@ -19,10 +19,12 @@ export default {
 
   sVessel: "/sVessel/",
   sVesselGet: "/sVessel",
-  retriveVessel:'/sVessel/',
+  retriveVessel: "/sVessel/",
   sMember: "/sMember/",
-retriveMember:"/sMember/",
-UpdateMember:'/sMember/',
+  retriveMember: "/sMember/",
+  UpdateMember: "/sMember/",
+
+  createPayment:"/sPayment/",
   // user Registraion and login
   registerUser: "/auth/user/create",
   login: "/auth/login",
@@ -39,8 +41,8 @@ UpdateMember:'/sMember/',
   sendOtp: "/auth/user/send_otp/",
 
   // verify Email and Login api
-  verifyEmail:"/auth/verifyEmail",
-  loginPassword:"/auth/login/",
+  verifyEmail: "/auth/verifyEmail",
+  loginPassword: "/auth/login/",
 
   //roles and permissions
   userpermissionPost: "/userpermission/",
@@ -55,10 +57,10 @@ UpdateMember:'/sMember/',
   getallSubuser: "/sub_user",
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
-  
+
   slipAssignmentGet: "/slipAssignmentGet",
   GenerateOtp: "/sPayment/generate",
-  verifyOTP: "/slipAssignment/verify/",
+  verifyOTP: "/sPayment/verify/",
   slipDocument: "/slipDocument/",
 
   // Value of this property will be used as key to store JWT token in storage

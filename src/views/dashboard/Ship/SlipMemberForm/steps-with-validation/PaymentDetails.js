@@ -6,22 +6,69 @@ import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import Flatpickr from "react-flatpickr";
+import { Spinner } from "reactstrap";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
 import useJwt from "@src/auth/jwt/useJwt";
 // ** Reactstrap Imports
-import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
+import {
+  Label,
+  Row,
+  Col,
+  Button,
+  Form,
+  Input,
+  FormFeedback,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  FormGroup,
+  InputGroup,
+  InputGroupText,
+} from "reactstrap";
 import PersonalInfo from "./MemberDetails";
 import GenrateOtp from "./GenrateOtp";
 import { format } from "date-fns";
 import React from "react";
 import { UncontrolledAlert } from "reactstrap";
-const Address = ({
-  stepper,
-  buttonEnabled,
-  setButtonEnabled,
-}) => {
+import { Send } from "react-feather";
+import { DollarSign, Percent } from "lucide-react";
+
+const paymentModes = {
+  "Credit Card": [
+    "cardNumber",
+    "cardType",
+    "cardExpiryYear",
+    "cardExpiryMonth",
+    "cardCvv",
+    "nameOnCard",
+    "address",
+    "city",
+    "state",
+    "country",
+    "pinCode",
+  ],
+  "Card Swipe": ["cardSwipeTransactionId"],
+  Cheque21: [
+    "bankName",
+    "nameOnAccount",
+    "routingNumber",
+    "accountNumber",
+    "chequeNumber",
+    "chequeImage",
+  ],
+  ChequeACH: [
+    "bankName",
+    "nameOnAccount",
+    "routingNumber",
+    "accountNumber",
+    "chequeNumber",
+  ],
+};
+
+const Address = ({ stepper, formData, slipIID, memberID }) => {
   const colourOptions = [
     { value: null, label: "select" },
     { value: "Monthly", label: "Monthly" },
@@ -37,7 +84,8 @@ const Address = ({
     { value: "1", label: "Credit Card" },
     { value: "2", label: "Card Swipe" },
     { value: "3", label: "Cash" },
-    { value: "4", label: "Cheque" },
+    { value: "4", label: "Cheque21" },
+    { value: "5", label: "ChequeACH" },
   ];
 
   const colourOptions4 = [
@@ -63,14 +111,28 @@ const Address = ({
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
-  const years = Array.from({ length: 30 }, (_, i) => ({
-    value: currentYear + i,
-    label: (currentYear + i).toString(),
-  }));
+  const years = Array.from({ length: 10 }, (_, i) => {
+    return {
+      value: currentYear + i,
+      label: currentYear + i,
+    };
+  });
 
-    const [picker, setPicker] = useState(new Date());
+  const [isPercentage, setIsPercentage] = useState(true);
+  const [value, setValuee] = useState("");
+
+  const handleValueChange = (e) => {
+    const newValue = e.target.value;
+    // Only allow numbers and decimal point
+    if (/^\d*\.?\d*$/.test(newValue) || newValue === "") {
+      setValuee(newValue);
+    }
+  };
+  const [paidInOption, setPaidInOption] = useState(null);
+
+  const [picker, setPicker] = useState(new Date());
   const [nextPayment, setnextPayment] = useState(new Date());
-  const [availableMonths, setAvailableMonths] = useState(months);
+  const [availableMonths, setAvailableMonths] = useState([]);
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [discounttoggle, setDiscountToggle] = useState(false);
   const [otpVisible, setOtpVisible] = useState(false);
@@ -81,12 +143,55 @@ const Address = ({
   const [calculatedDiscount, setCalculatedDiscount] = useState(0);
   const [rentalPrice, setRentalPrice] = useState("");
   const [show, setShow] = useState(false);
-  const [cardType, setCardType] = useState("");
   const [slipDetail, setSlipDetail] = useState({});
-  const [Verifyotp, setVerifyotp] = useState(false);
-  const[loading,setLoading]=useState(false);
-  const[errMsz,setErrMsz]= useState("");
-  
+  const [loading, setLoading] = useState(false);
+  const [errMsz, setErrMsz] = useState("");
+  const [otpVerify, setotpVerify] = useState(false);
+
+  const [discountTypedStatus, setdiscountTypedStatus] = useState(null);
+
+  const [cardNumber, setCardNumber] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [cardType, setCardType] = useState("");
+
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setFile(null);
+  };
+
+  const renderFilePreview = (file) => {
+    if (file && file.type.startsWith("image")) {
+      return (
+        <img
+          className="rounded mt-2"
+          alt={file.name}
+          src={URL.createObjectURL(file)}
+          height="100"
+        />
+      );
+    }
+    return null;
+  };
+
+  const renderFileSize = (size) => {
+    if (size) {
+      if (Math.round(size / 100) / 10 > 1000) {
+        return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+      } else {
+        return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
+      }
+    }
+    return null;
+  };
+
   const {
     control,
     handleSubmit,
@@ -96,54 +201,168 @@ const Address = ({
     reset,
     formState: { errors },
   } = useForm({
-    // defaultValues,
+    
   });
 
- 
+  // Update available months based on the selected year
+  const handleYearChange = (selectedYear) => {
+    const selectedYearValue = selectedYear ? selectedYear.value : currentYear;
 
-  const handleOTPVerified = () => {
-    setVerifyotp(true); // Set OTP as verified
-  };
-
-  // Handle changes in the "Paid In" dropdown
-  const handlePaidInChange = (option) => {
-    if (option?.value === "Monthly") {
-      setValue("rentalPrice", slipDetail.marketMonthlyPrice);
-      console.log("price ",slipDetail.marketMonthlyPrice);
-      
-    } else if (option?.value === "Annual") {
-      // setRentalPrice(slipDetail.marketAnnualPrice); // Update rental price to Annual value
-      setValue("rentalPrice", slipDetail.marketAnnualPrice);
-
-      // console.log(
-      //   "Updated Rental Price (Annual):",
-      //   slipDetail.marketAnnualPrice
-      // );
-    } else {
-      setRentalPrice(""); // Clear rental price if no valid option
-      console.log("Cleared Rental Price");
-    }
-  };
-
-  // Handle year change
-  const handleYearChange = (year) => {
-    setSelectedYear(year.value); // Update the selected year
-
-    // Determine the available months for the selected year
-    if (year.value === currentYear) {
-      // If the selected year is the current year, only show months from the current month onwards
-      const remainingMonths = months.filter(
-        (month) => parseInt(month.value) >= currentMonth
+    if (selectedYearValue === currentYear) {
+      // Filter months to show only the ones that are still available in the current year
+      const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
+      const filteredMonths = months.filter(
+        (month) => month.value >= currentMonth
       );
-      setAvailableMonths(remainingMonths);
+      setAvailableMonths(filteredMonths);
     } else {
       // If it's a future year, show all months
       setAvailableMonths(months);
     }
-
-    // Reset the month value when the year changes
-    setValue("cardExpiryMonth", null);
   };
+
+  useEffect(() => {
+    // Initially, display all months
+    setAvailableMonths(months);
+  }, []);
+
+  const detectedCardType = (number) => {
+    const patterns = {
+      Visa: /^4/,
+      MasterCard: /^5[1-5]/,
+      Discover: /^6/,
+      RuPay: /^(60|65)\d{0,}/, // Updated pattern for RuPay
+      ChinaUnionPay: /^62/,
+      Amex: /^3[47]\d{0,}/, // Fixed pattern for AMEX
+    };
+
+    for (let [type, pattern] of Object.entries(patterns)) {
+      if (pattern.test(number)) return type; // Check for matching card type
+    }
+    return "";
+  };
+
+  const getCvvLength = (cardType) => {
+    return cardType === "Amex" ? 4 : 3;
+  };
+
+  const handleOnchangeCardNum = (e, field) => {
+    let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    let detectedType = detectedCardType(value);
+
+    if (detectedType === "Amex") {
+      value = value.slice(0, 15);
+    } else {
+      value = value.slice(0, 16);
+    }
+    setCardType(detectedType); // Update state for UI
+    setValue("cardType", detectedType); // Update form field
+    field.onChange(value); // Update React Hook Form
+  };
+
+//   const fetchMarketPrices = async () => {
+//     try {
+//       const response = await useJwt.getslip();
+//       const paydata = response.data.content.result.map((item) => ({
+//         marketAnnualPrice: item.marketAnnualPrice,
+//         marketMonthlyPrice: item.marketMonthlyPrice,
+//         id: item.id,
+//       }));
+
+//       const filteredData = paydata.find((item) => item.id === slipIID);
+//       console.log("filteredData", filteredData);
+
+//       setSlipDetail(filteredData || {});
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+// console.log(slipDetail);
+
+const getReadOnlyStyle = () => {
+  return {
+    color: "#000",
+    backgroundColor: "#fff",
+    opacity: 1,
+  };
+};
+const fetchMarketPrices = async () => {
+  try {
+    const response = await useJwt.getslip();
+    const paydata = response.data.content.result.map((item) => ({
+      marketAnnualPrice: item.marketAnnualPrice,
+      marketMonthlyPrice: item.marketMonthlyPrice,
+      id: item.id,
+    }));
+
+    const filteredData = paydata.find((item) => item.id === slipIID);
+    console.log("filteredData", filteredData);
+
+    setSlipDetail(filteredData || {});
+
+    // Recalculate rentalPrice after slipDetail is set
+    if (paidInOption) {
+      if (paidInOption.value === "Monthly") {
+        setValue("rentalPrice", filteredData?.marketMonthlyPrice || "");
+        console.log("rentalPrice", filteredData?.marketMonthlyPrice);
+      } else if (paidInOption.value === "Annual") {
+        setValue("rentalPrice", filteredData?.marketAnnualPrice || "");
+        console.log("rentalPrice", filteredData?.marketAnnualPrice);
+      } else {
+        setValue("rentalPrice", ""); // Clear rental price if no valid option
+        console.log("Cleared Rental Price");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Fetch data once when the component mounts
+useEffect(() => {
+
+  fetchMarketPrices();
+}, []);
+
+// Handle option change
+// const handlePaidInChange = (option) => {
+//   setPaidInOption(option);
+//   // Recalculate rentalPrice immediately after setting paidInOption
+//   if (slipDetail) {
+//     if (option.value === "Monthly") {
+//       setValue("rentalPrice", slipDetail?.marketMonthlyPrice || "");
+//       console.log("rentalPrice", slipDetail?.marketMonthlyPrice);
+//     } else if (option.value === "Annual") {
+//       setValue("rentalPrice", slipDetail?.marketAnnualPrice || "");
+//       console.log("rentalPrice", slipDetail?.marketAnnualPrice);
+//     } else {
+//       setValue("rentalPrice", ""); 
+//       console.log("Cleared Rental Price");
+//     }
+//   }
+// };
+
+  
+  // const handlePaidInChange = (option) => {
+  //   // debugger
+  //   console.log(slipDetail);
+    
+  //   // {{debugger}}/
+  //   if (option?.value === "Monthly") {
+  //     // setRentalPrice(slipDetail.marketMonthlyPrice);
+  //     setValue("rentalPrice", slipDetail.marketMonthlyPrice);
+  //     console.log("rentalPrice", slipDetail.marketMonthlyPrice);
+  //   } else if (option?.value === "Annual") {
+  //     setRentalPrice(slipDetail.marketAnnualPrice);
+  //     setValue("rentalPrice", slipDetail.marketAnnualPrice);
+  //     console.log("rentalPrice", slipDetail.marketAnnualPrice);
+  //   } else {
+  //     setRentalPrice(""); // Clear rental price if no valid
+  //     setValue("rentalPrice", "");
+
+  //     console.log("Cleared Rental Price");
+  //   }
+  // };
 
   const handleDiscount = (event) => {
     // Handle OTP button click (can trigger OTP API here)
@@ -156,63 +375,46 @@ const Address = ({
     }
   };
 
-  const handleDisType = (selectMyType) => {
-    // console.log(selectMyType);
-    setdiscountTypee(selectMyType.label);
-    // setValue('discountType', selectedOption?.value || '');
-  };
-
   const handlepaymentMode = (selectedOption) => {
     // Ensure that we are getting the correct value
     const selectedType = selectedOption?.label; // Extract the value
 
     if (selectedType) {
       setpaymentMode(selectedType); // Update the  paymentMode state
-      // console.log(selectedType); // Log the selected  paymentMode (this should no longer be undefined)
     }
   };
 
-  // const [MonYearValue, setMonYearValue] = useState(0);
-  // Watch the value of rentalPrice
-  const rentalPriceValue = watch("rentalPrice");
+  useEffect(() => {
+    // {{debugger}}
+    const rentalPrice = getValues("rentalPrice"); // Get the current value
+    if (rentalPrice) {
+      setValue("finalPayment", rentalPrice); // Set the default value
+    }
+  }, [watch("rentalPrice")]);
 
-  // const handleMonYear = (e) => {
-  //   console.log("Updated value:", e.target.value);
-  //   console.log(monYearValue);
-
-  // };
-
-  const totalAmount = rentalPriceValue;
-  // console.log(totalAmount,"total amount");
-
-  const handleFinalValue = (e) => {
-    const finalAmount = e.target.value;
-
-    setValue(finalAmount);
-  };
+  //Discount Calculations
 
   const handlePercentageChange = (e) => {
     const percentage = parseFloat(e.target.value);
+    console.log(percentage);
+
     if (!isNaN(percentage)) {
-      const discountValue = (percentage / 100) * totalAmount;
+      const discountValue = (percentage / 100) * rentalPrice;
       setCalculatedDiscount(discountValue);
 
-      setValue("finalPayment", totalAmount - discountValue); // Update the calculated field
-      // console.log("MonYearValue=",MonYearValue,"discountValue",discountValue,"both",MonYearValue - discountValue);
-
+      setValue("finalPayment", rentalPrice - discountValue);
       setValue("calDisAmount", discountValue);
     } else {
       setCalculatedDiscount(0);
-      setValue("finalPayment", totalAmount); // Reset to original value
+      setValue("finalPayment", rentalPrice); // Reset to original value
     }
   };
 
   const handleFlatChange = (e) => {
     const amount = e.target.value;
-    // console.log(amount);
     setValue("calDisAmount", amount); // Update the calculated field
 
-    setValue("finalPayment", totalAmount - amount); // Update the calculated field
+    setValue("finalPayment", rentalPrice - amount); // Update the calculated field
   };
 
   const validateContractDate = (value) => {
@@ -250,22 +452,6 @@ const Address = ({
     return true;
   };
 
-  // Validate card number to ensure it contains exactly 16 digits
-  const validateCardNumber = (value) => {
-    if (!/^\d{16}$/.test(value)) {
-      return "Card Number must be 16 digits";
-    }
-    return true;
-  };
-
-  // Validate CVV for 3 or 4 digits
-  const validateCardCvv = (value) => {
-    if (!/^\d{3,4}$/.test(value)) {
-      return "CVV must be 3 or 4 digits";
-    }
-    return true;
-  };
-
   const validateCardSwipeTransactionId = (value) => {
     if (!value) {
       return "Card Swipe Transaction ID is required";
@@ -293,62 +479,104 @@ const Address = ({
     // }
   };
 
+  const handleButtonClick = () => {
+    // Toggle the value
+    const newIsPercentage = !isPercentage;
+    setIsPercentage(newIsPercentage);
+
+    // Prepare data
+    const discountType = newIsPercentage ? "Percentage" : "flat";
+    const handleTypeDiscount = {
+      discountType: discountType,
+    };
+    console.log(handleTypeDiscount);
+
+    setdiscountTypedStatus(handleTypeDiscount);
+  };
+
   const onSubmit = async (data) => {
-   
-    console.log("payment data 3rd for", data);
+    console.log("Payment data:", data);
+    const formData = new FormData();
+    formData.append("SlipId", slipIID);
+    formData.append("contractDate", data.contractDate);
+    formData.append("paidIn", data.paidIn);
+    formData.append("rentalPrice", data.rentalPrice);
+    formData.append("finalPayment", data.finalPayment);
+    formData.append("renewalDate", data.renewalDate);
+    formData.append("nextPaymentDate", data.nextPaymentDate);
+    formData.append("paymentMode", data.paymentMode);
+    formData.append("otpVerify", otpVerify);
+    formData.append("memberId", memberID);
+
+    if (otpVerify) {
+      formData.append("discountAmount", data.discountAmount);
+      formData.append("calDisAmount", data.calDisAmount);
+      formData.append("discountType", discountTypedStatus.discountType);
+    }
+
+    if (paymentMode === "Credit Card") {
+      formData.append("cardNumber", data.cardNumber);
+      formData.append("cardType", data.cardType);
+      formData.append("cardExpiryYear", data.cardExpiryYear);
+      formData.append("cardExpiryMonth", data.cardExpiryMonth);
+      formData.append("cardCvv", data.cardCvv);
+
+      formData.append("nameOnCard", data.nameOnCard);
+      formData.append("address", data.address);
+      formData.append("city", data.city);
+      formData.append("state", data.state);
+      formData.append("country", data.country);
+      formData.append("pinCode", data.pinCode);
+    } else if (paymentMode === "Card Swipe") {
+      formData.append("cardSwipeTransactionId", data.cardSwipeTransactionId);
+    } else if (paymentMode === "Cheque21") {
+      if (!file) {
+        alert("Please select a file first.");
+        return;
+      }
+      formData.append("bankName", data.bankName);
+      formData.append("nameOnAccount", data.nameOnAccount);
+      formData.append("routingNumber", data.routingNumber);
+      formData.append("accountNumber", data.accountNumber);
+      formData.append("chequeNumber", data.chequeNumber);
+      formData.append("chequeImage", file);
+    } else if (paymentMode === "ChequeACH") {
+      formData.append("bankName", data.bankName);
+      formData.append("nameOnAccount", data.nameOnAccount);
+      formData.append("routingNumber", data.routingNumber);
+      formData.append("accountNumber", data.accountNumber);
+      formData.append("chequeNumber", data.chequeNumber);
+    } else {
+      console.log("Choose differant payment Method ");
+    }
 
     try {
-      setLoading(true);
-      const response = await useJwt.postslipAssignment(); // Send cleaned data
+      setLoading(true); // Start loading
+
+      const response = await useJwt.createPayment(formData); // API call
       console.log("API Response:", response);
     } catch (error) {
       console.error("Error submitting data:", error);
+
       if (error.response && error.response.data) {
         const { status, content } = error.response.data;
         console.log(content);
 
         switch (status) {
           case 400:
-            setErrMsz(content);
-
-            break;
           case 401:
-            setErrMsz(content);
-            // navigate("/login");
-            break;
           case 403:
-            setErrMsz(content);
-            break;
           case 500:
             setErrMsz(content);
-
             break;
           default:
-            setErrMsz(content);
+            setErrMsz("Something went wrong. Please try again.");
         }
       }
-    }finally{
-      setLoading(true);
+    } finally {
+      setLoading(false); // ✅ Stop loading after API call (fix)
     }
   };
-
-  // useEffect(() => {
-  //   const fetchMarketPrices = async () => {
-  //     try {
-  //       const response = await useJwt.getslip();
-  //       const pydata=response.data.content.result.map((item) =>({
-  //         marketAnnualPrice:item.marketAnnualPrice,
-  //         marketMonthlyPrice:item.marketMonthlyPrice,
-  //       }))
-  //       setSlipDetail(pydata);
-  //       console.log("payment Details", pydata);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchMarketPrices();
-  // }, []);
-  // console.log("slipDetail",slipDetail);
 
   return (
     <Fragment>
@@ -368,7 +596,6 @@ const Address = ({
       )}
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-
         <Row>
           <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
@@ -515,15 +742,16 @@ const Address = ({
           {discounttoggle && (
             <Col md="auto" className="mb-1 my-3">
               <GenrateOtp
-                buttonEnabled={buttonEnabled}
-                setButtonEnabled={setButtonEnabled}
+                otpVerify={otpVerify}
+                setotpVerify={setotpVerify}
+                slipIID={slipIID}
+                memberId={memberID}
               />
             </Col>
           )}
         </Row>
-        {buttonEnabled && (
-          <Row>
-            <Col md="4" className="mb-1">
+        {/* {otpVerify && ( */}
+        {/* <Col md="4" className="mb-1">
               <Label className="form-label" for="hf-picker">
                 Discount Type <span style={{ color: "red" }}>*</span>
               </Label>
@@ -619,9 +847,97 @@ const Address = ({
               {errors.calDisAmount && (
                 <FormFeedback>{errors.calDisAmount.message}</FormFeedback>
               )}
-            </Col>
+            </Col> */}
+        {otpVerify && (
+          <Row className="mb-1">
+            <div className="d-flex align-items-center justify-content-between w-100">
+              <Col xs="auto" className="p-0 mt-2">
+                <Button
+                  color={isPercentage ? "success" : "warning"} // Set color based on isPercentage
+                  outline={true}
+                  className="me-2 d-flex align-items-center justify-content-center p-1"
+                  style={{
+                    height: "35px",
+                    fontSize: "10px",
+                    padding: "0.2rem 0.4rem",
+                  }}
+                  // onClick={() => setIsPercentage(!isPercentage)}
+                  onClick={handleButtonClick}
+                >
+                  {isPercentage ? (
+                    <Percent className="w-3 h-3" />
+                  ) : (
+                    <DollarSign className="w-4 h-4" />
+                  )}
+                </Button>
+              </Col>
+
+              {/* <Col className="p-0 me-1"> */}
+              <Col className="me-1">
+                <Label className="form-label" for="hf-picker">
+                  Discount Amount Or Percentage
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+
+                <InputGroup className="flex-grow-1">
+                  <Controller
+                    name="discountAmount"
+                    rules={{
+                      required: "Discount Type is required",
+                      validate: validatePositiveNumber,
+                    }}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder={
+                          isPercentage ? "Enter percentage" : "Enter amount"
+                        }
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(value); // Sync with React Hook Form
+                          if (isPercentage) {
+                            handlePercentageChange(e);
+                          } else {
+                            handleFlatChange(e);
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                  <InputGroupText className="bg-white text-muted">
+                    {isPercentage ? "%" : "$"}
+                  </InputGroupText>
+                </InputGroup>
+              </Col>
+              <Col className="p-0 ">
+                <Label className="form-label" for="landmark">
+                  Discount Amount{" "}
+                </Label>
+                <Controller
+                  name="calDisAmount"
+                  control={control}
+                  rules={{
+                    required: "Discount Amount is required",
+                    validate: validateNumber,
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      value={getValues("calDisAmount") || ""}
+                      style={{ color: "#000" }}
+                      placeholder="After DisCount value"
+                      // readOnly
+                      invalid={errors.calDisAmount && true}
+                      {...field}
+                    />
+                  )}
+                />
+              </Col>
+            </div>
           </Row>
         )}
+
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="landmark">
@@ -629,7 +945,6 @@ const Address = ({
             </Label>
 
             <Controller
-              id="finalPayment"
               name="finalPayment"
               control={control}
               rules={{
@@ -642,10 +957,10 @@ const Address = ({
                   invalid={errors.finalPayment && true}
                   {...field}
                   readOnly
-                  value={getValues("finalPayment") || ""}
+                  value={watch("finalPayment") || ""} // Use watch instead of getValues
                   onChange={(e) => {
                     handleFinalValue(e); // Call the handler if needed
-                    field.onChange(e); // Update the react-hook-form value
+                    field.onChange(e); // Update react-hook-form value
                   }}
                 />
               )}
@@ -657,43 +972,6 @@ const Address = ({
         </Row>
 
         <Row>
-          {/* <Col md="6" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Renewal Date <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              name="renewalDate"
-              control={control}
-              rules={{
-                required: "ReNewal date is required",
-
-                validate: validateFutureDate,
-              }} // Apply custom validation for future date
-              render={({ field }) => (
-                <Flatpickr
-                  id="hf-picker"
-                  className={`form-control ${
-                    errors.renewalDate ? "is-invalid" : ""
-                  }`}
-                  options={{
-                    altInput: true,
-                    altFormat: "Y-m-d",
-                    dateFormat: "Y-m-d",
-                    minDate: "today", // Disable past dates
-                  }}
-                  value={field.value}
-                  onChange={(date) => {
-                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
-                    field.onChange(formattedDate); // Update value in the form
-                  }}
-                />
-              )}
-            />
-            {errors.renewalDate && (
-              <FormFeedback>{errors.renewalDate.message}</FormFeedback>
-            )}
-          </Col> */}
-
           <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
               Renewal Date <span style={{ color: "red" }}>*</span>
@@ -753,7 +1031,7 @@ const Address = ({
               rules={{
                 required: "Next Payment date is required",
                 validate: validateFutureDate,
-              }} 
+              }}
               render={({ field }) => (
                 <Flatpickr
                   id="hf-picker"
@@ -778,6 +1056,27 @@ const Address = ({
               <FormFeedback>{errors.nextPaymentDate.message}</FormFeedback>
             )}
           </Col>
+        </Row>
+
+        <Row>
+          {/* <Col md="12" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Otp verification For the Cash Payment{" "}
+              <span style={{ color: "red" }}>*</span>
+            </Label>
+            <br />
+            <Button color="primary" outline>
+              <Send className="me-1" size={20} />
+              Generate otp
+            </Button>
+
+            {errors.paymentMode && (
+              <FormFeedback className="d-block">
+                {errors.paymentMode.value?.message ||
+                  errors.paymentMode.message}
+              </FormFeedback>
+            )}
+          </Col> */}
         </Row>
 
         <Row>
@@ -820,7 +1119,7 @@ const Address = ({
           </Col>
         </Row>
 
-      {/*   ===================== credit card =============================  */}
+        {/*   ===================== credit card =============================  */}
 
         {paymentMode === "Credit Card" && (
           <>
@@ -833,6 +1132,32 @@ const Address = ({
 
             <Row>
               <Col md="6" className="mb-1">
+                <Label className="form-label" for="payment-card-number">
+                  Card Number <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="cardNumber"
+                  rules={{
+                    required: "Card Number is required",
+                    maxLength: cardType === "Amex" ? 15 : 16,
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter Card Number"
+                      invalid={!!errors.cardNumber}
+                      {...field}
+                      onChange={(e) => handleOnchangeCardNum(e, field)}
+                    />
+                  )}
+                />
+                {errors.cardNumber && (
+                  <FormFeedback>{errors.cardNumber.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col md="6" className="mb-1">
                 <Label className="form-label" for="card-type">
                   Card Type <span style={{ color: "red" }}>*</span>
                 </Label>
@@ -843,23 +1168,13 @@ const Address = ({
                   }}
                   control={control}
                   render={({ field }) => (
-                    <Select
+                    <Input
+                      type="text"
+                      value={cardType}
+                      readOnly
+                      invalid={!!errors.nameOnCard}
                       {...field}
-                      options={colourOptions4}
-                      placeholder="Select Card Type"
-                      className={`react-select ${
-                        errors.cardType ? "is-invalid" : ""
-                      }`}
-                      classNamePrefix="select"
-                      isClearable
-                      // Set the selected value
-                      value={colourOptions4.find(
-                        (option) => option.value === field.value
-                      )}
-                      // Extract the `value` on change
-                      onChange={(selectedOption) =>
-                        field.onChange(selectedOption?.value || "")
-                      }
+                      style={getReadOnlyStyle()}
                     />
                   )}
                 />
@@ -867,80 +1182,7 @@ const Address = ({
                   <FormFeedback>{errors.cardType.message}</FormFeedback>
                 )}
               </Col>
-
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="payment-card-number">
-                  Card Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardNumber"
-                  rules={{
-                    required: "Card Number is required",
-                    validate: validateCardNumber,
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Card Number"
-                      invalid={!!errors.cardNumber}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.cardNumber && (
-                  <FormFeedback>{errors.cardNumber.message}</FormFeedback>
-                )}
-              </Col>
             </Row>
-
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="card-holder-name">
-                  Card Holder's Name <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="nameOnCard"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Card Holder's Name"
-                      invalid={!!errors.nameOnCard}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.nameOnCard && (
-                  <FormFeedback>{errors.nameOnCard.message}</FormFeedback>
-                )}
-              </Col>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="payment-cvv">
-                  Card CVV <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardCvv"
-                  control={control}
-                  rules={{
-                    required: "CVV is required",
-                    validate: validateCardCvv,
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter CVV Number"
-                      invalid={!!errors.cardCvv}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.cardCvv && (
-                  <FormFeedback>{errors.cardCvv.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-
             <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="card-expiry-year">
@@ -951,7 +1193,7 @@ const Address = ({
                   control={control}
                   rules={{
                     required: "Expiry Year is required",
-                    min: new Date().getFullYear(),
+                    min: currentYear,
                     message: "Expiry Year cannot be in the past",
                   }}
                   render={({ field }) => (
@@ -969,9 +1211,10 @@ const Address = ({
                         (option) => option.value === field.value
                       )}
                       // Extract the `value` on change
-                      onChange={(selectedOption) =>
-                        field.onChange(selectedOption?.value || "")
-                      }
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value || "");
+                        handleYearChange(selectedOption); // Update available months based on year
+                      }}
                     />
                   )}
                 />
@@ -1003,7 +1246,6 @@ const Address = ({
                       }`}
                       classNamePrefix="select"
                       isClearable
-                      // Set the selected value
                       value={availableMonths.find(
                         (option) => option.value === field.value
                       )}
@@ -1016,6 +1258,56 @@ const Address = ({
                 />
                 {errors.cardExpiryMonth && (
                   <FormFeedback>{errors.cardExpiryMonth.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="payment-cvv">
+                  Card CVV <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="cardCvv"
+                  control={control}
+                  rules={{
+                    required: "CVV is required",
+                    maxLength: getCvvLength(cardType), // Dynamically set maxLength
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="text" // Change type to text
+                      maxLength={getCvvLength(cardType)} // Dynamically set maxLength
+                      placeholder="Enter CVV Number"
+                      invalid={!!errors.cardCvv}
+                      {...field}
+                    />
+                  )}
+                />
+
+                {errors.cardCvv && (
+                  <FormFeedback>{errors.cardCvv.message}</FormFeedback>
+                )}
+              </Col>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="card-holder-name">
+                  Card Holder's Name <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="nameOnCard"
+                  control={control}
+                  rules={{ required: "Card Holder's Name is required" }}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter Card Holder's Name"
+                      invalid={!!errors.nameOnCard}
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value)}
+                    />
+                  )}
+                />
+                {errors.nameOnCard && (
+                  <FormFeedback>{errors.nameOnCard.message}</FormFeedback>
                 )}
               </Col>
             </Row>
@@ -1151,9 +1443,194 @@ const Address = ({
           </>
         )}
 
-        {/* //* ============================ Bank Details =========================  */}
+        {/* //* ============================ Cheque21 Details =========================  */}
 
-        {paymentMode === "Cheque" && (
+        {paymentMode === "Cheque21" && (
+          <>
+            <div className="content-header">
+              <h5 className="mb-0 my-2">Bank Details</h5>
+              <small>Fill Bank Details</small>
+            </div>
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="bankName">
+                  Bank Name <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "Bank Name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Bank Name must be at least 3 characters",
+                    },
+                  }}
+                  name="bankName"
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter Bank Name"
+                      invalid={!!errors.bankName}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.bankName && (
+                  <FormFeedback>{errors.bankName.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="nameOnAccount">
+                  Account Name <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="nameOnAccount"
+                  control={control}
+                  rules={{
+                    required: "Account Name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Account Name must be at least 3 characters",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter Account Name"
+                      invalid={!!errors.nameOnAccount}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.nameOnAccount && (
+                  <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md="4" className="mb-1">
+                <Label className="form-label" for="routingNumber">
+                  Routing Number <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="routingNumber"
+                  rules={{
+                    required: "Routing Number is required",
+                    validate: validateNumber,
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="number"
+                      placeholder="Enter Routing Number"
+                      invalid={!!errors.routingNumber}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.routingNumber && (
+                  <FormFeedback>{errors.routingNumber.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col md="4" className="mb-1">
+                <Label className="form-label" for="accountNumber">
+                  Account Number <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="accountNumber"
+                  rules={{
+                    required: "Account Number is required",
+                    validate: validateNumber,
+                    minLength: {
+                      value: 10,
+                      message: "Account Number must be at least 10 digits",
+                    },
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="number"
+                      placeholder="Enter Account Number"
+                      invalid={!!errors.accountNumber}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.accountNumber && (
+                  <FormFeedback>{errors.accountNumber.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col md="4" className="mb-1">
+                <Label className="form-label" for="chequeNumber">
+                  Cheque Number <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="chequeNumber"
+                  control={control}
+                  rules={{
+                    required: "Cheque Number is required",
+                    validate: validateNumber,
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="number"
+                      placeholder="Enter Cheque Number"
+                      invalid={!!errors.chequeNumber}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.chequeNumber && (
+                  <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+
+            {/* <Row> */}
+            <Card>
+              <CardHeader>
+                <CardTitle tag="h4">
+                  Upload Cheque Image
+                  <span style={{ color: "red" }}>*</span>
+                </CardTitle>
+              </CardHeader>
+              <CardBody>
+                <FormGroup>
+                  <Label for="fileUpload">Upload File:</Label>
+                  <Input
+                    type="file"
+                    id="fileUpload"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                  />
+                </FormGroup>
+
+                {file && (
+                  <div className="mt-3">
+                    <h6>File Details:</h6>
+                    <p>Name: {file.name}</p>
+                    <p>Size: {renderFileSize(file.size)}</p>
+                    {renderFilePreview(file)}
+                    <div className="d-flex justify-content-end mt-2">
+                      <Button color="danger" outline onClick={handleRemoveFile}>
+                        Remove File
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+            {/* </Row> */}
+          </>
+        )}
+
+        {/* //* ============================ ChequeACH =========================  */}
+
+        {paymentMode === "ChequeACH" && (
           <>
             <div className="content-header">
               <h5 className="mb-0 my-2">Bank Details</h5>
@@ -1299,7 +1776,6 @@ const Address = ({
             </Row>
           </>
         )}
-
         {/* ===================== card Swipe ==========================*/}
 
         {paymentMode === "Card Swipe" && (
@@ -1364,15 +1840,14 @@ const Address = ({
             </Button>
             <Button type="submit" color="primary" className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
-               
-               {loading ? <Spinner size="sm" /> :"Submit" } 
+                {loading ? <Spinner size="sm" /> : "Submit"}
               </span>
-             {loading ? null:(
-              <ArrowRight
-                size={14}
-                className="align-middle ms-sm-25 ms-0"
-              ></ArrowRight>
-            )}
+              {loading ? null : (
+                <ArrowRight
+                  size={14}
+                  className="align-middle ms-sm-25 ms-0"
+                ></ArrowRight>
+              )}
             </Button>
           </div>
         </div>

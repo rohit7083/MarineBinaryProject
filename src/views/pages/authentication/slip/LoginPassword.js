@@ -51,7 +51,7 @@ import axios from "axios";
 
 // Default Form Values
 const defaultValues = {
-  password: "12345",
+  password: "101010",
 };
 
 const Login = () => {
@@ -93,27 +93,27 @@ const Login = () => {
         setLoading(true);
 
         const res = await useJwt.loginPassword(loginToken, data);
-          const authStatus = res.data.content.TwoNf;
+        const authStatus = res.data.content.TwoNf;
 
-  if (res.status == 200 || res.status == 201) {
-    return MySwal.fire({
-      title: "Successfully ",
-      text: "Successfully Login",
-      icon: "success",
-      customClass: {
-        confirmButton: "btn btn-primary",
-      },
-      buttonsStyling: false,
-    }).then(() => {
-     
-      if (authStatus === "false" || authStatus === false) {
-        navigate("/EmailOTP", { state: { userData: res.data?.content } });
-      } else if (authStatus === "true" || authStatus === true) {
-        navigate("/Mobile_OTP", { state: { userData: res.data?.content } });
-      }
-    });
-  }
-
+        if (res.status == 200 || res.status == 201) {
+          return MySwal.fire({
+            title: "Successfully ",
+            text: "Successfully Login",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            if (authStatus === "false" || authStatus === false) {
+              navigate("/EmailOTP", { state: { userData: res.data?.content } });
+            } else if (authStatus === "true" || authStatus === true) {
+              navigate("/Mobile_OTP", {
+                state: { userData: res.data?.content },
+              });
+            }
+          });
+        }
 
         console.log("API Response Full:", res);
         console.log("data", data);
@@ -125,8 +125,8 @@ const Login = () => {
 
         if (error.response) {
           const { status, data } = error.response;
-          const LoginAttempt = data.content.LoginAttempt;
-          const errorMessage = data.content.message;
+          const LoginAttempt = data?.content?.LoginAttempt;
+          const errorMessage = data?.content?.message;
           setLoginAttempt(LoginAttempt);
           setMessage(errorMessage);
           console.log("failed");
@@ -146,12 +146,7 @@ const Login = () => {
           }
           switch (status) {
             case 400:
-              setMessage(errorMessage);
-              break;
             case 401:
-              setMessage(errorMessage);
-              // navigate("/login");
-              break;
             case 403:
               setMessage(errorMessage);
               break;
@@ -183,43 +178,12 @@ const Login = () => {
 
   return (
     <div className="auth-wrapper auth-cover">
-      {/* <Fragment>
-        <Modal
-          isOpen={show}
-          toggle={() => setShow(!show)}
-          className="modal-dialog-centered"
-        >
-          <ModalHeader
-            className="bg-transparent"
-            toggle={() => setShow(!show)}
-          ></ModalHeader>
-          <ModalBody className="px-sm-5 mx-50 pb-5">
-            <h1 className="text-center mb-1">Turn On Your Location</h1>
-            <Row
-              tag="form"
-              className="gy-1 gx-2 mt-75"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <img src="src/views/pages/authentication/Images/locationguide.png" />
-
-              <Button
-                color="primary"
-                onClick={() => {
-                  setShow(!show);
-                  reset();
-                }}
-              >
-                OK
-              </Button>
-            </Row>
-          </ModalBody>
-        </Modal>
-      </Fragment> */}
+    
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
 
-          <h2 className="brand-text text-primary ms-1">Marin</h2>
+          <h2 className="brand-text text-primary ms-1">Longcove Marina</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -233,7 +197,7 @@ const Login = () => {
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-              Password For Login 👋
+              Login - Password 👋
             </CardTitle>
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
@@ -336,11 +300,11 @@ const Login = () => {
                 {loading ? <Spinner size="sm" /> : "Login "}
               </Button>
               <p className="text-center mt-2">
-              <Link to="/Login">
-                <ChevronLeft className="rotate-rtl me-25" size={14} />
-                <span className="align-middle">Back to login</span>
-              </Link>
-            </p>
+                <Link to="/Login">
+                  <ChevronLeft className="rotate-rtl me-25" size={14} />
+                  <span className="align-middle">Back to login</span>
+                </Link>
+              </p>
             </form>
           </Col>
         </Col>

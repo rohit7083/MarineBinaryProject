@@ -37,7 +37,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     formState: { errors },
     setValue,
     watch,
-  } = useForm({});
+  } = useForm({ defaultValues: formData,});
 
   async function fetchForm() {
     try {
@@ -72,6 +72,8 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     }
   }, [reset, formData]);
 
+
+  
   useEffect(() => {
     fetchForm();
   }, []);
@@ -92,9 +94,12 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     finaleData.vesselName = data.vesselName;
     finaleData.uid = data.uid ? data.uid : "";
 
+  console.log("Final data before submitting:", finaleData); // 🔍 Debugging
+
+
     try {
       setLoading(true);
-
+// {{debugger}}
       if (slipId) {
         setLoading(true);
         await useJwt.updateVessel(finaleData.uid, finaleData);
@@ -163,43 +168,81 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
   const renderField = (fields) => {
     // {{debugger}}
 
+    // if (!fields) return null;
+
+    // return Object.keys(fields).map((dimKey) => (
+    //   <Col key={dimKey} md="6" className="mb-1">
+    //     <Label className="form-label" htmlFor={dimKey}>
+    //       {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+    //       <span style={{ color: "red" }}>*</span>
+    //     </Label>
+    //     <Controller
+    //       name={`dimensionVal.${dimKey}`}
+    //       control={control}
+    //       rules={{
+    //         valueAsNumber: true,
+    //         validate: (value) =>
+    //           parseInt(value) <= watch("slipName").dimensions[dimKey] ||
+    //           `Value must be less than ${watch("slipName").dimensions[dimKey]}`, // Custom validation
+    //       }}
+    //       render={({ field, fieldState }) => (
+    //         <div>
+    //           <Input
+    //             type="number"
+    //             placeholder={`Enter Vessel ${dimKey}`}
+    //             invalid={!!fieldState?.error}
+    //             {...field}
+    //           />
+    //           {fieldState?.error && (
+    //             <p className="text-danger">{fieldState?.error?.message}</p>
+    //           )}
+    //         </div>
+    //       )}
+    //     />
+
+    //   </Col>
+    // ));
+
+
+
     if (!fields) return null;
 
-    return Object.keys(fields).map((dimKey) => (
-      <Col key={dimKey} md="6" className="mb-1">
-        <Label className="form-label" htmlFor={dimKey}>
-          {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-          <span style={{ color: "red" }}>*</span>
-        </Label>
-        <Controller
-          name={`dimensionVal.${dimKey}`}
-          control={control}
-          rules={{
-            valueAsNumber: true,
-            validate: (value) =>
-              parseInt(value) <= watch("slipName").dimensions[dimKey] ||
-              `Value must be less than ${watch("slipName").dimensions[dimKey]}`, // Custom validation
-          }}
-          render={({ field, fieldState }) => (
-            <div>
-              <Input
-                type="number"
-                placeholder={`Enter Vessel ${dimKey}`}
-                invalid={!!fieldState?.error}
-                {...field}
-              />
-              {fieldState?.error && (
-                <p className="text-danger">{fieldState?.error?.message}</p>
-              )}
-            </div>
+return Object.keys(fields).map((dimKey) => (
+  <Col key={dimKey} md="6" className="mb-1">
+    <Label className="form-label" htmlFor={dimKey}>
+      {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+      <span style={{ color: "red" }}>*</span>
+    </Label>
+    <Controller
+      name={`dimensionVal.${dimKey}`}
+      control={control}
+      rules={
+        dimKey === "width" || dimKey === "height"
+          ? {
+              valueAsNumber: true,
+              validate: (value) =>
+                parseInt(value) <= watch("slipName").dimensions[dimKey] ||
+                `Value must be less than ${watch("slipName").dimensions[dimKey]}`,
+            }
+          : {} // No validation for other fields like "length"
+      }
+      render={({ field, fieldState }) => (
+        <div>
+          <Input
+            type="number"
+            placeholder={`Enter Vessel ${dimKey}`}
+            invalid={!!fieldState?.error}
+            {...field}
+          />
+          {fieldState?.error && (
+            <p className="text-danger">{fieldState?.error?.message}</p>
           )}
-        />
+        </div>
+      )}
+    />
+  </Col>
+));
 
-        {/* {errors?.[dimKey] && (
-      <FormFeedback>{errors.$[dimKey]?.message}</FormFeedback>
-    )} */}
-      </Col>
-    ));
   };
 
   return (
@@ -221,10 +264,14 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
           </UncontrolledAlert>
         </React.Fragment>
       )}
-       {loadinng ? (
-         <Spinner size="lg" />
+       {/* {loadinng ? (
+         <Spinner  color="primary"
+         style={{
+           height: '3rem',
+           width: '3rem'
+         }} />
       ):(
-        <>
+        <> */}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
@@ -319,8 +366,8 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
           </div>
         </div>
       </form>
-      </>
-    )}
+      {/* </>
+    )} */}
     </Fragment>
   );
 };

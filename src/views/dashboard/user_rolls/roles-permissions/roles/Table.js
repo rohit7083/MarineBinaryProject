@@ -16,7 +16,7 @@ import {
   ModalBody,
   FormFeedback,
 } from "reactstrap";
-
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** Store & Actions
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -48,7 +48,7 @@ const CustomHeader = ({
 }) => {
   return (
     <Row className="text-nowrap w-100 my-75 g-0 permission-header">
-      <Col xs={12} lg={4} className="d-flex align-items-center">
+       <Col xs={12} lg={4} className="d-flex align-items-center">
         <div className="d-flex align-items-center justify-content-center justify-content-lg-start">
           <label htmlFor="rows-per-page">Show</label>
           <Input
@@ -95,14 +95,64 @@ const CustomHeader = ({
               <option value="restricted-user">Restricted User</option>
             </Input>
           </div>
-          {/* <Button className='add-permission mt-sm-0 mt-1' color='primary' onClick={() => setShow(true)}>
-            Add Permission
-          </Button> */}
+         
           <div className="">
             <RoleCards />
           </div>
         </div>
-      </Col>
+      </Col> 
+
+
+{/* 
+<Card>
+        <CardHeader className="border-bottom">
+          <CardTitle tag="h4">Slip Details</CardTitle>
+          <Link to="/dashboard/SlipDetails">
+            <Button.Ripple color="primary">Add Slip Details +</Button.Ripple>
+          </Link>
+        </CardHeader>
+        <Row className="mx-0 mt-1 mb-50">
+          <Col sm="6">
+            <div className="d-flex align-items-center">
+              <Label for="sort-select">show</Label>
+              <Input
+                className="dataTable-select"
+                type="select"
+                id="sort-select"
+                value={rowsPerPage}
+                onChange={handlePerPage}
+              >
+                <option value={7}>7</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={75}>75</option>
+                <option value={100}>100</option>
+              </Input>
+              <Label for="sort-select">entries</Label>
+            </div>
+          </Col>
+          <Col
+            className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1"
+            sm="6"
+          >
+            <Label className="me-1" for="search-input">
+              Search
+            </Label>
+            <Input
+              className="dataTable-filter"
+              type="text"
+              bsSize="sm"
+              id="search-input"
+              value={searchValue}
+              onChange={handleFilter}
+            />
+          </Col>
+        </Row>
+        
+      
+             
+      </Card> */}
     </Row>
   );
 };
@@ -412,24 +462,26 @@ const Table = () => {
           noHeader
           pagination
           subHeader
-          responsive
+          responsive //
           paginationServer
           columns={updatedColumns}
-          sortIcon={<ChevronDown />}
+          // sortIcon={<ChevronDown />}
+          sortIcon={<ChevronDown size={10} />}
+          
           className="react-dataTable"
           paginationComponent={CustomPagination}
           data={dataToRender()}
-          subHeaderComponent={
-            <CustomHeader
-              setShow={setShow}
-              assignedTo={assignedTo}
-              searchTerm={searchTerm}
-              rowsPerPage={rowsPerPage}
-              handleFilter={handleFilter}
-              handlePerPage={handlePerPage}
-              handleAssignedToChange={handleAssignedToChange}
-            />
-          }
+          // subHeaderComponent={
+          //   <CustomHeader
+          //     setShow={setShow}
+          //     assignedTo={assignedTo}
+          //     searchTerm={searchTerm}
+          //     rowsPerPage={rowsPerPage}
+          //     handleFilter={handleFilter}
+          //     handlePerPage={handlePerPage}
+          //     handleAssignedToChange={handleAssignedToChange}
+          //   />
+          // }
         />
       </div>
       <Modal

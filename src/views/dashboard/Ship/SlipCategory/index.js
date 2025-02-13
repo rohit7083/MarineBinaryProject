@@ -58,7 +58,6 @@ function Index() {
           }
         } catch (error) {
           console.error("Error fetching data:", error);
-          alert.error("Failed to fetch data");
         }
       };
 

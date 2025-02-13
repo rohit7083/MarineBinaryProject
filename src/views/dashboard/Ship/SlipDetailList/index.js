@@ -1,5 +1,5 @@
 import React from "react";
-
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Spinner } from "reactstrap";
 import { Button } from "reactstrap";
 import { Link } from "react-router-dom";
