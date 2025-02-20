@@ -188,8 +188,8 @@ export default class JwtService {
   updateVessel(uid, ...args) {
     return axios.put(`${this.jwtConfig.sVessel}${uid}`, ...args);
   }
-  getVessel(uid="") {
-    return axios.get(this.jwtConfig.sVesselGet,"/"+uid);
+  getVessel(uid = "") {
+    return axios.get(`${this.jwtConfig.sVesselGet}/${uid}`);
   }
   retriveVessel(uid="") {
     return axios.get(this.jwtConfig.retriveVessel+uid);
@@ -208,10 +208,19 @@ export default class JwtService {
     return axios.put(`${this.jwtConfig.UpdateMember}${uid}`, ...args);
   }
 
+  
   // =================== Payment
-
+  
   createPayment(...args) {
     return axios.post(this.jwtConfig.createPayment, ...args);
+  }
+ 
+  otpForCash(...args) {
+    return axios.post(this.jwtConfig.otpForCash, ...args);
+  }
+
+  verifyCash(token, ...args) {
+    return axios.post(`${this.jwtConfig.verifyCash}${token}`, ...args);
   }
 
   // =================== Register
@@ -303,8 +312,12 @@ export default class JwtService {
     return axios.delete(`${this.jwtConfig.deleteRole}${uid}`);
   }
 
+  // updateRole(uid, ...args) {
+  //   return axios.put(`${this.jwtConfig.updateRole}${uid}`, ...args);
+  // }
+
   updateRole(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateRole}${uid}`, ...args);
+    return axios.put(`${this.jwtConfig.updateRole}/${uid}`, ...args);
   }
   getallSubuser() {
     return axios.get(this.jwtConfig.getallSubuser);
@@ -326,16 +339,41 @@ export default class JwtService {
     return axios.post(this.jwtConfig.GenerateOtp, payload);
   }
 
-  verifyOTP(token, ...data) {
-    return axios.post(this.jwtConfig.verifyOTP + token, ...data);
+  // verifyOTP(token, ...data) {
+  //   return axios.post(this.jwtConfig.verifyOTP + token, ...data);
+  // }
+
+  async verifyOTP(token, ...data) {
+    try {
+      const response = await axios.post(`${this.jwtConfig.verifyOTP}${token}`, ...data);
+      return response.data;
+    } catch (error) {
+      console.error("OTP Verification Failed:", error.response?.data || error.message);
+      throw error;
+    }
   }
+  
   slipDocument(uid, ...args) {
     return axios.post(this.jwtConfig.slipDocument + uid, ...args);
   }
 
-  refreshToken() {
-    return axios.post(this.jwtConfig.refreshEndpoint, {
-      refreshToken: this.getRefreshToken(),
-    });
+  // refreshToken() {
+  //   return axios.post(this.jwtConfig.refreshEndpoint, {
+  //     refreshToken: this.getRefreshToken(),
+  //   });
+  // }
+
+
+  async refreshToken() {
+    try {
+      const response = await axios.post(this.jwtConfig.refreshEndpoint, {
+        refreshToken: this.getRefreshToken(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      throw error;
+    }
   }
+  
 }

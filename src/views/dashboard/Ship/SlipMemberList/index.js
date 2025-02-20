@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
 import { ChevronDown } from "react-feather";
 import DataTable from "react-data-table-component";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import {
   Card,
   CardHeader,
@@ -32,56 +33,17 @@ const DataTableServerSide = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // const customStyles = {
-  //   headRow: {
-  //     style: {
-  //       backgroundColor: "#333", // Dark header background
-  //       color: "#fff", // White text
-  //       fontSize: "16px",
-  //       fontWeight: "bold",
-  //     },
-  //   },
-  //   headCells: {
-  //     style: {
-  //       color: "#fff", // White text for header cells
-  //     },
-  //   },
-  //   rows: {
-  //     style: {
-  //       backgroundColor: "#f8f9fa", // Light color for default row
-  //     },
-  //     stripedStyle: {
-  //       backgroundColor: "#ffffff", // Slightly different light color for alternating rows
-  //     },
-  //   },
-  // };
-
-  // const dataToRender = () => {
-  //   const limit = currentPage * rowsPerPage;
-  //   const start = limit - rowsPerPage;
-  //   console.log({
-  //     data: data.slice(start, limit),
-  //     default: data,
-  //     limit,
-  //     start,
-  //   });
-  //   return store.data
-  //     .filter((item) => {
-  //       const slipNameMatch = item.slipName.toLowerCase().includes(searchValue.toLowerCase());
-  //       const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
-  //       const categoryMatch = item.category.shipTypeName.toLowerCase().includes(searchValue.toLowerCase());
-
-  //       return slipNameMatch || idMatch || categoryMatch;
-  //     })
-  //     .slice(start, limit);
-  // };
-
+  
   const dataToRender = () => {
     const limit = currentPage * rowsPerPage;
     const start = limit - rowsPerPage;
 
     return store.data
       .filter((item) => {
+        if (item.vessel === null) {
+         
+          return false;
+        }
         const slipNameMatch =
           item.slipName?.toLowerCase().includes(searchValue.toLowerCase()) ||
           false;
@@ -92,6 +54,7 @@ const DataTableServerSide = () => {
             .includes(searchValue.toLowerCase()) || false;
 
         return slipNameMatch || idMatch || categoryMatch;
+      
       })
       .slice(start, limit);
   };
@@ -238,7 +201,6 @@ const DataTableServerSide = () => {
               sortIcon={<ChevronDown size={10} />}
               paginationComponent={CustomPagination}
               data={dataToRender()}
-              // customStyles={customStyles}
               striped
             />
           </div>

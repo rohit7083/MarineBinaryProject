@@ -1,16 +1,400 @@
-  {paymentMode === "Cash" && (
-          <>
-            <Cash_otp
-              showModal={showModal}
-              setShowModal={setShowModal}
-              totalPayment={totalPayment}
-              slipIID={slipIID}
-              memberId={memberID}
+   <Row>
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Contract Date <span style={{ color: "red" }}>*</span>
+            </Label>
+
+
+            <Controller
+              name="contractDate"
+              control={control}
+              rules={{
+                required: "Contract Date is required",
+                validate: validateContractDate,
+              }}
+              render={({ field }) => (
+                <Flatpickr
+                  {...field} // Fixes uncontrolled component issues
+                  className={`form-control ${
+                    errors.contractDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "Y-m-d", // Display format
+                    dateFormat: "Y-m-d", // Stored format
+                  }}
+                  onChange={([selectedDate]) => {
+                    field.onChange(
+                      selectedDate
+                        ? selectedDate.toISOString().split("T")[0]
+                        : ""
+                    );
+                  }}
+                />
+              )}
             />
-          </>
+            {errors.contractDate && (
+              <FormFeedback>{errors.contractDate.message}</FormFeedback>
+            )}
+
+          
+          </Col>
+
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="paidIn">
+              Paid In <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              control={control}
+              rules={{
+                required: "Paid In is required",
+              }}
+              name="paidIn"
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  theme={selectThemeColors}
+                  className="react-select"
+                  isDisabled={statusThree()}
+                  classNamePrefix="select"
+                  isClearable
+                  options={colourOptions}
+                  value={colourOptions.find(
+                    (option) => option.value === field.value
+                  )} // Match selected option
+                  onChange={(option) => {
+                    const selectedValue = option ? option.value : "";
+
+                    field.onChange(selectedValue);
+                    handlePaidInChange(option); // Update rental price
+                  }}
+                  isInvalid={!!errors.paidIn}
+                />
+              )}
+            />
+            {errors.paidIn && (
+              <FormFeedback>{errors.paidIn.message}</FormFeedback>
+            )}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md="12" className="mb-1">
+            <Label className="form-label" for="landmark">
+              Rental Price
+              <span style={{ color: "red" }}>*</span>
+            </Label>
+
+            <Controller
+              name="rentalPrice"
+              rules={{
+                required: "Monthly Value is required",
+              }}
+              control={control}
+              render={({ field }) => (
+                <Input
+                  placeholder=""
+                  readOnly
+                  invalid={errors.rentalPrice && true}
+                  {...field}
+                  onChange={(e) => {
+                    handlerentalPrice(e); // Call the handler if needed
+                    field.onChange(e); // Update the react-hook-form value
+                  }}
+                />
+              )}
+            />
+          </Col>
+        </Row>
+
+        <div className="content-header">
+          <h5 className="mb-0 my-2">Discount</h5>
+          <small>Get Discount Using OTP</small>
+        </div>
+        <Row>
+          <Col md="auto" className="mb-1 ">
+            <Label className="form-label" for="hf-picker">
+              Do You Want Discount..?
+            </Label>
+
+            <div
+              className="my-2 form-check form-switch d-flex "
+              style={{ marginLeft: "-47px" }}
+            >
+              <Label
+                className="me-1"
+                htmlFor="distype"
+                style={{ textAlign: "left" }}
+              >
+                No
+              </Label>
+
+              <Input
+                type="switch"
+                name="distype"
+                id="distype"
+                onChange={handleDiscount}
+                style={{ margin: 0 }}
+                disabled={otpVerify}
+              />
+
+              <Label
+                className="ms-1"
+                htmlFor="distype"
+                style={{ textAlign: "left" }}
+              >
+                Yes
+              </Label>
+            </div>
+          </Col>
+          {discounttoggle && (
+            <Col md="auto" className="mb-1 my-3">
+              <GenrateOtp
+                otpVerify={otpVerify}
+                setotpVerify={setotpVerify}
+                slipIID={slipIID}
+                memberId={memberID}
+              />
+            </Col>
+          )}
+        </Row>
+
+        {otpVerify && (
+          <Row className="mb-1">
+            <div className="d-flex align-items-center justify-content-between w-100">
+              <Col xs="auto" className="p-0 mt-2">
+                <Button
+                  color={isPercentage ? "success" : "warning"} // Set color based on isPercentage
+                  outline={true}
+                  className="me-2 d-flex align-items-center justify-content-center p-1"
+                  style={{
+                    height: "35px",
+                    fontSize: "10px",
+                    padding: "0.2rem 0.4rem",
+                  }}
+                  // onClick={() => setIsPercentage(!isPercentage)}
+                  onClick={handleButtonClick}
+                >
+                  {isPercentage ? (
+                    <Percent className="w-3 h-3" />
+                  ) : (
+                    <DollarSign className="w-4 h-4" />
+                  )}
+                </Button>
+              </Col>
+
+              <Col className="me-1">
+                <Label className="form-label" for="hf-picker">
+                  Enter
+                  <strong>
+                    {isPercentage ? " Percentage " : " Amount  "}
+                  </strong>{" "}
+                  For Discount
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+
+                <InputGroup className="flex-grow-1">
+                  <Controller
+                    name="discountAmount"
+                    rules={{
+                      required: "Discount Type is required",
+                      validate: validatePositiveNumber,
+                    }}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder={
+                          isPercentage ? "Enter percentage" : "Enter amount"
+                        }
+                        // onChange={(e) => {
+                        //   const value = e.target.value;
+                        //   field.onChange(value); // Sync with React Hook Form
+                        //   if (isPercentage) {
+                        //     handlePercentageChange(e);
+                        //   } else {
+                        //     handleFlatChange(e);
+                        //   }
+                        // }}
+
+                        onChange={(e) => handleInputChange(e, field)}
+                      />
+                    )}
+                  />
+                  <InputGroupText className="bg-white text-muted">
+                    {isPercentage ? "%" : "$"}
+                  </InputGroupText>
+                </InputGroup>
+              </Col>
+              <Col className="p-0 ">
+                <Label className="form-label" for="landmark">
+                  Total Discount Amount{" "}
+                </Label>
+                <Controller
+                  name="calDisAmount"
+                  control={control}
+                  rules={{
+                    required: "Discount Amount is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      value={getValues("calDisAmount") || ""}
+                      style={{ color: "#000" }}
+                      placeholder="Total Discount"
+                      // readOnly
+                      invalid={errors.calDisAmount && true}
+                      {...field}
+                    />
+                  )}
+                />
+              </Col>
+            </div>
+          </Row>
         )}
 
-       
+        <Row>
+          <Col md="12" className="mb-1">
+            <Label className="form-label" for="landmark">
+              Total Amount <span style={{ color: "red" }}>*</span>
+            </Label>
+
+            <Controller
+              name="finalPayment"
+              control={control}
+              rules={{
+                required: "Final Payment is required",
+              }}
+              render={({ field }) => (
+                <Input
+                  placeholder="Final Amount"
+                  invalid={errors.finalPayment && true}
+                  {...field}
+                  readOnly
+                  value={watch("finalPayment") || ""} // Use watch instead of getValues
+                  onChange={(e) => {
+                    handleFinalValue(e); // Call the handler if needed
+                    field.onChange(e); // Update react-hook-form value
+                  }}
+                />
+              )}
+            />
+            {errors.finalPayment && (
+              <FormFeedback>{errors.finalPayment.message}</FormFeedback>
+            )}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Renewal Date <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              name="renewalDate"
+              control={control}
+              rules={{
+                required: "Renewal date is required",
+                validate: (value) => {
+                  const selectedDate = new Date(value);
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1); // Calculate tomorrow's date
+                  tomorrow.setHours(0, 0, 0, 0); // Normalize time to midnight
+
+                  if (selectedDate < tomorrow) {
+                    return "Renewal date cannot be today or in the past.";
+                  }
+
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <Flatpickr
+                  id="hf-picker"
+                  className={`form-control ${
+                    errors.renewalDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "Y-m-d",
+                    dateFormat: "Y-m-d",
+                    minDate: new Date(
+                      new Date().setDate(new Date().getDate() + 1)
+                    ), // Tomorrow's date as the minimum date
+                  }}
+                  value={field.value}
+                  onChange={(date) => {
+                    const formattedDate = date[0]?.toISOString().split("T")[0]; // Format date to 'YYYY-MM-DD'
+                    field.onChange(formattedDate); // Update form value
+                  }}
+                />
+              )}
+            />
+            {errors.renewalDate && (
+              <FormFeedback>{errors.renewalDate.message}</FormFeedback>
+            )}
+          </Col>
+
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Next Payment Date <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              name="nextPaymentDate"
+              control={control}
+              rules={{
+                required: "Next Payment date is required",
+                validate: validateFutureDate,
+              }}
+              render={({ field }) => (
+                <Flatpickr
+                  id="hf-picker"
+                  className={`form-control ${
+                    errors.nextPaymentDate ? "is-invalid" : ""
+                  }`}
+                  options={{
+                    altInput: true,
+                    altFormat: "Y-m-d",
+                    dateFormat: "Y-m-d",
+                    minDate: "today", // Disable past dates
+                  }}
+                  value={field.value}
+                  onChange={(date) => {
+                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
+                    field.onChange(formattedDate); // Update value in the form
+                  }}
+                />
+              )}
+            />
+            {errors.nextPaymentDate && (
+              <FormFeedback>{errors.nextPaymentDate.message}</FormFeedback>
+            )}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md="12" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Payment Mode <span style={{ color: "red" }}>*</span>
+            </Label>
+
+            <Controller
+              control={control}
+              name="paymentMode"
+              render={({ field }) => (
+                <Select {...field} options={colourOptions3} />
+              )}
+            />
+
+            {errors.paymentMode && (
+              <FormFeedback className="d-block">
+                {errors.paymentMode.value?.message ||
+                  errors.paymentMode.message}
+              </FormFeedback>
+            )}
+          </Col>
+        </Row>
+    
 
         {paymentMode === "Credit Card" && (
           <>
@@ -162,12 +546,12 @@
                   control={control}
                   rules={{
                     required: "CVV is required",
-                    maxLength: getCvvLength(cardType), // Dynamically set maxLength
+                    maxLength: getCvvLength(cardType), 
                   }}
                   render={({ field }) => (
                     <Input
-                      type="text" // Change type to text
-                      maxLength={getCvvLength(cardType)} // Dynamically set maxLength
+                      type="text" 
+                      maxLength={getCvvLength(cardType)} 
                       placeholder="Enter CVV Number"
                       invalid={!!errors.cardCvv}
                       {...field}
@@ -203,7 +587,6 @@
               </Col>
             </Row>
 
-            {/* Address Fields */}
             <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="address">
@@ -336,7 +719,7 @@
 
        
 
-        {paymentMode === "Cheque21" && (
+     {paymentMode === "Cheque21" && (
           <>
             <div className="content-header">
               <h5 className="mb-0 my-2">Bank Details</h5>
@@ -502,7 +885,6 @@
               </Col>
             </Row>
 
-            {/* <Row> */}
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">
@@ -536,9 +918,8 @@
                 )}
               </CardBody>
             </Card>
-            {/* </Row> */}
           </>
-        )}
+        )} 
 
        
 
@@ -737,3 +1118,4 @@
             </Row>
           </>
         )}
+      

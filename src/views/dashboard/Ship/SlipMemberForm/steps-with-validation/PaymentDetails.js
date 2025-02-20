@@ -1,4 +1,3 @@
-// ** React Imports
 import { Fragment } from "react";
 import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -30,12 +29,14 @@ import {
 } from "reactstrap";
 import PersonalInfo from "./MemberDetails";
 import GenrateOtp from "./GenrateOtp";
+import Cash_otp from "./Cash_otp";
 import { format } from "date-fns";
 import React from "react";
 import { UncontrolledAlert } from "reactstrap";
 import { Send } from "react-feather";
 import { DollarSign, Percent } from "lucide-react";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const paymentModes = {
   "Credit Card": [
     "cardNumber",
@@ -67,17 +68,14 @@ const paymentModes = {
     "chequeNumber",
   ],
 };
+import { useParams } from "react-router-dom";
+const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
+  console.log("data by formdata", formData);
 
-const Address = ({ stepper, formData, slipIID, memberID }) => {
   const colourOptions = [
-    { value: null, label: "select" },
+    // { value: null, label: "select" },
     { value: "Monthly", label: "Monthly" },
     { value: "Annual", label: "Annual" },
-  ];
-
-  const colourOptions2 = [
-    { value: "Percentage", label: "Percentage" },
-    { value: "Flat", label: "Flat" },
   ];
 
   const colourOptions3 = [
@@ -86,11 +84,6 @@ const Address = ({ stepper, formData, slipIID, memberID }) => {
     { value: "3", label: "Cash" },
     { value: "4", label: "Cheque21" },
     { value: "5", label: "ChequeACH" },
-  ];
-
-  const colourOptions4 = [
-    { value: "Visa", label: "Visa" },
-    { value: "Rupey", label: "Rupey" },
   ];
 
   // Create month and year options
@@ -121,17 +114,14 @@ const Address = ({ stepper, formData, slipIID, memberID }) => {
   const [isPercentage, setIsPercentage] = useState(true);
   const [value, setValuee] = useState("");
 
-  const handleValueChange = (e) => {
-    const newValue = e.target.value;
-    // Only allow numbers and decimal point
-    if (/^\d*\.?\d*$/.test(newValue) || newValue === "") {
-      setValuee(newValue);
-    }
-  };
-  const [paidInOption, setPaidInOption] = useState(null);
+  const MySwal = withReactContent(Swal);
+
+  // const [paidInOption, setPaidInOption] = /useState(null);
 
   const [picker, setPicker] = useState(new Date());
-  const [nextPayment, setnextPayment] = useState(new Date());
+
+  const [totalPayment, setFinalPayment] = useState("");
+
   const [availableMonths, setAvailableMonths] = useState([]);
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [discounttoggle, setDiscountToggle] = useState(false);
@@ -140,17 +130,16 @@ const Address = ({ stepper, formData, slipIID, memberID }) => {
   const [otp, setOtp] = useState("");
   const [paymentMode, setpaymentMode] = useState(null);
   const [marketPrices, setMarketPrices] = useState(null);
-  const [calculatedDiscount, setCalculatedDiscount] = useState(0);
-  const [rentalPrice, setRentalPrice] = useState("");
+  const [rentalPriceState, setRentalPrice] = useState("");
   const [show, setShow] = useState(false);
   const [slipDetail, setSlipDetail] = useState({});
   const [loading, setLoading] = useState(false);
   const [errMsz, setErrMsz] = useState("");
   const [otpVerify, setotpVerify] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [discountTypedStatus, setdiscountTypedStatus] = useState(null);
 
-  const [cardNumber, setCardNumber] = useState("");
   const [cvv, setCvv] = useState("");
   const [cardType, setCardType] = useState("");
 
@@ -200,16 +189,12 @@ const Address = ({ stepper, formData, slipIID, memberID }) => {
     watch,
     reset,
     formState: { errors },
-  } = useForm({
-    
-  });
+  } = useForm({});
 
-  // Update available months based on the selected year
   const handleYearChange = (selectedYear) => {
     const selectedYearValue = selectedYear ? selectedYear.value : currentYear;
 
     if (selectedYearValue === currentYear) {
-      // Filter months to show only the ones that are still available in the current year
       const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
       const filteredMonths = months.filter(
         (month) => month.value >= currentMonth
@@ -222,9 +207,10 @@ const Address = ({ stepper, formData, slipIID, memberID }) => {
   };
 
   useEffect(() => {
-    // Initially, display all months
     setAvailableMonths(months);
   }, []);
+
+  const { slipuid } = useParams();
 
   const detectedCardType = (number) => {
     const patterns = {
@@ -260,161 +246,143 @@ const Address = ({ stepper, formData, slipIID, memberID }) => {
     field.onChange(value); // Update React Hook Form
   };
 
-//   const fetchMarketPrices = async () => {
-//     try {
-//       const response = await useJwt.getslip();
-//       const paydata = response.data.content.result.map((item) => ({
-//         marketAnnualPrice: item.marketAnnualPrice,
-//         marketMonthlyPrice: item.marketMonthlyPrice,
-//         id: item.id,
-//       }));
+  const fetchMarketPrices = async () => {
+    try {
+      const response = await useJwt.getslip();
 
-//       const filteredData = paydata.find((item) => item.id === slipIID);
-//       console.log("filteredData", filteredData);
+      const { marketAnnualPrice, id, marketMonthlyPrice } =
+        response.data.content.result.find((item) => {
+          // const fakeID = 18;
+          if (item.id === slipIID) {
+            return item;
+          }
+        });
 
-//       setSlipDetail(filteredData || {});
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-// console.log(slipDetail);
-
-const getReadOnlyStyle = () => {
-  return {
-    color: "#000",
-    backgroundColor: "#fff",
-    opacity: 1,
-  };
-};
-const fetchMarketPrices = async () => {
-  try {
-    const response = await useJwt.getslip();
-    const paydata = response.data.content.result.map((item) => ({
-      marketAnnualPrice: item.marketAnnualPrice,
-      marketMonthlyPrice: item.marketMonthlyPrice,
-      id: item.id,
-    }));
-
-    const filteredData = paydata.find((item) => item.id === slipIID);
-    console.log("filteredData", filteredData);
-
-    setSlipDetail(filteredData || {});
-
-    // Recalculate rentalPrice after slipDetail is set
-    if (paidInOption) {
-      if (paidInOption.value === "Monthly") {
-        setValue("rentalPrice", filteredData?.marketMonthlyPrice || "");
-        console.log("rentalPrice", filteredData?.marketMonthlyPrice);
-      } else if (paidInOption.value === "Annual") {
-        setValue("rentalPrice", filteredData?.marketAnnualPrice || "");
-        console.log("rentalPrice", filteredData?.marketAnnualPrice);
-      } else {
-        setValue("rentalPrice", ""); // Clear rental price if no valid option
-        console.log("Cleared Rental Price");
+      if (!marketAnnualPrice || !marketMonthlyPrice || !id) {
+        console.log("Not Found Slip Chanrges");
+        return;
       }
+
+      /*
+      const paydata = response.data.content.result.map((item) => ({
+        marketAnnualPrice: item.marketAnnualPrice,
+        marketMonthlyPrice: item.marketMonthlyPrice,
+        id: item.id,
+      }));
+*/
+
+      // console.log("filteredData", filteredData);
+
+      setSlipDetail({
+        Monthly: marketMonthlyPrice,
+        Annual: marketAnnualPrice,
+        id,
+      });
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-  }
-};
+  };
+  // console.log(slipDetail);
 
-// Fetch data once when the component mounts
-useEffect(() => {
+  const getReadOnlyStyle = () => {
+    return {
+      color: "#000",
+      backgroundColor: "#fff",
+      opacity: 1,
+    };
+  };
 
-  fetchMarketPrices();
-}, []);
+  useEffect(() => {
+    if (slipIID) fetchMarketPrices();
+  }, [slipIID]);
 
-// Handle option change
-// const handlePaidInChange = (option) => {
-//   setPaidInOption(option);
-//   // Recalculate rentalPrice immediately after setting paidInOption
-//   if (slipDetail) {
-//     if (option.value === "Monthly") {
-//       setValue("rentalPrice", slipDetail?.marketMonthlyPrice || "");
-//       console.log("rentalPrice", slipDetail?.marketMonthlyPrice);
-//     } else if (option.value === "Annual") {
-//       setValue("rentalPrice", slipDetail?.marketAnnualPrice || "");
-//       console.log("rentalPrice", slipDetail?.marketAnnualPrice);
-//     } else {
-//       setValue("rentalPrice", ""); 
-//       console.log("Cleared Rental Price");
-//     }
-//   }
-// };
+  const handlePaidInChange = (option) => {
+    console.log("handlePaidInChange function", slipDetail);
+    if (option?.value === "Monthly") {
+      setValue("rentalPrice", slipDetail.marketMonthlyPrice);
 
-  
-  // const handlePaidInChange = (option) => {
-  //   // debugger
-  //   console.log(slipDetail);
-    
-  //   // {{debugger}}/
-  //   if (option?.value === "Monthly") {
-  //     // setRentalPrice(slipDetail.marketMonthlyPrice);
-  //     setValue("rentalPrice", slipDetail.marketMonthlyPrice);
-  //     console.log("rentalPrice", slipDetail.marketMonthlyPrice);
-  //   } else if (option?.value === "Annual") {
-  //     setRentalPrice(slipDetail.marketAnnualPrice);
-  //     setValue("rentalPrice", slipDetail.marketAnnualPrice);
-  //     console.log("rentalPrice", slipDetail.marketAnnualPrice);
-  //   } else {
-  //     setRentalPrice(""); // Clear rental price if no valid
-  //     setValue("rentalPrice", "");
+      console.log("rentalPrice", slipDetail.marketMonthlyPrice);
+    } else if (option?.value === "Annual") {
+      setValue("rentalPrice", slipDetail.marketAnnualPrice);
+      console.log("rentalPrice", slipDetail.marketAnnualPrice);
+    } else {
+      setValue("rentalPrice", "");
 
-  //     console.log("Cleared Rental Price");
-  //   }
-  // };
+      console.log("Cleared Rental Price");
+    }
+  };
 
   const handleDiscount = (event) => {
-    // Handle OTP button click (can trigger OTP API here)
+    console.clear();
     const isToggled = event.target.checked;
+    console.log("is toggled", isToggled);
 
-    setDiscountToggle(isToggled); // Update toggle state
+    setDiscountToggle(isToggled);
+
     if (!isToggled) {
-      // Reset all states if toggled to "No"
       setOtpVisible(false);
     }
   };
 
   const handlepaymentMode = (selectedOption) => {
-    // Ensure that we are getting the correct value
     const selectedType = selectedOption?.label; // Extract the value
 
     if (selectedType) {
-      setpaymentMode(selectedType); // Update the  paymentMode state
+      setpaymentMode(selectedType);
     }
   };
 
   useEffect(() => {
-    // {{debugger}}
-    const rentalPrice = getValues("rentalPrice"); // Get the current value
-    if (rentalPrice) {
-      setValue("finalPayment", rentalPrice); // Set the default value
+    const rentalPrice = getValues("rentalPrice");
+    const uid = watch("uid");
+
+    setRentalPrice(rentalPrice);
+
+    if (formData[0]?.otpVerify) {
+      setDiscountToggle(true);
+    }
+
+    if (!uid && rentalPrice) {
+      setFinalPayment(rentalPrice);
+      setValue("finalPayment", rentalPrice);
     }
   }, [watch("rentalPrice")]);
 
   //Discount Calculations
 
   const handlePercentageChange = (e) => {
+    // {{debugger}}
     const percentage = parseFloat(e.target.value);
     console.log(percentage);
-
     if (!isNaN(percentage)) {
-      const discountValue = (percentage / 100) * rentalPrice;
-      setCalculatedDiscount(discountValue);
-
-      setValue("finalPayment", rentalPrice - discountValue);
+      const discountValue = (percentage / 100) * rentalPriceState;
       setValue("calDisAmount", discountValue);
+      setValue("finalPayment", rentalPriceState - discountValue);
     } else {
-      setCalculatedDiscount(0);
-      setValue("finalPayment", rentalPrice); // Reset to original value
+      setValue("finalPayment", rentalPriceState);
     }
   };
 
   const handleFlatChange = (e) => {
-    const amount = e.target.value;
-    setValue("calDisAmount", amount); // Update the calculated field
+    // {{debugger}}
 
-    setValue("finalPayment", rentalPrice - amount); // Update the calculated field
+    const amount = Number(e.target.value);
+    setValue("calDisAmount", amount);
+    const finalPaymentcal = rentalPriceState - amount;
+    setValue("finalPayment", finalPaymentcal);
+    setFinalPayment(finalPaymentcal);
+    console.log(finalPaymentcal);
+  };
+
+  const handleInputChange = (e, field) => {
+    const value = e.target.value;
+    field.onChange(value); // Sync with React Hook Form
+
+    if (isPercentage) {
+      handlePercentageChange(e);
+    } else {
+      handleFlatChange(e);
+    }
   };
 
   const validateContractDate = (value) => {
@@ -424,32 +392,6 @@ useEffect(() => {
     if (isNaN(contractDate)) {
       return "Invalid Contract Date";
     }
-    if (contractDate < today) {
-      return "Contract Date cannot be in the past";
-    }
-    return true;
-  };
-
-  // Custom validation for checking if value is a number
-  const validateNumber = (value) => {
-    if (isNaN(value)) {
-      return "This field must be a number";
-    }
-    return true;
-  };
-
-  const validPainIn = (value) => {
-    if (isNaN(value)) {
-      return "This Feild Is required";
-    }
-  };
-
-  // Validate if the value is a positive number
-  const validatePositiveNumber = (value) => {
-    if (value <= 0) {
-      return "Value must be positive";
-    }
-    return true;
   };
 
   const validateCardSwipeTransactionId = (value) => {
@@ -485,21 +427,47 @@ useEffect(() => {
     setIsPercentage(newIsPercentage);
 
     // Prepare data
-    const discountType = newIsPercentage ? "Percentage" : "flat";
+    const discountType = newIsPercentage ? "Percentage" : "Flat";
     const handleTypeDiscount = {
       discountType: discountType,
     };
     console.log(handleTypeDiscount);
+    // {{debugger}}
 
     setdiscountTypedStatus(handleTypeDiscount);
   };
+  const statusThree = () => {
+    if (formStatus === 3) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (Object.keys(formData)?.length) {
+      
+      const data = { ...formData };
+
+      const { paymentMode } = data["0"];
+
+      const pmVal = colourOptions3.find((x) => paymentMode == x.value);
+      setpaymentMode(pmVal.label);
+      data["0"].paymentMode = pmVal;
+
+      data["0"].paidIn = { label: data[0].paidIn, value: data[0].paidIn };
+      console.log({ finalData: data });
+      reset(data["0"]);
+    }
+  }, [reset, formData]);
 
   const onSubmit = async (data) => {
+    data.paymentMode = data.paymentMode.value;
+
     console.log("Payment data:", data);
     const formData = new FormData();
     formData.append("SlipId", slipIID);
     formData.append("contractDate", data.contractDate);
-    formData.append("paidIn", data.paidIn);
+    formData.append("paidIn", data.paidIn.value);
     formData.append("rentalPrice", data.rentalPrice);
     formData.append("finalPayment", data.finalPayment);
     formData.append("renewalDate", data.renewalDate);
@@ -509,8 +477,10 @@ useEffect(() => {
     formData.append("memberId", memberID);
 
     if (otpVerify) {
-      formData.append("discountAmount", data.discountAmount);
+      formData.append("discountAmount", Number(data.discountAmount));
       formData.append("calDisAmount", data.calDisAmount);
+      // {{debugger}}
+
       formData.append("discountType", discountTypedStatus.discountType);
     }
 
@@ -555,6 +525,19 @@ useEffect(() => {
 
       const response = await useJwt.createPayment(formData); // API call
       console.log("API Response:", response);
+      MySwal.fire({
+        title: "Successfully Created",
+        text: " Your Vessel Details Created Successfully",
+        icon: "success",
+        customClass: {
+          confirmButton: "btn btn-primary",
+        },
+        buttonsStyling: false,
+      }).then(() => {
+        if (Object.keys(errors).length === 0) {
+          stepper.next();
+        }
+      });
     } catch (error) {
       console.error("Error submitting data:", error);
 
@@ -578,6 +561,7 @@ useEffect(() => {
     }
   };
 
+  console.log({ paymentMode });
   return (
     <Fragment>
       <div className="content-header">
@@ -616,15 +600,14 @@ useEffect(() => {
                   }`}
                   options={{
                     altInput: true,
-                    altFormat: "Y-m-d", // Format for display
-                    dateFormat: "Y-m-d", // Ensures the value is in YYYY-MM-DD format
-                    minDate: "today", // Disable all dates before today
+                    altFormat: "Y-m-d",
+                    dateFormat: "Y-m-d",
+                    // minDate: "today",
                   }}
                   value={field.value}
-                  onChange={(date) => {
-                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
-                    field.onChange(formattedDate); // Update value in the form
-                  }}
+                  onChange={(date) =>
+                    field.onChange(format(date[0], "yyyy-MM-dd"))
+                  }
                 />
               )}
             />
@@ -648,17 +631,17 @@ useEffect(() => {
                   {...field}
                   theme={selectThemeColors}
                   className="react-select"
+                  isDisabled={true}
                   classNamePrefix="select"
                   isClearable
                   options={colourOptions}
-                  value={colourOptions.find(
-                    (option) => option.value === field.value
-                  )} // Match selected option
                   onChange={(option) => {
-                    const selectedValue = option ? option.value : "";
-
-                    field.onChange(selectedValue);
-                    handlePaidInChange(option); // Update rental price
+                    console.clear();
+                    console.log(option);
+                    const { value } = option;
+                    field.onChange(option);
+                    setValue("rentalPrice", slipDetail[value]);
+                    // handlePaidInChange(option); // Update rental price
                   }}
                   isInvalid={!!errors.paidIn}
                 />
@@ -681,7 +664,6 @@ useEffect(() => {
               name="rentalPrice"
               rules={{
                 required: "Monthly Value is required",
-                validate: validateNumber,
               }}
               control={control}
               render={({ field }) => (
@@ -690,10 +672,6 @@ useEffect(() => {
                   readOnly
                   invalid={errors.rentalPrice && true}
                   {...field}
-                  onChange={(e) => {
-                    handlerentalPrice(e); // Call the handler if needed
-                    field.onChange(e); // Update the react-hook-form value
-                  }}
                 />
               )}
             />
@@ -728,6 +706,8 @@ useEffect(() => {
                 id="distype"
                 onChange={handleDiscount}
                 style={{ margin: 0 }}
+                disabled={otpVerify || formData[0]?.otpVerify}
+                checked={discounttoggle} // This controls the checked state
               />
 
               <Label
@@ -739,6 +719,7 @@ useEffect(() => {
               </Label>
             </div>
           </Col>
+
           {discounttoggle && (
             <Col md="auto" className="mb-1 my-3">
               <GenrateOtp
@@ -746,115 +727,22 @@ useEffect(() => {
                 setotpVerify={setotpVerify}
                 slipIID={slipIID}
                 memberId={memberID}
+                fetchDiscountFields={formData[0]?.otpVerify}
               />
             </Col>
           )}
+
+          {/* || formData[0]?.otpVerify */}
         </Row>
-        {/* {otpVerify && ( */}
-        {/* <Col md="4" className="mb-1">
-              <Label className="form-label" for="hf-picker">
-                Discount Type <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Controller
-                control={control}
-                name="discountType"
-                rules={{
-                  required: "discountType is required",
-                }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    theme={selectThemeColors}
-                    className="react-select"
-                    classNamePrefix="select"
-                    isClearable
-                    options={colourOptions2}
-                    value={colourOptions2.find(
-                      (option) => option.value === field.value
-                    )} // Match selected option
-                    onChange={(option) => {
-                      field.onChange(option ? option.value : ""); // Pass only the value
-                      handleDisType(option); // Perform additional logic if needed
-                    }}
-                  />
-                )}
-              />
-              {errors.discountType && (
-                <FormFeedback>{errors.discountType.message}</FormFeedback>
-              )}
-            </Col>
 
-            <Col md="4" className="mb-1">
-              <Label className="form-label" for="hf-picker">
-                {discountTypee == "Flat" ? "Discount Amount" : "Discount %"}
-              </Label>
-              <Controller
-                name="discountAmount"
-                rules={{
-                  required: "Discount Type is required",
-                  validate: validatePositiveNumber,
-                }}
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    placeholder={
-                      discountTypee == "Flat"
-                        ? "Enter Discount Amount"
-                        : "Enter Percentage %"
-                    }
-                    invalid={errors.discountAmount && true}
-                    {...field}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(value); // Sync with React Hook Form
-                      if (discountTypee === "Percentage")
-                        handlePercentageChange(e);
-                      if (discountTypee === "Flat") handleFlatChange(e);
-                    }}
-                  />
-                )}
-              />
-              {errors.discountAmount && (
-                <FormFeedback>{errors.discountAmount.message}</FormFeedback>
-              )}
-            </Col>
-            <Col md="4" className="mb-1">
-              <Label className="form-label" for="landmark">
-                Calculate Discount Amount{" "}
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-
-              <Controller
-                id="calDisAmount"
-                name="calDisAmount"
-                rules={{
-                  required: "Discount Amount is required",
-                  validate: validateNumber,
-                }}
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    value={getValues("calDisAmount") || ""}
-                    style={{ color: "#000" }}
-                    placeholder="After DisCount value"
-                    readOnly
-                    invalid={errors.calDisAmount && true}
-                    {...field}
-                  />
-                )}
-              />
-
-              {errors.calDisAmount && (
-                <FormFeedback>{errors.calDisAmount.message}</FormFeedback>
-              )}
-            </Col> */}
-        {otpVerify && (
+        {(otpVerify || formData[0]?.otpVerify) && (
           <Row className="mb-1">
             <div className="d-flex align-items-center justify-content-between w-100">
               <Col xs="auto" className="p-0 mt-2">
                 <Button
                   color={isPercentage ? "success" : "warning"} // Set color based on isPercentage
                   outline={true}
+                  disabled={formData[0]?.otpVerify}
                   className="me-2 d-flex align-items-center justify-content-center p-1"
                   style={{
                     height: "35px",
@@ -875,7 +763,11 @@ useEffect(() => {
               {/* <Col className="p-0 me-1"> */}
               <Col className="me-1">
                 <Label className="form-label" for="hf-picker">
-                  Discount Amount Or Percentage
+                  Enter
+                  <strong>
+                    {isPercentage ? " Percentage " : " Amount  "}
+                  </strong>{" "}
+                  For Discount
                   <span style={{ color: "red" }}>*</span>
                 </Label>
 
@@ -884,25 +776,17 @@ useEffect(() => {
                     name="discountAmount"
                     rules={{
                       required: "Discount Type is required",
-                      validate: validatePositiveNumber,
                     }}
                     control={control}
                     render={({ field }) => (
                       <Input
                         {...field}
                         type="text"
+                        readOnly={formData[0]?.otpVerify}
                         placeholder={
                           isPercentage ? "Enter percentage" : "Enter amount"
                         }
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          field.onChange(value); // Sync with React Hook Form
-                          if (isPercentage) {
-                            handlePercentageChange(e);
-                          } else {
-                            handleFlatChange(e);
-                          }
-                        }}
+                        onChange={(e) => handleInputChange(e, field)}
                       />
                     )}
                   />
@@ -911,23 +795,78 @@ useEffect(() => {
                   </InputGroupText>
                 </InputGroup>
               </Col>
+              {/* 
+              <Col className="me-1">
+                <Label className="form-label" for="hf-picker">
+                  Enter
+                  <strong>
+                    {isPercentage ? " Percentage " : " Amount "}
+                  </strong>{" "}
+                  For Discount
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+
+                <InputGroup className="flex-grow-1">
+                  <Controller
+                    name="discountAmount"
+                    rules={{
+                      required: "Discount is required",
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: "Only numeric values are allowed",
+                      },
+                      validate: (value) => {
+                        if (isPercentage) {
+                          return (
+                            (value > 0 && value <= 100) ||
+                            "Percentage must be between 1 and 100"
+                          );
+                        } else {
+                          return value > 0 || "Amount must be greater than 0";
+                        }
+                      },
+                    }}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="text"
+                        readOnly={formData[0]?.otpVerify}
+                        placeholder={
+                          isPercentage ? "Enter percentage" : "Enter amount"
+                        }
+                        onChange={(e) => handleInputChange(e, field)}
+                        invalid={errors.discountAmount ? true : false} // Show error style
+                      />
+                    )}
+                  />
+                  <InputGroupText className="bg-white text-muted">
+                    {isPercentage ? "%" : "$"}
+                  </InputGroupText>
+                </InputGroup>
+                {errors.discountAmount && (
+                  <div className="text-danger" style={{ fontSize: "12px" }}>
+                    {errors.discountAmount.message}
+                  </div>
+                )}
+              </Col> */}
+
               <Col className="p-0 ">
                 <Label className="form-label" for="landmark">
-                  Discount Amount{" "}
+                  Total Discount Amount{" "}
                 </Label>
                 <Controller
                   name="calDisAmount"
                   control={control}
                   rules={{
                     required: "Discount Amount is required",
-                    validate: validateNumber,
                   }}
                   render={({ field }) => (
                     <Input
                       value={getValues("calDisAmount") || ""}
                       style={{ color: "#000" }}
-                      placeholder="After DisCount value"
-                      // readOnly
+                      placeholder="Total Discount"
+                      readOnly={formData[0]?.otpVerify}
                       invalid={errors.calDisAmount && true}
                       {...field}
                     />
@@ -949,7 +888,6 @@ useEffect(() => {
               control={control}
               rules={{
                 required: "Final Payment is required",
-                validate: validateNumber,
               }}
               render={({ field }) => (
                 <Input
@@ -957,14 +895,41 @@ useEffect(() => {
                   invalid={errors.finalPayment && true}
                   {...field}
                   readOnly
-                  value={watch("finalPayment") || ""} // Use watch instead of getValues
-                  onChange={(e) => {
-                    handleFinalValue(e); // Call the handler if needed
-                    field.onChange(e); // Update react-hook-form value
-                  }}
                 />
               )}
             />
+
+            {/* <Controller
+              name="finalPayment"
+              control={control}
+              rules={{
+                required: "Final Payment is required",
+                validate: (value) => {
+                  if (Number(value) < 0) {
+                    return "Final Payment cannot be negative";
+                  }
+                  return true;
+                },
+              }}
+              render={({ field }) => (
+                <Input
+                  placeholder="Final Amount"
+                  invalid={errors.finalPayment && true}
+                  {...field}
+                  readOnly
+                  value={watch("finalPayment") || ""}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    // Prevent negative value manually
+                    if (Number(newValue) >= 0) {
+                      handleFinalValue(e); // Call the handler if needed
+                      field.onChange(e); // Update react-hook-form value
+                    }
+                  }}
+                />
+              )}
+            /> */}
+
             {errors.finalPayment && (
               <FormFeedback>{errors.finalPayment.message}</FormFeedback>
             )}
@@ -1008,7 +973,7 @@ useEffect(() => {
                       new Date().setDate(new Date().getDate() + 1)
                     ), // Tomorrow's date as the minimum date
                   }}
-                  value={field.value}
+                  value={field.value || ""}
                   onChange={(date) => {
                     const formattedDate = date[0]?.toISOString().split("T")[0]; // Format date to 'YYYY-MM-DD'
                     field.onChange(formattedDate); // Update form value
@@ -1059,27 +1024,6 @@ useEffect(() => {
         </Row>
 
         <Row>
-          {/* <Col md="12" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Otp verification For the Cash Payment{" "}
-              <span style={{ color: "red" }}>*</span>
-            </Label>
-            <br />
-            <Button color="primary" outline>
-              <Send className="me-1" size={20} />
-              Generate otp
-            </Button>
-
-            {errors.paymentMode && (
-              <FormFeedback className="d-block">
-                {errors.paymentMode.value?.message ||
-                  errors.paymentMode.message}
-              </FormFeedback>
-            )}
-          </Col> */}
-        </Row>
-
-        <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="hf-picker">
               Payment Mode <span style={{ color: "red" }}>*</span>
@@ -1098,14 +1042,13 @@ useEffect(() => {
                   className={`react-select ${
                     errors.paymentMode ? "is-invalid" : ""
                   }`}
+                  isDisabled={statusThree()}
                   onChange={(selectedOption) => {
                     const value = selectedOption ? selectedOption.value : "";
-                    field.onChange(value); // Update React Hook Form with the value
+                    field.onChange(selectedOption); // Update React Hook Form with the value
                     handlepaymentMode(selectedOption); // Run your custom function with the full option
                   }}
-                  value={colourOptions3.find(
-                    (option) => option.value === field.value
-                  )} // To set the selected option correctly
+                 
                 />
               )}
             />
@@ -1118,6 +1061,33 @@ useEffect(() => {
             )}
           </Col>
         </Row>
+
+        {/*   ===================== Cash =============================  */}
+
+        {paymentMode === "Cash" && (
+          <>
+            {/* { formData[0]?.cashOtpVerify ? (
+                    <React.Fragment>
+                      <Alert color="success">
+                        <div className="alert-body " style={{ marginTop: "10px" }}>
+                          <span className="ms-1">OTP Verified Successfully ! </span>
+                          <ThumbsUp size={15} />
+                        </div>
+                      </Alert>
+                    </React.Fragment>
+            ):( */}
+            <Cash_otp
+              showModal={showModal}
+              setShowModal={setShowModal}
+              totalPayment={totalPayment}
+              slipIID={slipIID}
+              memberId={memberID}
+              cashOtpVerify={formData[0]?.cashOtpVerify}
+            />
+
+            {/* )} */}
+          </>
+        )}
 
         {/*   ===================== credit card =============================  */}
 
@@ -1148,6 +1118,7 @@ useEffect(() => {
                       placeholder="Enter Card Number"
                       invalid={!!errors.cardNumber}
                       {...field}
+                      readOnly={statusThree()}
                       onChange={(e) => handleOnchangeCardNum(e, field)}
                     />
                   )}
@@ -1280,6 +1251,7 @@ useEffect(() => {
                       placeholder="Enter CVV Number"
                       invalid={!!errors.cardCvv}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1302,6 +1274,7 @@ useEffect(() => {
                       placeholder="Enter Card Holder's Name"
                       invalid={!!errors.nameOnCard}
                       {...field}
+                      readOnly={statusThree()}
                       onChange={(e) => field.onChange(e.target.value)}
                     />
                   )}
@@ -1330,6 +1303,7 @@ useEffect(() => {
                       placeholder="Enter Address"
                       invalid={!!errors.address}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1353,6 +1327,7 @@ useEffect(() => {
                       placeholder="Enter City"
                       invalid={!!errors.city}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1379,6 +1354,7 @@ useEffect(() => {
                       placeholder="Enter State"
                       invalid={!!errors.state}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1402,6 +1378,7 @@ useEffect(() => {
                       placeholder="Enter Country"
                       invalid={!!errors.country}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1432,6 +1409,7 @@ useEffect(() => {
                       placeholder="Enter Pincode"
                       invalid={!!errors.pinCode}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1472,6 +1450,7 @@ useEffect(() => {
                       placeholder="Enter Bank Name"
                       invalid={!!errors.bankName}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1500,6 +1479,7 @@ useEffect(() => {
                       placeholder="Enter Account Name"
                       invalid={!!errors.nameOnAccount}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1518,7 +1498,10 @@ useEffect(() => {
                   name="routingNumber"
                   rules={{
                     required: "Routing Number is required",
-                    validate: validateNumber,
+                    pattern: {
+                      value: /^[0-9]{9}$/,
+                      message: "Routing Number must be exactly 9 digits",
+                    },
                   }}
                   control={control}
                   render={({ field }) => (
@@ -1526,6 +1509,7 @@ useEffect(() => {
                       type="number"
                       placeholder="Enter Routing Number"
                       invalid={!!errors.routingNumber}
+                      readOnly={statusThree()}
                       {...field}
                     />
                   )}
@@ -1543,10 +1527,17 @@ useEffect(() => {
                   name="accountNumber"
                   rules={{
                     required: "Account Number is required",
-                    validate: validateNumber,
                     minLength: {
                       value: 10,
                       message: "Account Number must be at least 10 digits",
+                    },
+                    maxLength: {
+                      value: 17,
+                      message: "Account Number can't exceed 17 digits",
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "Account Number must be numeric",
                     },
                   }}
                   control={control}
@@ -1556,6 +1547,7 @@ useEffect(() => {
                       placeholder="Enter Account Number"
                       invalid={!!errors.accountNumber}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1573,7 +1565,18 @@ useEffect(() => {
                   control={control}
                   rules={{
                     required: "Cheque Number is required",
-                    validate: validateNumber,
+                    minLength: {
+                      value: 6,
+                      message: "Cheque Number must be at least 6 digits",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "Cheque Number cannot exceed 10 digits",
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "Cheque Number must be numeric",
+                    },
                   }}
                   render={({ field }) => (
                     <Input
@@ -1581,6 +1584,7 @@ useEffect(() => {
                       placeholder="Enter Cheque Number"
                       invalid={!!errors.chequeNumber}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1606,6 +1610,7 @@ useEffect(() => {
                     id="fileUpload"
                     onChange={handleFileChange}
                     accept="image/*"
+                    readOnly={statusThree()}
                   />
                 </FormGroup>
 
@@ -1649,6 +1654,14 @@ useEffect(() => {
                       value: 3,
                       message: "Bank Name must be at least 3 characters",
                     },
+                    maxLength: {
+                      value: 50,
+                      message: "Bank Name can't exceed 50 characters",
+                    },
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message: "Bank Name Can Only contain letters and Spaces",
+                    },
                   }}
                   name="bankName"
                   render={({ field }) => (
@@ -1657,6 +1670,7 @@ useEffect(() => {
                       placeholder="Enter Bank Name"
                       invalid={!!errors.bankName}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1678,6 +1692,15 @@ useEffect(() => {
                       value: 3,
                       message: "Account Name must be at least 3 characters",
                     },
+                    maxLength: {
+                      value: 50,
+                      message: "Account Name can't exceed 50 characters",
+                    },
+                    pattern: {
+                      value: /^[A-Za-z. ]+$/,
+                      message:
+                        "Account Name can only contain letters, dots, and spaces",
+                    },
                   }}
                   render={({ field }) => (
                     <Input
@@ -1685,6 +1708,7 @@ useEffect(() => {
                       placeholder="Enter Account Name"
                       invalid={!!errors.nameOnAccount}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1703,7 +1727,6 @@ useEffect(() => {
                   name="routingNumber"
                   rules={{
                     required: "Routing Number is required",
-                    validate: validateNumber,
                   }}
                   control={control}
                   render={({ field }) => (
@@ -1712,6 +1735,7 @@ useEffect(() => {
                       placeholder="Enter Routing Number"
                       invalid={!!errors.routingNumber}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1728,7 +1752,6 @@ useEffect(() => {
                   name="accountNumber"
                   rules={{
                     required: "Account Number is required",
-                    validate: validateNumber,
                     minLength: {
                       value: 10,
                       message: "Account Number must be at least 10 digits",
@@ -1741,6 +1764,7 @@ useEffect(() => {
                       placeholder="Enter Account Number"
                       invalid={!!errors.accountNumber}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1758,7 +1782,6 @@ useEffect(() => {
                   control={control}
                   rules={{
                     required: "Cheque Number is required",
-                    validate: validateNumber,
                   }}
                   render={({ field }) => (
                     <Input
@@ -1766,6 +1789,7 @@ useEffect(() => {
                       placeholder="Enter Cheque Number"
                       invalid={!!errors.chequeNumber}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />
@@ -1799,6 +1823,7 @@ useEffect(() => {
                       placeholder="Enter Transaction ID"
                       invalid={!!errors.cardSwipeTransactionId}
                       {...field}
+                      readOnly={statusThree()}
                     />
                   )}
                 />

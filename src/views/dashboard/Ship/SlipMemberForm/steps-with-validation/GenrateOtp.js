@@ -17,7 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 
 import { Alert } from "reactstrap";
 import { ThumbsUp } from "react-feather";
-const GenrateOtp = ({ setotpVerify, memberId, slipIID }) => {
+const GenrateOtp = ({ setotpVerify, memberId, slipIID, fetchDiscountFields }) => {
   // ** States
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(100);
@@ -89,7 +89,7 @@ const GenrateOtp = ({ setotpVerify, memberId, slipIID }) => {
 
   return (
     <Fragment>
-      {verify ? (
+      {verify || fetchDiscountFields ? (
         <React.Fragment>
           <Alert color="success">
             <div className="alert-body "style={{ marginTop: '-10px' }}>

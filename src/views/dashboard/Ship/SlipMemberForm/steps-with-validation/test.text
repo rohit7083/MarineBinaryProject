@@ -1,139 +1,131 @@
-import React, { useState, useRef, useEffect } from "react";
-import PaymentDetails from "./steps-with-validation/PaymentDetails";
-import DocumentsDetails from "./steps-with-validation/DocumentsDetails";
-import MemberDetails from "./steps-with-validation/MemberDetails";
-import VesselDetails from "./steps-with-validation/VesselDetails";
+  useEffect(() => {
+    console.clear();
+    if (Object.keys(formData)?.length) {
+      const data = { ...formData };
+
+      const paymentOption = colourOptions3.find(
+        (option) => option.value === data["0"].paymentMode?.toString()
+      );
+
+      if (paymentOption) {
+        data["0"].paymentMode = paymentOption;
+      }
+      reset(data["0"]);
+    }
+  }, [reset, formData]);
+
+  useEffect(() => {
+    if (watch("paymentMode")) handlepaymentMode(watch("paymentMode"));
+  }, [watch("paymentMode")]);
+
+
+
+
+ <Col md="12" className="mb-1">
+            <Label className="form-label" for="hf-picker">
+              Payment Mode <span style={{ color: "red" }}>*</span>
+            </Label>
+
+            {/* <Controller control={control} name='paymentMode' render={({field})=><Select {...field} options={colourOptions} />}/> */}
+
+            <Controller
+              name="paymentMode"
+              control={control}
+              rules={{
+                required: "payment Mode  is required",
+              }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  options={colourOptions3}
+                  className={`react-select ${
+                    errors.paymentMode ? "is-invalid" : ""
+                  }`}
+                  onChange={(selectedOption) => {
+                    field.onChange(value); // Update React Hook Form with the value
+                    handlepaymentMode(selectedOption); // Run your custom function with the full option
+                  }}
+                />
+              )}
+            />
+
+            {errors.paymentMode && (
+              <FormFeedback className="d-block">
+                {errors.paymentMode.value?.message ||
+                  errors.paymentMode.message}
+              </FormFeedback>
+            )}
+          </Col>
+
+
+
+
+          // ** React Imports
+import { useRef, useState } from 'react'
 
 // ** Custom Components
-import Wizard from "@components/wizard";
+import Wizard from '@components/wizard'
 
-// ** Jwt Clss
-import useJwt from "@src/auth/jwt/useJwt";
+// ** Steps
+import Address from './steps/Address'
+import SocialLinks from './steps/SocialLinks'
+import PersonalInfo from './steps/PersonalInfo'
+import AccountDetails from './steps/AccountDetails'
 
 // ** Icons Imports
-import { FileText, User, MapPin, Link } from "react-feather";
-import { useParams } from "react-router-dom";
+import { FileText, User, MapPin, Link } from 'react-feather'
 
 const WizardModern = () => {
-  // ** RefselectedSlipname
-  const ref = useRef(null);
+  // ** Ref
+  const ref = useRef(null)
 
   // ** State
-  const [stepper, setStepper] = useState(null);
-  const [slipId, setSlipId] = useState(null);
-  const [formDetails, setFormDetails] = useState({
-    vsDetails: {
-      slipId: 0,
-      vesselName: "",
-      vesselRegistrationNumber: "",
-      vesselWidth: 0,
-      vesselHeight: 0,
-    },
-    mmDetails: {},
-    pyDetails: {},
-    dcDetails: {},
-  });
-
-  // ** Hooks
-  const params = useParams();
+  const [stepper, setStepper] = useState(null)
 
   const steps = [
     {
-      id: "Vessel-details",
-      title: "Vessel Details",
-      subtitle: "Enter Your Vessel Details.",
+      id: 'account-details',
+      title: 'Account Detailss4s',
+      subtitle: 'Enter Your Account Details.',
       icon: <FileText size={18} />,
-      content: (
-        <VesselDetails
-          stepper={stepper}
-          setSlipId={setSlipId}
-          type="wizard-modern"
-          formDetails={formDetails} 
-        />
-      ),
+      content: <AccountDetails stepper={stepper} type='wizard-modern' />
     },
-
-
- 
     {
-      id: "Member-info",
-      title: "Member Details",
-      subtitle: "Add Member Info",
+      id: 'personal-info',
+      title: 'Personal Info',
+      subtitle: 'Add Personal Info',
       icon: <User size={18} />,
-      content: (
-        <MemberDetails stepper={stepper} slipId={slipId} type="wizard-modern" />
-      ),
+      content: <PersonalInfo stepper={stepper} type='wizard-modern' />
     },
     {
-      id: "Payment",
-      title: "Payment Details",
-      subtitle: "Add Payment",
+      id: 'step-address',
+      title: 'Address',
+      subtitle: 'Add Address',
       icon: <MapPin size={18} />,
-      content: <PaymentDetails stepper={stepper} type="wizard-modern" />,
+      content: <Address stepper={stepper} type='wizard-modern' />
     },
     {
-      id: "DocumentsDetails",
-      title: "Document Details",
-      subtitle: "Add Documents",
+      id: 'social-links',
+      title: 'Social Links',
+      subtitle: 'Add Social Links',
       icon: <Link size={18} />,
-      content: <DocumentsDetails stepper={stepper} type="wizard-modern" />,
-    },
-  ];
-
-  useEffect(() => {
-    const fetchData = async () => {
-      
-      try {
-        const response = await useJwt.getslip(params.uid);
-        const { content } = response.data;
-        const { vess } = content;
-
-        const tempKey = { ...formDetails };
-
-        const { vsDetails, mmDetails, pyDetails, dcDetails } = tempKey;
-
-        const updatedDetails = [vsDetails, mmDetails, pyDetails, dcDetails].map(
-          (obj) => {
-            let newObj = { ...obj };
-            Object.keys(newObj).forEach((key) => {
-              newObj[key] = content[key] ? content[key] : "";
-            });
-            return newObj;
-          }
-        );
-
-        [
-          tempKey.vsDetails,
-          tempKey.mmDetails,
-          tempKey.pyDetails,
-          tempKey.dcDetails,
-        ] = updatedDetails;
-
-        setFormDetails(tempKey);
-
-        console.log("Updated vsDetails:", tempKey.vsDetails);
-      } catch (error) {
-        console.error("Error fetching slip details:", error);
-        alert("An unexpected error occurred");
-      }
-    };
-
-    if (params.uid) fetchData();
-  }, []);
+      content: <SocialLinks stepper={stepper} type='wizard-modern' />
+    }
+  ]
 
   return (
-    <div className="modern-horizontal-wizard">
+    <div className='modern-horizontal-wizard'>
       <Wizard
-        type="modern-horizontal"
+        type='modern-horizontal'
         ref={ref}
         steps={steps}
         options={{
-          linear: false,
+          linear: false
         }}
-        instance={(el) => setStepper(el)}
+        instance={el => setStepper(el)}
       />
     </div>
-  );
-};
+  )
+}
 
-export default WizardModern;
+export default WizardModern

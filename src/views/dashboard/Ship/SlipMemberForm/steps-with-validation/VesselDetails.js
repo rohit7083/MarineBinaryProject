@@ -1,7 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
 import {
@@ -37,7 +35,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     formState: { errors },
     setValue,
     watch,
-  } = useForm({ defaultValues: formData,});
+  } = useForm({ defaultValues: formData });
 
   async function fetchForm() {
     try {
@@ -49,15 +47,15 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
       const falseOptions = result.map((item) => ({
         isAssigned: item.isAssigned,
       }));
-// {{debugger}}
+      // {{debugger}}
       // if (!falseOptions) {
-        setSlipNames(() =>
-          result.map(({ slipName: label, id: value, dimensions }) => ({
-            label,
-            value,
-            dimensions,
-          }))
-        );
+      setSlipNames(() =>
+        result.map(({ slipName: label, id: value, dimensions }) => ({
+          label,
+          value,
+          dimensions,
+        }))
+      );
       // }
     } catch (error) {
       console.log(error);
@@ -65,15 +63,13 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
   }
 
   useEffect(() => {
+    
     if (Object.keys(formData)?.length) {
       const data = { ...formData };
-
       reset(data);
     }
   }, [reset, formData]);
 
-
-  
   useEffect(() => {
     fetchForm();
   }, []);
@@ -94,12 +90,11 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     finaleData.vesselName = data.vesselName;
     finaleData.uid = data.uid ? data.uid : "";
 
-  console.log("Final data before submitting:", finaleData); // 🔍 Debugging
-
+    console.log("Final data before submitting:", finaleData); // 🔍 Debugging
 
     try {
       setLoading(true);
-// {{debugger}}
+      // {{debugger}}
       if (slipId) {
         setLoading(true);
         await useJwt.updateVessel(finaleData.uid, finaleData);
@@ -166,88 +161,113 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
   };
 
   const renderField = (fields) => {
-    // {{debugger}}
-
-    // if (!fields) return null;
-
-    // return Object.keys(fields).map((dimKey) => (
-    //   <Col key={dimKey} md="6" className="mb-1">
-    //     <Label className="form-label" htmlFor={dimKey}>
-    //       {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-    //       <span style={{ color: "red" }}>*</span>
-    //     </Label>
-    //     <Controller
-    //       name={`dimensionVal.${dimKey}`}
-    //       control={control}
-    //       rules={{
-    //         valueAsNumber: true,
-    //         validate: (value) =>
-    //           parseInt(value) <= watch("slipName").dimensions[dimKey] ||
-    //           `Value must be less than ${watch("slipName").dimensions[dimKey]}`, // Custom validation
-    //       }}
-    //       render={({ field, fieldState }) => (
-    //         <div>
-    //           <Input
-    //             type="number"
-    //             placeholder={`Enter Vessel ${dimKey}`}
-    //             invalid={!!fieldState?.error}
-    //             {...field}
-    //           />
-    //           {fieldState?.error && (
-    //             <p className="text-danger">{fieldState?.error?.message}</p>
-    //           )}
-    //         </div>
-    //       )}
-    //     />
-
-    //   </Col>
-    // ));
-
-
-
     if (!fields) return null;
 
-return Object.keys(fields).map((dimKey) => (
-  <Col key={dimKey} md="6" className="mb-1">
-    <Label className="form-label" htmlFor={dimKey}>
-      {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-      <span style={{ color: "red" }}>*</span>
-    </Label>
-    <Controller
-      name={`dimensionVal.${dimKey}`}
-      control={control}
-      rules={
-        dimKey === "width" || dimKey === "height"
-          ? {
-              valueAsNumber: true,
-              validate: (value) =>
-                parseInt(value) <= watch("slipName").dimensions[dimKey] ||
-                `Value must be less than ${watch("slipName").dimensions[dimKey]}`,
-            }
-          : {} // No validation for other fields like "length"
-      }
-      render={({ field, fieldState }) => (
-        <div>
-          <Input
-            type="number"
-            placeholder={`Enter Vessel ${dimKey}`}
-            invalid={!!fieldState?.error}
-            {...field}
-          />
-          {fieldState?.error && (
-            <p className="text-danger">{fieldState?.error?.message}</p>
-          )}
-        </div>
-      )}
-    />
-  </Col>
-));
+    return Object.keys(fields).map((dimKey) => (
+      // <Col key={dimKey} md="6" className="mb-1">
+      //   <Label className="form-label" htmlFor={dimKey}>
+      //     {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+      //     <span style={{ color: "red" }}>*</span>
+      //   </Label>
+      //   <Controller
+      //     name={`dimensionVal.${dimKey}`}
+      //     control={control}
+      //     rules={
+      //       dimKey === "width" || dimKey === "height"
+      //         ? {
+      //             valueAsNumber: true,
+      //             validate: {
+      //               maxValue: (value) =>
+      //                 parseInt(value) <= watch("slipName").dimensions[dimKey] ||
+      //                 `Value must be less than ${
+      //                   watch("slipName").dimensions[dimKey]
+      //                 }`,
+      //               nonNegative: (value) =>
+      //                 parseInt(value) >= 0 || "Value must not be negative",
+      //             },
+      //           }
+      //         : {} 
+      //     }
+      //     render={({ field, fieldState }) => (
+      //       <div>
+      //         <Input
+      //           type="number"
+      //           placeholder={`Enter Vessel ${dimKey}`}
+      //           invalid={!!fieldState?.error}
+      //           {...field}
+      //         />
+      //         {fieldState?.error && (
+      //           <p className="text-danger">{fieldState?.error?.message}</p>
+      //         )}
+      //       </div>
+      //     )}
+      //   />
+      // </Col>
 
+
+<Col key={dimKey} md="6" className="mb-1">
+  <Label className="form-label" htmlFor={dimKey}>
+    {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+    <span style={{ color: "red" }}>*</span>
+  </Label>
+  <Controller
+    name={`dimensionVal.${dimKey}`}
+    control={control}
+    rules={{
+      ...(dimKey === "width" || dimKey === "height"
+        ? {
+            validate: {
+              required: (value) =>
+                value !== "" || `${dimKey} field is required`,
+              isNumber: (value) =>
+                !isNaN(parseFloat(value)) || "Value must be a number",
+              maxValue: (value) => {
+                const numberValue = parseFloat(value);
+                return (
+                  numberValue <= watch("slipName").dimensions[dimKey] ||
+                  `Value must be less than ${watch("slipName").dimensions[dimKey]}`
+                );
+              },
+              nonNegative: (value) => {
+                const numberValue = parseFloat(value);
+                return (
+                  numberValue >= 0 || "Value must not be negative"
+                );
+              },
+            },
+          }
+        : {}),
+      ...(dimKey === "length" || dimKey === "width" || dimKey === "height"
+        ? {
+            required: {
+              value: true,
+              message: `${dimKey} field is required`,
+            },
+          }
+        : {}),
+    }}
+    render={({ field, fieldState }) => (
+      <div>
+        <Input
+          type="number"
+          placeholder={`Enter Vessel ${dimKey}`}
+          invalid={!!fieldState?.error}
+          {...field}
+        />
+        {fieldState?.error && (
+          <p className="text-danger">{fieldState?.error?.message}</p>
+        )}
+      </div>
+    )}
+  />
+</Col>
+
+
+    ));
   };
 
   return (
     <Fragment>
-     
       <div className="content-header">
         <h5 className="mb-0">
           {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}
@@ -264,7 +284,7 @@ return Object.keys(fields).map((dimKey) => (
           </UncontrolledAlert>
         </React.Fragment>
       )}
-       {/* {loadinng ? (
+      {/* {loadinng ? (
          <Spinner  color="primary"
          style={{
            height: '3rem',
@@ -282,6 +302,10 @@ return Object.keys(fields).map((dimKey) => (
             <Controller
               name="slipName"
               control={control}
+              rules={{
+                required: "Slip Name is required",
+
+              }}
               render={({ field }) => (
                 <Select
                   {...field}
@@ -303,6 +327,9 @@ return Object.keys(fields).map((dimKey) => (
             <Controller
               control={control}
               name="vesselName"
+              rules={{
+                required: "Vessel Name is required",
+              }}
               render={({ field }) => (
                 <Input
                   type="text"
@@ -324,6 +351,9 @@ return Object.keys(fields).map((dimKey) => (
             </Label>
             <Controller
               control={control}
+              rules={{
+                required: "Vessel Registration Number is required",
+              }}
               name="vesselRegistrationNumber"
               render={({ field }) => (
                 <Input

@@ -22,37 +22,7 @@ import useJwt from '@src/auth/jwt/useJwt'
 const DataTableServerSide = () => {
 
 
-  // const customStyles = {
-  //   headRow: {
-  //     style: {
-  //       backgroundColor: "#333", // Dark header background
-  //       color: "#fff", // White text
-  //       fontSize: "16px",
-  //       fontWeight: "bold",
-      
-  //     },
-  //   },
-  //   headCells: {
-  //     style: {
-  //       color: "#fff", // White text for header cells
-  //     },
-  //   },
-  //   rows: {
-  //     style: {
-  //       backgroundColor: "#f8f9fa", // Light color for default row
-  //     },
-  //     stripedStyle: {
-  //       backgroundColor: "#ffffff", // Slightly different light color for alternating rows
-  //     },
-  //   },
-  // };
-  
-
-
-
-
-
-  // ** Store Vars
+ // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.dataTables);
 

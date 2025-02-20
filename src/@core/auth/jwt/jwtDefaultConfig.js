@@ -40,6 +40,9 @@ export default {
   status: "/googleAuthenticatorQR/status",
   sendOtp: "/auth/user/send_otp/",
 
+//verify otp for cash payment
+otpForCash:"/sPayment/otpForCash",
+verifyCash:"/sPayment/verifyCash/",
   // verify Email and Login api
   verifyEmail: "/auth/verifyEmail",
   loginPassword: "/auth/login/",

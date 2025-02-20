@@ -3,8 +3,6 @@ import Avatar from "@components/avatar";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-// ** Third Party Components
-import axios from "axios";
 import {
   MoreVertical,
   Edit,
@@ -39,13 +37,7 @@ const states = [
   "secondary",
 ];
 
-const status = {
-  1: { title: "Current", color: "light-primary" },
-  2: { title: "Professional", color: "light-success" },
-  3: { title: "Rejected", color: "light-danger" },
-  4: { title: "Resigned", color: "light-warning" },
-  5: { title: "Applied", color: "light-info" },
-};
+
 
 const PaymentTypes = {
   1: "CreditCard",
@@ -53,6 +45,13 @@ const PaymentTypes = {
   3: "Cash",
   4: "Cheque21",
   5: "ChequeACH",
+};
+const status = {
+  1: { title: 'Member-Pending', color: 'light-primary' },
+  2: { title: 'Payment-Pending', color: 'light-info' },
+  3: { title: 'Document-Pending', color: 'light-warning' },
+  4: { title: 'Completed', color: 'light-success' },
+  // 5: { title: 'Applied', color: '' }
 };
 // ** Table Zero Config Column
 export const basicColumns = [
@@ -356,15 +355,43 @@ export const multiLingColumns = [
   },
 ];
 
+
+
 // ** Table Server Side Column
 export const serverSideColumns = [
+  
   {
     sortable: true,
     name: "Id",
-    minWidth: "170px",
+    minWidth: "150px",
     selector: (row) => row.id,
   },
- 
+  
+  {
+    name: 'Status',
+    minWidth: "180px",
+
+    sortable: true,
+    cell: (row) => {
+      const stepStatus = row.stepStatus; // Get the stepStatus from the row
+      const statusInfo = status[stepStatus]; // Find the corresponding status info
+  
+      return (
+        <div className="d-flex justify-content-center">
+          {statusInfo ? (
+            <Badge color={statusInfo.color} pill className="text-dark">
+              {statusInfo.title}
+            </Badge>
+          ) : (
+            <Badge color="light-secondary" pill className="text-dark">
+              Unknown
+            </Badge>
+          )}
+        </div>
+      );
+    }
+  },
+  
   {
     sortable: true,
     name: "Slip Name",
@@ -400,31 +427,30 @@ export const serverSideColumns = [
     sortable: true,
     name: "Payment",
     minWidth: "150px",
-    selector: (row) => row.payment?.find((p) => p.finalPayment)?.finalPayment,
+    selector: (row) => row.finalPayment,
   },
   {
     sortable: true,
     name: "Contract Date",
     minWidth: "200px",
-    selector: (row) => row.payment?.find((p) => p.contractDate)?.contractDate,
+    selector: (row) => row.contractDate,
   },
   {
     sortable: true,
     name: " Next Payment Date",
     minWidth: "250px",
     selector: (row) =>
-      row.payment?.find((p) => p.nextPaymentDate)?.nextPaymentDate,
+      row.nextPaymentDate,
   },
   {
     sortable: true,
     name: "Contract Type",
     minWidth: "150x",
-    selector: (row) => {
-      // const paymentMode = row.payment?.find((p) => p.paymentMode)?.paymentMode;
-      // return PaymentTypes[paymentMode] || "";
-      const paymentMode = row.payment?.find((p) => p.paidIn)?.paidIn;
-    },
+    selector: (row) => row.paidIn,
+  
   },
+
+
   
   {
     name: "Actions",
@@ -432,6 +458,9 @@ export const serverSideColumns = [
     minWidth: "150px",
     cell: (row) => {
       const [data, setData] = useState([]);
+      console.log("row data",row)
+      // console.log(" data",data)
+      console.log("formData.stepStatus",row.stepStatus);
 
       const MySwal = withReactContent(Swal);
 
@@ -503,9 +532,11 @@ export const serverSideColumns = [
           <Link
             style={{ margin: "0.5rem" }}
             to={{
-              pathname: `/dashboard/SlipMemberForm/${row?.uid}`, // Ensure this is the correct path
-              state: {},
+            
+              pathname: `/dashboard/SlipMemberForm/${row?.uid}`,
+             
             }}
+            state={{stepStatus:row.stepStatus}}
           >
             <span>
               <Edit2 className="font-medium-3 text-body" />

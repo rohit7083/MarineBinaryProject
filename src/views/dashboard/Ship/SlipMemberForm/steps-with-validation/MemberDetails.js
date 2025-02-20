@@ -19,7 +19,7 @@ import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
 const PersonalInfo = ({ stepper, slipIID, formData, slipId ,setMemberID }) => {
-  console.log("memberformData :", formData);
+  // console.log("memberformData :", formData);
 
   const MySwal = withReactContent(Swal);
   const [fullname, setFullname] = useState([]);
