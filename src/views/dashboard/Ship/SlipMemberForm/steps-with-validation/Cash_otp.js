@@ -135,7 +135,7 @@ const Cash_otp = ({
         <>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="hf-picker">
-              Otp verification For the Cash Payment{" "}
+              Otp verification compulsory For the Cash Payment{" "}
               <span style={{ color: "red" }}>*</span>
             </Label>
             <br />

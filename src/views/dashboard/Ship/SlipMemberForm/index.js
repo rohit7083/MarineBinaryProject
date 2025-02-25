@@ -163,6 +163,7 @@ const WizardModern = () => {
   const [stepper, setStepper] = useState(null);
 const [slipIID,setSlipIID]=useState("");
 const[memberID,setMemberID]=useState(null);
+const [fetchLoader,setFetchLoader]=useState(false);
 
   const [formData, setFormData] = useState({
     vessel: {},
@@ -172,17 +173,16 @@ const[memberID,setMemberID]=useState(null);
   // ** Hooks
   const { uid } = useParams();
   useEffect(() => {
-    console.log(memberID,"memb");
-    
+
     const fetchData = async () => {
       try {
-        // {{debugger}}  
+        setFetchLoader(true);
         const response = await useJwt.getslip(uid);
         const { content } = response.data;
         const { vessel, member, payment } = content;
-        console.log("Cntent",content);
+        console.log("content",content);
         
-        //vessel details 
+        // vessel details 
         vessel.slipName = {
           label: vessel.slipName,
           value: content.id,
@@ -194,11 +194,6 @@ const[memberID,setMemberID]=useState(null);
           (key) => (vessel.dimensionVal[key] = vessel[key])
         );
 
-        console.log({vessel})
-
-        //member details
-          
-
         setFormData({
           vessel: { ...vessel },
           member,
@@ -206,6 +201,8 @@ const[memberID,setMemberID]=useState(null);
         });
       } catch (error) {
         console.log("Error fetching slip details:", error);
+      }finally{
+        setFetchLoader(false);
       }
     };
 
@@ -230,6 +227,7 @@ const[memberID,setMemberID]=useState(null);
           formData={{ ...formData.vessel }}
           slipId={uid}
           setSlipIID={setSlipIID}
+          fetchLoader={fetchLoader}
 
         />
       ),
@@ -247,6 +245,9 @@ const[memberID,setMemberID]=useState(null);
           type="wizard-modern"
           slipIID={slipIID}
           setMemberID={setMemberID}
+          memberID={memberID}
+          fetchLoader={fetchLoader}
+
         />
       ),
     },
@@ -263,6 +264,7 @@ const[memberID,setMemberID]=useState(null);
           slipIID={slipIID}
           memberID={memberID}
           type="wizard-modern"
+          fetchLoader={fetchLoader}
         />
       ),
     },

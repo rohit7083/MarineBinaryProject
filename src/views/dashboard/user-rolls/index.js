@@ -11,6 +11,7 @@ const index = ({ data }) => {
   // const [nextPageLink, setNextPageLink] = useState(null);
 
   // const [allRoleName, setallRoleName] = React.useState([]);
+  // {{debugger}}
   const [tableData, setTableData] = React.useState({
     count: 0,
     results: [],
@@ -32,7 +33,6 @@ const index = ({ data }) => {
         const { content } = data;
 
         setTableData({ count: content.count, results: content.result });
-        // setallRoleName("roles",content.result.map((role) => role.roleName));
       } catch (error) {
         console.log(error);
       } finally {

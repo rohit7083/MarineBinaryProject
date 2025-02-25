@@ -91,9 +91,10 @@ const DataTableServerSide = () => {
 
     if (value) {
       const filteredResults = tableData.results.filter((row) =>
-        row.roleName.toLowerCase().includes(value.toLowerCase())
+        row?.roleName?.toLowerCase().includes(value?.toLowerCase() || "")
       );
-
+      
+      
       // Update table data with filtered results
       setTableData((prev) => ({
         ...prev,

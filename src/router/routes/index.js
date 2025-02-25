@@ -12,6 +12,7 @@ import UiElementRoutes from './UiElements'
 import ExtensionsRoutes from './Extensions'
 import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
+import Marin from './Marin'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -49,7 +50,8 @@ const Routes = [
   ...PageLayoutsRoutes,
   ...FormRoutes,
   ...TablesRoutes,
-  ...ChartsRoutes
+  ...ChartsRoutes,
+  ...Marin
 ]
 
 const getRouteMeta = route => {

@@ -36,7 +36,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   } = useForm();
 
   const [countryCode, setCountryCode] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [mobileNum, setMobileNumber] = useState("");
   const [allRoleName, setallRoleName] = useState(null);
   const [Errmessage, setMessage] = useState("");
 
@@ -50,14 +50,14 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   };
 
   const onSubmit = async (data) => {
-    const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
+    const { code, number } = extractCountryCodeAndNumber(data.mobileNum);
 
     // Transform the data into the required format
     const transformedData = {
       firstName: data.firstName,
       lastName: data.lastName,
       emailId: data.emailId,
-      mobileNumber: number,
+      mobileNum: number,
       password: data.password,
       countryCode: `+${code}`,
       userRoles: {
@@ -140,6 +140,7 @@ console.log("data is created",data);
     setModalType("Add New");
     reset();
   };
+  // {{debugger}}
   useEffect(() => {
     // Check if it's an edit mode
     if (uid && row) {
@@ -147,7 +148,7 @@ console.log("data is created",data);
         firstName,
         lastName,
         emailId,
-        mobileNumber,
+        mobileNum,
         userRoles,
         countryCode,
         password,
@@ -157,11 +158,11 @@ console.log("data is created",data);
         firstName,
         lastName,
         emailId,
-        mobileNumber: `${countryCode}${mobileNumber}`,
+        mobileNum: `${countryCode}${mobileNum}`,
         userRoles: userRoles?.uid || null,
         password, // Leave password blank
       });
-      setMobileNumber(`${countryCode}${mobileNumber}`); // Ensure PhoneInput gets the value
+      setMobileNumber(`${countryCode}${mobileNum}`); // Ensure PhoneInput gets the value
       setCountryCode(countryCode); // Optionally track the country code separately
 
       setModalType("Edit");
@@ -171,7 +172,7 @@ console.log("data is created",data);
         firstName: "",
         lastName: "",
         emailId: "",
-        mobileNumber: "",
+        mobileNum: "",
         userRoles: null,
         password: "",
       });
@@ -333,16 +334,16 @@ console.log("data is created",data);
             </Row>
 
             <Row className="mb-2">
-              <Label sm="3" for="mobileNumber">
+              <Label sm="3" for="mobileNum">
                 Mobile
               </Label>
               <Col sm="9">
                 <InputGroup className="input-group-merge">
                   <Controller
-                    name="mobileNumber"
+                    name="mobileNum"
                     control={control}
                     // defaultValue=""
-                    defaultValue={mobileNumber} // Set defaultValue to the prefilled mobile number
+                    defaultValue={mobileNum} // Set defaultValue to the prefilled mobile number
                     rules={{
                       required: "Mobile number is required",
                       validate: (value) =>
@@ -354,13 +355,13 @@ console.log("data is created",data);
                       <PhoneInput
                         country={"us"} // Default country code
                         // value={value}
-                        value={value || mobileNumber} // Use `value` from the form or prefilled value
+                        value={value || mobileNum} // Use `value` from the form or prefilled value
                         onChange={(phone) => {
                           onChange(phone); // Update react-hook-form's value
                           setMobileNumber(phone); // Update internal state
                         }}
                         inputProps={{
-                          name: "mobileNumber",
+                          name: "mobileNum",
                           required: true,
                           className: "form-control",
                         }}
@@ -378,9 +379,9 @@ console.log("data is created",data);
                     )}
                   />
                 </InputGroup>
-                {errors.mobileNumber && (
+                {errors.mobileNum && (
                   <small className="text-danger">
-                    {errors.mobileNumber.message}
+                    {errors.mobileNum.message}
                   </small>
                 )}
               </Col>

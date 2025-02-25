@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import React from "react";
-import { UncontrolledAlert } from "reactstrap";
+import { Spinner, UncontrolledAlert } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 import {
   Row,
@@ -41,7 +41,7 @@ const RoleCards = () => {
   const [CheckActions, setCheckActions] = useState([]);
   const [selectAll, setSelectAll] = useState(false); // State to track "Select All"
   const MySwal = withReactContent(Swal);
-
+  const [loading, setLoading] = useState(false);
   const {
     reset,
     control,
@@ -92,7 +92,6 @@ const RoleCards = () => {
         const selectedUIDs = res.data.content.result.map((item) => item.uid);
         // console.log("Selected UIDs:", selectedUIDs);
 
-        // Set roles (module names) from the API response
         const fetchedRoles = Array.from(
           new Set(res.data.content.result.map((role) => role.moduleName))
         );
@@ -134,7 +133,6 @@ const RoleCards = () => {
     // {{debugger}}
     const selectedUIDs = [];
 
-    // Loop over selectedPermissions to collect UIDs of selected actions
     for (const role in selectedPermissions) {
       for (const action in selectedPermissions[role]) {
         if (selectedPermissions[role][action]) {
@@ -150,7 +148,7 @@ const RoleCards = () => {
     };
     console.log("payload", payload);
     try {
-      // {{debugger}}
+      setLoading(true);
       const res = await useJwt.userpermissionPost(payload);
       console.log(" Add role res:", res);
 
@@ -215,6 +213,9 @@ const RoleCards = () => {
         }
       }
     
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -288,11 +289,6 @@ const RoleCards = () => {
           </div>
 
           <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
-
-
-
-
-
             <Col xs={12}>
               <Label className="form-label" for="roleName">
                 Role Name
@@ -392,18 +388,9 @@ const RoleCards = () => {
               </Table>
             </Col>
 
-
-
-
-
-
-
-
-
-
             <Col className="text-center mt-2" xs={12}>
               <Button type="submit" color="primary" className="me-1">
-                Submit
+               {loading ?  <Spinner size="sm" />:"Submit"} 
               </Button>
               <Button type="reset" outline onClick={onReset}>
                 Discard

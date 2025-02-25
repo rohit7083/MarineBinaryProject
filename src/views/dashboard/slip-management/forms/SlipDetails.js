@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-
-// ** Utils
+import { Tooltip } from "reactstrap";// ** Utils
 import {
   Card,
   CardHeader,
@@ -19,17 +18,33 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { parse } from "@babel/core/lib/parse";
 import { useLocation } from "react-router-dom";
 import { colors } from "@mui/material";
-
+import { Edit, Repeat, Send } from "lucide-react";
+// import Index from './SlipDetailsForm';
 const MySwal = withReactContent(Swal);
-function ShipDetails() {
+
+function SlipDetailsForm() {
   // let navigate = useNavigate();
   let { uid } = useParams(); // Fetch `uid` from the route params
   const location = useLocation(); // Use location hook to get the passed state
-
+  const [tooltipOpen, setTooltipOpen] = useState({
+    edit: false,
+    switchSlip: false,
+    takePayment: false,
+    purchaseOrder: false,
+    listEmpty: false
+  });
+  
+  const toggleTooltip = (tooltip) => {
+    setTooltipOpen((prevState) => ({
+      ...prevState,
+      [tooltip]: !prevState[tooltip]
+    }));
+  };
+  
   const [userData, setUserData] = useState({
     slipName: "",
     electric: false,
@@ -376,97 +391,97 @@ function ShipDetails() {
     return newErrors;
   };
 
-  const fetchData = async () => {
-    try {
-      const payload = {}; // Add any necessary payload if required
-      const response = await useJwt.getslipCatogory(payload);
-console.log(response);
+//   const fetchData = async () => {
+//     try {
+//       const payload = {}; // Add any necessary payload if required
+//       const response = await useJwt.getslipCatogory(payload);
+// console.log(response);
 
-      const options = response.data.content.result.map((item) => ({
-        value: item.uid,
-        label: item.shipTypeName,
-        dimensions: item.dimensions, // Store dimensions for each category
-      }));
+//       const options = response.data.content.result.map((item) => ({
+//         value: item.uid,
+//         label: item.shipTypeName,
+//         dimensions: item.dimensions, // Store dimensions for each category
+//       }));
 
-      setShipTypeNames(options);
-    } catch (error) {
-      console.error("Error fetching category:", error);
-      const { response } = error;
-      const { data, status } = response;
-      if (status == 400) {
-        console.log(data.content);
-      }
-    }
+//       setShipTypeNames(options);
+//     } catch (error) {
+//       console.error("Error fetching category:", error);
+//       const { response } = error;
+//       const { data, status } = response;
+//       if (status == 400) {
+//         console.log(data.content);
+//       }
+//     }
 
-    console.log("Category", selectedCategory);
-  };
-  useEffect(() => {
-   fetchData();
+//     console.log("Category", selectedCategory);
+//   };
+//   useEffect(() => {
+//    fetchData();
 
-    if (uid) {
-      const fetchDetailsForUpdate = async () => {
-        try {
+//     if (uid) {
+//       const fetchDetailsForUpdate = async () => {
+//         try {
 
-          const resp = await useJwt.getslip(uid);
-          // const { result } = content;
+//           const resp = await useJwt.getslip(uid);
+//           // const { result } = content;
 
-          const result =resp.data.content;
-          console.log(result);
+//           const result =resp.data.content;
+//           console.log(result);
           
-          // {{debugger}}
-          if (result) {
+//           // {{debugger}}
+//           if (result) {
 
-            if (result && result.uid === uid) {
-              setUserData({
-              slipName: result.slipName,
-              electric: result.electric,
-              water: result.water,
-              addOn: result.addOn,
-              marketAnnualPrice: result.marketAnnualPrice,
-              marketMonthlyPrice: result.marketMonthlyPrice,
-              amps: result.amps,
-              overDueAmountFor7Days: result.overDueAmountFor7Days,
-              overDueAmountFor15Days: result.overDueAmountFor15Days,
-              overDueAmountFor30Days: result.overDueAmountFor30Days,
-              overDueAmountForNotice: result.overDueAmountForNotice,
-              overDueAmountForAuction: result.overDueAmountForAuction,
-            });
-          }
-            setDimensions(Object.keys(result.dimensions) || []);
-            setUserData((pre) => ({ ...pre, ...result.dimensions }));
+//             if (result && result.uid === uid) {
+//               setUserData({
+//               slipName: result.slipName,
+//               electric: result.electric,
+//               water: result.water,
+//               addOn: result.addOn,
+//               marketAnnualPrice: result.marketAnnualPrice,
+//               marketMonthlyPrice: result.marketMonthlyPrice,
+//               amps: result.amps,
+//               overDueAmountFor7Days: result.overDueAmountFor7Days,
+//               overDueAmountFor15Days: result.overDueAmountFor15Days,
+//               overDueAmountFor30Days: result.overDueAmountFor30Days,
+//               overDueAmountForNotice: result.overDueAmountForNotice,
+//               overDueAmountForAuction: result.overDueAmountForAuction,
+//             });
+//           }
+//             setDimensions(Object.keys(result.dimensions) || []);
+//             setUserData((pre) => ({ ...pre, ...result.dimensions }));
 
-            setSelectedCategory({
-              value: result.category.uid,
-              label: result.category.shipTypeName,
-              dimensions: result.dimensions,
-            });
-            console.log("result", result);
+//             setSelectedCategory({
+//               value: result.category.uid,
+//               label: result.category.shipTypeName,
+//               dimensions: result.dimensions,
+//             });
+//             console.log("result", result);
 
-            console.log("selectedCategory", {
-              dimensions: result.dimensions,
-            });
+//             console.log("selectedCategory", {
+//               dimensions: result.dimensions,
+//             });
 
-            setSelections({
-              overDueChargesFor7Days: result.overDueChargesFor7Days,
-              overDueChargesFor15Days: result.overDueChargesFor15Days,
-              overDueChargesFor30Days: result.overDueChargesFor30Days,
-              overDueChargesForNotice: result.overDueChargesForNotice,
-              overDueChagesForAuction: result.overDueChagesForAuction,
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchDetailsForUpdate();
-    }
+//             setSelections({
+//               overDueChargesFor7Days: result.overDueChargesFor7Days,
+//               overDueChargesFor15Days: result.overDueChargesFor15Days,
+//               overDueChargesFor30Days: result.overDueChargesFor30Days,
+//               overDueChargesForNotice: result.overDueChargesForNotice,
+//               overDueChagesForAuction: result.overDueChagesForAuction,
+//             });
+//           }
+//         } catch (error) {
+//           console.error("Error fetching data:", error);
+//         }
+//       };
+//       fetchDetailsForUpdate();
+//     }
 
-    if (uid) {
-      SetView(true);
-    }
+//     if (uid) {
+//       SetView(true);
+//     }
 
-    fetchData();
-  }, [uid]);
+//     fetchData();
+//   }, [uid]);
 
   const resetForm = () => {
     setUserData({
@@ -509,6 +524,8 @@ console.log(response);
 
   const handleEditBtn = () => {
     SetView(false);
+    console.log("now i can view anything");
+    
   };
 
   const handleViewbtn = () => {
@@ -533,6 +550,111 @@ console.log(response);
             {" "}
             {View ? "View Details" : "Edit Details"}
           </CardTitle>
+
+          <div className="d-flex justify-content-end gap-2">
+  <div>
+    <Link>
+    <img
+      width="20"
+      height="20"
+      id="editTooltip"
+      src="https://img.icons8.com/ios/50/edit--v1.png"
+      alt="edit"
+      onClick={handleEditBtn}
+
+    />
+    <Tooltip
+      placement="top"
+      isOpen={tooltipOpen.edit}
+      target="editTooltip"
+      toggle={() => toggleTooltip("edit")}
+    >
+      Edit
+    </Tooltip>
+    </Link>
+  </div>
+  <div>
+    <Link>
+    <img
+      width="25"
+      height="25"
+      id="switchSlipTooltip"
+      src="https://img.icons8.com/ios-glyphs/30/repeat.png"
+      alt="repeat"
+    />
+    <Tooltip
+      placement="top"
+      isOpen={tooltipOpen.switchSlip}
+      target="switchSlipTooltip"
+      toggle={() => toggleTooltip("switchSlip")}
+    >
+      Switch Slip
+    </Tooltip>
+    </Link>
+  </div>
+
+
+  <div>
+    <Link>
+    <img
+      width="25"
+      height="25"
+      id="takePaymentTooltip"
+      src="https://img.icons8.com/ios/50/online-payment-.png"
+      alt="online-payment"
+    />
+    <Tooltip
+      placement="top"
+      isOpen={tooltipOpen.takePayment}
+      target="takePaymentTooltip"
+      toggle={() => toggleTooltip("takePayment")}
+    >
+      Take Slip Payment
+    </Tooltip>
+    </Link>
+  </div>
+  <div>
+    <Link>
+        <img
+      width="25"
+      height="25"
+      id="purchaseOrderTooltip"
+      src="https://img.icons8.com/ios/50/purchase-order.png"
+      alt="purchase-order"
+    />
+    <Tooltip
+      placement="top"
+      isOpen={tooltipOpen.purchaseOrder}
+      target="purchaseOrderTooltip"
+      toggle={() => toggleTooltip("purchaseOrder")}
+    >
+      Send Rental Invoice
+    </Tooltip>
+    </Link>
+
+  </div>
+  <div>
+    <Link>
+    <img
+      width="25"
+      height="25"
+      id="listEmptyTooltip"
+      src="https://img.icons8.com/fluency-systems-regular/50/list-is-empty.png"
+      alt="list-is-empty"
+    />
+    <Tooltip
+      placement="top"
+      isOpen={tooltipOpen.listEmpty}
+      target="listEmptyTooltip"
+      toggle={() => toggleTooltip("listEmpty")}
+    >
+     Make Empty Slip
+    </Tooltip>
+    </Link>
+  </div>
+</div>
+
+
         </CardHeader>
 
         {/* <Row className="mb-1">
@@ -550,29 +672,7 @@ console.log(response);
           </Col>
         </Row> */}
 
-        <div className="d-flex align-items-end mt-75 ms-1">
-          <div>
-            <Button
-              className="mb-75 me-75"
-              size="sm"
-              onClick={handleEditBtn}
-              color="primary"
-            >
-              Edit
-            </Button>
-          </div>
-          {/* <div>
-            <Button
-              className="mb-75 me-75"
-              size="sm"
-              onClick={handleViewbtn}
-              color="primary"
-            >
-              View
-            </Button>
-          </div> */}
-        </div>
-
+       
         <CardBody className="py-2 my-25">
           <Form onSubmit={handleSubmit}>
             <Row className="mb-1">
@@ -1213,4 +1313,9 @@ console.log(response);
   );
 }
 
-export default ShipDetails;
+export default SlipDetailsForm;
+
+
+
+
+

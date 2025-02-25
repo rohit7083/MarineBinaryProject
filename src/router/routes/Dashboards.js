@@ -10,13 +10,12 @@ const DashboardSlipList = lazy(()=> import('../../views/dashboard/Ship/SlipList'
 const DashboardSlipDetailList = lazy(()=> import('../../views/dashboard/Ship/SlipDetailList'))
 const DashboardSlipMemberForm = lazy(()=> import('../../views/dashboard/Ship/SlipMemberForm'))
 const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/SlipMemberList'))
-// const DashboardSlipLogin = lazy(()=> import('../../views/dashboard/Ship/UserAuth/Login'))
+const DashboardIM = lazy(()=> import('../../views/dashboard/invoice_management'))
 // const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
 // const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
 // const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
 // const DashboardemailForReset= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailForReset'))
 
-const DashboardSlipView=lazy(()=> import('../../views/dashboard/Ship/SlipDetails/SlipView'))
 const Dashboarddash=lazy(()=> import('../../views/dashboard/dash'))
 const Dashboardroles=lazy(()=> import('../../views/dashboard/user-rolls'))
 // const Dashboardroles=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/roles'))
@@ -88,21 +87,28 @@ const DashboardRoutes = [
     path: '/dashboard/SlipMemberList',
     element: <DashboardSlipMemberList />
   },
-  {
-    path: '/dashboard/SlipView/:uid',
-    element: <DashboardSlipView />
-  },
+  // {
+  //   path: '/dashboard/SlipView/:uid',
+  //   element: <DashboardSlipView />
+  // },
     
 
-     {
-      path: '/dashboard/SlipView',
-      element: <DashboardSlipView />
-    },
+    //  {
+    //   path: '/dashboard/SlipView',
+    //   element: <DashboardSlipView />
+    // },
    
     {
       path: '/dashboard/dash',
       element: <Dashboarddash />
     },
+
+
+    {
+      path: '/dashboard/invoice_management',
+      element: <DashboardIM />
+    },
+
 
   // {
   //   path: '/dashboard/UI',

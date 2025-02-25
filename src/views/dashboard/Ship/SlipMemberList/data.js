@@ -59,7 +59,7 @@ export const basicColumns = [
     name: "ID",
     sortable: true,
     maxWidth: "100px",
-    selector: (row) => row.id,
+    selector: (row, index) => index + 1, 
   },
   {
     name: "Name",
@@ -355,16 +355,13 @@ export const multiLingColumns = [
   },
 ];
 
-
-
-// ** Table Server Side Column
-export const serverSideColumns = [
+export const serverSideColumns =(currentPage,rowsPerPage) => [ 
   
   {
     sortable: true,
     name: "Id",
     minWidth: "150px",
-    selector: (row) => row.id,
+    selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, 
   },
   
   {
@@ -373,8 +370,8 @@ export const serverSideColumns = [
 
     sortable: true,
     cell: (row) => {
-      const stepStatus = row.stepStatus; // Get the stepStatus from the row
-      const statusInfo = status[stepStatus]; // Find the corresponding status info
+      const stepStatus = row.stepStatus; 
+      const statusInfo = status[stepStatus]; 
   
       return (
         <div className="d-flex justify-content-center">

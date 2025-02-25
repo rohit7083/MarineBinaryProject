@@ -1,0 +1,99 @@
+<div className="d-flex  justify-content-end gap-2 ">
+          <div>
+            {/* <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleEditBtn}
+              color="primary"
+            > */}
+              {/* <Edit id='ControlledExample'/> */}
+              <img width="20" height="20"  id='ControlledExample' src="https://img.icons8.com/ios/50/edit--v1.png" alt="edit--v1"/>
+            {/* </Button> */}
+            <Tooltip
+        placement='top'
+        isOpen={tooltipOpen}
+        target='ControlledExample'
+        toggle={() => setTooltipOpen(!tooltipOpen)}
+      >
+        Edit
+      </Tooltip>
+          </div>
+          <div>
+            {/* <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleViewbtn}
+              color="primary"
+            > */}
+{/* <Repeat /> */}
+<img width="25" height="25"  id='SwitchSlip' src="https://img.icons8.com/ios-glyphs/30/repeat.png" alt="repeat"/>
+         
+<Tooltip
+        placement='top'
+        isOpen={tooltipOpen}
+        target='SwitchSlip'
+        toggle={() => setTooltipOpen(!tooltipOpen)}
+      >
+        Switch Slip
+      </Tooltip>
+           {/* </Button> */}
+          </div>
+          <div>
+            {/* <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleViewbtn}
+              color="primary"
+            > */}
+<img width="25" height="25"  id='takePayment' src="https://img.icons8.com/ios/50/online-payment-.png" alt="online-payment-"/> 
+
+<Tooltip
+        placement='top'
+        isOpen={tooltipOpen}
+        target='takePayment'
+        toggle={() => setTooltipOpen(!tooltipOpen)}
+      >
+        Take Slip payment
+      </Tooltip>
+{/* </Button> */}
+          </div>
+          <div>
+            {/* <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleViewbtn}
+              color="primary"
+            > */}
+            <img width="25" height="25"  id='ControlledExample' src="https://img.icons8.com/ios/50/purchase-order.png" alt="purchase-order"/>
+           
+            <Tooltip
+        placement='top'
+        isOpen={tooltipOpen}
+        target='ControlledExample'
+        toggle={() => setTooltipOpen(!tooltipOpen)}
+      >
+        Edit
+      </Tooltip>
+            {/* </Button> */}
+          </div>
+
+          <div>
+            {/* <Button
+              className="mb-75 me-75"
+              size="sm"
+              onClick={handleViewbtn}
+              color="primary"
+            > */}
+          <img width="25" height="25"  id='ControlledExample' src="https://img.icons8.com/fluency-systems-regular/50/list-is-empty.png" alt="list-is-empty"/>
+         
+          <Tooltip
+        placement='top'
+        isOpen={tooltipOpen}
+        target='ControlledExample'
+        toggle={() => setTooltipOpen(!tooltipOpen)}
+      >
+        Edit
+      </Tooltip>
+          {/* </Button> */}
+          </div>
+        </div>

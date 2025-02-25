@@ -15,7 +15,6 @@ import {
   Row,
   FormFeedback,
 } from "reactstrap";
-import "./index.css";
 import useJwt from "@src/auth/jwt/useJwt";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";

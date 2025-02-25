@@ -18,9 +18,9 @@ import withReactContent from "sweetalert2-react-content";
 import { UncontrolledAlert } from "reactstrap";
 import { useParams } from "react-router-dom";
 
-const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
+const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) => {
   const MySwal = withReactContent(Swal);
-
+// {{debugger}}
   // const { uid } = useParams();
 
   const [slipNames, setSlipNames] = useState([]);
@@ -61,6 +61,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
       console.log(error);
     }
   }
+  
 
   useEffect(() => {
     
@@ -68,6 +69,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
       const data = { ...formData };
       reset(data);
     }
+
   }, [reset, formData]);
 
   useEffect(() => {
@@ -93,7 +95,6 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     console.log("Final data before submitting:", finaleData); // 🔍 Debugging
 
     try {
-      setLoading(true);
       // {{debugger}}
       if (slipId) {
         setLoading(true);
@@ -164,45 +165,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
     if (!fields) return null;
 
     return Object.keys(fields).map((dimKey) => (
-      // <Col key={dimKey} md="6" className="mb-1">
-      //   <Label className="form-label" htmlFor={dimKey}>
-      //     {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-      //     <span style={{ color: "red" }}>*</span>
-      //   </Label>
-      //   <Controller
-      //     name={`dimensionVal.${dimKey}`}
-      //     control={control}
-      //     rules={
-      //       dimKey === "width" || dimKey === "height"
-      //         ? {
-      //             valueAsNumber: true,
-      //             validate: {
-      //               maxValue: (value) =>
-      //                 parseInt(value) <= watch("slipName").dimensions[dimKey] ||
-      //                 `Value must be less than ${
-      //                   watch("slipName").dimensions[dimKey]
-      //                 }`,
-      //               nonNegative: (value) =>
-      //                 parseInt(value) >= 0 || "Value must not be negative",
-      //             },
-      //           }
-      //         : {} 
-      //     }
-      //     render={({ field, fieldState }) => (
-      //       <div>
-      //         <Input
-      //           type="number"
-      //           placeholder={`Enter Vessel ${dimKey}`}
-      //           invalid={!!fieldState?.error}
-      //           {...field}
-      //         />
-      //         {fieldState?.error && (
-      //           <p className="text-danger">{fieldState?.error?.message}</p>
-      //         )}
-      //       </div>
-      //     )}
-      //   />
-      // </Col>
+     
 
 
 <Col key={dimKey} md="6" className="mb-1">
@@ -284,14 +247,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
           </UncontrolledAlert>
         </React.Fragment>
       )}
-      {/* {loadinng ? (
-         <Spinner  color="primary"
-         style={{
-           height: '3rem',
-           width: '3rem'
-         }} />
-      ):(
-        <> */}
+     
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
@@ -376,7 +332,6 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
           <div className="d-flex">
             <Button
               type="reset"
-              color="primary"
               onClick={() => reset()}
               className="btn-reset me-2"
             >
@@ -396,8 +351,7 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID }) => {
           </div>
         </div>
       </form>
-      {/* </>
-    )} */}
+     
     </Fragment>
   );
 };

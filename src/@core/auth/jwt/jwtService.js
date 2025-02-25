@@ -146,9 +146,11 @@ export default class JwtService {
     localStorage.setItem(this.jwtConfig.storageRefreshTokenKeyName, value);
   }
 
-  // login(...args) {
-  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  // }
+// temp
+
+  login(...args) {
+    return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  }
 
   // ==================== Slip Category
 

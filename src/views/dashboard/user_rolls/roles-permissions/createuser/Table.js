@@ -22,11 +22,15 @@ const CustomTable = ({ data }) => {
   const [showModal, setShowModal] = useState(false);
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
+
   const [tableData, setTableData] = useState({
+  
     count: 0,
     results: [],
   });
-const [loading,setLoading]=useState(true);
+  console.log("table",tableData);
+  
+  const [loading, setLoading] = useState(true);
   // ** Get data on mount
   const MySwal = withReactContent(Swal);
 
@@ -35,14 +39,13 @@ const [loading,setLoading]=useState(true);
       const { data } = await useJwt.getallSubuser(
         `?offset=${offset}&limit=${limit}`
       );
-setLoading(true);
+      setLoading(true);
       const { content } = data;
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   }
@@ -103,13 +106,13 @@ setLoading(true);
   };
 
   const columns = [
-    // {
-    //   name: "Id",
-    //   sortable: true,
-    //   minWidth: "150px",
-    //   selector: (row) => ,
+    {
+      name: "Id",
+      sortable: true,
+      minWidth: "150px",
+      selector: (row, index) => index + 1,
+    },
 
-    // },
     {
       name: "First Name",
       sortable: true,
@@ -132,14 +135,9 @@ setLoading(true);
       name: "Mobile Number",
       sortable: true,
       minWidth: "250px",
-      selector: (row) => row.mobileNum,
+      selector: (row) => `${row.countryCode}${row.mobileNum}`,
     },
-    {
-      name: "Country code",
-      sortable: true,
-      minWidth: "250px",
-      selector: (row) => row.countryCode,
-    },
+
     {
       name: "Roll Name",
       sortable: true,
@@ -247,19 +245,20 @@ setLoading(true);
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Math.ceil(tableData.count / rowsPerPage);
+    const pageCount = Math.ceil(tableData.count / rowsPerPage);
+console.log(pageCount);
 
     return (
       <ReactPaginate
         previousLabel={""}
         nextLabel={""}
         breakLabel="..."
-        pageCount={Math.ceil(count) || 1}
+        pageCount={pageCount}
         marginPagesDisplayed={2}
         pageRangeDisplayed={2}
         activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page)}
+        forcePage={currentPage - 1}
+        onPageChange={handlePagination}
         pageClassName="page-item"
         breakClassName="page-item"
         nextLinkClassName="page-link"
@@ -274,6 +273,7 @@ setLoading(true);
       />
     );
   };
+
   // ** Table data to render
   const dataToRender = () => {
     return tableData.results;
@@ -324,26 +324,31 @@ setLoading(true);
           </Col>
         </Row>
       </div>
-{loading ?(
-  <div className="text-center">
-<Spinner className="me-25 spinner-border" color="primary" style={{width: '4rem', height: '4rem' }}/>
-  </div>
-):(
-      <div className="react-dataTable">
-        <DataTable
-          noHeader
-          pagination
-          subHeader
-          responsive
-          paginationServer
-          columns={columns}
-          sortIcon={<ChevronDown />}
-          className="react-dataTable"
-          // data={tableData}
-          paginationComponent={CustomPagination}
-          data={dataToRender()}
-        />
-      </div>
+      {loading ? (
+        <div className="text-center">
+          <Spinner
+            className="me-25 spinner-border"
+            color="primary"
+            style={{ width: "4rem", height: "4rem" }}
+          />
+        </div>
+      ) : (
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            pagination
+            subHeader
+            responsive
+            paginationServer
+            columns={columns}
+            sortIcon={<ChevronDown />}
+            className="react-dataTable"
+            // data={tableData}
+            striped
+            paginationComponent={CustomPagination}
+            data={dataToRender()}
+          />
+        </div>
       )}
       <CreateuserModal show={showModal} uid={dataUid} row={datarow} />
     </>

@@ -69,9 +69,17 @@ const paymentModes = {
   ],
 };
 import { useParams } from "react-router-dom";
-const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
-  console.log("data by formdata", formData);
-
+const Address = ({
+  stepper,
+  formData,
+  slipIID,
+  memberID,
+  formStatus,
+  fetchLoader,
+  slipId,
+}) => {
+  // console.log("data by formdata", formData['0'].id);
+  // {{debugger}}
   const colourOptions = [
     // { value: null, label: "select" },
     { value: "Monthly", label: "Monthly" },
@@ -442,23 +450,24 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
     }
     return false;
   };
+  
+    useEffect(() => {
+      if (Object.keys(formData)?.length) {
 
-  useEffect(() => {
-    if (Object.keys(formData)?.length) {
-      
-      const data = { ...formData };
+        const data = { ...formData };
 
-      const { paymentMode } = data["0"];
+        const { paymentMode } = data["0"];
 
-      const pmVal = colourOptions3.find((x) => paymentMode == x.value);
-      setpaymentMode(pmVal.label);
-      data["0"].paymentMode = pmVal;
+        const pmVal = colourOptions3?.find((x) => paymentMode == x.value);
+        setpaymentMode(pmVal?.label);
+        data["0"].paymentMode = pmVal;
 
-      data["0"].paidIn = { label: data[0].paidIn, value: data[0].paidIn };
-      console.log({ finalData: data });
-      reset(data["0"]);
-    }
-  }, [reset, formData]);
+        data["0"].paidIn = { label: data[0].paidIn, value: data[0].paidIn };
+        console.log({ finalData: data });
+        reset(data["0"]);
+      }
+    }, [reset, formData]);
+  
 
   const onSubmit = async (data) => {
     data.paymentMode = data.paymentMode.value;
@@ -521,23 +530,27 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
     }
 
     try {
-      setLoading(true); // Start loading
+      // if (formData["0"].id != null) {
+       
 
-      const response = await useJwt.createPayment(formData); // API call
-      console.log("API Response:", response);
-      MySwal.fire({
-        title: "Successfully Created",
-        text: " Your Vessel Details Created Successfully",
-        icon: "success",
-        customClass: {
-          confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-      }).then(() => {
-        if (Object.keys(errors).length === 0) {
-          stepper.next();
-        }
-      });
+        setLoading(true);
+
+        const response = await useJwt.createPayment(formData); // API call
+        console.log("API Response:", response);
+        MySwal.fire({
+          title: "Successfully Created",
+          text: " Your Vessel Details Created Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          if (Object.keys(errors).length === 0) {
+            stepper.next();
+          }
+        });
+      // }
     } catch (error) {
       console.error("Error submitting data:", error);
 
@@ -561,7 +574,26 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
     }
   };
 
-  console.log({ paymentMode });
+
+    if (fetchLoader)
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <Spinner
+            color="primary"
+            style={{
+              height: "5rem",
+              width: "5rem",
+            }}
+          />
+        </div>
+      );
   return (
     <Fragment>
       <div className="content-header">
@@ -579,223 +611,239 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
         </React.Fragment>
       )}
 
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row>
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Contract Date <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              name="contractDate"
-              control={control}
-              rules={{
-                required: "Contract Date is required",
-                validate: validateContractDate,
-              }}
-              render={({ field }) => (
-                <Flatpickr
-                  id="contractDate"
-                  className={`form-control ${
-                    errors.contractDate ? "is-invalid" : ""
-                  }`}
-                  options={{
-                    altInput: true,
-                    altFormat: "Y-m-d",
-                    dateFormat: "Y-m-d",
-                    // minDate: "today",
+      
+          <Form onSubmit={handleSubmit(onSubmit)}>
+              <>  
+            <Row>
+             
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="contractDate">
+                  Contract Date <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="contractDate"
+                  control={control}
+                  rules={{
+                    required: "Contract Date is required",
                   }}
-                  value={field.value}
-                  onChange={(date) =>
-                    field.onChange(format(date[0], "yyyy-MM-dd"))
-                  }
-                />
-              )}
-            />
-            {errors.contractDate && (
-              <FormFeedback>{errors.contractDate.message}</FormFeedback>
-            )}
-          </Col>
+                  render={({ field }) => (
+                    <Flatpickr
+                      id="contractDate"
+                      className={`form-control ${
+                        errors.contractDate ? "is-invalid" : ""
+                      }`}
+                      options={{
+                        altInput: true,
+                        altFormat: "Y-m-d",
+                        dateFormat: "Y-m-d",
+                      }}
+                      value={field.value}
+                      onChange={(date) => {
+                        const formattedDate = date[0]
+                          ?.toISOString()
+                          .split("T")[0];
+                        field.onChange(formattedDate);
 
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="paidIn">
-              Paid In <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              control={control}
-              rules={{
-                required: "Paid In is required",
-              }}
-              name="paidIn"
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  theme={selectThemeColors}
-                  className="react-select"
-                  isDisabled={true}
-                  classNamePrefix="select"
-                  isClearable
-                  options={colourOptions}
-                  onChange={(option) => {
-                    console.clear();
-                    console.log(option);
-                    const { value } = option;
-                    field.onChange(option);
-                    setValue("rentalPrice", slipDetail[value]);
-                    // handlePaidInChange(option); // Update rental price
-                  }}
-                  isInvalid={!!errors.paidIn}
-                />
-              )}
-            />
-            {errors.paidIn && (
-              <FormFeedback>{errors.paidIn.message}</FormFeedback>
-            )}
-          </Col>
-        </Row>
+                        // Calculate Renewal Date (365 days later)
+                        const renewalDate = new Date(date[0]);
+                        renewalDate.setDate(renewalDate.getDate() + 365);
 
-        <Row>
-          <Col md="12" className="mb-1">
-            <Label className="form-label" for="landmark">
-              Rental Price
-              <span style={{ color: "red" }}>*</span>
-            </Label>
+                        const formattedRenewalDate = renewalDate
+                          .toISOString()
+                          .split("T")[0];
 
-            <Controller
-              name="rentalPrice"
-              rules={{
-                required: "Monthly Value is required",
-              }}
-              control={control}
-              render={({ field }) => (
-                <Input
-                  placeholder=""
-                  readOnly
-                  invalid={errors.rentalPrice && true}
-                  {...field}
-                />
-              )}
-            />
-          </Col>
-        </Row>
-
-        <div className="content-header">
-          <h5 className="mb-0 my-2">Discount</h5>
-          <small>Get Discount Using OTP</small>
-        </div>
-        <Row>
-          <Col md="auto" className="mb-1 ">
-            <Label className="form-label" for="hf-picker">
-              Do You Want Discount..?
-            </Label>
-
-            <div
-              className="my-2 form-check form-switch d-flex "
-              style={{ marginLeft: "-47px" }}
-            >
-              <Label
-                className="me-1"
-                htmlFor="distype"
-                style={{ textAlign: "left" }}
-              >
-                No
-              </Label>
-
-              <Input
-                type="switch"
-                name="distype"
-                id="distype"
-                onChange={handleDiscount}
-                style={{ margin: 0 }}
-                disabled={otpVerify || formData[0]?.otpVerify}
-                checked={discounttoggle} // This controls the checked state
-              />
-
-              <Label
-                className="ms-1"
-                htmlFor="distype"
-                style={{ textAlign: "left" }}
-              >
-                Yes
-              </Label>
-            </div>
-          </Col>
-
-          {discounttoggle && (
-            <Col md="auto" className="mb-1 my-3">
-              <GenrateOtp
-                otpVerify={otpVerify}
-                setotpVerify={setotpVerify}
-                slipIID={slipIID}
-                memberId={memberID}
-                fetchDiscountFields={formData[0]?.otpVerify}
-              />
-            </Col>
-          )}
-
-          {/* || formData[0]?.otpVerify */}
-        </Row>
-
-        {(otpVerify || formData[0]?.otpVerify) && (
-          <Row className="mb-1">
-            <div className="d-flex align-items-center justify-content-between w-100">
-              <Col xs="auto" className="p-0 mt-2">
-                <Button
-                  color={isPercentage ? "success" : "warning"} // Set color based on isPercentage
-                  outline={true}
-                  disabled={formData[0]?.otpVerify}
-                  className="me-2 d-flex align-items-center justify-content-center p-1"
-                  style={{
-                    height: "35px",
-                    fontSize: "10px",
-                    padding: "0.2rem 0.4rem",
-                  }}
-                  // onClick={() => setIsPercentage(!isPercentage)}
-                  onClick={handleButtonClick}
-                >
-                  {isPercentage ? (
-                    <Percent className="w-3 h-3" />
-                  ) : (
-                    <DollarSign className="w-4 h-4" />
+                        // Set Renewal Date value in the form
+                        setValue("renewalDate", formattedRenewalDate, {
+                          shouldValidate: true,
+                        });
+                      }}
+                    />
                   )}
-                </Button>
+                />
+                {errors.contractDate && (
+                  <FormFeedback>{errors.contractDate.message}</FormFeedback>
+                )}
               </Col>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="paidIn">
+                  Paid In <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: "Paid In is required",
+                  }}
+                  name="paidIn"
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      theme={selectThemeColors}
+                      className="react-select"
+                      isDisabled={statusThree()}
+                      classNamePrefix="select"
+                      isClearable
+                      options={colourOptions}
+                      onChange={(option) => {
+                        console.clear();
+                        console.log(option);
+                        const { value } = option;
+                        field.onChange(option);
+                        setValue("rentalPrice", slipDetail[value]);
+                        // handlePaidInChange(option); // Update rental price
+                      }}
+                      isInvalid={!!errors.paidIn}
+                    />
+                  )}
+                />
+                {errors.paidIn && (
+                  <FormFeedback>{errors.paidIn.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
 
-              {/* <Col className="p-0 me-1"> */}
-              <Col className="me-1">
-                <Label className="form-label" for="hf-picker">
-                  Enter
-                  <strong>
-                    {isPercentage ? " Percentage " : " Amount  "}
-                  </strong>{" "}
-                  For Discount
+            <Row>
+              <Col md="12" className="mb-1">
+                <Label className="form-label" for="landmark">
+                  Rental Price
                   <span style={{ color: "red" }}>*</span>
                 </Label>
 
-                <InputGroup className="flex-grow-1">
-                  <Controller
-                    name="discountAmount"
-                    rules={{
-                      required: "Discount Type is required",
-                    }}
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        type="text"
-                        readOnly={formData[0]?.otpVerify}
-                        placeholder={
-                          isPercentage ? "Enter percentage" : "Enter amount"
-                        }
-                        onChange={(e) => handleInputChange(e, field)}
-                      />
-                    )}
-                  />
-                  <InputGroupText className="bg-white text-muted">
-                    {isPercentage ? "%" : "$"}
-                  </InputGroupText>
-                </InputGroup>
+                <Controller
+                  name="rentalPrice"
+                  rules={{
+                    required: "Monthly Value is required",
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      placeholder=""
+                      readOnly
+                      invalid={errors.rentalPrice && true}
+                      {...field}
+                    />
+                  )}
+                />
               </Col>
-              {/* 
+            </Row>
+
+            <div className="content-header">
+              <h5 className="mb-0 my-2">Discount</h5>
+              <small>Get Discount Using OTP</small>
+            </div>
+            <Row>
+              <Col md="auto" className="mb-1 ">
+                <Label className="form-label" for="hf-picker">
+                  Do You Want Discount..?
+                </Label>
+
+                <div
+                  className="my-2 form-check form-switch d-flex "
+                  style={{ marginLeft: "-47px" }}
+                >
+                  <Label
+                    className="me-1"
+                    htmlFor="distype"
+                    style={{ textAlign: "left" }}
+                  >
+                    No
+                  </Label>
+
+                  <Input
+                    type="switch"
+                    name="distype"
+                    id="distype"
+                    onChange={handleDiscount}
+                    style={{ margin: 0 }}
+                    disabled={otpVerify || formData[0]?.otpVerify}
+                    checked={discounttoggle} // This controls the checked state
+                  />
+
+                  <Label
+                    className="ms-1"
+                    htmlFor="distype"
+                    style={{ textAlign: "left" }}
+                  >
+                    Yes
+                  </Label>
+                </div>
+              </Col>
+
+              {discounttoggle && (
+                <Col md="auto" className="mb-1 my-3">
+                  <GenrateOtp
+                    otpVerify={otpVerify}
+                    setotpVerify={setotpVerify}
+                    slipIID={slipIID}
+                    memberId={memberID}
+                    fetchDiscountFields={formData[0]?.otpVerify}
+                  />
+                </Col>
+              )}
+
+              {/* || formData[0]?.otpVerify */}
+            </Row>
+
+            {(otpVerify || formData[0]?.otpVerify) && (
+              <Row className="mb-1">
+                <div className="d-flex align-items-center justify-content-between w-100">
+                  <Col xs="auto" className="p-0 mt-2">
+                    <Button
+                      color={isPercentage ? "success" : "warning"} // Set color based on isPercentage
+                      outline={true}
+                      disabled={formData[0]?.otpVerify}
+                      className="me-2 d-flex align-items-center justify-content-center p-1"
+                      style={{
+                        height: "35px",
+                        fontSize: "10px",
+                        padding: "0.2rem 0.4rem",
+                      }}
+                      // onClick={() => setIsPercentage(!isPercentage)}
+                      onClick={handleButtonClick}
+                    >
+                      {isPercentage ? (
+                        <Percent className="w-3 h-3" />
+                      ) : (
+                        <DollarSign className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </Col>
+
+                  {/* <Col className="p-0 me-1"> */}
+                  <Col className="me-1">
+                    <Label className="form-label" for="hf-picker">
+                      Enter
+                      <strong>
+                        {isPercentage ? " Percentage " : " Amount  "}
+                      </strong>{" "}
+                      For Discount
+                      <span style={{ color: "red" }}>*</span>
+                    </Label>
+
+                    <InputGroup className="flex-grow-1">
+                      <Controller
+                        name="discountAmount"
+                        rules={{
+                          required: "Discount Type is required",
+                        }}
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            type="text"
+                            readOnly={formData[0]?.otpVerify}
+                            placeholder={
+                              isPercentage ? "Enter percentage" : "Enter amount"
+                            }
+                            onChange={(e) => handleInputChange(e, field)}
+                          />
+                        )}
+                      />
+                      <InputGroupText className="bg-white text-muted">
+                        {isPercentage ? "%" : "$"}
+                      </InputGroupText>
+                    </InputGroup>
+                  </Col>
+                  {/* 
               <Col className="me-1">
                 <Label className="form-label" for="hf-picker">
                   Enter
@@ -851,55 +899,55 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
                 )}
               </Col> */}
 
-              <Col className="p-0 ">
+                  <Col className="p-0 ">
+                    <Label className="form-label" for="landmark">
+                      Total Discount Amount{" "}
+                    </Label>
+                    <Controller
+                      name="calDisAmount"
+                      control={control}
+                      rules={{
+                        required: "Discount Amount is required",
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          value={getValues("calDisAmount") || ""}
+                          style={{ color: "#000" }}
+                          placeholder="Total Discount"
+                          readOnly={formData[0]?.otpVerify}
+                          invalid={errors.calDisAmount && true}
+                          {...field}
+                        />
+                      )}
+                    />
+                  </Col>
+                </div>
+              </Row>
+            )}
+
+            <Row>
+              <Col md="12" className="mb-1">
                 <Label className="form-label" for="landmark">
-                  Total Discount Amount{" "}
+                  Total Amount <span style={{ color: "red" }}>*</span>
                 </Label>
+
                 <Controller
-                  name="calDisAmount"
+                  name="finalPayment"
                   control={control}
                   rules={{
-                    required: "Discount Amount is required",
+                    required: "Final Payment is required",
                   }}
                   render={({ field }) => (
                     <Input
-                      value={getValues("calDisAmount") || ""}
-                      style={{ color: "#000" }}
-                      placeholder="Total Discount"
-                      readOnly={formData[0]?.otpVerify}
-                      invalid={errors.calDisAmount && true}
+                      placeholder="Final Amount"
+                      invalid={errors.finalPayment && true}
                       {...field}
+                      readOnly
                     />
                   )}
                 />
-              </Col>
-            </div>
-          </Row>
-        )}
 
-        <Row>
-          <Col md="12" className="mb-1">
-            <Label className="form-label" for="landmark">
-              Total Amount <span style={{ color: "red" }}>*</span>
-            </Label>
-
-            <Controller
-              name="finalPayment"
-              control={control}
-              rules={{
-                required: "Final Payment is required",
-              }}
-              render={({ field }) => (
-                <Input
-                  placeholder="Final Amount"
-                  invalid={errors.finalPayment && true}
-                  {...field}
-                  readOnly
-                />
-              )}
-            />
-
-            {/* <Controller
+                {/* <Controller
               name="finalPayment"
               control={control}
               rules={{
@@ -930,14 +978,14 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
               )}
             /> */}
 
-            {errors.finalPayment && (
-              <FormFeedback>{errors.finalPayment.message}</FormFeedback>
-            )}
-          </Col>
-        </Row>
+                {errors.finalPayment && (
+                  <FormFeedback>{errors.finalPayment.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
 
-        <Row>
-          <Col md="6" className="mb-1">
+            <Row>
+              {/* <Col md="6" className="mb-1">
             <Label className="form-label" for="hf-picker">
               Renewal Date <span style={{ color: "red" }}>*</span>
             </Label>
@@ -950,7 +998,7 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
                   const selectedDate = new Date(value);
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1); // Calculate tomorrow's date
-                  tomorrow.setHours(0, 0, 0, 0); // Normalize time to midnight
+                  tomorrow.setHours(0, 0, 0, 0); 
 
                   if (selectedDate < tomorrow) {
                     return "Renewal date cannot be today or in the past.";
@@ -969,9 +1017,7 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
                     altInput: true,
                     altFormat: "Y-m-d",
                     dateFormat: "Y-m-d",
-                    minDate: new Date(
-                      new Date().setDate(new Date().getDate() + 1)
-                    ), // Tomorrow's date as the minimum date
+                   
                   }}
                   value={field.value || ""}
                   onChange={(date) => {
@@ -984,89 +1030,119 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
             {errors.renewalDate && (
               <FormFeedback>{errors.renewalDate.message}</FormFeedback>
             )}
-          </Col>
+          </Col> */}
 
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Next Payment Date <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              name="nextPaymentDate"
-              control={control}
-              rules={{
-                required: "Next Payment date is required",
-                validate: validateFutureDate,
-              }}
-              render={({ field }) => (
-                <Flatpickr
-                  id="hf-picker"
-                  className={`form-control ${
-                    errors.nextPaymentDate ? "is-invalid" : ""
-                  }`}
-                  options={{
-                    altInput: true,
-                    altFormat: "Y-m-d",
-                    dateFormat: "Y-m-d",
-                    minDate: "today", // Disable past dates
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="renewalDate">
+                  Renewal Date <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="renewalDate"
+                  control={control}
+                  rules={{
+                    required: "Renewal date is required",
                   }}
-                  value={field.value}
-                  onChange={(date) => {
-                    const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
-                    field.onChange(formattedDate); // Update value in the form
-                  }}
+                  render={({ field }) => (
+                    <Flatpickr
+                      id="renewalDate"
+                      className="form-control"
+                      options={{
+                        altInput: true,
+                        altFormat: "Y-m-d",
+                        dateFormat: "Y-m-d",
+                      }}
+                      value={field.value}
+                      onChange={() => {}} // Disable manual changes
+                      readOnly ={true}
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.nextPaymentDate && (
-              <FormFeedback>{errors.nextPaymentDate.message}</FormFeedback>
-            )}
-          </Col>
-        </Row>
-
-        <Row>
-          <Col md="12" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Payment Mode <span style={{ color: "red" }}>*</span>
-            </Label>
-
-            <Controller
-              name="paymentMode"
-              control={control}
-              rules={{
-                required: "payment Mode  is required",
-              }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={colourOptions3}
-                  className={`react-select ${
-                    errors.paymentMode ? "is-invalid" : ""
-                  }`}
-                  isDisabled={statusThree()}
-                  onChange={(selectedOption) => {
-                    const value = selectedOption ? selectedOption.value : "";
-                    field.onChange(selectedOption); // Update React Hook Form with the value
-                    handlepaymentMode(selectedOption); // Run your custom function with the full option
+                {errors.renewalDate && (
+                  <FormFeedback>{errors.renewalDate.message}</FormFeedback>
+                )}
+              </Col>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="hf-picker">
+                  Next Payment Date <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="nextPaymentDate"
+                  control={control}
+                  rules={{
+                    required: "Next Payment date is required",
+                    validate: validateFutureDate,
                   }}
-                 
+                  render={({ field }) => (
+                    <Flatpickr
+                      id="hf-picker"
+                      className={`form-control ${
+                        errors.nextPaymentDate ? "is-invalid" : ""
+                      }`}
+                      options={{
+                        altInput: true,
+                        altFormat: "Y-m-d",
+                        dateFormat: "Y-m-d",
+                        minDate: "today", // Disable past dates
+                      }}
+                      value={field.value}
+                      onChange={(date) => {
+                        const formattedDate = format(date[0], "yyyy-MM-dd"); // Format date
+                        field.onChange(formattedDate); // Update value in the form
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
+                {errors.nextPaymentDate && (
+                  <FormFeedback>{errors.nextPaymentDate.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
 
-            {errors.paymentMode && (
-              <FormFeedback className="d-block">
-                {errors.paymentMode.value?.message ||
-                  errors.paymentMode.message}
-              </FormFeedback>
-            )}
-          </Col>
-        </Row>
+            <Row>
+              <Col md="12" className="mb-1">
+                <Label className="form-label" for="hf-picker">
+                  Payment Mode <span style={{ color: "red" }}>*</span>
+                </Label>
 
-        {/*   ===================== Cash =============================  */}
+                <Controller
+                  name="paymentMode"
+                  control={control}
+                  rules={{
+                    required: "payment Mode  is required",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={colourOptions3}
+                      className={`react-select ${
+                        errors.paymentMode ? "is-invalid" : ""
+                      }`}
+                      isDisabled={statusThree()}
+                      onChange={(selectedOption) => {
+                        const value = selectedOption
+                          ? selectedOption.value
+                          : "";
+                        field.onChange(selectedOption); // Update React Hook Form with the value
+                        handlepaymentMode(selectedOption); // Run your custom function with the full option
+                      }}
+                    />
+                  )}
+                />
 
-        {paymentMode === "Cash" && (
-          <>
-            {/* { formData[0]?.cashOtpVerify ? (
+                {errors.paymentMode && (
+                  <FormFeedback className="d-block">
+                    {errors.paymentMode.value?.message ||
+                      errors.paymentMode.message}
+                  </FormFeedback>
+                )}
+              </Col>
+            </Row>
+
+            {/*   ===================== Cash =============================  */}
+
+            {paymentMode === "Cash" && (
+              <>
+                {/* { formData[0]?.cashOtpVerify ? (
                     <React.Fragment>
                       <Alert color="success">
                         <div className="alert-body " style={{ marginTop: "10px" }}>
@@ -1076,807 +1152,829 @@ const Address = ({ stepper, formData, slipIID, memberID, formStatus }) => {
                       </Alert>
                     </React.Fragment>
             ):( */}
-            <Cash_otp
-              showModal={showModal}
-              setShowModal={setShowModal}
-              totalPayment={totalPayment}
-              slipIID={slipIID}
-              memberId={memberID}
-              cashOtpVerify={formData[0]?.cashOtpVerify}
-            />
-
-            {/* )} */}
-          </>
-        )}
-
-        {/*   ===================== credit card =============================  */}
-
-        {paymentMode === "Credit Card" && (
-          <>
-            <Row>
-              <div className="content-header">
-                <h5 className="mb-0 my-2">Credit Card Details</h5>
-                <small>Fill Credit Card Details</small>
-              </div>
-            </Row>
-
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="payment-card-number">
-                  Card Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardNumber"
-                  rules={{
-                    required: "Card Number is required",
-                    maxLength: cardType === "Amex" ? 15 : 16,
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Card Number"
-                      invalid={!!errors.cardNumber}
-                      {...field}
-                      readOnly={statusThree()}
-                      onChange={(e) => handleOnchangeCardNum(e, field)}
-                    />
-                  )}
-                />
-                {errors.cardNumber && (
-                  <FormFeedback>{errors.cardNumber.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="card-type">
-                  Card Type <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardType"
-                  rules={{
-                    required: "Card Type is required",
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      value={cardType}
-                      readOnly
-                      invalid={!!errors.nameOnCard}
-                      {...field}
-                      style={getReadOnlyStyle()}
-                    />
-                  )}
-                />
-                {errors.cardType && (
-                  <FormFeedback>{errors.cardType.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="card-expiry-year">
-                  Card Expiry Year <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardExpiryYear"
-                  control={control}
-                  rules={{
-                    required: "Expiry Year is required",
-                    min: currentYear,
-                    message: "Expiry Year cannot be in the past",
-                  }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={years}
-                      placeholder="Select Year"
-                      className={`react-select ${
-                        errors.cardExpiryYear ? "is-invalid" : ""
-                      }`}
-                      classNamePrefix="select"
-                      isClearable
-                      // Set the selected value
-                      value={years.find(
-                        (option) => option.value === field.value
-                      )}
-                      // Extract the `value` on change
-                      onChange={(selectedOption) => {
-                        field.onChange(selectedOption?.value || "");
-                        handleYearChange(selectedOption); // Update available months based on year
-                      }}
-                    />
-                  )}
-                />
-                {errors.cardExpiryYear && (
-                  <FormFeedback>{errors.cardExpiryYear.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="card-expiry-month">
-                  Card Expiry Month <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardExpiryMonth"
-                  control={control}
-                  rules={{
-                    required: "Expiry Month is required",
-                    min: 1,
-                    max: 12,
-                    message: "Expiry Month must be between 1 and 12",
-                  }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={availableMonths}
-                      placeholder="Select Month"
-                      className={`react-select ${
-                        errors.cardExpiryMonth ? "is-invalid" : ""
-                      }`}
-                      classNamePrefix="select"
-                      isClearable
-                      value={availableMonths.find(
-                        (option) => option.value === field.value
-                      )}
-                      // Extract the `value` on change
-                      onChange={(selectedOption) =>
-                        field.onChange(selectedOption?.value || "")
-                      }
-                    />
-                  )}
-                />
-                {errors.cardExpiryMonth && (
-                  <FormFeedback>{errors.cardExpiryMonth.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="payment-cvv">
-                  Card CVV <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="cardCvv"
-                  control={control}
-                  rules={{
-                    required: "CVV is required",
-                    maxLength: getCvvLength(cardType), // Dynamically set maxLength
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text" // Change type to text
-                      maxLength={getCvvLength(cardType)} // Dynamically set maxLength
-                      placeholder="Enter CVV Number"
-                      invalid={!!errors.cardCvv}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
+                <Cash_otp
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                  totalPayment={totalPayment}
+                  slipIID={slipIID}
+                  memberId={memberID}
+                  cashOtpVerify={formData[0]?.cashOtpVerify}
                 />
 
-                {errors.cardCvv && (
-                  <FormFeedback>{errors.cardCvv.message}</FormFeedback>
-                )}
-              </Col>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="card-holder-name">
-                  Card Holder's Name <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="nameOnCard"
-                  control={control}
-                  rules={{ required: "Card Holder's Name is required" }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Card Holder's Name"
-                      invalid={!!errors.nameOnCard}
-                      {...field}
-                      readOnly={statusThree()}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  )}
-                />
-                {errors.nameOnCard && (
-                  <FormFeedback>{errors.nameOnCard.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
+                {/* )} */}
+              </>
+            )}
 
-            {/* Address Fields */}
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="address">
-                  Address <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="address"
-                  control={control}
-                  rules={{
-                    required: "Address is required",
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Address"
-                      invalid={!!errors.address}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.address && (
-                  <FormFeedback>{errors.address.message}</FormFeedback>
-                )}
-              </Col>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="city">
-                  City <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="city"
-                  rules={{
-                    required: "City is required",
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter City"
-                      invalid={!!errors.city}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.city && (
-                  <FormFeedback>{errors.city.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
+            {/*   ===================== credit card =============================  */}
 
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="state">
-                  State <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="state"
-                  rules={{
-                    required: "State is required",
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter State"
-                      invalid={!!errors.state}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.state && (
-                  <FormFeedback>{errors.state.message}</FormFeedback>
-                )}
-              </Col>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="country">
-                  Country <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="country"
-                  rules={{
-                    required: "Country is required",
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Country"
-                      invalid={!!errors.country}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.country && (
-                  <FormFeedback>{errors.country.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="pincode">
-                  Pincode <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="pinCode"
-                  rules={{
-                    required: "Pincode is required",
-                    pattern: {
-                      value: /^\d{6}$/,
-                      message: "Pincode must be exactly 6 digits",
-                    },
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Pincode"
-                      invalid={!!errors.pinCode}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.pinCode && (
-                  <FormFeedback>{errors.pinCode.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-          </>
-        )}
-
-        {/* //* ============================ Cheque21 Details =========================  */}
-
-        {paymentMode === "Cheque21" && (
-          <>
-            <div className="content-header">
-              <h5 className="mb-0 my-2">Bank Details</h5>
-              <small>Fill Bank Details</small>
-            </div>
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="bankName">
-                  Bank Name <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: "Bank Name is required",
-                    minLength: {
-                      value: 3,
-                      message: "Bank Name must be at least 3 characters",
-                    },
-                  }}
-                  name="bankName"
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Bank Name"
-                      invalid={!!errors.bankName}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.bankName && (
-                  <FormFeedback>{errors.bankName.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="nameOnAccount">
-                  Account Name <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="nameOnAccount"
-                  control={control}
-                  rules={{
-                    required: "Account Name is required",
-                    minLength: {
-                      value: 3,
-                      message: "Account Name must be at least 3 characters",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Account Name"
-                      invalid={!!errors.nameOnAccount}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.nameOnAccount && (
-                  <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md="4" className="mb-1">
-                <Label className="form-label" for="routingNumber">
-                  Routing Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="routingNumber"
-                  rules={{
-                    required: "Routing Number is required",
-                    pattern: {
-                      value: /^[0-9]{9}$/,
-                      message: "Routing Number must be exactly 9 digits",
-                    },
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Enter Routing Number"
-                      invalid={!!errors.routingNumber}
-                      readOnly={statusThree()}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.routingNumber && (
-                  <FormFeedback>{errors.routingNumber.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="4" className="mb-1">
-                <Label className="form-label" for="accountNumber">
-                  Account Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="accountNumber"
-                  rules={{
-                    required: "Account Number is required",
-                    minLength: {
-                      value: 10,
-                      message: "Account Number must be at least 10 digits",
-                    },
-                    maxLength: {
-                      value: 17,
-                      message: "Account Number can't exceed 17 digits",
-                    },
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: "Account Number must be numeric",
-                    },
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Enter Account Number"
-                      invalid={!!errors.accountNumber}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.accountNumber && (
-                  <FormFeedback>{errors.accountNumber.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="4" className="mb-1">
-                <Label className="form-label" for="chequeNumber">
-                  Cheque Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="chequeNumber"
-                  control={control}
-                  rules={{
-                    required: "Cheque Number is required",
-                    minLength: {
-                      value: 6,
-                      message: "Cheque Number must be at least 6 digits",
-                    },
-                    maxLength: {
-                      value: 10,
-                      message: "Cheque Number cannot exceed 10 digits",
-                    },
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: "Cheque Number must be numeric",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Enter Cheque Number"
-                      invalid={!!errors.chequeNumber}
-                      {...field}
-                      readOnly={statusThree()}
-                    />
-                  )}
-                />
-                {errors.chequeNumber && (
-                  <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-
-            {/* <Row> */}
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h4">
-                  Upload Cheque Image
-                  <span style={{ color: "red" }}>*</span>
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <FormGroup>
-                  <Label for="fileUpload">Upload File:</Label>
-                  <Input
-                    type="file"
-                    id="fileUpload"
-                    onChange={handleFileChange}
-                    accept="image/*"
-                    readOnly={statusThree()}
-                  />
-                </FormGroup>
-
-                {file && (
-                  <div className="mt-3">
-                    <h6>File Details:</h6>
-                    <p>Name: {file.name}</p>
-                    <p>Size: {renderFileSize(file.size)}</p>
-                    {renderFilePreview(file)}
-                    <div className="d-flex justify-content-end mt-2">
-                      <Button color="danger" outline onClick={handleRemoveFile}>
-                        Remove File
-                      </Button>
-                    </div>
+            {paymentMode === "Credit Card" && (
+              <>
+                <Row>
+                  <div className="content-header">
+                    <h5 className="mb-0 my-2">Credit Card Details</h5>
+                    <small>Fill Credit Card Details</small>
                   </div>
-                )}
-              </CardBody>
-            </Card>
-            {/* </Row> */}
-          </>
-        )}
+                </Row>
 
-        {/* //* ============================ ChequeACH =========================  */}
-
-        {paymentMode === "ChequeACH" && (
-          <>
-            <div className="content-header">
-              <h5 className="mb-0 my-2">Bank Details</h5>
-              <small>Fill Bank Details</small>
-            </div>
-            <Row>
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="bankName">
-                  Bank Name <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: "Bank Name is required",
-                    minLength: {
-                      value: 3,
-                      message: "Bank Name must be at least 3 characters",
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: "Bank Name can't exceed 50 characters",
-                    },
-                    pattern: {
-                      value: /^[A-Za-z ]+$/,
-                      message: "Bank Name Can Only contain letters and Spaces",
-                    },
-                  }}
-                  name="bankName"
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Bank Name"
-                      invalid={!!errors.bankName}
-                      {...field}
-                      readOnly={statusThree()}
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="payment-card-number">
+                      Card Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="cardNumber"
+                      rules={{
+                        required: "Card Number is required",
+                        maxLength: cardType === "Amex" ? 15 : 16,
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Card Number"
+                          invalid={!!errors.cardNumber}
+                          {...field}
+                          readOnly={statusThree()}
+                          onChange={(e) => handleOnchangeCardNum(e, field)}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.bankName && (
-                  <FormFeedback>{errors.bankName.message}</FormFeedback>
-                )}
-              </Col>
+                    {errors.cardNumber && (
+                      <FormFeedback>{errors.cardNumber.message}</FormFeedback>
+                    )}
+                  </Col>
 
-              <Col md="6" className="mb-1">
-                <Label className="form-label" for="nameOnAccount">
-                  Account Name <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="nameOnAccount"
-                  control={control}
-                  rules={{
-                    required: "Account Name is required",
-                    minLength: {
-                      value: 3,
-                      message: "Account Name must be at least 3 characters",
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: "Account Name can't exceed 50 characters",
-                    },
-                    pattern: {
-                      value: /^[A-Za-z. ]+$/,
-                      message:
-                        "Account Name can only contain letters, dots, and spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Account Name"
-                      invalid={!!errors.nameOnAccount}
-                      {...field}
-                      readOnly={statusThree()}
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="card-type">
+                      Card Type <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="cardType"
+                      rules={{
+                        required: "Card Type is required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          value={cardType}
+                          readOnly
+                          invalid={!!errors.nameOnCard}
+                          {...field}
+                          style={getReadOnlyStyle()}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.nameOnAccount && (
-                  <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md="4" className="mb-1">
-                <Label className="form-label" for="routingNumber">
-                  Routing Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="routingNumber"
-                  rules={{
-                    required: "Routing Number is required",
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Enter Routing Number"
-                      invalid={!!errors.routingNumber}
-                      {...field}
-                      readOnly={statusThree()}
+                    {errors.cardType && (
+                      <FormFeedback>{errors.cardType.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="card-expiry-year">
+                      Card Expiry Year <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="cardExpiryYear"
+                      control={control}
+                      rules={{
+                        required: "Expiry Year is required",
+                        min: currentYear,
+                        message: "Expiry Year cannot be in the past",
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={years}
+                          placeholder="Select Year"
+                          className={`react-select ${
+                            errors.cardExpiryYear ? "is-invalid" : ""
+                          }`}
+                          classNamePrefix="select"
+                          isClearable
+                          // Set the selected value
+                          value={years.find(
+                            (option) => option.value === field.value
+                          )}
+                          // Extract the `value` on change
+                          onChange={(selectedOption) => {
+                            field.onChange(selectedOption?.value || "");
+                            handleYearChange(selectedOption); // Update available months based on year
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.routingNumber && (
-                  <FormFeedback>{errors.routingNumber.message}</FormFeedback>
-                )}
-              </Col>
+                    {errors.cardExpiryYear && (
+                      <FormFeedback>
+                        {errors.cardExpiryYear.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
 
-              <Col md="4" className="mb-1">
-                <Label className="form-label" for="accountNumber">
-                  Account Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="accountNumber"
-                  rules={{
-                    required: "Account Number is required",
-                    minLength: {
-                      value: 10,
-                      message: "Account Number must be at least 10 digits",
-                    },
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Enter Account Number"
-                      invalid={!!errors.accountNumber}
-                      {...field}
-                      readOnly={statusThree()}
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="card-expiry-month">
+                      Card Expiry Month <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="cardExpiryMonth"
+                      control={control}
+                      rules={{
+                        required: "Expiry Month is required",
+                        min: 1,
+                        max: 12,
+                        message: "Expiry Month must be between 1 and 12",
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          options={availableMonths}
+                          placeholder="Select Month"
+                          className={`react-select ${
+                            errors.cardExpiryMonth ? "is-invalid" : ""
+                          }`}
+                          classNamePrefix="select"
+                          isClearable
+                          value={availableMonths.find(
+                            (option) => option.value === field.value
+                          )}
+                          // Extract the `value` on change
+                          onChange={(selectedOption) =>
+                            field.onChange(selectedOption?.value || "")
+                          }
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.accountNumber && (
-                  <FormFeedback>{errors.accountNumber.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="4" className="mb-1">
-                <Label className="form-label" for="chequeNumber">
-                  Cheque Number <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="chequeNumber"
-                  control={control}
-                  rules={{
-                    required: "Cheque Number is required",
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Enter Cheque Number"
-                      invalid={!!errors.chequeNumber}
-                      {...field}
-                      readOnly={statusThree()}
+                    {errors.cardExpiryMonth && (
+                      <FormFeedback>
+                        {errors.cardExpiryMonth.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="payment-cvv">
+                      Card CVV <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="cardCvv"
+                      control={control}
+                      rules={{
+                        required: "CVV is required",
+                        maxLength: getCvvLength(cardType), // Dynamically set maxLength
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="text" // Change type to text
+                          maxLength={getCvvLength(cardType)} // Dynamically set maxLength
+                          placeholder="Enter CVV Number"
+                          invalid={!!errors.cardCvv}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.chequeNumber && (
-                  <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-          </>
-        )}
-        {/* ===================== card Swipe ==========================*/}
 
-        {paymentMode === "Card Swipe" && (
-          <>
-            <Row>
-              <Col md="12" className="mb-1">
-                <Label className="form-label" for="cardSwipeTransactionId">
-                  Card Swipe Transaction ID
-                  <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  id="cardSwipeTransactionId"
-                  name="cardSwipeTransactionId"
-                  rules={{
-                    validate: validateCardSwipeTransactionId, // Custom validation function
-                  }}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      placeholder="Enter Transaction ID"
-                      invalid={!!errors.cardSwipeTransactionId}
-                      {...field}
-                      readOnly={statusThree()}
+                    {errors.cardCvv && (
+                      <FormFeedback>{errors.cardCvv.message}</FormFeedback>
+                    )}
+                  </Col>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="card-holder-name">
+                      Card Holder's Name <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="nameOnCard"
+                      control={control}
+                      rules={{ required: "Card Holder's Name is required" }}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Card Holder's Name"
+                          invalid={!!errors.nameOnCard}
+                          {...field}
+                          readOnly={statusThree()}
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
+                      )}
                     />
-                  )}
-                />
-                {errors.cardSwipeTransactionId && (
-                  <FormFeedback>
-                    {errors.cardSwipeTransactionId.message}
-                  </FormFeedback>
-                )}
-              </Col>
-            </Row>
-          </>
-        )}
+                    {errors.nameOnCard && (
+                      <FormFeedback>{errors.nameOnCard.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
 
-        <div className="d-flex justify-content-between">
-          <Button
-            type="button"
-            color="primary"
-            className="btn-prev"
-            onClick={() => stepper.previous()}
-          >
-            <ArrowLeft
-              size={14}
-              className="align-middle me-sm-25 me-0"
-            ></ArrowLeft>
-            <span className="align-middle d-sm-inline-block d-none">
-              Previous
-            </span>
-          </Button>
-          <div className="d-flex">
-            <Button
-              type="reset"
-              color="primary"
-              onClick={() => reset()}
-              className="btn-reset me-2"
-            >
-              <span className="align-middle d-sm-inline-block d-none">
-                Reset
-              </span>
-            </Button>
-            <Button type="submit" color="primary" className="btn-next">
-              <span className="align-middle d-sm-inline-block d-none">
-                {loading ? <Spinner size="sm" /> : "Submit"}
-              </span>
-              {loading ? null : (
-                <ArrowRight
+                {/* Address Fields */}
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="address">
+                      Address <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="address"
+                      control={control}
+                      rules={{
+                        required: "Address is required",
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Address"
+                          invalid={!!errors.address}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.address && (
+                      <FormFeedback>{errors.address.message}</FormFeedback>
+                    )}
+                  </Col>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="city">
+                      City <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="city"
+                      rules={{
+                        required: "City is required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter City"
+                          invalid={!!errors.city}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.city && (
+                      <FormFeedback>{errors.city.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="state">
+                      State <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="state"
+                      rules={{
+                        required: "State is required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter State"
+                          invalid={!!errors.state}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.state && (
+                      <FormFeedback>{errors.state.message}</FormFeedback>
+                    )}
+                  </Col>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="country">
+                      Country <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="country"
+                      rules={{
+                        required: "Country is required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Country"
+                          invalid={!!errors.country}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.country && (
+                      <FormFeedback>{errors.country.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="pincode">
+                      Pincode <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="pinCode"
+                      rules={{
+                        required: "Pincode is required",
+                        pattern: {
+                          value: /^\d{6}$/,
+                          message: "Pincode must be exactly 6 digits",
+                        },
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Pincode"
+                          invalid={!!errors.pinCode}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.pinCode && (
+                      <FormFeedback>{errors.pinCode.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+              </>
+            )}
+
+            {/* //* ============================ Cheque21 Details =========================  */}
+
+            {paymentMode === "Cheque21" && (
+              <>
+                <div className="content-header">
+                  <h5 className="mb-0 my-2">Bank Details</h5>
+                  <small>Fill Bank Details</small>
+                </div>
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="bankName">
+                      Bank Name <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      control={control}
+                      rules={{
+                        required: "Bank Name is required",
+                        minLength: {
+                          value: 3,
+                          message: "Bank Name must be at least 3 characters",
+                        },
+                      }}
+                      name="bankName"
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Bank Name"
+                          invalid={!!errors.bankName}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.bankName && (
+                      <FormFeedback>{errors.bankName.message}</FormFeedback>
+                    )}
+                  </Col>
+
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="nameOnAccount">
+                      Account Name <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="nameOnAccount"
+                      control={control}
+                      rules={{
+                        required: "Account Name is required",
+                        minLength: {
+                          value: 3,
+                          message: "Account Name must be at least 3 characters",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Account Name"
+                          invalid={!!errors.nameOnAccount}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.nameOnAccount && (
+                      <FormFeedback>
+                        {errors.nameOnAccount.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md="4" className="mb-1">
+                    <Label className="form-label" for="routingNumber">
+                      Routing Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="routingNumber"
+                      rules={{
+                        required: "Routing Number is required",
+                        pattern: {
+                          value: /^[0-9]{9}$/,
+                          message: "Routing Number must be exactly 9 digits",
+                        },
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          placeholder="Enter Routing Number"
+                          invalid={!!errors.routingNumber}
+                          readOnly={statusThree()}
+                          {...field}
+                        />
+                      )}
+                    />
+                    {errors.routingNumber && (
+                      <FormFeedback>
+                        {errors.routingNumber.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+
+                  <Col md="4" className="mb-1">
+                    <Label className="form-label" for="accountNumber">
+                      Account Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="accountNumber"
+                      rules={{
+                        required: "Account Number is required",
+                        minLength: {
+                          value: 10,
+                          message: "Account Number must be at least 10 digits",
+                        },
+                        maxLength: {
+                          value: 17,
+                          message: "Account Number can't exceed 17 digits",
+                        },
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Account Number must be numeric",
+                        },
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          placeholder="Enter Account Number"
+                          invalid={!!errors.accountNumber}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.accountNumber && (
+                      <FormFeedback>
+                        {errors.accountNumber.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+
+                  <Col md="4" className="mb-1">
+                    <Label className="form-label" for="chequeNumber">
+                      Cheque Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="chequeNumber"
+                      control={control}
+                      rules={{
+                        required: "Cheque Number is required",
+                        minLength: {
+                          value: 6,
+                          message: "Cheque Number must be at least 6 digits",
+                        },
+                        maxLength: {
+                          value: 10,
+                          message: "Cheque Number cannot exceed 10 digits",
+                        },
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Cheque Number must be numeric",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          placeholder="Enter Cheque Number"
+                          invalid={!!errors.chequeNumber}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.chequeNumber && (
+                      <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+
+                {/* <Row> */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle tag="h4">
+                      Upload Cheque Image
+                      <span style={{ color: "red" }}>*</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <FormGroup>
+                      <Label for="fileUpload">Upload File:</Label>
+                      <Input
+                        type="file"
+                        id="fileUpload"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        readOnly={statusThree()}
+                      />
+                    </FormGroup>
+
+                    {file && (
+                      <div className="mt-3">
+                        <h6>File Details:</h6>
+                        <p>Name: {file.name}</p>
+                        <p>Size: {renderFileSize(file.size)}</p>
+                        {renderFilePreview(file)}
+                        <div className="d-flex justify-content-end mt-2">
+                          <Button
+                            color="danger"
+                            outline
+                            onClick={handleRemoveFile}
+                          >
+                            Remove File
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </CardBody>
+                </Card>
+                {/* </Row> */}
+              </>
+            )}
+
+            {/* //* ============================ ChequeACH =========================  */}
+
+            {paymentMode === "ChequeACH" && (
+              <>
+                <div className="content-header">
+                  <h5 className="mb-0 my-2">Bank Details</h5>
+                  <small>Fill Bank Details</small>
+                </div>
+                <Row>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="bankName">
+                      Bank Name <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      control={control}
+                      rules={{
+                        required: "Bank Name is required",
+                        minLength: {
+                          value: 3,
+                          message: "Bank Name must be at least 3 characters",
+                        },
+                        maxLength: {
+                          value: 50,
+                          message: "Bank Name can't exceed 50 characters",
+                        },
+                        pattern: {
+                          value: /^[A-Za-z ]+$/,
+                          message:
+                            "Bank Name Can Only contain letters and Spaces",
+                        },
+                      }}
+                      name="bankName"
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Bank Name"
+                          invalid={!!errors.bankName}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.bankName && (
+                      <FormFeedback>{errors.bankName.message}</FormFeedback>
+                    )}
+                  </Col>
+
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="nameOnAccount">
+                      Account Name <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="nameOnAccount"
+                      control={control}
+                      rules={{
+                        required: "Account Name is required",
+                        minLength: {
+                          value: 3,
+                          message: "Account Name must be at least 3 characters",
+                        },
+                        maxLength: {
+                          value: 50,
+                          message: "Account Name can't exceed 50 characters",
+                        },
+                        pattern: {
+                          value: /^[A-Za-z. ]+$/,
+                          message:
+                            "Account Name can only contain letters, dots, and spaces",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Account Name"
+                          invalid={!!errors.nameOnAccount}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.nameOnAccount && (
+                      <FormFeedback>
+                        {errors.nameOnAccount.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md="4" className="mb-1">
+                    <Label className="form-label" for="routingNumber">
+                      Routing Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="routingNumber"
+                      rules={{
+                        required: "Routing Number is required",
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          placeholder="Enter Routing Number"
+                          invalid={!!errors.routingNumber}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.routingNumber && (
+                      <FormFeedback>
+                        {errors.routingNumber.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+
+                  <Col md="4" className="mb-1">
+                    <Label className="form-label" for="accountNumber">
+                      Account Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="accountNumber"
+                      rules={{
+                        required: "Account Number is required",
+                        minLength: {
+                          value: 10,
+                          message: "Account Number must be at least 10 digits",
+                        },
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          placeholder="Enter Account Number"
+                          invalid={!!errors.accountNumber}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.accountNumber && (
+                      <FormFeedback>
+                        {errors.accountNumber.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+
+                  <Col md="4" className="mb-1">
+                    <Label className="form-label" for="chequeNumber">
+                      Cheque Number <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      name="chequeNumber"
+                      control={control}
+                      rules={{
+                        required: "Cheque Number is required",
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="number"
+                          placeholder="Enter Cheque Number"
+                          invalid={!!errors.chequeNumber}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.chequeNumber && (
+                      <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+              </>
+            )}
+            {/* ===================== card Swipe ==========================*/}
+
+            {paymentMode === "Card Swipe" && (
+              <>
+                <Row>
+                  <Col md="12" className="mb-1">
+                    <Label className="form-label" for="cardSwipeTransactionId">
+                      Card Swipe Transaction ID
+                      <span style={{ color: "red" }}>*</span>
+                    </Label>
+                    <Controller
+                      id="cardSwipeTransactionId"
+                      name="cardSwipeTransactionId"
+                      rules={{
+                        validate: validateCardSwipeTransactionId, // Custom validation function
+                      }}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Transaction ID"
+                          invalid={!!errors.cardSwipeTransactionId}
+                          {...field}
+                          readOnly={statusThree()}
+                        />
+                      )}
+                    />
+                    {errors.cardSwipeTransactionId && (
+                      <FormFeedback>
+                        {errors.cardSwipeTransactionId.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
+                </Row>
+              </>
+            )}
+
+            <div className="d-flex justify-content-between">
+              <Button
+                type="button"
+                color="primary"
+                className="btn-prev"
+                onClick={() => stepper.previous()}
+              >
+                <ArrowLeft
                   size={14}
-                  className="align-middle ms-sm-25 ms-0"
-                ></ArrowRight>
-              )}
-            </Button>
-          </div>
-        </div>
-      </Form>
+                  className="align-middle me-sm-25 me-0"
+                ></ArrowLeft>
+                <span className="align-middle d-sm-inline-block d-none">
+                  Previous
+                </span>
+              </Button>
+              <div className="d-flex">
+                <Button
+                  type="reset"
+                  onClick={() => reset()}
+                  className="btn-reset me-2"
+                >
+                  <span className="align-middle d-sm-inline-block d-none">
+                    Reset
+                  </span>
+                </Button>
+                <Button type="submit" color="primary" className="btn-next">
+                  <span className="align-middle d-sm-inline-block d-none">
+                    {loading ? <Spinner size="sm" /> : "Submit"}
+                  </span>
+                  {loading ? null : (
+                    <ArrowRight
+                      size={14}
+                      className="align-middle ms-sm-25 ms-0"
+                    ></ArrowRight>
+                  )}
+                </Button>
+              </div>
+            </div>
+        </>
+          </Form>
+     
     </Fragment>
   );
 };

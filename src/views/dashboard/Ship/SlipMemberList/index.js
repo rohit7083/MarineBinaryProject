@@ -22,6 +22,9 @@ import {
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 
+
+
+
 const DataTableServerSide = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.dataTables);
@@ -197,7 +200,7 @@ const DataTableServerSide = () => {
               pagination
               paginationServer
               className="react-dataTable"
-              columns={serverSideColumns}
+              columns={serverSideColumns(currentPage, rowsPerPage)}
               sortIcon={<ChevronDown size={10} />}
               paginationComponent={CustomPagination}
               data={dataToRender()}

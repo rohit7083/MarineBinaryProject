@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertCircle } from "react-feather";
 import { useNavigate } from "react-router-dom";
-
+import Index from './dashboard_manage';
 import {
   Row,
   Col,
@@ -308,6 +308,9 @@ const DefaultAlert = () => {
           )}
         </ModalBody>
       </Modal>
+
+      <Index/>
+
     </>
   );
 };
@@ -395,6 +398,8 @@ const AppAuthComponent = ({
 
   return (
     <Fragment>
+
+
       <h1 className="text-center mb-2 pb-50">Add Authenticator App</h1>
 
       {msz && (
@@ -468,6 +473,7 @@ const AppAuthComponent = ({
           </Col>
         </Row>
       </form>
+
     </Fragment>
   );
 };
