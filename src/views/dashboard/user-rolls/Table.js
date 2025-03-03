@@ -10,6 +10,8 @@ import { ChevronDown, Edit2, Trash } from "react-feather";
 import DataTable from "react-data-table-component";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import AddRoles from "../user_rolls/roles-permissions/roles/AddRoles";
+
 // ** Reactstrap Imports
 import {
   Card,
@@ -28,7 +30,11 @@ import useJwt from "@src/auth/jwt/useJwt";
 // ** Component
 import RoleCards from "../user_rolls/roles-permissions/roles/RoleCards";
 import Role_modal from "../user_rolls/roles-permissions/roles/Role_modal";
-
+const defaultRowDetails = {
+  show: false,
+  row: {},
+  modalType: "Add",
+};
 const DataTableServerSide = () => {
   // ** States
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +51,21 @@ const DataTableServerSide = () => {
     count: 0,
     results: [],
   });
+  const [rowDetails, setRowDetails] = useState({ ...defaultRowDetails });
 
+
+  const handleEditClick = (row = {}) => {
+    const { show } = rowDetails;
+    const hasRowData = Object.keys(row).length > 0;
+
+    setRowDetails({
+      show: !show,
+      modalType: hasRowData ? "Edit" : "Add",
+      row: hasRowData ? { ...row } : {},
+    });
+  };
+
+  
   // ** Get data on mount
   const MySwal = withReactContent(Swal);
 
@@ -175,7 +195,7 @@ const DataTableServerSide = () => {
       name: "Id",
       sortable: true,
       minWidth: "150px",
-      selector: (row) => row.id,
+      selector: (row,index) => index+1,
     },
     {
       name: "Role Name",
@@ -185,17 +205,18 @@ const DataTableServerSide = () => {
     },
     {
       name: "Actions",
-      minWidth: "400px",
+      minWidth: "150px",
       cell: (row) => (
         <>
           <span
             color="danger"
             style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-            onClick={() => {
-              setDataUid(row.uid);
-              setDatarow(row);
-              setShowModal((x) => !x);
-            }}
+            // onClick={() => {
+            //   setDataUid(row.uid);
+            //   setDatarow(row);
+            //   setShowModal((x) => !x);
+            // }}
+            onClick={() => handleEditClick(row)}
           >
             <Edit2 className="font-medium-3 text-body" />
           </span>
@@ -331,7 +352,15 @@ const DataTableServerSide = () => {
           </div>
         )}
       </Card>
-      <Role_modal show={showModal} uid={dataUid} row={datarow} />
+      {/* <Role_modal show={showModal} uid={dataUid} row={datarow} /> */}
+      <AddRoles
+        {...rowDetails}
+        // show={show}
+        toggle={() => handleEditClick()}
+        // uid={""}
+        // modalType={"Add"}
+      />
+    
     </Fragment>
   );
 };

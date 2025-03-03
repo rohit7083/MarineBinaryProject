@@ -3,12 +3,14 @@ import { useState } from "react";
 
 // ** Table Columns and Data
 import { data, reOrderColumns } from "./Data";
+import { Controller } from "react-hook-form";
 
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
-import { ChevronDown } from "react-feather";
+import { ChevronDown, Search } from "react-feather";
 import DataTable from "react-data-table-component";
-
+import { useForm } from "react-hook-form";
+import Select from "react-select";
 // ** Reactstrap Imports
 import {
   Button,
@@ -22,6 +24,15 @@ import {
 } from "reactstrap";
 
 const DataTablesReOrder = () => {
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm({});
   // ** States
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState("");
@@ -81,9 +92,7 @@ const DataTablesReOrder = () => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="d-flex justify-content-between align-items-center">
-        <CardTitle tag="h4">Slip Rental Archive
-
-        </CardTitle>
+        <CardTitle tag="h4">Slip Rental Archive</CardTitle>
 
         <div className="d-flex align-items-center gap-2">
           {/* <div className="d-flex align-items-center">
@@ -105,6 +114,134 @@ const DataTablesReOrder = () => {
           <Button color="relief-primary">Take Slip Payment</Button>
         </div>
       </CardHeader>
+
+      <Row className="container mb-3 mt-2">
+        <Col md="12">
+          <div className="p-1 border rounded shadow-sm">
+            <Row>
+              <Col md="6" className="mb-3">
+                <Label className="form-label" for="card-expiry-year">
+                  From Month
+                </Label>
+                <Controller
+                  name="cardExpiryYear"
+                  control={control}
+                  rules={{
+                    required: "Expiry Year is required",
+                    message: "Expiry Year cannot be in the past",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      placeholder="Select Year"
+                      className={`react-select ${
+                        errors.cardExpiryYear ? "is-invalid" : ""
+                      }`}
+                      classNamePrefix="select"
+                      isClearable
+                    />
+                  )}
+                />
+              </Col>
+
+              <Col md="6" className="mb-3">
+                <Label className="form-label" for="card-expiry-month">
+                  From Year
+                </Label>
+                <Controller
+                  name="cardExpiryMonth"
+                  control={control}
+                  rules={{
+                    required: "Expiry Month is required",
+                    min: 1,
+                    max: 12,
+                    message: "Expiry Month must be between 1 and 12",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      placeholder="Select Month"
+                      className={`react-select ${
+                        errors.cardExpiryMonth ? "is-invalid" : ""
+                      }`}
+                      classNamePrefix="select"
+                      isClearable
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col md="6" className="mb-3">
+                <Label className="form-label" for="card-expiry-year">
+                  To Month
+                </Label>
+                <Controller
+                  name="cardExpiryYear"
+                  control={control}
+                  rules={{
+                    required: "Expiry Year is required",
+                    message: "Expiry Year cannot be in the past",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      placeholder="Select Year"
+                      className={`react-select ${
+                        errors.cardExpiryYear ? "is-invalid" : ""
+                      }`}
+                      classNamePrefix="select"
+                      isClearable
+                    />
+                  )}
+                />
+              </Col>
+
+              <Col md="6" className="mb-3">
+                <Label className="form-label" for="card-expiry-month">
+                  To Year{" "}
+                </Label>
+                <Controller
+                  name="cardExpiryMonth"
+                  control={control}
+                  rules={{
+                    required: "Expiry Month is required",
+                    min: 1,
+                    max: 12,
+                    message: "Expiry Month must be between 1 and 12",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      placeholder="Select Month"
+                      className={`react-select ${
+                        errors.cardExpiryMonth ? "is-invalid" : ""
+                      }`}
+                      classNamePrefix="select"
+                      isClearable
+                      onChange={(selectedOption) =>
+                        field.onChange(selectedOption?.value || "")
+                      }
+                    />
+                  )}
+                />
+              </Col>
+            </Row>
+
+            <Row className="mt-1">
+              <Col md="12" className="text-end">
+                <Button color="relief-primary">
+                  <Search className="me-1" size={20} />
+                  Search
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        </Col>
+      </Row>
 
       <div className="react-dataTable">
         <DataTable

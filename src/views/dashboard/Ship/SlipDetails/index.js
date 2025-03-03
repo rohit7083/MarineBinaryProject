@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { UncontrolledAlert } from "reactstrap";
+import { Spinner, UncontrolledAlert } from "reactstrap";
 // ** Utils
 import {
   Card,
@@ -27,6 +27,7 @@ function ShipDetails() {
   // let navigate = useNavigate();
   let { uid } = useParams(); // Fetch `uid` from the route params
   const location = useLocation(); // Use location hook to get the passed state
+  const [loadinng, setLoading] = useState(false);
 
   const [userData, setUserData] = useState({
     slipName: "",
@@ -174,83 +175,101 @@ function ShipDetails() {
 
           overDueChagesForAuction: selections.overDueChagesForAuction,
         };
-        console.log("payload", payload);
 
-        if (uid) {
-          // Update existing entry
-          await useJwt.updateslip(uid, payload);
-          return MySwal.fire({
-            title: "Successfully Updated",
-            text: " Your Details Updated Successfully",
-            icon: "success",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-            buttonsStyling: false,
-          }).then(() => {
-            navigate("/dashboard/SlipDetailList");
-          });
-        } else {
-          await useJwt.postslip(payload);
-          // console.log("API Response:", response);
-          try {
+        // if (uid) {
+        //   setLoading(true);
+        //   await useJwt.updateslip(uid, payload);
+        //   return MySwal.fire({
+        //     title: "Successfully Updated",
+        //     text: " Your Details Updated Successfully",
+        //     icon: "success",
+        //     customClass: {
+        //       confirmButton: "btn btn-primary",
+        //     },
+        //     buttonsStyling: false,
+        //   }).then(() => {
+        //     navigate("/dashboard/SlipDetailList");
+        //   });
+        // } else {
+        //   setLoading(true);
+        //   await useJwt.postslip(payload);
+        //   try {
+        //     MySwal.fire({
+        //       title: "Successfully Created",
+        //       text: " Your Slip Details Created Successfully",
+        //       icon: "success",
+        //       customClass: {
+        //         confirmButton: "btn btn-primary",
+        //       },
+        //       buttonsStyling: false,
+        //     }).then(() => {
+        //       navigate("/dashboard/SlipDetailList");
+        //     });
+        //   } catch (error) {
+        //     console.log(error);
+        //   }
+        // }
+
+
+      
+        
+          if (uid) {
+            setLoading(true); // Ensure loading is set before request starts
+
+            await useJwt.updateslip(uid, payload);
+            MySwal.fire({
+              title: "Successfully Updated",
+              text: "Your Details Updated Successfully",
+              icon: "success",
+              customClass: { confirmButton: "btn btn-primary" },
+              buttonsStyling: false,
+            }).then(() => navigate("/dashboard/SlipDetailList"));
+          } else {
+            await useJwt.postslip(payload);
             MySwal.fire({
               title: "Successfully Created",
-              text: " Your Slip Details Created Successfully",
+              text: "Your Slip Details Created Successfully",
               icon: "success",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
+              customClass: { confirmButton: "btn btn-primary" },
               buttonsStyling: false,
-            }).then(() => {
-              navigate("/dashboard/SlipDetailList");
+            }).then(() => navigate("/dashboard/SlipDetailList"));
+          }
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          
+          if (error.response) {
+            const { content } = error.response.data || {};
+            const { status } = error.response;
+        
+            // Ensure state updates even if the same error occurs multiple times
+            setMessage((prev) => {
+              const newMessage = content || "An unexpected error occurred";
+              return prev !== newMessage ? newMessage : prev + " "; // Force update
             });
-          } catch (error) {
-            console.log(error);
+        
+            switch (status) {
+              case 400:
+              case 401:
+              case 403:
+                setMessage(content);
+                break;
+              case 500:
+                setMessage(
+                  <span style={{ color: "red" }}>
+                    Something went wrong on our end. Please try again later
+                  </span>
+                );
+                break;
+              default:
+                setMessage(content);
+            }
+          } else {
+            setMessage("Network error. Please try again later.");
           }
+        } finally {
+          setLoading(false); // Ensure loading stops in case of success or failure
         }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        // return MySwal.fire({
-        //   title: "Error!",
-        //   text: "An error occurred while submitting the form.",
-        //   icon: "error",
-        //   customClass: {
-        //     confirmButton: "btn btn-primary",
-        //   },
-        //   buttonsStyling: false,
-        // });
-      
-        if (error.response) {
-          const {  content } = error.response.data;
-          const {status} = error.response;
-          // setMessage(errorMessage);
-  
-          switch (status) {
-            case 400:
-              setMessage(content);
-              break;
-            case 401:
-              setMessage(content);
-              // navigate("/login");
-              break;
-            case 403:
-              setMessage(content);
-              break;
-            case 500:
-              setMessage(
-                <span style={{ color: "red" }}>
-                  Something went wrong on our end. Please try again later
-                </span>
-              );
-              break;
-            default:
-              setMessage(content);
-          }
-        } 
-      
-      
-      }
+        
      
     } else {
       console.log("Validation failed. Please fix the errors.");
@@ -536,12 +555,16 @@ function ShipDetails() {
           <CardTitle tag="h4">
             {uid ? "Edit Slip Details" : "Add Slip Details"}
           </CardTitle>
+         
         </CardHeader>
 
         
 
         <CardBody>
+          <p><strong>Note : </strong> If the slip is assigned, you can only update <strong>Electric </strong> , 
+          <strong>Water</strong>, <strong>Add-On</strong> And <strong>AMPS</strong> </p>
           <Form onSubmit={handleSubmit}>
+            
           <Row className="mb-1">
               <Label sm="3" for=""></Label>               <Col sm="12"> 
                 {Message && (
@@ -1075,7 +1098,10 @@ function ShipDetails() {
             <Row>
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>
                 <Button className="me-1" color="primary" type="submit">
-                  {uid ? "Update" : "Submit"}
+                  {!loadinng ?(
+                  uid ? "Update" : "Submit"
+                ):<Spinner size="sm"/>}
+
                 </Button>
                 <Button
                   outline

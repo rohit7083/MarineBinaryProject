@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { Tooltip } from "reactstrap";// ** Utils
+import { Spinner, UncontrolledAlert } from "reactstrap";
+import { Tooltip } from "reactstrap"; // ** Utils
+import Invoice from '../../invoice_management/Invoice'
 import {
   Card,
   CardHeader,
@@ -26,25 +28,26 @@ import { Edit, Repeat, Send } from "lucide-react";
 // import Index from './SlipDetailsForm';
 const MySwal = withReactContent(Swal);
 
-function SlipDetailsForm() {
-  // let navigate = useNavigate();
-  let { uid } = useParams(); // Fetch `uid` from the route params
-  const location = useLocation(); // Use location hook to get the passed state
+function SlipDetailsForm({assigned}) {
+  let navigate = useNavigate();
+  
+  let { uid } = useParams();
+  const location = useLocation();
   const [tooltipOpen, setTooltipOpen] = useState({
     edit: false,
     switchSlip: false,
     takePayment: false,
     purchaseOrder: false,
-    listEmpty: false
+    listEmpty: false,
   });
-  
+
   const toggleTooltip = (tooltip) => {
     setTooltipOpen((prevState) => ({
       ...prevState,
-      [tooltip]: !prevState[tooltip]
+      [tooltip]: !prevState[tooltip],
     }));
   };
-  
+
   const [userData, setUserData] = useState({
     slipName: "",
     electric: false,
@@ -79,8 +82,11 @@ function SlipDetailsForm() {
     overDueChargesForNotice: "",
     overDueChagesForAuction: "",
   });
+  const [errors, setErrors] = useState({});
+  const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
+  const [View, SetView] = useState(true);
+const [fetchLoader,setFetchLoader]=useState(false);
 
-  // console.log("dimensions", dimensions);
   const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
       ...prev,
@@ -94,19 +100,11 @@ function SlipDetailsForm() {
     }));
   };
 
-  // Handle dropdown selection change
   const handleSelectChange = (option) => {
     setSelectedCategory(option);
     setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
 
-  let navigate = useNavigate();
-
-  const [errors, setErrors] = useState({});
-  const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
-  const [View, SetView] = useState(true);
-
-  // Handle input changes
   const handleChange = ({ target }) => {
     const { name, value, checked, type } = target;
 
@@ -124,16 +122,13 @@ function SlipDetailsForm() {
 
   const handleSubmit = async (e, data) => {
     e.preventDefault();
-    console.log("dataform", data);
 
     const validationErrors = validate();
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      // Submit form logic here...
       console.log("Form submitted successfully:", { selections, userData });
       try {
-        // Construct payload and call the API
         const payload = {
           slipName: userData.slipName,
           electric: userData.electric,
@@ -219,7 +214,7 @@ function SlipDetailsForm() {
               },
               buttonsStyling: false,
             }).then(() => {
-              navigate("/dashboard/SlipDetailList");
+              // navigate("/marin/slip-management  ");
             });
           } catch (error) {
             console.log(error);
@@ -391,97 +386,95 @@ function SlipDetailsForm() {
     return newErrors;
   };
 
-//   const fetchData = async () => {
-//     try {
-//       const payload = {}; // Add any necessary payload if required
-//       const response = await useJwt.getslipCatogory(payload);
-// console.log(response);
+  const fetchData = async () => {
+    try {
+      const payload = {}; // Add any necessary payload if required
+      const response = await useJwt.getslipCatogory(payload);
+      console.log(response);
 
-//       const options = response.data.content.result.map((item) => ({
-//         value: item.uid,
-//         label: item.shipTypeName,
-//         dimensions: item.dimensions, // Store dimensions for each category
-//       }));
+      const options = response.data.content.result.map((item) => ({
+        value: item.uid,
+        label: item.shipTypeName,
+        dimensions: item.dimensions, // Store dimensions for each category
+      }));
 
-//       setShipTypeNames(options);
-//     } catch (error) {
-//       console.error("Error fetching category:", error);
-//       const { response } = error;
-//       const { data, status } = response;
-//       if (status == 400) {
-//         console.log(data.content);
-//       }
-//     }
+      setShipTypeNames(options);
+    } catch (error) {
+      console.error("Error fetching category:", error);
+      const { response } = error;
+      const { data, status } = response;
+      if (status == 400) {
+        console.log(data.content);
+      }
+    }
 
-//     console.log("Category", selectedCategory);
-//   };
-//   useEffect(() => {
-//    fetchData();
+    console.log("Category", selectedCategory);
+  };
 
-//     if (uid) {
-//       const fetchDetailsForUpdate = async () => {
-//         try {
+  useEffect(() => {
+    fetchData();
 
-//           const resp = await useJwt.getslip(uid);
-//           // const { result } = content;
+    if (uid) {
+      setFetchLoader(true);
 
-//           const result =resp.data.content;
-//           console.log(result);
-          
-//           // {{debugger}}
-//           if (result) {
+      const fetchDetailsForUpdate = async () => {
+        try {
+          const resp = await useJwt.getslip(uid);
 
-//             if (result && result.uid === uid) {
-//               setUserData({
-//               slipName: result.slipName,
-//               electric: result.electric,
-//               water: result.water,
-//               addOn: result.addOn,
-//               marketAnnualPrice: result.marketAnnualPrice,
-//               marketMonthlyPrice: result.marketMonthlyPrice,
-//               amps: result.amps,
-//               overDueAmountFor7Days: result.overDueAmountFor7Days,
-//               overDueAmountFor15Days: result.overDueAmountFor15Days,
-//               overDueAmountFor30Days: result.overDueAmountFor30Days,
-//               overDueAmountForNotice: result.overDueAmountForNotice,
-//               overDueAmountForAuction: result.overDueAmountForAuction,
-//             });
-//           }
-//             setDimensions(Object.keys(result.dimensions) || []);
-//             setUserData((pre) => ({ ...pre, ...result.dimensions }));
+          const result = resp.data.content;
+          console.log(result);
 
-//             setSelectedCategory({
-//               value: result.category.uid,
-//               label: result.category.shipTypeName,
-//               dimensions: result.dimensions,
-//             });
-//             console.log("result", result);
+          if (result) {
+            if (result && result.uid === uid) {
+              setUserData({
+                slipName: result.slipName,
+                electric: result.electric,
+                water: result.water,
+                addOn: result.addOn,
+                marketAnnualPrice: result.marketAnnualPrice,
+                marketMonthlyPrice: result.marketMonthlyPrice,
+                amps: result.amps,
+                overDueAmountFor7Days: result.overDueAmountFor7Days,
+                overDueAmountFor15Days: result.overDueAmountFor15Days,
+                overDueAmountFor30Days: result.overDueAmountFor30Days,
+                overDueAmountForNotice: result.overDueAmountForNotice,
+                overDueAmountForAuction: result.overDueAmountForAuction,
+              });
+            }
+            setDimensions(Object.keys(result.dimensions) || []);
+            setUserData((pre) => ({ ...pre, ...result.dimensions }));
 
-//             console.log("selectedCategory", {
-//               dimensions: result.dimensions,
-//             });
+            setSelectedCategory({
+              value: result.category.uid,
+              label: result.category.shipTypeName,
+              dimensions: result.dimensions,
+            });
+            console.log("result", result);
 
-//             setSelections({
-//               overDueChargesFor7Days: result.overDueChargesFor7Days,
-//               overDueChargesFor15Days: result.overDueChargesFor15Days,
-//               overDueChargesFor30Days: result.overDueChargesFor30Days,
-//               overDueChargesForNotice: result.overDueChargesForNotice,
-//               overDueChagesForAuction: result.overDueChagesForAuction,
-//             });
-//           }
-//         } catch (error) {
-//           console.error("Error fetching data:", error);
-//         }
-//       };
-//       fetchDetailsForUpdate();
-//     }
+            console.log("selectedCategory", {
+              dimensions: result.dimensions,
+            });
 
-//     if (uid) {
-//       SetView(true);
-//     }
+            setSelections({
+              overDueChargesFor7Days: result.overDueChargesFor7Days,
+              overDueChargesFor15Days: result.overDueChargesFor15Days,
+              overDueChargesFor30Days: result.overDueChargesFor30Days,
+              overDueChargesForNotice: result.overDueChargesForNotice,
+              overDueChagesForAuction: result.overDueChagesForAuction,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+        finally{
+          setFetchLoader(false);
+        }
+      };
+      fetchDetailsForUpdate();
+    }
 
-//     fetchData();
-//   }, [uid]);
+    fetchData();
+  }, [uid]);
 
   const resetForm = () => {
     setUserData({
@@ -522,16 +515,6 @@ function SlipDetailsForm() {
     { value: "Percentage", label: "Percentage" },
   ];
 
-  const handleEditBtn = () => {
-    SetView(false);
-    console.log("now i can view anything");
-    
-  };
-
-  const handleViewbtn = () => {
-    SetView(true);
-  };
-
   const getReadOnlyStyle = () => {
     return View
       ? {
@@ -542,119 +525,139 @@ function SlipDetailsForm() {
       : {};
   };
 
+  const handleEditBtn = () => {
+    SetView(false);
+  };
+
+   if (fetchLoader)
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <Spinner
+            color="primary"
+            style={{
+              height: "5rem",
+              width: "5rem",
+            }}
+          />
+        </div>
+      );
+  
+
   return (
     <>
       <Card>
         <CardHeader className="border-bottom">
           <CardTitle tag="h5">
             {" "}
-            {View ? "View Details" : "Edit Details"}
+            {View ? "Slip Details" : "Edit Details"}
           </CardTitle>
 
           <div className="d-flex justify-content-end gap-2">
-  <div>
-    <Link>
-    <img
-      width="20"
-      height="20"
-      id="editTooltip"
-      src="https://img.icons8.com/ios/50/edit--v1.png"
-      alt="edit"
-      onClick={handleEditBtn}
+            <div>
+              <img
+                width="20"
+                height="20"
+                id="editTooltip"
+                src="https://img.icons8.com/ios/50/edit--v1.png"
+                alt="edit"
+                onClick={handleEditBtn}
+                style={{ cursor: "pointer" }}
+              />
+              <Tooltip
+                placement="top"
+                isOpen={tooltipOpen.edit}
+                target="editTooltip"
+                toggle={() => toggleTooltip("edit")}
+              >
+                Edit
+              </Tooltip>
+            </div>
+            <div>
+              <Link>
+                <img
+                  width="25"
+                  height="25"
+                  id="switchSlipTooltip"
+                  src="https://img.icons8.com/ios-glyphs/30/repeat.png"
+                  alt="repeat"
+                />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.switchSlip}
+                  target="switchSlipTooltip"
+                  toggle={() => toggleTooltip("switchSlip")}
+                >
+                  Switch Slip
+                </Tooltip>
+              </Link>
+            </div>
 
-    />
-    <Tooltip
-      placement="top"
-      isOpen={tooltipOpen.edit}
-      target="editTooltip"
-      toggle={() => toggleTooltip("edit")}
-    >
-      Edit
-    </Tooltip>
-    </Link>
-  </div>
-  <div>
-    <Link>
-    <img
-      width="25"
-      height="25"
-      id="switchSlipTooltip"
-      src="https://img.icons8.com/ios-glyphs/30/repeat.png"
-      alt="repeat"
-    />
-    <Tooltip
-      placement="top"
-      isOpen={tooltipOpen.switchSlip}
-      target="switchSlipTooltip"
-      toggle={() => toggleTooltip("switchSlip")}
-    >
-      Switch Slip
-    </Tooltip>
-    </Link>
-  </div>
+            <div>
+            <Link to='/dashboard/invoice_management/Invoice'>
+            <img
+                  width="25"
+                  height="25"
+                  id="takePaymentTooltip"
+                  src="https://img.icons8.com/ios/50/online-payment-.png"
+                  alt="online-payment"
 
-
-  <div>
-    <Link>
-    <img
-      width="25"
-      height="25"
-      id="takePaymentTooltip"
-      src="https://img.icons8.com/ios/50/online-payment-.png"
-      alt="online-payment"
-    />
-    <Tooltip
-      placement="top"
-      isOpen={tooltipOpen.takePayment}
-      target="takePaymentTooltip"
-      toggle={() => toggleTooltip("takePayment")}
-    >
-      Take Slip Payment
-    </Tooltip>
-    </Link>
-  </div>
-  <div>
-    <Link>
-        <img
-      width="25"
-      height="25"
-      id="purchaseOrderTooltip"
-      src="https://img.icons8.com/ios/50/purchase-order.png"
-      alt="purchase-order"
-    />
-    <Tooltip
-      placement="top"
-      isOpen={tooltipOpen.purchaseOrder}
-      target="purchaseOrderTooltip"
-      toggle={() => toggleTooltip("purchaseOrder")}
-    >
-      Send Rental Invoice
-    </Tooltip>
-    </Link>
-
-  </div>
-  <div>
-    <Link>
-    <img
-      width="25"
-      height="25"
-      id="listEmptyTooltip"
-      src="https://img.icons8.com/fluency-systems-regular/50/list-is-empty.png"
-      alt="list-is-empty"
-    />
-    <Tooltip
-      placement="top"
-      isOpen={tooltipOpen.listEmpty}
-      target="listEmptyTooltip"
-      toggle={() => toggleTooltip("listEmpty")}
-    >
-     Make Empty Slip
-    </Tooltip>
-    </Link>
-  </div>
-</div>
-
-
+                  />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.takePayment}
+                  target="takePaymentTooltip"
+                  toggle={() => toggleTooltip("takePayment")}
+                >
+                  Take Slip Payment
+                </Tooltip>
+              </Link>
+            </div>
+            <div>
+              <Link>
+                <img
+                  width="25"
+                  height="25"
+                  id="purchaseOrderTooltip"
+                  src="https://img.icons8.com/ios/50/purchase-order.png"
+                  alt="purchase-order"
+                />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.purchaseOrder}
+                  target="purchaseOrderTooltip"
+                  toggle={() => toggleTooltip("purchaseOrder")}
+                >
+                  Send Rental Invoice
+                </Tooltip>
+              </Link>
+            </div>
+            <div>
+              <Link>
+                <img
+                  width="25"
+                  height="25"
+                  id="listEmptyTooltip"
+                  src="https://img.icons8.com/fluency-systems-regular/50/list-is-empty.png"
+                  alt="list-is-empty"
+                />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.listEmpty}
+                  target="listEmptyTooltip"
+                  toggle={() => toggleTooltip("listEmpty")}
+                >
+                  Make Empty Slip
+                </Tooltip>
+              </Link>
+            </div>
+          </div>
         </CardHeader>
 
         {/* <Row className="mb-1">
@@ -672,10 +675,15 @@ function SlipDetailsForm() {
           </Col>
         </Row> */}
 
-       
         <CardBody className="py-2 my-25">
+          <p>
+            <strong>Note : </strong> If the slip is assigned, you can only
+            update <strong>Electric </strong> ,<strong>Water</strong>,{" "}
+            <strong>Add-On</strong> And <strong>AMPS</strong>{" "}
+          </p>
+
           <Form onSubmit={handleSubmit}>
-            <Row className="mb-1">
+            <Row className="mb-1 ">
               <Label sm="3" for="name">
                 Slip Name
                 <span style={{ color: "red" }}>*</span>
@@ -687,7 +695,7 @@ function SlipDetailsForm() {
                   value={userData.slipName}
                   onChange={handleChange}
                   name="slipName"
-                  readOnly={View} // Conditionally set readOnly based on uid
+                  disabled={assigned ? true : View}
                   id="slipName"
                   placeholder="Enter Slip Name"
                   invalid={!!errors.slipName}
@@ -709,7 +717,7 @@ function SlipDetailsForm() {
                   name="category"
                   options={shipTypeNames}
                   // isDisabled={!!uid}
-                  isDisabled={View}
+                  isDisabled={assigned ? true : View}
                   isClearable
                   placeholder="Select Category"
                   className={errors.category ? "is-invalid" : ""}
@@ -737,7 +745,7 @@ function SlipDetailsForm() {
                     style={getReadOnlyStyle()}
                     name={dim}
                     id={dim}
-                    readOnly={View}
+                    disabled={assigned ? true : View}
                     placeholder={`Enter ${dim.toLowerCase()}`}
                     invalid={!!errors[dim]}
                   />
@@ -884,7 +892,7 @@ function SlipDetailsForm() {
                   onChange={handleChange}
                   name="marketAnnualPrice"
                   style={getReadOnlyStyle()}
-                  readOnly={View}
+                  disabled={assigned ? true : View}
                   id="marketAnnualPrice"
                   placeholder="Enter Annual Price"
                   invalid={!!errors.marketAnnualPrice}
@@ -905,7 +913,7 @@ function SlipDetailsForm() {
                   onChange={handleChange}
                   name="marketMonthlyPrice"
                   style={getReadOnlyStyle()}
-                  readOnly={View}
+                  disabled={assigned ? true : View}
                   id="marketMonthlyPrice"
                   placeholder="Enter Monthly Price"
                   invalid={!!errors.marketMonthlyPrice}
@@ -923,7 +931,8 @@ function SlipDetailsForm() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
-                    disabled={View}
+                    disabled={assigned ? true : View}
+
                     style={{ opacity: 1 }}
                     name="overDueChargesFor7Days"
                     value="Percentage"
@@ -970,7 +979,7 @@ function SlipDetailsForm() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="number"
-                    readOnly={View}
+                    disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
                     name="overDueAmountFor7Days"
                     value={userData.overDueAmountFor7Days || ""}
@@ -997,7 +1006,7 @@ function SlipDetailsForm() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="radio"
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     style={{ opacity: 1 }}
                     checked={
                       selections.overDueChargesFor15Days === "Percentage"
@@ -1041,7 +1050,7 @@ function SlipDetailsForm() {
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    readOnly={View}
+                    disabled={assigned ? true : View}
                     type="number"
                     name="overDueAmountFor15Days"
                     style={getReadOnlyStyle()}
@@ -1072,7 +1081,7 @@ function SlipDetailsForm() {
                   <Input
                     type="radio"
                     style={{ opacity: 1 }}
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     checked={
                       selections.overDueChargesFor30Days === "Percentage"
                     }
@@ -1097,7 +1106,7 @@ function SlipDetailsForm() {
                   <Input
                     type="radio"
                     style={{ opacity: 1 }}
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     checked={selections.overDueChargesFor30Days === "Flat"}
                     onChange={() =>
                       handleSelectTypeChange("overDueChargesFor30Days", "Flat")
@@ -1116,7 +1125,7 @@ function SlipDetailsForm() {
                 <div className="form-check form-check-inline">
                   <Input
                     type="number"
-                    readOnly={View}
+                    disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
                     name="overDueAmountFor30Days"
                     placeholder="Enter 30 Days Charges"
@@ -1145,7 +1154,7 @@ function SlipDetailsForm() {
                 <div className="form-check form-check-inline">
                   <Input
                     style={{ opacity: 1 }}
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     type="radio"
                     checked={
                       selections.overDueChargesForNotice === "Percentage"
@@ -1169,7 +1178,7 @@ function SlipDetailsForm() {
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     style={{ opacity: 1 }}
                     type="radio"
                     checked={selections.overDueChargesForNotice === "Flat"}
@@ -1189,7 +1198,7 @@ function SlipDetailsForm() {
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    readOnly={View}
+                    disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
                     type="number"
                     name="overDueAmountForNotice"
@@ -1218,7 +1227,7 @@ function SlipDetailsForm() {
               <Col sm="9">
                 <div className="form-check form-check-inline">
                   <Input
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     style={{ opacity: 1 }}
                     type="radio"
                     checked={
@@ -1243,7 +1252,7 @@ function SlipDetailsForm() {
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     type="radio"
                     style={{ opacity: 1 }}
                     checked={selections.overDueChagesForAuction === "Flat"}
@@ -1265,7 +1274,7 @@ function SlipDetailsForm() {
                   <Input
                     type="number"
                     style={getReadOnlyStyle()}
-                    readOnly={View}
+                    disabled={assigned ? true : View}
                     name="overDueAmountForAuction"
                     placeholder="Enter Auction Charges"
                     value={userData.overDueAmountForAuction || ""}
@@ -1285,16 +1294,10 @@ function SlipDetailsForm() {
             </Row>
 
             <Row>
-              <Col className="d-flex" md={{ size: 9, offset: 3 }}>
-                <Button
-                  className="me-1"
-                  color="primary"
-                  disabled={View}
-                  // onClick={hadleOnclick}
-                  type="submit"
-                >
-                  {uid ? "Update" : "Submit"}
-                </Button>
+              <Col
+                // md={{ size: 6, offset: 3 }}
+                className="d-flex mt-2 justify-content-end gap-2"
+              >
                 <Button
                   outline
                   disabled={View}
@@ -1303,6 +1306,9 @@ function SlipDetailsForm() {
                   type="reset"
                 >
                   Reset
+                </Button>
+                <Button color="primary" disabled={View} type="submit">
+                  {uid ? "Update" : "Submit"}
                 </Button>
               </Col>
             </Row>
@@ -1314,8 +1320,3 @@ function SlipDetailsForm() {
 }
 
 export default SlipDetailsForm;
-
-
-
-
-

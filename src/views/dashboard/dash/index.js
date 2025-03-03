@@ -172,19 +172,20 @@ const DefaultAlert = () => {
     <>
       <React.Fragment>
         {isAuthenticated ? (
-          <React.Fragment>
-            <Alert
-              color="success"
-              isOpen={visible}
-              toggle={() => {
-                setVisible(false);
-              }}
-            >
-              <div className="alert-body">
-                Two Steps Authentication Is Successfully Completed
-              </div>
-            </Alert>
-          </React.Fragment>
+          // <React.Fragment>
+          //   <Alert
+          //     color="success"
+          //     isOpen={visible}
+          //     toggle={() => {
+          //       setVisible(false);
+          //     }}
+          //   >
+          //     <div className="alert-body">
+          //       Two Steps Authentication Is Successfully Completed
+          //     </div>
+          //   </Alert>
+          // </React.Fragment>
+          ""
         ) : (
           <Alert color="primary">
             <div className="p-1 d-flex justify-content-between align-item-center">

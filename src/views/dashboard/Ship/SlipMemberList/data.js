@@ -519,7 +519,7 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
           <Link
             style={{ margin: "0.5rem" }}
             to={{
-              pathname: `/dashboard/SlipView/${row.uid}`,
+              pathname: `/marin/slip-management/${row.uid}`,
             }}
           >
             <Eye className="font-medium-3 text-body" />

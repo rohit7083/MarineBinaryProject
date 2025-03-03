@@ -148,9 +148,9 @@ export default class JwtService {
 
 // temp
 
-  login(...args) {
-    return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  }
+  // login(...args) {
+  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  // }
 
   // ==================== Slip Category
 
@@ -319,10 +319,10 @@ export default class JwtService {
   // }
 
   updateRole(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateRole}/${uid}`, ...args);
+    return axios.put(`${this.jwtConfig.updateRole}${uid}`, ...args);
   }
-  getallSubuser() {
-    return axios.get(this.jwtConfig.getallSubuser);
+  getallSubuser(paramas="") {
+    return axios.get(`${this.jwtConfig.getallSubuser}${paramas}`);
   }
 
   updateSubuser(uid, ...args) {

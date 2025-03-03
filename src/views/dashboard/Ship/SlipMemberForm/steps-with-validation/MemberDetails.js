@@ -5,7 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
 import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
-import { ArrowLeft, ArrowRight } from "react-feather";
+import { ArrowLeft, UserPlus, Users, ArrowRight } from "react-feather";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -21,21 +21,7 @@ import "@styles/react/libs/react-select/_react-select.scss";
 
 // ** Sweet Alert
 const MySwal = withReactContent(Swal);
-const handleSweetAlert = (title, text, next) => {
-  return MySwal.fire({
-    title,
-    text,
-    icon: "success",
-    customClass: {
-      confirmButton: "btn btn-primary",
-    },
-    buttonsStyling: false,
-  }).then(() => {
-    if (Object.keys(errors).length === 0) {
-      next();
-    }
-  });
-};
+
 
 const PersonalInfo = ({
   stepper,
@@ -46,17 +32,30 @@ const PersonalInfo = ({
   memberID,
   fetchLoader,
 }) => {
+  console.log({ formData });
 
-  console.log({formData})
-
-  // const [isFetching, setIsFetching] = useState(true);
-
+  const handleSweetAlert = (title, text, next) => {
+    return MySwal.fire({
+      title,
+      text,
+      icon: "success",
+      customClass: {
+        confirmButton: "btn btn-primary",
+      },
+      buttonsStyling: false,
+    }).then(() => {
+      // if (Object.keys(errors).length === 0) {
+        stepper.next();
+      // /}
+    });
+  };
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
   const [visible, setVisible] = useState(false);
   const [ErrMsz, setErrMsz] = useState("");
-
+  const [newMember, setNewMember] = useState(false);
+  const [exMember, setExMember] = useState(false);
   const [loading, setLoading] = useState(false);
   const SignupSchema = yup.object().shape({
     firstName: yup
@@ -131,9 +130,9 @@ const PersonalInfo = ({
   useEffect(() => {
     if (Object.keys(formData)?.length) {
       const data = { ...formData };
-    
+
       reset(data);
-    } 
+    }
   }, [reset, formData]);
 
   const handleMemberChange = (option) => {
@@ -167,11 +166,6 @@ const PersonalInfo = ({
     };
     let memberId;
     try {
-      // {
-      //   {
-      //     debugger;
-      //   }
-      // }
       if (payload.createdBy) {
         const res = await useJwt.UpdateMember(formData.uid, payload);
         // ** set here
@@ -222,7 +216,6 @@ const PersonalInfo = ({
     try {
       const response = await useJwt.getslip();
 
-      // Filter out items where member or both firstName & lastName are missing
       const options = response.data.content.result
         .filter(
           (item) =>
@@ -313,34 +306,62 @@ const PersonalInfo = ({
           </React.Fragment>
         )}
 
-        <>
-          <Row>
-            <Col md="12" className="mb-1">
-              <Label className="form-label" for="slipName">
-                Member Name
-                {/* <span style={{ color: "red" }}>*</span> */}
-              </Label>
-              <Controller
-                name="uid"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    value={selectedFullName}
-                    onChange={(option) => {
-                      field.onChange(option?.value);
-                      handleMemberChange(option); // Handle slip change
-                    }}
-                    options={fullname}
-                    isClearable
-                    placeholder="Select Slip Name"
-                  />
-                )}
-              />
-              {errors.uid && <FormFeedback>{errors.uid.message}</FormFeedback>}
-            </Col>
-          </Row>
+        <div className="d-flex gap-2 mb-2">
+          <Button
+            onClick={() => {
+              setNewMember(true);
+              setExMember(false);
+            }}
+            color="primary"
+            className="btn-next"
+          >
+            <UserPlus className="me-1" size={20} />
+            Add New Member
+          </Button>
+          <Button
+            onClick={() => {
+              setExMember(true);
+              setNewMember(false);
+            }}
+            color="primary"
+            className="btn-next"
+          >
+            <Users className="me-1" size={20} />
+            Existing Member
+          </Button>
+        </div>
 
+        <>
+          {exMember && (
+            <Row>
+              <Col md="12" className="mb-1">
+                <Label className="form-label" for="slipName">
+                  Member Name
+                  {/* <span style={{ color: "red" }}>*</span> */}
+                </Label>
+                <Controller
+                  name="uid"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      value={selectedFullName}
+                      onChange={(option) => {
+                        field.onChange(option?.value);
+                        handleMemberChange(option); // Handle slip change
+                      }}
+                      options={fullname}
+                      isClearable
+                      placeholder="Select Slip Name"
+                    />
+                  )}
+                />
+                {errors.uid && (
+                  <FormFeedback>{errors.uid.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+          )}
           <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="firstName">
@@ -354,7 +375,7 @@ const PersonalInfo = ({
                     {...field}
                     placeholder="Enter First Name"
                     invalid={errors.firstName && true}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -375,7 +396,7 @@ const PersonalInfo = ({
                     {...field}
                     placeholder="Enter Last Name"
                     invalid={errors.lastName && true}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -401,7 +422,7 @@ const PersonalInfo = ({
                     placeholder="Enter Email "
                     invalid={errors.emailId && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -425,7 +446,7 @@ const PersonalInfo = ({
                     placeholder="Enter Mobile Number"
                     invalid={errors.phoneNumber && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -450,7 +471,7 @@ const PersonalInfo = ({
                     placeholder="Enter Address "
                     invalid={errors.address && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -474,7 +495,7 @@ const PersonalInfo = ({
                     placeholder="Enter City Name"
                     invalid={errors.city && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -500,7 +521,7 @@ const PersonalInfo = ({
                     placeholder="Enter State Name"
                     invalid={errors.state && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -524,7 +545,7 @@ const PersonalInfo = ({
                     placeholder="Enter Country"
                     invalid={errors.country && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -549,7 +570,7 @@ const PersonalInfo = ({
                     placeholder="Enter Postal Code"
                     invalid={errors.postalCode && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -572,7 +593,7 @@ const PersonalInfo = ({
                     placeholder="Enter Secondary Guest Name"
                     invalid={errors.secondaryGuestName && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -596,7 +617,7 @@ const PersonalInfo = ({
                     placeholder="Enter Secondary Email"
                     invalid={errors.secondaryEmail && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -619,7 +640,7 @@ const PersonalInfo = ({
                     placeholder="Enter Secondary Phone Number"
                     invalid={errors.secondaryPhoneNumber && true}
                     {...field}
-                    readOnly={visible}
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
                   />
                 )}
@@ -631,7 +652,7 @@ const PersonalInfo = ({
               )}
             </Col>
           </Row>
-          {/* Add other fields similarly */}
+
           <div className="d-flex justify-content-between">
             <Button
               type="button"

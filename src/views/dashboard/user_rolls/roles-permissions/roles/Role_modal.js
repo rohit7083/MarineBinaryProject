@@ -21,7 +21,7 @@ import { Info } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { permissionList } from "./fakedb";
+// import { permissionList } from "./fakedb";
 
 const actions = ["View", "Create", "Update", "Delete"];
 

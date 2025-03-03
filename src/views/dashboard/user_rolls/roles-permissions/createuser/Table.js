@@ -12,9 +12,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import Createuser from "./Createuser";
 import CreateuserModal from "./CreateUserModal";
 const CustomTable = ({ data }) => {
-  // const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [role, setRole] = useState("");
@@ -24,24 +22,23 @@ const CustomTable = ({ data }) => {
   const [datarow, setDatarow] = useState(null);
 
   const [tableData, setTableData] = useState({
-  
     count: 0,
     results: [],
   });
-  console.log("table",tableData);
-  
+  console.log("table", tableData);
+
   const [loading, setLoading] = useState(true);
   // ** Get data on mount
   const MySwal = withReactContent(Swal);
 
   async function fetchTableData(offset = 0, limit = 10) {
     try {
-      const { data } = await useJwt.getallSubuser(
-        `?offset=${offset}&limit=${limit}`
-      );
       setLoading(true);
+      const offset = (currentPage - 1) * rowsPerPage;
+      const { data } = await useJwt.getallSubuser(
+        `?offset=${offset}&limit=${rowsPerPage}`
+      );
       const { content } = data;
-
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
@@ -50,27 +47,15 @@ const CustomTable = ({ data }) => {
     }
   }
 
-  // ?offset=10&limit=10
   useEffect(() => {
     fetchTableData();
-  }, []);
+  }, [currentPage, rowsPerPage]);
 
   const handlePerPage = (e) => {
-    // setRowsPerPage(Number(e.target.value));
+    setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1);
   };
 
-  // const handleFilter = (value) => {
-  //   setSearchTerm(value);
-  //   if (value) {
-  //     const filteredData = data.results.filter((row) =>
-  //       row.firstName.toLowerCase().includes(value.toLowerCase())
-  //     );
-  //     setTableData(filteredData);
-  //   } else {
-  //     setTableData(data.results);
-  //   }
-
-  // };
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
@@ -85,21 +70,20 @@ const CustomTable = ({ data }) => {
           row.mobileNum.includes(value)
       );
 
-      // Update table data with filtered results
       setTableData((prev) => ({
         ...prev,
         results: filteredResults,
       }));
     } else {
-      // Re-fetch the data or reset it to its original state
       fetchTableData((currentPage - 1) * rowsPerPage, rowsPerPage);
     }
   };
 
   const handlePagination = (page) => {
+    console.log("Page selected:", page.selected + 1);
     setCurrentPage(page.selected + 1);
-    fetchTableData(page.selected * 10, 10);
   };
+  
 
   const handleAssignedToChange = (value) => {
     setRole(value);
@@ -109,20 +93,20 @@ const CustomTable = ({ data }) => {
     {
       name: "Id",
       sortable: true,
-      minWidth: "150px",
+      minWidth: "100px",
       selector: (row, index) => index + 1,
     },
 
     {
       name: "First Name",
       sortable: true,
-      minWidth: "250px",
+      minWidth: "150px",
       selector: (row) => row.firstName,
     },
     {
       name: "Last Name",
       sortable: true,
-      minWidth: "250px",
+      minWidth: "150px",
       selector: (row) => row.lastName,
     },
     {
@@ -134,20 +118,20 @@ const CustomTable = ({ data }) => {
     {
       name: "Mobile Number",
       sortable: true,
-      minWidth: "250px",
+      minWidth: "150px",
       selector: (row) => `${row.countryCode}${row.mobileNum}`,
     },
 
     {
       name: "Roll Name",
       sortable: true,
-      minWidth: "250px",
+      minWidth: "150px",
       selector: (row) => row.userRoles.roleName,
     },
 
     {
       name: "Actions",
-      minWidth: "400px",
+      minWidth: "150px",
       cell: (row) => {
         const [data, setData] = useState([]);
 
@@ -204,9 +188,6 @@ const CustomTable = ({ data }) => {
         };
         return (
           <>
-            {/* <Link to={`/apps/user/view/${row.uid}`}>
-            <Eye className="font-medium-3 text-body" />
-          </Link> */}
             <span
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
@@ -216,7 +197,7 @@ const CustomTable = ({ data }) => {
                   setDataUid(row.uid);
                   setDatarow(row);
                   setShowModal(true); // Open modal
-                }, 0); // Slight delay to ensure React detects state change
+                }, 0);
               }}
             >
               <Edit2 className="font-medium-3 text-body" />
@@ -235,19 +216,8 @@ const CustomTable = ({ data }) => {
     },
   ];
 
-  // useEffect(() => {
-  //   if (data && data.results) {
-  //     setTableData(data.results);
-  //   }
-
-  // console.log("showmodal", showModal);
-  // }, [data]);
-
-  // ** Custom Pagination
+  const pageCount = Math.ceil(tableData.count / rowsPerPage);
   const CustomPagination = () => {
-    const pageCount = Math.ceil(tableData.count / rowsPerPage);
-console.log(pageCount);
-
     return (
       <ReactPaginate
         previousLabel={""}

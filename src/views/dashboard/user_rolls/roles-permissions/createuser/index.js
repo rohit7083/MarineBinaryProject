@@ -1,4 +1,3 @@
-// ** React Imports
 import { Fragment } from "react";
 import React from "react";
 import "@styles/react/libs/tables/react-dataTable-component.scss";

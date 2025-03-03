@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
-import { Clipboard, DollarSign, FileText, Users } from "react-feather";
+import {
+  CheckCircle,
+  Clipboard,
+  DollarSign,
+  FileText,
+  Pocket,
+  Repeat,
+  Users,
+} from "react-feather";
 // ** Components
-import SlipDetails from "./forms/SlipDetails";
-// import MemberInfo from "./forms/MemberInfo";
-import MemberIndex from './forms/memberInfo/index';
-import Index from "./forms/slip_rental";
-import OtherPayment from "./forms/OtherPayment";
-import ViewDocuments from "./forms/ViewDocuments";
+import PartialInvoice from "./PartialInvoice";
+import RecurringInvoice from "./RecurringInvoice";
+import DueInvoice from "./DueInvoice";
+import CancelInvoice from "./CancelInvoice";
+import PaidInvoive from "./PaidInvoice";
+import Send_Invoice from "./Send_Invoice";
 import { Book } from "lucide-react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { useParams } from "react-router-dom";
-
+import { X } from "react-feather";
+import { Send } from "react-feather";
 const TabsCentered = () => {
   const [error, setError] = useState("");
-const[SlipData,setSlipData]=useState({});
-const [fetchLoader,setFetchLoader]=useState(false);
+  const [SlipData, setSlipData] = useState({});
+  const [fetchLoader, setFetchLoader] = useState(false);
 
   const [active, setActive] = useState("1");
   const { uid } = useParams();
@@ -38,8 +47,7 @@ const [fetchLoader,setFetchLoader]=useState(false);
       }
     } catch (error) {
       console.log(error);
-    }
-    finally{
+    } finally {
       setFetchLoader(false);
     }
   };
@@ -49,7 +57,7 @@ const [fetchLoader,setFetchLoader]=useState(false);
   }, []);
 
   console.log("SlipData", SlipData);
-  
+
   return (
     <React.Fragment>
       <Nav className="justify-content-center" tabs>
@@ -60,8 +68,8 @@ const [fetchLoader,setFetchLoader]=useState(false);
               toggle("1");
             }}
           >
-            <Clipboard />
-            Slip Details
+            <Send />
+            Send Invoice
           </NavLink>
         </NavItem>
         <NavItem>
@@ -71,13 +79,10 @@ const [fetchLoader,setFetchLoader]=useState(false);
               toggle("2");
             }}
           >
-            <Users />
-            Member Details
+            <CheckCircle /> Paid Invoice
           </NavLink>
         </NavItem>
-        {/* <NavItem>
-          <NavLink disabled>Disabled</NavLink>
-        </NavItem> */}
+
         <NavItem>
           <NavLink
             active={active === "3"}
@@ -85,8 +90,8 @@ const [fetchLoader,setFetchLoader]=useState(false);
               toggle("3");
             }}
           >
-            <FileText />
-            Slip Rental
+            <X />
+            Cancel Invoice
           </NavLink>
         </NavItem>
         <NavItem>
@@ -96,8 +101,7 @@ const [fetchLoader,setFetchLoader]=useState(false);
               toggle("4");
             }}
           >
-            <DollarSign />
-            Other Payment
+            <FileText /> Due Invoice
           </NavLink>
         </NavItem>
         <NavItem>
@@ -107,37 +111,47 @@ const [fetchLoader,setFetchLoader]=useState(false);
               toggle("5");
             }}
           >
-            <Book />
-            View Documents
+            <Repeat /> Recurring Invoice
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            active={active === "6"}
+            onClick={() => {
+              toggle("6");
+            }}
+          >
+            <Pocket /> partial Invoice
           </NavLink>
         </NavItem>
       </Nav>
       <TabContent className="py-50" activeTab={active}>
         <TabPane tabId="1">
-          <SlipDetails
-                    fetchLoader={fetchLoader}
-                    assigned={SlipData.isAssigned}
-                    />
+          <Send_Invoice
+          // fetchLoader={fetchLoader}
+          // assigned={SlipData.isAssigned}
+          />
         </TabPane>
 
         <TabPane tabId="2">
-          {/* <MemberInfo  */}
-          <MemberIndex
-          SlipData={SlipData}
-          fetchLoader={fetchLoader}
-        
-           />
+          <PaidInvoive
+          // SlipData={SlipData}
+          // fetchLoader={fetchLoader}
+          />
         </TabPane>
 
         <TabPane tabId="3">
-          <Index />
+          <CancelInvoice />
         </TabPane>
 
         <TabPane tabId="4">
-          <OtherPayment />
+          <DueInvoice />
         </TabPane>
         <TabPane tabId="5">
-          <ViewDocuments />
+          <RecurringInvoice />
+        </TabPane>
+        <TabPane tabId="6">
+          <PartialInvoice />
         </TabPane>
       </TabContent>
     </React.Fragment>

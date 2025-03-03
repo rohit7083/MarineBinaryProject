@@ -10,11 +10,9 @@ const DashboardSlipList = lazy(()=> import('../../views/dashboard/Ship/SlipList'
 const DashboardSlipDetailList = lazy(()=> import('../../views/dashboard/Ship/SlipDetailList'))
 const DashboardSlipMemberForm = lazy(()=> import('../../views/dashboard/Ship/SlipMemberForm'))
 const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/SlipMemberList'))
-const DashboardIM = lazy(()=> import('../../views/dashboard/invoice_management'))
 // const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
 // const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
 // const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
-// const DashboardemailForReset= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailForReset'))
 
 const Dashboarddash=lazy(()=> import('../../views/dashboard/dash'))
 const Dashboardroles=lazy(()=> import('../../views/dashboard/user-rolls'))
@@ -104,16 +102,9 @@ const DashboardRoutes = [
     },
 
 
-    {
-      path: '/dashboard/invoice_management',
-      element: <DashboardIM />
-    },
 
 
-  // {
-  //   path: '/dashboard/UI',
-  //   element: <DashboardUI />
-  // }, 
+ 
   
 ]
 

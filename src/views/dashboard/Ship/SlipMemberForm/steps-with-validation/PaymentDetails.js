@@ -10,7 +10,6 @@ import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { selectThemeColors } from "@utils";
 import Select from "react-select";
 import useJwt from "@src/auth/jwt/useJwt";
-// ** Reactstrap Imports
 import {
   Label,
   Row,
@@ -145,6 +144,8 @@ const Address = ({
   const [errMsz, setErrMsz] = useState("");
   const [otpVerify, setotpVerify] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  console.log({errMsz})
 
   const [discountTypedStatus, setdiscountTypedStatus] = useState(null);
 
@@ -462,21 +463,35 @@ const Address = ({
         setpaymentMode(pmVal?.label);
         data["0"].paymentMode = pmVal;
 
-        data["0"].paidIn = { label: data[0].paidIn, value: data[0].paidIn };
-        console.log({ finalData: data });
+        data["0"].paidIn = { label: data[0].paidIn || '' , value: data[0].paidIn || ''}; 
         reset(data["0"]);
       }
     }, [reset, formData]);
   
 
+    // useEffect(() => {
+    //   if (Object.keys(formData)?.length) {
+    //     const data = { ...formData };
+    
+    //     const { paymentMode } = data["0"];
+    
+    //     const pmVal = colourOptions3?.find((x) => paymentMode == x.value);
+    //     setpaymentMode(pmVal?.label);
+    //     data["0"].paymentMode = pmVal?.label || ''; // Store label as string
+    
+    //     data["0"].paidIn = data[0].paidIn || ''; // Store paidIn as string
+    //     reset(data["0"]);
+    //   }
+    // }, [reset, formData]);
+     
   const onSubmit = async (data) => {
-    data.paymentMode = data.paymentMode.value;
+    data.paymentMode = data.paymentMode?.value;
 
     console.log("Payment data:", data);
     const formData = new FormData();
     formData.append("SlipId", slipIID);
     formData.append("contractDate", data.contractDate);
-    formData.append("paidIn", data.paidIn.value);
+    formData.append("paidIn", data.paidIn?.value);
     formData.append("rentalPrice", data.rentalPrice);
     formData.append("finalPayment", data.finalPayment);
     formData.append("renewalDate", data.renewalDate);
@@ -947,36 +962,7 @@ const Address = ({
                   )}
                 />
 
-                {/* <Controller
-              name="finalPayment"
-              control={control}
-              rules={{
-                required: "Final Payment is required",
-                validate: (value) => {
-                  if (Number(value) < 0) {
-                    return "Final Payment cannot be negative";
-                  }
-                  return true;
-                },
-              }}
-              render={({ field }) => (
-                <Input
-                  placeholder="Final Amount"
-                  invalid={errors.finalPayment && true}
-                  {...field}
-                  readOnly
-                  value={watch("finalPayment") || ""}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    // Prevent negative value manually
-                    if (Number(newValue) >= 0) {
-                      handleFinalValue(e); // Call the handler if needed
-                      field.onChange(e); // Update react-hook-form value
-                    }
-                  }}
-                />
-              )}
-            /> */}
+               
 
                 {errors.finalPayment && (
                   <FormFeedback>{errors.finalPayment.message}</FormFeedback>

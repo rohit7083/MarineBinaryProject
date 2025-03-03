@@ -105,23 +105,31 @@ export default [
   // navLink: '/dashboard/create-user',
   badge: 'light-warning',
   // badgeText: '2',
-  children: [
+  children: [{
+    
+    id: 'Invoice',
+    title: 'Create Invoice',
+    icon: <Circle size={12} />,
+    navLink: '/dashboard/invoice_management/invoice'
+ 
+},
+{
+    
+  id: 'Manage Invoice ',
+  title: 'Manage Invoice',
+  icon: <Circle size={12} />,
+  navLink: '/dashboard/invoice_management/manageInvoice'
+
+},
   {
     
       id: 'Invoice Setting',
       title: 'Invoice Setting',
       icon: <Circle size={12} />,
-      navLink: '/dashboard/invoice_management'
+      navLink: '/dashboard/invoice_management/invoice_setting'
    
   },
-//   {
-    
-//     id: 'permissions',
-//     title: 'Users',
-//     icon: <Circle size={12} />,
-//     navLink: '/dashboard/user_rolls/roles-permissions/createuser'
-    
-// },
+  
 ]
   
 }

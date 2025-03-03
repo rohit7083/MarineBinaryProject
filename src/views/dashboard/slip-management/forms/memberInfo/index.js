@@ -1,19 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
-import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
-import { ArrowLeft, ArrowRight } from "react-feather";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
 import React from "react";
-import Flatpickr from "react-flatpickr";
 import { Spinner, UncontrolledAlert } from "reactstrap";
-// ** Utils
-import { selectThemeColors } from "@utils";
+import Swal from "sweetalert2";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import { Card, CardBody, CardTitle, CardHeader, Tooltip } from "reactstrap";
@@ -21,39 +15,22 @@ import { Card, CardBody, CardTitle, CardHeader, Tooltip } from "reactstrap";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Link } from "react-router-dom";
 
-// ** Sweet Alert
-const MySwal = withReactContent(Swal);
-const handleSweetAlert = (title, text, next) => {
-  return MySwal.fire({
-    title,
-    text,
-    icon: "success",
-    customClass: {
-      confirmButton: "btn btn-primary",
-    },
-    buttonsStyling: false,
-  }).then(() => {
-    if (Object.keys(errors).length === 0) {
-      next();
-    }
-  });
-};
+import RenewalContract  from '../memberInfo/RenewalContract'
 
 const PersonalInfo = ({
-  stepper,
-  slipIID,
-  formData,
-  slipId,
-  setMemberID,
-  memberID,
   fetchLoader,
+  SlipData,
+ 
 }) => {
-  console.log({ formData });
+  const MySwal = withReactContent(Swal);
 
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [View, SetView] = useState(true);
+  const [show, setShow] = useState(false)
+
   const [ErrMsz, setErrMsz] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -125,63 +102,83 @@ const PersonalInfo = ({
     resolver: yupResolver(SignupSchema),
   });
 
-  const handleMemberChange = (option) => {
-    setSelectedFullName(option);
-    if (option?.details) {
-      console.log("Selected Member Details:", option.details);
-    }
-    setSelectedDetails(option.details);
+  const { member } = SlipData;
 
-    setValue("firstName", option.details.firstName || "");
-    setValue("lastName", option.details.lastName || "");
-    setValue("emailId", option.details.emailId || "");
-    setValue("phoneNumber", option.details.phoneNumber || "");
-    setValue("address", option.details.address || "");
-    setValue("city", option.details.city || "");
-    setValue("state", option.details.state || "");
-    setValue("postalCode", option.details.postalCode || "");
-    setValue("secondaryGuestName", option.details.secondaryGuestName || "");
-    setValue("secondaryEmail", option.details.secondaryEmail || "");
-    setValue("country", option.details.country || "");
+  // const handleMemberChange = (option) => {
+  //   setSelectedFullName(option);
+  //   if (option?.details) {
+  //     console.log("Selected Member Details:", option.details);
+  //   }
+  //   setSelectedDetails(option.details);
 
-    setVisible(true);
-  };
+  //   setValue("firstName", option.details.firstName || "");
+  //   setValue("lastName", option.details.lastName || "");
+  //   setValue("emailId", option.details.emailId || "");
+  //   setValue("phoneNumber", option.details.phoneNumber || "");
+  //   setValue("address", option.details.address || "");
+  //   setValue("city", option.details.city || "");
+  //   setValue("state", option.details.state || "");
+  //   setValue("postalCode", option.details.postalCode || "");
+  //   setValue("secondaryGuestName", option.details.secondaryGuestName || "");
+  //   setValue("secondaryEmail", option.details.secondaryEmail || "");
+  //   setValue("country", option.details.country || "");
+
+  //   setVisible(true);
+  // };
 
   const onSubmit = async (data) => {
     setLoading(true);
-
+    const {
+      firstName,
+      lastName,
+      emailId,
+      address,
+      phoneNumber,
+      city,
+      state,
+      country,
+      postalCode,
+      secondaryGuestName,
+      secondaryEmail,
+      secondaryPhoneNumber,
+    } = data;
     const payload = {
-      ...data,
-      slipId: slipIID,
+      firstName,
+      lastName,
+      emailId,
+      address,
+      phoneNumber,
+      city,
+      state,
+      country,
+      postalCode,
+      secondaryGuestName,
+      secondaryEmail,
+      secondaryPhoneNumber,
+      slipId: SlipData.id,
     };
     let memberId;
     try {
-      // {
-      //   {
-      //     debugger;
-      //   }
-      // }
-      if (payload.createdBy) {
-        const res = await useJwt.UpdateMember(formData.uid, payload);
+        const res = await useJwt.UpdateMember(member.uid, payload);
         // ** set here
         memberId = res.data.id;
+        // setMemberID(memberId);
 
-        handleSweetAlert(
-          "Successfully updated",
-          " Your Member Details Update Successfully",
-          stepper.next
-        );
-      } else {
-        const res = await useJwt.postsMember(payload);
-
-        memberId = res.data.id;
-        handleSweetAlert(
-          "Successfully Created",
-          " Your Member Details Created Successfully",
-          stepper.next
-        );
-      }
-      setMemberID(memberId);
+        return MySwal.fire({
+          title: "Successfully updated",
+          text: " Your Member Details Update Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          // if (Object.keys(errors).length === 0) {
+          //   stepper.next();
+          // }
+        });
+        
+     
     } catch (error) {
       console.error("Error submitting vessel details:", error);
 
@@ -207,55 +204,56 @@ const PersonalInfo = ({
     }
   };
 
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await useJwt.getslip();
+  const { vessel } = SlipData;
+  const { payment } = SlipData;
 
-  //       // Filter out items where member or both firstName & lastName are missing
-  //       const options = response.data.content.result
-  //         .filter(
-  //           (item) =>
-  //             item.member && (item.member.firstName || item.member.lastName)
-  //         )
-  //         .map((item) => ({
-  //           value: item.member?.uid,
-  //           label: `${item.member?.firstName || ""} ${
-  //             item.member?.lastName || ""
-  //           }`.trim(),
-  //           details: item.member,
-  //         }));
 
-  //       console.log("Filtered response:", response);
+  useEffect(() => {
+    if (member) {
+      Object.keys(member).forEach((key) => {
+        setValue(key, member[key] || "NA");
+      });
+    }
 
-  //       setFullname(options);
-  //     } catch (error) {
-  //       console.error("Error fetching slip details:", error);
-  //       if (error.response && error.response.data) {
-  //         const { status } = error.response;
-  //         const { content } = error.response.data;
-  //         console.log(content);
+    if (vessel) {
+      Object.keys(vessel).forEach((key) => {
+        setValue(key, vessel[key] || "0");
+      });
+    }
 
-  //         switch (status) {
-  //           case 400:
-  //           case 401:
-  //           case 403:
-  //           case 404:
-  //           case 500:
-  //             setErrMsz(content);
-  //             break;
-  //           default:
-  //             setErrMsz(content);
-  //         }
-  //       }
-  //     }
-  //   };
+    if (payment && Array.isArray(payment) && payment.length > 0) {
+      payment.forEach((paymentItem, index) => {
+        setValue("finalPayment", paymentItem?.finalPayment || "NA");
+        setValue("nextPaymentDate", paymentItem.nextPaymentDate);
+        setValue("paidIn", paymentItem.paidIn);
+        setValue("renewalDate", paymentItem.renewalDate);
+        setValue("contractDate", paymentItem.contractDate);
+      });
+    }
 
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, []);
+    // if (payment && Array.isArray(payment) && payment.length > 0) {
+    //   payment.forEach((paymentItem, index) => {
+    //     setValue(`payment[${index}].finalPayment`, paymentItem?.finalPayment || "NA");
+    //     setValue(`payment[${index}].nextPaymentDate`, paymentItem.nextPaymentDate);
+    //     setValue(`payment[${index}].paidIn`, paymentItem.paidIn);
+    //     setValue(`payment[${index}].renewalDate`, paymentItem.renewalDate);
+    //     setValue(`payment[${index}].contractDate`, paymentItem.contractDate);
+    //   });
+    // }
+  }, [member, vessel, payment]);
+
+  const handleEditBtn = () => {
+    SetView(false);
+    console.log("now i can view anything");
+  };
+
+  const handleRenwalContract=()=>{
+
+setShow(true);
+  }
 
   const getReadOnlyStyle = () => {
-    return visible
+    return View
       ? {
           color: "#000",
           backgroundColor: "#fff",
@@ -302,32 +300,46 @@ const PersonalInfo = ({
   return (
     <Fragment>
       <Card>
+
+
+
+        
         <CardHeader className="border-bottom">
-          <CardTitle tag="h5"> Member Details</CardTitle>
+          <CardTitle tag="h5">
+            {!View ? "Edit Member Details" : "Member Details"}
+          </CardTitle>
 
           <div className="d-flex justify-content-end gap-2">
             <div>
-              <Link>
-                <img
-                  width="20"
-                  height="20"
-                  id="editTooltip"
-                  src="https://img.icons8.com/ios/50/edit--v1.png"
-                  alt="edit"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.edit}
-                  target="editTooltip"
-                  toggle={() => toggleTooltip("edit")}
-                >
-                  Edit
-                </Tooltip>
-              </Link>
+              <img
+                width="20"
+                height="20"
+                id="editTooltip"
+                src="https://img.icons8.com/ios/50/edit--v1.png"
+                alt="edit"
+                onClick={handleEditBtn}
+                style={{ cursor: "pointer" }}
+              />
+              <Tooltip
+                placement="top"
+                isOpen={tooltipOpen.edit}
+                target="editTooltip"
+                toggle={() => toggleTooltip("edit")}
+              >
+                Edit
+              </Tooltip>
             </div>
             <div>
-              <Link>
-              <img id="RenewContract" width="25" height="25" src="https://img.icons8.com/ios/50/renew-subscription.png" alt="renew-subscription"/>
+                <img
+                  id="RenewContract"
+                  width="25"
+                  height="25"
+                  src="https://img.icons8.com/ios/50/renew-subscription.png"
+                  alt="renew-subscription"
+
+                  onClick={handleRenwalContract}
+                  style={{ cursor: "pointer" }}
+                />
 
                 <Tooltip
                   placement="top"
@@ -337,7 +349,6 @@ const PersonalInfo = ({
                 >
                   Update/Renew Contract
                 </Tooltip>
-              </Link>
             </div>
 
             <div>
@@ -413,34 +424,14 @@ const PersonalInfo = ({
             )}
 
             <Row>
-              <Col md="12" className="mb-1">
-                <Label className="form-label" for="slipName">
-                  Member Name
-                  <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="uid"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      value={selectedFullName}
-                      options={fullname}
-                      isClearable
-                      placeholder="Select Slip Name"
-                    />
-                  )}
-                />
-                {errors.uid && (
-                  <FormFeedback>{errors.uid.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
 
-            <Row>
+<RenewalContract
+setShow={setShow}
+show={show}/>
+
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="firstName">
-                  First Name<span style={{ color: "red" }}>*</span>
+                  First Name
                 </Label>
                 <Controller
                   name="firstName"
@@ -448,9 +439,8 @@ const PersonalInfo = ({
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter First Name"
                       invalid={errors.firstName && true}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -461,7 +451,7 @@ const PersonalInfo = ({
               </Col>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="lastName">
-                  Last Name<span style={{ color: "red" }}>*</span>
+                  Last Name
                 </Label>
                 <Controller
                   name="lastName"
@@ -469,9 +459,8 @@ const PersonalInfo = ({
                   render={({ field }) => (
                     <Input
                       {...field}
-                      placeholder="Enter Last Name"
                       invalid={errors.lastName && true}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -486,7 +475,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="emailId">
                   Email
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="emailId"
@@ -494,10 +482,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Email "
                       invalid={errors.emailId && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -510,7 +497,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="phoneNumber">
                   Mobile Number
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="phoneNumber"
@@ -518,10 +504,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Mobile Number"
                       invalid={errors.phoneNumber && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -535,7 +520,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="address">
                   Address
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="address"
@@ -543,10 +527,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Address "
                       invalid={errors.address && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -559,7 +542,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="city">
                   City
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="city"
@@ -567,10 +549,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter City Name"
                       invalid={errors.city && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -585,7 +566,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="state">
                   State
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="state"
@@ -593,10 +573,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter State Name"
                       invalid={errors.state && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -609,7 +588,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="country">
                   Country
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="country"
@@ -617,10 +595,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Country"
                       invalid={errors.country && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -634,7 +611,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="postalCode">
                   Postal Code
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   id="postalCode"
@@ -642,10 +618,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Postal Code"
                       invalid={errors.postalCode && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -665,10 +640,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Secondary Guest Name"
                       invalid={errors.secondaryGuestName && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -691,10 +665,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Secondary Email"
                       invalid={errors.secondaryEmail && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -714,10 +687,9 @@ const PersonalInfo = ({
                   control={control}
                   render={({ field }) => (
                     <Input
-                      placeholder="Enter Secondary Phone Number"
                       invalid={errors.secondaryPhoneNumber && true}
                       {...field}
-                      readOnly={visible}
+                      readOnly={View}
                       style={getReadOnlyStyle()}
                     />
                   )}
@@ -737,7 +709,7 @@ const PersonalInfo = ({
             <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="vesselName">
-                  Vessel Name <span style={{ color: "red" }}>*</span>
+                  Vessel Name
                 </Label>
                 <Controller
                   control={control}
@@ -748,9 +720,10 @@ const PersonalInfo = ({
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter Vessel Name"
+                      style={getReadOnlyStyle()}
                       invalid={errors.vesselName && true}
                       {...field}
+                      readOnly={true}
                     />
                   )}
                 />
@@ -762,7 +735,6 @@ const PersonalInfo = ({
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="vesselRegistrationNumber">
                   Vessel Registration Number{" "}
-                  <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Controller
                   control={control}
@@ -773,9 +745,10 @@ const PersonalInfo = ({
                   render={({ field }) => (
                     <Input
                       type="text"
-                      placeholder="Enter Registration Number"
+                      style={getReadOnlyStyle()}
                       invalid={errors.vesselRegistrationNumber && true}
                       {...field}
+                      readOnly={true}
                     />
                   )}
                 />
@@ -786,18 +759,94 @@ const PersonalInfo = ({
                 )}
               </Col>
             </Row>
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="vesselName">
+                  length
+                </Label>
+                <Controller
+                  control={control}
+                  name="length"
+                  rules={{
+                    required: "Vessel length is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      style={getReadOnlyStyle()}
+                      invalid={errors.length && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.length && (
+                  <FormFeedback>{errors.length.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="vesselRegistrationNumber">
+                  width
+                </Label>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: " width  is required",
+                  }}
+                  name="width"
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      style={getReadOnlyStyle()}
+                      invalid={errors.width && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.width && (
+                  <FormFeedback>{errors.width.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="height">
+                  height
+                </Label>
+                <Controller
+                  control={control}
+                  name="height"
+                  rules={{
+                    required: "height length is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      style={getReadOnlyStyle()}
+                      invalid={errors.height && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.height && (
+                  <FormFeedback>{errors.height.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
 
             <CardTitle tag="h5" className="mt-2">
               {" "}
               Payment Details
             </CardTitle>
 
-
-
             <Row>
               <Col md="6" className="mb-1">
-              <Label className="form-label" for="landmark">
-                  Total Amount <span style={{ color: "red" }}>*</span>
+                <Label className="form-label" for="landmark">
+                  Total Amount
                 </Label>
 
                 <Controller
@@ -808,10 +857,10 @@ const PersonalInfo = ({
                   }}
                   render={({ field }) => (
                     <Input
-                      placeholder="Final Amount"
+                      style={getReadOnlyStyle()}
                       invalid={errors.finalPayment && true}
                       {...field}
-                    //   readOnly
+                      readOnly={true}
                     />
                   )}
                 />
@@ -819,50 +868,130 @@ const PersonalInfo = ({
                   <FormFeedback>{errors.finalPayment.message}</FormFeedback>
                 )}
               </Col>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="landmark">
+                  Contract Date
+                </Label>
 
-              
+                <Controller
+                  name="contractDate"
+                  control={control}
+                  rules={{
+                    required: "contractDate is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      style={getReadOnlyStyle()}
+                      invalid={errors.contractDate && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.contractDate && (
+                  <FormFeedback>{errors.contractDate.message}</FormFeedback>
+                )}
+              </Col>
             </Row>
 
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="landmark">
+                  Renewal Date
+                </Label>
 
-            {/* Add other fields similarly */}
-            <div className="d-flex justify-content-between">
-              <Button
-                type="button"
-                color="primary"
-                className="btn-prev"
-                onClick={() => stepper.previous()}
-              >
-                <ArrowLeft
-                  size={14}
-                  className="align-middle me-sm-25 me-0"
-                ></ArrowLeft>
-                <span className="align-middle d-sm-inline-block d-none">
-                  Previous
-                </span>
-              </Button>
+                <Controller
+                  name="renewalDate"
+                  control={control}
+                  rules={{
+                    required: "renewalDate is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      style={getReadOnlyStyle()}
+                      invalid={errors.renewalDate && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.renewalDate && (
+                  <FormFeedback>{errors.renewalDate.message}</FormFeedback>
+                )}
+              </Col>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="landmark">
+                  Next Payment Date
+                </Label>
 
-              {/* Submit and Reset Button Group */}
+                <Controller
+                  name="nextPaymentDate"
+                  control={control}
+                  rules={{
+                    required: "next Payment Date is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      style={getReadOnlyStyle()}
+                      invalid={errors.nextPaymentDate && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.nextPaymentDate && (
+                  <FormFeedback>{errors.nextPaymentDate.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="landmark">
+                  Paid In
+                </Label>
+
+                <Controller
+                  name="paidIn"
+                  control={control}
+                  rules={{
+                    required: "paidIn is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      style={getReadOnlyStyle()}
+                      invalid={errors.paidIn && true}
+                      {...field}
+                      readOnly={true}
+                    />
+                  )}
+                />
+                {errors.paidIn && (
+                  <FormFeedback>{errors.paidIn.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+            <div className="d-flex mt-2 justify-content-end gap-2">
               <div className="d-flex">
                 <Button
                   type="reset"
                   onClick={() => reset()}
                   className="btn-reset me-2"
+                  disabled={View}
                 >
                   <span className="align-middle d-sm-inline-block d-none">
                     Reset
                   </span>
                 </Button>
 
-                <Button type="submit" color="primary" className="btn-next">
+                <Button
+                  disabled={View}
+                  type="submit"
+                  color="primary"
+                  className="btn-next"
+                >
                   <span className="align-middle d-sm-inline-block d-none">
-                    {loading ? <Spinner size="sm" /> : "Next"}
+                    {loading ? <Spinner size="sm" /> : "Update"}
                   </span>
-                  {loading ? null : (
-                    <ArrowRight
-                      size={14}
-                      className="align-middle ms-sm-25 ms-0"
-                    />
-                  )}
                 </Button>
               </div>
             </div>

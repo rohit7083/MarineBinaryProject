@@ -148,6 +148,8 @@ const Import = () => {
       <Card className="overflow-hidden">
         <CardHeader className="d-flex justify-content-between align-items-center">
           <CardTitle tag="h4">View Document</CardTitle>
+          <Button color="relief-primary">Send Rental Invoice</Button>
+
         </CardHeader>
         <Row className="import-component">
           <Col sm="12">

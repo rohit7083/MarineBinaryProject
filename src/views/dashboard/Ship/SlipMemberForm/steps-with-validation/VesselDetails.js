@@ -18,9 +18,15 @@ import withReactContent from "sweetalert2-react-content";
 import { UncontrolledAlert } from "reactstrap";
 import { useParams } from "react-router-dom";
 
-const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) => {
+const AccountDetails = ({
+  stepper,
+  formData,
+  slipId,
+  setSlipIID,
+  fetchLoader,
+}) => {
   const MySwal = withReactContent(Swal);
-// {{debugger}}
+  // {{debugger}}
   // const { uid } = useParams();
 
   const [slipNames, setSlipNames] = useState([]);
@@ -44,32 +50,37 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) =
       const { result } = response.data.content;
       console.log("result from the vessel ", result);
 
-      const falseOptions = result.map((item) => ({
-        isAssigned: item.isAssigned,
-      }));
-      // {{debugger}}
-      // if (!falseOptions) {
-      setSlipNames(() =>
-        result.map(({ slipName: label, id: value, dimensions }) => ({
-          label,
-          value,
-          dimensions,
-        }))
-      );
-      // }
+     const NotAssigned=result
+     .filter((item)=>!item.isAssigned)
+     .map((item)=>({
+      isAssigned:item.isAssigned,
+      label:item.slipName,
+      value:item.id,
+      dimensions:item.dimensions
+      
+     }))
+
+      console.log("flseoption",NotAssigned);
+    
+      setSlipNames(NotAssigned);
+    
+      // setSlipNames(() =>
+      //   result.map(({ slipName: label, id: value, dimensions }) => ({
+      //     label,
+      //     value,
+      //     dimensions,
+      //   }))
+      // );
     } catch (error) {
       console.log(error);
     }
   }
-  
 
   useEffect(() => {
-    
     if (Object.keys(formData)?.length) {
       const data = { ...formData };
       reset(data);
     }
-
   }, [reset, formData]);
 
   useEffect(() => {
@@ -165,67 +176,62 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) =
     if (!fields) return null;
 
     return Object.keys(fields).map((dimKey) => (
-     
-
-
-<Col key={dimKey} md="6" className="mb-1">
-  <Label className="form-label" htmlFor={dimKey}>
-    {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-    <span style={{ color: "red" }}>*</span>
-  </Label>
-  <Controller
-    name={`dimensionVal.${dimKey}`}
-    control={control}
-    rules={{
-      ...(dimKey === "width" || dimKey === "height"
-        ? {
-            validate: {
-              required: (value) =>
-                value !== "" || `${dimKey} field is required`,
-              isNumber: (value) =>
-                !isNaN(parseFloat(value)) || "Value must be a number",
-              maxValue: (value) => {
-                const numberValue = parseFloat(value);
-                return (
-                  numberValue <= watch("slipName").dimensions[dimKey] ||
-                  `Value must be less than ${watch("slipName").dimensions[dimKey]}`
-                );
-              },
-              nonNegative: (value) => {
-                const numberValue = parseFloat(value);
-                return (
-                  numberValue >= 0 || "Value must not be negative"
-                );
-              },
-            },
-          }
-        : {}),
-      ...(dimKey === "length" || dimKey === "width" || dimKey === "height"
-        ? {
-            required: {
-              value: true,
-              message: `${dimKey} field is required`,
-            },
-          }
-        : {}),
-    }}
-    render={({ field, fieldState }) => (
-      <div>
-        <Input
-          type="number"
-          placeholder={`Enter Vessel ${dimKey}`}
-          invalid={!!fieldState?.error}
-          {...field}
+      <Col key={dimKey} md="6" className="mb-1">
+        <Label className="form-label" htmlFor={dimKey}>
+          {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+          <span style={{ color: "red" }}>*</span>
+        </Label>
+        <Controller
+          name={`dimensionVal.${dimKey}`}
+          control={control}
+          rules={{
+            ...(dimKey === "width" || dimKey === "height"
+              ? {
+                  validate: {
+                    required: (value) =>
+                      value !== "" || `${dimKey} field is required`,
+                    isNumber: (value) =>
+                      !isNaN(parseFloat(value)) || "Value must be a number",
+                    maxValue: (value) => {
+                      const numberValue = parseFloat(value);
+                      return (
+                        numberValue <= watch("slipName").dimensions[dimKey] ||
+                        `Value must be less than ${
+                          watch("slipName").dimensions[dimKey]
+                        }`
+                      );
+                    },
+                    nonNegative: (value) => {
+                      const numberValue = parseFloat(value);
+                      return numberValue >= 0 || "Value must not be negative";
+                    },
+                  },
+                }
+              : {}),
+            ...(dimKey === "length" || dimKey === "width" || dimKey === "height"
+              ? {
+                  required: {
+                    value: true,
+                    message: `${dimKey} field is required`,
+                  },
+                }
+              : {}),
+          }}
+          render={({ field, fieldState }) => (
+            <div>
+              <Input
+                type="number"
+                placeholder={`Enter Vessel ${dimKey}`}
+                invalid={!!fieldState?.error}
+                {...field}
+              />
+              {fieldState?.error && (
+                <p className="text-danger">{fieldState?.error?.message}</p>
+              )}
+            </div>
+          )}
         />
-        {fieldState?.error && (
-          <p className="text-danger">{fieldState?.error?.message}</p>
-        )}
-      </div>
-    )}
-  />
-</Col>
-
-
+      </Col>
     ));
   };
 
@@ -247,7 +253,6 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) =
           </UncontrolledAlert>
         </React.Fragment>
       )}
-     
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
@@ -260,7 +265,6 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) =
               control={control}
               rules={{
                 required: "Slip Name is required",
-
               }}
               render={({ field }) => (
                 <Select
@@ -351,7 +355,6 @@ const AccountDetails = ({ stepper, formData, slipId, setSlipIID,fetchLoader }) =
           </div>
         </div>
       </form>
-     
     </Fragment>
   );
 };

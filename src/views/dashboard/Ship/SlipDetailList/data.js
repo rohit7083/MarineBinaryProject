@@ -354,7 +354,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Id",
-    minWidth: "150px",
+    minWidth: "100px",
     selector: (row) => row.id,
   },
 
@@ -364,6 +364,30 @@ export const serverSideColumns = [
     minWidth: "150px",
     selector: (row) => row.slipName,
   },
+  {
+    sortable: true,
+    name: "Slip Assigned",
+    minWidth: "200px",
+    selector: (row) =>{
+// {{debugger}}
+      const SlipAssigned = row.isAssigned;
+
+      return (
+        <div className="d-flex justify-content-center">
+          {SlipAssigned ? (
+            <Badge color="success"  className="badge-glow">
+              Assigned
+            </Badge>
+          ) : (
+            <Badge color="danger" pill className="badge-glow">
+             Not Assigned
+            </Badge>
+          )}
+        </div>
+      );
+    
+      }
+      },
   {
     sortable: true,
     name: "Category",
@@ -410,7 +434,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Market Monthly Price",
-    minWidth: "190px",
+    minWidth: "250px",
     selector: (row) => row.marketMonthlyPrice,
   },
   {
@@ -484,19 +508,19 @@ export const serverSideColumns = [
             <Eye size={25}className="me-2"/>
           </span></Link> */}
 
-            <Link 
-            style={{margin: "0.5rem"}}
-              to={{
-                pathname: `/dashboard/SlipView/${row.uid}`,
-                state: { slipData: row }, // Pass full data
-              }}
-            >
+          <Link
+            style={{ margin: "0.5rem" }}
+            to={{
+              pathname: `/marin/slip-management/${row.uid}`,
+              state: { slipData: row }, // Pass full data
+            }}
+          >
             <Eye className="font-medium-3 text-body" />
-            </Link>
+          </Link>
 
           {/* Edit Button */}
-          <Link             style={{margin: "0.5rem"}}
-
+          <Link
+            style={{ margin: "0.5rem" }}
             to={{
               pathname: `/dashboard/SlipDetails/${row.uid}`, // Ensure this is the correct path
               state: {},
@@ -507,14 +531,15 @@ export const serverSideColumns = [
             </span>
           </Link>
 
-<Link             style={{margin: "0.5rem"}}
->          <span
-            color="danger"
-            style={{ cursor: "pointer", color: "red" }}
-            onClick={() => handleDelete(row.uid)}
-          >
+          <Link style={{ margin: "0.5rem" }}>
+            {" "}
+            <span
+              color="danger"
+              style={{ cursor: "pointer", color: "red" }}
+              onClick={() => handleDelete(row.uid)}
+            >
               <Trash className="font-medium-3 text-body" />
-          </span>
+            </span>
           </Link>
         </div>
       );
