@@ -107,6 +107,7 @@ function ShipDetails() {
   };
 
   const handleSubmit = async (e, data) => {
+    setMessage("");
     e.preventDefault();
     console.log("dataform", data);
 
@@ -114,10 +115,7 @@ function ShipDetails() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      // Submit form logic here...
-      console.log("Form submitted successfully:", { selections, userData });
       try {
-        // Construct payload and call the API
         const payload = {
           slipName: userData.slipName,
           electric: userData.electric,
@@ -211,10 +209,9 @@ function ShipDetails() {
         // }
 
 
-      
+        setLoading(true);
         
           if (uid) {
-            setLoading(true); // Ensure loading is set before request starts
 
             await useJwt.updateslip(uid, payload);
             MySwal.fire({
@@ -237,35 +234,15 @@ function ShipDetails() {
         } catch (error) {
           console.error("Error submitting form:", error);
           
-          if (error.response) {
             const { content } = error.response.data || {};
             const { status } = error.response;
         
-            // Ensure state updates even if the same error occurs multiple times
             setMessage((prev) => {
               const newMessage = content || "An unexpected error occurred";
               return prev !== newMessage ? newMessage : prev + " "; // Force update
             });
         
-            switch (status) {
-              case 400:
-              case 401:
-              case 403:
-                setMessage(content);
-                break;
-              case 500:
-                setMessage(
-                  <span style={{ color: "red" }}>
-                    Something went wrong on our end. Please try again later
-                  </span>
-                );
-                break;
-              default:
-                setMessage(content);
-            }
-          } else {
-            setMessage("Network error. Please try again later.");
-          }
+           
         } finally {
           setLoading(false); // Ensure loading stops in case of success or failure
         }

@@ -158,6 +158,7 @@ const PersonalInfo = ({
   };
 
   const onSubmit = async (data) => {
+    setErrMsz("")
     setLoading(true);
 
     const payload = {
@@ -193,19 +194,12 @@ const PersonalInfo = ({
       if (error.response && error.response.data) {
         const { status } = error.response;
         const { content } = error.response.data;
-        console.log(content);
+       
+        setErrMsz((prev)=>{
+          const newMsz=content || "Un unexpected error occurred";
+          return prev !== newMsz ? newMsz : prev + " ";
+        })
 
-        switch (status) {
-          case 400:
-          case 401:
-          case 403:
-          case 404:
-          case 500:
-            setErrMsz(content);
-            break;
-          default:
-            setErrMsz(content);
-        }
       }
     } finally {
       setLoading(false);
@@ -213,6 +207,7 @@ const PersonalInfo = ({
   };
 
   const fetchData = async () => {
+    setErrMsz("");
     try {
       const response = await useJwt.getslip();
 
@@ -237,19 +232,11 @@ const PersonalInfo = ({
       if (error.response && error.response.data) {
         const { status } = error.response;
         const { content } = error.response.data;
-        console.log(content);
 
-        switch (status) {
-          case 400:
-          case 401:
-          case 403:
-          case 404:
-          case 500:
-            setErrMsz(content);
-            break;
-          default:
-            setErrMsz(content);
-        }
+       setErrMsz((prev)=>{
+        const newMsz=content || "Un expected Error occurred";
+        return prev !== newMsz ? newMsz : prev + " ";
+       })
       }
     }
   };

@@ -26,8 +26,7 @@ const AccountDetails = ({
   fetchLoader,
 }) => {
   const MySwal = withReactContent(Swal);
-  // {{debugger}}
-  // const { uid } = useParams();
+
 
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
@@ -88,7 +87,8 @@ const AccountDetails = ({
   }, []);
 
   const onSubmit = async (data) => {
-    // {{debugger}}
+    seterrMsz("");
+    
     const finaleData = {};
     const { dimensions } = data.slipName;
 
@@ -106,7 +106,6 @@ const AccountDetails = ({
     console.log("Final data before submitting:", finaleData); // 🔍 Debugging
 
     try {
-      // {{debugger}}
       if (slipId) {
         setLoading(true);
         await useJwt.updateVessel(finaleData.uid, finaleData);
@@ -145,27 +144,13 @@ const AccountDetails = ({
 
       if (error.response && error.response.data) {
         const { status, content } = error.response.data;
-        console.log(content);
 
-        switch (status) {
-          case 400:
-            seterrMsz(content);
 
-            break;
-          case 401:
-            seterrMsz(content);
-            // navigate("/login");
-            break;
-          case 403:
-            seterrMsz(content);
-            break;
-          case 500:
-            seterrMsz(content);
-
-            break;
-          default:
-            seterrMsz(content);
-        }
+        seterrMsz((prev)=>{
+          const newMsz=content || "Un expected Error Occurred . Try Again Later ";
+          return prev !== newMsz ? newMsz : prev + " ";
+        })
+        
       }
     } finally {
       setLoading(false);

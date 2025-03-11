@@ -485,6 +485,7 @@ const Address = ({
     // }, [reset, formData]);
      
   const onSubmit = async (data) => {
+    setErrMsz("");
     data.paymentMode = data.paymentMode?.value;
 
     console.log("Payment data:", data);
@@ -545,9 +546,7 @@ const Address = ({
     }
 
     try {
-      // if (formData["0"].id != null) {
        
-
         setLoading(true);
 
         const response = await useJwt.createPayment(formData); // API call
@@ -565,27 +564,20 @@ const Address = ({
             stepper.next();
           }
         });
-      // }
+     
     } catch (error) {
       console.error("Error submitting data:", error);
 
       if (error.response && error.response.data) {
         const { status, content } = error.response.data;
-        console.log(content);
 
-        switch (status) {
-          case 400:
-          case 401:
-          case 403:
-          case 500:
-            setErrMsz(content);
-            break;
-          default:
-            setErrMsz("Something went wrong. Please try again.");
-        }
+       setErrMsz((prev)=>{
+        const newMsz= content || "An unexpected error occurred";
+        return prev !== newMsz ? newMsz :prev + " ";
+       })
       }
     } finally {
-      setLoading(false); // ✅ Stop loading after API call (fix)
+      setLoading(false); 
     }
   };
 

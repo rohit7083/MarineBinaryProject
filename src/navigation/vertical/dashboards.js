@@ -1,5 +1,5 @@
 // ** Icons Import
-import { Home, Circle } from 'react-feather'
+import { Home, Circle } from "react-feather";
 
 export default [
   // {
@@ -23,33 +23,32 @@ export default [
   //     }
   //   ]
   // }
-// ,
-    {
-        id: 'dashboard',
-        title: 'dashboard',
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/dash'
-      },
+  // ,
   {
-    id: 'Slip',
-    title: 'Slip',
+    id: "dashboard",
+    title: "dashboard",
     icon: <Circle size={12} />,
-    navLink: '/dashboard/Ship',
-    badge: 'light-warning',
+    navLink: "/dashboard/dash",
+  },
+  {
+    id: "Slip",
+    title: "Slip",
+    icon: <Circle size={12} />,
+    navLink: "/dashboard/Ship",
+    badge: "light-warning",
     // badgeText: '2',
     children: [
-    
       {
-        id: 'SlipList',
-        title: 'Slip Category List',
+        id: "SlipList",
+        title: "Slip Category List",
         icon: <Circle size={12} />,
-        navLink: '/dashboard/SlipList'
+        navLink: "/dashboard/SlipList",
       },
       {
-        id: 'SlipDetailList',
-        title: 'Slip List',
+        id: "SlipDetailList",
+        title: "Slip List",
         icon: <Circle size={12} />,
-        navLink: '/dashboard/SlipDetailList'
+        navLink: "/dashboard/SlipDetailList",
       },
       // {
       //   id: 'SlipMemberForm',
@@ -57,81 +56,104 @@ export default [
       //   icon: <Circle size={12} />,
       //   navLink: '/dashboard/SlipMemberForm'
       // },
-        {
-        id: 'SlipMemberList',
-        title: 'Slip Member List',
+      {
+        id: "SlipMemberList",
+        title: "Slip Member List",
         icon: <Circle size={12} />,
-        navLink: '/dashboard/SlipMemberList'
-      }, 
-      
-    ]
-  }
-,
-  
+        navLink: "/dashboard/SlipMemberList",
+      },
+    ],
+  },
   {
-    id: 'Users Management',
-    title: 'Users Management',
+    id: "Users Management",
+    title: "Users Management",
     icon: <Circle size={12} />,
     // navLink: '/dashboard/create-user',
-    badge: 'light-warning',
+    badge: "light-warning",
     // badgeText: '2',
     children: [
-    {
-      
-        id: 'Create User',
-        title: 'Roles & Permissions',
+      {
+        id: "Create User",
+        title: "Roles & Permissions",
         icon: <Circle size={12} />,
-        navLink: '/dashboard/user_rolls/roles-permissions/roles'
-     
-    },
-    {
-      
-      id: 'permissions',
-      title: 'Users',
-      icon: <Circle size={12} />,
-      navLink: '/dashboard/user_rolls/roles-permissions/createuser'
-      
+        navLink: "/dashboard/user_rolls/roles-permissions/roles",
+      },
+      {
+        id: "permissions",
+        title: "Users",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/user_rolls/roles-permissions/createuser",
+      },
+    ],
   },
-  ]
-    
-},
- 
 
-
-{
-  id: 'Invoice Management',
-  title: 'Invoice Management',
-  icon: <Circle size={12} />,
-  // navLink: '/dashboard/create-user',
-  badge: 'light-warning',
-  // badgeText: '2',
-  children: [{
-    
-    id: 'Invoice',
-    title: 'Create Invoice',
-    icon: <Circle size={12} />,
-    navLink: '/dashboard/invoice_management/invoice'
- 
-},
-{
-    
-  id: 'Manage Invoice ',
-  title: 'Manage Invoice',
-  icon: <Circle size={12} />,
-  navLink: '/dashboard/invoice_management/manageInvoice'
-
-},
   {
-    
-      id: 'Invoice Setting',
-      title: 'Invoice Setting',
-      icon: <Circle size={12} />,
-      navLink: '/dashboard/invoice_management/invoice_setting'
-   
+    id: "Invoice Management",
+    title: "Invoice Management",
+    icon: <Circle size={12} />,
+    // navLink: '/dashboard/create-user',
+    badge: "light-warning",
+    // badgeText: '2',
+    children: [
+      {
+        id: "Invoice",
+        title: "Create Invoice",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/invoice_management/invoice",
+      },
+      {
+        id: "Manage Invoice ",
+        title: "Manage Invoice",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/invoice_management/manageInvoice",
+      },
+      {
+        id: "Invoice Setting",
+        title: "Invoice Setting",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/invoice_management/invoice_setting",
+      },
+      {
+        id: "Recurring Invoice ",
+        title: "Recurring Invoice ",
+        icon: <Circle size={12} />,
+        // navLink: '/dashboard/invoice_management/'
+      },
+    ],
   },
-  
-]
-  
-}
-]
 
+  {
+    id: "POS",
+    title: "POS",
+    icon: <Circle size={12} />,
+    // navLink: '/dashboard/create-user',
+    badge: "light-warning",
+    // badgeText: '2',
+    children: [
+      {
+        id: "Product Manage",
+        title: "Product Manage",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/pos/product_management",
+      },
+      {
+        id: "Point Of Sale ",
+        title: "Point Of Sale ",
+        icon: <Circle size={12} />,
+        // navLink: "/dashboard/invoice_management/manageInvoice",
+      },
+      {
+        id: "Cusstomer manage",
+        title: "Customer Manage",
+        icon: <Circle size={12} />,
+        // navLink: "/dashboard/invoice_management/invoice_setting",
+      },
+      {
+        id: "Virtual Terminal",
+        title: "Virtual Terminal ",
+        icon: <Circle size={12} />,
+        // navLink: '/dashboard/invoice_management/'
+      },
+    ],
+  },
+];

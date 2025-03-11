@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 // ** Table Columns and Data
-import { data, reOrderColumns } from './Data'
+import { data, basicColumns } from './Data'
 
 // ** Third Party Components
 import ReactPaginate from 'react-paginate'
@@ -100,7 +100,7 @@ const DataTablesReOrder = () => {
       <div className='react-dataTable'>
         <DataTable
           noHeader
-          columns={reOrderColumns}
+          columns={basicColumns}
           className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
           pagination

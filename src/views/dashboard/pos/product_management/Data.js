@@ -26,7 +26,7 @@ axios.get('/api/datatables/initial-data').then(response => {
   data = response.data
 })
 
-// **  paid invoice
+// ** Table Zero Config Column
 export const basicColumns = [
   {
     name: 'ID',
@@ -35,7 +35,7 @@ export const basicColumns = [
     selector: row => row.id
   },
   {
-    name: 'paid name',
+    name: 'Name',
     sortable: true,
     minWidth: '225px',
     selector: row => row.full_name
@@ -47,15 +47,25 @@ export const basicColumns = [
     selector: row => row.email
   },
   {
-    name: 'paid postion',
+    name: 'Position',
     sortable: true,
     minWidth: '250px',
     selector: row => row.post
   },
- 
-
+  {
+    name: 'Age',
+    sortable: true,
+    minWidth: '100px',
+    selector: row => row.age
+  },
+  {
+    name: 'Salary',
+    sortable: true,
+    minWidth: '175px',
+    selector: row => row.salary
+  }
 ]
-// ** Send Invoice
+// ** Table ReOrder Column
 export const reOrderColumns = [
   {
     name: 'ID',

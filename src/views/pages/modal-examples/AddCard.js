@@ -86,6 +86,7 @@ const AddCardExample = () => {
           </Button>
         </CardBody>
       </Card>
+      
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}

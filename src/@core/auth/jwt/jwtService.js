@@ -148,9 +148,9 @@ export default class JwtService {
 
 // temp
 
-  // login(...args) {
-  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  // }
+  login(...args) {
+    return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  }
 
   // ==================== Slip Category
 

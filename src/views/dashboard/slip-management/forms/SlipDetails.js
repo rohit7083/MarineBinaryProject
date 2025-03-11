@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import { Tooltip } from "reactstrap"; // ** Utils
-import Invoice from '../../invoice_management/Invoice'
+// import Invoice from '../../invoice_management/Invoice'
 import {
   Card,
   CardHeader,
