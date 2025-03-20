@@ -1,6 +1,6 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { DownloadCloud } from "react-feather";
+import { DownloadCloud, Eye, FileText, X } from "react-feather";
 import toast from "react-hot-toast";
 import { set, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -16,182 +16,176 @@ import {
   CardBody,
   CardTitle,
   Form,
+  Badge,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 
-// ** Validation Schema
-const schema = yup.object().shape({
-  contractFile: yup
-    .mixed()
-    .required("Contract file is required")
-    .test(
-      "fileFormat",
-      "File must be .xlsx, .xls, .csv, .pdf, or .doc",
-      (value) => {
-        return (
-          value &&
-          [
-            "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "text/csv",
-            "application/pdf",
-            "application/msword",
-          ].includes(value.type)
-        );
-      }
-    ),
-  identityDocumentFile: yup
-    .mixed()
-    .required("Identity document file is required")
-    .test(
-      "fileFormat",
-      "File must be .xlsx, .xls, .csv, .pdf, or .doc",
-      (value) => {
-        return (
-          value &&
-          [
-            "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "text/csv",
-            "application/pdf",
-            "application/msword",
-          ].includes(value.type)
-        );
-      }
-    ),
-  registrationFile: yup
-    .mixed()
-    .required("Registration file is required")
-    .test(
-      "fileFormat",
-      "File must be .xlsx, .xls, .csv, .pdf, or .doc",
-      (value) => {
-        return (
-          value &&
-          [
-            "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "text/csv",
-            "application/pdf",
-            "application/msword",
-          ].includes(value.type)
-        );
-      }
-    ),
-  insuranceFile: yup
-    .mixed()
-    .required("Insurance file is required")
-    .test(
-      "fileFormat",
-      "File must be .xlsx, .xls, .csv, .pdf, or .doc",
-      (value) => {
-        return (
-          value &&
-          [
-            "application/vnd.ms-excel",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "text/csv",
-            "application/pdf",
-            "application/msword",
-          ].includes(value.type)
-        );
-      }
-    ),
-});
+const filesName = [
+  "Identity Document",
+  "Contract",
+  "Registration",
+  "Insurance",
+];
+const FileUploadForm = ({ stepper, slipIID }) => {
+  const [documents, setDocuments] = useState([]);
 
-const FileUploadForm = ({ stepper }) => {
-  const [uploadedFiles, setUploadedFiles] = useState({
-    contractFile: null,
-    identityDocumentFile: null,
-    registrationFile: null,
-    insuranceFile: null,
-  });
   const [loading, setLoading] = useState(false);
+  const [isDataFetch, setIsDataFetch] = useState(false);
 
   const {
     handleSubmit,
     setValue,
     formState: { errors },
-    clearErrors, // This will help clear errors when a file is uploaded
+    clearErrors,
+    reset,
+    watch,
   } = useForm({
-    resolver: yupResolver(schema),
+    defaultValues: {
+      Contract: {
+        lastUploaded: "",
+        currentFile: null,
+      },
+      "Identity Document": {
+        lastUploaded: "",
+        currentFile: null,
+      },
+      Registration: {
+        lastUploaded: "",
+        currentFile: null,
+      },
+      Insurance: {
+        lastUploaded: "",
+        currentFile: null,
+      },
+    },
   });
 
-  // Submit form data to the API
-  const onSubmit = async (data) => {
-    
-    const formData = new FormData();
-    formData.append("contractFile", data.contractFile);
-    formData.append("identityDocumentFile", data.identityDocumentFile);
-    formData.append("registrationFile", data.registrationFile);
-    formData.append("insuranceFile", data.insuranceFile);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await useJwt.getSingleDocuments(slipIID);
+        // {
+        //   {
+        //     debugger;
+        //   }
+        // }
+        const doc = response.data.content.result.reduce((object, item) => {
+          const { uid, documentName, documentFilePath } = item;
+          object[documentName] = {
+            uid,
+            lastUploaded: documentFilePath,
+            currentFile: null,
+          };
+          return object;
+        }, {});
 
-    // try {
-    // formData.forEach((value, key) => {
-    //   console.log(key, value);
-    // });
-// setLoading(true);
-    // const response = await useJwt.slipDocument(formData);
-    // if (response.status === 200) {
-
-    toast.success("Files uploaded successfully!");
-
-    console.log(data);
-
-    // console.log('API Response:', response.data);
-    // } else {
-    // toast.error('Failed to upload files.');
-    // console.error('API Error:', response.statusText);
-    //   }
-    // } catch (error) {
-    //   toast.error('An error occurred while uploading files.');
-    //   console.error('Error:', error); // Handle unexpected errors
-    // }
-    // finally
-    setLoading(false);
-  // }
-  };
-
-  const handleDrop = (acceptedFiles, fieldName) => {
-    if (acceptedFiles.length) {
-      const file = acceptedFiles[0];
-      const fileType = file.type;
-
-      if (
-        [
-          "application/vnd.ms-excel",
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "text/csv",
-          "application/pdf",
-          "application/msword",
-        ].includes(fileType)
-      ) {
-        setUploadedFiles((prevState) => ({
-          ...prevState,
-          [fieldName]: file.name,
-        }));
-        setValue(fieldName, file, { shouldValidate: true });
-        clearErrors(fieldName); // Clear any previous validation errors
-        toast.success(`${file.name} uploaded successfully.`);
-      } else {
-        toast.error(
-          "Invalid file type. Only .xlsx, .xls, .csv, .pdf, and .doc are allowed."
-        );
+        if (Object.keys(doc).length) {
+          reset(doc);
+          setIsDataFetch(true);
+        }
+      } catch (error) {
+        console.error("Error fetching documents:", error);
       }
+    };
+    if (slipIID) fetchData();
+  }, [slipIID, reset]);
+
+  const onSubmit = async (data) => {
+    // const updatedDataList = Object.keys(filesName).reduce((array, key) => {
+    //   const formData = new FormData();
+    //   formData.append("documentName", filesName[key]);
+    //   formData.append("documentFile", data[key]);
+    //   formData.append("slipId", slipIID);
+    //   array.push(formData);
+    //   return array;
+    // }, []);
+
+    const updatedDataList = Object.keys(data).reduce((obj, key) => {
+      if (data[key].currentFile == null) {
+        delete data[key];
+        return obj;
+      }
+
+      const formData = new FormData();
+
+      formData.append("documentName", key);
+      formData.append("documentFile", data[key].currentFile );
+      formData.append("slipId", slipIID);
+
+      obj[key] = obj[key] || {};
+      obj[key]["formData"] = formData;
+      if (data[key].uid) obj[key]["uid"] = data[key].uid;
+      return obj;
+    }, {});
+  
+    try {
+      const results = await Promise.all(
+        Object.values(updatedDataList).map((details) =>
+          details?.uid
+            ? useJwt.updateDoc(details.uid, details.formData)
+            : useJwt.slipDocument(details.formData)
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
     }
   };
 
+  //** File Size */
+  const renderFileSize = (size) => {
+    if (Math.round(size / 100) / 10 > 1000) {
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+    } else {
+      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
+    }
+  };
+
+  //** Render View */
+  const renderFilePreview = (file) => {
+    if (file.type.startsWith("image")) {
+      return (
+        <img
+          className="rounded"
+          alt={file.name}
+          src={URL.createObjectURL(file)}
+          height="28"
+          width="28"
+        />
+      );
+    } else {
+      return <FileText size="28" />;
+    }
+  };
+
+  // ** Render Drop Zone
   const renderDropzone = (fieldName, label) => {
     const { getRootProps, getInputProps } = useDropzone({
       multiple: false,
-      onDrop: (acceptedFiles) => handleDrop(acceptedFiles, fieldName),
+      onDrop: (acceptedFiles) => {
+        setValue(`${fieldName}.currentFile`, acceptedFiles[0]);
+      },
     });
 
     return (
       <Col sm="6" className="mb-3">
-        <Label className="mb-2">
-          {label} <span style={{ color: "red" }}>*</span>
-        </Label>
+        <div className="d-flex justify-content-between align-items-center">
+          <Label className="mb-2">
+            {label} <span style={{ color: "red" }}>*</span>
+          </Label>
+          {watch(fieldName)?.lastUploaded ? (
+            <Badge
+              color={"success"}
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                window.open(watch(fieldName)?.lastUploaded, "_blank")
+              }
+            >
+              <Eye size={12} /> Last File Uploaded
+            </Badge>
+          ) : null}
+        </div>
+
         <div
           {...getRootProps({
             className: "dropzone",
@@ -211,17 +205,31 @@ const FileUploadForm = ({ stepper }) => {
         >
           <input {...getInputProps()} />
           <div className="d-flex align-items-center justify-content-center flex-column">
-            {uploadedFiles[fieldName] ? (
-              <span
-                className="text-success p-2 text-truncate"
-                style={{
-                  maxWidth: "100%", // Prevents text from breaking layout
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {uploadedFiles[fieldName]}
-              </span>
+            {watch(fieldName)?.currentFile ? (
+              ((file = watch(fieldName)?.currentFile) => (
+                <Fragment>
+                  <div className="file-details d-flex align-items-center">
+                    <div className="file-preview me-1">
+                      {renderFilePreview(file)}
+                    </div>
+                    <div>
+                      <p className="file-name mb-0">{file.nameX}</p>
+                      <p className="file-size mb-0">
+                        {renderFileSize(file.size)}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    color="danger"
+                    outline
+                    size="sm"
+                    className="btn-icon"
+                    onClick={() => setValue(`${fieldName}.currentFile`, null)}
+                  >
+                    <X size={14} />
+                  </Button>
+                </Fragment>
+              ))()
             ) : (
               <>
                 <DownloadCloud size={64} />
@@ -249,12 +257,13 @@ const FileUploadForm = ({ stepper }) => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardBody>
-            <CardTitle tag="h5">Upload Documents</CardTitle>
             <Row>
-              {renderDropzone("contractFile", "Contract File")}
-              {renderDropzone("identityDocumentFile", "Identity Document File")}
-              {renderDropzone("registrationFile", "Registration File")}
-              {renderDropzone("insuranceFile", "Insurance File")}
+              {[
+                "Identity Document",
+                "Contract",
+                "Registration",
+                "Insurance",
+              ].map((fieldName) => renderDropzone(fieldName, fieldName))}
             </Row>
           </CardBody>
         </Card>
@@ -273,9 +282,6 @@ const FileUploadForm = ({ stepper }) => {
               Previous
             </span>
           </Button>
-
-          {/* Submit and Reset Button Group */}
-
           <Button
             disabled={loading}
             type="submit"
@@ -283,15 +289,8 @@ const FileUploadForm = ({ stepper }) => {
             className="btn-next"
           >
             <span className="align-middle d-sm-inline-block d-none">
-              {loading ? (
-                <>
-                  <Spinner size="sm" className="me-2" /> Submitting...
-                </>
-              ) : (
-                "Submit"
-              )}{" "}
+              Submit
             </span>
-            <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
           </Button>
         </div>
       </Form>
@@ -300,3 +299,45 @@ const FileUploadForm = ({ stepper }) => {
 };
 
 export default FileUploadForm;
+
+/*
+
+
+    const formData = new FormData();
+  
+    if (data.contractFile) {
+      formData.append("documentFile", data.contractFile);
+      formData.append("documentNames", "Contract Document");
+    }
+  
+    if (data.identityDocumentFile) {
+      formData.append("documentFile", data.identityDocumentFile);
+      formData.append("documentNames", "Identity Document");
+    }
+  
+    if (data.registrationFile) {
+      formData.append("documentFile", data.registrationFile);
+      formData.append("documentNames", "Registration Document");
+    }
+  
+    if (data.insuranceFile) {
+      formData.append("documentFile", data.insuranceFile);
+      formData.append("documentNames", "Insurance Document");
+    }
+  
+    formData.append("slipId", slipIID); // Always append slipIID
+  console.log(data);
+   try {
+      setLoading(true);
+      
+      const response = await useJwt.slipDocument(formData); // Send FormData directly
+  
+      toast.success("Files uploaded successfully!");
+      console.log("API Response:", response.data);
+    } catch (error) {
+      toast.error("An error occurred while uploading files.");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+*/

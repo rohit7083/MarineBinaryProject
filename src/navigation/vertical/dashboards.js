@@ -140,19 +140,26 @@ export default [
         id: "Point Of Sale ",
         title: "Point Of Sale ",
         icon: <Circle size={12} />,
-        // navLink: "/dashboard/invoice_management/manageInvoice",
+        navLink: "/dashboard/pos/point_of_sale/shop",
       },
       {
         id: "Cusstomer manage",
         title: "Customer Manage",
         icon: <Circle size={12} />,
-        // navLink: "/dashboard/invoice_management/invoice_setting",
+        navLink: "/dashboard/pos/customer_management",
       },
       {
         id: "Virtual Terminal",
         title: "Virtual Terminal ",
         icon: <Circle size={12} />,
         // navLink: '/dashboard/invoice_management/'
+      },
+
+      {
+        id: "Ecomm",
+        title: "Ecomm ",
+        icon: <Circle size={12} />,
+        navLink: '/dashboard/pos/point_of_sale/ecommerce/shop'
       },
     ],
   },

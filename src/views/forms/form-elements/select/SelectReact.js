@@ -29,7 +29,7 @@ const SelectReact = () => {
           <a className='my-50' target='_blank' href='https://react-select.com/home' rel='noopener noreferrer'>
             here
           </a>
-          .
+          
         </p>
         <Row>
           <Col className='mb-1' md='6' sm='12'>

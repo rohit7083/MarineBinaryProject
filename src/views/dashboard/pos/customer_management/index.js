@@ -4,17 +4,14 @@ import { Link } from "react-router-dom";
 // ** Table Data & Columns
 import { Tooltip } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "react-feather"; // Using Feather Icons
 
-import { data, columns } from "./Data";
-import addProductIcon from '../../../../assets/icons/shopping-bag-add.svg'
-import importIcon from '../../../../assets/icons/file-import.svg'
-import AddCategoryIcon from '../../../../assets/icons/category-alt.svg'
-import addStocks from '../../../../assets/icons/supplier-alt.svg'
-import ManageStocks from '../../../../assets/icons/workflow-setting.svg'
-import addTax from '../../../../assets/icons/calendar-event-tax.svg'
-// ** Add New Modal Component
-
+import { data, columns } from "../product_management/Data";
+import addCustomer from "../../../../assets/icons/person-circle-plus.svg";
+import importDataicon from "../../../../assets/icons/folder-upload.svg";
+import ExportDataicon from "../../../../assets/icons/file-import.svg";
+import AddCustomer from "./AddCustomer"
+import ExportData from '../customer_management/ExportData'
+import ImportData from '../customer_management/ImportData'
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
@@ -55,7 +52,9 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 const DataTableWithButtons = () => {
   // ** States
   // const [modal, setModal] = useState(false);
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
+  const [exportData, setExportdata] = useState(false);
+  const [importDataState, setImportData] = useState(false);
 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
@@ -209,136 +208,79 @@ const DataTableWithButtons = () => {
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">
-      {/* <Button color="primary" outline onClick={() => navigate(-1)} className="d-flex align-items-center">
+            {/* <Button color="primary" outline onClick={() => navigate(-1)} className="d-flex align-items-center">
       <ArrowLeft size={10} className="me-1" /> Previous
     </Button> */}
-    
-         
-    Manage Stocks
-    </CardTitle>
+            Customer List
+          </CardTitle>
           <div className="d-flex mt-md-0 mt-1">
+            <div className="d-flex justify-content-end gap-2">
+              <div>
+                  <img
+                    src={addCustomer}
+                    id="ANP"
+                    alt="Shopping Bag"
+                    width="25"
+                    onClick={() => setShow(true)}  
+                    style={{cursor:"pointer"}}
+                  />
+                  <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.ANP}
+                    target="ANP"
+                    toggle={() => toggleTooltip("ANP")}
+                  >
+                    Add Customer
+                  </Tooltip>
+              </div>
+              <div>
+                <img
+                  id="importProduct"
+                  width="25"
+                  height="25"
+                  src={importDataicon}
+                  alt="importProduct"
+                  onClick={() => setImportData(true)}
+                  style={{ cursor: "pointer" }}
+                />
 
-          <div className="d-flex justify-content-end gap-2">
-          <div>
-            <Link to="/dashboard/pos/product_management/addProduct">
-            <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.ANP}
-              target="ANP"
-              toggle={() => toggleTooltip("ANP")}
-            >
-              Add New Producct
-            </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <img
-              id="importProduct"
-              width="25"
-              height="25"
-              src={importIcon}
-              alt="importProduct"
-              onClick={() => setShow(true)}  
-                          style={{ cursor: "pointer" }}
-            />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.importProduct}
+                  target="importProduct"
+                  toggle={() => toggleTooltip("importProduct")}
+                >
+                  Import Data
+                </Tooltip>
+              </div>
 
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.importProduct}
-              target="importProduct"
-              toggle={() => toggleTooltip("importProduct")}
-            >
-              Import Product
-            </Tooltip>
-          </div>
+              <div>
+                  <img
+                    width="25"
+                    height="25"
+                    id="addProductCate"
+                    src={ExportDataicon}
+                    alt="sorting-answers"
+                    onClick={() => setExportdata(true)}
 
-          <div>
-            <Link to="/dashboard/pos/product_management/addproductCategory">
-              <img
-                width="25"
-                height="25"
-                id="addProductCate"
-    src={AddCategoryIcon}
-                alt="sorting-answers"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProductCate}
-                target="addProductCate"
-                toggle={() => toggleTooltip("addProductCate")}
-              >
-                Add Product Category
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/dashboard/pos/product_management/addTaxes">
-              <img
-                width="25"
-                height="25"
-                id="addProducttaxes"
-                src={addTax}
-                alt="addProducttaxes"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProducttaxes}
-                target="addProducttaxes"
-                toggle={() => toggleTooltip("addProducttaxes")}
-              >
-                Add Product Taxes
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/dashboard/pos/product_management/AddStocks">
-              <img
-                width="25"
-                height="25"
-                id="addStock"
-                src={addStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addStock}
-                target="addStock"
-                toggle={() => toggleTooltip("addStock")}
-              >
-                Add Stock
-              </Tooltip>
-            </Link>
-          </div>
+                    style={{ cursor: "pointer" }}
 
-          <div>
-            <Link>
-              <img
-                width="25"
-                height="25"
-                id="stockManage"
-                src={ManageStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.stockManage}
-                target="stockManage"
-                toggle={() => toggleTooltip("stockManage")}
-              >
-                Stock Manage
-              </Tooltip>
-            </Link>
-          </div>
-        </div>
-
+                  />
+                  <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.addProductCate}
+                    target="addProductCate"
+                    toggle={() => toggleTooltip("addProductCate")}
+                  >
+                    Export Data
+                  </Tooltip>
+              </div>
+            </div>
           </div>
         </CardHeader>
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
-          <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-
-          </Col>
+          <Col md="6" sm="12" className="d-flex align-items-center mt-1"></Col>
 
           {/* Right Side - Search Bar */}
           <Col
@@ -376,6 +318,11 @@ const DataTableWithButtons = () => {
           />
         </div>
       </Card>
+      <AddCustomer show={show} setShow={setShow} />
+      <ExportData show={exportData} setShow={setExportdata} />
+      <ImportData show={importDataState} setShow={setImportData} />
+
+
     </Fragment>
   );
 };

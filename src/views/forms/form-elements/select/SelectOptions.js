@@ -112,28 +112,28 @@ const OptionComponent = ({ data, ...props }) => {
   )
 }
 
-const groupedOptions = [
-  {
-    label: 'Ice Creams',
-    options: [
-      { value: 'vanilla', label: 'Vanilla' },
-      { value: 'Dark Chocolate', label: 'Dark Chocolate' },
-      { value: 'chocolate', label: 'Chocolate' },
-      { value: 'strawberry', label: 'Strawberry' },
-      { value: 'salted-caramel', label: 'Salted Caramel' }
-    ]
-  },
-  {
-    label: 'Snacks',
-    options: [
-      { value: 'Pizza', label: 'Pizza' },
-      { value: 'Burger', label: 'Burger' },
-      { value: 'Pasta', label: 'Pasta' },
-      { value: 'Pretzel', label: 'Pretzel' },
-      { value: 'Popcorn', label: 'Popcorn' }
-    ]
-  }
-]
+  const groupedOptions = [
+    {
+      label: 'Ice Creams',
+      options: [
+        { value: 'vanilla', label: 'Vanilla' },
+        { value: 'Dark Chocolate', label: 'Dark Chocolate' },
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'salted-caramel', label: 'Salted Caramel' }
+      ]
+    },
+    {
+      label: 'Snacks',
+      options: [
+        { value: 'Pizza', label: 'Pizza' },
+        { value: 'Burger', label: 'Burger' },
+        { value: 'Pasta', label: 'Pasta' },
+        { value: 'Pretzel', label: 'Pretzel' },
+        { value: 'Popcorn', label: 'Popcorn' }
+      ]
+    }
+  ]
 
 const animatedComponents = makeAnimated()
 

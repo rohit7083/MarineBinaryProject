@@ -212,6 +212,7 @@ const DataTableWithButtons = () => {
       {/* <Button color="primary" outline onClick={() => navigate(-1)} className="d-flex align-items-center">
       <ArrowLeft size={10} className="me-1" /> Previous
     </Button> */}
+    
          
             Product List
           </CardTitle>
@@ -311,7 +312,7 @@ const DataTableWithButtons = () => {
           </div>
 
           <div>
-            <Link>
+            <Link to="/dashboard/pos/product_management/manageStocks">
               <img
                 width="25"
                 height="25"

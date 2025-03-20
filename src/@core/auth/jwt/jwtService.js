@@ -148,9 +148,9 @@ export default class JwtService {
 
 // temp
 
-  login(...args) {
-    return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  }
+  // login(...args) {
+  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  // }
 
   // ==================== Slip Category
 
@@ -217,6 +217,10 @@ export default class JwtService {
     return axios.post(this.jwtConfig.createPayment, ...args);
   }
  
+  getPayment(...args) {
+    return axios.get(this.jwtConfig.getPayment, ...args);
+  }
+
   otpForCash(...args) {
     return axios.post(this.jwtConfig.otpForCash, ...args);
   }
@@ -355,9 +359,18 @@ export default class JwtService {
     }
   }
   
-  slipDocument(uid, ...args) {
-    return axios.post(this.jwtConfig.slipDocument + uid, ...args);
+  slipDocument(...args) {
+    return axios.post(this.jwtConfig.slipDocument, ...args);
   }
+
+  getSingleDocuments(slipId) {
+    return axios.get(`${this.jwtConfig.getSingleDocuments}${slipId}`);
+  }
+
+  updateDoc(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateDoc}${uid}`,...args);
+  }
+
 
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

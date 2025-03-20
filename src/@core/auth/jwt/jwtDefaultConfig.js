@@ -1,6 +1,6 @@
 // ** Auth Endpoints
 export default {
-  loginEndpoint: "/jwt/login",  // temp
+  // loginEndpoint: "/jwt/login",  // temp
   // loginEndpoint: '/login',
 
   registerEndpoint: "/jwt/register",
@@ -15,7 +15,6 @@ export default {
 
   slip: "/slip/",
   slipGet: "/slip",
-
   sVessel: "/sVessel/",
   sVesselGet: "/sVessel",
   retriveVessel: "/sVessel/",
@@ -39,9 +38,9 @@ export default {
   status: "/googleAuthenticatorQR/status",
   sendOtp: "/auth/user/send_otp/",
 
-//verify otp for cash payment
-otpForCash:"/sPayment/otpForCash",
-verifyCash:"/sPayment/verifyCash/",
+  // verify otp for cash payment
+  otpForCash:"/sPayment/otpForCash",
+  verifyCash:"/sPayment/verifyCash/",
   // verify Email and Login api
   verifyEmail: "/auth/verifyEmail",
   loginPassword: "/auth/login/",
@@ -60,11 +59,14 @@ verifyCash:"/sPayment/verifyCash/",
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
 
+
+
   slipAssignmentGet: "/slipAssignmentGet",
   GenerateOtp: "/sPayment/generate",
   verifyOTP: "/sPayment/verify/",
-  slipDocument: "/slipDocument/",
-
+  slipDocument: "/sDocuments/",
+  getSingleDocuments:"/sDocuments/slip/",
+updateDoc:'/sDocuments/',
   // Value of this property will be used as key to store JWT token in storage
   storageTokenKeyName: "accessToken",
   storageRefreshTokenKeyName: "refreshToken",
