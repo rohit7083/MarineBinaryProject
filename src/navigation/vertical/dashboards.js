@@ -152,7 +152,7 @@ export default [
         id: "Virtual Terminal",
         title: "Virtual Terminal ",
         icon: <Circle size={12} />,
-        // navLink: '/dashboard/invoice_management/'
+        navLink: '/dashboard/pos/point_of_sale/virtual-terminal'
       },
 
       {

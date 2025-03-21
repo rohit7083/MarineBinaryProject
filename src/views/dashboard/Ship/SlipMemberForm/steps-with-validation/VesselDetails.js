@@ -188,7 +188,7 @@ const AccountDetails = ({
                     },
                     nonNegative: (value) => {
                       const numberValue = parseFloat(value);
-                      return numberValue >= 0 || "Value must not be negative";
+                      return numberValue > 0 || "Value must not be negative";
                     },
                   },
                 }
@@ -219,6 +219,26 @@ const AccountDetails = ({
       </Col>
     ));
   };
+
+   if (fetchLoader)
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <Spinner
+            color="primary"
+            style={{
+              height: "5rem",
+              width: "5rem",
+            }}
+          />
+        </div>
+      );
 
   return (
     <Fragment>

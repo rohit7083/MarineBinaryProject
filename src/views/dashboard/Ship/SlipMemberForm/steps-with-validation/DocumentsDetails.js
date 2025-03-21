@@ -21,7 +21,7 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 
 const filesName = [
-  "Identity Document",
+  "IdentityDocument",
   "Contract",
   "Registration",
   "Insurance",
@@ -45,7 +45,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
         lastUploaded: "",
         currentFile: null,
       },
-      "Identity Document": {
+      "IdentityDocument": {
         lastUploaded: "",
         currentFile: null,
       },
@@ -259,7 +259,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
           <CardBody>
             <Row>
               {[
-                "Identity Document",
+                "IdentityDocument",
                 "Contract",
                 "Registration",
                 "Insurance",

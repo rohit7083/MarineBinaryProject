@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
+import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
@@ -59,9 +60,10 @@ const Ecomm = lazy(() =>
 );
 
 const QrPaymentStepTwo = lazy(() =>
-  import("../../views/dashboard/Ship/SlipMemberForm/steps-with-validation/QrPaymentStepTwo")
+  import(
+    "../../views/dashboard/Ship/SlipMemberForm/steps-with-validation/QrPaymentStepTwo"
+  )
 );
-
 
 export default [
   {
@@ -173,17 +175,24 @@ export default [
     path: "/dashboard/pos/point_of_sale/shop",
   },
   {
-    element: <QrPaymentStepTwo/>,
+    element: <QrPaymentStepTwo />,
     path: "/dashboard/slipmemberform/qr_paymentsteptwo",
+    meta: {
+      layout: "blank",
+    },
   },
 
   {
-    element: <QrPaymentStepTwo/>,
+    element: <QrPaymentStepTwo />,
     path: "/dashboard/slipmemberform/qr_paymentsteptwo/:token",
   },
 
   {
     element: <Ecomm />,
     path: "/dashboard/pos/point_of_sale/ecommerce/shop",
+  },
+  {
+    element: <VertualTerminal />,
+    path: "/dashboard/pos/point_of_sale/virtual-terminal",
   },
 ];

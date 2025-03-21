@@ -80,9 +80,7 @@ const Address = ({
   fetchLoader,
   slipId,
 }) => {
-  // {{debugger}}
   const colourOptions = [
-    // { value: null, label: "select" },
     { value: "Monthly", label: "Monthly" },
     { value: "Annual", label: "Annual" },
   ];
@@ -157,7 +155,6 @@ const Address = ({
   const [otpVerify, setotpVerify] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  console.log({ errMsz });
 
   const [discountTypedStatus, setdiscountTypedStatus] = useState(null);
 
@@ -701,7 +698,8 @@ const Address = ({
                 <FormFeedback>{errors.contractDate.message}</FormFeedback>
               )}
             </Col>
-            <Col md="6" className="mb-1">
+
+             <Col md="6" className="mb-1">
               <Label className="form-label" for="paidIn">
                 Paid In <span style={{ color: "red" }}>*</span>
               </Label>
@@ -721,21 +719,24 @@ const Address = ({
                     isClearable
                     options={colourOptions}
                     onChange={(option) => {
-                      console.clear();
-                      console.log(option);
+                      
                       const { value } = option;
                       field.onChange(option);
-                      setValue("rentalPrice", slipDetail[value]);
-                      // handlePaidInChange(option); // Update rental price
+                      setValue("rentalPrice", slipDetail[option?.value] );
+
+
+                      
                     }}
                     isInvalid={!!errors.paidIn}
                   />
                 )}
               />
               {errors.paidIn && (
-                <FormFeedback>{errors.paidIn.message}</FormFeedback>
+                <FormFeedback>
+                  {errors.paidIn.message}
+                  </FormFeedback>
               )}
-            </Col>
+            </Col> 
           </Row>
 
           <Row>
