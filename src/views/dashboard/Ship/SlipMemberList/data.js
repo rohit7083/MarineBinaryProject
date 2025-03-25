@@ -530,7 +530,7 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
             style={{ margin: "0.5rem" }}
             to={{
             
-              pathname: `/dashboard/SlipMemberForm/${row?.uid}`,
+              pathname: `/dashboard/slip_memberform/${row?.uid}`,
              
             }}
             state={{stepStatus:row.stepStatus}}

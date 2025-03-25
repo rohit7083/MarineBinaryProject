@@ -1,12 +1,12 @@
 // Logo Import
-import logo from '@src/assets/images/logo/logo.svg'
+import logo from '@src/assets/images/logo/marina.png'
 
 // You can customize the template with the help of this file
 
 //Template config options
 const themeConfig = {
   app: {
-    appName: 'Vuexy',
+    appName: 'Longcove Marina',
     appLogoImage: logo
   },
   layout: {

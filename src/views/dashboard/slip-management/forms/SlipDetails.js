@@ -199,7 +199,7 @@ const [fetchLoader,setFetchLoader]=useState(false);
             },
             buttonsStyling: false,
           }).then(() => {
-            navigate("/dashboard/SlipDetailList");
+            navigate("/dashboard/slipdetail_list");
           });
         } else {
           await useJwt.postslip(payload);
@@ -755,16 +755,15 @@ const [fetchLoader,setFetchLoader]=useState(false);
             ))}
 
             {/* Electric Switch Field */}
-            <Row className="mb-1">
+            <Row className="mb-1 ">
               <Label sm="3" for="electric">
-                Electric (Yes/No)
+                Electric (Yes/No) 
               </Label>
-              <Col sm="9">
+              <Col sm="9" >
                 <div
                   className="form-check form-switch d-flex align-items-center"
                   style={{ margin: " 0px -55px" }}
                 >
-                  {/* "No" label to the left */}
                   <Label
                     className=" px-1"
                     htmlFor="electric"
@@ -773,7 +772,6 @@ const [fetchLoader,setFetchLoader]=useState(false);
                     No
                   </Label>
 
-                  {/* Toggle switch */}
                   <Input
                     type="switch"
                     name="electric"
@@ -784,7 +782,6 @@ const [fetchLoader,setFetchLoader]=useState(false);
                     disabled={View}
                   />
 
-                  {/* "Yes" label to the right */}
                   <Label
                     className="px-1"
                     htmlFor="electric"

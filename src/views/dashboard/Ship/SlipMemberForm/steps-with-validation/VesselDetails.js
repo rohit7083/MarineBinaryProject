@@ -27,7 +27,6 @@ const AccountDetails = ({
 }) => {
   const MySwal = withReactContent(Swal);
 
-
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
   const [errMsz, seterrMsz] = useState("");
@@ -49,20 +48,19 @@ const AccountDetails = ({
       const { result } = response.data.content;
       console.log("result from the vessel ", result);
 
-     const NotAssigned=result
-     .filter((item)=>!item.isAssigned)
-     .map((item)=>({
-      isAssigned:item.isAssigned,
-      label:item.slipName,
-      value:item.id,
-      dimensions:item.dimensions
-      
-     }))
+      const NotAssigned = result
+        .filter((item) => !item.isAssigned)
+        .map((item) => ({
+          isAssigned: item.isAssigned,
+          label: item.slipName,
+          value: item.id,
+          dimensions: item.dimensions,
+        }));
 
-      console.log("flseoption",NotAssigned);
-    
+      console.log("flseoption", NotAssigned);
+
       setSlipNames(NotAssigned);
-    
+
       // setSlipNames(() =>
       //   result.map(({ slipName: label, id: value, dimensions }) => ({
       //     label,
@@ -88,7 +86,7 @@ const AccountDetails = ({
 
   const onSubmit = async (data) => {
     seterrMsz("");
-    
+
     const finaleData = {};
     const { dimensions } = data.slipName;
 
@@ -145,12 +143,11 @@ const AccountDetails = ({
       if (error.response && error.response.data) {
         const { status, content } = error.response.data;
 
-
-        seterrMsz((prev)=>{
-          const newMsz=content || "Un expected Error Occurred . Try Again Later ";
+        seterrMsz((prev) => {
+          const newMsz =
+            content || "Un expected Error Occurred . Try Again Later ";
           return prev !== newMsz ? newMsz : prev + " ";
-        })
-        
+        });
       }
     } finally {
       setLoading(false);
@@ -220,25 +217,25 @@ const AccountDetails = ({
     ));
   };
 
-   if (fetchLoader)
-      return (
-        <div
+  if (fetchLoader)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "4rem",
+        }}
+      >
+        <Spinner
+          color="primary"
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "4rem",
+            height: "5rem",
+            width: "5rem",
           }}
-        >
-          <Spinner
-            color="primary"
-            style={{
-              height: "5rem",
-              width: "5rem",
-            }}
-          />
-        </div>
-      );
+        />
+      </div>
+    );
 
   return (
     <Fragment>

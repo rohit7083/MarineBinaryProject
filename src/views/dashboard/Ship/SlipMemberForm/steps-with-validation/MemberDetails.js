@@ -125,7 +125,6 @@ const PersonalInfo = ({
     resolver: yupResolver(SignupSchema),
   });
 
-  // prefilled value when u want to edit
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {

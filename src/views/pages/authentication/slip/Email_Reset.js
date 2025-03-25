@@ -12,6 +12,7 @@ import { UncontrolledAlert } from "reactstrap";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const VerifyEmailBasic = () => {
   // Initialize the useForm hook
@@ -39,15 +40,7 @@ const VerifyEmailBasic = () => {
       setResToken(res.data.token);
 
       if (res.status === 200) {
-        setMsz(
-          <React.Fragment>
-            <UncontrolledAlert color="success" onClick={handleDismiss}>
-              <div className="alert-body">
-                <strong>{res.data.content}</strong>
-              </div>
-            </UncontrolledAlert>
-          </React.Fragment>
-        );
+        toast.success("Email sent successfully!", { position: "top-center", autoClose: 3000 });
 
         setBtn(true);
 
@@ -67,16 +60,7 @@ const VerifyEmailBasic = () => {
         const errorMessage = data.content;
 
         switch (status) {
-          case 400:
-            setMsz(<span style={{ color: "red" }}>{errorMessage}</span>);
-            break;
-          case 401:
-            setMsz(errorMessage);
-            // navigate("/login");
-            break;
-          case 403:
-            setMsz(errorMessage);
-            break;
+        
           case 500:
             setMsz(
               <span style={{ color: "red" }}>

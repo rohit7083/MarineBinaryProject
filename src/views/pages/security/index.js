@@ -1,6 +1,6 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from "react";
-
+import BeatLoader from "react-spinners/BeatLoader";
 // ** Reactstrap Imports
 import {
   Row,
@@ -16,7 +16,7 @@ import {
   ModalBody,
   ModalHeader,
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 
 // ** Third Party Components
 import "cleave.js/dist/addons/cleave-phone.us";
@@ -26,7 +26,6 @@ import { Key, Settings, MessageSquare, ChevronRight } from "react-feather";
 // import qrCode from '@src/assets/images/icons/qrcode.png'
 import useJwt from "@src/auth/jwt/useJwt";
 import React from "react";
-
 
 const AppAuthComponent = ({
   setShow,
@@ -183,8 +182,6 @@ const AppAuthComponent = ({
   );
 };
 
-
-
 const AuthenticationExample = () => {
   const [show, setShow] = useState(false);
   const [authType, setAuthType] = useState("authApp");
@@ -193,7 +190,7 @@ const AuthenticationExample = () => {
   const [msz, setMessage] = useState("");
   const [autMsz, setauthMsz] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const handleContinue = async () => {
     try {
       const res = await useJwt.generate();
@@ -212,25 +209,27 @@ const AuthenticationExample = () => {
     }
   };
 
+  useEffect(() => {
+    let isMounted = true;
 
-useEffect(() => {
-  let isMounted = true;
-
-  (async () => {
-    try {
-      const res = await useJwt.status();
-      if (isMounted) {
-        setIsAuthenticated(res.data.is_2fa_activated);
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await useJwt.status();
+        if (isMounted) {
+          setIsAuthenticated(res.data.is_2fa_activated);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  })();
+    })();
 
-  return () => {
-    isMounted = false; // Avoid state updates after unmount
-  };
-}, []);
+    return () => {
+      isMounted = false; // Avoid state updates after unmount
+    };
+  }, []);
 
   return (
     <Fragment>
@@ -238,37 +237,42 @@ useEffect(() => {
         <CardBody className="text-center">
           <Key className="font-large-2 mb-1" />
           <CardTitle tag="h5">Two Factor Auth</CardTitle>
-
           {isAuthenticated ? (
             <>
-          <CardText>
-          <React.Fragment>
-                     <Alert
-                       color="success"
-                      
-                     >
-                       <div className="alert-body">
-                         Two Steps Authentication Is Successfully Completed
-                       </div>
-                     </Alert>
-                   </React.Fragment>
-        </CardText>
-        {/* <Button color="primary" type="submit"  onClick={() => setShow(true)}>
-          Enable Authentication
-        </Button> */}
-        </>
- ):(
-  <>
-          <CardText>
-            Use this modal to enhance your application security by enabling two
-            factor authentication.
-          </CardText>
-          <Button color="primary" type="submit" onClick={() => setShow(true)}>
-            Enable Authentication
-          </Button>
-          </>
-)}
-
+              <CardText>
+                <React.Fragment>
+                  <Alert color="success">
+                    <div className="alert-body">
+                      Two Steps Authentication Is Successfully Completed
+                    </div>
+                  </Alert>
+                </React.Fragment>
+              </CardText>
+            </>
+          ) : (
+            <>
+              {!loading ? (
+                <>
+                  <CardText>
+                    Use this modal to enhance your application security by
+                    enabling two factor authentication.
+                  </CardText>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    onClick={() => setShow(true)}
+                  >
+                    Enable Authentication
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <CardText>Please Wait...</CardText>
+                  <BeatLoader />
+                </>
+              )}
+            </>
+          )}
         </CardBody>
       </Card>
       <Modal
@@ -365,4 +369,3 @@ useEffect(() => {
 };
 
 export default AuthenticationExample;
-

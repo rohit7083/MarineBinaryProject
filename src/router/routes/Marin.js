@@ -176,7 +176,7 @@ export default [
   },
   {
     element: <QrPaymentStepTwo />,
-    path: "/dashboard/slipmemberform/qr_paymentsteptwo",
+    path: "/dashboard/slip_memberform/qr_paymentsteptwo",
     meta: {
       layout: "blank",
     },
@@ -184,13 +184,10 @@ export default [
 
   {
     element: <QrPaymentStepTwo />,
-    path: "/dashboard/slipmemberform/qr_paymentsteptwo/:token",
+    path: "/dashboard/slip_memberform/qr_paymentsteptwo/:token",
   },
 
-  {
-    element: <Ecomm />,
-    path: "/dashboard/pos/point_of_sale/ecommerce/shop",
-  },
+
   {
     element: <VertualTerminal />,
     path: "/dashboard/pos/point_of_sale/virtual-terminal",

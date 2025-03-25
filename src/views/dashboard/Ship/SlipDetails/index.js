@@ -220,7 +220,7 @@ function ShipDetails() {
               icon: "success",
               customClass: { confirmButton: "btn btn-primary" },
               buttonsStyling: false,
-            }).then(() => navigate("/dashboard/SlipDetailList"));
+            }).then(() => navigate("/dashboard/slipdetail_list"));
           } else {
             await useJwt.postslip(payload);
             MySwal.fire({
@@ -229,7 +229,7 @@ function ShipDetails() {
               icon: "success",
               customClass: { confirmButton: "btn btn-primary" },
               buttonsStyling: false,
-            }).then(() => navigate("/dashboard/SlipDetailList"));
+            }).then(() => navigate("/dashboard/slipdetail_list"));
           }
         } catch (error) {
           console.error("Error submitting form:", error);
@@ -629,7 +629,7 @@ function ShipDetails() {
                 <div className="form-check form-switch d-flex align-items-center">
                   {/* "No" label to the left */}
                   <Label
-                    className="me-0"
+                    className="me-1"
                     htmlFor="electric"
                     style={{ textAlign: "left" }}
                   >
@@ -648,7 +648,7 @@ function ShipDetails() {
 
                   {/* "Yes" label to the right */}
                   <Label
-                    className="ms-0"
+                    className="ms-1"
                     htmlFor="electric"
                     style={{ textAlign: "left" }}
                   >
@@ -657,6 +657,7 @@ function ShipDetails() {
                 </div>
               </Col>
             </Row>
+
 
             {/* Water Switch Field */}
             <Row className="mb-1">
@@ -667,7 +668,7 @@ function ShipDetails() {
                 <div className="form-check form-switch d-flex align-items-center">
                   {/* "No" label to the left */}
                   <Label
-                    className="me-0"
+                    className="me-1"
                     htmlFor="water"
                     style={{ textAlign: "left" }}
                   >
@@ -686,7 +687,7 @@ function ShipDetails() {
 
                   {/* "Yes" label to the right */}
                   <Label
-                    className="ms-0"
+                    className="ms-1"
                     htmlFor="water"
                     style={{ textAlign: "left" }}
                   >

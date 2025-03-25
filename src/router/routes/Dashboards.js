@@ -46,43 +46,43 @@ const DashboardRoutes = [
 
 
   {
-    path: '/dashboard/Ship',
+    path: '/dashboard/slip',
     element: <DashboardShip />
   },
   {
-    path: '/dashboard/SlipCategory/:uid',
+    path: '/dashboard/slipcategory/:uid',
     element: <DashboardSlipCategory />
   },
   {
-    path: '/dashboard/SlipCategory',
+    path: '/dashboard/slipcategory',
     element: <DashboardSlipCategory />
   },
    {
-    path: '/dashboard/SlipDetails',
+    path: '/dashboard/slip-details',
     element: <DashboardSlipDetails />
   }, 
   {
-    path: '/dashboard/SlipDetails/:uid',
+    path: '/dashboard/slip-details/:uid',
     element: <DashboardSlipDetails />
   }, 
   {
-    path: '/dashboard/SlipList',
+    path: 'slip_Management/sliplist',
     element: <DashboardSlipList />
   },
   {
-    path: '/dashboard/SlipDetailList',
+    path: '/dashboard/slipdetail_list',
     element: <DashboardSlipDetailList />
   }, {
-    path: '/dashboard/SlipMemberForm',
+    path: '/dashboard/slip_memberform',
     element: <DashboardSlipMemberForm />
   }, 
   {
-    path: '/dashboard/SlipMemberForm/:uid',
+    path: '/dashboard/slip_memberform/:uid',
     element: <DashboardSlipMemberForm />
   }, 
 
   {
-    path: '/dashboard/SlipMemberList',
+    path: '/dashboard/slipmember_list',
     element: <DashboardSlipMemberList />
   },
   // {
@@ -97,7 +97,7 @@ const DashboardRoutes = [
     // },
    
     {
-      path: '/dashboard/dash',
+      path: '/dashbord',
       element: <Dashboarddash />
     },
 

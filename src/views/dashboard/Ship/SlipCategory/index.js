@@ -196,7 +196,7 @@ const [loading,setLoading]=useState(false);
             icon: "success",
             customClass: { confirmButton: "btn btn-primary" },
             buttonsStyling: false,
-          }).then(() => navigate("/dashboard/SlipList"));
+          }).then(() => navigate("/slip_Management/sliplist"));
         } else {
           await useJwt.postslipCatogory(payload);
           MySwal.fire({
@@ -205,7 +205,7 @@ const [loading,setLoading]=useState(false);
             icon: "success",
             customClass: { confirmButton: "btn btn-primary" },
             buttonsStyling: false,
-          }).then(() => navigate("/dashboard/SlipList"));
+          }).then(() => navigate("/slip_Management/sliplist"));
         }
       } catch (error) {
         console.error("API Error:", error);

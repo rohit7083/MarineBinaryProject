@@ -34,7 +34,7 @@ const DefaultAlert = () => {
   const [autMsz, setauthMsz] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-
+const [statusLoad,setStatusLoad]=useState(false);
   const MySwal = withReactContent(Swal);
   const [visible, setVisible] = useState(true);
 
@@ -97,20 +97,20 @@ const DefaultAlert = () => {
     }
   };
 
-  const handleRemove = async () => {
-    try {
-      const res = await useJwt.disable();
-      console.log(res);
-    } catch (error) {
-      console.log("disabled errror", error);
-    }
-  };
+  // const handleRemove = async () => {
+  //   try {
+  //     const res = await useJwt.disable();
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.log("disabled errror", error);
+  //   }
+  // };
 
   const handdleStatus = async () => {
     let isMounted = true;
 
     try {
-     
+      setStatusLoad(true);
       const res = await useJwt.status();
       if (isMounted) {
         setIsAuthenticated(res.data.is_2fa_activated);
@@ -154,6 +154,8 @@ const DefaultAlert = () => {
         }
       }
       console.log({ error });
+    }finally{
+      setStatusLoad(false);
     }
 
     return () => {
@@ -187,6 +189,9 @@ const DefaultAlert = () => {
           // </React.Fragment>
           ""
         ) : (
+          <>
+          {!statusLoad && (
+
           <Alert color="primary">
             <div className="p-1 d-flex justify-content-between align-item-center">
               <div className="alert-body">
@@ -203,6 +208,8 @@ const DefaultAlert = () => {
               </Button>
             </div>
           </Alert>
+        )}
+</>
         )}
       </React.Fragment>
       {/* <Button.Ripple color="dark" type="submit" onClick={handleRemove}>

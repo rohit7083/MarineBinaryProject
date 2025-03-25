@@ -6,7 +6,8 @@ import { set, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ArrowLeft, ArrowRight } from "react-feather";
-
+import Swal from "sweetalert2";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Row,
@@ -20,17 +21,13 @@ import {
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 
-const filesName = [
-  "IdentityDocument",
-  "Contract",
-  "Registration",
-  "Insurance",
-];
+const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
 const FileUploadForm = ({ stepper, slipIID }) => {
   const [documents, setDocuments] = useState([]);
-
+  const myId = useParams();
   const [loading, setLoading] = useState(false);
   const [isDataFetch, setIsDataFetch] = useState(false);
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -45,7 +42,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
         lastUploaded: "",
         currentFile: null,
       },
-      "IdentityDocument": {
+      IdentityDocument: {
         lastUploaded: "",
         currentFile: null,
       },
@@ -64,11 +61,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
     const fetchData = async () => {
       try {
         const response = await useJwt.getSingleDocuments(slipIID);
-        // {
-        //   {
-        //     debugger;
-        //   }
-        // }
+
         const doc = response.data.content.result.reduce((object, item) => {
           const { uid, documentName, documentFilePath } = item;
           object[documentName] = {
@@ -91,15 +84,6 @@ const FileUploadForm = ({ stepper, slipIID }) => {
   }, [slipIID, reset]);
 
   const onSubmit = async (data) => {
-    // const updatedDataList = Object.keys(filesName).reduce((array, key) => {
-    //   const formData = new FormData();
-    //   formData.append("documentName", filesName[key]);
-    //   formData.append("documentFile", data[key]);
-    //   formData.append("slipId", slipIID);
-    //   array.push(formData);
-    //   return array;
-    // }, []);
-
     const updatedDataList = Object.keys(data).reduce((obj, key) => {
       if (data[key].currentFile == null) {
         delete data[key];
@@ -109,7 +93,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
       const formData = new FormData();
 
       formData.append("documentName", key);
-      formData.append("documentFile", data[key].currentFile );
+      formData.append("documentFile", data[key].currentFile);
       formData.append("slipId", slipIID);
 
       obj[key] = obj[key] || {};
@@ -117,22 +101,62 @@ const FileUploadForm = ({ stepper, slipIID }) => {
       if (data[key].uid) obj[key]["uid"] = data[key].uid;
       return obj;
     }, {});
-  
+
     try {
+      // {{debugger}}
+      if (myId) {
+        navigate("/dashboard/slipmember_list"); // Redirect after alert
+      }
       const results = await Promise.all(
-        Object.values(updatedDataList).map((details) =>
-          details?.uid
-            ? useJwt.updateDoc(details.uid, details.formData)
-            : useJwt.slipDocument(details.formData)
-        )
+        Object.values(updatedDataList).map(async (details) => {
+          if (details?.uid) {
+            await useJwt.updateDoc(details.uid, details.formData);
+            return { type: "update" };
+          } else {
+            await useJwt.slipDocument(details.formData);
+            return { type: "create" };
+          }
+        })
       );
+
+      // Check results and show messages accordingly
+      const updatedCount = results.filter(
+        (res) => res.type === "update"
+      ).length;
+      const createdCount = results.filter(
+        (res) => res.type === "create"
+      ).length;
+
+      let message = "";
+      if (updatedCount > 0 && createdCount > 0) {
+        message = `Successfully updated ${updatedCount} and created ${createdCount} records!`;
+      } else if (updatedCount > 0) {
+        message = `Successfully updated ${updatedCount} records!`;
+      } else if (createdCount > 0) {
+        message = `Successfully created ${createdCount} records!`;
+      }
+
+      if (message) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: message,
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          navigate("/dashboard/slipmember_list"); // Redirect after alert
+        });
+      }
     } catch (error) {
       console.log(error);
-    } finally {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Something went wrong. Please try again.",
+      });
     }
   };
 
-  //** File Size */
   const renderFileSize = (size) => {
     if (Math.round(size / 100) / 10 > 1000) {
       return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;

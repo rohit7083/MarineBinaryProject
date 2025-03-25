@@ -147,7 +147,7 @@ const DataTableServerSide = () => {
       <Card>
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Members </CardTitle>
-          <Link to="/dashboard/SlipMemberForm">
+          <Link to="/dashboard/slip_memberform">
             <Button.Ripple color="primary">Add Vessels +</Button.Ripple>
           </Link>
         </CardHeader>

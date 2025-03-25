@@ -28,13 +28,13 @@ export default [
     id: "dashboard",
     title: "dashboard",
     icon: <Circle size={12} />,
-    navLink: "/dashboard/dash",
+    navLink: "/dashbord",
   },
   {
     id: "Slip",
     title: "Slip",
     icon: <Circle size={12} />,
-    navLink: "/dashboard/Ship",
+    navLink: "/Ship",
     badge: "light-warning",
     // badgeText: '2',
     children: [
@@ -42,13 +42,13 @@ export default [
         id: "SlipList",
         title: "Slip Category List",
         icon: <Circle size={12} />,
-        navLink: "/dashboard/SlipList",
+        navLink: "slip_Management/sliplist",
       },
       {
         id: "SlipDetailList",
-        title: "Slip List",
+        title: "Slip Details List",
         icon: <Circle size={12} />,
-        navLink: "/dashboard/SlipDetailList",
+        navLink: "/dashboard/slipdetail_list",
       },
       // {
       //   id: 'SlipMemberForm',
@@ -60,7 +60,7 @@ export default [
         id: "SlipMemberList",
         title: "Slip Member List",
         icon: <Circle size={12} />,
-        navLink: "/dashboard/SlipMemberList",
+        navLink: "/dashboard/slipmember_list",
       },
     ],
   },
@@ -155,12 +155,7 @@ export default [
         navLink: '/dashboard/pos/point_of_sale/virtual-terminal'
       },
 
-      {
-        id: "Ecomm",
-        title: "Ecomm ",
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/pos/point_of_sale/ecommerce/shop'
-      },
+     
     ],
   },
 ];

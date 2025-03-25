@@ -367,7 +367,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Slip Assigned",
-    minWidth: "200px",
+    minWidth: "170px",
     selector: (row) =>{
 // {{debugger}}
       const SlipAssigned = row.isAssigned;
@@ -391,7 +391,7 @@ export const serverSideColumns = [
   {
     sortable: true,
     name: "Category",
-    minWidth: "150px",
+    minWidth: "160px",
     selector: (row) => row.category?.shipTypeName || "N/A", // Fallback to "N/A" if shipTypeName is undefined
   },
 
@@ -501,7 +501,7 @@ export const serverSideColumns = [
       return (
         <div className="d-flex">
           {/* <Link to={{
-            // pathname: `/dashboard/SlipMemberList/${row.uid}`,
+            // pathname: `/dashboard/slipmember_list/${row.uid}`,
             pathname: `/dashboard/SlipView`,
           }}>
           <span style={{ cursor: "pointer" }}>
@@ -522,7 +522,7 @@ export const serverSideColumns = [
           <Link
             style={{ margin: "0.5rem" }}
             to={{
-              pathname: `/dashboard/SlipDetails/${row.uid}`, // Ensure this is the correct path
+              pathname: `/dashboard/slip-details/${row.uid}`, // Ensure this is the correct path
               state: {},
             }}
           >

@@ -1,9 +1,10 @@
 // ** React Imports
-import { Navigate ,useParams} from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-// ** Reactstrap Imports
+import React from "react";
+import { UncontrolledAlert } from "reactstrap";
 import {
   Card,
   CardBody,
@@ -11,6 +12,9 @@ import {
   CardText,
   Button,
   Form,
+  Row,
+  Col,
+  Label,
   Input,
 } from "reactstrap";
 import { Spinner } from "reactstrap";
@@ -31,15 +35,7 @@ import { useDispatch, useSelector } from "react-redux";
 // ** Utils
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
-
-/*
- [
-          {
-            action: 'manage',
-            subject: 'all'
-          }
-        ]
-*/
+import toast from "react-hot-toast";
 
 const TwoStepsBasic = () => {
   const MySwal = withReactContent(Swal);
@@ -50,7 +46,7 @@ const TwoStepsBasic = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState(""); // ** React Hook Form Setup
   const [loading, setLoading] = useState(false);
-
+  // {{debugger}}
   const userData = location.state?.userData;
   const {
     control,
@@ -59,15 +55,18 @@ const TwoStepsBasic = () => {
     formState: { errors },
   } = useForm();
 
-const { uid: token } = useParams();
-
-  // console.log({ token });
+  // const { uid: token } = useParams();
+  const token = userData?.token;
 
   const handleResendOTP = async (e) => {
     e.preventDefault();
     try {
       const res = await useJwt.resend_Otp(token);
       console.log("resentOTP", res);
+      toast.success("OTP sent successfully", {
+        position: "top-center",
+        autoClose: 5000,
+      });
     } catch (error) {
       console.log(error.response);
     }
@@ -82,11 +81,12 @@ const { uid: token } = useParams();
     } catch (error) {
       console.log(error.response);
     }
-  }; 
+  };
   const onSubmit = async (formData) => {
+    setMessage("");
     try {
-        // console.log("ability",ability);
-        setLoading(true); // Set loading to true before API call
+      // console.log("ability",ability);
+      setLoading(true); // Set loading to true before API call
 
       const token = userData?.token;
       const otpString = formData.otp.join("");
@@ -96,12 +96,15 @@ const { uid: token } = useParams();
       console.log(res);
 
       const data = {
-       ...{ ...res.data.profile,ability:[
-        {
-          action: "manage",
-          subject: "all",
+        ...{
+          ...res.data.profile,
+          ability: [
+            {
+              action: "manage",
+              subject: "all",
+            },
+          ],
         },
-      ]},
         accessToken: res.data.access,
         refreshToken: res.data.refresh,
       };
@@ -117,36 +120,26 @@ const { uid: token } = useParams();
       console.log({ error });
       if (error.response) {
         const { status, data } = error.response;
-        const errorMessage = data.content;
-        // setMessage(errorMessage);
+        const errorMessage = data.message;
+
+        setMessage(errorMessage);
 
         switch (status) {
-          case 400:
-            setMessage(<span style={{ color: "red" }}>{data.content}</span>);
-            break;
-          case 401:
-            setMessage(errorMessage);
-            // navigate("/login");
-            break;
-          case 403:
-            setMessage(errorMessage);
-            break;
+          
           case 500:
             setMessage(
               <span style={{ color: "red" }}>
                 Something went wrong on our end. Please try again later
               </span>
             );
-                        break;
+            break;
           default:
             setMessage(errorMessage);
         }
       }
-
+    } finally {
+      setLoading(false); // Set loading to false after API call is complete
     }
-    finally {
-        setLoading(false); // Set loading to false after API call is complete
-      }
   };
 
   return (
@@ -234,15 +227,30 @@ const { uid: token } = useParams();
               </svg>
               <h2 className="brand-text text-primary ms-1">Longcove Marina</h2>
             </Link>
+
+            <Row className="mb-1">
+              <Label sm="3" for=""></Label>
+              <Col sm="12">
+                {message && (
+                  <React.Fragment>
+                    <UncontrolledAlert color="danger">
+                      <div className="alert-body">
+                        <span className="text-danger fw-bold">{message}</span>
+                      </div>
+                    </UncontrolledAlert>
+                  </React.Fragment>
+                )}
+              </Col>
+            </Row>
+
             <CardTitle tag="h2" className="fw-bolder mb-1">
               Verify OTP For Login 💬
             </CardTitle>
             <CardText className="mb-75">
-              We sent OTP to your Registered Mobile Number.Enter the code from the
-              Email in the field below.
+              We sent OTP to your Registered Mobile Number.Enter the code from
+              the Email in the field below.
             </CardText>
-            <CardText className="fw-bolder mb-2">
-            </CardText>
+            <CardText className="fw-bolder mb-2"></CardText>
             <Form
               className="auth-reset-password-form mt-2"
               onSubmit={handleSubmit(onSubmit)}
@@ -313,7 +321,15 @@ const { uid: token } = useParams();
                 )}
               </div>
               <Button block type="submit" color="primary">
-                 {loading ? <Spinner size="sm" /> : "Login"}
+                <div className="d-flex justify-content-center align-items-center">
+                  {loading ? (
+                    <div className="d-flex align-items-center">
+                      Loading.. <Spinner size="sm" className="mx-1" />
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
+                </div>
               </Button>
             </Form>
 

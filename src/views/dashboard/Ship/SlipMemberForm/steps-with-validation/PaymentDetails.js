@@ -102,6 +102,12 @@ const Address = ({
     { value: "8", label: "QR Code" },
   ];
 
+  const AccountType = [
+    { value: "8", label: "Personal Checking Account" },
+    { value: "9", label: "Personal Saving Account" },
+    { value: "10", label: "Business Checking Account" },
+    { value: "11", label: "Business Savings Account" },
+  ];
   // Create month and year options
   const months = [
     { value: "01", label: "January" },
@@ -154,7 +160,6 @@ const Address = ({
   const [errMsz, setErrMsz] = useState("");
   const [otpVerify, setotpVerify] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
 
   const [discountTypedStatus, setdiscountTypedStatus] = useState(null);
 
@@ -468,38 +473,33 @@ const Address = ({
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
-      const data = { ...formData };
+      const data = { ...formData }["0"]; // Extract first object
+      // {{debugger}}
+      let pmVal =
+        colourOptions3?.find((x) => x.value == data.paymentMode) || null;
+      let paidInVal =
+        colourOptions?.find((x) => x.value == data.paidIn) || null;
+      let accoTypeValue =
+        AccountType?.find((x) => x.value == data.accountType) || null;
 
-      const { paymentMode } = data["0"];
+      // Update state if needed
+      setpaymentMode(pmVal?.label || "");
 
-      const pmVal = colourOptions3?.find((x) => paymentMode == x.value);
-      setpaymentMode(pmVal?.label);
-      data["0"].paymentMode = pmVal;
-
-      data["0"].paidIn = {
-        label: data[0].paidIn || "",
-        value: data[0].paidIn || "",
+      const updatedData = {
+        ...data,
+        paymentMode: pmVal,
+        paidIn: paidInVal,
+        accountType: accoTypeValue,
       };
-      reset(data["0"]);
+
+      reset(updatedData);
     }
-  }, [reset, formData]);
-
-  // useEffect(() => {
-  //   if (Object.keys(formData)?.length) {
-  //     const data = { ...formData };
-
-  //     const { paymentMode } = data["0"];
-
-  //     const pmVal = colourOptions3?.find((x) => paymentMode == x.value);
-  //     setpaymentMode(pmVal?.label);
-  //     data["0"].paymentMode = pmVal?.label || ''; // Store label as string
-
-  //     data["0"].paidIn = data[0].paidIn || ''; // Store paidIn as string
-  //     reset(data["0"]);
-  //   }
-  // }, [reset, formData]);
+  }, [setValue, reset, formData]);
 
   const companyName = watch("companyName");
+  const accType = watch("accountType");
+  const acctypeValue = accType?.value;
+  console.log(acctypeValue);
 
   const onSubmit = async (data) => {
     setErrMsz("");
@@ -553,10 +553,12 @@ const Address = ({
       formData.append("chequeNumber", data.chequeNumber);
       formData.append("chequeImage", file);
     } else if (paymentMode === "ChequeACH") {
+      // {{debugger}}
       formData.append("bankName", data.bankName);
       formData.append("nameOnAccount", data.nameOnAccount);
       formData.append("routingNumber", data.routingNumber);
       formData.append("accountNumber", data.accountNumber);
+      formData.append("accountType", data.accountType?.value);
     } else if (paymentMode === "Money Order") {
       formData.append("companyName", data.companyName?.value);
       if (companyName?.label !== "Other") {
@@ -589,7 +591,7 @@ const Address = ({
         if (Object.keys(errors).length === 0) {
           if (qr) {
             setShowQrModal(true);
-          // } else if () {
+            // } else if () {
           } else {
             stepper.next();
           }
@@ -699,7 +701,7 @@ const Address = ({
               )}
             </Col>
 
-             <Col md="6" className="mb-1">
+            <Col md="6" className="mb-1">
               <Label className="form-label" for="paidIn">
                 Paid In <span style={{ color: "red" }}>*</span>
               </Label>
@@ -710,6 +712,24 @@ const Address = ({
                 }}
                 name="paidIn"
                 render={({ field }) => (
+                  // <Select
+                  //   {...field}
+                  //   theme={selectThemeColors}
+                  //   className="react-select"
+                  //   isDisabled={statusThree()}
+                  //   classNamePrefix="select"
+                  //   isClearable
+                  //   options={colourOptions}
+                  //   onChange={(option) => {
+
+                  //     const { value } = option;
+                  //     field.onChange(option);
+                  //     setValue("rentalPrice", slipDetail[option?.value] );
+
+                  //   }}
+                  //   isInvalid={!!errors.paidIn}
+                  // />
+
                   <Select
                     {...field}
                     theme={selectThemeColors}
@@ -719,26 +739,19 @@ const Address = ({
                     isClearable
                     options={colourOptions}
                     onChange={(option) => {
-                      
-                      const { value } = option;
-                      field.onChange(option);
-                      setValue("rentalPrice", slipDetail[option?.value] );
-
-
-                      
+                      field.onChange(option); // Ensure field can accept object
+                      setValue("rentalPrice", slipDetail[option?.value] || ""); // Avoid undefined errors
                     }}
                     isInvalid={!!errors.paidIn}
                   />
                 )}
               />
               {errors.paidIn && (
-                <FormFeedback>
-                  {errors.paidIn.message}
-                  </FormFeedback>
+                <FormFeedback>{errors.paidIn.message}</FormFeedback>
               )}
-            </Col> 
+            </Col>
           </Row>
-
+          {console.log("paymentMode", watch("paymentMode"))}
           <Row>
             <Col md="12" className="mb-1">
               <Label className="form-label" for="landmark">
@@ -1721,13 +1734,47 @@ const Address = ({
           )}
 
           {/* //* ============================ ChequeACH =========================  */}
-
           {paymentMode === "ChequeACH" && (
             <>
               <div className="content-header">
                 <h5 className="mb-0 my-2">Bank Details</h5>
                 <small>Fill Bank Details</small>
               </div>
+
+              <Row>
+                <Col md="12" className="mb-1">
+                  <Label className="form-label" for="acctype">
+                    Account Type <span style={{ color: "red" }}>*</span>
+                  </Label>
+
+                  <Controller
+                    name="accountType"
+                    control={control}
+                    rules={{
+                      required: "Account Typed is required",
+                    }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={AccountType}
+                        className={`react-select ${
+                          errors.accountType ? "is-invalid" : ""
+                        }`}
+                        isDisabled={statusThree()}
+                        // onChange={(selectedOption) => {
+                        //   const value = selectedOption ? selectedOption.value : "";
+                        //   field.onChange(selectedOption); // Update React Hook Form with the value
+                        //   handlepaymentMode(selectedOption); // Run your custom function with the full option
+                        // }}
+                      />
+                    )}
+                  />
+                  {errors.accountType && (
+                    <FormFeedback>{errors.accountType.message}</FormFeedback>
+                  )}
+                </Col>
+              </Row>
+
               <Row>
                 <Col md="6" className="mb-1">
                   <Label className="form-label" for="bankName">

@@ -452,7 +452,7 @@ export const serverSideColumns = [
 
           <Link
             to={{
-              pathname: `/dashboard/SlipCategory/${row.uid}`, // Ensure this is the correct path
+              pathname: `/dashboard/slipcategory/${row.uid}`, // Ensure this is the correct path
               state: {
                 shipTypeName: row.shipTypeName, // Pass the shipTypeName
                 dimensions: row.dimensions, // Pass the dimensions (make sure it's an array)

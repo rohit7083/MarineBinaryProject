@@ -114,7 +114,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
           },
           buttonsStyling: false,
         }).then(() => {
-          // navigate("/dashboard/SlipList");
+          // navigate("/dashboard/sliplist");
         });
         console.error("Failed to add role:", res.message || res);
       }

@@ -8,6 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
 import { ChevronDown } from "react-feather";
 import DataTable from "react-data-table-component";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+
 import {
   Card,
   CardHeader,
@@ -156,7 +158,7 @@ const DataTableServerSide = () => {
       <Card>
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Category</CardTitle>
-          <Link to="/dashboard/SlipCategory">
+          <Link to="/dashboard/slipcategory">
             <Button.Ripple color="primary">Add Category +</Button.Ripple>
           </Link>
         </CardHeader>

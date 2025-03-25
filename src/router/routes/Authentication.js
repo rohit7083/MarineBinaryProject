@@ -63,7 +63,7 @@ const AuthenticationRoutes = [
   },
   
   {
-    path: '/Email_Reset',
+    path: '/email_reset',
     element: <Email_Reset />,
     meta: {
       layout: 'blank',
@@ -90,7 +90,7 @@ const AuthenticationRoutes = [
     }
   },
   {
-    path: '/Mobile_OTP',
+    path: '/mobile_otp',
     element: <Mobile_OTP/>,
     meta: {
       layout: 'blank',
@@ -109,7 +109,7 @@ const AuthenticationRoutes = [
     }
   },
   {
-    path: '/SlipRegister',
+    path: '/slip_register',
     element: <SlipRegister />,
     meta: {
       layout: 'blank',
