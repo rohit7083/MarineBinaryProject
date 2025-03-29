@@ -349,12 +349,12 @@ export const multiLingColumns = [
 ];
 
 // ** Table Server Side Column
-export const serverSideColumns = [
+export const serverSideColumns =(currentPage,rowsPerPage)=> [
   {
     sortable: true,
     name: "Id",
     minWidth: " 50px",
-    selector: (row) => row.id,
+    selector: (row,index) => (currentPage -1)* rowsPerPage + index + 1 ,
   },
 
   {
@@ -387,6 +387,9 @@ export const serverSideColumns = [
 
       const MySwal = withReactContent(Swal);
 
+
+
+
       const handleDelete = async (uid) => {
         // Show confirmation modal
         return MySwal.fire({
@@ -400,25 +403,29 @@ export const serverSideColumns = [
             cancelButton: "btn btn-danger ms-1",
           },
           buttonsStyling: false,
-        }).then(async function (result) {
+        }).then(async (result) => {
           if (result.value) {
             try {
               // Call delete API
               const response = await useJwt.deleteslipCatogory(uid);
               if (response.status === 204) {
+                // Update state by filtering out the deleted item
                 setData((prevData) =>
-                  prevData.filter((item) => item.uid !== uid)
-                );
+                  {
+                   const newData= prevData.filter((item) => item.uid !== uid)
+                   console.log("Updated Data:", newData);
+                   return newData;
+                  })
+      
                 // Show success message
                 MySwal.fire({
                   icon: "success",
                   title: "Deleted!",
-                  text: "Your file has been deleted.",
+                  text: "Your Record has been deleted.",
                   customClass: {
                     confirmButton: "btn btn-success",
                   },
                 });
-                window.location.reload(true);
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -427,7 +434,7 @@ export const serverSideColumns = [
             // Show cancellation message
             MySwal.fire({
               title: "Cancelled",
-              text: "Your imaginary file is safe :)",
+              text: "Your Record is safe :)",
               icon: "error",
               customClass: {
                 confirmButton: "btn btn-success",
@@ -436,6 +443,7 @@ export const serverSideColumns = [
           }
         });
       };
+      
 
       const handle = async () => {
         console.log(row.shipTypeName);

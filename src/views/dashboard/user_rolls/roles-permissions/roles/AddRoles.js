@@ -47,7 +47,7 @@ const AddRoles = (props) => {
   const { show, toggle, uid, modalType, row } = props;
 
 
-
+const[fetchLoader,setFetchLoader]=useState(false);
   // ** States
   const [permissionList, setPermissionList] = useState(null);
   const [processingData, setProcessing] = useState(false);
@@ -125,6 +125,7 @@ const AddRoles = (props) => {
     (async () => {
       try {
    
+        setFetchLoader(true);
         const res = await useJwt.permission();
         const { result } = res?.data.content;
         let data = structurePermissionList(result);
@@ -146,6 +147,7 @@ const AddRoles = (props) => {
         }
       } catch (error) {
       } finally {
+        setFetchLoader(false);
       }
     })();
   }, [props]);
@@ -183,10 +185,27 @@ const AddRoles = (props) => {
             </Fragment>
           )}
         </div>
+{fetchLoader ?(<> <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "4rem",
+        }}
+      >
+        <Spinner
+          color="primary"
+          style={{
+            height: "5rem",
+            width: "5rem",
+          }}
+        />
+      </div></>):(<> 
+
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
             <Label className="form-label" for="roleName">
-              Role Name
+              Role Name 
             </Label>
             <Controller
               name="roleName"
@@ -205,13 +224,15 @@ const AddRoles = (props) => {
               <FormFeedback>Please enter a valid role name</FormFeedback>
             )}
           </Col>
+
+
           <Col xs={12}>
             <h4 className="mt-2 pt-50">Role Permissions</h4>
             <Table className="table-flush-spacing" responsive>
               <tbody>
                 <tr>
                   <td className="text-nowrap fw-bolder">
-                    <span className="me-50"> Administrator Access</span>
+                    <span className="me-50"> Administrator Access </span>
                     <Info size={14} id="info-tooltip" />
                     <UncontrolledTooltip placement="top" target="info-tooltip">
                       Allows a full access to the system
@@ -226,7 +247,6 @@ const AddRoles = (props) => {
                     </div>
                   </td>
                 </tr>
-{/* {console.log(permissionList)} */}
                 {permissionList &&
                   Object.keys(permissionList).map((category, index) => {
                     // console.log({category})
@@ -286,7 +306,11 @@ const AddRoles = (props) => {
               Discard
             </Button>
           </Col>
+
+
         </Row>
+        </>)}
+
       </ModalBody>
     </Modal>
   );

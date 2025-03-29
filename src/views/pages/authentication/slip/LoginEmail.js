@@ -70,8 +70,6 @@ const Login = () => {
   const MySwal = withReactContent(Swal);
   const [message, setMessage] = useState(""); // ** React Hook Form Setup
   const [loading, setLoading] = useState(false);
-  // const [locationEnabled, setLocationEnabled] = useState(false);
-  const [locationLoader, setlocationLoader] = useState(true);
   const [show, setShow] = useState(false);
   const [location, setLocation] = useState(null);
   const [ip, setIP] = useState(null);
@@ -94,14 +92,7 @@ const Login = () => {
     return undefined; // Valid case
   };
 
-const handleRemove = async () => {
-    try {
-      const res = await useJwt.disable();
-      console.log(res);
-    } catch (error) {
-      console.log("disabled errror", error);
-    }
-  };
+
 
   // const isLoacationEnabled=localStorage.getItem("locationEnabled");
   // console.log("isLocationEnabled",isLoacationEnabled);
@@ -298,6 +289,8 @@ else{
                 </ModalBody>
               </Modal>
             </Fragment>
+
+
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
@@ -320,9 +313,7 @@ else{
             </CardTitle>
 
             <CardText className="mb-2">
-               {/* <Button.Ripple color="dark" type="submit" onClick={handleRemove}>
-                      Remove{" "}
-                    </Button.Ripple> */}
+               
               Please sign-in to your account and start the adventure
               <br />
               {message && (

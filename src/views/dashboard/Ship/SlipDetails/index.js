@@ -28,7 +28,8 @@ function ShipDetails() {
   let { uid } = useParams(); // Fetch `uid` from the route params
   const location = useLocation(); // Use location hook to get the passed state
   const [loadinng, setLoading] = useState(false);
-
+  const [fetchLoader, setFetchLoader] = useState(false);
+  const [view, setView] = useState(false);
   const [userData, setUserData] = useState({
     slipName: "",
     electric: false,
@@ -57,7 +58,7 @@ function ShipDetails() {
   const [shipTypeNames, setShipTypeNames] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null); // Store selected option for the single dropdown
   const [dimensions, setDimensions] = useState([]); // Dimensions for the selected category
-  const [Message,setMessage]=useState("");
+  const [Message, setMessage] = useState("");
   const [selections, setSelections] = useState({
     overDueChargesFor7Days: "",
     overDueChargesFor15Days: "",
@@ -104,6 +105,9 @@ function ShipDetails() {
     if (userData.electric === false) {
       setUserData((prev) => ({ ...prev, amps: "" }));
     }
+
+    let sanitizedValue=value.replace(/[^A-Za-z0-9\s]/g, "");
+    setUserData((prev)=>({...prev ,[name]:sanitizedValue}));
   };
 
   const handleSubmit = async (e, data) => {
@@ -141,8 +145,7 @@ function ShipDetails() {
               orderedDimensions.width = unorderedDimensions.width;
             if ("length" in unorderedDimensions)
               orderedDimensions.length = unorderedDimensions.length;
-          
-           
+
             // Add any remaining dimensions
             for (const [key, value] of Object.entries(unorderedDimensions)) {
               if (!(key in orderedDimensions)) {
@@ -174,80 +177,40 @@ function ShipDetails() {
           overDueChagesForAuction: selections.overDueChagesForAuction,
         };
 
-        // if (uid) {
-        //   setLoading(true);
-        //   await useJwt.updateslip(uid, payload);
-        //   return MySwal.fire({
-        //     title: "Successfully Updated",
-        //     text: " Your Details Updated Successfully",
-        //     icon: "success",
-        //     customClass: {
-        //       confirmButton: "btn btn-primary",
-        //     },
-        //     buttonsStyling: false,
-        //   }).then(() => {
-        //     navigate("/dashboard/SlipDetailList");
-        //   });
-        // } else {
-        //   setLoading(true);
-        //   await useJwt.postslip(payload);
-        //   try {
-        //     MySwal.fire({
-        //       title: "Successfully Created",
-        //       text: " Your Slip Details Created Successfully",
-        //       icon: "success",
-        //       customClass: {
-        //         confirmButton: "btn btn-primary",
-        //       },
-        //       buttonsStyling: false,
-        //     }).then(() => {
-        //       navigate("/dashboard/SlipDetailList");
-        //     });
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // }
-
-
         setLoading(true);
-        
-          if (uid) {
 
-            await useJwt.updateslip(uid, payload);
-            MySwal.fire({
-              title: "Successfully Updated",
-              text: "Your Details Updated Successfully",
-              icon: "success",
-              customClass: { confirmButton: "btn btn-primary" },
-              buttonsStyling: false,
-            }).then(() => navigate("/dashboard/slipdetail_list"));
-          } else {
-            await useJwt.postslip(payload);
-            MySwal.fire({
-              title: "Successfully Created",
-              text: "Your Slip Details Created Successfully",
-              icon: "success",
-              customClass: { confirmButton: "btn btn-primary" },
-              buttonsStyling: false,
-            }).then(() => navigate("/dashboard/slipdetail_list"));
-          }
-        } catch (error) {
-          console.error("Error submitting form:", error);
-          
-            const { content } = error.response.data || {};
-            const { status } = error.response;
-        
-            setMessage((prev) => {
-              const newMessage = content || "An unexpected error occurred";
-              return prev !== newMessage ? newMessage : prev + " "; // Force update
-            });
-        
-           
-        } finally {
-          setLoading(false); // Ensure loading stops in case of success or failure
+        if (uid) {
+          await useJwt.updateslip(uid, payload);
+          MySwal.fire({
+            title: "Successfully Updated",
+            text: "Your Details Updated Successfully",
+            icon: "success",
+            customClass: { confirmButton: "btn btn-primary" },
+            buttonsStyling: false,
+          }).then(() => navigate("/dashboard/slipdetail_list"));
+        } else {
+          await useJwt.postslip(payload);
+          MySwal.fire({
+            title: "Successfully Created",
+            text: "Your Slip Details Created Successfully",
+            icon: "success",
+            customClass: { confirmButton: "btn btn-primary" },
+            buttonsStyling: false,
+          }).then(() => navigate("/dashboard/slipdetail_list"));
         }
-        
-     
+      } catch (error) {
+        console.error("Error submitting form:", error);
+
+        const { content } = error.response.data || {};
+        const { status } = error.response;
+
+        setMessage((prev) => {
+          const newMessage = content || "An unexpected error occurred";
+          return prev !== newMessage ? newMessage : prev + " "; // Force update
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
       console.log("Validation failed. Please fix the errors.");
     }
@@ -255,14 +218,16 @@ function ShipDetails() {
 
   const validate = () => {
     const newErrors = {};
-    const alphanumericRegex = /^[A-Za-z0-9]+$/; // Alphanumeric for slipName
-    const alphabeticRegex = /^[A-Za-z.-]+$/; // Alphabetic with periods and hyphens for add-on
+    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/; // 
+    const alphabeticRegex = /^[A-Za-z.-]+$/; // accept a-z . -
+    const NonSpecialChar = /[^a-zA-Z0-9 ]/g;
 
     // Validate Slip Name
     if (!userData.slipName) {
       newErrors.slipName = "Slip Name is required";
     } else if (!alphanumericRegex.test(userData.slipName)) {
       newErrors.slipName = "Slip Name should contain only letters and numbers";
+    } else if (NonSpecialChar) {
     } else {
       // If `uid` exists (update mode), exclude current slipName from uniqueness check
       const isDuplicate = slipNames.some(
@@ -270,10 +235,10 @@ function ShipDetails() {
       );
 
       if (!uid && isDuplicate) {
-        // Check uniqueness only if it's not an update (no uid)
         newErrors.slipName = "Slip Name must be unique";
       }
     }
+
     // Validate Category
     if (!selectedCategory) {
       newErrors.category = "Category is required";
@@ -287,7 +252,7 @@ function ShipDetails() {
     });
 
     // Validate Add-On
-    if (userData.addOn && !alphabeticRegex.test(userData.addOn)) {
+    if (userData.addOn && !alphanumericRegex.test(userData.addOn)) {
       newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
     }
 
@@ -402,13 +367,13 @@ function ShipDetails() {
     return newErrors;
   };
 
-  
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const payload = {}; // Add any necessary payload if required
+        const payload = {};
         const response = await useJwt.getslipCatogory(payload);
-        // Extract shipTypeName and set as dropdown option
         const options = response.data.content.result.map((item) => ({
           value: item.uid,
           label: item.shipTypeName,
@@ -430,10 +395,19 @@ function ShipDetails() {
     if (uid) {
       const fetchDetailsForUpdate = async () => {
         try {
+          setFetchLoader(true);
+
           const resp = await useJwt.getslip(uid);
-          const details =resp.data.content;
-          console.log(details);
-          
+          const details = resp.data.content;
+
+          console.log("details", details.isAssigned);
+
+          if (details?.isAssigned === true) {
+            setView(true);
+          } else {
+            setView(false);
+          }
+
           if (details && details.uid === uid) {
             setUserData({
               slipName: details.slipName,
@@ -478,6 +452,8 @@ function ShipDetails() {
           }
         } catch (error) {
           console.error("Error fetching data:", error);
+        } finally {
+          setFetchLoader(false);
         }
       };
       fetchDetailsForUpdate();
@@ -501,6 +477,7 @@ function ShipDetails() {
       overDueAmountFor30Days: "",
       overDueAmountForNotice: "",
       overDueAmountForAuction: "",
+      daysradio: "",
     });
     setErrors({
       slipName: "",
@@ -517,7 +494,6 @@ function ShipDetails() {
       overDueAmountForNotice: "",
       overDueAmountForAuction: "",
     });
-    setErrorMessage("");
   };
 
   const optionsForDays = [
@@ -532,566 +508,681 @@ function ShipDetails() {
           <CardTitle tag="h4">
             {uid ? "Edit Slip Details" : "Add Slip Details"}
           </CardTitle>
-         
         </CardHeader>
 
-        
-
         <CardBody>
-          <p><strong>Note : </strong> If the slip is assigned, you can only update <strong>Electric </strong> , 
-          <strong>Water</strong>, <strong>Add-On</strong> And <strong>AMPS</strong> </p>
-          <Form onSubmit={handleSubmit}>
-            
-          <Row className="mb-1">
-              <Label sm="3" for=""></Label>               <Col sm="12"> 
-                {Message && (
-                  <React.Fragment>
-                    <UncontrolledAlert color="danger">
-                      <div className="alert-body">
-                        <span className="text-danger fw-bold">Error - {Message}</span>
-                      </div>
-                    </UncontrolledAlert>
-                  </React.Fragment>
-                )}
-               </Col>
-            </Row>
-            <Row className="mb-1">
-              <Label sm="3" for="name">
-                Slip Name
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <Input
-                  type="text"
-                  value={userData.slipName}
-                  onChange={handleChange}
-                  name="slipName"
-                  id="slipName"
-                  placeholder="Enter Slip Name"
-                  invalid={!!errors.slipName}
+          <p>
+            <strong>Note : </strong> If the slip is <strong>Assigned</strong> ,
+            you can only update <strong>Electric </strong> ,
+            <strong>Water</strong>, <strong>Add-On</strong> And{" "}
+            <strong>AMPS</strong>{" "}
+          </p>
+
+          {fetchLoader ? (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "4rem",
+                }}
+              >
+                <Spinner
+                  color="primary"
+                  style={{
+                    height: "5rem",
+                    width: "5rem",
+                  }}
                 />
-                {errors.slipName && (
-                  <FormFeedback>{errors.slipName}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-
-            <Row className="mb-1">
-              <Label sm="3" for="category">
-                Category<span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <Select
-                  value={selectedCategory}
-                  onChange={handleSelectChange}
-                  name="category"
-                  options={shipTypeNames}
-                  isClearable
-                  placeholder="Select Category"
-                  className={errors.category ? "is-invalid" : ""}
-                />
-
-                {errors.category && (
-                  <div className="invalid-feedback d-block">
-                    {errors.category}
-                  </div>
-                )}
-              </Col>
-            </Row>
-
-            {dimensions.map((dim) => (
-              <Row className="mb-1" key={dim}>
-                <Label sm="3" for={dim}>
-                  {dim.toLowerCase()}
+              </div>
+            </>
+          ) : (
+            <Form autoComplete="off" onSubmit={handleSubmit}>
+              <Row className="mb-1">
+                <Label sm="3" for=""></Label>{" "}
+                <Col sm="12">
+                  {Message && (
+                    <React.Fragment>
+                      <UncontrolledAlert color="danger">
+                        <div className="alert-body">
+                          <span className="text-danger fw-bold">
+                            Error - {Message}
+                          </span>
+                        </div>
+                      </UncontrolledAlert>
+                    </React.Fragment>
+                  )}
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="name">
+                  Slip Name
                   <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Col sm="9">
                   <Input
                     type="text"
-                    value={userData[dim] || ""}
+                    value={userData.slipName}
                     onChange={handleChange}
-                    name={dim}
-                    id={dim}
-                    placeholder={`Enter ${dim.toLowerCase()}`}
-                    invalid={!!errors[dim]}
+                    name="slipName"
+                    id="slipName"
+                    placeholder="Enter Slip Name"
+                    invalid={!!errors.slipName}
+                    disabled={view}
+
                   />
-                  {errors[dim] && <FormFeedback>{errors[dim]}</FormFeedback>}
+                  {errors.slipName && (
+                    <FormFeedback>{errors.slipName}</FormFeedback>
+                  )}
                 </Col>
               </Row>
-            ))}
 
-            {/* Electric Switch Field */}
-            <Row className="mb-1">
-              <Label sm="3" for="electric">
-                Electric (Yes/No)
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-switch d-flex align-items-center">
-                  {/* "No" label to the left */}
-                  <Label
-                    className="me-1"
-                    htmlFor="electric"
-                    style={{ textAlign: "left" }}
-                  >
-                    No
-                  </Label>
-
-                  {/* Toggle switch */}
-                  <Input
-                    type="switch"
-                    name="electric"
-                    id="electric"
-                    checked={userData.electric}
-                    onChange={handleChange}
-                    style={{ margin: 0 }}
-                  />
-
-                  {/* "Yes" label to the right */}
-                  <Label
-                    className="ms-1"
-                    htmlFor="electric"
-                    style={{ textAlign: "left" }}
-                  >
-                    Yes
-                  </Label>
-                </div>
-              </Col>
-            </Row>
-
-
-            {/* Water Switch Field */}
-            <Row className="mb-1">
-              <Label sm="3" for="water">
-                Water (Yes/No)
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-switch d-flex align-items-center">
-                  {/* "No" label to the left */}
-                  <Label
-                    className="me-1"
-                    htmlFor="water"
-                    style={{ textAlign: "left" }}
-                  >
-                    No
-                  </Label>
-
-                  {/* Toggle switch */}
-                  <Input
-                    type="switch"
-                    name="water"
-                    id="water"
-                    checked={userData.water}
-                    onChange={handleChange}
-                    style={{ margin: 0 }}
-                  />
-
-                  {/* "Yes" label to the right */}
-                  <Label
-                    className="ms-1"
-                    htmlFor="water"
-                    style={{ textAlign: "left" }}
-                  >
-                    Yes
-                  </Label>
-                </div>
-              </Col>
-            </Row>
-
-            {userData.electric && (
               <Row className="mb-1">
-                <Label sm="3" for="amps">
-                  AMPS
+                <Label sm="3" for="category">
+                  Category<span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <Select
+                    value={selectedCategory}
+                    onChange={handleSelectChange}
+                    name="category"
+                    options={shipTypeNames}
+                    isClearable
+                    placeholder="Select Category"
+                    className={errors.category ? "is-invalid" : ""}
+                    isDisabled={view}
+                  />
+
+                  {errors.category && (
+                    <div className="invalid-feedback d-block">
+                      {errors.category}
+                    </div>
+                  )}
+                </Col>
+              </Row>
+
+              {dimensions.map((dim) => (
+                <Row className="mb-1" key={dim}>
+                  <Label sm="3" for={dim}>
+                    {dim.toLowerCase()}
+                    <span style={{ color: "red" }}>*</span>
+                  </Label>
+                  <Col sm="9">
+                    <Input
+                      type="text"
+                      value={userData[dim] || ""}
+                      onChange={(e) => {
+                        let validatedDimension = e.target.value.replace(/[^0-9.]/g, ""); // Ensure only numbers and dots are allowed
+                        setUserData((prev) => ({ ...prev, [dim]: validatedDimension })); // Correct state update
+                      }} 
+                      
+                      name={dim}
+                      id={dim}
+                      placeholder={`Enter ${dim.toLowerCase()}`}
+                      invalid={!!errors[dim]}
+                      disabled={view}
+                    />
+                    {errors[dim] && <FormFeedback>{errors[dim]}</FormFeedback>}
+                  </Col>
+                </Row>
+              ))}
+
+              {/* Electric Switch Field */}
+              <Row className="mb-1">
+                <Label sm="3" for="electric">
+                  Electric (Yes/No)
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-switch d-flex align-items-center">
+                    {/* "No" label to the left */}
+                    <Label
+                      className="me-1"
+                      htmlFor="electric"
+                      style={{ textAlign: "left" }}
+                    >
+                      No
+                    </Label>
+
+                    {/* Toggle switch */}
+                    <Input
+                      type="switch"
+                      name="electric"
+                      id="electric"
+                      checked={userData.electric}
+                      onChange={handleChange}
+                      style={{ margin: 0 }}
+                    />
+
+                    {/* "Yes" label to the right */}
+                    <Label
+                      className="ms-1"
+                      htmlFor="electric"
+                      style={{ textAlign: "left" }}
+                    >
+                      Yes
+                    </Label>
+                  </div>
+                </Col>
+              </Row>
+
+              {/* Water Switch Field */}
+              <Row className="mb-1">
+                <Label sm="3" for="water">
+                  Water (Yes/No)
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-switch d-flex align-items-center">
+                    {/* "No" label to the left */}
+                    <Label
+                      className="me-1"
+                      htmlFor="water"
+                      style={{ textAlign: "left" }}
+                    >
+                      No
+                    </Label>
+
+                    {/* Toggle switch */}
+                    <Input
+                      type="switch"
+                      name="water"
+                      id="water"
+                      checked={userData.water}
+                      onChange={handleChange}
+                      style={{ margin: 0 }}
+                    />
+
+                    {/* "Yes" label to the right */}
+                    <Label
+                      className="ms-1"
+                      htmlFor="water"
+                      style={{ textAlign: "left" }}
+                    >
+                      Yes
+                    </Label>
+                  </div>
+                </Col>
+              </Row>
+
+              {userData.electric && (
+                <Row className="mb-1">
+                  <Label sm="3" for="amps">
+                    AMPS
+                  </Label>
+                  <Col sm="9">
+                    <Input
+                      type="text"
+                      value={userData.amps}
+                      onChange={handleChange}
+                      name="amps"
+                      id="amps"
+                      placeholder="Enter AMPS"
+                      invalid={!!errors.amps}
+                    />
+                    <FormFeedback>{errors.amps}</FormFeedback>
+                  </Col>
+                </Row>
+              )}
+
+              <Row className="mb-1">
+                <Label sm="3" for="addOn">
+                  Add-on
                 </Label>
                 <Col sm="9">
                   <Input
                     type="text"
-                    value={userData.amps}
+                    value={userData.addOn}
                     onChange={handleChange}
-                    name="amps"
-                    id="amps"
-                    placeholder="Enter AMPS"
-                    invalid={!!errors.amps}
+                    name="addOn"
+                    id="addOn"
+                    placeholder="Enter Add-on"
+                    invalid={!!errors.addOn}
                   />
-                  <FormFeedback>{errors.amps}</FormFeedback>
+                  <FormFeedback>{errors.addOn}</FormFeedback>
                 </Col>
               </Row>
-            )}
 
-            <Row className="mb-1">
-              <Label sm="3" for="addOn">
-                Add-on
-              </Label>
-              <Col sm="9">
-                <Input
-                  type="text"
-                  value={userData.addOn}
-                  onChange={handleChange}
-                  name="addOn"
-                  id="addOn"
-                  placeholder="Enter Add-on"
-                  invalid={!!errors.addOn}
-                />
-                <FormFeedback>{errors.addOn}</FormFeedback>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="marketAnnualPrice">
+                  Market Annual Price
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <Input
+                    type="text"
+                    value={userData.marketAnnualPrice}
+                    onChange={(e) => {
+                      let marketAnnual = e.target.value; // Use "let" instead of "const"
+                      marketAnnual = marketAnnual.replace(/[^0-9.]/g, ""); // Apply replace correctly
+                  
+                      setUserData((prev) => ({ ...prev, marketAnnualPrice: marketAnnual })); // Fix state update
+                    }}
+                    name="marketAnnualPrice"
+                    id="marketAnnualPrice"
+                    placeholder="Enter Annual Price"
+                    disabled={view}
+                    invalid={!!errors.marketAnnualPrice}
+                  />
+                  <FormFeedback>{errors.marketAnnualPrice}</FormFeedback>
+                </Col>
+              </Row>
 
-            <Row className="mb-1">
-              <Label sm="3" for="marketAnnualPrice">
-                Market Annual Price
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <Input
-                  type="number"
-                  value={userData.marketAnnualPrice}
-                  onChange={handleChange}
-                  name="marketAnnualPrice"
-                  id="marketAnnualPrice"
-                  placeholder="Enter Annual Price"
-                  invalid={!!errors.marketAnnualPrice}
-                />
-                <FormFeedback>{errors.marketAnnualPrice}</FormFeedback>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="marketMonthlyPrice">
+                  Market Monthly Price
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <Input
+                    type="text"
+                    value={userData.marketMonthlyPrice}
+                    onChange={(e) => {
+                      let marketMonth = e.target.value; // Use "let" instead of "const"
+                      marketMonth = marketMonth.replace(/[^0-9.]/g, ""); // Apply replace correctly
+                  
+                      setUserData((prev) => ({ ...prev, marketMonthlyPrice: marketMonth })); // Fix state update
+                    }}  
+                                      name="marketMonthlyPrice"
+                    id="marketMonthlyPrice"
+                    placeholder="Enter Monthly Price"
+                    disabled={view}
+                    invalid={!!errors.marketMonthlyPrice}
+                  />
+                  <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
+                </Col>
+              </Row>
 
-            <Row className="mb-1">
-              <Label sm="3" for="marketMonthlyPrice">
-                Market Monthly Price
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <Input
-                  type="number"
-                  value={userData.marketMonthlyPrice}
-                  onChange={handleChange}
-                  name="marketMonthlyPrice"
-                  id="marketMonthlyPrice"
-                  placeholder="Enter Monthly Price"
-                  invalid={!!errors.marketMonthlyPrice}
-                />
-                <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="marketMonthlyPrice">
+                  7 Days Charges
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      name="overDueChargesFor7Days"
+                      value="Percentage"
+                      id="Percentage"
+                      disabled={view}
+                      checked={
+                        selections.overDueChargesFor7Days === "Percentage"
+                      }
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesFor7Days",
+                          "Percentage"
+                        )
+                      }
+                      invalid={!!errors.overDueChargesFor7Days}
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Percentage
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      name="overDueChargesFor7Days"
+                      value="Flat"
+                      id="Flat"
+                      disabled={view}
+                      checked={selections.overDueChargesFor7Days === "Flat"}
+                      onChange={() =>
+                        handleSelectTypeChange("overDueChargesFor7Days", "Flat")
+                      }
+                      invalid={!!errors.overDueChargesFor7Days}
+                    />{" "}
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Flat
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="text"
+                      name="overDueAmountFor7Days"
+                      disabled={view}
+                      value={userData.overDueAmountFor7Days || ""}
+                      onChange={(e) => {
+                        let sevenDays = e.target.value; // Use "let" instead of "const"
+                        sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
+                    
+                        setUserData((prev) => ({ ...prev, overDueAmountFor7Days: sevenDays })); // Fix state update
+                      }}
+                      placeholder="Enter 7 Days Charges"
+                      invalid={!!errors.overDueAmountFor7Days}
+                    />
+                    <FormFeedback>{errors.overDueAmountFor7Days}</FormFeedback>
+                  </div>
+                </Col>
+              </Row>
 
-            <Row className="mb-1">
-              <Label sm="3" for="marketMonthlyPrice">
-                7 Days Charges
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    name="overDueChargesFor7Days"
-                    value="Percentage"
-                    id="Percentage"
-                    checked={selections.overDueChargesFor7Days === "Percentage"}
-                    onChange={() =>
-                      handleSelectTypeChange(
-                        "overDueChargesFor7Days",
-                        "Percentage"
-                      )
-                    }
-                    invalid={!!errors.overDueChargesFor7Days}
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Percentage
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    name="overDueChargesFor7Days"
-                    value="Flat"
-                    id="Flat"
-                    checked={selections.overDueChargesFor7Days === "Flat"}
-                    onChange={() =>
-                      handleSelectTypeChange("overDueChargesFor7Days", "Flat")
-                    }
-                    invalid={!!errors.overDueChargesFor7Days}
-                  />{" "}
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Flat
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="number"
-                    name="overDueAmountFor7Days"
-                    value={userData.overDueAmountFor7Days || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountFor7Days: e.target.value,
-                      })
-                    }
-                    placeholder="Enter 7 Days Charges"
-                    invalid={!!errors.overDueAmountFor7Days}
-                  />
-                  <FormFeedback>{errors.overDueAmountFor7Days}</FormFeedback>
-                </div>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="">
+                  15 Days Charges
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={
+                        selections.overDueChargesFor15Days === "Percentage"
+                      }
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesFor15Days",
+                          "Percentage"
+                        )
+                      }
+                      name="overDueChargesFor15Days"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Percentage
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      checked={selections.overDueChargesFor15Days === "Flat"}
+                      disabled={view}
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesFor15Days",
+                          "Flat"
+                        )
+                      }
+                      name="overDueChargesFor15Days "
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Flat
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="text"
+                      disabled={view}
+                      name="overDueAmountFor15Days"
+                      value={userData.overDueAmountFor15Days || ""}
+                      onChange={(e) => {
+                        let fiftinDays = e.target.value; 
+                        fiftinDays = fiftinDays.replace(/[^0-9.]/g, ""); 
+                    
+                        setUserData((prev) => ({ ...prev, overDueAmountFor15Days: fiftinDays })); // Fix state update
+                      }}
+                      placeholder="Enter 15 Days Charges"
+                      invalid={!!errors.overDueAmountFor15Days}
+                    />
+                    <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
+                  </div>
 
-            <Row className="mb-1">
-              <Label sm="3" for="">
-                15 Days Charges
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={
-                      selections.overDueChargesFor15Days === "Percentage"
-                    }
-                    onChange={() =>
-                      handleSelectTypeChange(
-                        "overDueChargesFor15Days",
-                        "Percentage"
-                      )
-                    }
-                    name="overDueChargesFor15Days"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Percentage
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={selections.overDueChargesFor15Days === "Flat"}
-                    onChange={() =>
-                      handleSelectTypeChange("overDueChargesFor15Days", "Flat")
-                    }
-                    name="overDueChargesFor15Days "
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Flat
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="number"
-                    name="overDueAmountFor15Days"
-                    value={userData.overDueAmountFor15Days || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountFor15Days: e.target.value,
-                      })
-                    }
-                    placeholder="Enter 15 Days Charges"
-                    invalid={!!errors.overDueAmountFor15Days}
-                  />
                   <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
-                </div>
+                </Col>
+              </Row>
 
-                <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="">
+                  30 Days Charges
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={
+                        selections.overDueChargesFor30Days === "Percentage"
+                      }
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesFor30Days",
+                          "Percentage"
+                        )
+                      }
+                      name="overDueChargesFor30Days"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Percentage
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={selections.overDueChargesFor30Days === "Flat"}
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesFor30Days",
+                          "Flat"
+                        )
+                      }
+                      name="overDueChargesFor30Days"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Flat
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="text"
+                      disabled={view}
+                      name="overDueAmountFor30Days"
+                      placeholder="Enter 30 Days Charges"
+                      value={userData.overDueAmountFor30Days || ""}
+                      onChange={(e) =>{
+                        let thirty = e.target.value; 
+                        thirty = thirty.replace(/[^0-9.]/g, ""); 
+                    
+                        setUserData((prev) => ({ ...prev, overDueAmountFor30Days: thirty })); // Fix state update
+                      }}
+                      invalid={!!errors.overDueAmountFor30Days}
+                    />
+                    <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
+                  </div>
 
-            <Row className="mb-1">
-              <Label sm="3" for="">
-                30 Days Charges
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={
-                      selections.overDueChargesFor30Days === "Percentage"
-                    }
-                    onChange={() =>
-                      handleSelectTypeChange(
-                        "overDueChargesFor30Days",
-                        "Percentage"
-                      )
-                    }
-                    name="overDueChargesFor30Days"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Percentage
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={selections.overDueChargesFor30Days === "Flat"}
-                    onChange={() =>
-                      handleSelectTypeChange("overDueChargesFor30Days", "Flat")
-                    }
-                    name="overDueChargesFor30Days"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Flat
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="number"
-                    name="overDueAmountFor30Days"
-                    placeholder="Enter 30 Days Charges"
-                    value={userData.overDueAmountFor30Days || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountFor30Days: e.target.value,
-                      })
-                    }
-                    invalid={!!errors.overDueAmountFor30Days}
-                  />
                   <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
-                </div>
+                </Col>
+              </Row>
 
-                <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="marketMonthlyPrice">
+                  Notice Charges
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={
+                        selections.overDueChargesForNotice === "Percentage"
+                      }
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesForNotice",
+                          "Percentage"
+                        )
+                      }
+                      name="overDueChargesForNotice"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Percentage
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={selections.overDueChargesForNotice === "Flat"}
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChargesForNotice",
+                          "Flat"
+                        )
+                      }
+                      name="overDueChargesForNotice"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Flat
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="text"
+                      disabled={view}
+                      name="overDueAmountForNotice"
+                      value={userData.overDueAmountForNotice || ""}
+                      onChange={(e) =>{
+                        let noticeCharge = e.target.value; 
+                        noticeCharge = noticeCharge.replace(/[^0-9.]/g, ""); 
+                    
+                        setUserData((prev) => ({ ...prev, overDueAmountForNotice: noticeCharge })); // Fix state update
+                      }}
+                      placeholder="Enter Notice Charges"
+                      invalid={!!errors.overDueAmountForNotice}
+                    />
+                    <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
+                  </div>
 
-            <Row className="mb-1">
-              <Label sm="3" for="marketMonthlyPrice">
-                Notice Charges
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={
-                      selections.overDueChargesForNotice === "Percentage"
-                    }
-                    onChange={() =>
-                      handleSelectTypeChange(
-                        "overDueChargesForNotice",
-                        "Percentage"
-                      )
-                    }
-                    name="overDueChargesForNotice"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Percentage
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={selections.overDueChargesForNotice === "Flat"}
-                    onChange={() =>
-                      handleSelectTypeChange("overDueChargesForNotice", "Flat")
-                    }
-                    name="overDueChargesForNotice"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Flat
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="number"
-                    name="overDueAmountForNotice"
-                    value={userData.overDueAmountForNotice || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountForNotice: e.target.value,
-                      })
-                    }
-                    placeholder="Enter Notice Charges"
-                    invalid={!!errors.overDueAmountForNotice}
-                  />
                   <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
-                </div>
+                </Col>
+              </Row>
 
-                <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
-              </Col>
-            </Row>
+              <Row className="mb-1">
+                <Label sm="3" for="marketMonthlyPrice">
+                  Auction Charges
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Col sm="9">
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={
+                        selections.overDueChagesForAuction === "Percentage"
+                      }
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChagesForAuction",
+                          "Percentage"
+                        )
+                      }
+                      name="overDueChagesForAuction"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Percentage
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="radio"
+                      disabled={view}
+                      checked={selections.overDueChagesForAuction === "Flat"}
+                      onChange={() =>
+                        handleSelectTypeChange(
+                          "overDueChagesForAuction",
+                          "Flat"
+                        )
+                      }
+                      name="overDueChagesForAuction"
+                      id="basic-cb-unchecked"
+                    />
+                    <Label
+                      for="basic-cb-unchecked"
+                      className="form-check-label"
+                    >
+                      Flat
+                    </Label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <Input
+                      type="text"
+                      disabled={view}
+                      name="overDueAmountForAuction"
+                      placeholder="Enter Auction Charges"
+                      value={userData.overDueAmountForAuction || ""}
+                      onChange={(e) =>{
+                        let AuctionCharge = e.target.value; 
+                        AuctionCharge = AuctionCharge.replace(/[^0-9.]/g, ""); 
+                    
+                        setUserData((prev) => ({ ...prev, overDueAmountForAuction: AuctionCharge })); // Fix state update
+                      }}
+                      invalid={!!errors.overDueAmountForAuction}
+                    />
+                    <FormFeedback>
+                      {errors.overDueAmountForAuction}
+                    </FormFeedback>
+                  </div>
 
-            <Row className="mb-1">
-              <Label sm="3" for="marketMonthlyPrice">
-                Auction Charges
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Col sm="9">
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={
-                      selections.overDueChagesForAuction === "Percentage"
-                    }
-                    onChange={() =>
-                      handleSelectTypeChange(
-                        "overDueChagesForAuction",
-                        "Percentage"
-                      )
-                    }
-                    name="overDueChagesForAuction"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Percentage
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="radio"
-                    checked={selections.overDueChagesForAuction === "Flat"}
-                    onChange={() =>
-                      handleSelectTypeChange("overDueChagesForAuction", "Flat")
-                    }
-                    name="overDueChagesForAuction"
-                    id="basic-cb-unchecked"
-                  />
-                  <Label for="basic-cb-unchecked" className="form-check-label">
-                    Flat
-                  </Label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <Input
-                    type="number"
-                    name="overDueAmountForAuction"
-                    placeholder="Enter Auction Charges"
-                    value={userData.overDueAmountForAuction || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountForAuction: e.target.value,
-                      })
-                    }
-                    invalid={!!errors.overDueAmountForAuction}
-                  />
                   <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
-                </div>
+                </Col>
+              </Row>
 
-                <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col className="d-flex" md={{ size: 9, offset: 3 }}>
-                <Button className="me-1" color="primary" type="submit">
-                  {!loadinng ?(
-                  uid ? "Update" : "Submit"
-                ):<Spinner size="sm"/>}
-
-                </Button>
+              <Row>
+                <Col className="d-flex justify-content-end" md={{ size: 9, offset: 3 }}>
+                
                 <Button
-                  outline
-                  onClick={resetForm}
-                  color="secondary"
-                  type="reset"
-                >
-                  Reset
-                </Button>
-              </Col>
-            </Row>
-          </Form>
+className="me-1" 
+                    outline
+                    onClick={resetForm}
+                    color="secondary"
+                    type="reset"
+                  >
+                    Reset
+                  </Button>
+                  <Button color="primary" type="submit">
+                    {!loadinng ? (
+                      uid ? (
+                        "Update"
+                      ) : (
+                        "Submit"
+                      )
+                    ) : (
+                    <>
+                      <span className="me-1">Loading..</span>
+                      <Spinner size="sm" />
+                    </>                    )}
+                  </Button>
+                 
+                </Col>
+              </Row>
+            </Form>
+          )}
         </CardBody>
       </Card>
     </>

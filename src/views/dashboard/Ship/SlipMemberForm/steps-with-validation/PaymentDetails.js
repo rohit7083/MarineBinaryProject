@@ -473,8 +473,7 @@ const Address = ({
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
-      const data = { ...formData }["0"]; // Extract first object
-      // {{debugger}}
+      const data = { ...formData }["0"]; 
       let pmVal =
         colourOptions3?.find((x) => x.value == data.paymentMode) || null;
       let paidInVal =
@@ -1131,7 +1130,7 @@ const Address = ({
                   required: "payment Mode  is required",
                 }}
                 render={({ field }) => (
-                  <Select
+                  <Select 
                     {...field}
                     options={colourOptions3}
                     className={`react-select ${
@@ -1143,6 +1142,7 @@ const Address = ({
                       field.onChange(selectedOption); // Update React Hook Form with the value
                       handlepaymentMode(selectedOption); // Run your custom function with the full option
                     }}
+                    menuPlacement="top" 
                   />
                 )}
               />

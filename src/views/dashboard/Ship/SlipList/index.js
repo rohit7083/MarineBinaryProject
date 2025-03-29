@@ -2,7 +2,7 @@ import { Spinner } from "reactstrap";
 import { Button } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Fragment, useState, useEffect, memo } from "react";
-import { serverSideColumns  } from "../../../dashboard/Ship/SlipList/data";
+import { serverSideColumns } from "../../../dashboard/Ship/SlipList/data";
 import { getData } from "../../../dashboard/Ship/SlipList/store";
 import { useSelector, useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
@@ -19,18 +19,16 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import useJwt from '@src/auth/jwt/useJwt'
+import useJwt from "@src/auth/jwt/useJwt";
 
 const DataTableServerSide = () => {
-
-
- // ** Store Vars
+  // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.dataTables);
 
   // ** States
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
   const [tableData, setTableData] = useState([]);
   const [data, setData] = useState([]);
@@ -51,7 +49,7 @@ const DataTableServerSide = () => {
           .toLowerCase()
           .includes(searchValue.toLowerCase());
 
-        return  categoryMatch || idMatch ;
+        return categoryMatch || idMatch;
       })
       .slice(start, limit);
   };
@@ -96,10 +94,11 @@ const DataTableServerSide = () => {
   };
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const response = await useJwt.getslipCatogory(); // Assuming this fetches all categories
+        console.log(response.data);
+
         setData(response.data); //
         setLoading(true); // Set loading to true when data fetching starts
         await dispatch(
@@ -111,7 +110,6 @@ const DataTableServerSide = () => {
         );
       } catch (error) {
         console.error("Error fetching data:", error);
-
       } finally {
         setLoading(false); // Set loading to false when data fetching completes
       }
@@ -121,7 +119,8 @@ const DataTableServerSide = () => {
 
   // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Math.ceil(data.length / rowsPerPage);
+    const count = Math.ceil(data?.content?.count / rowsPerPage);
+    console.log("myCount", count);
 
     return (
       <ReactPaginate
@@ -129,6 +128,7 @@ const DataTableServerSide = () => {
         nextLabel={""}
         breakLabel="..."
         pageCount={Math.ceil(count) || 1}
+
         marginPagesDisplayed={2}
         pageRangeDisplayed={2}
         activeClassName="active"
@@ -150,7 +150,7 @@ const DataTableServerSide = () => {
   };
 
   // ** Table data to render
-  
+
   const [loading, setLoading] = useState(true); // Add loading state
 
   return (
@@ -231,26 +231,24 @@ const DataTableServerSide = () => {
           //     sortIcon={<ChevronDown size={10} />}
           //     paginationComponent={CustomPagination}
           //     data={dataToRender()}
-            
+
           //   />
           // </div>
 
-<div style={{ marginTop: "20px" }}> 
-
-  
-<DataTable
-  noHeader
-  pagination
-  paginationServer
-  className="react-dataTable"
-  columns={serverSideColumns}
-  sortIcon={<ChevronDown size={10} />}
-  paginationComponent={CustomPagination}
-  data={dataToRender()}
-  // customStyles={customStyles} 
-  striped 
-/>
-</div>
+          <div style={{ marginTop: "20px" }}>
+            <DataTable
+              noHeader
+              pagination
+              paginationServer
+              className="react-dataTable"
+              columns={serverSideColumns(currentPage, rowsPerPage)}
+              sortIcon={<ChevronDown size={10} />}
+              paginationComponent={CustomPagination}
+              data={dataToRender()}
+              // customStyles={customStyles}
+              striped
+            />
+          </div>
         )}
       </Card>
     </Fragment>

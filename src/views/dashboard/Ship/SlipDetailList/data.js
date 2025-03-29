@@ -465,21 +465,20 @@ export const serverSideColumns = [
               // Call delete API
               const response = await useJwt.deleteslip(uid);
               if (response.status === 204) {
-                setData((prevData) =>
-                  prevData.filter((item) => item.uid !== uid)
-                );
+                setData((prevData) =>{
+                  const newData=prevData.filter((item) => item.uid !== uid)
+                  return newData;
+              });
                 // Show success message
                 MySwal.fire({
                   icon: "success",
                   title: "Deleted!",
-                  text: "Your file has been deleted.",
+                  text: "Your Record has been deleted.",
                   customClass: {
                     confirmButton: "btn btn-success",
                   },
                 });
-                setTimeout(() => {
-                  window.location.reload(true);
-                }, 2000); // 2000ms = 2 seconds
+              
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -488,7 +487,7 @@ export const serverSideColumns = [
             // Show cancellation message
             MySwal.fire({
               title: "Cancelled",
-              text: "Your imaginary file is safe :)",
+              text: "Your Record is safe :)",
               icon: "error",
               customClass: {
                 confirmButton: "btn btn-success",

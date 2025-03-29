@@ -91,10 +91,11 @@ export default class JwtService {
 
   async getLocation() {
     try {
+      // {{debugger}}
       if (!navigator.geolocation) {
 
         localStorage.setItem("locationEnabled","false")
-        window.location.reload()
+        // window.location.reload()
         throw new Error("Geolocation is not supported by your browser.");
 
       }
@@ -114,7 +115,12 @@ export default class JwtService {
     } catch (error) {
       localStorage.setItem("locationEnabled", "false");
     
-      window.location.reload()
+      // window.location.reload()
+      if(error?.code ==1 && error?.message){
+        localStorage.removeItem('userData');
+        window.location.replace='/login';
+      }
+      // userData
 
       console.error("Error fetching location:", error.message);
       throw error;

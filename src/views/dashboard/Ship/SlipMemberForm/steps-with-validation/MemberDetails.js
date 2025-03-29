@@ -3,6 +3,10 @@ import { useNavigate, useLocation, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
+import PhoneInput from "react-phone-input-2";
+// import 'react-phone-input-2/lib/style.css'
+import "react-phone-input-2/lib/bootstrap.css";
+
 import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
 import { ArrowLeft, UserPlus, Users, ArrowRight } from "react-feather";
@@ -10,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
 import React from "react";
-import { Spinner, UncontrolledAlert } from "reactstrap";
+import { Spinner, UncontrolledAlert, InputGroup } from "reactstrap";
 // ** Utils
 import { selectThemeColors } from "@utils";
 // ** Reactstrap Imports
@@ -21,7 +25,6 @@ import "@styles/react/libs/react-select/_react-select.scss";
 
 // ** Sweet Alert
 const MySwal = withReactContent(Swal);
-
 
 const PersonalInfo = ({
   stepper,
@@ -45,10 +48,13 @@ const PersonalInfo = ({
       buttonsStyling: false,
     }).then(() => {
       // if (Object.keys(errors).length === 0) {
-        stepper.next();
+      stepper.next();
       // /}
     });
   };
+
+  const [phoneNumber, setMobileNumber] = useState("");
+
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
@@ -76,10 +82,10 @@ const PersonalInfo = ({
       .string()
       .email("Invalid email format")
       .required("Email is required"),
-    phoneNumber: yup
-      .string()
-      .matches(/^[0-9]{10}$/, "Phone Number must be exactly 10 digits")
-      .required("Phone Number is required"),
+    // phoneNumber: yup
+    //   .string()
+    //   .matches(/^[0-9]{10}$/, "Phone Number must be exactly 10 digits")
+    //   .required("Phone Number is required"),
     address: yup
       .string()
       .required("Address is required")
@@ -123,16 +129,41 @@ const PersonalInfo = ({
     formState: { errors },
   } = useForm({
     resolver: yupResolver(SignupSchema),
+    // defaultValues: {
+    //   firstName: "hello",
+    //   lastName: "surname",
+    //   emailId: "rohit@gmail.com",
+    //   phoneNumber: "921234567890",
+    //   address: "satpur",
+    //   city: "nashik",
+    //   state: "maharstra",
+    //   country: "india",
+    //   postalCode: "12365",
+    // },
   });
-
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
-      const data = { ...formData };
+      const phoneNum = `${formData.countryCode || ""}${
+        formData.phoneNumber || ""
+      }`;
 
+      const data = {
+        ...formData,
+
+        phoneNumber: phoneNum.substring(1),
+      };
       reset(data);
     }
   }, [reset, formData]);
+
+  // useEffect(() => {
+  //   if (Object.keys(formData)?.length) {
+  //     const data = { ...formData};
+
+  //     reset(data);
+  //   }
+  // }, [reset, formData]);
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
@@ -156,13 +187,33 @@ const PersonalInfo = ({
     setVisible(true);
   };
 
+  // const extractCountryCodeAndNumber = (value) => {
+  //   // {{debugger}}
+  //   const code = value.slice(0, value.length - 10);
+  //   const number = value.slice(-10);
+  //   return { code, number };
+  // };
+  const extractCountryCodeAndNumber = (value) => {
+    if (!value) return { code: "", number: "" }; // Handle undefined case
+    const code = value.slice(0, value.length - 10);
+    const number = value.slice(-10);
+    return { code, number };
+  };
+
   const onSubmit = async (data) => {
-    setErrMsz("")
+    const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
+
+    console.log("data", data);
+
+    setErrMsz("");
+
     setLoading(true);
 
     const payload = {
       ...data,
       slipId: slipIID,
+      countryCode: `+${code}`,
+      phoneNumber: number,
     };
     let memberId;
     try {
@@ -193,12 +244,11 @@ const PersonalInfo = ({
       if (error.response && error.response.data) {
         const { status } = error.response;
         const { content } = error.response.data;
-       
-        setErrMsz((prev)=>{
-          const newMsz=content || "Un unexpected error occurred";
-          return prev !== newMsz ? newMsz : prev + " ";
-        })
 
+        setErrMsz((prev) => {
+          const newMsz = content || "Un unexpected error occurred";
+          return prev !== newMsz ? newMsz : prev + " ";
+        });
       }
     } finally {
       setLoading(false);
@@ -232,10 +282,10 @@ const PersonalInfo = ({
         const { status } = error.response;
         const { content } = error.response.data;
 
-       setErrMsz((prev)=>{
-        const newMsz=content || "Un expected Error occurred";
-        return prev !== newMsz ? newMsz : prev + " ";
-       })
+        setErrMsz((prev) => {
+          const newMsz = content || "Un expected Error occurred";
+          return prev !== newMsz ? newMsz : prev + " ";
+        });
       }
     }
   };
@@ -273,6 +323,7 @@ const PersonalInfo = ({
         />
       </div>
     );
+  console.log("error", errors);
 
   return (
     <Fragment>
@@ -405,7 +456,7 @@ const PersonalInfo = ({
                 control={control}
                 render={({ field }) => (
                   <Input
-                    placeholder="Enter Email "
+                    placeholder="Enter Email"
                     invalid={errors.emailId && true}
                     {...field}
                     // readOnly={visible}
@@ -423,7 +474,7 @@ const PersonalInfo = ({
                 Mobile Number
                 <span style={{ color: "red" }}>*</span>
               </Label>
-              <Controller
+              {/*   <Controller
                 id="phoneNumber"
                 name="phoneNumber"
                 control={control}
@@ -439,9 +490,50 @@ const PersonalInfo = ({
               />
               {errors.phoneNumber && (
                 <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
-              )}
+              )} */}
+
+              <InputGroup className="input-group-merge">
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  defaultValue={phoneNumber}
+                  rules={{
+                    required: "Mobile number is required",
+                    validate: (value) =>
+                      value && value.length >= 10
+                        ? true
+                        : "Invalid mobile number",
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <PhoneInput
+                      // country={"us"}
+                      value={value || phoneNumber}
+                      onChange={(phone) => {
+                        onChange(phone);
+                        setMobileNumber(phone);
+                      }}
+                      inputProps={{
+                        name: "phoneNumber",
+                        required: true,
+                        className: "form-control",
+                      }}
+                      containerStyle={{
+                        width: "100%",
+                      }}
+                      inputStyle={{
+                        height: "38px",
+                        border: "1px solid #ced4da",
+                        borderRadius: "0 .375rem .375rem 0",
+                        paddingLeft: "63px",
+                        width: "100%",
+                      }}
+                    />
+                  )}
+                />
+              </InputGroup>
             </Col>
           </Row>
+
           <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="address">

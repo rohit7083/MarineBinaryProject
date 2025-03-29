@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Send } from "react-feather";
-import { UncontrolledAlert } from "reactstrap";
+import { Spinner, UncontrolledAlert } from "reactstrap";
 
 import {
   Row,
@@ -29,7 +29,7 @@ const GenrateOtp = ({
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(100);
   const [errMsz, seterrMsz] = useState("");
-
+  const [loader, setLoader] = useState(false);
   const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
   const [verify, setVerify] = useState(false);
   const {
@@ -67,7 +67,7 @@ const GenrateOtp = ({
 
       // {{debugger}}
       const payload = { otp: parseInt(data.Userotp) };
-
+      setLoader(true);
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
       setVerify(true);
       console.log(response);
@@ -89,6 +89,8 @@ const GenrateOtp = ({
           return prev !== newMsz ? newMsz : prev + " ";
         });
       }
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -105,7 +107,7 @@ const GenrateOtp = ({
         });
       }, 1000);
     }
-    return () => clearInterval(timer); 
+    return () => clearInterval(timer);
   }, [show]);
 
   return (
@@ -203,7 +205,7 @@ const GenrateOtp = ({
 
             <Col xs={12}>
               <Button type="submit" color="success" block>
-                Verify OTP
+                {loader ? <Spinner color="white" size={12} /> : "Verify OTP"}
               </Button>
             </Col>
           </Row>

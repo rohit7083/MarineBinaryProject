@@ -92,7 +92,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         }
         const res2 = await useJwt.createUser(transformedData);
         console.log("updated res:", res2);
-console.log("data is created",data);
+        console.log("data is created",data);
 
         MySwal.fire({
           title: "Successfully Added",
@@ -176,9 +176,8 @@ console.log("data is created",data);
         userRoles: null,
         password: "",
       });
-      setMobileNumber(""); // Clear PhoneInput
-      setCountryCode(""); // Clear country code
-
+      setMobileNumber(""); 
+      setCountryCode(""); 
       setModalType("Add New");
     }
   }, [uid, row, reset]);
@@ -198,8 +197,8 @@ console.log("data is created",data);
         <ModalHeader className="bg-transparent" toggle={() => setShow(!show)} />
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
-            <h1>{modalType} Add Users</h1>
-            <p>{uid ? "Update User" : "Add new user"}</p>
+            <h1>{modalType} Users</h1>
+            {/* <p>{uid ? "Update User" : "Add new user"}</p> */}
           </div>
 
           <Form onSubmit={handleSubmit(onSubmit)}>

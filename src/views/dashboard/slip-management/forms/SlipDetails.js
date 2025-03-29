@@ -28,9 +28,10 @@ import { Edit, Repeat, Send } from "lucide-react";
 // import Index from './SlipDetailsForm';
 const MySwal = withReactContent(Swal);
 
-function SlipDetailsForm({assigned}) {
+function SlipDetailsForm({ assigned }) {
   let navigate = useNavigate();
-  
+  const [loadinng, setLoading] = useState(false);
+
   let { uid } = useParams();
   const location = useLocation();
   const [tooltipOpen, setTooltipOpen] = useState({
@@ -85,7 +86,7 @@ function SlipDetailsForm({assigned}) {
   const [errors, setErrors] = useState({});
   const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
   const [View, SetView] = useState(true);
-const [fetchLoader,setFetchLoader]=useState(false);
+  const [fetchLoader, setFetchLoader] = useState(false);
 
   const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
@@ -118,6 +119,9 @@ const [fetchLoader,setFetchLoader]=useState(false);
     if (userData.electric === false) {
       setUserData((prev) => ({ ...prev, amps: "" }));
     }
+
+    let sanitizedValue = value.replace(/[^A-Za-z0-9\s]/g, "");
+    setUserData((prev) => ({ ...prev, [name]: sanitizedValue }));
   };
 
   const handleSubmit = async (e, data) => {
@@ -186,9 +190,11 @@ const [fetchLoader,setFetchLoader]=useState(false);
           overDueChagesForAuction: selections.overDueChagesForAuction,
         };
         console.log("payload", payload);
+        setLoading(true);
 
         if (uid) {
           // Update existing entry
+
           await useJwt.updateslip(uid, payload);
           return MySwal.fire({
             title: "Successfully Updated",
@@ -201,9 +207,9 @@ const [fetchLoader,setFetchLoader]=useState(false);
           }).then(() => {
             navigate("/dashboard/slipdetail_list");
           });
+
         } else {
           await useJwt.postslip(payload);
-          // console.log("API Response:", response);
           try {
             MySwal.fire({
               title: "Successfully Created",
@@ -218,6 +224,8 @@ const [fetchLoader,setFetchLoader]=useState(false);
             });
           } catch (error) {
             console.log(error);
+          } finally {
+            setLoading(false);
           }
         }
       } catch (error) {
@@ -232,6 +240,10 @@ const [fetchLoader,setFetchLoader]=useState(false);
           buttonsStyling: false,
         });
       }
+      finally{
+        setLoading(false);
+
+      }
     } else {
       console.log("Validation failed. Please fix the errors.");
     }
@@ -239,8 +251,9 @@ const [fetchLoader,setFetchLoader]=useState(false);
 
   const validate = () => {
     const newErrors = {};
-    const alphanumericRegex = /^[A-Za-z0-9]+$/; // Alphanumeric for slipName
-    const alphabeticRegex = /^[A-Za-z.-]+$/; // Alphabetic with periods and hyphens for add-on
+    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/; //
+    const alphabeticRegex = /^[A-Za-z.-]+$/; // accept a-z . -
+    const NonSpecialChar = /[^a-zA-Z0-9 ]/g;
 
     // Validate Slip Name
     if (!userData.slipName) {
@@ -271,7 +284,7 @@ const [fetchLoader,setFetchLoader]=useState(false);
     });
 
     // Validate Add-On
-    if (userData.addOn && !alphabeticRegex.test(userData.addOn)) {
+    if (userData.addOn && !alphanumericRegex.test(userData.addOn)) {
       newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
     }
 
@@ -465,8 +478,7 @@ const [fetchLoader,setFetchLoader]=useState(false);
           }
         } catch (error) {
           console.error("Error fetching data:", error);
-        }
-        finally{
+        } finally {
           setFetchLoader(false);
         }
       };
@@ -529,26 +541,25 @@ const [fetchLoader,setFetchLoader]=useState(false);
     SetView(false);
   };
 
-   if (fetchLoader)
-      return (
-        <div
+  if (fetchLoader)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "4rem",
+        }}
+      >
+        <Spinner
+          color="primary"
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "4rem",
+            height: "5rem",
+            width: "5rem",
           }}
-        >
-          <Spinner
-            color="primary"
-            style={{
-              height: "5rem",
-              width: "5rem",
-            }}
-          />
-        </div>
-      );
-  
+        />
+      </div>
+    );
 
   return (
     <>
@@ -600,15 +611,14 @@ const [fetchLoader,setFetchLoader]=useState(false);
             </div>
 
             <div>
-            <Link to='/dashboard/invoice_management/Invoice'>
-            <img
+              <Link to="/dashboard/invoice_management/Invoice">
+                <img
                   width="25"
                   height="25"
                   id="takePaymentTooltip"
                   src="https://img.icons8.com/ios/50/online-payment-.png"
                   alt="online-payment"
-
-                  />
+                />
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.takePayment}
@@ -741,7 +751,16 @@ const [fetchLoader,setFetchLoader]=useState(false);
                   <Input
                     type="text"
                     value={userData[dim] || ""}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      let validatedDimension = e.target.value.replace(
+                        /[^0-9.]/g,
+                        ""
+                      ); // Ensure only numbers and dots are allowed
+                      setUserData((prev) => ({
+                        ...prev,
+                        [dim]: validatedDimension,
+                      })); // Correct state update
+                    }}
                     style={getReadOnlyStyle()}
                     name={dim}
                     id={dim}
@@ -757,9 +776,9 @@ const [fetchLoader,setFetchLoader]=useState(false);
             {/* Electric Switch Field */}
             <Row className="mb-1 ">
               <Label sm="3" for="electric">
-                Electric (Yes/No) 
+                Electric (Yes/No)
               </Label>
-              <Col sm="9" >
+              <Col sm="9">
                 <div
                   className="form-check form-switch d-flex align-items-center"
                   style={{ margin: " 0px -55px" }}
@@ -884,9 +903,17 @@ const [fetchLoader,setFetchLoader]=useState(false);
               </Label>
               <Col sm="9">
                 <Input
-                  type="number"
+                  type="text"
                   value={userData.marketAnnualPrice}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    let marketAnnual = e.target.value; // Use "let" instead of "const"
+                    marketAnnual = marketAnnual.replace(/[^0-9.]/g, ""); // Apply replace correctly
+
+                    setUserData((prev) => ({
+                      ...prev,
+                      marketAnnualPrice: marketAnnual,
+                    })); // Fix state update
+                  }}
                   name="marketAnnualPrice"
                   style={getReadOnlyStyle()}
                   disabled={assigned ? true : View}
@@ -905,9 +932,17 @@ const [fetchLoader,setFetchLoader]=useState(false);
               </Label>
               <Col sm="9">
                 <Input
-                  type="number"
+                  type="text"
                   value={userData.marketMonthlyPrice}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    let marketMonth = e.target.value; // Use "let" instead of "const"
+                    marketMonth = marketMonth.replace(/[^0-9.]/g, ""); // Apply replace correctly
+
+                    setUserData((prev) => ({
+                      ...prev,
+                      marketMonthlyPrice: marketMonth,
+                    })); // Fix state update
+                  }}
                   name="marketMonthlyPrice"
                   style={getReadOnlyStyle()}
                   disabled={assigned ? true : View}
@@ -929,7 +964,6 @@ const [fetchLoader,setFetchLoader]=useState(false);
                   <Input
                     type="radio"
                     disabled={assigned ? true : View}
-
                     style={{ opacity: 1 }}
                     name="overDueChargesFor7Days"
                     value="Percentage"
@@ -975,17 +1009,20 @@ const [fetchLoader,setFetchLoader]=useState(false);
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    type="number"
+                    type="text"
                     disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
                     name="overDueAmountFor7Days"
                     value={userData.overDueAmountFor7Days || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountFor7Days: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      let sevenDays = e.target.value; // Use "let" instead of "const"
+                      sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        overDueAmountFor7Days: sevenDays,
+                      })); // Fix state update
+                    }}
                     placeholder="Enter 7 Days Charges"
                     invalid={!!errors.overDueAmountFor7Days}
                   />
@@ -1048,16 +1085,19 @@ const [fetchLoader,setFetchLoader]=useState(false);
                 <div className="form-check form-check-inline">
                   <Input
                     disabled={assigned ? true : View}
-                    type="number"
+                    type="text"
                     name="overDueAmountFor15Days"
                     style={getReadOnlyStyle()}
                     value={userData.overDueAmountFor15Days || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountFor15Days: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      let fiftinDays = e.target.value;
+                      fiftinDays = fiftinDays.replace(/[^0-9.]/g, "");
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        overDueAmountFor15Days: fiftinDays,
+                      })); // Fix state update
+                    }}
                     placeholder="Enter 15 Days Charges"
                     invalid={!!errors.overDueAmountFor15Days}
                   />
@@ -1121,18 +1161,21 @@ const [fetchLoader,setFetchLoader]=useState(false);
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    type="number"
+                    type="text"
                     disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
                     name="overDueAmountFor30Days"
                     placeholder="Enter 30 Days Charges"
                     value={userData.overDueAmountFor30Days || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountFor30Days: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      let thirty = e.target.value;
+                      thirty = thirty.replace(/[^0-9.]/g, "");
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        overDueAmountFor30Days: thirty,
+                      })); // Fix state update
+                    }}
                     invalid={!!errors.overDueAmountFor30Days}
                   />
                   <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
@@ -1197,15 +1240,18 @@ const [fetchLoader,setFetchLoader]=useState(false);
                   <Input
                     disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
-                    type="number"
+                    type="text"
                     name="overDueAmountForNotice"
                     value={userData.overDueAmountForNotice || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountForNotice: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      let noticeCharge = e.target.value;
+                      noticeCharge = noticeCharge.replace(/[^0-9.]/g, "");
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        overDueAmountForNotice: noticeCharge,
+                      })); // Fix state update
+                    }}
                     placeholder="Enter Notice Charges"
                     invalid={!!errors.overDueAmountForNotice}
                   />
@@ -1269,18 +1315,21 @@ const [fetchLoader,setFetchLoader]=useState(false);
                 </div>
                 <div className="form-check form-check-inline">
                   <Input
-                    type="number"
+                    type="text"
                     style={getReadOnlyStyle()}
                     disabled={assigned ? true : View}
                     name="overDueAmountForAuction"
                     placeholder="Enter Auction Charges"
                     value={userData.overDueAmountForAuction || ""}
-                    onChange={(e) =>
-                      setUserData({
-                        ...userData,
-                        overDueAmountForAuction: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      let AuctionCharge = e.target.value;
+                      AuctionCharge = AuctionCharge.replace(/[^0-9.]/g, "");
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        overDueAmountForAuction: AuctionCharge,
+                      })); // Fix state update
+                    }}
                     invalid={!!errors.overDueAmountForAuction}
                   />
                   <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
@@ -1305,7 +1354,18 @@ const [fetchLoader,setFetchLoader]=useState(false);
                   Reset
                 </Button>
                 <Button color="primary" disabled={View} type="submit">
-                  {uid ? "Update" : "Submit"}
+                  {!loadinng ? (
+                    uid ? (
+                      "Update"
+                    ) : (
+                      "Submit"
+                    )
+                  ) : (
+                    <>
+                      <span className="me-1">Loading..</span>
+                      <Spinner size="sm" />
+                    </>
+                  )}{" "}
                 </Button>
               </Col>
             </Row>

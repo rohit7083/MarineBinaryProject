@@ -275,12 +275,12 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
             )}
           </Col>
           <Col xs={12}>
-            <h4 className="mt-2 pt-50">Role Permissions</h4>
+            <h4 className="mt-2 pt-50">Role Permissions </h4>
             <Table className="table-flush-spacing" responsive>
               <tbody>
                 <tr>
                   <td className="text-nowrap fw-bolder">
-                    Administrator Access
+                    Administrator Access 
                     <Info size={14} id="info-tooltip" />
                     <UncontrolledTooltip placement="top" target="info-tooltip">
                       Allows a full access to the system
