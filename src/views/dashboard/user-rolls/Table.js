@@ -85,24 +85,10 @@ const DataTableServerSide = () => {
     }
   }
 
-  // ?offset=10&limit=10
   useEffect(() => {
     fetchTableData();
   }, []);
-  // ** Function to handle filter
 
-  // const handleFilter = (value) => {
-  //   setSearchTerm(value);
-  //   if (value) {
-  //     const filteredData = data.results.filter((row) =>
-  //       row.roleName.toLowerCase().includes(value.toLowerCase())
-  //     );
-  //     setTableData(filteredData);
-  //   } else {
-  //     setTableData(data.results);
-  //   }
-  //   setCurrentPage(1);
-  // };
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
@@ -114,14 +100,11 @@ const DataTableServerSide = () => {
         row?.roleName?.toLowerCase().includes(value?.toLowerCase() || "")
       );
       
-      
-      // Update table data with filtered results
-      setTableData((prev) => ({
+            setTableData((prev) => ({
         ...prev,
         results: filteredResults,
       }));
     } else {
-      // Re-fetch the data or reset it to its original state
       fetchTableData((currentPage - 1) * rowsPerPage, rowsPerPage);
     }
   };
@@ -161,8 +144,16 @@ const DataTableServerSide = () => {
         try {
           // Call delete API
           const response = await useJwt.deleteRole(uid);
+            
           if (response.status === 204) {
-            // Show success message
+            const newData = tableData.results.filter((item) => item.uid !== uid);
+            
+            setTableData((prevData) => ({
+              ...prevData,
+              results: newData,
+            }));
+  
+            
             MySwal.fire({
               icon: "success",
               title: "Deleted!",
@@ -171,8 +162,8 @@ const DataTableServerSide = () => {
                 confirmButton: "btn btn-success",
               },
             });
-            window.location.reload(true);
           }
+
         } catch (error) {
           console.error("Error deleting item:", error);
         }
@@ -263,24 +254,9 @@ const DataTableServerSide = () => {
     );
   };
 
-  // ** Table data to render
   const dataToRender = () => {
     return tableData.results;
-    // const filters = {
-    //   q: searchValue
-    // }
-
-    // const isFiltered = Object.keys(filters).some(function (k) {
-    //   return filters[k].length > 0
-    // })
-
-    // if (store.data.length > 0) {
-    //   return store.data
-    // } else if (store.data.length === 0 && isFiltered) {
-    //   return []
-    // } else {
-    //   return store.allData.slice(0, rowsPerPage)
-    // }
+ 
   };
 
   return (
@@ -352,7 +328,6 @@ const DataTableServerSide = () => {
           </div>
         )}
       </Card>
-      {/* <Role_modal show={showModal} uid={dataUid} row={datarow} /> */}
       <AddRoles
         {...rowDetails}
         // show={show}

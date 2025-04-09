@@ -1,8 +1,9 @@
+//============ Create Roles ===================
 // ** React Imports
 import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {PacmanLoader} from "react-spinners"
+import { PacmanLoader } from "react-spinners";
 import { Spinner } from "reactstrap";
 import {
   Row,
@@ -43,7 +44,7 @@ import {
   handleUpdatePermissionList,
 } from "../utils";
 
-const AddRoles = (props) => {
+const AddRoles = ({ props, refreshTable }) => {
   // ** Props
   // const { show, toggle, uid, modalType, row } = props;
 
@@ -53,6 +54,7 @@ const AddRoles = (props) => {
   const [permissionList, setPermissionList] = useState(null);
   const [processingData, setProcessing] = useState(false);
   const [fetchLoader, setfetchLoader] = useState(false);
+  const [fetchTrigger, setFetchTrigger] = useState(false);
 
   // ** Hooks
   const {
@@ -83,18 +85,13 @@ const AddRoles = (props) => {
   };
 
   const onSubmit = async (data) => {
-    // console.log("data",data);
-
     const updatedData = extractUIDFromPermissionList(data);
-    // {{
-    //   debugger
-    // }}
-    console.log(updatedData);
-
+   
     try {
       setProcessing(true);
-      // {{debugger}}
+
       const res = await useJwt.userpermissionPost(updatedData);
+      setFetchTrigger(true);
 
       toggle();
     } catch (error) {
@@ -103,28 +100,24 @@ const AddRoles = (props) => {
         const { content, message } = response?.data;
         handleError(response?.status, content || message);
       } else {
-        console.log(` ❌`, {
-          error,
-        });
+        console.error('API Error: ', error);  // More clear error logging
       }
+    
+    
     } finally {
       setProcessing(false);
     }
   };
 
-  const onReset = () => {
-    toggle();
-    reset({ roleName: "" });
-  };
-
+ 
   useEffect(() => {
     (async () => {
       try {
-        // {{debugger}}
         setfetchLoader(true);
         const res = await useJwt.permission();
         const { result } = res?.data.content;
         let data = structurePermissionList(result);
+        console.log("permission", result);
 
         if (data && Object.keys(data).length) {
           const { permissionIds, roleName, uid } = data;
@@ -146,7 +139,12 @@ const AddRoles = (props) => {
         setfetchLoader(false);
       }
     })();
-  }, [props]);
+  }, [props,fetchTrigger]);
+
+  const onReset = () => {
+    toggle();
+    reset({ roleName: "" });
+  };
 
   return (
     <Fragment>
@@ -288,43 +286,43 @@ const AddRoles = (props) => {
                 </Table>
               </Col>
               <Col className="text-center mt-2" xs={12}>
+                <Button type="reset" outline onClick={onReset}>
+                  Discard
+                </Button>
                 <Button
                   type="submit"
                   color="primary"
-                  className="me-1"
+                  className="mx-1"
                   onClick={() => clearErrors()}
                   disabled={processingData}
                 >
                   {processingData ? (
-                    <Spinner color={"#fff"} size={10} />
+                    <>
+                      Loading.. <Spinner size="sm" />
+                    </>
                   ) : (
                     "Submit"
                   )}
-                </Button>
-                <Button type="reset" outline onClick={onReset}>
-                  Discard
                 </Button>
               </Col>
             </Row>
           ) : (
             <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {/* <Spinner
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {/* <Spinner
               color="primary"
               style={{
                 height: "5rem",
                 width: "5rem",
               }}
             /> */}
-            <PacmanLoader />
-
-          </div>
-          
+              <PacmanLoader />
+            </div>
           )}
         </ModalBody>
       </Modal>

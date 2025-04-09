@@ -1,4 +1,4 @@
-// // // ============================ Original Code ======================================
+// ============================ Original Code ======================================
 
 import { useContext, Fragment, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,14 +8,14 @@ import { ChevronLeft } from "react-feather";
 import { useSkin } from "@hooks/useSkin";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Spinner } from "reactstrap";
-
+import { ListGroup, ListGroupItem } from "reactstrap";
 // ** Third Party Components
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { Facebook, Twitter, Mail, GitHub, X } from "react-feather";
 import { handleLogin } from "@store/authentication";
-
+import CryptoJS from "crypto-js";
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
 import Avatar from "@components/avatar";
@@ -49,9 +49,8 @@ import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
 
-// Default Form Values
 const defaultValues = {
-  password: "101010",
+  password: "Ro1234567899",
 };
 
 const Login = () => {
@@ -68,6 +67,8 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [isPassword, setIspassword] = useState(false);
   const location = useLocation();
+  const [encryptedPasss, setEncrypt] = useState(null);
+  // {{debugger}}
   const loginToken = location.state;
   const {
     control,
@@ -78,22 +79,79 @@ const Login = () => {
   } = useForm({
     defaultValues,
   });
-
+  const [password, setPassword] = useState("");
+  const [requirements, setRequirements] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    specialChar: false,
+  });
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
-  const validatePassword = (value) => {
-    if (!value) return "Password is required";
-    if (value.length < 6) return "Password must be at least 6 characters";
-    return undefined;
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16); // 16-byte IV
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+
+    return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+  }
+
+  const handleChange = (e) => {
+    const newPwd = e.target.value;
+
+    setPassword(newPwd);
+    validatePassword(newPwd);
   };
+
+  useEffect(() => {
+    // {{debugger}}
+    if (password) {
+      const encrypted = encryptAES(password);
+      setEncrypt(encrypted);
+    }
+  }, [password]);
+
+  // const handleChange = (e) => {
+  //   const newPwd = e.target.value;
+
+  //   setPassword(newPwd);
+  //   validatePassword(newPwd);
+  // };
+
+  // const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+  // console.log(hashedPassword);
 
   const onSubmit = async (data) => {
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
+        const payload = {
+          ...data,
+          password: encryptedPasss,
+        };
+
         setLoading(true);
 
-        const res = await useJwt.loginPassword(loginToken, data);
+        const res = await useJwt.loginPassword(loginToken, payload);
         const authStatus = res.data.content.TwoNf;
+        const passCreated = res?.data?.content?.passwardCreated;
 
         if (res.status == 200 || res.status == 201) {
           return MySwal.fire({
@@ -105,31 +163,38 @@ const Login = () => {
             },
             buttonsStyling: false,
           }).then(() => {
-            if (authStatus === "false" || authStatus === false) {
-              navigate("/EmailOTP", { state: { userData: res.data?.content } });
-            } else if (authStatus === "true" || authStatus === true) {
-              navigate("/Mobile_OTP", {
-                state: { userData: res.data?.content },
+            if (passCreated === false) {
+              navigate("/create-new-password", {
+                state: {
+                  userData: res.data?.content,
+                },
               });
+            } else {
+              if (authStatus === "false" || authStatus === false) {
+                navigate("/EmailOTP", {
+                  state: { userData: res.data?.content },
+                });
+              } else if (authStatus === "true" || authStatus === true) {
+                navigate("/mobile_otp", {
+                  state: { userData: res.data?.content },
+                });
+              }
             }
           });
         }
-
-        console.log("API Response Full:", res);
-        console.log("data", data);
       } catch (error) {
         console.error(
           "Login Error Details:",
           error.response || error.message || error
         );
-
         if (error.response) {
           const { status, data } = error.response;
           const LoginAttempt = data?.content?.LoginAttempt;
-          const errorMessage = data?.content?.message;
+          const errorMessage =
+            data?.content?.message ||
+            "Technical Error Occured , Please try again later.";
           setLoginAttempt(LoginAttempt);
           setMessage(errorMessage);
-          console.log("failed");
 
           if (LoginAttempt > 3) {
             return MySwal.fire({
@@ -144,21 +209,11 @@ const Login = () => {
               navigate("/Email_Reset");
             });
           }
-          switch (status) {
-            case 400:
-            case 401:
-            case 403:
-              setMessage(errorMessage);
-              break;
-            default:
-              setMessage(errorMessage);
-          }
         }
       } finally {
         setLoading(false);
       }
     } else {
-      // Validate fields and show errors if empty
       for (const key in data) {
         if (data[key].length === 0) {
           setError(key, {
@@ -172,13 +227,18 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    // console.log("token",loginToken);
-  }, []);
+  const validatePassword = (pwd) => {
+    setRequirements({
+      length: pwd.length >= 12,
+      uppercase: /[A-Z]/.test(pwd),
+      lowercase: /[a-z]/.test(pwd),
+      number: /[0-9]/.test(pwd),
+      specialChar: /[^A-Za-z\d]/.test(pwd), // Detects special characters
+    });
+  };
 
   return (
     <div className="auth-wrapper auth-cover">
-    
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
@@ -240,20 +300,94 @@ const Login = () => {
                     id="password"
                     name="password"
                     control={control}
-                    rules={{ validate: validatePassword }}
+                    rules={{
+                      required: "Password is required",
+                      minLength: {
+                        value: 12,
+                        message: "Password must be at least 12 characters long",
+                      },
+                      pattern: {
+                        value:
+                          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{12,}$/,
+                        message:
+                          "Password must contain at least one uppercase letter, one lowercase letter, one digit, and no special characters",
+                      },
+                    }}
                     render={({ field }) => (
-                      <InputPasswordToggle
-                        className="input-group-merge"
-                        invalid={errors.password}
-                        {...field}
-                      />
+                      <div>
+                        <InputPasswordToggle
+                          className="input-group-merge"
+                          invalid={errors.password}
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e); // React Hook Form
+                            handleChange(e); // Custom validation
+                          }}
+                          value={password}
+                        />
+                        {errors.password && (
+                          <FormFeedback
+                            style={{ color: "red", display: "block" }}
+                          >
+                            {errors.password.message}
+                          </FormFeedback>
+                        )}
+                        {/* {requirements.specialChar && (
+        <FormFeedback style={{ color: "red", display: "block" }}>
+          ❌ Special characters are not allowed.
+        </FormFeedback>
+      )} */}
+                      </div>
                     )}
                   />
                   {errors.password && (
                     <FormFeedback>{errors.password.message}</FormFeedback>
                   )}
                 </div>
-                <div className="mb-1">
+                <CardTitle tag="h5" className="mb-1">
+                  Password Requirement
+                </CardTitle>
+
+                <ListGroupItem
+                  className={
+                    requirements.length ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.length ? "✅" : "❌"} At least 12 characters
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.uppercase ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.uppercase ? "✅" : "❌"} At least one uppercase
+                  letter
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.lowercase ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.lowercase ? "✅" : "❌"} At least one lowercase
+                  letter
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.number ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.number ? "✅" : "❌"} At least one number
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    !requirements.specialChar ? "text-success" : "text-danger"
+                  }
+                >
+                  {!requirements.specialChar ? "✅" : "❌"} No special
+                  characters allowed
+                </ListGroupItem>
+
+                <div className="mb-1 mt-2">
                   {loginAttempt >= 1 && (
                     <Controller
                       name="captcha"
@@ -297,7 +431,13 @@ const Login = () => {
                 // disabled={!locationEnabled}
                 block
               >
-                {loading ? <Spinner size="sm" /> : "Login "}
+                {loading ? (
+                  <>
+                    Loading.. <Spinner size="sm" />
+                  </>
+                ) : (
+                  "Login "
+                )}
               </Button>
               <p className="text-center mt-2">
                 <Link to="/Login">

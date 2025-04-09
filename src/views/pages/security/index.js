@@ -254,7 +254,8 @@ const AuthenticationExample = () => {
               {!loading ? (
                 <>
                   <CardText>
-                    Use this modal to enhance your application security by
+
+                   Click On below to enhance your application security by
                     enabling two factor authentication.
                   </CardText>
                   <Button

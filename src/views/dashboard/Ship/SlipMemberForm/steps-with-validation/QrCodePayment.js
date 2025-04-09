@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 // ** Reactstrap Imports
 import {
@@ -58,7 +58,7 @@ const AddCardExample = ({
 }) => {
   // ** States
   const [cardType, setCardType] = useState('')
-
+// {{debugger}}
   // ** Hooks
   const {
     reset,
@@ -69,6 +69,9 @@ const AddCardExample = ({
     formState: { errors }
   } = useForm({ defaultValues })
 
+  useEffect(()=>{
+
+  },[])
   
 
   return (
@@ -84,7 +87,7 @@ const AddCardExample = ({
         {/* <ModalHeader className='bg-transparent' toggle={() => setShowQrModal(!showQrModal)}></ModalHeader> */}
         <ModalBody className='px-sm-5 mx-50 pb-5'>
           <h1 className='text-center mb-1'>Scan QR Code</h1>
-          <p className='text-center'>Add card for future billing</p>
+          {/* <p className='text-center'>Add card for future billing</p> */}
           <Row tag='form' className='gy-1 gx-2 mt-75'>
             {/* <Col xs={12}> */}
              
@@ -94,7 +97,7 @@ const AddCardExample = ({
             {/* </Col> */}
           
             <Col className='text-center mt-1' xs={12}>
-              <Button type='submit' className='me-1' color='primary'>
+              <Button type='submit' id="qr-ssubmit" className='me-1' color='primary'>
                 Submit
               </Button>
              

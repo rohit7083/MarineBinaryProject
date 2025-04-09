@@ -92,91 +92,14 @@ const Login = () => {
     return undefined; // Valid case
   };
 
-
-
-  // const isLoacationEnabled=localStorage.getItem("locationEnabled");
-  // console.log("isLocationEnabled",isLoacationEnabled);
-  
-  // const onSubmit = async (data) => {
-
-  //   if (Object.values(data).every((field) => field.length > 0)) {
-  //     try {
-  //       setLoading(true);
-  //       const res = await useJwt.verifyEmail(data);
-  //       if (res.status === 200) {
-  //         const loginToken = res.data.content.token;
-
-  //         navigate("/login_password", { state: loginToken });
-  //       }
-        
-  //     } catch (error) {
-  //       console.error(
-  //         "Login Error Details:",
-  //         error.response || error.message || error
-  //       );
-
-  //       if (error.response) {
-  //         const { status, data } = error.response;
-  //         const LoginAttempt = data.content.LoginAttempt;
-  //         const errorMessage = data.content;
-  //         setMessage(errorMessage);
-  //         console.log("failed");
-
-  //         if (LoginAttempt > 3) {
-  //           return MySwal.fire({
-  //             title: "Blocked",
-  //             text: errorMessage,
-  //             icon: "error",
-  //             customClass: {
-  //               confirmButton: "btn btn-primary",
-  //             },
-  //             buttonsStyling: false,
-  //           }).then(() => {
-  //             navigate("/Email_Reset");
-  //           });
-  //         }
-
-  //         switch (status) {
-  //           case 400:
-  //             setMessage(data.content);
-  //             break;
-  //           case 401:
-  //             setMessage(errorMessage);
-  //             // navigate("/login");
-  //             break;
-  //           case 403:
-  //             setMessage(errorMessage);
-  //             break;
-  //           default:
-  //             setMessage(errorMessage);
-  //         }
-        
-  //     }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     // Validate fields and show errors if empty
-  //     for (const key in data) {
-  //       if (data[key].length === 0) {
-  //         setError(key, {
-  //           type: "manual",
-  //           message: `${
-  //             key.charAt(0).toUpperCase() + key.slice(1)
-  //           } is required`,
-  //         });
-  //       }
-  //     }
-  //   }
-  // };
-
-
   const onSubmit = async (data) => {
+
+    setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
         setLoading(true);
         const res = await useJwt.verifyEmail(data); // Assuming useJwt is an imported function
-  
+
         if (res.status === 200) {
           const loginToken = res.data.content.token;
           navigate("/login_password", { state: loginToken });
@@ -187,13 +110,13 @@ const Login = () => {
           "Login Error Details:",
           error.response || error.message || error
         );
-  
+
         if (error.response) {
           const { status, data } = error.response;
-          const LoginAttempt = data.content.LoginAttempt;
-          const errorMessage = data.content;
+          const LoginAttempt = data?.content?.LoginAttempt;
+          const errorMessage = data?.content;
           setMessage(errorMessage);
-  
+
           if (LoginAttempt > 3) {
             MySwal.fire({
               title: "Blocked",
@@ -206,20 +129,12 @@ const Login = () => {
             }).then(() => {
               navigate("/Email_Reset");
             });
-            return; // Exit to prevent further processing
+            return; 
           }
-  
-          switch (status) {
-            case 400:
-            case 401:
-            case 403:
-              setMessage(errorMessage);
-              break;
-            default:
-              setMessage("An unexpected error occurred. Please try again.");
-          }
+
+   
         } else {
-          setMessage("Network error. Please check your connection.");
+          setMessage(errorMessage || "Something Went Wrong. Try After Some time");
         }
       } finally {
         setLoading(false);
@@ -230,66 +145,60 @@ const Login = () => {
         if (data[key].length === 0) {
           setError(key, {
             type: "manual",
-            message: `${key.charAt(0).toUpperCase() + key.slice(1)} is required`,
+            message: `${
+              key.charAt(0).toUpperCase() + key.slice(1)
+            } is required`,
           });
         }
       }
     }
   };
-  
-   
-  useEffect(()=>{
-    const isLoacationEnabled=localStorage.getItem("locationEnabled");
-if (isLoacationEnabled === true || isLoacationEnabled === "true" ) {
-  setShow(false);
-  console.log(isLoacationEnabled);
-  
-}   
-else{
-  setShow(true);
-  console.log(isLoacationEnabled);
 
-} 
-  },[])
-  
-
+  useEffect(() => {
+    // Check if the location is already enabled from localStorage
+    const isLocationEnabled = localStorage.getItem("locationEnabled");
+    if (isLocationEnabled === "true") {
+      setShow(false); // Hide the modal if location is enabled
+    } else {
+      setShow(true); // Show the modal if location is not enabled
+    }
+  }, []);
 
 
   return (
     <div className="auth-wrapper auth-cover">
+      <Fragment>
+        <Modal
+          isOpen={show}
+          toggle={() => setShow(!show)}
+          className="modal-dialog-centered"
+        >
+          <ModalHeader
+            className="bg-transparent"
+            toggle={() => setShow(!show)}
+          ></ModalHeader>
+          <ModalBody className="px-sm-5 mx-50 pb-5">
+            <h1 className="text-center mb-1">Turn On Your Location</h1>
+            <Row
+              tag="form"
+              className="gy-1 gx-2 mt-75"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <img src="src/views/pages/authentication/Images/locationguide.png" />
 
-       <Fragment>
-              <Modal
-                isOpen={show}
-                toggle={() => setShow(!show)}
-                className="modal-dialog-centered"
+              <Button
+                color="primary"
+                onClick={() => {
+                  localStorage.setItem("locationEnabled", "true"); // Set location as enabled
+                  setShow(false); // Close the modal
+                }}
               >
-                <ModalHeader
-                  className="bg-transparent"
-                  toggle={() => setShow(!show)}
-                ></ModalHeader>
-                <ModalBody className="px-sm-5 mx-50 pb-5">
-                  <h1 className="text-center mb-1">Turn On Your Location</h1>
-                  <Row
-                    tag="form"
-                    className="gy-1 gx-2 mt-75"
-                    onSubmit={handleSubmit(onSubmit)}
-                  >
-                    <img src="src/views/pages/authentication/Images/locationguide.png" />
-      
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        setShow(!show);
-                      }}
-                    >
-                      OK
-                    </Button>
-                  </Row>
-                </ModalBody>
-              </Modal>
-            </Fragment>
-
+                OK
+              </Button>
+            </Row>
+          </ModalBody>
+        </Modal>
+      </Fragment>
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
@@ -309,18 +218,20 @@ else{
         >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
-             Login - Email 👋
+              Login - Email 👋
             </CardTitle>
 
             <CardText className="mb-2">
-               
               Please sign-in to your account and start the adventure
               <br />
               {message && (
                 <React.Fragment>
                   <UncontrolledAlert color="danger">
                     <div className="alert-body">
-                      <span className="text-danger fw-bold">{message}</span>
+                      <span className="text-danger fw-bold">
+                      <strong>Error : </strong>
+
+                        {message}</span>
                     </div>
                   </UncontrolledAlert>
                 </React.Fragment>
@@ -363,10 +274,30 @@ else{
                 type="submit"
                 color="primary"
                 // disabled={!locationEnabled}
-                onClick={handleLogin}
+                onClick={async (e) => {
+                  e.preventDefault();
+
+                  // Check if location is enabled from localStorage
+                  const isLocationEnabled =
+                    localStorage.getItem("locationEnabled");
+
+                  if (isLocationEnabled === "true") {
+                    // If location is enabled, proceed with login
+                    handleSubmit(onSubmit)();
+                  } else {
+                    // If location is not enabled, show the modal to enable it
+                    setShow(true);
+                  }
+                }}
                 block
               >
-                {loading ? <Spinner size="sm" /> : "Next"}
+                {loading ? (
+                  <>
+                    Loading.. <Spinner size="sm" />{" "}
+                  </>
+                ) : (
+                  "Next"
+                )}
               </Button>
             </form>
           </Col>

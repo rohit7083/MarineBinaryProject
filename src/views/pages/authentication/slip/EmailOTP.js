@@ -3,9 +3,11 @@ import { Navigate, useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import React from "react";
+import React, { useEffect } from "react";
 import { Alert } from "reactstrap";
 import { UncontrolledAlert } from "reactstrap";
+import toast from "react-hot-toast";
+
 // ** Reactstrap Imports
 import {
   Card,
@@ -25,6 +27,7 @@ import "@styles/react/pages/page-authentication.scss";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Spinner } from "reactstrap";
+import CryptoJS from "crypto-js";
 
 // ** Actions
 import { handleLogin } from "@store/authentication";
@@ -32,24 +35,26 @@ import { handleLogin } from "@store/authentication";
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
 import { useDispatch, useSelector } from "react-redux";
+import Countdown from "react-countdown";
 
 // ** Utils
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
-// import Index from "../../../dashboard/";
-/*
- [
-          {
-            action: 'manage',
-            subject: 'all'
-          }
-        ]
-*/
+import { PulseLoader } from "react-spinners";
 
 const TwoStepsBasic = () => {
+  const [attempt, setAttempt] = useState(0);
+
   const MySwal = withReactContent(Swal);
   const ability = useContext(AbilityContext);
   const dispatch = useDispatch(); // Define dispatch
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendLoading2, setResendLoading2] = useState(false);
+  const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+
+  const [resendCount, setResendcount] = useState(false);
+
+  const [resendcallCount, setResendcallCount] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -63,39 +68,94 @@ const TwoStepsBasic = () => {
     watch,
     formState: { errors },
   } = useForm();
-
-  const { uid: token } = useParams();
+  const token = userData?.token;
 
   // console.log({ token });
+
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16); // 16-byte IV
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+
+    return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+  }
+
+  const handleOtp = watch("otp");
+  // console.log(handleOtp);
 
   const handleResendOTP = async (e) => {
     e.preventDefault();
     try {
+      setResendLoading(true);
+
       const res = await useJwt.resend_Otp(token);
+      if (res?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+
+        setResendcount(true);
+      }
       console.log("resentOTP", res);
+      toast.success("OTP sent successfully", {
+        position: "top-center",
+        autoClose: 5000,
+      });
     } catch (error) {
       console.log(error.response);
+    } finally {
+      setResendLoading(false);
     }
   };
 
   const handleResendCall = async (e) => {
     e.preventDefault();
-
     try {
+      setResendLoading2(true);
+
       const res = await useJwt.resend_OtpCall(token);
-      console.log("resentCall", res);
+      if (res?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+
+        setResendcallCount(true);
+      }
+      console.log("resentCall", callRes);
+      toast.success("Call Verification Send Sucessfully", {
+        position: "top-center",
+        autoClose: 5000,
+      });
     } catch (error) {
       console.log(error.response);
+    } finally {
+      setResendLoading2(false);
     }
   };
-  const onSubmit = async (formData) => {
+
+  const onSubmit = async (data1) => {
+    setAttempt(0);
+    setCountdownEndTime(0);
     try {
       setLoading(true);
-      // {{debugger}}
+
       const token = userData?.token;
-      const otpString = formData.otp.join("");
-      const otp = parseInt(otpString, 10);
-      console.log(token);
+      const otp = encryptAES(data1?.otp.join(""));
+      console.log("otp", otp);
+
       const res = await useJwt.verifyAccount(token, { otp });
       console.log(res);
       // setAuthStatus(res.data.profile.TwoNf);
@@ -126,19 +186,26 @@ const TwoStepsBasic = () => {
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = error.response.data.message;
-        // setMessage(errorMessage);
+        const otpAttempt = data.otpAttempts;
 
+        const code = data?.code;
+
+        setMessage(errorMessage);
+        setAttempt(otpAttempt);
+        if (code === 423) {
+          return MySwal.fire({
+            title: "Blocked",
+            text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin",
+            icon: "warning",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            navigate("/Login");
+          });
+        }
         switch (status) {
-          case 400:
-            setMessage(errorMessage);
-            break;
-          case 401:
-            setMessage(errorMessage);
-            // navigate("/login");
-            break;
-          case 403:
-            setMessage(errorMessage);
-            break;
           case 500:
             setMessage(
               <span style={{ color: "red" }}>
@@ -154,101 +221,6 @@ const TwoStepsBasic = () => {
       setLoading(false); // Set loading to false after API call is complete
     }
   };
-
-  // const onSubmit = async (data) => {
-  //   // Convert OTP array to a string and then to an integer
-  //   const otpString = data.otp.join("");
-  //   const otp = parseInt(otpString, 10); // Convert to number (e.g., 12345)
-  //   // console.log("OTP Number: ", otp);
-
-  //   // Token from user data
-  //   const token = userData?.token;
-  //   // console.log("Token: ", token);
-  //   // localStorage.setItem("authToken", token);
-
-  //   try {
-  //     if (Object.values(data).every((field) => field.length > 0)) {
-  //       // Make the API call to verify OTP
-  //       const resOtp = await useJwt.verifyAccount(token, { otp });
-  //       // const accessToken = resOtp.data.access;
-  //       // const refreshToken = resOtp.data.refresh;
-  //       // const userData = resOtp.data.profile;
-  //       // console.log("userData", userData);
-
-  //       // console.log("ResOTPAPi", resOtp);
-  //       // localStorage.setItem("accessToken", accessToken);
-  //       // localStorage.setItem("refreshToken", refreshToken);
-  //       // localStorage.setItem("userData", JSON.stringify(userData))
-  //       // localStorage.setItem("userData",userData);
-
-  //       // // To retrieve and parse it later
-  //       // const retrievedData = JSON.parse(localStorage.getItem("userData"));
-
-  //       // console.log(retrievedData);
-
-  //       // Success case
-  //       return MySwal.fire({
-  //         title: "Successfully Login",
-  //         text: "Successfully Login",
-  //         icon: "success",
-  //         customClass: {
-  //           confirmButton: "btn btn-primary",
-  //         },
-  //         buttonsStyling: false,
-  //       }).then(() => {
-  //         navigate("/dashboard/ecommerce");
-  //       });
-  //     }
-  //   } catch (error) {
-  //     // Check if error.response exists
-  //     if (error.response) {
-  //       const { status, data } = error.response;
-
-  //       // Handling specific error codes
-  //       if (status === 400) {
-  //         return MySwal.fire({
-  //           title: "Error!",
-  //           text: "OTP verification failed",
-  //           icon: "error",
-  //           customClass: {
-  //             confirmButton: "btn btn-primary",
-  //           },
-  //           buttonsStyling: false,
-  //         });
-  //       }
-
-  //       // Handle 401 error for unauthorized access
-  //       else if (status === 401) {
-  //         const errorMessage =
-  //           data?.error || "Unauthorized access. Please log in again.";
-
-  //         return MySwal.fire({
-  //           title: "Time Out!",
-  //           text: errorMessage, // Display the error message from the response
-  //           icon: "error  ",
-  //           customClass: {
-  //             confirmButton: "btn btn-primary",
-  //           },
-  //           buttonsStyling: false,
-  //         }).then(() => {
-  //           // Optional: Redirect to login page
-  //           // navigate("/login");
-  //         });
-  //       }
-  //     } else {
-  //       // Handle errors when there is no response object (e.g., network issues)
-  //       return MySwal.fire({
-  //         title: "Error!",
-  //         text: "An unexpected error occurred. Please try again later.",
-  //         icon: "error",
-  //         customClass: {
-  //           confirmButton: "btn btn-primary",
-  //         },
-  //         buttonsStyling: false,
-  //       });
-  //     }
-  //   }
-  // };
 
   return (
     <div className="auth-wrapper auth-basic px-2">
@@ -430,20 +402,107 @@ const TwoStepsBasic = () => {
                   <small className="text-danger">{errors.otp.message}</small>
                 )}
               </div>
-              <Button block type="submit" color="primary">
-                {loading ? <Spinner size="sm" /> : "Login"}
+              {attempt < 3 && (
+                <>
+                  <div className="d-flex flex-column align-items-center position-relative">
+                    <div
+                      style={{ position: "relative", display: "inline-block" }}
+                    >
+                      <img
+                        src="/src/assets/images/updatedWatchnew.jpg"
+                        alt="Phone Call"
+                        style={{
+                          width: "120px",
+                          height: "100px",
+                          display: "block",
+                        }}
+                      />
+
+                      <Countdown
+                        key={countdownEndTime} // resets the countdown on update
+                        date={countdownEndTime}
+                        // onComplete={() => setResendLoading(false)} // re-enable the button
+                        renderer={({ minutes, seconds }) => (
+                          <span
+                            className="position-absolute top-50 start-50 translate-middle"
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "White",
+                            }}
+                          >
+                            {String(minutes).padStart(2, "0")}:
+                            {String(seconds).padStart(2, "0")}
+                          </span>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+              {attempt === 1 && (
+                <p className="text-center mt-2">
+                  {!resendCount && (
+                    <>
+                      <span>Didn’t get the code?</span>{" "}
+                      <a
+                        href="#"
+                        onClick={handleResendOTP}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Resend
+                      </a>
+                    </>
+                  )}
+                </p>
+              )}
+
+              {attempt === 2 && (
+                <p className="text-center mt-2">
+                  {!resendcallCount && (
+                    <>
+                      <span>Didn’t get the code?</span>{" "}
+                      <a href="#" onClick={handleResendCall}>
+                        Call us
+                      </a>
+                    </>
+                  )}
+                </p>
+              )}
+
+              <Button block type="submit" className="mt-2" color="primary">
+                {loading ? (
+                  <>
+                    Loading.. <Spinner size="sm" />
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
             </Form>
-            <p className="text-center mt-2">
+            {/* <p className="text-center mt-2">
               <span>Didn’t get the code?</span>{" "}
               <a href="" onClick={handleResendOTP}>
-                Resend
+                {resendLoading ? (
+                  <>
+                    {" "}
+                    <PulseLoader size={5} />
+                  </>
+                ) : (
+                  "Resend"
+                )}{" "}
               </a>{" "}
               <span>or</span>{" "}
               <a href="/" onClick={handleResendCall}>
-                Call us
+                {resendLoading2 ? (
+                  <>
+                    <PulseLoader size={5} />
+                  </>
+                ) : (
+                  "Call Us"
+                )}{" "}
               </a>
-            </p>
+            </p> */}
           </CardBody>
         </Card>
       </div>

@@ -83,7 +83,6 @@ const CustomTable = ({ data }) => {
     console.log("Page selected:", page.selected + 1);
     setCurrentPage(page.selected + 1);
   };
-  
 
   const handleAssignedToChange = (value) => {
     setRole(value);
@@ -155,11 +154,15 @@ const CustomTable = ({ data }) => {
               try {
                 // Call delete API
                 const response = await useJwt.deleteSubUser(uid);
-                if (response.status === 204) {
-                  setData((prevData) =>
-                    prevData.filter((item) => item.uid !== uid)
-                  );
-                  // Show success message
+                if (response?.status === 204) {
+                  setTableData((prevData) => {
+                    const newData = prevData.results.filter((item) => item.uid !== uid);
+                    return {
+                      ...prevData,
+                      results: newData,
+                      count: prevData.count - 1, // Adjust the count if needed
+                    };
+                  });
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
@@ -168,13 +171,11 @@ const CustomTable = ({ data }) => {
                       confirmButton: "btn btn-success",
                     },
                   });
-                  window.location.reload(true);
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
-              // Show cancellation message
               MySwal.fire({
                 title: "Cancelled",
                 text: "Your imaginary file is safe :)",

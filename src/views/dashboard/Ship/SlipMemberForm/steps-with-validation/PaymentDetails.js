@@ -141,7 +141,6 @@ const Address = ({
   // const [paidInOption, setPaidInOption] = useState(null);
 
   const [picker, setPicker] = useState(new Date());
-
   const [totalPayment, setFinalPayment] = useState("");
   const [showQrModal, setShowQrModal] = useState(false);
 
@@ -473,7 +472,7 @@ const Address = ({
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
-      const data = { ...formData }["0"]; 
+      const data = { ...formData }["0"];
       let pmVal =
         colourOptions3?.find((x) => x.value == data.paymentMode) || null;
       let paidInVal =
@@ -499,7 +498,7 @@ const Address = ({
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
   console.log(acctypeValue);
-
+  // {{debugger}}
   const onSubmit = async (data) => {
     setErrMsz("");
     data.paymentMode = data.paymentMode?.value;
@@ -576,26 +575,30 @@ const Address = ({
       const response = await useJwt.createPayment(formData);
       const { qr_code_base64 } = response?.data;
       setQr(qr_code_base64);
+      if (qr_code_base64) {
+        setShowQrModal(true);
+      }
+      // console.log("API Response:", response);
+      // MySwal.fire({
+      //   title: "Successfully Completed",
+      //   text: " Your Pyament is Successfully Completed",
+      //   icon: "success",
+      //   customClass: {
+      //     confirmButton: "btn btn-primary",
+      //   },
+      //   buttonsStyling: false,
+      // }).then(() => {
+      //   if (Object.keys(errors).length === 0) {
+          // {{debugger}}
+          // if (qr) {
 
-      console.log("API Response:", response);
-      MySwal.fire({
-        title: "Successfully Created",
-        text: " Your Vessel Details Created Successfully",
-        icon: "success",
-        customClass: {
-          confirmButton: "btn btn-primary",
-        },
-        buttonsStyling: false,
-      }).then(() => {
-        if (Object.keys(errors).length === 0) {
-          if (qr) {
-            setShowQrModal(true);
-            // } else if () {
-          } else {
-            stepper.next();
-          }
-        }
-      });
+          // setShowQrModal(true);
+
+          // } else {
+          stepper.next();
+          // }
+      //   }
+      // });
     } catch (error) {
       console.error("Error submitting data:", error);
 
@@ -631,6 +634,7 @@ const Address = ({
         />
       </div>
     );
+
   return (
     <Fragment>
       <div className="content-header">
@@ -664,6 +668,7 @@ const Address = ({
                 render={({ field }) => (
                   <Flatpickr
                     id="contractDate"
+                    name="contractDate"
                     className={`form-control ${
                       errors.contractDate ? "is-invalid" : ""
                     }`}
@@ -673,19 +678,43 @@ const Address = ({
                       dateFormat: "Y-m-d",
                     }}
                     value={field.value}
+                    // onChange={(date) => {
+                    //   const formattedDate = date[0]
+                    //     ?.toISOString()
+                    //     .split("T")[0];
+                    //   field.onChange(formattedDate);
+
+                    //   // Calculate Renewal Date (365 days later)
+                    //   const renewalDate = new Date(date[0]);
+                    //   renewalDate.setFullYear(renewalDate.getFullYear() + 1); // Ensures year increment without affecting the day
+
+                    //   const formattedRenewalDate = renewalDate
+                    //     .toISOString()
+                    //     .split("T")[0];
+
+                    //   // Set Renewal Date value in the form
+                    //   setValue("renewalDate", formattedRenewalDate, {
+                    //     shouldValidate: true,
+                    //   });
+                    // }}
+
                     onChange={(date) => {
-                      const formattedDate = date[0]
-                        ?.toISOString()
-                        .split("T")[0];
+                      if (!date[0]) return;
+
+                      const selectedDate = date[0];
+
+                      // Format Contract Date Correctly
+                      const formattedDate =
+                        selectedDate.toLocaleDateString("en-CA"); // YYYY-MM-DD
                       field.onChange(formattedDate);
 
-                      // Calculate Renewal Date (365 days later)
-                      const renewalDate = new Date(date[0]);
-                      renewalDate.setDate(renewalDate.getDate() + 365);
+                      // Calculate Renewal Date (1 year later)
+                      const renewalDate = new Date(selectedDate);
+                      renewalDate.setFullYear(renewalDate.getFullYear() + 1);
 
-                      const formattedRenewalDate = renewalDate
-                        .toISOString()
-                        .split("T")[0];
+                      // Format Renewal Date Correctly
+                      const formattedRenewalDate =
+                        renewalDate.toLocaleDateString("en-CA"); // YYYY-MM-DD
 
                       // Set Renewal Date value in the form
                       setValue("renewalDate", formattedRenewalDate, {
@@ -1130,7 +1159,7 @@ const Address = ({
                   required: "payment Mode  is required",
                 }}
                 render={({ field }) => (
-                  <Select 
+                  <Select
                     {...field}
                     options={colourOptions3}
                     className={`react-select ${
@@ -1142,7 +1171,7 @@ const Address = ({
                       field.onChange(selectedOption); // Update React Hook Form with the value
                       handlepaymentMode(selectedOption); // Run your custom function with the full option
                     }}
-                    menuPlacement="top" 
+                    menuPlacement="top"
                   />
                 )}
               />
@@ -2128,7 +2157,13 @@ const Address = ({
                 onClick={() => clearErrors()}
               >
                 <span className="align-middle d-sm-inline-block d-none">
-                  {loading ? <Spinner size="sm" /> : "Submit"}
+                  {loading ? (
+                    <>
+                      Loading.. <Spinner size="sm" />{" "}
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
                 </span>
                 {loading ? null : (
                   <ArrowRight

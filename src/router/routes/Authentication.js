@@ -1,10 +1,11 @@
 // ** React Imports
 import { lazy } from 'react'
 
+const Create_New_Pass= lazy(()=> import('../../views/pages/authentication/slip/Create_New_Pass'))
 const loginEmail = lazy(() => import('../../views/pages/authentication/slip/LoginEmail'))
 const LoginBasic = lazy(() => import('../../views/pages/authentication/LoginBasic'))
 const LoginCover = lazy(() => import('../../views/pages/authentication/LoginCover'))
-
+const TokenExpire=lazy(()=>import('../../views/pages/authentication/slip/TokenExpire')) 
 const Register = lazy(() => import('../../views/pages/authentication/Register'))
 const RegisterBasic = lazy(() => import('../../views/pages/authentication/RegisterBasic'))
 // const RegisterCover = lazy(() => import('../../views/pages/authentication/RegisterCover'))
@@ -32,6 +33,7 @@ const SlipRegister = lazy(()=> import('../../views/pages/authentication/SlipRegi
 const Forget_password = lazy(()=> import('../../views/pages/authentication/slip/Forget_password'))
 // const twoStep_auth=lazy(()=>import('../../views/pages/authentication/slip/twoStep_auth'))
 const AuthenticationRoutes = [
+  
   {
     path: '/login',
     element: <loginEmail />,
@@ -42,6 +44,15 @@ const AuthenticationRoutes = [
     }
   },
 
+  {
+    path: '/token-expire',
+    element: <TokenExpire/>,
+    meta: {
+      layout: 'blank',
+      publicRoute: true,
+      // restricted: true
+    }
+  },  
 
   {
     path: '/login_password',
@@ -52,6 +63,17 @@ const AuthenticationRoutes = [
       restricted: true
     }
   },
+
+  {
+    path: '/create-new-password',
+    element: <Create_New_Pass/>,
+    meta: {
+      layout: 'blank',
+      publicRoute: true,
+      // restricted: true
+    }
+  },
+
   {
     path: '/reset_password/:token',
     element: <Forget_password />,
@@ -105,7 +127,7 @@ const AuthenticationRoutes = [
     meta: {
       layout: 'blank',
       publicRoute: true,
-      restricted: true
+      // restricted: true
     }
   },
   {

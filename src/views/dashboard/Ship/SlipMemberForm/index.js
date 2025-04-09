@@ -4,7 +4,7 @@ import PaymentDetails from "./steps-with-validation/PaymentDetails";
 import DocumentsDetails from "./steps-with-validation/DocumentsDetails";
 import MemberDetails from "./steps-with-validation/MemberDetails";
 import VesselDetails from "./steps-with-validation/VesselDetails";
-
+import { useLocation, useNavigate } from "react-router-dom";
 // ** Custom Components
 import Wizard from "@components/wizard";
 
@@ -24,7 +24,7 @@ const WizardModern = () => {
   const [slipIID, setSlipIID] = useState("");
   const [memberID, setMemberID] = useState(null);
   const [fetchLoader, setFetchLoader] = useState(false);
-
+// {{debugger}}
   const [formData, setFormData] = useState({
     vessel: {},
     member: {},
@@ -32,8 +32,14 @@ const WizardModern = () => {
     documents: {},
   });
   // ** Hooks
-  const { uid } = useParams();
+  // const { uid } = useParams();
+
+  const location=useLocation();
+const uid=location.state?.uid || "";
+
+
   useEffect(() => {
+
     const fetchData = async () => {
       try {
         setFetchLoader(true);
@@ -72,6 +78,8 @@ const WizardModern = () => {
 
   useEffect(() => {
     console.log(formData);
+    console.log("memeber id from index", memberID);
+    
   }, [formData]);
 
   // {{debugger}}

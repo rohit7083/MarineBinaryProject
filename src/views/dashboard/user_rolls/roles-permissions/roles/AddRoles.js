@@ -115,12 +115,7 @@ const[fetchLoader,setFetchLoader]=useState(false);
     reset({ roleName: "" });
   };
 
-  /*
-  const handleModalClosed = () => {
-    setModalType("Add New");
-    setValue("roleName");
-  };
-*/
+ 
   useEffect(() => {
     (async () => {
       try {
@@ -166,7 +161,7 @@ const[fetchLoader,setFetchLoader]=useState(false);
       <ModalBody className="px-5 pb-5">
         <div className="text-center mb-4">
           <h1>{modalType} Role</h1>
-          <p>Set role permissions</p>
+          <p>Set role permissions Edit</p>
           {errors?.server && (
             <Fragment>
               <Alert color="danger">

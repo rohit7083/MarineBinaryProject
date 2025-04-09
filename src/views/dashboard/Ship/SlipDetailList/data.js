@@ -1,4 +1,4 @@
-// ** Custom Components
+  // ** Custom Components
 import Avatar from "@components/avatar";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -355,7 +355,7 @@ export const serverSideColumns = [
     sortable: true,
     name: "Id",
     minWidth: "100px",
-    selector: (row) => row.id,
+    selector:(row,index)=>index+1,
   },
 
   {
@@ -509,10 +509,11 @@ export const serverSideColumns = [
 
           <Link
             style={{ margin: "0.5rem" }}
-            to={{
-              pathname: `/marin/slip-management/${row.uid}`,
-              state: { slipData: row }, // Pass full data
-            }}
+            to={`/marin/slip-management`}
+              state={ {slipData: row,
+                uid:row.uid
+               }}
+          
           >
             <Eye className="font-medium-3 text-body" />
           </Link>
@@ -520,10 +521,9 @@ export const serverSideColumns = [
           {/* Edit Button */}
           <Link
             style={{ margin: "0.5rem" }}
-            to={{
-              pathname: `/dashboard/slip-details/${row.uid}`, // Ensure this is the correct path
-              state: {},
-            }}
+            to={`/dashboard/slip-details`}
+              state={{uid:row.uid}}
+            
           >
             <span>
               <Edit2 className="font-medium-3 text-body" />

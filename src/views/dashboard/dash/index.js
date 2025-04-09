@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertCircle } from "react-feather";
 import { useNavigate } from "react-router-dom";
-import Index from './dashboard_manage';
+import Index from "./dashboard_manage";
 import {
   Row,
   Col,
@@ -34,7 +34,8 @@ const DefaultAlert = () => {
   const [autMsz, setauthMsz] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-const [statusLoad,setStatusLoad]=useState(false);
+  const [statusLoad, setStatusLoad] = useState(false);
+  const[authStatusauth,setauthStatus]=useState(null);
   const MySwal = withReactContent(Swal);
   const [visible, setVisible] = useState(true);
 
@@ -60,161 +61,59 @@ const [statusLoad,setStatusLoad]=useState(false);
         const { status, data } = error.response;
         const errorMessage = data.error;
         // setMessage(errorMessage);
-
-        switch (status) {
-          case 400:
-            setMessage(errorMessage);
-            break;
-          case 401:
-            // setMessage(<span style={{ color: "red" }}>Time Out</span>);
-            return MySwal.fire({
-              title: "Time Out ",
-              text: " Please Login Again",
-              icon: "error",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-              buttonsStyling: false,
-            });
-
-            break;
-          case 403:
-            setMessage(errorMessage);
-            break;
-          case 500:
-            setMessage(
-              <span style={{ color: "red" }}>
-                Something went wrong on our end. Please try again later
-              </span>
-            );
-            break;
-          default:
-            setMessage(errorMessage);
-        }
       }
     } finally {
-      setLoading(false); // Set loading to false after API call is complete
+      setLoading(false); 
     }
   };
 
-  // const handleRemove = async () => {
-  //   try {
-  //     const res = await useJwt.disable();
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log("disabled errror", error);
-  //   }
-  // };
-
-  const handdleStatus = async () => {
-    let isMounted = true;
-
-    try {
-      setStatusLoad(true);
-      const res = await useJwt.status();
-      if (isMounted) {
-        setIsAuthenticated(res.data.is_2fa_activated);
-      }
-    } catch (error) {
-      console.log(error);
-      if (error.response) {
-        const { status, data } = error.response;
-        const errorMessage = data.error;
-        // setMessage(errorMessage);
-
-        switch (status) {
-          case 400:
-            setMessage(errorMessage);
-            break;
-          case 401:
-            // setMessage(<span style={{ color: "red" }}>Time Out</span>);
-            return MySwal.fire({
-              title: "Time Out ",
-              text: " Please Login Again",
-              icon: "error",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-              buttonsStyling: false,
-            });
-
-            break;
-          case 403:
-            setMessage(errorMessage);
-            break;
-          case 500:
-            setMessage(
-              <span style={{ color: "red" }}>
-                Something went wrong on our end. Please try again later
-              </span>
-            );
-            break;
-          default:
-            setMessage(errorMessage);
-        }
-      }
-      console.log({ error });
-    }finally{
-      setStatusLoad(false);
-    }
-
-    return () => {
-      isMounted = false; // Avoid state updates after unmount
-    };
-  };
+   useEffect(() => {
+    setVisible(false);
+  }, []);
 
   useEffect(() => {
-    setVisible(false);
- 
-
-    handdleStatus();
-    
-  }, []);
+    const rawData = localStorage.getItem("userData"); 
+    if (rawData) {
+      try {
+        const authStatus = JSON.parse(rawData); 
+        setauthStatus(authStatus?.TwoNf);
+      
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+      }
+    } else {
+      console.log("No userdata found in localStorage");
+    }
+  },[]);
+  
   return (
     <>
       <React.Fragment>
-        {isAuthenticated ? (
-          // <React.Fragment>
-          //   <Alert
-          //     color="success"
-          //     isOpen={visible}
-          //     toggle={() => {
-          //       setVisible(false);
-          //     }}
-          //   >
-          //     <div className="alert-body">
-          //       Two Steps Authentication Is Successfully Completed
-          //     </div>
-          //   </Alert>
-          // </React.Fragment>
+        {authStatusauth ? (
           ""
         ) : (
           <>
-          {!statusLoad && (
+            {!statusLoad && (
+              <Alert color="primary">
+                <div className="p-1 d-flex justify-content-between align-item-center">
+                  <div className="alert-body">
+                    <span className="fw-bold">Two Steps Authentication</span>
+                    <span></span>
+                  </div>
 
-          <Alert color="primary">
-            <div className="p-1 d-flex justify-content-between align-item-center">
-              <div className="alert-body">
-                <span className="fw-bold">Two Steps Authentication</span>
-                <span></span>
-              </div>
-
-              <Button
-                color="relief-primary"
-                type="submit"
-                onClick={() => setShow(true)}
-              >
-                Enable Authentication
-              </Button>
-            </div>
-          </Alert>
-        )}
-</>
+                  <Button
+                    color="relief-primary"
+                    type="submit"
+                    onClick={() => setShow(true)}
+                  >
+                    Enable Authentication
+                  </Button>
+                </div>
+              </Alert>
+            )}
+          </>
         )}
       </React.Fragment>
-      {/* <Button.Ripple color="dark" type="submit" onClick={handleRemove}>
-        Remove{" "}
-      </Button.Ripple> */}
 
       <Modal
         isOpen={show}
@@ -272,12 +171,13 @@ const [statusLoad,setStatusLoad]=useState(false);
             onClick={handleContinue}
           >
             {loading ? (
-              <Spinner size="sm" />
+              <>
+              Loading.. <Spinner size="sm" />
+              </>
             ) : (
               <span className="me-50">Continue</span>
             )}
 
-            <ChevronRight className="rotate-rtl" size={14} />
           </Button>
         </ModalBody>
       </Modal>
@@ -298,12 +198,13 @@ const [statusLoad,setStatusLoad]=useState(false);
               qrCode={qrCode}
               msz={msz}
               setMessage={setMessage}
-              isAuthenticated={isAuthenticated}
-              setIsAuthenticated={setIsAuthenticated}
+              isAuthenticated={authStatusauth}
+              setIsAuthenticated={setauthStatus}
               toggle={() => setShow(!show)}
               setauthMsz={setauthMsz}
               setLoading={setLoading}
               loading={loading}
+              authStatusauth={authStatusauth}
             />
           ) : (
             <AppSMSComponent
@@ -317,8 +218,7 @@ const [statusLoad,setStatusLoad]=useState(false);
         </ModalBody>
       </Modal>
 
-      <Index/>
-
+      <Index />
     </>
   );
 };
@@ -335,6 +235,7 @@ const AppAuthComponent = ({
   setauthMsz,
   loading,
   setLoading,
+  authStatusauth,
   // toggle
 }) => {
   const {
@@ -350,53 +251,32 @@ const AppAuthComponent = ({
     setShowDetailModal(false);
   };
 
+
   const handleVerifyqr = async (data) => {
     try {
       setLoading(true);
       const resverify = await useJwt.verifyQr({
-        otp: data.otp, // Use the form data
+        otp: data?.otp, // Use the form data
       });
       if (resverify.status == 200) {
-        navigate("/dashboard/dash");
-      }
+        navigate("/dashbord");
 
-      console.log(resverify);
+        const rawData = localStorage.getItem("userData");
+        let userData = rawData ? JSON.parse(rawData) : {};
+    
+        userData.TwoNf = true;
+    
+        // Save the updated object back to localStorage
+        localStorage.setItem("userData", JSON.stringify(userData));      }
+
+      
     } catch (error) {
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = data.error;
-        // setMessage(errorMessage);
+        setMessage(errorMessage);
 
-        switch (status) {
-          case 400:
-            setMessage(errorMessage);
-            break;
-          case 401:
-            // setMessage(<span style={{ color: "red" }}>Time Out</span>);
-            return MySwal.fire({
-              title: "Time Out ",
-              text: " Please Login Again",
-              icon: "error",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-              buttonsStyling: false,
-            });
-
-            break;
-          case 403:
-            setMessage(errorMessage);
-            break;
-          case 500:
-            setMessage(
-              <span style={{ color: "red" }}>
-                Something went wrong on our end. Please try again later
-              </span>
-            );
-            break;
-          default:
-            setMessage(errorMessage);
-        }
+     
       }
       console.log({ error });
     } finally {
@@ -406,8 +286,6 @@ const AppAuthComponent = ({
 
   return (
     <Fragment>
-
-
       <h1 className="text-center mb-2 pb-50">Add Authenticator App</h1>
 
       {msz && (
@@ -481,7 +359,6 @@ const AppAuthComponent = ({
           </Col>
         </Row>
       </form>
-
     </Fragment>
   );
 };

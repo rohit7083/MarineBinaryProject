@@ -1,6 +1,8 @@
 // ** React Imports
 import { Navigate, useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import CryptoJS from "crypto-js";
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import React from "react";
@@ -36,11 +38,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
+import { PulseLoader } from "react-spinners";
 
 const TwoStepsBasic = () => {
   const MySwal = withReactContent(Swal);
   const ability = useContext(AbilityContext);
   const dispatch = useDispatch(); // Define dispatch
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendLoading2, setResendLoading2] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,10 +62,36 @@ const TwoStepsBasic = () => {
 
   // const { uid: token } = useParams();
   const token = userData?.token;
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16); // 16-byte IV
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+
+    return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+  }
 
   const handleResendOTP = async (e) => {
     e.preventDefault();
     try {
+      setResendLoading(true);
+
       const res = await useJwt.resend_Otp(token);
       console.log("resentOTP", res);
       toast.success("OTP sent successfully", {
@@ -69,28 +100,38 @@ const TwoStepsBasic = () => {
       });
     } catch (error) {
       console.log(error.response);
+    } finally {
+      setResendLoading(false);
     }
   };
 
   const handleResendCall = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await useJwt.resend_OtpCall(token);
-      console.log("resentCall", res);
+      setResendLoading2(true);
+
+      const callRes = await useJwt.resend_OtpCall(token);
+      console.log("resentCall", callRes);
+      toast.success("Call Verification Send Sucessfully", {
+        position: "top-center",
+        autoClose: 5000,
+      });
     } catch (error) {
       console.log(error.response);
+    } finally {
+      setResendLoading2(false);
     }
   };
-  const onSubmit = async (formData) => {
+
+  const onSubmit = async (otpData) => {
     setMessage("");
     try {
-      // console.log("ability",ability);
-      setLoading(true); // Set loading to true before API call
+      setLoading(true);
 
       const token = userData?.token;
-      const otpString = formData.otp.join("");
-      const otp = parseInt(otpString, 10);
+      // const otpString = formData.otp.join("");
+      // const otp = parseInt(otpString, 10);
+      const otp = encryptAES(otpData?.otp.join(""));
 
       const res = await useJwt.mobileOtp(token, { otp });
       console.log(res);
@@ -125,7 +166,6 @@ const TwoStepsBasic = () => {
         setMessage(errorMessage);
 
         switch (status) {
-          
           case 500:
             setMessage(
               <span style={{ color: "red" }}>
@@ -248,7 +288,7 @@ const TwoStepsBasic = () => {
             </CardTitle>
             <CardText className="mb-75">
               We sent OTP to your Registered Mobile Number.Enter the code from
-              the Email in the field below.
+              the Mobile Number in the field below.
             </CardText>
             <CardText className="fw-bolder mb-2"></CardText>
             <Form
@@ -333,16 +373,29 @@ const TwoStepsBasic = () => {
               </Button>
             </Form>
 
-            <p className="text-center mt-2">
+            {/* <p className="text-center mt-2">
               <span>Didn’t get the code?</span>{" "}
               <a href="" onClick={handleResendOTP}>
-                Resend
+                {resendLoading ? (
+                  <>
+                    {" "}
+                    <PulseLoader size={5} />
+                  </>
+                ) : (
+                  "Resend"
+                )}
               </a>{" "}
               <span>or</span>{" "}
               <a href="/" onClick={handleResendCall}>
-                Call us
+                {resendLoading2 ? (
+                  <>
+                    <PulseLoader size={5} />
+                    </>
+                ) : (
+                  "Call Us"
+                )}
               </a>
-            </p>
+            </p> */}
           </CardBody>
         </Card>
       </div>

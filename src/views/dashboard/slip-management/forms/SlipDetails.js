@@ -32,8 +32,11 @@ function SlipDetailsForm({ assigned }) {
   let navigate = useNavigate();
   const [loadinng, setLoading] = useState(false);
 
-  let { uid } = useParams();
+  // let { uid } = useParams();
   const location = useLocation();
+
+  const uid=location.state?.uid || "";
+  
   const [tooltipOpen, setTooltipOpen] = useState({
     edit: false,
     switchSlip: false,

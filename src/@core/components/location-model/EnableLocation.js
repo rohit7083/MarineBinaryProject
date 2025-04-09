@@ -13,6 +13,11 @@ function EnableLocation() {
       console.log(isLoacationEnabled);
     }
   }, []);
+
+  const onSubmit=(data)=>{
+    console.log(data);
+    
+  }
   return (
     <div>
       <Fragment>

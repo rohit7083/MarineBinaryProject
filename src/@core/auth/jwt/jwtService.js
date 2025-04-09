@@ -89,6 +89,10 @@ export default class JwtService {
     );
   }
 
+
+
+
+
   async getLocation() {
     try {
       // {{debugger}}
@@ -126,6 +130,13 @@ export default class JwtService {
       throw error;
     }}
 
+
+
+   
+
+
+
+    
   onAccessTokenFetched(accessToken) {
     this.subscribers = this.subscribers.filter((callback) =>
       callback(accessToken)
@@ -242,6 +253,12 @@ export default class JwtService {
   // }
 
   // =================== Login
+  checktoken(token , ...args) {
+    return axios.get(this.jwtConfig.checktoken+token, ...args);
+  }
+
+
+
   verifyEmail(...args) {
     // {{debugger}}
     return axios.post(this.jwtConfig.verifyEmail, ...args);
@@ -251,6 +268,10 @@ export default class JwtService {
   loginPassword(token, ...args){
     return axios.post(this.jwtConfig.loginPassword+token, ...args);
 
+  }
+
+  chnagePassword(token, ...args){
+    return axios.post(this.jwtConfig.chnagePassword+token,...args);
   }
 
   sendOtp(token="") {

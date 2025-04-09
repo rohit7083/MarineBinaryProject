@@ -8,7 +8,7 @@ import React from "react";
 // ** React Hook Form Imports
 import { useForm, Controller } from "react-hook-form";
 import { UncontrolledAlert } from "reactstrap";
-
+import { ChevronLeft } from "react-feather";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
@@ -46,7 +46,7 @@ const VerifyEmailBasic = () => {
 
         setTimeout(() => {
           setBtn(false);
-          navigate("/login_password", {
+          navigate("/login", {
             state: { resettoken: res.data.token },
           });
           setBtn(false);
@@ -217,6 +217,13 @@ const VerifyEmailBasic = () => {
               >
                 {loading ? <Spinner size="sm" /> : "Send"}
               </Button>
+
+              <p className="text-center mt-2">
+                            <Link to="/Login">
+                              <ChevronLeft className="rotate-rtl me-25" size={14} />
+                              <span className="align-middle">Back to login</span>
+                            </Link>
+                          </p>
             </form>
           </CardBody>
         </Card>
@@ -226,3 +233,63 @@ const VerifyEmailBasic = () => {
 };
 
 export default VerifyEmailBasic;
+// import React, { useState } from "react";
+// import { Container, Form, FormGroup, Label, Input, ListGroup, ListGroupItem } from "reactstrap";
+// import "bootstrap/dist/css/bootstrap.min.css";
+
+// const PasswordRequirement = () => {
+//   const [password, setPassword] = useState("");
+//   const [requirements, setRequirements] = useState({
+//     length: false,
+//     uppercase: false,
+//     lowercase: false,
+//     number: false,
+//     specialChar: false,
+//   });
+
+//   const validatePassword = (pwd) => {
+//     setRequirements({
+//       length: pwd.length >= 8,
+//       uppercase: /[A-Z]/.test(pwd),
+//       lowercase: /[a-z]/.test(pwd),
+//       number: /[0-9]/.test(pwd),
+//       specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
+//     });
+//   };
+
+//   const handleChange = (e) => {
+//     const newPwd = e.target.value;
+//     setPassword(newPwd);
+//     validatePassword(newPwd);
+//   };
+
+//   return (
+//     <div className="bg-light min-vh-100 d-flex justify-content-center align-items-center">
+//       <Container className="p-4 border rounded shadow bg-white" style={{ maxWidth: "400px" }}>
+//         <h2 className="text-center mb-4">Create a Secure Password</h2>
+//         <Form>
+//           <FormGroup>
+//             <Label for="password">Password</Label>
+//             <Input
+//               type="password"
+//               id="password"
+//               value={password}
+//               onChange={handleChange}
+//               placeholder="Enter your password"
+//               className="mb-3"
+//             />
+//           </FormGroup>
+//         </Form>
+//         <ListGroup>
+//           <ListGroupItem className={requirements.length ? "text-success" : "text-danger"}>✔ At least 8 characters</ListGroupItem>
+//           <ListGroupItem className={requirements.uppercase ? "text-success" : "text-danger"}>✔ At least one uppercase letter</ListGroupItem>
+//           <ListGroupItem className={requirements.lowercase ? "text-success" : "text-danger"}>✔ At least one lowercase letter</ListGroupItem>
+//           <ListGroupItem className={requirements.number ? "text-success" : "text-danger"}>✔ At least one number</ListGroupItem>
+//           <ListGroupItem className={requirements.specialChar ? "text-success" : "text-danger"}>✔ At least one special character (!@#$%^&*)</ListGroupItem>
+//         </ListGroup>
+//       </Container>
+//     </div>
+//   );
+// };
+
+// export default PasswordRequirement;

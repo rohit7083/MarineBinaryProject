@@ -22,9 +22,6 @@ import {
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 
-
-
-
 const DataTableServerSide = () => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.dataTables);

@@ -37,22 +37,6 @@ const PersonalInfo = ({
 }) => {
   console.log({ formData });
 
-  const handleSweetAlert = (title, text, next) => {
-    return MySwal.fire({
-      title,
-      text,
-      icon: "success",
-      customClass: {
-        confirmButton: "btn btn-primary",
-      },
-      buttonsStyling: false,
-    }).then(() => {
-      // if (Object.keys(errors).length === 0) {
-      stepper.next();
-      // /}
-    });
-  };
-
   const [phoneNumber, setMobileNumber] = useState("");
 
   const [fullname, setFullname] = useState([]);
@@ -68,8 +52,8 @@ const PersonalInfo = ({
       .string()
       .required("First Name is required")
       .matches(
-        /^[a-zA-Z\s-]+$/,
-        "First Name must contain only alphabetic characters, hyphens, and spaces"
+        /^[a-zA-Z]+$/,
+        "First Name must contain only alphabetic characters"
       ),
     lastName: yup
       .string()
@@ -129,19 +113,34 @@ const PersonalInfo = ({
     formState: { errors },
   } = useForm({
     resolver: yupResolver(SignupSchema),
-    // defaultValues: {
-    //   firstName: "hello",
-    //   lastName: "surname",
-    //   emailId: "rohit@gmail.com",
-    //   phoneNumber: "921234567890",
-    //   address: "satpur",
-    //   city: "nashik",
-    //   state: "maharstra",
-    //   country: "india",
-    //   postalCode: "12365",
-    // },
+    defaultValues: {
+      //   firstName: "hello",
+      //   lastName: "surname",
+      //   emailId: "rohit@gmail.com",
+      //   phoneNumber: "921234567890",
+      //   address: "satpur",
+      //   city: "nashik",
+      //   state: "maharstra",
+      //   country: "india",
+      //   postalCode: "12365",
+      secondaryPhoneNumber: null,
+    },
   });
-
+  const handleSweetAlert = (title, text, next) => {
+    return MySwal.fire({
+      title,
+      text,
+      icon: "success",
+      customClass: {
+        confirmButton: "btn btn-primary",
+      },
+      buttonsStyling: false,
+    }).then(() => {
+      // if (Object.keys(errors).length === 0) {
+      stepper.next();
+      // /}
+    });
+  };
   useEffect(() => {
     if (Object.keys(formData)?.length) {
       const phoneNum = `${formData.countryCode || ""}${
@@ -220,7 +219,8 @@ const PersonalInfo = ({
       if (payload.createdBy) {
         const res = await useJwt.UpdateMember(formData.uid, payload);
         // ** set here
-        memberId = res.data.id;
+        memberId = res?.data?.id;
+        console.log(memberId);
 
         handleSweetAlert(
           "Successfully updated",
@@ -230,7 +230,9 @@ const PersonalInfo = ({
       } else {
         const res = await useJwt.postsMember(payload);
 
-        memberId = res.data.id;
+        memberId = res?.data?.id;
+        console.log("memberid ", memberId);
+        
         handleSweetAlert(
           "Successfully Created",
           " Your Member Details Created Successfully",
@@ -325,6 +327,14 @@ const PersonalInfo = ({
     );
   console.log("error", errors);
 
+  const avoidSpecialChar = (e, field) => {
+    const value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+    field.onChange(value);
+  };
+  const addNum_Alphabetics = (e, field) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+    field.onChange(value);
+  };
   return (
     <Fragment>
       <div className="content-header">
@@ -414,6 +424,7 @@ const PersonalInfo = ({
                     invalid={errors.firstName && true}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -435,6 +446,7 @@ const PersonalInfo = ({
                     invalid={errors.lastName && true}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -551,6 +563,7 @@ const PersonalInfo = ({
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => addNum_Alphabetics(e, field)}
                   />
                 )}
               />
@@ -575,6 +588,7 @@ const PersonalInfo = ({
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -601,6 +615,7 @@ const PersonalInfo = ({
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -625,6 +640,7 @@ const PersonalInfo = ({
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -650,6 +666,10 @@ const PersonalInfo = ({
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => {
+                      let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(OnlyNumAllow);
+                    }}
                   />
                 )}
               />
@@ -673,6 +693,10 @@ const PersonalInfo = ({
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/[^a-zA-Z\s]/g, ""); // Allow only letters and spaces
+                      field.onChange(value === "" ? null : value); // Convert empty string to null
+                    }}
                   />
                 )}
               />
@@ -710,7 +734,6 @@ const PersonalInfo = ({
                 Secondary Phone Number (optional)
               </Label>
               <Controller
-                id="secondaryPhoneNumber"
                 name="secondaryPhoneNumber"
                 control={control}
                 render={({ field }) => (
@@ -718,8 +741,12 @@ const PersonalInfo = ({
                     placeholder="Enter Secondary Phone Number"
                     invalid={errors.secondaryPhoneNumber && true}
                     {...field}
-                    // readOnly={visible}
                     style={getReadOnlyStyle()}
+                    onChange={(e) => {
+                      let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(OnlyNumAllow == "" ? null : OnlyNumAllow);
+                      console.log(OnlyNumAllow);
+                    }}
                   />
                 )}
               />
@@ -761,7 +788,14 @@ const PersonalInfo = ({
 
               <Button type="submit" color="primary" className="btn-next">
                 <span className="align-middle d-sm-inline-block d-none">
-                  {loading ? <Spinner size="sm" /> : "Next"}
+                  {loading ? (
+                    <>
+                      <span>Loading.. </span>
+                      <Spinner size="sm" />{" "}
+                    </>
+                  ) : (
+                    "Next"
+                  )}
                 </span>
                 {loading ? null : (
                   <ArrowRight

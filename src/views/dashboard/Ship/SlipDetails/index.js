@@ -24,8 +24,7 @@ import { useLocation } from "react-router-dom";
 
 const MySwal = withReactContent(Swal);
 function ShipDetails() {
-  // let navigate = useNavigate();
-  let { uid } = useParams(); // Fetch `uid` from the route params
+  let navigate = useNavigate();
   const location = useLocation(); // Use location hook to get the passed state
   const [loadinng, setLoading] = useState(false);
   const [fetchLoader, setFetchLoader] = useState(false);
@@ -67,7 +66,9 @@ function ShipDetails() {
     overDueChagesForAuction: "",
   });
 
-  // console.log("dimensions", dimensions);
+
+const uid=location.state?.uid || ""
+
   const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
       ...prev,
@@ -86,7 +87,6 @@ function ShipDetails() {
     setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
 
-  let navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
   const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names

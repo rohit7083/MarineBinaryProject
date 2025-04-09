@@ -73,6 +73,8 @@ const AccountDetails = ({
     }
   }
 
+
+
   useEffect(() => {
     if (Object.keys(formData)?.length) {
       const data = { ...formData };
@@ -145,7 +147,7 @@ const AccountDetails = ({
 
         seterrMsz((prev) => {
           const newMsz =
-            content || "Un expected Error Occurred . Try Again Later ";
+            content || "Session Expired ! Login Again  ";
           return prev !== newMsz ? newMsz : prev + " ";
         });
       }
@@ -157,6 +159,66 @@ const AccountDetails = ({
   const renderField = (fields) => {
     if (!fields) return null;
 
+    // return Object.keys(fields).map((dimKey) => (
+    //   <Col key={dimKey} md="6" className="mb-1">
+    //     <Label className="form-label" htmlFor={dimKey}>
+    //       {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
+    //       <span style={{ color: "red" }}>*</span>
+    //     </Label>
+    //     <Controller
+    //       name={`dimensionVal.${dimKey}`}
+    //       control={control}
+    //       rules={{
+    //         ...(dimKey === "width" || dimKey === "height"
+    //           ? {
+    //               validate: {
+    //                 required: (value) =>
+    //                   value !== "" || `${dimKey} field is required`,
+    //                 isNumber: (value) =>
+    //                   !isNaN(parseFloat(value)) || "Value must be a number",
+    //                 maxValue: (value) => {
+    //                   const numberValue = parseFloat(value);
+    //                   return (
+    //                     numberValue <= watch("slipName").dimensions[dimKey] ||
+    //                     `Value must be less than ${
+    //                       watch("slipName").dimensions[dimKey]
+    //                     }`
+    //                   );
+    //                 },
+    //                 nonNegative: (value) => {
+    //                   const numberValue = parseFloat(value);
+    //                   return numberValue > 0 || "Value must not be negative";
+    //                 },
+    //               },
+    //             }
+    //           : {}),
+    //         ...(dimKey === "length" || dimKey === "width" || dimKey === "height"
+    //           ? {
+    //               required: {
+    //                 value: true,
+    //                 message: `${dimKey} field is required`,
+    //               },
+    //             }
+    //           : {}),
+    //       }}
+    //       render={({ field, fieldState }) => (
+    //         <div>
+    //           <Input
+    //             type="text"
+    //             placeholder={`Enter Vessel ${dimKey}`}
+    //             invalid={!!fieldState?.error}
+    //             {...field}
+    //           />
+    //           {fieldState?.error && (
+    //             <p className="text-danger">{fieldState?.error?.message}</p>
+    //           )}
+    //         </div>
+    //       )}
+    //     />
+    //   </Col>
+    // ));
+  
+  
     return Object.keys(fields).map((dimKey) => (
       <Col key={dimKey} md="6" className="mb-1">
         <Label className="form-label" htmlFor={dimKey}>
@@ -167,45 +229,41 @@ const AccountDetails = ({
           name={`dimensionVal.${dimKey}`}
           control={control}
           rules={{
-            ...(dimKey === "width" || dimKey === "height"
-              ? {
-                  validate: {
-                    required: (value) =>
-                      value !== "" || `${dimKey} field is required`,
-                    isNumber: (value) =>
-                      !isNaN(parseFloat(value)) || "Value must be a number",
-                    maxValue: (value) => {
-                      const numberValue = parseFloat(value);
-                      return (
-                        numberValue <= watch("slipName").dimensions[dimKey] ||
-                        `Value must be less than ${
-                          watch("slipName").dimensions[dimKey]
-                        }`
-                      );
-                    },
-                    nonNegative: (value) => {
-                      const numberValue = parseFloat(value);
-                      return numberValue > 0 || "Value must not be negative";
-                    },
-                  },
-                }
-              : {}),
-            ...(dimKey === "length" || dimKey === "width" || dimKey === "height"
-              ? {
-                  required: {
-                    value: true,
-                    message: `${dimKey} field is required`,
-                  },
-                }
-              : {}),
+            required: {
+              value: true,
+              message: `${dimKey} field is required`,
+            },
+            pattern: {
+              value: /^\d*\.?\d+$/, // ✅ Only allows numbers and floats (e.g., 123, 45.67)
+              message: "Only numbers and decimals are allowed",
+            },
+            validate: {
+              maxValue: (value) => {
+                const numberValue = parseFloat(value);
+                return (
+                  numberValue <= watch("slipName").dimensions[dimKey] ||
+                  `Value must be less than ${watch("slipName").dimensions[dimKey]}`
+                );
+              },
+              nonNegative: (value) => {
+                const numberValue = parseFloat(value);
+                return numberValue > 0 || "Value must not be negative";
+              },
+            },
           }}
-          render={({ field, fieldState }) => (
+          render={({ field: { onChange, value, ...rest }, fieldState }) => (
             <div>
               <Input
-                type="number"
+                type="text"
                 placeholder={`Enter Vessel ${dimKey}`}
                 invalid={!!fieldState?.error}
-                {...field}
+                {...rest}
+                value={value}
+                onChange={(e) => {
+                  let newValue = e.target.value.replace(/[^0-9.]/g, ""); // ✅ Remove non-numeric characters
+                  newValue = newValue.replace(/(\..*)\./g, "$1"); // ✅ Prevent multiple dots
+                  onChange(newValue); // ✅ Update form state
+                }}
               />
               {fieldState?.error && (
                 <p className="text-danger">{fieldState?.error?.message}</p>
@@ -215,7 +273,12 @@ const AccountDetails = ({
         />
       </Col>
     ));
+    
+  
+  
   };
+
+ 
 
   if (fetchLoader)
     return (
@@ -281,30 +344,40 @@ const AccountDetails = ({
             {errors.slipName && (
               <FormFeedback>{errors.slipName.message}</FormFeedback>
             )}
-          </Col>
-          <Col md="6" className="mb-1">
-            <Label className="form-label" for="vesselName">
-              Vessel Name <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              control={control}
-              name="vesselName"
-              rules={{
-                required: "Vessel Name is required",
-              }}
-              render={({ field }) => (
-                <Input
-                  type="text"
-                  placeholder="Enter Vessel Name"
-                  invalid={errors.vesselName && true}
-                  {...field}
-                />
-              )}
-            />
-            {errors.vesselName && (
-              <FormFeedback>{errors.vesselName.message}</FormFeedback>
-            )}
-          </Col>
+         </Col>
+
+
+<Col md="6" className="mb-1">
+  <Label className="form-label" for="vesselName">
+    Vessel Name <span style={{ color: "red" }}>*</span>
+  </Label>
+  <Controller
+    control={control}
+    name="vesselName"
+    rules={{
+      required: "Vessel Name is required",
+      pattern: {
+        value: /^[a-zA-Z0-9\s]+$/, // Allows only letters, numbers, and spaces
+        message: "Special characters are not allowed",
+      },
+    }}
+    render={({ field: { onChange, value, ...rest } }) => (
+      <Input
+        type="text"
+        placeholder="Enter Vessel Name"
+        invalid={!!errors.vesselName}
+        value={value}
+        {...rest}
+        onChange={(e) => {
+          const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""); 
+          onChange(sanitizedValue); 
+        }}
+      />
+    )}
+  />
+  {errors.vesselName && <FormFeedback>{errors.vesselName.message}</FormFeedback>}
+</Col>
+
         </Row>
         <Row>
           <Col md="6" className="mb-1">
@@ -314,15 +387,25 @@ const AccountDetails = ({
             <Controller
               control={control}
               rules={{
-                required: "Vessel Registration Number is required",
+                required:"Vessel Registration Number Is Required",
+                pattern:{
+                  value:/^[a-zA-Z0-9]+$/,
+                  message:"Special Character Are Not Allowed",
+                }
+
               }}
               name="vesselRegistrationNumber"
-              render={({ field }) => (
+              render={({ field:{onChange, value, ...field} }) => (
                 <Input
                   type="text"
                   placeholder="Enter Registration Number"
                   invalid={errors.vesselRegistrationNumber && true}
+                  value={value}
                   {...field}
+                  onChange={(e)=>{
+                    const sanitizedNumber=e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                    onChange(sanitizedNumber);
+                  }}
                 />
               )}
             />
@@ -348,8 +431,11 @@ const AccountDetails = ({
 
             <Button type="submit" color="primary" className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
-                {loadinng ? <Spinner size="sm" /> : "Next"}
+                {loadinng ? <>
+                <span>Loading.. </span>
+               <Spinner size="sm" />  </>: "Next"}
               </span>
+              
               {loadinng ? null : (
                 <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
               )}

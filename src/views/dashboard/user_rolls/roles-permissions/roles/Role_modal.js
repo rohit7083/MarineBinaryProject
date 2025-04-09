@@ -255,7 +255,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
             <Label className="form-label" for="roleName">
-              Role Name
+              Role Name 
             </Label>
             <Controller
               name="roleName"

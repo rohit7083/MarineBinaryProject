@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Send } from "react-feather";
 import { Spinner, UncontrolledAlert } from "reactstrap";
-
+import {BeatLoader} from 'react-spinners';
 import {
   Row,
   Col,
@@ -32,6 +32,8 @@ const GenrateOtp = ({
   const [loader, setLoader] = useState(false);
   const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
   const [verify, setVerify] = useState(false);
+  const [otpLoader, setOtpLoader] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -45,6 +47,7 @@ const GenrateOtp = ({
         slipId: slipIID,
         memberId: memberId,
       };
+      setOtpLoader(true);
       const response = await useJwt.GenerateOtp(payload); // Adjust this method to send the payload
       const token = response.data.content;
       setAccessTokenOtp(token);
@@ -53,6 +56,8 @@ const GenrateOtp = ({
     } catch (error) {
       console.error("Error generating OTP:", error);
       console.log("Failed to generate OTP. Please try again.");
+    } finally {
+      setOtpLoader(false);
     }
   };
 
@@ -123,8 +128,16 @@ const GenrateOtp = ({
         </React.Fragment>
       ) : (
         <Button color="primary" onClick={handleOTP}>
-          <Send className="me-1" size={20} />
-          Generate otp
+          {otpLoader ? (
+           <BeatLoader size={10} color="#ffffff" />
+
+          ) : (
+            <>
+              {" "}
+              <Send className="me-1" size={20} />
+              Generate otp
+            </>
+          )}
         </Button>
       )}
 

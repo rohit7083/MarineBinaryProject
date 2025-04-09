@@ -7,8 +7,9 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { Spinner } from "reactstrap";
 // ** React Hook Form
 import { UncontrolledAlert, ListGroupItem } from "reactstrap";
+import Countdown from "react-countdown";
 
-import { useForm, Controller, set } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
@@ -30,10 +31,8 @@ import InputPassword from "@components/input-password-toggle";
 import "@styles/react/pages/page-authentication.scss";
 import { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
-import { PulseLoader } from "react-spinners";
-import Countdown from "react-countdown";
 
-const ResetPasswordBasic = () => {
+const CreateNewPass = () => {
   const {
     control,
     handleSubmit,
@@ -42,16 +41,19 @@ const ResetPasswordBasic = () => {
   } = useForm();
   const [msz, setMsz] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [expireTokenLoader, setExpireTokenLoader] = useState(true);
+
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
-  const { token } = useParams();
-  const [password, setPassword] = useState("");
-  const [resendCount, setResendcount] = useState(false);
-  const [resendcallCount, setResendcallCount] = useState(false);
+  const location = useLocation();
   const [encryptedPasss, setEncrypt] = useState(null);
-  const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+  const [password, setPassword] = useState("");
+  const [errorMsz, setErrorMsz] = useState(""); 
+    const [resendCount, setResendcount] = useState(false);
+    const [resendcallCount, setResendcallCount] = useState(false);
+  
+const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const [attempt, setAttempt] = useState(0);
+
   const [requirements, setRequirements] = useState({
     length: false,
     uppercase: false,
@@ -59,6 +61,47 @@ const ResetPasswordBasic = () => {
     number: false,
     specialChar: false,
   });
+
+
+    const handleResendOTP = async (e) => {
+      e.preventDefault();
+      try {
+        const res = await useJwt.resend_Otp(token);
+        if (res?.status == 200) {
+          setCountdownEndTime(Date.now() + 40000);
+  
+          setResendcount(true);
+        }
+        console.log("resentOTP", res.status);
+      } catch (error) {
+        console.log(error.response);
+      } finally {
+        //   setTimeout(() => {
+        //     setResendcount(false);
+        //   }, countdownEndTime);
+      }
+    };
+  
+    const handleResendCall = async (e) => {
+      e.preventDefault();
+      try {
+        const res = await useJwt.resend_OtpCall(token);
+        if (res?.status == 200) {
+          setCountdownEndTime(Date.now() + 40000);
+  
+          setResendcallCount(true);
+        }
+        console.log("resentCall", res);
+      } catch (error) {
+        console.log(error.response);
+      } finally {
+        // setTimeout(() => {
+        //   setResendcallLoading(false);
+        // }, 30000);
+      }
+    };
+
+
 
   const validatePassword = (pwd) => {
     setRequirements({
@@ -69,6 +112,18 @@ const ResetPasswordBasic = () => {
       specialChar: /[^A-Za-z\d]/.test(pwd), // Detects special characters
     });
   };
+
+  const token = location.state?.userData?.token;
+  const userData = location.state?.userData;
+  // const authStatus=location.state?.userData?.TwoNf;
+
+  const onchnagePass = watch("password") || "";
+
+  useEffect(() => {
+    setPassword(onchnagePass);
+
+    validatePassword(onchnagePass);
+  }, [onchnagePass]);
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -95,101 +150,47 @@ const ResetPasswordBasic = () => {
     return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
   }
 
-  const handlePass = watch("password") || "";
-  const handleConfirm = watch("confirmPassword");
-  const handleOtp = watch("otp");
-  console.log("handleOtp", handleOtp);
-
-  const handleResendOTP = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await useJwt.resend_Otp(token);
-      if (res?.status == 200) {
-        setCountdownEndTime(Date.now() + 40000);
-
-        setResendcount(true);
-      }
-      console.log("resentOTP", res.status);
-    } catch (error) {
-      console.log(error.response);
-    } finally {
-      //   setTimeout(() => {
-      //     setResendcount(false);
-      //   }, countdownEndTime);
-    }
-  };
-
-  const handleResendCall = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await useJwt.resend_OtpCall(token);
-      if (res?.status == 200) {
-        setCountdownEndTime(Date.now() + 40000);
-
-        setResendcallCount(true);
-      }
-      console.log("resentCall", res);
-    } catch (error) {
-      console.log(error.response);
-    } finally {
-      // setTimeout(() => {
-      //   setResendcallLoading(false);
-      // }, 30000);
-    }
-  };
-
-  const sendOtp = async () => {
-    try {
-      // {{debugger}}
-      const otpRes = await useJwt.sendOtp(token);
-    } catch (error) {
-      console.log(error);
-      console.log("failed to get otp");
-    }
-  };
-
-  const checkTokenExpirey = async () => {
-    // {{debugger}}
-    try {
-      const res = await useJwt.checktoken(token);
-      const tokenStatus = res?.data?.content?.token;
-      if (tokenStatus == "true") {
-        navigate("/token-expire");
-      } else {
-        sendOtp();
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setExpireTokenLoader(false);
-    }
-  };
+  const handleOtp = (watch("otp") || []).join("");
+  const confirmPassword = watch("confirmPassword");
+  const previousPassword = watch("previousPassword");
 
   useEffect(() => {
-    checkTokenExpirey();
-  }, []);
+    // {{debugger}}
+    if (onchnagePass && handleOtp && confirmPassword && previousPassword) {
+      const encryptedotp = encryptAES(handleOtp);
+      const encryptPass = encryptAES(onchnagePass);
+
+      const encryptedConfirm = encryptAES(confirmPassword);
+      const encryptPreivous = encryptAES(previousPassword);
+
+      setEncrypt({
+        otp: encryptedotp,
+        password: encryptPass,
+        confirmPassword: encryptedConfirm,
+        previousPassword: encryptPreivous,
+      });
+    }
+  }, [handleOtp, onchnagePass, confirmPassword, previousPassword]);
 
   const onSubmit = async (data) => {
-    console.log(data);
-
-    setMsz("");
-
-    setAttempt(0);
     setCountdownEndTime(0);
+    setAttempt(0);
+    setErrorMsz("");
+
     console.log("Form Data:", data);
-    // const otpString = data.otp.join("");
-    // const otp = parseInt(otpString, 10);
+    const otpString = data.otp.join("");
+    const otp = parseInt(otpString, 10);
 
     try {
-      setLoading(true);
-
-      const res = await useJwt.createPass(token, {
+      setLoading(true); 
+      const res = await useJwt.chnagePassword(token, {
+        previousPassword: encryptedPasss?.previousPassword,
         otp: encryptedPasss?.otp,
         password: encryptedPasss?.password,
         confirmPassword: encryptedPasss?.confirmPassword,
       });
 
-
+      console.log(res);
       if (res.status == 200 || res.status == 201) {
         return MySwal.fire({
           title: "Successfully ",
@@ -201,6 +202,7 @@ const ResetPasswordBasic = () => {
           buttonsStyling: false,
         }).then(() => {
           navigate("/Login");
+        
         });
       }
     } catch (error) {
@@ -208,11 +210,13 @@ const ResetPasswordBasic = () => {
 
       if (error.response) {
         const { status, data } = error.response;
+        const errorMessage = data.content;
         const otpAttempt = data.otpAttempts;
-        const blockMsz = data?.content;
         const code = data?.code;
 
-        setMsz(blockMsz);
+        console.log("errormsx", errorMessage);
+        setErrorMsz(errorMessage);
+
         setAttempt(otpAttempt);
         if (code === 423) {
           return  MySwal.fire({
@@ -229,67 +233,9 @@ const ResetPasswordBasic = () => {
         }
       }
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false after API call is complete
     }
   };
-
-  useEffect(() => {
-    // setPassword(handlePass);
-    validatePassword(handlePass);
-
-    if (handlePass && handleConfirm && handleOtp) {
-      const encryptedOTp = encryptAES(handleOtp.join(""));
-      const encrypted = encryptAES(handlePass);
-      const encryptedConfirm = encryptAES(handleConfirm);
-
-      setEncrypt({
-        otp: encryptedOTp,
-        password: encrypted,
-        confirmPassword: encryptedConfirm,
-      });
-    }
-  }, [handlePass, handleOtp, handleConfirm]);
-
-  // const returnBlockMsz = async () => {
-  //   if (attempt > 3) {
-  //     await MySwal.fire({
-  //       title: "Blocked",
-  //       text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin.",
-  //       icon: "error",
-  //       customClass: {
-  //         confirmButton: "btn btn-primary",
-  //       },
-  //       buttonsStyling: false,
-  //     }).then(() => {
-  //       navigate("/Login");
-  //     });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   returnBlockMsz();
-  // }, [attempt]);
-
-  if (expireTokenLoader) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "4rem",
-        }}
-      >
-        <Spinner
-          color="primary"
-          style={{
-            height: "5rem",
-            width: "5rem",
-          }}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="auth-wrapper auth-basic px-2">
@@ -309,22 +255,24 @@ const ResetPasswordBasic = () => {
             </Link>
 
             <CardTitle tag="h4" className="mb-1">
-              Reset Password 🔒
+              Create New Password 🔒
             </CardTitle>
             <CardText className="mb-2">
               Your new password must be different from previously used passwords
             </CardText>
-            {msz && (
-                  <React.Fragment>
-                    <UncontrolledAlert color="danger">
-                      <div className="alert-body">
-                        <span className="text-danger fw-bold">
-                          <strong>Error : </strong>
-                        {msz}</span>
-                      </div>
-                    </UncontrolledAlert>
-                  </React.Fragment>
-                )}
+            {errorMsz && (
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">
+                      <strong>Error : </strong>
+                      {errorMsz}
+                    </span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
+
             <form
               className="auth-reset-password-form mt-2"
               onSubmit={handleSubmit(onSubmit)}
@@ -354,7 +302,6 @@ const ResetPasswordBasic = () => {
                           autoFocus={index === 0}
                           onChange={(e) => {
                             const value = e.target.value;
-                            console.log("Value", value);
 
                             // Update the value in the form
                             field.onChange(e);
@@ -390,11 +337,12 @@ const ResetPasswordBasic = () => {
                     />
                   ))}
                 </div>
-              
+
                 {errors.otp && (
                   <small className="text-danger">{errors.otp.message}</small>
                 )}
               </div>
+
               {attempt < 3 && (
                 <>
                   <div className="d-flex flex-column align-items-center position-relative">
@@ -464,6 +412,35 @@ const ResetPasswordBasic = () => {
               )}
 
 
+              <div className="mb-1 mt-2">
+                <Label className="form-label" for="new-password">
+                  Previous Password
+                </Label>
+                <Controller
+                  name="previousPassword"
+                  control={control}
+                  rules={{
+                    required: "Previous passowrd is required",
+                    minLength: {
+                      value: 12,
+                      message:
+                        "Previous Password must be at least 12 characters",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <InputPassword
+                      {...field}
+                      className="input-group-merge"
+                      autoFocus
+                    />
+                  )}
+                />
+                {errors.previousPassword && (
+                  <small className="text-danger">
+                    {errors.previousPassword.message}
+                  </small>
+                )}
+              </div>
               <div className="mb-1">
                 <Label className="form-label" for="new-password">
                   New Password
@@ -564,10 +541,9 @@ const ResetPasswordBasic = () => {
                 allowed
               </ListGroupItem>
 
-              <Button color="primary" className="mt-2" block type="submit">
+              <Button color="primary" block type="submit" className="mt-2">
                 {loading ? (
                   <>
-                    {" "}
                     Loading.. <Spinner size="sm" />{" "}
                   </>
                 ) : (
@@ -589,84 +565,4 @@ const ResetPasswordBasic = () => {
   );
 };
 
-export default ResetPasswordBasic;
-
-// <p className="text-center mt-2">
-// <span>Didn’t get the code?</span>{" "}
-// <a href="#" onClick={handleResendOTP}>
-//   {resendLoading ? (
-//     <>
-//       {/* <Countdown date={Date.now() + 100000} /> */}
-//       <Countdown
-//         style={{ pointerEvents: "none", userSelect: "none" }}
-//         date={Date.now() + 30000} // 30 seconds countdown
-//         renderer={({ minutes, seconds }) => (
-//           <span
-//             style={{
-//               pointerEvents: "none",
-//               userSelect: "none",
-//               fontSize: "24px",
-//               fontWeight: "bold",
-//             }}
-//           >{`${String(minutes).padStart(2, "0")}:${String(
-//             seconds
-//           ).padStart(2, "0")}`}</span>
-//         )}
-//       />
-//     </>
-//   ) : (
-//     "Resend"
-//   )}
-// </a>{" "}
-// <span>or</span>{" "}
-// <a href="#" onClick={handleResendCall}>
-// {  resendcallLoading? (
-//     <>
-//       {/* <Countdown date={Date.now() + 100000} /> */}
-//       {/* <Countdown
-//         style={{ pointerEvents: "none", userSelect: "none" }}
-//         date={Date.now() + 30000} // 30 seconds countdown
-//         renderer={({ minutes, seconds }) => (
-//           <span
-//             style={{
-//               pointerEvents: "none",
-//               userSelect: "none",
-//               fontSize: "24px",
-//               fontWeight: "bold",
-//             }}
-//           >{`${String(minutes).padStart(2, "0")}:${String(
-//             seconds
-//           ).padStart(2, "0")}`}</span>
-//         )}
-//       /> */}
-//       <img
-//      className="d-flex justify-content-center align-items-center"
-//         src=" /src/assets/images/clock.jpg"
-//         alt="Phone Call"
-//         style={{ width: "100px", height: "80px",display:'block' }}/>
-//         {/* <Countdown
-// date={Date.now() + 30000} // 30 seconds countdown
-// renderer={({ minutes, seconds }) => (
-// <span
-// style={{
-// position: "absolute",
-// top: "40%",
-// left: "50%",
-// transform: "translate(-50%, -50%)",
-// fontSize: "14px",
-// fontWeight: "bold",
-// color: "white",
-// padding: "10px 20px",
-// borderRadius: "10px",
-// }}
-// >
-// {`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
-// </span>
-// )}
-// /> */}
-//     </>
-//   ) : (
-//     "Call us"
-//   )}
-// </a>
-// </p>
+export default CreateNewPass;

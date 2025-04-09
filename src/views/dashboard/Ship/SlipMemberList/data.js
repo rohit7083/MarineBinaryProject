@@ -51,7 +51,10 @@ const status = {
   2: { title: 'Payment-Pending', color: 'light-info' },
   3: { title: 'Document-Pending', color: 'light-warning' },
   4: { title: 'Completed', color: 'light-success' },
-  // 5: { title: 'Applied', color: '' }
+  5: { title: 'PaymentLink Send', color: 'light-info' },
+  6: { title: 'Qr Code Generate',color: "light-danger" },
+
+
 };
 // ** Table Zero Config Column
 export const basicColumns = [
@@ -479,9 +482,11 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
               // Call delete API
               const response = await useJwt.deleteslip(uid);
               if (response.status === 204) {
-                setData((prevData) =>
-                  prevData.filter((item) => item.uid !== uid)
-                );
+                setData((prevData) =>{
+                  const newData=prevData.filter((item) => item.uid !== uid)
+                  return newData;
+                })
+              ;
                 // Show success message
                 MySwal.fire({
                   icon: "success",
@@ -491,9 +496,7 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
                     confirmButton: "btn btn-success",
                   },
                 });
-                setTimeout(() => {
-                  window.location.reload(true);
-                }, 2000); // 2000ms = 2 seconds
+               
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -528,12 +531,10 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
           {/* Edit Button */}
           <Link
             style={{ margin: "0.5rem" }}
-            to={{
-            
-              pathname: `/dashboard/slip_memberform/${row?.uid}`,
-             
+            to={`/dashboard/slip_memberform`}
+            state={{stepStatus:row.stepStatus,
+              uid:row.uid,
             }}
-            state={{stepStatus:row.stepStatus}}
           >
             <span>
               <Edit2 className="font-medium-3 text-body" />

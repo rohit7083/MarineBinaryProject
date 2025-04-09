@@ -23,7 +23,9 @@ export default {
   UpdateMember: "/sMember/",
 
   createPayment:"/sPayment/",
-  // user Registraion and login
+  // user  login
+  checktoken: "/auth/user/check_token/",
+chnagePassword:"/auth/user/change_password/",
   registerUser: "/auth/user/create",
   login: "/auth/login",
   verifyAccount: "/auth/verify_account/",

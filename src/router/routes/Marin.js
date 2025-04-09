@@ -176,7 +176,7 @@ export default [
   },
   {
     element: <QrPaymentStepTwo />,
-    path: "/dashboard/slip_memberform/qr_paymentsteptwo",
+    path: "/slip_memberform/qr_paymentsteptwo",
     meta: {
       layout: "blank",
     },
@@ -184,7 +184,10 @@ export default [
 
   {
     element: <QrPaymentStepTwo />,
-    path: "/dashboard/slip_memberform/qr_paymentsteptwo/:token",
+    path: "/slip_memberform/qr_paymentsteptwo/:token",
+    meta: {
+      layout: "blank",
+    },
   },
 
 

@@ -409,7 +409,6 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
               // Call delete API
               const response = await useJwt.deleteslipCatogory(uid);
               if (response.status === 204) {
-                // Update state by filtering out the deleted item
                 setData((prevData) =>
                   {
                    const newData= prevData.filter((item) => item.uid !== uid)
@@ -431,7 +430,6 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
               console.error("Error deleting item:", error);
             }
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
-            // Show cancellation message
             MySwal.fire({
               title: "Cancelled",
               text: "Your Record is safe :)",
@@ -444,7 +442,6 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
         });
       };
       
-
       const handle = async () => {
         console.log(row.shipTypeName);
         console.log(row.dimensions);
@@ -458,15 +455,15 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
           </span>
           </Link> */}
 
-          <Link
-            to={{
-              pathname: `/dashboard/slipcategory/${row.uid}`, // Ensure this is the correct path
-              state: {
-                shipTypeName: row.shipTypeName, // Pass the shipTypeName
-                dimensions: row.dimensions, // Pass the dimensions (make sure it's an array)
-              },
-            }}
-          >
+<Link
+  to={`/dashboard/slipcategory`} // Don't pass UID in the path
+  state={{ 
+    shipTypeName: row.shipTypeName, 
+    dimensions: row.dimensions, 
+    uid: row.uid
+  }}
+>
+                       
             <span
               style={{ margin: "0.5rem", cursor: "pointer" }}
               onClick={() => handle(row)}
