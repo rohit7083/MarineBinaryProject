@@ -418,12 +418,12 @@ const Login = () => {
                     />
                   )}
                 </div>
-                <div className="form-check mb-1">
+                {/* <div className="form-check mb-1">
                   <Input type="checkbox" id="remember-me" />
                   <Label className="form-check-label" for="remember-me">
                     Remember Me
                   </Label>
-                </div>
+                </div> */}
               </div>
               <Button
                 type="submit"

@@ -402,11 +402,11 @@ const ResetPasswordBasic = () => {
                       style={{ position: "relative", display: "inline-block" }}
                     >
                       <img
-                        src="/src/assets/images/digitalwatch.jpeg"
+                        src="/src/assets/images/updatedWatchnew.jpg"
                         alt="Phone Call"
                         style={{
-                          width: "70px",
-                          height: "90px",
+                          width: "120px",
+                          height: "100px",
                           display: "block",
                         }}
                       />
@@ -419,9 +419,11 @@ const ResetPasswordBasic = () => {
                           <span
                             className="position-absolute top-50 start-50 translate-middle"
                             style={{
+                              marginTop: "-4px",
+
                               fontSize: "14px",
                               fontWeight: "bold",
-                              color: "black",
+                              color: "White",
                             }}
                           >
                             {String(minutes).padStart(2, "0")}:

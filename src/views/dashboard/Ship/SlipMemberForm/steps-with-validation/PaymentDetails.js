@@ -323,21 +323,21 @@ const Address = ({
     if (slipIID) fetchMarketPrices();
   }, [slipIID]);
 
-  const handlePaidInChange = (option) => {
-    console.log("handlePaidInChange function", slipDetail);
-    if (option?.value === "Monthly") {
-      setValue("rentalPrice", slipDetail.marketMonthlyPrice);
+  // const handlePaidInChange = (option) => {
+  //   console.log("handlePaidInChange function", slipDetail);
+  //   if (option?.value === "Monthly") {
+  //     setValue("rentalPrice", slipDetail.marketMonthlyPrice);
 
-      console.log("rentalPrice", slipDetail.marketMonthlyPrice);
-    } else if (option?.value === "Annual") {
-      setValue("rentalPrice", slipDetail.marketAnnualPrice);
-      console.log("rentalPrice", slipDetail.marketAnnualPrice);
-    } else {
-      setValue("rentalPrice", "");
+  //     console.log("rentalPrice", slipDetail.marketMonthlyPrice);
+  //   } else if (option?.value === "Annual") {
+  //     setValue("rentalPrice", slipDetail.marketAnnualPrice);
+  //     console.log("rentalPrice", slipDetail.marketAnnualPrice);
+  //   } else {
+  //     setValue("rentalPrice", "");
 
-      console.log("Cleared Rental Price");
-    }
-  };
+  //     console.log("Cleared Rental Price");
+  //   }
+  // };
 
   const handleDiscount = (event) => {
     console.clear();

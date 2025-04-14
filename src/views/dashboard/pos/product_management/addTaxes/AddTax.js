@@ -1,76 +1,56 @@
-// ** React Imports
 import { Fragment, useState } from "react";
+import useJwt from "@src/auth/jwt/useJwt";
 
-// ** Reactstrap Imports
+// Reactstrap
 import {
   Row,
   Col,
-  Card,
   Modal,
   Label,
   Input,
   Button,
-  CardBody,
-  CardText,
-  CardTitle,
   ModalBody,
-  InputGroup,
   ModalHeader,
-  FormFeedback,
-  InputGroupText,
 } from "reactstrap";
-import Select from "react-select";
-// ** Third Party Components
-import classnames from "classnames";
-import Cleave from "cleave.js/react";
-import { Check, X, CreditCard } from "react-feather";
+
+// React Hook Form
 import { useForm, Controller } from "react-hook-form";
 
-// ** Images
-import jcbCC from "@src/assets/images/icons/payments/jcb-cc.png";
-import amexCC from "@src/assets/images/icons/payments/amex-cc.png";
-import uatpCC from "@src/assets/images/icons/payments/uatp-cc.png";
-import visaCC from "@src/assets/images/icons/payments/visa-cc.png";
-import dinersCC from "@src/assets/images/icons/payments/diners-cc.png";
-import maestroCC from "@src/assets/images/icons/payments/maestro-cc.png";
-import discoverCC from "@src/assets/images/icons/payments/discover-cc.png";
-import mastercardCC from "@src/assets/images/icons/payments/mastercard-cc.png";
-
-const cardsObj = {
-  jcb: jcbCC,
-  uatp: uatpCC,
-  visa: visaCC,
-  amex: amexCC,
-  diners: dinersCC,
-  maestro: maestroCC,
-  discover: discoverCC,
-  mastercard: mastercardCC,
-};
-
-const defaultValues = {
-  cardNumber: "",
-};
 
 const AddCardExample = ({ show, setShow }) => {
-  // ** States
-  const [cardType, setCardType] = useState("");
-
-  // ** Hooks
+  // Hooks
   const {
     reset,
     control,
-    setError,
-    clearErrors,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({ 
+    // defaultValues 
+  });
 
-  const onSubmit = (data) => {
-    if (data.cardNumber.length) {
-      clearErrors();
-    } else {
-      setError("cardNumber", { type: "manual" });
-    }
+  const onSubmit = async(data) => {
+
+  // if (!vendorData) {
+      try {
+        const res = await useJwt.productTax(data);
+        console.log("Response from API", res);
+      } catch (error) {
+        console.log("Error submitting form", error);
+      }
+    
+    // else {
+      // try {
+      //   const updatedRes = await useJwt.updateTax(vendorData?.uid, payload);
+      //   console.log(updatedRes);
+      // } catch (error) {
+      //   console.log("Error submitting form", error);
+      // }
+    // }
+
+
+    console.log("Submitted Data:", data);
+    setShow(false);
+    reset();
   };
 
   return (
@@ -79,12 +59,13 @@ const AddCardExample = ({ show, setShow }) => {
         isOpen={show}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered"
-        onClosed={() => setCardType("")}
+        onClosed={() => reset()}
       >
         <ModalHeader
           className="bg-transparent"
           toggle={() => setShow(!show)}
         ></ModalHeader>
+
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <h1 className="text-center mb-1">Add Product Tax</h1>
 
@@ -93,42 +74,90 @@ const AddCardExample = ({ show, setShow }) => {
             className="gy-1 gx-2 mt-75"
             onSubmit={handleSubmit(onSubmit)}
           >
+            {/* Tax Name */}
             <Col md={12}>
-              <Label className="form-label" for="card-name">
-                Tax Name{" "}
+              <Label className="form-label" for="taxName">
+                Tax Name
               </Label>
-              <Input id="card-name" placeholder="John Doe" />
+              <Controller
+                name="taxName"
+                control={control}
+                rules={{ required: "Tax name is required" }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="taxName"
+                    placeholder="Enter tax name"
+                    invalid={!!errors.taxName}
+                  />
+                )}
+              />
+              {errors.taxName && (
+                <span className="text-danger">{errors.taxName.message}</span>
+              )}
             </Col>
 
+            {/* Tax Type */}
             <Col md={12}>
-              <Label className="form-label" for="card-name">
-              Tax Type{" "}
-              </Label>
-
-              <div className='demo-inline-spacing'>
-            <div className='form-check'>
-              <Input type='radio' id='ex1-active' name='ex1' defaultChecked />
-              <Label className='form-check-label' for='ex1-active'>
-                Flat
-              </Label>
-            </div>
-            <div className='form-check'>
-              <Input type='radio' name='ex1' id='ex1-inactive' />
-              <Label className='form-check-label' for='ex1-inactive'>
-                Percentage
-              </Label>
-            </div>
-            </div>            </Col>
-
-
-
-            <Col md={12}>
-              <Label className="form-label" for="card-name">
-                Tax{" "}
-              </Label>
-              <Input id="card-name" placeholder="John Doe" />
+              <Label className="form-label">Tax Type</Label>
+              <Controller
+                name="taxType"
+                control={control}
+                render={({ field }) => (
+                  <div className="demo-inline-spacing">
+                    <div className="form-check">
+                      <Input
+                        type="radio"
+                        id="flat"
+                        value="Flat"
+                        checked={field.value === "Flat"}
+                        onChange={field.onChange}
+                      />
+                      <Label className="form-check-label" for="flat">
+                        Flat
+                      </Label>
+                    </div>
+                    <div className="form-check">
+                      <Input
+                        type="radio"
+                        id="percentage"
+                        value="Percentage"
+                        checked={field.value === "Percentage"}
+                        onChange={field.onChange}
+                      />
+                      <Label className="form-check-label" for="percentage">
+                        Percentage
+                      </Label>
+                    </div>
+                  </div>
+                )}
+              />
             </Col>
 
+            {/* Tax Value */}
+            <Col md={12}>
+              <Label className="form-label" for="taxValue">
+                Tax Value
+              </Label>
+              <Controller
+                name="taxValue"
+                control={control}
+                rules={{ required: "Tax value is required" }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="taxValue"
+                    placeholder="Enter tax amount"
+                    invalid={!!errors.taxValue}
+                  />
+                )}
+              />
+              {errors.taxValue && (
+                <span className="text-danger">{errors.taxValue.message}</span>
+              )}
+            </Col>
+
+            {/* Buttons */}
             <Col className="text-center mt-1" xs={12}>
               <Button type="submit" className="me-1" color="primary">
                 Submit

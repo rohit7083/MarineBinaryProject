@@ -131,6 +131,12 @@ export default [
     // badgeText: '2',
     children: [
       {
+        id: "Vendor Manage",
+        title: "Vendor Manage",
+        icon: <Circle size={12} />,
+        navLink: "/pos/VendorManage",
+      },
+      {
         id: "Product Manage",
         title: "Product Manage",
         icon: <Circle size={12} />,
@@ -155,6 +161,31 @@ export default [
         navLink: '/dashboard/pos/point_of_sale/virtual-terminal'
       },
 
+     
+    ],
+  },
+
+  {
+    id: "ui",
+    title: "ui",
+    icon: <Circle size={12} />,
+    // navLink: '/dashboard/create-user',
+    badge: "light-warning",
+    // badgeText: '2',
+    children: [
+      {
+        id: "ui1",
+        title: "ui  1",
+        icon: <Circle size={12} />,
+        navLink: "/dashbord/ship/ui",
+      },
+      {
+        id: "ui2",
+        title: "ui 2",
+        icon: <Circle size={12} />,
+        navLink: "/dashbord/ship/ui",
+      },
+ 
      
     ],
   },

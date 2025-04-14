@@ -12,7 +12,7 @@ import Wizard from "@components/wizard";
 import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Icons Imports
-import { FileText, User, MapPin, Link } from "react-feather";
+import { FileText, User, MapPin, Link, CreditCard, File } from "react-feather";
 import { useParams } from "react-router-dom";
 
 const WizardModern = () => {
@@ -88,7 +88,7 @@ const uid=location.state?.uid || "";
       id: "Vessel-details",
       title: "Vessel Details",
       subtitle: "Enter Your Vessel Details.",
-      icon: <FileText size={18} />,
+      icon: <File size={18} />,
       content: (
         <VesselDetails
           stepper={stepper}
@@ -122,7 +122,7 @@ const uid=location.state?.uid || "";
       id: "Payment",
       title: "Payment Details",
       subtitle: "Add Payment",
-      icon: <MapPin size={18} />,
+      icon: <CreditCard size={18} />,
       content: (
         <PaymentDetails
           formData={{ ...formData.payment }}
@@ -139,7 +139,7 @@ const uid=location.state?.uid || "";
       id: "DocumentsDetails",
       title: "Document Details",
       subtitle: "Add Documents",
-      icon: <Link size={18} />,
+      icon: <FileText size={18} />,
       content: (
         <DocumentsDetails
         formDataParent={{ ...formData.documents }}

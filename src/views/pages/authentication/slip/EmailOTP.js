@@ -28,6 +28,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { Spinner } from "reactstrap";
 import CryptoJS from "crypto-js";
+import { ChevronLeft } from "react-feather";
 
 // ** Actions
 import { handleLogin } from "@store/authentication";
@@ -426,6 +427,7 @@ const TwoStepsBasic = () => {
                           <span
                             className="position-absolute top-50 start-50 translate-middle"
                             style={{
+                              marginTop: "-4px",
                               fontSize: "14px",
                               fontWeight: "bold",
                               color: "White",
@@ -503,6 +505,12 @@ const TwoStepsBasic = () => {
                 )}{" "}
               </a>
             </p> */}
+       <p className="text-center mt-2">
+                      <Link to="/Login">
+                        <ChevronLeft className="rotate-rtl me-25" size={14} />
+                        <span className="align-middle">Back to login</span>
+                      </Link>
+                    </p>
           </CardBody>
         </Card>
       </div>

@@ -458,8 +458,8 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
     minWidth: "150px",
     cell: (row) => {
       const [data, setData] = useState([]);
+
       console.log("row data",row)
-      // console.log(" data",data)
       console.log("formData.stepStatus",row.stepStatus);
 
       const MySwal = withReactContent(Swal);

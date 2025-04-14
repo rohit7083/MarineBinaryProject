@@ -88,11 +88,11 @@ const RoleCards = () => {
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
   function generateKey(secretKey) {
-    return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
+    return CryptoJS.SHA256(secretKey);
   }
 
   function generateIV() {
-    return CryptoJS.lib.WordArray.random(16); // 16-byte IV
+    return CryptoJS.lib.WordArray.random(16); 
   }
 
   function encryptAES(plainText) {

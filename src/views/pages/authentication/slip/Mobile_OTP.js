@@ -20,6 +20,7 @@ import {
   Input,
 } from "reactstrap";
 import { Spinner } from "reactstrap";
+import { ChevronLeft } from "react-feather";
 
 import useJwt from "@src/auth/jwt/useJwt";
 // ** Styles
@@ -396,6 +397,12 @@ const TwoStepsBasic = () => {
                 )}
               </a>
             </p> */}
+             <p className="text-center mt-2">
+                            <Link to="/Login">
+                              <ChevronLeft className="rotate-rtl me-25" size={14} />
+                              <span className="align-middle">Back to login</span>
+                            </Link>
+                          </p>
           </CardBody>
         </Card>
       </div>

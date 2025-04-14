@@ -1,13 +1,12 @@
 // ** Auth Endpoints
 export default {
-  // loginEndpoint: "/jwt/login",  // temp
+  loginEndpoint: "/jwt/login",  // temp
   // loginEndpoint: '/login',
 
   registerEndpoint: "/jwt/register",
   refreshEndpoint: "/auth/refresh_token",
   logoutEndpoint: "/jwt/logout",
 
-  
   tokenType: "Bearer",
   // ** Admin Endpoint
   slipCategory: "/slipCategory/",
@@ -22,10 +21,10 @@ export default {
   retriveMember: "/sMember/",
   UpdateMember: "/sMember/",
 
-  createPayment:"/sPayment/",
+  createPayment: "/sPayment/",
   // user  login
   checktoken: "/auth/user/check_token/",
-chnagePassword:"/auth/user/change_password/",
+  chnagePassword: "/auth/user/change_password/",
   registerUser: "/auth/user/create",
   login: "/auth/login",
   verifyAccount: "/auth/verify_account/",
@@ -41,8 +40,8 @@ chnagePassword:"/auth/user/change_password/",
   sendOtp: "/auth/user/send_otp/",
 
   // verify otp for cash payment
-  otpForCash:"/sPayment/otpForCash",
-  verifyCash:"/sPayment/verifyCash/",
+  otpForCash: "/sPayment/otpForCash",
+  verifyCash: "/sPayment/verifyCash/",
   // verify Email and Login api
   verifyEmail: "/auth/verifyEmail",
   loginPassword: "/auth/login/",
@@ -61,15 +60,30 @@ chnagePassword:"/auth/user/change_password/",
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
 
+getMemberDetails: "/sPayment/decrypt-token?token=",
 
 
   slipAssignmentGet: "/slipAssignmentGet",
   GenerateOtp: "/sPayment/generate",
   verifyOTP: "/sPayment/verify/",
   slipDocument: "/sDocuments/",
-  getSingleDocuments:"/sDocuments/slip/",
-updateDoc:'/sDocuments/',
+  getSingleDocuments: "/sDocuments/slip/",
+  updateDoc: "/sDocuments/",
   // Value of this property will be used as key to store JWT token in storage
   storageTokenKeyName: "accessToken",
   storageRefreshTokenKeyName: "refreshToken",
+
+
+  //POS : Vender Management
+
+  addVender: "/vendor/",
+  editvender: "/vendor/",
+  deleteVender: "/vendor/",
+  getAllVendor:"/vendor",
+
+  //pos: Tax 
+  productTax:"/productTax/",
+  updateTax:"/productTax/",
+  deleteTax:"/productTax/",
+  getAlltax:"/productTax",
 };

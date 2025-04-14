@@ -2,6 +2,9 @@ import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Send } from "react-feather";
 import { Link } from "react-router-dom";
+import Countdown from "react-countdown";
+import { Spinner, UncontrolledAlert } from "reactstrap";
+
 import {
   Row,
   Col,
@@ -19,7 +22,7 @@ import {
   CardText,
   Form,
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 
 import { Alert } from "reactstrap";
 import { ThumbsUp } from "react-feather";
@@ -30,13 +33,16 @@ const Cash_otp = ({
   showModal,
   setShowModal,
   totalPayment,
-  cashOtpVerify,  
-
+  cashOtpVerify,
 }) => {
   // ** States
+  const [loading, setLoading] = useState(false);
+
   const [time, setTime] = useState(100);
   const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
   const [verify, setVerify] = useState(false);
+  const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+  const [errorMessage, setErrorMsz] = useState("");
   const {
     control,
     handleSubmit,
@@ -53,7 +59,11 @@ const Cash_otp = ({
         finalPayment: totalPayment,
       };
       const response = await useJwt.otpForCash(payload); // Adjust this method to send the payload
-      const token = response.data.content;
+      if (response?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+      }
+      // {{debugger}}
+      const token = response?.data?.content;
       console.log("response from cash otp", response);
 
       setAccessTokenOtp(token);
@@ -66,6 +76,8 @@ const Cash_otp = ({
   };
 
   const onSubmit = async (data) => {
+    setErrorMsz("");
+    // {{debugger}}
     console.log(data);
 
     try {
@@ -78,28 +90,34 @@ const Cash_otp = ({
       const payload = {
         cashOtp: Number(data.otp.join("")),
       };
-
+      setLoading(true);
       const response = await useJwt.verifyCash(accessTokenotp, payload);
       setVerify(true);
       setShowModal(false);
       setotpVerify(true);
       console.log("OTP Verified Successfully!");
-    //   return MySwal.fire({
-    //     title: "Successfully Verified",
-    //     text: " Your OTP is Verified Successfull",
-    //     icon: "success",
-    //     customClass: {
-    //       confirmButton: "btn btn-primary",
-    //     },
-    //     buttonsStyling: false,
-    //   }).then(() => {
-    //     if (Object.keys(errors).length === 0) {
-    //       stepper.next();
-    //     }
-    //   });
-        } catch (error) {
-      console.error("Error verifying OTP:", error);
-      console.log("Failed to verify OTP. Please try again.");
+      //   return MySwal.fire({
+      //     title: "Successfully Verified",
+      //     text: " Your OTP is Verified Successfull",
+      //     icon: "success",
+      //     customClass: {
+      //       confirmButton: "btn btn-primary",
+      //     },
+      //     buttonsStyling: false,
+      //   }).then(() => {
+      //     if (Object.keys(errors).length === 0) {
+      //       stepper.next();
+      //     }
+      //   });
+    } catch (error) {
+      if (error.response) {
+        console.error("Error verifying OTP:", error);
+
+        const errorMessage = error?.response?.data?.content;
+        setErrorMsz(errorMessage);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,7 +140,7 @@ const Cash_otp = ({
 
   return (
     <Fragment>
-      {verify || cashOtpVerify? (
+      {verify || cashOtpVerify ? (
         <React.Fragment>
           <Alert color="success">
             <div className="alert-body " style={{ marginTop: "10px" }}>
@@ -157,11 +175,12 @@ const Cash_otp = ({
         <div className="auth-inner my-2">
           <Card className="mb-0">
             <CardBody>
-              <Link
+              {/* <Link
                 className="brand-logo"
                 to="/"
                 onClick={(e) => e.preventDefault()}
-              ></Link>
+              ></Link> */}
+
               <CardTitle tag="h2" className="fw-bolder mb-1">
                 Verify OTP 💬
               </CardTitle>
@@ -174,6 +193,20 @@ const Cash_otp = ({
                 className="auth-reset-password-form mt-2"
                 onSubmit={handleSubmit(onSubmit)}
               >
+                <Col sm="12">
+                  {errorMessage && (
+                    <React.Fragment>
+                      <UncontrolledAlert color="danger">
+                        <div className="alert-body">
+                          <span className="text-danger fw-bold">
+                            <strong>Error ! </strong>
+                            {errorMessage}
+                          </span>
+                        </div>
+                      </UncontrolledAlert>
+                    </React.Fragment>
+                  )}
+                </Col>
                 <div className="mb-2">
                   <h6>Type your 6-digit security code</h6>
                   <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
@@ -235,13 +268,54 @@ const Cash_otp = ({
                     ))}
                   </div>
 
+                  <div className="d-flex flex-column align-items-center position-relative">
+                    <div
+                      style={{ position: "relative", display: "inline-block" }}
+                    >
+                      <img
+                        src="/src/assets/images/updatedWatchnew.jpg"
+                        alt="Phone Call"
+                        style={{
+                          width: "120px",
+                          height: "100px",
+                          display: "block",
+                        }}
+                      />
+
+                      <Countdown
+                        key={countdownEndTime} // resets the countdown on update
+                        date={countdownEndTime}
+                        // onComplete={() => setResendLoading(false)} // re-enable the button
+                        renderer={({ minutes, seconds }) => (
+                          <span
+                            className="position-absolute top-50 start-50 translate-middle"
+                            style={{
+                              marginTop: "-4px",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "White",
+                            }}
+                          >
+                            {String(minutes).padStart(2, "0")}:
+                            {String(seconds).padStart(2, "0")}
+                          </span>
+                        )}
+                      />
+                    </div>
+                  </div>
+
                   {errors.otp && (
                     <small className="text-danger">{errors.otp.message}</small>
                   )}
                 </div>
                 <Button block type="submit" color="primary">
-                  {/* {loading ? <Spinner size="sm" /> : "Verify"} */}
-                  Verify
+                  {loading ? (
+                    <>
+                      Loading.. <Spinner size="sm" />
+                    </>
+                  ) : (
+                    "Verify"
+                  )}
                 </Button>
               </Form>
 

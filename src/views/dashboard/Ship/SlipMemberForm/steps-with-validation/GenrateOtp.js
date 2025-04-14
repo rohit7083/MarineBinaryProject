@@ -3,6 +3,8 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { Send } from "react-feather";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import {BeatLoader} from 'react-spinners';
+import Countdown from "react-countdown";
+
 import {
   Row,
   Col,
@@ -26,6 +28,8 @@ const GenrateOtp = ({
   fetchDiscountFields,
 }) => {
   // ** States
+    const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+  
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(100);
   const [errMsz, seterrMsz] = useState("");
@@ -50,6 +54,10 @@ const GenrateOtp = ({
       setOtpLoader(true);
       const response = await useJwt.GenerateOtp(payload); // Adjust this method to send the payload
       const token = response.data.content;
+      if (response?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+
+      }
       setAccessTokenOtp(token);
       setShow(true);
       setTime(100);
@@ -200,7 +208,7 @@ const GenrateOtp = ({
             </Col>
 
             <Col xs={12} className="text-center mt-2">
-              <p>
+              {/* <p>
                 Time Remaining: {`${Math.floor(time / 60)}`.padStart(2, "0")}:
                 {`${time % 60}`.padStart(2, "0")}
               </p>
@@ -213,7 +221,44 @@ const GenrateOtp = ({
                 <a href="/" onClick={(e) => e.preventDefault()}>
                   Call us
                 </a>
-              </p>
+              </p> */}
+
+
+               <div className="d-flex flex-column align-items-center position-relative">
+                                  <div
+                                    style={{ position: "relative", display: "inline-block" }}
+                                  >
+                                    <img
+                                      src="/src/assets/images/updatedWatchnew.jpg"
+                                      alt="Phone Call"
+                                      style={{
+                                        width: "120px",
+                                        height: "100px",
+                                        display: "block",
+                                      }}
+                                    />
+              
+                                    <Countdown
+                                      key={countdownEndTime} // resets the countdown on update
+                                      date={countdownEndTime}
+                                      // onComplete={() => setResendLoading(false)} // re-enable the button
+                                      renderer={({ minutes, seconds }) => (
+                                        <span
+                                          className="position-absolute top-50 start-50 translate-middle"
+                                          style={{
+                                            marginTop: "-4px",
+                                            fontSize: "14px",
+                                            fontWeight: "bold",
+                                            color: "White",
+                                          }}
+                                        >
+                                          {String(minutes).padStart(2, "0")}:
+                                          {String(seconds).padStart(2, "0")}
+                                        </span>
+                                      )}
+                                    />
+                                  </div>
+                                </div>
             </Col>
 
             <Col xs={12}>

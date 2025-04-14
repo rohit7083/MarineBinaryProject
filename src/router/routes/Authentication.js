@@ -108,7 +108,7 @@ const AuthenticationRoutes = [
     meta: {
       layout: 'blank',
       publicRoute: true,
-      restricted: true
+      // restricted: true
     }
   },
   {

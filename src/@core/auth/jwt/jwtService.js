@@ -129,13 +129,6 @@ export default class JwtService {
       console.error("Error fetching location:", error.message);
       throw error;
     }}
-
-
-
-   
-
-
-
     
   onAccessTokenFetched(accessToken) {
     this.subscribers = this.subscribers.filter((callback) =>
@@ -165,9 +158,9 @@ export default class JwtService {
 
 // temp
 
-  // login(...args) {
-  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  // }
+  login(...args) {
+    return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  }
 
   // ==================== Slip Category
 
@@ -244,6 +237,10 @@ export default class JwtService {
 
   verifyCash(token, ...args) {
     return axios.post(`${this.jwtConfig.verifyCash}${token}`, ...args);
+  }
+
+  getMemberDetails(token, ...args) {
+    return axios.get(`${this.jwtConfig.getMemberDetails}${token}`, ...args);
   }
 
   // =================== Register
@@ -375,6 +372,42 @@ export default class JwtService {
   // verifyOTP(token, ...data) {
   //   return axios.post(this.jwtConfig.verifyOTP + token, ...data);
   // }
+
+
+// Pos- Vender management
+
+addVender(...args) {
+  return axios.post(this.jwtConfig.addVender, ...args); 
+}
+editvender(uid, ...args) {
+  return axios.put(`${this.jwtConfig.editvender}${uid}`, ...args);
+}
+
+deleteVender(uid) {
+  return axios.delete(`${this.jwtConfig.deleteVender}${uid}`);  
+}
+
+getAllVendor() {
+  return axios.get(`${this.jwtConfig.getAllVendor}`);  
+}
+// ===== tax product ====
+productTax(...args) {
+  return axios.post(this.jwtConfig.productTax, ...args); 
+}
+
+
+updateTax(uid, ...args) {
+  return axios.put(`${this.jwtConfig.updateTax}${uid}`, ...args);
+}
+
+deleteTax(uid) {
+  return axios.delete(`${this.jwtConfig.deleteTax}${uid}`);  
+}
+
+getAlltax() {
+  return axios.get(`${this.jwtConfig.getAlltax}`);  
+}
+
 
   async verifyOTP(token, ...data) {
     try {

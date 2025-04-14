@@ -22,6 +22,7 @@ import {
   Form,
   Label,
   Button,
+ 
 } from "reactstrap";
 
 // ** Custom Components
@@ -124,6 +125,9 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
 
     validatePassword(onchnagePass);
   }, [onchnagePass]);
+
+  // const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_KEY;
+
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -295,6 +299,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                       render={({ field }) => (
                         <Input
                           {...field}
+
                           maxLength="1"
                           className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
                             errors.otp?.[index] ? "is-invalid" : ""
@@ -350,11 +355,11 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                       style={{ position: "relative", display: "inline-block" }}
                     >
                       <img
-                        src="/src/assets/images/digitalwatch.jpeg"
+                        src="/src/assets/images/updatedWatchnew.jpg"
                         alt="Phone Call"
                         style={{
-                          width: "70px",
-                          height: "90px",
+                          width: "120px",
+                          height: "100px",
                           display: "block",
                         }}
                       />
@@ -367,9 +372,11 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                           <span
                             className="position-absolute top-50 start-50 translate-middle"
                             style={{
+                              marginTop: "-4px",
+
                               fontSize: "14px",
                               fontWeight: "bold",
-                              color: "black",
+                              color: "White",
                             }}
                           >
                             {String(minutes).padStart(2, "0")}:

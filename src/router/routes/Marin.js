@@ -59,6 +59,16 @@ const Ecomm = lazy(() =>
   import("../../views/dashboard/pos/point_of_sale/ecommerce/shop")
 );
 
+
+const VendorManage
+= lazy(() =>
+  import("../../views/dashboard/pos/vendorManagement")
+);
+
+const VendorAdd
+= lazy(() =>
+  import("../../views/dashboard/pos/vendorManagement/AddVender")
+);
 const QrPaymentStepTwo = lazy(() =>
   import(
     "../../views/dashboard/Ship/SlipMemberForm/steps-with-validation/QrPaymentStepTwo"
@@ -195,4 +205,14 @@ export default [
     element: <VertualTerminal />,
     path: "/dashboard/pos/point_of_sale/virtual-terminal",
   },
+
+  {
+    element: <VendorManage />,
+    path: "/pos/VendorManage",
+  },
+  {
+    element: <VendorAdd />,
+    path: "/pos/VendorManage/addVendor",
+  },
+  
 ];

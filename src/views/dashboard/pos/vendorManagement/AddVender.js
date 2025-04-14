@@ -7,23 +7,22 @@ import {
   Button,
   Label,
   Row,
-  InputGroup ,
+  InputGroup,
 } from "reactstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
 
 import { Tooltip } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
 import importIcon from "../../../../assets/icons/file-import.svg";
 import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
 import addStocks from "../../../../assets/icons/supplier-alt.svg";
 import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
 import addTax from "../../../../assets/icons/calendar-event-tax.svg";
-import ProductAdd_Table from "./ProductAdd_Table";
 import { data } from "jquery";
 import useJwt from "@src/auth/jwt/useJwt";
 
@@ -35,13 +34,18 @@ const MultipleColumnForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      vendorName: "aa",
-      companyName: "bb",
-      address: "cc",
-      phoneNumber: "912345678901",
-      emailId: "aa@gmail.com",  
+      // vendorName: "aa",
+      // companyName: "bb",
+      // address: "cc",
+      // phoneNumber: "912345678901",
+      // emailId: "aa@gmail.com",
     },
   });
+
+  const location = useLocation();
+  const vendorData = location.state;
+  console.log("vendor ddata ", vendorData);
+
   const [phoneNumber, setMobileNumber] = useState("");
   const extractCountryCodeAndNumber = (value) => {
     if (!value) return { code: "", number: "" }; // Handle undefined case
@@ -49,56 +53,40 @@ const MultipleColumnForm = () => {
     const number = value.slice(-10);
     return { code, number };
   };
-  const [tooltipOpen, setTooltipOpen] = useState({
-    ANP: false,
-    importProduct: false,
-    addProductCate: false,
-    addProducttaxes: false,
-    addStock: false,
-    stockManage: false,
-  });
 
-  const toggleTooltip = (tooltip) => {
-    setTooltipOpen((prevState) => ({
-      ...prevState,
-      [tooltip]: !prevState[tooltip],
-    }));
-  };
-
-
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
-
-try {
-  
-  const payload = {
-    ...data,
-    countryCode: `+${code}`,
-    phoneNumber: number,
+    const payload = {
+      ...data,
+      countryCode: `+${code}`,
+      phoneNumber: number,
+    };
+    if (!vendorData) {
+      try {
+        const res = await useJwt.addVender(payload);
+        console.log("Response from API", res);
+      } catch (error) {
+        console.log("Error submitting form", error);
+      }
+    } else {
+      try {
+        const updatedRes = await useJwt.editvender(vendorData?.uid, payload);
+        console.log(updatedRes);
+      } catch (error) {
+        console.log("Error submitting form", error);
+      }
+    }
   };
 
-  const res=await useJwt.addVender(payload);
-  console.log("Response from API", res);
-
-  
-} catch (error) {
-  console.log("Error submitting form", error);
-  
-}
-
-    console.log("Submitted data", data);
-  };
-
-  const productOptions = [
-    { value: "prod1", label: "Product 1" },
-    { value: "prod2", label: "Product 2" },
-  ];
+  useEffect(() => {
+    reset(vendorData.venderData);
+  }, [reset, vendorData]);
 
   return (
     <Card>
       <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
-        <CardTitle tag="h4">Add Product Stocks</CardTitle>
-        <div className="d-flex gap-2">
+        <CardTitle tag="h4">Add Vender</CardTitle>
+        {/* <div className="d-flex gap-2">
           <Link to="/dashboard/pos/product_management/addProduct">
             <img src={addProductIcon} id="ANP" alt="Add Product" width="25" />
             <Tooltip
@@ -179,7 +167,7 @@ try {
               Stock Manage
             </Tooltip>
           </Link>
-        </div>
+        </div> */}
       </CardHeader>
 
       <CardBody className="mt-2">
@@ -229,7 +217,7 @@ try {
           </Row>
 
           <Row>
-          <Col md="6" className="mb-1">
+            <Col md="6" className="mb-1">
               <Label for="vendorName">Address</Label>
               <Controller
                 name="address"
@@ -244,15 +232,13 @@ try {
                 )}
               />
               {errors.address && (
-                <small className="text-danger">
-                  {errors.address.message}
-                </small>
+                <small className="text-danger">{errors.address.message}</small>
               )}
             </Col>
             <Col md="6" className="mb-1">
               <Label for="mobile">Mobile Number</Label>
-           
-                <InputGroup className="input-group-merge">
+
+              <InputGroup className="input-group-merge">
                 <Controller
                   name="phoneNumber"
                   control={control}
@@ -291,11 +277,9 @@ try {
                   )}
                 />
               </InputGroup>
-            
             </Col>
           </Row>
-       
-       
+
           <Row>
             <Col md="6" className="mb-1">
               <Label for="email">Email Address</Label>
