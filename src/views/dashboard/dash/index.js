@@ -24,6 +24,7 @@ import withReactContent from "sweetalert2-react-content";
 import useJwt from "@src/auth/jwt/useJwt";
 import React, { Fragment } from "react";
 import { useForm, Controller } from "react-hook-form";
+import ParkBoat from "./ParkBoat";
 
 const DefaultAlert = () => {
   const [show, setShow] = useState(false);
@@ -35,7 +36,7 @@ const DefaultAlert = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [statusLoad, setStatusLoad] = useState(false);
-  const[authStatusauth,setauthStatus]=useState(null);
+  const [authStatusauth, setauthStatus] = useState(null);
   const MySwal = withReactContent(Swal);
   const [visible, setVisible] = useState(true);
 
@@ -63,29 +64,28 @@ const DefaultAlert = () => {
         // setMessage(errorMessage);
       }
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     setVisible(false);
   }, []);
 
   useEffect(() => {
-    const rawData = localStorage.getItem("userData"); 
+    const rawData = localStorage.getItem("userData");
     if (rawData) {
       try {
-        const authStatus = JSON.parse(rawData); 
+        const authStatus = JSON.parse(rawData);
         setauthStatus(authStatus?.TwoNf);
-      
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }
     } else {
       console.log("No userdata found in localStorage");
     }
-  },[]);
-  
+  }, []);
+
   return (
     <>
       <React.Fragment>
@@ -172,12 +172,11 @@ const DefaultAlert = () => {
           >
             {loading ? (
               <>
-              Loading.. <Spinner size="sm" />
+                Loading.. <Spinner size="sm" />
               </>
             ) : (
               <span className="me-50">Continue</span>
             )}
-
           </Button>
         </ModalBody>
       </Modal>
@@ -219,6 +218,7 @@ const DefaultAlert = () => {
       </Modal>
 
       <Index />
+      <ParkBoat />
     </>
   );
 };
@@ -251,7 +251,6 @@ const AppAuthComponent = ({
     setShowDetailModal(false);
   };
 
-
   const handleVerifyqr = async (data) => {
     try {
       setLoading(true);
@@ -263,20 +262,17 @@ const AppAuthComponent = ({
 
         const rawData = localStorage.getItem("userData");
         let userData = rawData ? JSON.parse(rawData) : {};
-    
-        userData.TwoNf = true;
-    
-        // Save the updated object back to localStorage
-        localStorage.setItem("userData", JSON.stringify(userData));      }
 
-      
+        userData.TwoNf = true;
+
+        // Save the updated object back to localStorage
+        localStorage.setItem("userData", JSON.stringify(userData));
+      }
     } catch (error) {
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = data.error;
         setMessage(errorMessage);
-
-     
       }
       console.log({ error });
     } finally {

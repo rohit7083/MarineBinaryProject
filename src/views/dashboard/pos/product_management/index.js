@@ -209,9 +209,7 @@ const DataTableWithButtons = () => {
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">
-      {/* <Button color="primary" outline onClick={() => navigate(-1)} className="d-flex align-items-center">
-      <ArrowLeft size={10} className="me-1" /> Previous
-    </Button> */}
+    
     
          
             Product List

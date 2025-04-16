@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 // ** Table Data & Columns
 import { Tooltip } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 import { data, serverSideColumns } from "./Data";
 import addProductIcon from "../../../../../assets/icons/shopping-bag-add.svg";
@@ -27,6 +30,8 @@ import {
   Grid,
   Copy,
   Plus,
+  Edit2,
+  Trash,
 } from "react-feather";
 
 // ** Reactstrap Imports
@@ -52,13 +57,61 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
   </div>
 ));
 
+const MySwal = withReactContent(Swal);
+
+const handleDelete = async (uid) => {
+  return MySwal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    customClass: {
+      confirmButton: "btn btn-primary",
+      cancelButton: "btn btn-danger ms-1",
+    },
+    buttonsStyling: false,
+  }).then(async function (result) {
+    if (result.value) {
+      try {
+        // Call delete API
+        const response = await useJwt.deleteTax(uid);
+        if (response.status === 204) {
+          setData((prevData) => {
+            const newData = prevData.filter((item) => item.uid !== uid);
+            return newData;
+          });
+          MySwal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: "Your Record has been deleted.",
+            customClass: {
+              confirmButton: "btn btn-success",
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Error deleting item:", error);
+      }
+    } else if (result.dismiss === MySwal.DismissReason.cancel) {
+      MySwal.fire({
+        title: "Cancelled",
+        text: "Your imaginary file is safe :)",
+        icon: "error",
+        customClass: {
+          confirmButton: "btn btn-success",
+        },
+      });
+    }
+  });
+};
 
 const DataTableWithButtons = () => {
-  // ** States
   // const [modal, setModal] = useState(false);
+  const [isDataUpdated,setIsDataUpdated]=useState(false);
   const [show, setShow] = useState(false);
-  const [data,setData]=useState([])
-
+  const [data, setData] = useState([]);
+  const [uid, setUid] = useState(null);
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -77,11 +130,8 @@ const DataTableWithButtons = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
-  // ** Function to handle Modal toggle
-  // const handleModal = () => setModal(!modal);
-
-  // ** Function to handle filter
+  const [row, setRow] = useState(null);
+ 
   const handleFilter = (e) => {
     const value = e.target.value;
     let updatedData = [];
@@ -205,23 +255,55 @@ const DataTableWithButtons = () => {
     link.click();
   }
 
-   useEffect(()=>{
-  
-      (async()=>{
-        try {
-          const res=await useJwt.getAlltax();
-          setData(res?.data?.content?.result)
-          console.log(res);
-          
-        } catch (error) {
-          console.log("error in Vendar data ",error);
-          
-        }
-      })()
-  
-  
-  
-    },[])
+  const handleEdit = (row) => {
+    setShow(true);
+    setUid(row?.uid);
+    console.log("row", row);
+    setRow(row);
+  };
+  const column = [
+    ...serverSideColumns,
+    {
+      name: "Actions",
+      sortable: true,
+      minWidth: "150px",
+      cell: (row) => {
+        return (
+          <div className="d-flex">
+            <span
+              style={{ margin: "0.5rem" }}
+              onClick={() => handleEdit(row)}
+            >
+              <Edit2 className="font-medium-3 text-body" />
+            </span>
+
+            <Link style={{ margin: "0.5rem" }}>
+              {" "}
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            </Link>
+          </div>
+        );
+      },
+    },
+  ];
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await useJwt.getAlltax();
+        setData(res?.data?.content?.result);
+        console.log(res);
+      } catch (error) {
+        console.log("error in Vendar data ", error);
+      }
+    })();
+}, [isDataUpdated]);
   return (
     <Fragment>
       <Card>
@@ -348,6 +430,7 @@ const DataTableWithButtons = () => {
             </div>
           </div>
         </CardHeader>
+
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
           <Col md="6" sm="12" className="d-flex align-items-center mt-1">
@@ -381,13 +464,13 @@ const DataTableWithButtons = () => {
           </Col>
         </Row>
 
-        <div className="react-dataTable react-dataTable-selectable-rows">
+        <div className="mt-2 react-dataTable react-dataTable-selectable-rows">
           <DataTable
             noHeader
             pagination
             selectableRows
-            columns={serverSideColumns}
-            paginationPerPage={7}
+            columns={column}
+            paginationPerPage={8}
             className="react-dataTable"
             sortIcon={<ChevronDown size={10} />}
             paginationComponent={CustomPagination}
@@ -395,11 +478,10 @@ const DataTableWithButtons = () => {
             selectableRowsComponent={BootstrapCheckbox}
             // data={searchValue.length ? filteredData : data}
             data={data}
-
           />
         </div>
       </Card>
-      <AddTax show={show} setShow={setShow} />
+      <AddTax show={show} setShow={setShow} uid={uid} setIsDataUpdated={setIsDataUpdated} row={row} />
     </Fragment>
   );
 };

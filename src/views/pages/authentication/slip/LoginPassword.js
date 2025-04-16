@@ -255,6 +255,7 @@ const Login = () => {
           lg="4"
           sm="12"
         >
+          Ro1234567899
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
               Login - Password 👋
@@ -332,11 +333,7 @@ const Login = () => {
                             {errors.password.message}
                           </FormFeedback>
                         )}
-                        {/* {requirements.specialChar && (
-        <FormFeedback style={{ color: "red", display: "block" }}>
-          ❌ Special characters are not allowed.
-        </FormFeedback>
-      )} */}
+                       
                       </div>
                     )}
                   />

@@ -79,7 +79,7 @@ const MultipleColumnForm = () => {
   };
 
   useEffect(() => {
-    reset(vendorData.venderData);
+    reset(vendorData?.venderData);
   }, [reset, vendorData]);
 
   return (

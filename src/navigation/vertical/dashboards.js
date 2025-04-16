@@ -1,5 +1,5 @@
 // ** Icons Import
-import { Home, Circle } from "react-feather";
+import { Home, Circle, Plus, FileText, Users } from "react-feather";
 
 export default [
   // {
@@ -33,7 +33,7 @@ export default [
   {
     id: "Slip",
     title: "Slip",
-    icon: <Circle size={12} />,
+    icon: <FileText size={12} />,
     navLink: "/Ship",
     badge: "light-warning",
     // badgeText: '2',
@@ -67,7 +67,11 @@ export default [
   {
     id: "Users Management",
     title: "Users Management",
-    icon: <Circle size={12} />,
+    icon: <img width="22" height="22
+    
+    " className="me-1" src="https://img.icons8.com/ios/50/user--v1.png" alt="user--v1"/>,
+     
+  
     // navLink: '/dashboard/create-user',
     badge: "light-warning",
     // badgeText: '2',
@@ -90,7 +94,7 @@ export default [
   {
     id: "Invoice Management",
     title: "Invoice Management",
-    icon: <Circle size={12} />,
+    icon: <img width="20" className="me-1" height="20" src="https://img.icons8.com/ios/50/check--v1.png" alt="check--v1"/>,
     // navLink: '/dashboard/create-user',
     badge: "light-warning",
     // badgeText: '2',
@@ -125,7 +129,7 @@ export default [
   {
     id: "POS",
     title: "POS",
-    icon: <Circle size={12} />,
+    icon: <img width="26" height="26" className="me-1"src="https://img.icons8.com/dotty/80/receipt-terminal.png" alt="transaction-declined"/>,
     // navLink: '/dashboard/create-user',
     badge: "light-warning",
     // badgeText: '2',
@@ -166,6 +170,15 @@ export default [
   },
 
   {
+    id: "Member management",
+    title: "Memeber Manage",
+    icon: <Users size={12} />,
+    navLink: '/member_management',
+    badge: "light-warning",
+  
+  },
+
+  {
     id: "ui",
     title: "ui",
     icon: <Circle size={12} />,
@@ -179,12 +192,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashbord/ship/ui",
       },
-      {
-        id: "ui2",
-        title: "ui 2",
-        icon: <Circle size={12} />,
-        navLink: "/dashbord/ship/ui",
-      },
+      
  
      
     ],

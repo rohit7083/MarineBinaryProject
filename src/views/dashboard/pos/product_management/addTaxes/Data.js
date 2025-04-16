@@ -1,134 +1,153 @@
 // ** Custom Components
-import Avatar from '@components/avatar'
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import Avatar from "@components/avatar";
 // ** Third Party Components
 import { Link } from "react-router-dom";
 
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { MoreVertical, Edit, FileText, Archive, Trash, Eye, Edit2 } from 'react-feather'
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+  MoreVertical,
+  Edit,
+  FileText,
+  Archive,
+  Trash,
+  Eye,
+  Edit2,
+} from "react-feather";
 import useJwt from "@src/auth/jwt/useJwt";
-
+import AddTax from "./AddTax";
 // ** Reactstrap Imports
-import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import {
+  Badge,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "reactstrap";
 
 // ** Vars
-const states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary']
+const states = [
+  "success",
+  "danger",
+  "warning",
+  "info",
+  "dark",
+  "primary",
+  "secondary",
+];
 
 const status = {
-  1: { title: 'Current', color: 'light-primary' },
-  2: { title: 'Professional', color: 'light-success' },
-  3: { title: 'Rejected', color: 'light-danger' },
-  4: { title: 'Resigned', color: 'light-warning' },
-  5: { title: 'Applied', color: 'light-info' }
-}
+  1: { title: "Current", color: "light-primary" },
+  2: { title: "Professional", color: "light-success" },
+  3: { title: "Rejected", color: "light-danger" },
+  4: { title: "Resigned", color: "light-warning" },
+  5: { title: "Applied", color: "light-info" },
+};
 
-export let data
-
-
+export let data;
 
 // ** Table Zero Config Column
 export const basicColumns = [
   {
-    name: 'ID',
+    name: "ID",
     sortable: true,
-    maxWidth: '100px',
-    selector: row => row.id
+    maxWidth: "100px",
+    selector: (row) => row.id,
   },
   {
-    name: 'Name',
+    name: "Name",
     sortable: true,
-    minWidth: '225px',
-    selector: row => row.full_name
+    minWidth: "225px",
+    selector: (row) => row.full_name,
   },
   {
-    name: 'Email',
+    name: "Email",
     sortable: true,
-    minWidth: '310px',
-    selector: row => row.email
+    minWidth: "310px",
+    selector: (row) => row.email,
   },
   {
-    name: 'Position',
+    name: "Position",
     sortable: true,
-    minWidth: '250px',
-    selector: row => row.post
+    minWidth: "250px",
+    selector: (row) => row.post,
   },
   {
-    name: 'Age',
+    name: "Age",
     sortable: true,
-    minWidth: '100px',
-    selector: row => row.age
+    minWidth: "100px",
+    selector: (row) => row.age,
   },
   {
-    name: 'Salary',
+    name: "Salary",
     sortable: true,
-    minWidth: '175px',
-    selector: row => row.salary
-  }
-]
+    minWidth: "175px",
+    selector: (row) => row.salary,
+  },
+];
 // ** Table ReOrder Column
 export const reOrderColumns = [
   {
-    name: 'ID',
+    name: "ID",
     reorder: true,
     sortable: true,
-    maxWidth: '100px',
-    selector: row => row.id
+    maxWidth: "100px",
+    selector: (row) => row.id,
   },
   {
-    name: 'Name',
+    name: "Name",
     reorder: true,
     sortable: true,
-    minWidth: '225px',
-    selector: row => row.full_name
+    minWidth: "225px",
+    selector: (row) => row.full_name,
   },
   {
-    name: 'Email',
+    name: "Email",
     reorder: true,
     sortable: true,
-    minWidth: '310px',
-    selector: row => row.email
+    minWidth: "310px",
+    selector: (row) => row.email,
   },
   {
-    name: 'Position',
+    name: "Position",
     reorder: true,
     sortable: true,
-    minWidth: '250px',
-    selector: row => row.post
+    minWidth: "250px",
+    selector: (row) => row.post,
   },
   {
-    name: 'Age',
+    name: "Age",
     reorder: true,
     sortable: true,
-    minWidth: '100px',
-    selector: row => row.age
+    minWidth: "100px",
+    selector: (row) => row.age,
   },
   {
-    name: 'Salary',
+    name: "Salary",
     reorder: true,
     sortable: true,
-    minWidth: '175px',
-    selector: row => row.salary
-  }
-]
+    minWidth: "175px",
+    selector: (row) => row.salary,
+  },
+];
 
 // ** Expandable table component
 const ExpandableTable = ({ data }) => {
   return (
-    <div className='expandable-content p-2'>
+    <div className="expandable-content p-2">
       <p>
-        <span className='fw-bold'>City:</span> {data.city}
+        <span className="fw-bold">City:</span> {data.city}
       </p>
       <p>
-        <span className='fw-bold'>Experience:</span> {data.experience}
+        <span className="fw-bold">Experience:</span> {data.experience}
       </p>
-      <p className='m-0'>
-        <span className='fw-bold'>Post:</span> {data.post}
+      <p className="m-0">
+        <span className="fw-bold">Post:</span> {data.post}
       </p>
     </div>
-  )
-}
+  );
+};
 
 // ** Table Common Column
 // export const columns = [
@@ -222,235 +241,150 @@ const ExpandableTable = ({ data }) => {
 // ** Table Intl Column
 export const multiLingColumns = [
   {
-    name: 'Name',
+    name: "Name",
     sortable: true,
-    minWidth: '200px',
-    selector: row => row.full_name
+    minWidth: "200px",
+    selector: (row) => row.full_name,
   },
   {
-    name: 'Position',
+    name: "Position",
     sortable: true,
-    minWidth: '250px',
-    selector: row => row.post
+    minWidth: "250px",
+    selector: (row) => row.post,
   },
   {
-    name: 'Email',
+    name: "Email",
     sortable: true,
-    minWidth: '250px',
-    selector: row => row.email
+    minWidth: "250px",
+    selector: (row) => row.email,
   },
   {
-    name: 'Date',
+    name: "Date",
     sortable: true,
-    minWidth: '150px',
-    selector: row => row.start_date
+    minWidth: "150px",
+    selector: (row) => row.start_date,
   },
 
   {
-    name: 'Salary',
+    name: "Salary",
     sortable: true,
-    minWidth: '150px',
-    selector: row => row.salary
+    minWidth: "150px",
+    selector: (row) => row.salary,
   },
   {
-    name: 'Status',
+    name: "Status",
     sortable: true,
-    minWidth: '150px',
-    selector: row => row.status,
-    cell: row => {
+    minWidth: "150px",
+    selector: (row) => row.status,
+    cell: (row) => {
       return (
         <Badge color={status[row.status].color} pill>
           {status[row.status].title}
         </Badge>
-      )
-    }
+      );
+    },
   },
   {
-    name: 'Actions',
+    name: "Actions",
     allowOverflow: true,
     cell: () => {
       return (
-        <div className='d-flex'>
+        <div className="d-flex">
           <UncontrolledDropdown>
-            <DropdownToggle className='pe-1' tag='span'>
+            <DropdownToggle className="pe-1" tag="span">
               <MoreVertical size={15} />
             </DropdownToggle>
             <DropdownMenu end>
               <DropdownItem>
                 <FileText size={15} />
-                <span className='align-middle ms-50'>Details</span>
+                <span className="align-middle ms-50">Details</span>
               </DropdownItem>
               <DropdownItem>
                 <Archive size={15} />
-                <span className='align-middle ms-50'>Archive</span>
+                <span className="align-middle ms-50">Archive</span>
               </DropdownItem>
               <DropdownItem>
                 <Trash size={15} />
-                <span className='align-middle ms-50'>Delete</span>
+                <span className="align-middle ms-50">Delete</span>
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
           <Edit size={15} />
         </div>
-      )
-    }
-  }
-]
+      );
+    },
+  },
+];
 
 // ** Table Server Side Column
-export const serverSideColumns = [
+export const serverSideColumns =[
   {
     sortable: true,
-    name: 'Tax Name',
-    minWidth: '225px',
-    selector: row => row.taxName
+    name: "Id",
+    minWidth: "225px",
+    selector: (row ,index) =>index + 1,
   },
   {
     sortable: true,
-    name: 'Tax Type',
-    minWidth: '250px',
-    selector: row => row.taxType
+    name: "Tax Name",
+    minWidth: "225px",
+    selector: (row) => row.taxName,
   },
   {
     sortable: true,
-    name: 'Tax Value',
-    minWidth: '250px',
-    selector: row => row.taxValue
+    name: "Tax Type",
+    minWidth: "250px",
+    selector: (row) => row.taxType,
   },
- 
- 
-   {
-     name: "Actions",
-     sortable: true,
-     minWidth: "150px",
-     cell: (row) => {
-      
- 
-       const MySwal = withReactContent(Swal);
- 
-       const handleDelete = async (uid) => {
-         return MySwal.fire({
-           title: "Are you sure?",
-           text: "You won't be able to revert this!",
-           icon: "warning",
-           showCancelButton: true,
-           confirmButtonText: "Yes, delete it!",
-           customClass: {
-             confirmButton: "btn btn-primary",
-             cancelButton: "btn btn-danger ms-1",
-           },
-           buttonsStyling: false,
-         }).then(async function (result) {
-           if (result.value) {
-             try {
-               // Call delete API
-               const response = await useJwt.deleteTax(uid);
-               if (response.status === 204) {
-                 setData((prevData) =>{
-                   const newData=prevData.filter((item) => item.uid !== uid)
-                   return newData;
-                 })
-               ;
-                 // Show success message
-                 MySwal.fire({
-                   icon: "success",
-                   title: "Deleted!",
-                   text: "Your file has been deleted.",
-                   customClass: {
-                     confirmButton: "btn btn-success",
-                   },
-                 });
-                
-               }
-             } catch (error) {
-               console.error("Error deleting item:", error);
-             }
-           } else if (result.dismiss === MySwal.DismissReason.cancel) {
+  {
+    sortable: true,
+    name: "Tax Value",
+    minWidth: "250px",
+    selector: (row) => row.taxValue,
+  },
 
-            MySwal.fire({
-               title: "Cancelled",
-               text: "Your imaginary file is safe :)",
-               icon: "error",
-               customClass: {
-                 confirmButton: "btn btn-success",
-               },
-             });
-           }
-         });
-       };
  
-       return (
-         <div className="d-flex">
-        
-
-           <Link
-             style={{ margin: "0.5rem" }}
-            //  to={`/pos/VendorManage/`}
-            // onClick={}
-             state={{
-              venderData:row,
-              uid:row.uid}}
-           >
-             <span>
-               <Edit2 className="font-medium-3 text-body" />
-             </span>
-           </Link>
- 
-           <Link style={{ margin: "0.5rem" }}>
-             {" "}
-             <span
-               color="danger"
-               style={{ cursor: "pointer", color: "red" }}
-               onClick={() => handleDelete(row.uid)}
-             >
-               <Trash className="font-medium-3 text-body" />
-             </span>
-           </Link>
-         </div>
-       );
-     },
-   },
-]
+];
 
 // ** Table Adv Search Column
 export const advSearchColumns = [
   {
-    name: 'Name',
+    name: "Name",
     sortable: true,
-    minWidth: '200px',
-    selector: row => row.full_name
+    minWidth: "200px",
+    selector: (row) => row.full_name,
   },
   {
-    name: 'Email',
+    name: "Email",
     sortable: true,
-    minWidth: '250px',
-    selector: row => row.email
+    minWidth: "250px",
+    selector: (row) => row.email,
   },
   {
-    name: 'Post',
+    name: "Post",
     sortable: true,
-    minWidth: '250px',
-    selector: row => row.post
+    minWidth: "250px",
+    selector: (row) => row.post,
   },
   {
-    name: 'City',
+    name: "City",
     sortable: true,
-    minWidth: '150px',
-    selector: row => row.city
+    minWidth: "150px",
+    selector: (row) => row.city,
   },
   {
-    name: 'Date',
+    name: "Date",
     sortable: true,
-    minWidth: '150px',
-    selector: row => row.start_date
+    minWidth: "150px",
+    selector: (row) => row.start_date,
   },
 
   {
-    name: 'Salary',
+    name: "Salary",
     sortable: true,
-    minWidth: '100px',
-    selector: row => row.salary
-  }
-]
+    minWidth: "100px",
+    selector: (row) => row.salary,
+  },
+];
 
-export default ExpandableTable
+export default ExpandableTable;

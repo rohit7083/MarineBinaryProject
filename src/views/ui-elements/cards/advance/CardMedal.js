@@ -1,5 +1,5 @@
 // ** Reactstrap Imports
-import { Card, CardBody, CardText, Button } from 'reactstrap'
+import { Card, CardBody, CardText, Button  } from 'reactstrap'
 
 // ** Images
 import medal from '@src/assets/images/illustration/badge.svg'

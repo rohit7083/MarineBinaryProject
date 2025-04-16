@@ -19,6 +19,7 @@ const Dashboarddash=lazy(()=> import('../../views/dashboard/dash'))
 const Dashboardroles=lazy(()=> import('../../views/dashboard/user-rolls'))
 const DashboardRoleModal=lazy(()=>(import('../../views/dashboard/user_rolls/roles-permissions/roles/Role_modal')))
 const Dashboardcreateuser=lazy(()=> import('../../views/dashboard/user_rolls/roles-permissions/createuser'))
+const ParkBoat=lazy(()=> import('../../views/dashboard/dash/ParkBoat'))
 const DashboardRoutes = [
  
  
@@ -103,6 +104,10 @@ const DashboardRoutes = [
     {
       path: '/dashbord/ship/ui',
       element: <DashUI />
+    },
+    {
+      path: '/dashbord',
+      element: <ParkBoat />
     },
     
 

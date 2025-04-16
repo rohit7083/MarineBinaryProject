@@ -75,6 +75,19 @@ const QrPaymentStepTwo = lazy(() =>
   )
 );
 
+const MemberManagement = lazy(() =>
+  import(
+    "../../views/dashboard/member_management/Add_Member"
+  )
+);
+
+const MemberManagement_List = lazy(() =>
+  import(
+    "../../views/dashboard/member_management"
+  )
+);
+
+
 export default [
   {
     path: "/marin/slip-management/:uid",
@@ -215,4 +228,13 @@ export default [
     path: "/pos/VendorManage/addVendor",
   },
   
+
+  {
+    element: <MemberManagement />,
+    path: "/member_management/add-member",
+  },
+  {
+    element: <MemberManagement_List/>,
+    path: "/member_management",
+  },
 ];

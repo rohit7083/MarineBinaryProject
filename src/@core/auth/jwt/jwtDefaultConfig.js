@@ -1,6 +1,6 @@
 // ** Auth Endpoints
 export default {
-  loginEndpoint: "/jwt/login",  // temp
+  // loginEndpoint: "/jwt/login",  // temp
   // loginEndpoint: '/login',
 
   registerEndpoint: "/jwt/register",

@@ -486,25 +486,7 @@ const PersonalInfo = ({
                 Mobile Number
                 <span style={{ color: "red" }}>*</span>
               </Label>
-              {/*   <Controller
-                id="phoneNumber"
-                name="phoneNumber"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    placeholder="Enter Mobile Number"
-                    invalid={errors.phoneNumber && true}
-                    {...field}
-                    // readOnly={visible}
-                    style={getReadOnlyStyle()}
-                  />
-                )}
-              />
-              {errors.phoneNumber && (
-                <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
-              )} */}
-
-              <InputGroup className="input-group-merge">
+             <InputGroup className="input-group-merge">
                 <Controller
                   name="phoneNumber"
                   control={control}
