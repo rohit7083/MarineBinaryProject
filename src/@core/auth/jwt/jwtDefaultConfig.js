@@ -73,7 +73,7 @@ getMemberDetails: "/sPayment/decrypt-token?token=",
   storageTokenKeyName: "accessToken",
   storageRefreshTokenKeyName: "refreshToken",
 
-
+  totalPayment: "/sPayment/",
   //POS : Vender Management
 
   addVender: "/vendor/",
@@ -86,4 +86,10 @@ getMemberDetails: "/sPayment/decrypt-token?token=",
   updateTax:"/productTax/",
   deleteTax:"/productTax/",
   getAlltax:"/productTax",
+
+  //add Category
+  addProductCategory:'/productCategory/',
+  getProductCategory:'/productCategory',
+  editProductCategory:'/productCategory/',
+  deleteProductCategory:`/productCategory/`,
 };

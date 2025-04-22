@@ -116,6 +116,8 @@
 // }
 
 // export default ParkBoat;
+
+
 import React from "react";
 import {
   Row,
@@ -199,25 +201,25 @@ function ParkBoat() {
                         <CardText className="mb-1">
                           <strong>Status:</strong> {boat.type}
                         </CardText>
-                        <CardText className="">
+                        <CardText>
                           <strong>Date:</strong> {boat.date}
                         </CardText>
                       </div>
 
                       <div className="text-center">
+                        
                         <img
-                          src="src/assets/images/boat2.png"
-                          className="boat-float-up"
-
+                          src="src/assets/images/updatedboat2.png"
+                          className="boat-enter-float"
                           alt="Boat"
                           style={{
-                            width: "50px",
+                            width: "170px",
                             height: "auto",
                             marginTop: "10px",
-                            transform: "translateY(5px)",
                           }}
                         />
                       </div>
+                      
                     </CardBody>
                   </Card>
                 </Col>
@@ -226,74 +228,79 @@ function ParkBoat() {
           </CardBody>
         </Card>
 
-        {/* Optional: Add a custom style for hover effect */}
+        {/* Styles */}
         <style>
-          {`
-            .hover-card:hover {
-              transform: scale(1.03);
-              transition: 0.3s ease-in-out;
-              border: 1px solid rgb(19, 19, 18);
-            }
-          `}
-        </style>
+  {`
+    .hover-card:hover {
+      transform: scale(1.03);
+      transition: 0.3s ease-in-out;
+      border: 1px solid rgb(19, 19, 18);
+    }
 
-        <style>
-          {`
-           
-           
-           .boat-card {
-              background: linear-gradient(to bottom,rgb(255, 255, 255),rgb(54, 177, 193));
-              border-radius: 20px 20px 60px 60px; /* Rounded bottom to mimic hull */
-              position: relative;
-              box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-              overflow: hidden;
-              border: 1px solid #b2ebf2;
-            }
+    .boat-card {
+      background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(37, 155, 179));
+      border-radius: 20px 20px 60px 60px;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border: 1px solid #b2ebf2;
+    }
 
-            /* Platform below boat */
-            .boat-card::after {
-              content: '';
-              position: absolute;
-              bottom: -12px;
-              left: 10%;
-              width: 80%;
-              height: 40px;
-              background: #8d6e63; /* wood-like color */
-              border-radius: 10px;
-              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            }
+    .boat-card::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 10%;
+      width: 80%;
+      height: 40px;
+      background: #8d6e63;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
 
-            /* Optional water ripple below platform */
-            .boat-card::before {
-              content: '';
-              position: absolute;
-              bottom: -25px;
-              left: 20%;
-              width: 60%;
-              height: 15px;
-              background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
-              opacity: 0.6;
-            }
-           @keyframes floatUp {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+    .boat-card::before {
+      content: '';
+      position: absolute;
+      bottom: -25px;
+      left: 20%;
+      width: 60%;
+      height: 15px;
+      background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
+      opacity: 0.6;
+    }
 
+    @keyframes enterFromTop {
+      0% {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-.boat-float-up {
-  animation: floatUp 1s ease-out forwards; /* 3s = slow */
-}
+    @keyframes floatUpDown {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
 
+    .boat-enter-float {
+      animation:
+        enterFromTop 0.8s ease-out forwards,
+        floatUpDown 2s ease-in-out infinite;
+      animation-delay: 0s, 0.8s;
+    }
+  `}
+</style>
 
-
-          `}
-        </style>
       </div>
     </>
   );

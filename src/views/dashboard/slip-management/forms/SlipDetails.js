@@ -111,8 +111,6 @@ function SlipDetailsForm({ assigned }) {
 
   const handleChange = ({ target }) => {
     const { name, value, checked, type } = target;
-
-    // If it's a switch input (Electric or Water), update boolean state
     if (type === "checkbox") {
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
@@ -123,8 +121,7 @@ function SlipDetailsForm({ assigned }) {
       setUserData((prev) => ({ ...prev, amps: "" }));
     }
 
-    let sanitizedValue = value.replace(/[^A-Za-z0-9\s]/g, "");
-    setUserData((prev) => ({ ...prev, [name]: sanitizedValue }));
+  
   };
 
   const handleSubmit = async (e, data) => {
@@ -280,12 +277,27 @@ function SlipDetailsForm({ assigned }) {
     }
 
     // Validate Dimensions
+    // dimensions.forEach((dim) => {
+    //   if (!userData[dim]) {
+    //     newErrors[dim] = `${dim.toUpperCase()} is required`;
+    //   }
+    // });
+
+
     dimensions.forEach((dim) => {
       if (!userData[dim]) {
         newErrors[dim] = `${dim.toUpperCase()} is required`;
+      } else if (Number(userData[dim]) <= 0) {
+        // Show custom error for "length"
+        if (dim === "length") {
+          newErrors[dim] = "Length should be greater than 0";
+        } else {
+          newErrors[dim] = "Dimensions should be greater than 0";
+        }
       }
     });
 
+    
     // Validate Add-On
     if (userData.addOn && !alphanumericRegex.test(userData.addOn)) {
       newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
@@ -798,7 +810,7 @@ function SlipDetailsForm({ assigned }) {
                     type="switch"
                     name="electric"
                     id="electric"
-                    checked={userData.electric}
+                    checked={userData?.electric}
                     onChange={handleChange}
                     style={{ margin: 0, opacity: 1 }}
                     disabled={View}
@@ -840,7 +852,7 @@ function SlipDetailsForm({ assigned }) {
                     name="water"
                     id="water"
                     disabled={View}
-                    checked={userData.water}
+                    checked={userData?.water}
                     onChange={handleChange}
                     style={{ margin: 0, opacity: 1 }}
                   />

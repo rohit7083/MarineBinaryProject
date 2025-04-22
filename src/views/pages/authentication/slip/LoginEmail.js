@@ -93,7 +93,6 @@ const Login = () => {
   };
 
   const onSubmit = async (data) => {
-
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
@@ -129,12 +128,10 @@ const Login = () => {
             }).then(() => {
               navigate("/Email_Reset");
             });
-            return; 
+            return;
           }
-
-   
         } else {
-          setMessage(errorMessage || "Something Went Wrong. Try After Some time");
+          setMessage(errorMessage);
         }
       } finally {
         setLoading(false);
@@ -163,7 +160,6 @@ const Login = () => {
       setShow(true); // Show the modal if location is not enabled
     }
   }, []);
-
 
   return (
     <div className="auth-wrapper auth-cover">
@@ -202,9 +198,15 @@ const Login = () => {
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-          <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
-
-          <h2 className="brand-text text-primary ms-1">Longcove Marina</h2>
+        <img
+               src="src/assets/images/marinaLOGO.png"
+               alt="Longcove Marina Logo"
+               width={55}
+               height={55}
+               className="mx-2"
+             /> 
+            
+          <h2 className="brand-text text-primary ms-1 mt-1" style={{ fontWeight: 'bold' }}  >Longcove Marina</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -229,9 +231,10 @@ const Login = () => {
                   <UncontrolledAlert color="danger">
                     <div className="alert-body">
                       <span className="text-danger fw-bold">
-                      <strong>Error : </strong>
+                        <strong>Error : </strong>
 
-                        {message}</span>
+                        {message}
+                      </span>
                     </div>
                   </UncontrolledAlert>
                 </React.Fragment>
@@ -273,7 +276,7 @@ const Login = () => {
               <Button
                 type="submit"
                 color="primary"
-                // disabled={!locationEnabled}
+                disabled={loading}
                 onClick={async (e) => {
                   e.preventDefault();
 

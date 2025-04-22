@@ -337,7 +337,7 @@ const RoleCards = () => {
               <h4 className='mt-2 pt-50'>Role Permissions</h4>
               <Table className='table-flush-spacing' responsive>
                 <tbody>
-                  <tr>
+                  {/* <tr>
                     <td className='text-nowrap fw-bolder'>
                       <span className='me-50'> Administrator Access</span>
                       <Info size={14} id='info-tooltip' />
@@ -353,7 +353,7 @@ const RoleCards = () => {
                         </Label>
                       </div>
                     </td>
-                  </tr>
+                  </tr> */}
                   {rolesArr.map((role, index) => {
                     return (
                       <tr key={index}>

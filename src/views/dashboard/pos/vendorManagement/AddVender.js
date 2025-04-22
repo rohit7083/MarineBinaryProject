@@ -53,6 +53,20 @@ const MultipleColumnForm = () => {
     const number = value.slice(-10);
     return { code, number };
   };
+  const [tooltipOpen, setTooltipOpen] = useState({
+    ANP: false,
+    importProduct: false,
+    addProductCate: false,
+    addProducttaxes: false,
+    addStock: false,
+    stockManage: false,
+  });
+  const toggleTooltip = (tooltip) => {
+    setTooltipOpen((prevState) => ({
+      ...prevState,
+      [tooltip]: !prevState[tooltip],
+    }));
+  };
 
   const onSubmit = async (data) => {
     const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
@@ -86,7 +100,7 @@ const MultipleColumnForm = () => {
     <Card>
       <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
         <CardTitle tag="h4">Add Vender</CardTitle>
-        {/* <div className="d-flex gap-2">
+         <div className="d-flex gap-2">
           <Link to="/dashboard/pos/product_management/addProduct">
             <img src={addProductIcon} id="ANP" alt="Add Product" width="25" />
             <Tooltip
@@ -167,7 +181,7 @@ const MultipleColumnForm = () => {
               Stock Manage
             </Tooltip>
           </Link>
-        </div> */}
+        </div> 
       </CardHeader>
 
       <CardBody className="mt-2">
@@ -178,7 +192,13 @@ const MultipleColumnForm = () => {
               <Controller
                 name="vendorName"
                 control={control}
-                rules={{ required: "Vendor name is required" }}
+                rules={{
+                  required: "Vendor is required",
+                  pattern: {
+                    value: /^[A-Za-z ]+$/,
+                    message: "Only alphabetic characters (A–Z) are allowed",
+                  },
+                }}
                 render={({ field }) => (
                   <input
                     {...field}
@@ -199,8 +219,13 @@ const MultipleColumnForm = () => {
               <Controller
                 name="companyName"
                 control={control}
-                rules={{ required: "Vendor name is required" }}
-                render={({ field }) => (
+                rules={{
+                  required: "company Name is required",
+                  pattern: {
+                    value: /^[A-Za-z ]+$/,
+                    message: "Only alphabetic characters (A–Z) are allowed",
+                  },
+                }}                render={({ field }) => (
                   <input
                     {...field}
                     className="form-control"
@@ -208,9 +233,9 @@ const MultipleColumnForm = () => {
                   />
                 )}
               />
-              {errors.vendorName && (
+              {errors.companyName && (
                 <small className="text-danger">
-                  {errors.vendorName.message}
+                  {errors.companyName.message}
                 </small>
               )}
             </Col>
@@ -222,8 +247,13 @@ const MultipleColumnForm = () => {
               <Controller
                 name="address"
                 control={control}
-                rules={{ required: "address is required" }}
-                render={({ field }) => (
+                rules={{
+                  required: "Address is required",
+                  pattern: {
+                    value: /^[A-Za-z ]+$/,
+                    message: "Only alphabetic characters (A–Z) are allowed",
+                  },
+                }}                 render={({ field }) => (
                   <input
                     {...field}
                     className="form-control"
@@ -276,6 +306,9 @@ const MultipleColumnForm = () => {
                     />
                   )}
                 />
+                 {errors.phoneNumber && (
+                <small className="text-danger">{errors.phoneNumber.message}</small>
+              )}
               </InputGroup>
             </Col>
           </Row>
@@ -302,8 +335,8 @@ const MultipleColumnForm = () => {
                   />
                 )}
               />
-              {errors.email && (
-                <small className="text-danger">{errors.email.message}</small>
+              {errors.emailId && (
+                <small className="text-danger">{errors.emailId.message}</small>
               )}
             </Col>
           </Row>

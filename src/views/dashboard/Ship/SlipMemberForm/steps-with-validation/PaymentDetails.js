@@ -160,7 +160,7 @@ const Address = ({
   const [otpVerify, setotpVerify] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const [discountTypedStatus, setdiscountTypedStatus] = useState(null);
+  const [discountTypedStatus, setdiscountTypedStatus] = useState("Percentage");
 
   const [cvv, setCvv] = useState("");
   const [cardType, setCardType] = useState("");
@@ -244,9 +244,9 @@ const Address = ({
       Visa: /^4/,
       MasterCard: /^5[1-5]/,
       Discover: /^6/,
-      RuPay: /^(60|65)\d{0,}/, // Updated pattern for RuPay
+      RuPay: /^(60|65)\d{0,}/,
       ChinaUnionPay: /^62/,
-      Amex: /^3[47]\d{0,}/, // Fixed pattern for AMEX
+      Amex: /^3[47]\d{0,}/,
     };
 
     for (let [type, pattern] of Object.entries(patterns)) {
@@ -449,19 +449,19 @@ const Address = ({
   };
 
   const handleButtonClick = () => {
-    // Toggle the value
+    // {{debugger}}
+
     const newIsPercentage = !isPercentage;
     setIsPercentage(newIsPercentage);
 
-    // Prepare data
     const discountType = newIsPercentage ? "Percentage" : "Flat";
     const handleTypeDiscount = {
       discountType: discountType,
     };
-    console.log(handleTypeDiscount);
-    // {{debugger}}
 
-    setdiscountTypedStatus(handleTypeDiscount);
+    console.log(handleTypeDiscount.discountType);
+    setdiscountTypedStatus(handleTypeDiscount?.discountType);
+    console.log(discountTypedStatus);
   };
   const statusThree = () => {
     if (formStatus === 3) {
@@ -498,7 +498,6 @@ const Address = ({
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
   console.log(acctypeValue);
-  // {{debugger}}
   const onSubmit = async (data) => {
     setErrMsz("");
     data.paymentMode = data.paymentMode?.value;
@@ -521,7 +520,7 @@ const Address = ({
       formData.append("calDisAmount", data.calDisAmount);
       // {{debugger}}
 
-      formData.append("discountType", discountTypedStatus.discountType);
+      formData.append("discountType", discountTypedStatus);
     }
 
     if (paymentMode === "Credit Card") {
@@ -571,34 +570,31 @@ const Address = ({
 
     try {
       setLoading(true);
-
+      // {{debugger}}
       const response = await useJwt.createPayment(formData);
       const { qr_code_base64 } = response?.data;
       setQr(qr_code_base64);
       if (qr_code_base64) {
         setShowQrModal(true);
       }
-      // console.log("API Response:", response);
-      // MySwal.fire({
-      //   title: "Successfully Completed",
-      //   text: " Your Pyament is Successfully Completed",
-      //   icon: "success",
-      //   customClass: {
-      //     confirmButton: "btn btn-primary",
-      //   },
-      //   buttonsStyling: false,
-      // }).then(() => {
-      //   if (Object.keys(errors).length === 0) {
-          // {{debugger}}
-          // if (qr) {
 
-          // setShowQrModal(true);
+      if (response?.data?.status === "success") {
+        if (paymentMode == "Payment Link") {
+          MySwal.fire({
+            title: " Payment Link send Successfully",
+            text: "Payment Link is  Successfully Send to your Email Address",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            stepper.next();
+          });
+        }
+      }
 
-          // } else {
-          stepper.next();
-          // }
-      //   }
-      // });
+      stepper.next();
     } catch (error) {
       console.error("Error submitting data:", error);
 
@@ -903,6 +899,10 @@ const Address = ({
                       name="discountAmount"
                       rules={{
                         required: "Discount Type is required",
+                        validate: (value) => {
+                          if (isPercentage == "percentage") {
+                          }
+                        },
                       }}
                       control={control}
                       render={({ field }) => (
@@ -2154,6 +2154,7 @@ const Address = ({
                 type="submit"
                 color="primary"
                 className="btn-next"
+                disabled={loading}
                 onClick={() => clearErrors()}
               >
                 <span className="align-middle d-sm-inline-block d-none">

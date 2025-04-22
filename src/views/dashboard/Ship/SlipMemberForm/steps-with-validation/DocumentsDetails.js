@@ -103,10 +103,10 @@ const FileUploadForm = ({ stepper, slipIID }) => {
     }, {});
 
     try {
-      // {{debugger}}
-      if (myId) {
-        navigate("/dashboard/slipmember_list"); // Redirect after alert
-      }
+      // // {{debugger}}
+      // if (myId) {
+      //   navigate("/dashboard/slipmember_list"); // Redirect after alert
+      // }
       const results = await Promise.all(
         Object.values(updatedDataList).map(async (details) => {
           if (details?.uid) {

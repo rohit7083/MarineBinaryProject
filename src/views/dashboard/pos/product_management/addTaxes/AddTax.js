@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
-import { UncontrolledAlert } from "reactstrap";
+import { Spinner, UncontrolledAlert } from "reactstrap";
 
 // Reactstrap
 import {
@@ -17,42 +17,44 @@ import {
 // React Hook Form
 import { useForm, Controller } from "react-hook-form";
 
-const AddCardExample = ({ show, setShow, uid, row ,setIsDataUpdated}) => {
+const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
   const {
     reset,
     control,
     handleSubmit,
     setError,
+    watch,
     formState: { errors },
   } = useForm({
-    defaultValues:{
-      taxName:"dsadsa255",
-      taxType:"Flat",
-      taxValue:"20"
-    }
+    defaultValues: {
+      taxName: "dsadsa255",
+      taxType: "Flat",
+      taxValue: "20",
+    },
   });
 
-const[HeaderError,setHeaderError]=useState(null);
- 
-  const onSubmit = async (data) => {
+  const [HeaderError, setHeaderError] = useState(null);
+  const [loadinng, setLoading] = useState(false);
 
+  const onSubmit = async (data) => {
     setHeaderError("");
 
-    const payload={
+    const payload = {
       ...data,
-      taxValue:Number(data.taxValue)
-    }
+      taxValue: Number(data.taxValue),
+    };
 
     if (!row) {
       try {
+        setLoading(true);
         const res = await useJwt.productTax(payload);
-        setIsDataUpdated((prev)=>!prev);
+        setIsDataUpdated((prev) => !prev);
         setShow(false);
         reset();
       } catch (error) {
         console.log("Error submitting form", error);
         if (error.response) {
-          const errorKeys =error?.response?.data?.content;
+          const errorKeys = error?.response?.data?.content;
 
           setHeaderError(errorKeys);
 
@@ -60,21 +62,30 @@ const[HeaderError,setHeaderError]=useState(null);
             Object.entries(errorKeys).forEach(([fieldName, message]) => {
               setError(fieldName, {
                 type: "manual",
-                message: message
+                message: message,
               });
             });
           }
-
         }
+      } finally {
+        setLoading(false);
       }
     } else {
       try {
+        setLoading(true);
+
         const updatedRes = await useJwt.updateTax(uid, payload);
         console.log(updatedRes);
         setShow(false);
         reset();
       } catch (error) {
         console.log("Error submitting form", error);
+        if (error.response) {
+          const errorKeys = error?.response?.data?.content;
+          setHeaderError(errorKeys);
+        }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -106,15 +117,17 @@ const[HeaderError,setHeaderError]=useState(null);
           <h1 className="text-center mb-1">Add Product Tax</h1>
 
           {HeaderError && (
-        <React.Fragment>
-          <UncontrolledAlert color="danger">
-            <div className="alert-body">
-              <span className="text-danger fw-bold">
-                <strong>Error :   </strong>{HeaderError}</span>
-            </div>
-          </UncontrolledAlert>
-        </React.Fragment>
-      )} 
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error : </strong>
+                    {HeaderError}
+                  </span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
 
           <Row
             tag="form"
@@ -130,11 +143,11 @@ const[HeaderError,setHeaderError]=useState(null);
                 name="taxName"
                 control={control}
                 rules={{
-                   required: "Tax name is required", 
-                  pattern:{
-                    value:/^[A-Za-z ]+$/,
-                    message:"Only alphabetic characters (A–Z) are allowed"
-                  }
+                  required: "Tax name is required",
+                  pattern: {
+                    value: /^[A-Za-z ]+$/,
+                    message: "Only alphabetic characters (A–Z) are allowed",
+                  },
                 }}
                 render={({ field }) => (
                   <Input
@@ -194,13 +207,24 @@ const[HeaderError,setHeaderError]=useState(null);
               <Controller
                 name="taxValue"
                 control={control}
-                rules={{ required: "Tax value is required",
-                  pattern:{
-                    value:/^[0-9]+$/,
+                rules={{
+                  required: "Tax value is required",
+                  pattern: {
+                    value: /^[0-9]+$/,
 
-                    message:"Only numbers are allowed"
-                  }
-                 }}
+                    message: "Only numbers are allowed",
+                  },
+
+                  validate: (value) => {
+                    if (
+                      watch("taxType") === "Percentage" &&
+                      Number(value) > 100
+                    ) {
+                      return "Percentage cannot be greater than 100";
+                    }
+                    return true;
+                  },
+                }}
                 render={({ field }) => (
                   <Input
                     {...field}
@@ -217,9 +241,6 @@ const[HeaderError,setHeaderError]=useState(null);
 
             {/* Buttons */}
             <Col className="text-center mt-1" xs={12}>
-              <Button type="submit" className="me-1" color="primary">
-                Submit
-              </Button>
               <Button
                 color="secondary"
                 outline
@@ -229,6 +250,21 @@ const[HeaderError,setHeaderError]=useState(null);
                 }}
               >
                 Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={loadinng}
+                className="mx-1"
+                color="primary"
+              >
+                {loadinng ? (
+                  <>
+                    <span>Loading.. </span>
+                    <Spinner size="sm" />{" "}
+                  </>
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </Col>
           </Row>

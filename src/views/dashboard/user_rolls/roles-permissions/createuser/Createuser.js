@@ -14,7 +14,7 @@ import {
   InputGroupText,
   Label,
   CardTitle,
-  ListGroupItem,FormFeedback ,
+  ListGroupItem,FormFeedback ,FormGroup ,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -27,13 +27,14 @@ import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import CryptoJS from "crypto-js";
 import InputPasswordToggle from "@components/input-password-toggle";
+import ReactCountryFlag from "react-country-flag";
 
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 const RoleCards = () => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
   const MySwal = withReactContent(Swal);
-
+  
   const {
     reset,
     watch,
@@ -72,6 +73,16 @@ const RoleCards = () => {
   //   const number = value.slice(-10);
   //   return { code, number };
   // };
+  
+const countries = [
+  { name: "India", code: "+91", iso: "IN" },
+  { name: "USA", code: "+1", iso: "US" },
+  { name: "UK", code: "+44", iso: "GB" },
+  { name: "Canada", code: "+1", iso: "CA" },
+  { name: "Australia", code: "+61", iso: "AU" },
+];
+const [selected, setSelected] = useState(countries[0]);
+  const [phone, setPhone] = useState("");
   const extractCountryCodeAndNumber = (value) => {
     {{debugger}}
     console.log("Input received:", value); // Debugging log
@@ -117,6 +128,10 @@ const RoleCards = () => {
       setEncrypt(encrypted);
     }
   }, [password]);
+  
+
+
+
 
   const onSubmit = async (data) => {
     const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
@@ -439,7 +454,7 @@ console.log(newPwd);
               </Col>
             </Row>
 
-            <Row className="mb-2">
+            {/* <Row className="mb-2">
               <Label sm="3" for="mobileNumber">
                 Mobile
               </Label>
@@ -486,8 +501,51 @@ console.log(newPwd);
                   </small>
                 )}
               </Col>
-            </Row>
+            </Row> */}
 
+
+
+
+
+<Row>
+      <Col md="3">
+        <FormGroup>
+          <Label>Country Code</Label>
+          <Input
+            type="select"
+            value={selected.code}
+            onChange={(e) =>
+              setSelected(
+                countries.find((c) => c.code === e.target.value)
+              )
+            }
+          >
+            {countries.map((country) => (
+              <option key={country.code} value={country.code}>
+                <ReactCountryFlag
+                  countryCode={country.iso}
+                  svg
+                  style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+                />{" "}
+                {country.name} ({country.code})
+              </option>
+            ))}
+          </Input>
+        </FormGroup>
+      </Col>
+
+      <Col md="5">
+        <FormGroup>
+          <Label>Phone Number</Label>
+          <Input
+            type="tel"
+            placeholder="Enter phone number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        </FormGroup>
+      </Col>
+    </Row>
             <Row className="mb-2">
               <Label sm="3" for="password">
                 Password

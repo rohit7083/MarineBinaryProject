@@ -226,6 +226,12 @@ export default class JwtService {
   createPayment(...args) {
     return axios.post(this.jwtConfig.createPayment, ...args);
   }
+
+    
+  totalPayment(token, ...args) {
+    return axios.post(`${this.jwtConfig.totalPayment}${token}`, ...args);
+  }
+  
  
   getPayment(...args) {
     return axios.get(this.jwtConfig.getPayment, ...args);
@@ -431,6 +437,25 @@ getAlltax() {
     return axios.put(`${this.jwtConfig.updateDoc}${uid}`,...args);
   }
 
+
+  addProductCategory(...args) {
+    return axios.post(this.jwtConfig.addProductCategory, ...args);
+  }
+
+
+  
+  getProductCategory() {
+    return axios.get(this.jwtConfig.getProductCategory);
+  }
+  
+
+  editProductCategory(uid, ...args) {
+    return axios.put(`${this.jwtConfig.editProductCategory}${uid}`,...args);
+  }
+
+  deleteProductCategory(uid) {
+    return axios.delete(`${this.jwtConfig.editProductCategory}${uid}`);
+  }
 
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

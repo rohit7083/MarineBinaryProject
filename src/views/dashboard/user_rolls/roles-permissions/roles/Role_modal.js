@@ -278,7 +278,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
             <h4 className="mt-2 pt-50">Role Permissions </h4>
             <Table className="table-flush-spacing" responsive>
               <tbody>
-                <tr>
+                {/* <tr>
                   <td className="text-nowrap fw-bolder">
                     Administrator Access 
                     <Info size={14} id="info-tooltip" />
@@ -301,7 +301,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
                       </Label>
                     </div>
                   </td>
-                </tr>
+                </tr> */}
                 {Object.keys(permissionData).map((category, index) => (
                   <tr key={index}>
                     <td>{category}</td>

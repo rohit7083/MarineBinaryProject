@@ -297,16 +297,19 @@ const ResetPasswordBasic = () => {
         <Card className="mb-0">
           <CardBody>
             <Link
-              className="brand-logo"
-              to="/"
-              onClick={(e) => e.preventDefault()}
-            >
-              {/* Logo */}
-              <svg viewBox="0 0 139 95" version="1.1" height="28">
-                {/* Add SVG content here */}
-              </svg>
-              <h2 className="brand-text text-primary">Longcove Marina</h2>
-            </Link>
+                        to="/"
+                        onClick={(e) => e.preventDefault()}
+                        className="mb-4 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+                      >
+                        <img
+                          src="src/assets/images/marinaLOGO.png"
+                          alt="Longcove Marina Logo"
+                          width={55}
+                          height={55}
+                          className="mx-2"
+                        />
+                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
+                      </Link>
 
             <CardTitle tag="h4" className="mb-1">
               Reset Password 🔒
@@ -566,7 +569,7 @@ const ResetPasswordBasic = () => {
                 allowed
               </ListGroupItem>
 
-              <Button color="primary" className="mt-2" block type="submit">
+              <Button color="primary" className="mt-2" disabled={loading} block type="submit">
                 {loading ? (
                   <>
                     {" "}

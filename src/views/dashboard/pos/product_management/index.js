@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Tooltip } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "react-feather"; // Using Feather Icons
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 import { data, columns } from "./Data";
 import addProductIcon from '../../../../assets/icons/shopping-bag-add.svg'
@@ -325,6 +326,25 @@ const DataTableWithButtons = () => {
                 toggle={() => toggleTooltip("stockManage")}
               >
                 Stock Manage
+              </Tooltip>
+            </Link>
+          </div>
+          <div>
+            <Link to="/pos/VendorManage">
+              <img
+                width="25"
+                height="25"
+                id="Vendar"
+                src={ManageStocks}
+                alt="list-is-empty"
+              />
+              <Tooltip
+                placement="top"
+                isOpen={tooltipOpen.Vendar}
+                target="Vendar"
+                toggle={() => toggleTooltip("Vendar")}
+              >
+                Vendar 
               </Tooltip>
             </Link>
           </div>

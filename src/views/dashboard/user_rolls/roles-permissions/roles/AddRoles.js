@@ -226,7 +226,7 @@ const[fetchLoader,setFetchLoader]=useState(false);
             <Table className="table-flush-spacing" responsive>
               <tbody>
                 <tr>
-                  <td className="text-nowrap fw-bolder">
+                  {/* <td className="text-nowrap fw-bolder">
                     <span className="me-50"> Administrator Access </span>
                     <Info size={14} id="info-tooltip" />
                     <UncontrolledTooltip placement="top" target="info-tooltip">
@@ -240,7 +240,7 @@ const[fetchLoader,setFetchLoader]=useState(false);
                         Select All
                       </Label>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
                 {permissionList &&
                   Object.keys(permissionList).map((category, index) => {

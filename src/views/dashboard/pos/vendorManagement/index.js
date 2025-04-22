@@ -7,17 +7,16 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "react-feather"; // Using Feather Icons
 
 import useJwt from "@src/auth/jwt/useJwt";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 import { data, serverSideColumns } from "./Data";
-import addProductIcon from '../../../../assets/icons/shopping-bag-add.svg'
-import importIcon from '../../../../assets/icons/file-import.svg'
-import AddCategoryIcon from '../../../../assets/icons/category-alt.svg'
-import addStocks from '../../../../assets/icons/supplier-alt.svg'
-import ManageStocks from '../../../../assets/icons/workflow-setting.svg'
-import addTax from '../../../../assets/icons/calendar-event-tax.svg'
-// ** Add New Modal Component
+import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
+import importIcon from "../../../../assets/icons/file-import.svg";
+import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
+import addStocks from "../../../../assets/icons/supplier-alt.svg";
+import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
+import addTax from "../../../../assets/icons/calendar-event-tax.svg";
 
-// ** Third Party Components
 import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import {
@@ -31,7 +30,6 @@ import {
   Plus,
 } from "react-feather";
 
-// ** Reactstrap Imports
 import {
   Row,
   Col,
@@ -47,7 +45,6 @@ import {
   UncontrolledButtonDropdown,
 } from "reactstrap";
 
-// ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
   <div className="form-check">
     <Input type="checkbox" ref={ref} {...props} />
@@ -55,10 +52,8 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 ));
 
 const DataTableWithButtons = () => {
-  // ** States
-  // const [modal, setModal] = useState(false);
-  const [show, setShow] = useState(false)
-  const [data,setData]=useState([])
+  const [show, setShow] = useState(false);
+  const [data, setData] = useState([]);
 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
@@ -162,103 +157,45 @@ const DataTableWithButtons = () => {
     />
   );
 
-  // ** Converts table to CSV
-  function convertArrayOfObjectsToCSV(array) {
-    let result;
+ 
 
-    const columnDelimiter = ",";
-    const lineDelimiter = "\n";
-    const keys = Object.keys(data[0]);
-
-    result = "";
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
-
-    array.forEach((item) => {
-      let ctr = 0;
-      keys.forEach((key) => {
-        if (ctr > 0) result += columnDelimiter;
-
-        result += item[key];
-
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
-
-    return result;
-  }
-
-  // ** Downloads CSV
-  function downloadCSV(array) {
-    const link = document.createElement("a");
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv === null) return;
-
-    const filename = "export.csv";
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
-    }
-
-    link.setAttribute("href", encodeURI(csv));
-    link.setAttribute("download", filename);
-    link.click();
-  }
   const navigate = useNavigate();
 
-
-
-  useEffect(()=>{
-
-    (async()=>{
+  useEffect(() => {
+    (async () => {
       try {
-// {{debugger}}
-        const res=await useJwt.getAllVendor();
-        setData(res.data.content.result)
-        
+        const res = await useJwt.getAllVendor();
+        setData(res.data.content.result);
       } catch (error) {
-        console.log("error in Vendar data ",error);
-        
+        console.log("error in Vendar data ", error);
       }
-    })()
-
-
-
-  },[])
+    })();
+  }, []);
 
   return (
     <Fragment>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">
-  
-    
-         
-            Product List
-          </CardTitle>
+          <CardTitle tag="h4">Product List</CardTitle>
           <div className="d-flex mt-md-0 mt-1">
-
-          <div className="d-flex justify-content-end gap-2">
-          <div>
-
-            <Link to="/pos/VendorManage/addVendor">
-            <Button>
-            {/* <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
+            <div className="d-flex justify-content-end gap-2">
+              <div>
+                <Link to="/pos/VendorManage/addVendor">
+                  <Button>
+                    {/* <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
             <Tooltip
               placement="top"
               isOpen={tooltipOpen.ANP}
               target="ANP"
               toggle={() => toggleTooltip("ANP")}
             > */}
-              Add Vender
-            {/* </Tooltip> */}
-            </Button>
-            </Link>
-          </div>
-          <div>
-          
-            {/* <img
+                    Add Vender
+                    {/* </Tooltip> */}
+                  </Button>
+                </Link>
+              </div>
+              <div>
+                {/* <img
               id="importProduct"
               width="25"
               height="25"
@@ -267,16 +204,16 @@ const DataTableWithButtons = () => {
               
             /> */}
 
-            {/* <Tooltip
+                {/* <Tooltip
               placement="top"
               isOpen={tooltipOpen.importProduct}
               target="importProduct"
               toggle={() => toggleTooltip("importProduct")}
             > */}
-            {/* </Tooltip> */}
-          </div>
+                {/* </Tooltip> */}
+              </div>
 
-          {/* <div>
+              {/* <div>
             <Link to="/dashboard/pos/product_management/addproductCategory">
               <img
                 width="25"
@@ -295,7 +232,7 @@ const DataTableWithButtons = () => {
               </Tooltip>
             </Link>
           </div> */}
-          {/* <div>
+              {/* <div>
             <Link to="/dashboard/pos/product_management/addTaxes">
               <img
                 width="25"
@@ -314,7 +251,7 @@ const DataTableWithButtons = () => {
               </Tooltip>
             </Link>
           </div> */}
-          {/* <div>
+              {/* <div>
             <Link to="/dashboard/pos/product_management/AddStocks">
               <img
                 width="25"
@@ -333,7 +270,7 @@ const DataTableWithButtons = () => {
               </Tooltip>
             </Link>
           </div> */}
-{/* 
+              {/* 
           <div>
             <Link to="/dashboard/pos/product_management/manageStocks">
               <img
@@ -353,15 +290,12 @@ const DataTableWithButtons = () => {
               </Tooltip>
             </Link>
           </div> */}
-        </div>
-
+            </div>
           </div>
         </CardHeader>
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
-          <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-
-          </Col>
+          <Col md="6" sm="12" className="d-flex align-items-center mt-1"></Col>
 
           {/* Right Side - Search Bar */}
           <Col
@@ -382,8 +316,7 @@ const DataTableWithButtons = () => {
             />
           </Col>
         </Row>
-        {console.log(data)
-        }
+        {console.log(data)}
 
         <div className="react-dataTable react-dataTable-selectable-rows">
           <DataTable

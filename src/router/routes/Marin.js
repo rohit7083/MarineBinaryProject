@@ -87,6 +87,12 @@ const MemberManagement_List = lazy(() =>
   )
 );
 
+const AddCategory = lazy(() =>
+  import(
+    "../../views/dashboard/pos/product_management/addproductCategory/AddCategory"
+  )
+);
+
 
 export default [
   {
@@ -236,5 +242,10 @@ export default [
   {
     element: <MemberManagement_List/>,
     path: "/member_management",
+  },
+
+  {
+    element: <AddCategory/>,
+    path: "/pos/product_management/add-category",
   },
 ];

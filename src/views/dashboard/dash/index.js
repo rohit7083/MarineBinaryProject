@@ -12,6 +12,8 @@ import {
   Button,
   Input,
 } from "reactstrap";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Spinner } from "reactstrap";
 // ** Third Party Components
 import Cleave from "cleave.js/react";
@@ -169,6 +171,7 @@ const DefaultAlert = () => {
             type="submit"
             className="float-end mt-2"
             onClick={handleContinue}
+            disabled={loading}
           >
             {loading ? (
               <>
@@ -245,6 +248,7 @@ const AppAuthComponent = ({
   } = useForm();
 
   const navigate = useNavigate(); // Initialize navigate
+  const [showToast, setShowToast] = useState(false);
 
   const toggle = () => {
     setShow(false);
@@ -258,7 +262,19 @@ const AppAuthComponent = ({
         otp: data?.otp, // Use the form data
       });
       if (resverify.status == 200) {
-        navigate("/dashbord");
+
+      
+        toast.success('Success! Two Step Authentication succesfully Completed.', {
+          position: 'top-right',
+          autoClose: 3000,
+          theme: 'colored',
+        });
+
+        setTimeout(() => {
+          navigate("/dashbord");
+        }, 2000); 
+        
+       
 
         const rawData = localStorage.getItem("userData");
         let userData = rawData ? JSON.parse(rawData) : {};
@@ -273,6 +289,7 @@ const AppAuthComponent = ({
         const { status, data } = error.response;
         const errorMessage = data.error;
         setMessage(errorMessage);
+       
       }
       console.log({ error });
     } finally {
@@ -282,6 +299,8 @@ const AppAuthComponent = ({
 
   return (
     <Fragment>
+
+
       <h1 className="text-center mb-2 pb-50">Add Authenticator App</h1>
 
       {msz && (
@@ -344,13 +363,12 @@ const AppAuthComponent = ({
             <Button outline color="secondary" className="me-1" onClick={toggle}>
               Cancel
             </Button>
-            <Button color="primary" type="submit">
+            <Button color="primary" disabled={loading} type="submit">
               {loading ? (
-                <Spinner size="sm" />
+               <>Loading.. <Spinner size="sm" /></>
               ) : (
                 <span className="me-50">Continue</span>
               )}
-              <ChevronRight className="rotate-rtl" size={14} />
             </Button>
           </Col>
         </Row>

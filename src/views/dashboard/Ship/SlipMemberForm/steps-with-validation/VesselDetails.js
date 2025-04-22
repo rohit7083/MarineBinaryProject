@@ -237,14 +237,30 @@ const AccountDetails = ({
               value: /^\d*\.?\d+$/, // ✅ Only allows numbers and floats (e.g., 123, 45.67)
               message: "Only numbers and decimals are allowed",
             },
+            // validate: {
+            //   maxValue: (value) => {
+            //     const numberValue = parseFloat(value);
+            //     return (
+            //       numberValue <= watch("slipName").dimensions[dimKey] ||
+            //       `Value must be less than ${watch("slipName").dimensions[dimKey]}`
+            //     );
+            //   },
             validate: {
               maxValue: (value) => {
                 const numberValue = parseFloat(value);
-                return (
-                  numberValue <= watch("slipName").dimensions[dimKey] ||
-                  `Value must be less than ${watch("slipName").dimensions[dimKey]}`
-                );
+            
+                if (dimKey === "width" || dimKey === "height") {
+                  const maxLimit = watch("slipName")?.dimensions?.[dimKey];
+                  return (
+                    numberValue <= maxLimit ||
+                    `Value must be less than or equal to ${maxLimit}`
+                  );
+                }
+            
+                return true; // Skip validation for other keys like length, etc.
               },
+            
+            
               nonNegative: (value) => {
                 const numberValue = parseFloat(value);
                 return numberValue > 0 || "Value must not be negative";
@@ -429,7 +445,7 @@ const AccountDetails = ({
               </span>
             </Button>
 
-            <Button type="submit" color="primary" className="btn-next">
+            <Button type="submit" color="primary" disabled={loadinng} className="btn-next">
               <span className="align-middle d-sm-inline-block d-none">
                 {loadinng ? <>
                 <span>Loading.. </span>

@@ -96,12 +96,7 @@ const AddCardExample = ({
 
             {/* </Col> */}
           
-            <Col className='text-center mt-1' xs={12}>
-              <Button type='submit' id="qr-ssubmit" className='me-1' color='primary'>
-                Submit
-              </Button>
-             
-            </Col>
+          
           </Row>
         </ModalBody>
       </Modal>

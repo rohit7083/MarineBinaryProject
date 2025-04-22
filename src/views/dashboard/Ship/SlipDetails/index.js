@@ -96,7 +96,10 @@ const uid=location.state?.uid || ""
     const { name, value, checked, type } = target;
 
     // If it's a switch input (Electric or Water), update boolean state
+
+
     if (type === "checkbox") {
+      console.log(`${name} ${checked}`)
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
       setUserData((prev) => ({ ...prev, [name]: value }));
@@ -106,8 +109,7 @@ const uid=location.state?.uid || ""
       setUserData((prev) => ({ ...prev, amps: "" }));
     }
 
-    let sanitizedValue=value.replace(/[^A-Za-z0-9\s]/g, "");
-    setUserData((prev)=>({...prev ,[name]:sanitizedValue}));
+   
   };
 
   const handleSubmit = async (e, data) => {
@@ -120,6 +122,7 @@ const uid=location.state?.uid || ""
 
     if (Object.keys(validationErrors).length === 0) {
       try {
+        // {{debugger}}
         const payload = {
           slipName: userData.slipName,
           electric: userData.electric,
@@ -139,6 +142,7 @@ const uid=location.state?.uid || ""
 
             // Explicitly reorder dimensions to prioritize 'height' over 'width'
             const orderedDimensions = {};
+            
             if ("height" in unorderedDimensions)
               orderedDimensions.height = unorderedDimensions.height;
             if ("width" in unorderedDimensions)
@@ -245,12 +249,29 @@ const uid=location.state?.uid || ""
     }
 
     // Validate Dimensions
+    // dimensions.forEach((dim) => {
+    //   if (!userData[dim]) {
+    //     newErrors[dim] = `${dim.toUpperCase()} is required`;
+    //   }else if(userData[dim]>1){
+    //     newErrors[dim]="Dimentions Should be greater than 0"
+    //   }
+    // });
+
+
+
     dimensions.forEach((dim) => {
       if (!userData[dim]) {
         newErrors[dim] = `${dim.toUpperCase()} is required`;
+      } else if (Number(userData[dim]) <= 0) {
+        // Show custom error for "length"
+        if (dim === "length") {
+          newErrors[dim] = "Length should be greater than 0";
+        } else {
+          newErrors[dim] = "Dimensions should be greater than 0";
+        }
       }
     });
-
+    
     // Validate Add-On
     if (userData.addOn && !alphanumericRegex.test(userData.addOn)) {
       newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
@@ -644,12 +665,11 @@ const uid=location.state?.uid || ""
                       No
                     </Label>
 
-                    {/* Toggle switch */}
                     <Input
                       type="switch"
                       name="electric"
                       id="electric"
-                      checked={userData.electric}
+                      checked={userData?.electric}
                       onChange={handleChange}
                       style={{ margin: 0 }}
                     />
@@ -687,7 +707,7 @@ const uid=location.state?.uid || ""
                       type="switch"
                       name="water"
                       id="water"
-                      checked={userData.water}
+                      checked={userData?.water}
                       onChange={handleChange}
                       style={{ margin: 0 }}
                     />

@@ -219,7 +219,7 @@ const AddRoles = ({ props, refreshTable }) => {
                 <h4 className="mt-2 pt-50">Role Permissions</h4>
                 <Table className="table-flush-spacing" responsive>
                   <tbody>
-                    <tr>
+                    {/* <tr>
                       <td className="text-nowrap fw-bolder">
                         <span className="me-50"> Administrator Access</span>
                         <Info size={14} id="info-tooltip" />
@@ -238,7 +238,7 @@ const AddRoles = ({ props, refreshTable }) => {
                           </Label>
                         </div>
                       </td>
-                    </tr>
+                    </tr> */}
                     {/* {console.log(permissionList)} */}
                     {permissionList &&
                       Object.keys(permissionList).map((category, index) => {
@@ -314,14 +314,14 @@ const AddRoles = ({ props, refreshTable }) => {
                 alignItems: "center",
               }}
             >
-              {/* <Spinner
+              <Spinner
               color="primary"
               style={{
                 height: "5rem",
                 width: "5rem",
               }}
-            /> */}
-              <PacmanLoader />
+            />
+              {/* <PacmanLoader /> */}
             </div>
           )}
         </ModalBody>

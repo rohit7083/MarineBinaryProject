@@ -187,8 +187,16 @@ const DataTableServerSide = () => {
           </Col>
         </Row>
         {loading ? (
-          <div className="text-center">
-            <Spinner className="me-25 " color="primary" />
+          <div className="text-center "  style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "4rem",
+          }}>
+            <Spinner className="me-25 "  style={{
+            height: "5rem",
+            width: "5rem",
+          }} color="primary" />
           </div>
         ) : (
           <div className="react-dataTable" style={{ marginTop: "2rem" }}>

@@ -193,7 +193,7 @@ const PersonalInfo = ({
   //   return { code, number };
   // };
   const extractCountryCodeAndNumber = (value) => {
-    if (!value) return { code: "", number: "" }; // Handle undefined case
+    if (!value) return { code: "", number: "" }; 
     const code = value.slice(0, value.length - 10);
     const number = value.slice(-10);
     return { code, number };
@@ -216,6 +216,7 @@ const PersonalInfo = ({
     };
     let memberId;
     try {
+      // {{debugger}}
       if (payload.createdBy) {
         const res = await useJwt.UpdateMember(formData.uid, payload);
         // ** set here
@@ -768,7 +769,7 @@ const PersonalInfo = ({
                 </span>
               </Button>
 
-              <Button type="submit" color="primary" className="btn-next">
+              <Button type="submit" color="primary" disabled={loading} className="btn-next">
                 <span className="align-middle d-sm-inline-block d-none">
                   {loading ? (
                     <>
