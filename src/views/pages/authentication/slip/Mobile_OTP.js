@@ -189,19 +189,20 @@ const TwoStepsBasic = () => {
         <Card className="mb-0">
           <CardBody>
            
-<Link
-  to="/"
-  onClick={(e) => e.preventDefault()}
-  className="d-flex flex-column align-items-center text-decoration-none"
->
-  <img
-    src="src/assets/images/marinaLOGO.png"
-    alt="Longcove Marina Logo"
-    width={55}
-    height={55}
-  />
-  <h2 className="text-primary mt-2  mb-0"style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
-</Link>
+          <Link
+                        to="/"
+                        onClick={(e) => e.preventDefault()}
+                        className=" d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+                      >
+                        <img
+                          src="src/assets/images/marinaLOGO.png"
+                          alt="Longcove Marina Logo"
+                          width={55}
+                          height={55}
+                          className="mx-2"
+                        />
+                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
+                      </Link>
 
             <Row className="mb-1">
               <Label sm="3" for=""></Label>

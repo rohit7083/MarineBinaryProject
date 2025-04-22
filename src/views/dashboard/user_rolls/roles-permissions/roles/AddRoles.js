@@ -31,7 +31,8 @@ import AvatarGroup from "@components/avatar-group";
 
 // ** FAQ Illustrations
 import illustration from "@src/assets/images/illustration/faq-illustrations.svg";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 // ** Jwt Class
 import useJwt from "@src/auth/jwt/useJwt";
 
@@ -45,9 +46,9 @@ import {
 const AddRoles = (props) => {
   // ** Props
   const { show, toggle, uid, modalType, row } = props;
+  const MySwal = withReactContent(Swal);
 
-
-const[fetchLoader,setFetchLoader]=useState(false);
+  const [fetchLoader, setFetchLoader] = useState(false);
   // ** States
   const [permissionList, setPermissionList] = useState(null);
   const [processingData, setProcessing] = useState(false);
@@ -62,14 +63,6 @@ const[fetchLoader,setFetchLoader]=useState(false);
     formState: { errors },
   } = useForm({ defaultValues: { roleName: "" } });
 
-  /*
-  ! Temporary Comment Redux Code
-  const dispatch = useDispatch();
-  const { permissionList } = useSelector((store) => store.permissions);
-  console.log(permissionList);
-  */
-
-  // ** Handling Server Sides Errors
   const handleError = (statusCode, message) => {
     switch (statusCode) {
       case 403:
@@ -91,9 +84,33 @@ const[fetchLoader,setFetchLoader]=useState(false);
     const updatedData = extractUIDFromPermissionList(data);
     try {
       setProcessing(true);
-      
-      if (data.uid) await useJwt.updateRole(data.uid, updatedData);
 
+      if (data.uid) {
+        const updateRes = await useJwt.updateRole(data.uid, updatedData);
+        console.log(`Update Role Response`, {
+          updateRes,
+        });
+        if (updateRes.status === 200) {
+          MySwal.fire({
+            title: "Successfully Updated",
+            text: " Role updated Successfully",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            {{debugger}}
+            reset();
+
+            navigate("/dashboard/user_rolls/roles-permissions/roles", {
+              state: { forceRefresh: true },
+            });
+          });
+        }
+
+        
+      }
       // toggle();
     } catch (error) {
       if (error?.response) {
@@ -115,11 +132,9 @@ const[fetchLoader,setFetchLoader]=useState(false);
     reset({ roleName: "" });
   };
 
- 
   useEffect(() => {
     (async () => {
       try {
-   
         setFetchLoader(true);
         const res = await useJwt.permission();
         const { result } = res?.data.content;
@@ -180,53 +195,57 @@ const[fetchLoader,setFetchLoader]=useState(false);
             </Fragment>
           )}
         </div>
-{fetchLoader ?(<> <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "4rem",
-        }}
-      >
-        <Spinner
-          color="primary"
-          style={{
-            height: "5rem",
-            width: "5rem",
-          }}
-        />
-      </div></>):(<> 
-
-        <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
-          <Col xs={12}>
-            <Label className="form-label" for="roleName">
-              Role Name 
-            </Label>
-            <Controller
-              name="roleName"
-              control={control}
-              rules={{ required: true }}
-              render={({ field, fieldState }) => (
-                <Input
-                  {...field}
-                  id="roleName"
-                  placeholder="Enter role name"
-                  invalid={fieldState?.error && true}
+        {fetchLoader ? (
+          <>
+            {" "}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "4rem",
+              }}
+            >
+              <Spinner
+                color="primary"
+                style={{
+                  height: "5rem",
+                  width: "5rem",
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
+              <Col xs={12}>
+                <Label className="form-label" for="roleName">
+                  Role Name
+                </Label>
+                <Controller
+                  name="roleName"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field, fieldState }) => (
+                    <Input
+                      {...field}
+                      id="roleName"
+                      placeholder="Enter role name"
+                      invalid={fieldState?.error && true}
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.roleName && (
-              <FormFeedback>Please enter a valid role name</FormFeedback>
-            )}
-          </Col>
+                {errors.roleName && (
+                  <FormFeedback>Please enter a valid role name</FormFeedback>
+                )}
+              </Col>
 
-
-          <Col xs={12}>
-            <h4 className="mt-2 pt-50">Role Permissions</h4>
-            <Table className="table-flush-spacing" responsive>
-              <tbody>
-                <tr>
-                  {/* <td className="text-nowrap fw-bolder">
+              <Col xs={12}>
+                <h4 className="mt-2 pt-50">Role Permissions</h4>
+                <Table className="table-flush-spacing" responsive>
+                  <tbody>
+                    <tr>
+                      {/* <td className="text-nowrap fw-bolder">
                     <span className="me-50"> Administrator Access </span>
                     <Info size={14} id="info-tooltip" />
                     <UncontrolledTooltip placement="top" target="info-tooltip">
@@ -241,71 +260,75 @@ const[fetchLoader,setFetchLoader]=useState(false);
                       </Label>
                     </div>
                   </td> */}
-                </tr>
-                {permissionList &&
-                  Object.keys(permissionList).map((category, index) => {
-                    // console.log({category})
-                    return (
-                      <tr key={index}>
-                        <td className="text-nowrap fw-bolder">{category}</td>
-                        <td>
-                          <div className="d-flex">
-                            {permissionList[category].map(
-                              ({ action, uid }, index) => (
-                                <div
-                                  key={uid}
-                                  className="form-check me-3 me-lg-5"
-                                >
-                                  <Controller
-                                    name={`${category}.${[index]}.isSelected`}
-                                    control={control}
-                                    render={({ field }) => (
-                                      <Label>
-                                        <Input
-                                          type="checkbox"
-                                          checked={field.value}
-                                          onChange={(e) =>
-                                            field.onChange(e.target.checked)
-                                          }
-                                        />
-                                        {action}
-                                      </Label>
-                                    )}
-                                  />
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </Table>
-          </Col>
-          <Col className="text-center mt-2" xs={12}>
-            <Button
-              type="submit"
-              color="primary"
-              className="me-1"
-              onClick={() => clearErrors()}
-              disabled={processingData}
-            >
-              {processingData ? (
-                <Spinner color={"#fff"} size={10} />
-              ) : (
-                "Submit"
-              )}
-            </Button>
-            <Button type="reset" outline onClick={onReset}>
-              Discard
-            </Button>
-          </Col>
-
-
-        </Row>
-        </>)}
-
+                    </tr>
+                    {permissionList &&
+                      Object.keys(permissionList).map((category, index) => {
+                        // console.log({category})
+                        return (
+                          <tr key={index}>
+                            <td className="text-nowrap fw-bolder">
+                              {category}
+                            </td>
+                            <td>
+                              <div className="d-flex">
+                                {permissionList[category].map(
+                                  ({ action, uid }, index) => (
+                                    <div
+                                      key={uid}
+                                      className="form-check me-3 me-lg-5"
+                                    >
+                                      <Controller
+                                        name={`${category}.${[
+                                          index,
+                                        ]}.isSelected`}
+                                        control={control}
+                                        render={({ field }) => (
+                                          <Label>
+                                            <Input
+                                              type="checkbox"
+                                              checked={field.value}
+                                              onChange={(e) =>
+                                                field.onChange(e.target.checked)
+                                              }
+                                            />
+                                            {action}
+                                          </Label>
+                                        )}
+                                      />
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </Table>
+              </Col>
+              <Col className="text-center mt-2" xs={12}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  className="me-1"
+                  onClick={() => clearErrors()}
+                  disabled={processingData}
+                >
+                  {processingData ? (
+                    <>
+                      Loading.. <Spinner size="sm" />
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
+                </Button>
+                <Button type="reset" outline onClick={onReset}>
+                  Discard
+                </Button>
+              </Col>
+            </Row>
+          </>
+        )}
       </ModalBody>
     </Modal>
   );

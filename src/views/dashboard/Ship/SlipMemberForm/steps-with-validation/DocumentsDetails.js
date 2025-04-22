@@ -135,8 +135,8 @@ const FileUploadForm = ({ stepper, slipIID }) => {
       } else if (createdCount > 0) {
         message = `Successfully created ${createdCount} records!`;
       }
-
       if (message) {
+        {{debugger}}
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -144,7 +144,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
-          navigate("/dashboard/slipmember_list"); // Redirect after alert
+          navigate("/dashboard/slipmember_list");
         });
       }
     } catch (error) {

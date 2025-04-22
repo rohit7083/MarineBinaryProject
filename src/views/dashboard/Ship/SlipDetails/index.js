@@ -1185,7 +1185,7 @@ className="me-1"
                   >
                     Reset
                   </Button>
-                  <Button color="primary" type="submit">
+                  <Button color="primary" disabled={loadinng} type="submit">
                     {!loadinng ? (
                       uid ? (
                         "Update"

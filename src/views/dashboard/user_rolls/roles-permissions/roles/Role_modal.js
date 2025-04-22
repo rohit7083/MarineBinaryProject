@@ -67,6 +67,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
   };
 
   const onSubmit = async (data) => {
+    {{debugger}}
     data.permissionIds = [];
     Object.keys(permissionData).forEach((key) => {
       if (data[key]) {
@@ -255,7 +256,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
             <Label className="form-label" for="roleName">
-              Role Name 
+              Role Name 99
             </Label>
             <Controller
               name="roleName"
@@ -335,7 +336,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
               {uid ? "Update" : "Submit"}
             </Button>
             <Button type="reset" outline onClick={onReset}>
-              Discard
+              Discard10
             </Button>
           </Col>
         </Row>

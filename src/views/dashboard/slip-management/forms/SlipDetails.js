@@ -1368,7 +1368,7 @@ function SlipDetailsForm({ assigned }) {
                 >
                   Reset
                 </Button>
-                <Button color="primary" disabled={View} type="submit">
+                <Button color="primary" disabled={View || loadinng} type="submit">
                   {!loadinng ? (
                     uid ? (
                       "Update"

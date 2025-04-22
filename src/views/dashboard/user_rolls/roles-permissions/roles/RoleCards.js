@@ -27,7 +27,8 @@ import { Copy, Info, X } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 // import { BeatLoader } from "react-spinners";
-
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
 
@@ -55,6 +56,7 @@ const AddRoles = ({ props, refreshTable }) => {
   const [processingData, setProcessing] = useState(false);
   const [fetchLoader, setfetchLoader] = useState(false);
   const [fetchTrigger, setFetchTrigger] = useState(false);
+  const MySwal = withReactContent(Swal);
 
   // ** Hooks
   const {
@@ -92,8 +94,25 @@ const AddRoles = ({ props, refreshTable }) => {
 
       const res = await useJwt.userpermissionPost(updatedData);
       setFetchTrigger(true);
+      if (res.status === 201) {
+        MySwal.fire({
+          title: "Successfully Cretaed",
+          text: " Role Created Successfully",
+          icon: "success",
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          reset();
 
-      toggle();
+          toggle();
+          setMessage("");
+          navigate("/dashboard/user_rolls/roles-permissions/roles", {
+            state: { forceRefresh: true },
+          });
+        });
+      }
     } catch (error) {
       if (error?.response) {
         const { response } = error;
@@ -287,7 +306,7 @@ const AddRoles = ({ props, refreshTable }) => {
               </Col>
               <Col className="text-center mt-2" xs={12}>
                 <Button type="reset" outline onClick={onReset}>
-                  Discard
+                  Discard10
                 </Button>
                 <Button
                   type="submit"

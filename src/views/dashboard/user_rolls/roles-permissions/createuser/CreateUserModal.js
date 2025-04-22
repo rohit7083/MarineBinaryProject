@@ -1,7 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import InputPasswordToggle from "@components/input-password-toggle";
+import { useNavigate } from "react-router-dom";
+
 import React from "react";
-import { UncontrolledAlert } from "reactstrap";
+import { Spinner, UncontrolledAlert } from "reactstrap";
+import { countries } from "../../../slip-management/CountryCode";
+import ReactCountryFlag from "react-country-flag";
 import {
   Row,
   Col,
@@ -14,6 +19,9 @@ import {
   InputGroup,
   InputGroupText,
   Label,
+  CardTitle,
+  ListGroupItem,
+  FormFeedback,
 } from "reactstrap";
 import { User, Mail, Smartphone, Lock } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
@@ -23,52 +31,85 @@ import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
 import withReactContent from "sweetalert2-react-content";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { use } from "react";
 const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
-
+  const navigate = useNavigate(); 
   const {
     reset,
     control,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-  const [countryCode, setCountryCode] = useState("");
-  const [mobileNum, setMobileNumber] = useState("");
   const [allRoleName, setallRoleName] = useState(null);
   const [Errmessage, setMessage] = useState("");
-
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const MySwal = withReactContent(Swal);
+  const [requirements, setRequirements] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    specialChar: true,
+    sensitive: true,
+  });
+  const firstName = watch("firstName");
+  const lastName = watch("lastName");
+  const emailId = watch("emailId");
+  const mobileNum = watch("mobileNumber");
 
-  // Helper function to extract country code and mobile number
-  const extractCountryCodeAndNumber = (value) => {
-    const code = value.slice(0, value.length - 10);
-    const number = value.slice(-10);
-    return { code, number };
+  const validatePassword = (pwd) => {
+    if (!pwd)  return;
+    const isValid = {
+      length: pwd.length >= 12,
+      uppercase: /[A-Z]/.test(pwd),
+      lowercase: /[a-z]/.test(pwd),
+      number: /[0-9]/.test(pwd),
+      specialChar: !/[^A-Za-z\d]/.test(pwd),
+      sensitive:
+        firstName && lastName
+          ? !(
+              pwd.toLowerCase().includes(firstName.toLowerCase()) ||
+              pwd.toLowerCase().includes(lastName.toLowerCase()) ||
+              pwd.toLowerCase().includes(emailId.toLowerCase()) || "" ||
+              pwd.toLowerCase().includes(mobileNum || "") // Check if password contains mobile number
+            )
+          : true,
+    };
+    // {{debugger}}
+    setRequirements(isValid);
+    setIsPasswordValid(Object.values(isValid).every(Boolean)); // Set true only if all conditions pass
   };
 
-  const onSubmit = async (data) => {
-    const { code, number } = extractCountryCodeAndNumber(data.mobileNum);
+  const handleChange = (e) => {
+    const newPwd = e.target.value;
+    console.log(newPwd);
 
-    // Transform the data into the required format
+    setPassword(newPwd);
+    validatePassword(newPwd);
+  };
+  const onSubmit = async (data) => {
     const transformedData = {
       firstName: data.firstName,
       lastName: data.lastName,
       emailId: data.emailId,
-      mobileNum: number,
+      mobileNumber: data.mobileNumber,
       password: data.password,
-      countryCode: `+${code}`,
+      countryCode: data.countryCode.value,
       userRoles: {
         uid: data.userRoles, // `data.userRoles` contains the selected role UID
       },
     };
     console.log("Transformed Data:", transformedData);
-    console.log(number);
 
     try {
       if (uid) {
+        setLoading(true);
         const res = await useJwt.updateSubuser(uid, transformedData);
         console.log("Add role res:", res);
         MySwal.fire({
@@ -80,19 +121,15 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
           },
           buttonsStyling: false,
         }).then(() => {
+          navigate("/dashboard/user_rolls/roles-permissions/createuser");
           setShow(false);
           reset();
-          navigate("/dashboard/user_rolls/roles-permissions/createuser");
         });
       } else {
-        {
-          {
-            debugger;
-          }
-        }
+        setLoading(true);
         const res2 = await useJwt.createUser(transformedData);
         console.log("updated res:", res2);
-        console.log("data is created",data);
+        console.log("data is created", data);
 
         MySwal.fire({
           title: "Successfully Added",
@@ -103,20 +140,21 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
           },
           buttonsStyling: false,
         }).then(() => {
+          navigate("/dashboard/user_rolls/roles-permissions/createuser");
           setShow(false);
           reset();
-          navigate("/dashboard/user_rolls/roles-permissions/createuser");
         });
       }
     } catch (error) {
       console.error("Error occurred:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     (async () => {
       try {
-        // {{debugger}}
         const { data } = await useJwt.userpermission();
         const { content } = data;
 
@@ -133,37 +171,37 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       }
     })();
   }, []);
-  
-  // console.log("allRoleName", allRoleName);
+
 
   const handleModalClosed = () => {
     setModalType("Add New");
     reset();
   };
-  // {{debugger}}
   useEffect(() => {
-    // Check if it's an edit mode
     if (uid && row) {
       const {
         firstName,
         lastName,
         emailId,
-        mobileNum,
+        mobileNumber,
         userRoles,
         countryCode,
         password,
       } = row;
+      const matchedCountryOption = countryOptions.find(
+        (option) =>
+          option.value === countryCode?.value || option.value === countryCode
+      );
 
       reset({
         firstName,
         lastName,
         emailId,
-        mobileNum: `${countryCode}${mobileNum}`,
+        countryCode: matchedCountryOption || null,
+        mobileNumber,
         userRoles: userRoles?.uid || null,
-        password, // Leave password blank
+        password,
       });
-      setMobileNumber(`${countryCode}${mobileNum}`); // Ensure PhoneInput gets the value
-      setCountryCode(countryCode); // Optionally track the country code separately
 
       setModalType("Edit");
     } else {
@@ -172,12 +210,11 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         firstName: "",
         lastName: "",
         emailId: "",
-        mobileNum: "",
+        mobileNumber: "",
+        countryCode: "",
         userRoles: null,
         password: "",
       });
-      setMobileNumber(""); 
-      setCountryCode(""); 
       setModalType("Add New");
     }
   }, [uid, row, reset]);
@@ -186,6 +223,22 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
     setShow(propShow);
     console.log(row);
   }, [propShow]);
+
+  const countryOptions = countries.map((country) => ({
+    value: country.dial_code,
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <ReactCountryFlag
+          countryCode={country.code}
+          svg
+          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+        />
+        {country.name} ({country.dial_code})
+      </div>
+    ),
+    code: country.code,
+  }));
+
   return (
     <Fragment>
       <Modal
@@ -333,103 +386,166 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
             </Row>
 
             <Row className="mb-2">
-              <Label sm="3" for="mobileNum">
-                Mobile
+              <Label sm="3" for="phone">
+                Phone Number
               </Label>
-              <Col sm="9">
-                <InputGroup className="input-group-merge">
-                  <Controller
-                    name="mobileNum"
-                    control={control}
-                    // defaultValue=""
-                    defaultValue={mobileNum} // Set defaultValue to the prefilled mobile number
-                    rules={{
-                      required: "Mobile number is required",
-                      validate: (value) =>
-                        value && value.length >= 10
-                          ? true
-                          : "Invalid mobile number", // Custom validation for phone length
-                    }}
-                    render={({ field: { onChange, value } }) => (
-                      <PhoneInput
-                        country={"us"} // Default country code
-                        // value={value}
-                        value={value || mobileNum} // Use `value` from the form or prefilled value
-                        onChange={(phone) => {
-                          onChange(phone); // Update react-hook-form's value
-                          setMobileNumber(phone); // Update internal state
-                        }}
-                        inputProps={{
-                          name: "mobileNum",
-                          required: true,
-                          className: "form-control",
-                        }}
-                        containerStyle={{
-                          width: "100%",
-                        }}
-                        inputStyle={{
-                          height: "38px",
-                          border: "1px solid #ced4da",
-                          borderRadius: "0 .375rem .375rem 0",
-                          paddingLeft: "63px",
-                          width: "100%",
-                        }}
-                      />
-                    )}
-                  />
-                </InputGroup>
-                {errors.mobileNum && (
+
+              <Col sm="4">
+                {/* <FormGroup> */}
+                <Controller
+                  name="countryCode"
+                  control={control}
+                  defaultValue={countryOptions[0]}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={countryOptions}
+                      onChange={(option) => field.onChange(option)}
+                      value={countryOptions.find(
+                        (option) => option.value === field.value?.value
+                      )}
+                    />
+                  )}
+                />
+                {errors.countryCode && (
                   <small className="text-danger">
-                    {errors.mobileNum.message}
+                    {errors.countryCode.message}
                   </small>
                 )}
+                {/* </FormGroup> */}
+              </Col>
+
+              <Col sm="5">
+                {/* <FormGroup> */}
+                <Controller
+                  name="mobileNumber"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: "Phone number is required" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="tel"
+                      placeholder="Enter phone number"
+                    />
+                  )}
+                />
+                {errors.mobileNumber && (
+                  <small className="text-danger">
+                    {errors.mobileNumber.message}
+                  </small>
+                )}
+                {/* </FormGroup> */}
               </Col>
             </Row>
 
             <Row className="mb-2">
-              {" "}
-              {/* Reduced margin */}
               <Label sm="3" for="password">
                 Password
               </Label>
               <Col sm="9">
-                <InputGroup className="input-group-merge">
-                  <InputGroupText>
-                    <Lock size={15} />
-                  </InputGroupText>
-                  <Controller
-                    name="password"
-                    control={control}
-                    defaultValue=""
-                    // rules={{
-                    //   required: "Password is required",
-                    //   minLength: {
-                    //     value: 6,
-                    //     message: "Password must be at least 6 characters long",
-                    //   },
-                    // }}
-                    render={({ field }) => (
-                      <Input
-                        type="password"
-                        placeholder="Enter Password"
+                <Controller
+                  id="password"
+                  name="password"
+                  control={control}
+                  rules={{
+                    validate: validatePassword,
+                    minLength: {
+                      value: 12,
+                      message: "password must be at least 12 character long",
+                    },
+                    pattern: {
+                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{12,}$/,
+                      message:
+                        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and no special characters",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <div>
+                      <InputPasswordToggle
+                        className="input-group-merge"
+                        invalid={errors.password}
                         {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          handleChange(e);
+                        }}
+                        value={password}
                       />
-                    )}
-                  />
-                </InputGroup>
+                      {errors.password && (
+                        <FormFeedback
+                          style={{ color: "red", display: "block" }}
+                        >
+                          {errors.password.message}
+                        </FormFeedback>
+                      )}
+                    </div>
+                  )}
+                />
                 {errors.password && (
-                  <small className="text-danger">
-                    {errors.password.message}
-                  </small>
+                  <FormFeedback>{errors.password.message}</FormFeedback>
                 )}
               </Col>
             </Row>
 
             <Row>
+              {" "}
+              <Label sm="3" for="password"></Label>
+              <Col sm="9">
+                <CardTitle tag="h5" className="mb-1">
+                  Password Requirement
+                </CardTitle>
+
+                <ListGroupItem
+                  className={
+                    requirements.length ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.length ? "✅" : "❌"} At least 12 characters
+                </ListGroupItem>
+
+                <ListGroupItem
+                  className={
+                    requirements.uppercase ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.uppercase ? "✅" : "❌"} At least one uppercase
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.lowercase ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.lowercase ? "✅" : "❌"} At least one lowercase
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.number ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.number ? "✅" : "❌"} At least one number
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.sensitive ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.sensitive ? "✅" : "❌"}
+                  No firstName / lastName / Email And Mobile Number allowed
+                </ListGroupItem>
+                <ListGroupItem
+                  className={
+                    requirements.specialChar ? "text-success" : "text-danger"
+                  }
+                >
+                  {requirements.specialChar ? "✅" : "❌"} No special characters
+                  allowed
+                </ListGroupItem>
+              </Col>
+            </Row>
+
+            <Row className="mt-2">
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>
-                <Button className="me-1" color="primary" type="submit">
-                  {uid ? "Update" : "Submit"}
-                </Button>
                 <Button
                   outline
                   color="secondary"
@@ -437,6 +553,22 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                   onClick={() => reset()}
                 >
                   Reset
+                </Button>
+
+                <Button
+                  className="mx-1"
+                  disabled={loading}
+                  color="primary"
+                  type="submit"
+                >
+                  {loading ? (
+                    <>
+                      Loading..
+                      <Spinner size="sm" />
+                    </>
+                  ) : (
+                    <>{uid ? "Update" : "Submit"}</>
+                  )}
                 </Button>
               </Col>
             </Row>

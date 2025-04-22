@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import {
   Row,
@@ -14,12 +16,14 @@ import {
   InputGroupText,
   Label,
   CardTitle,
-  ListGroupItem,FormFeedback ,FormGroup ,
+  ListGroupItem,
+  FormFeedback,
+  FormGroup,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { User, Mail, Smartphone, Lock, Watch } from "react-feather";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -28,13 +32,13 @@ import { selectThemeColors } from "@utils";
 import CryptoJS from "crypto-js";
 import InputPasswordToggle from "@components/input-password-toggle";
 import ReactCountryFlag from "react-country-flag";
-
+import { countries } from "../../../slip-management/CountryCode";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 const RoleCards = () => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
   const MySwal = withReactContent(Swal);
-  
+  const navigate = useNavigate(); 
   const {
     reset,
     watch,
@@ -53,7 +57,6 @@ const RoleCards = () => {
   const [password, setPassword] = useState("");
 
   const [countryCode, setCountryCode] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const [allRoleName, setallRoleName] = useState(null);
@@ -66,36 +69,17 @@ const RoleCards = () => {
     lowercase: false,
     number: false,
     specialChar: true,
-    sensitive:true,
+    sensitive: true,
   });
-  // const extractCountryCodeAndNumber = (value) => {
-  //   const code = value.slice(0, value.length - 10);
-  //   const number = value.slice(-10);
-  //   return { code, number };
-  // };
-  
-const countries = [
-  { name: "India", code: "+91", iso: "IN" },
-  { name: "USA", code: "+1", iso: "US" },
-  { name: "UK", code: "+44", iso: "GB" },
-  { name: "Canada", code: "+1", iso: "CA" },
-  { name: "Australia", code: "+61", iso: "AU" },
-];
-const [selected, setSelected] = useState(countries[0]);
-  const [phone, setPhone] = useState("");
-  const extractCountryCodeAndNumber = (value) => {
-    {{debugger}}
-    console.log("Input received:", value); // Debugging log
-  
-    if (!/^\d{11,14}$/.test(value)) {
-      return { error: "Invalid phone number format" };
-    }
-  
-    const number = value.slice(-10);
-    const code = value.slice(0, value.length - 10);
-  
-    return { code, number };
-  };
+
+  // const countries = [
+  //   { name: "India", code: "+91", iso: "IN" },
+  //   { name: "USA", code: "+1", iso: "US" },
+  //   { name: "UK", code: "+44", iso: "GB" },
+  //   { name: "Canada", code: "+1", iso: "CA" },
+  //   { name: "Australia", code: "+61", iso: "AU" },
+  // ];
+
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
   function generateKey(secretKey) {
@@ -103,7 +87,7 @@ const [selected, setSelected] = useState(countries[0]);
   }
 
   function generateIV() {
-    return CryptoJS.lib.WordArray.random(16); 
+    return CryptoJS.lib.WordArray.random(16);
   }
 
   function encryptAES(plainText) {
@@ -121,28 +105,22 @@ const [selected, setSelected] = useState(countries[0]);
     return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
   }
 
-
   useEffect(() => {
     if (password) {
       const encrypted = encryptAES(password);
       setEncrypt(encrypted);
     }
   }, [password]);
-  
-
-
-
 
   const onSubmit = async (data) => {
-    const { code, number } = extractCountryCodeAndNumber(data.mobileNumber);
-
+    setMessage("");
     const transformedData = {
       firstName: data.firstName,
       lastName: data.lastName,
       emailId: data.emailId,
-      mobileNumber: number,
+      mobileNumber: data.mobileNumber,
       password: encryptedPasss,
-      countryCode: `+${code}`,
+      countryCode: data.countryCode.value,
       userRoles: {
         uid: data.userRoles,
       },
@@ -166,18 +144,14 @@ const [selected, setSelected] = useState(countries[0]);
           },
           buttonsStyling: false,
         }).then(() => {
-          setShow(false);
-          // toggle();
-          reset();
-
-          // navigate("/dashboard/user_rolls/roles-permissions/createuser");
-          // window.location.reload();
-          // Example with React Router v6
-          setMessage("");
-          setPassword("");
+          {{debugger}}
           navigate("/dashboard/user_rolls/roles-permissions/createuser", {
             state: { forceRefresh: true },
           });
+          setShow(false);
+          reset();
+
+          setMessage("");
         });
       } else {
         MySwal.fire({
@@ -231,56 +205,67 @@ const [selected, setSelected] = useState(countries[0]);
   useEffect(() => {
     fetchRole();
   }, []);
-  // console.log("allRoleName", allRoleName);
 
   const handleModalClosed = () => {
     setModalType("Add New");
     reset(); // Reset form values
   };
 
-  const firstName=watch("firstName");
-  const lastName=watch("lastName");
-  const emailId=watch("emailId");
-  const mobileNum =watch("mobileNumber");
+  const firstName = watch("firstName");
+  const lastName = watch("lastName");
+  const emailId = watch("emailId");
+  const mobileNum = watch("mobileNumber");
 
   const validatePassword = (pwd) => {
-    const isValid ={
+    const isValid = {
       length: pwd.length >= 12,
       uppercase: /[A-Z]/.test(pwd),
       lowercase: /[a-z]/.test(pwd),
       number: /[0-9]/.test(pwd),
-      specialChar: !( /[^A-Za-z\d]/.test(pwd) ),  
-      sensitive: 
-      firstName && lastName 
-      ? !(pwd.toLowerCase().includes(firstName.toLowerCase()) 
-      || pwd.toLowerCase().includes(lastName.toLowerCase())
-      || pwd.toLowerCase().includes(emailId.toLowerCase())
-      || pwd.toLowerCase().includes(mobileNum.toLowerCase())) 
-       : true
+      specialChar: !/[^A-Za-z\d]/.test(pwd),
+      sensitive:
+        firstName && lastName
+          ? !(
+              pwd.toLowerCase().includes(firstName.toLowerCase()) ||
+              pwd.toLowerCase().includes(lastName.toLowerCase()) ||
+              pwd.toLowerCase().includes(emailId.toLowerCase()) ||
+              pwd.toLowerCase().includes(mobileNum.toLowerCase())
+            )
+          : true,
     };
     // {{debugger}}
     setRequirements(isValid);
     setIsPasswordValid(Object.values(isValid).every(Boolean)); // Set true only if all conditions pass
-
   };
 
   const handleChange = (e) => {
     const newPwd = e.target.value;
-console.log(newPwd);
+    console.log(newPwd);
 
     setPassword(newPwd);
     validatePassword(newPwd);
   };
   // useEffect(() => {
-  //   if (password) {  
+  //   if (password) {
   //     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
   //     setEncrypt(hashedPassword);
   //   }
-  // }, [password]); 
-  
+  // }, [password]);
 
-
-  
+  const countryOptions = countries.map((country) => ({
+    value: country.dial_code,
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <ReactCountryFlag
+          countryCode={country.code}
+          svg
+          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+        />
+        {country.name} ({country.dial_code})
+      </div>
+    ),
+    code: country.code,
+  }));
 
   return (
     <Fragment>
@@ -327,7 +312,7 @@ console.log(newPwd);
                   name="userRoles"
                   control={control}
                   rules={{
-                    required:"Role Name Is Required"
+                    required: "Role Name Is Required",
                   }}
                   render={({ field }) => (
                     <Select
@@ -454,98 +439,56 @@ console.log(newPwd);
               </Col>
             </Row>
 
-            {/* <Row className="mb-2">
-              <Label sm="3" for="mobileNumber">
-                Mobile
+            <Row className="mb-2">
+              <Label sm="3" for="phone">
+                Phone Number
               </Label>
-              <Col sm="9">
-                <InputGroup className="input-group-merge">
-                  <Controller
-                    name="mobileNumber"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                      required: "Mobile number is required",
-                      validate: (value) =>
-                        value && value.length >= 10
-                          ? true
-                          : "Invalid mobile number", // Custom validation for phone length
-                    }}
-                    render={({ field: { onChange, value } }) => (
-                      <PhoneInput
-                        country={"us"} // Default country code
-                        value={value}
-                        onChange={(phone) => onChange(phone)}
-                        inputProps={{
-                          name: "mobileNumber",
-                          required: true,
-                          className: "form-control",
-                        }}
-                        containerStyle={{
-                          width: "100%",
-                        }}
-                        inputStyle={{
-                          height: "38px",
-                          border: "1px solid #ced4da",
-                          borderRadius: "0 .375rem .375rem 0",
-                          paddingLeft: "63px",
-                          width: "100%",
-                        }}
-                      />
-                    )}
-                  />
-                </InputGroup>
+
+              <Col sm="4">
+                <Controller
+                  name="countryCode"
+                  control={control}
+                  defaultValue={countryOptions[0]}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={countryOptions}
+                      onChange={(option) => field.onChange(option)}
+                      value={countryOptions.find(
+                        (option) => option.value === field.value?.value
+                      )}
+                    />
+                  )}
+                />
                 {errors.mobileNumber && (
                   <small className="text-danger">
                     {errors.mobileNumber.message}
                   </small>
                 )}
               </Col>
-            </Row> */}
 
+              <Col sm="5">
+                <Controller
+                  name="mobileNumber"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: "Phone number is required" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="tel"
+                      placeholder="Enter phone number"
+                    />
+                  )}
+                />
+                {errors.mobileNumber && (
+                  <small className="text-danger">
+                    {errors.mobileNumber.message}
+                  </small>
+                )}
+              </Col>
+            </Row>
 
-
-
-
-<Row>
-      <Col md="3">
-        <FormGroup>
-          <Label>Country Code</Label>
-          <Input
-            type="select"
-            value={selected.code}
-            onChange={(e) =>
-              setSelected(
-                countries.find((c) => c.code === e.target.value)
-              )
-            }
-          >
-            {countries.map((country) => (
-              <option key={country.code} value={country.code}>
-                <ReactCountryFlag
-                  countryCode={country.iso}
-                  svg
-                  style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-                />{" "}
-                {country.name} ({country.code})
-              </option>
-            ))}
-          </Input>
-        </FormGroup>
-      </Col>
-
-      <Col md="5">
-        <FormGroup>
-          <Label>Phone Number</Label>
-          <Input
-            type="tel"
-            placeholder="Enter phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </FormGroup>
-      </Col>
-    </Row>
             <Row className="mb-2">
               <Label sm="3" for="password">
                 Password
@@ -556,19 +499,17 @@ console.log(newPwd);
                   name="password"
                   control={control}
                   rules={{
-                    validate:validatePassword,
-                    required:"password is Required",
-                    minLength:{
-                      value:12,
-                      message:"password must be at least 12 character long"
+                    validate: validatePassword,
+                    required: "password is Required",
+                    minLength: {
+                      value: 12,
+                      message: "password must be at least 12 character long",
                     },
-                    pattern:{
-                      value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{12,}$/,
-                    message:
-                      "Password must contain at least one uppercase letter, one lowercase letter, one digit, and no special characters",
-                  },
-                    
+                    pattern: {
+                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{12,}$/,
+                      message:
+                        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and no special characters",
+                    },
                   }}
                   render={({ field }) => (
                     <div>
@@ -576,7 +517,7 @@ console.log(newPwd);
                         className="input-group-merge"
                         invalid={errors.password}
                         {...field}
-                        onChange={(e)=>{
+                        onChange={(e) => {
                           field.onChange(e);
                           handleChange(e);
                         }}
@@ -618,7 +559,7 @@ console.log(newPwd);
                     requirements.uppercase ? "text-success" : "text-danger"
                   }
                 >
-                  {requirements.uppercase ? "✅" : "❌"} At least one uppercase 
+                  {requirements.uppercase ? "✅" : "❌"} At least one uppercase
                 </ListGroupItem>
                 <ListGroupItem
                   className={
@@ -626,7 +567,6 @@ console.log(newPwd);
                   }
                 >
                   {requirements.lowercase ? "✅" : "❌"} At least one lowercase
-                  
                 </ListGroupItem>
                 <ListGroupItem
                   className={
@@ -648,8 +588,8 @@ console.log(newPwd);
                     requirements.specialChar ? "text-success" : "text-danger"
                   }
                 >
-                  {requirements.specialChar ? "✅" : "❌"} No special
-                  characters allowed
+                  {requirements.specialChar ? "✅" : "❌"} No special characters
+                  allowed
                 </ListGroupItem>
               </Col>
             </Row>
@@ -664,7 +604,12 @@ console.log(newPwd);
                 >
                   Reset
                 </Button>
-                <Button className="mx-1" color="primary" disabled={!isPasswordValid} type="submit">
+                <Button
+                  className="mx-1"
+                  color="primary"
+                  disabled={!isPasswordValid}
+                  type="submit"
+                >
                   {loading ? (
                     <>
                       Loading.. <Spinner size="sm" />

@@ -6,6 +6,8 @@ import withReactContent from "sweetalert2-react-content";
 import PhoneInput from "react-phone-input-2";
 // import 'react-phone-input-2/lib/style.css'
 import "react-phone-input-2/lib/bootstrap.css";
+import { countries } from "../../../slip-management/CountryCode";
+import ReactCountryFlag from "react-country-flag";
 
 import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
@@ -36,8 +38,6 @@ const PersonalInfo = ({
   fetchLoader,
 }) => {
   console.log({ formData });
-
-  const [phoneNumber, setMobileNumber] = useState("");
 
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
@@ -114,15 +114,16 @@ const PersonalInfo = ({
   } = useForm({
     resolver: yupResolver(SignupSchema),
     defaultValues: {
-      //   firstName: "hello",
-      //   lastName: "surname",
-      //   emailId: "rohit@gmail.com",
-      //   phoneNumber: "921234567890",
-      //   address: "satpur",
-      //   city: "nashik",
-      //   state: "maharstra",
-      //   country: "india",
-      //   postalCode: "12365",
+      // firstName: "hello",
+      // lastName: "surname",
+      // emailId: "rohit@gmail.com",
+      // phoneNumber: "1234567890",
+      // countryCode: { value: "+91", label: "+91" },
+      // address: "satpur",
+      // city: "nashik",
+      // state: "maharstra",
+      // country: "india",
+      // postalCode: "12365",
       secondaryPhoneNumber: null,
     },
   });
@@ -143,18 +144,40 @@ const PersonalInfo = ({
   };
   useEffect(() => {
     if (Object.keys(formData)?.length) {
-      const phoneNum = `${formData.countryCode || ""}${
-        formData.phoneNumber || ""
-      }`;
-
+      const countryCode = countries.find(
+        (country) => country.dial_code === formData?.countryCode
+      );
+      console.log("countryCode", countryCode);
       const data = {
         ...formData,
-
-        phoneNumber: phoneNum.substring(1),
+        countryCode: countryCode
+          ? {
+              value: countryCode.dial_code,
+              code: countryCode.code,
+              label: (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <ReactCountryFlag
+                    countryCode={countryCode.code}
+                    svg
+                    style={{
+                      width: "1.5em",
+                      height: "1.5em",
+                      marginRight: "8px",
+                    }}
+                  />
+                  {countryCode.name} ({countryCode.dial_code})
+                </div>
+              ),
+            }
+          : null,
       };
+
       reset(data);
+      console.log("formData", data);
     }
   }, [reset, formData]);
+  // console.clear();
+  // console.log('watch', watch('countryCode'));
 
   // useEffect(() => {
   //   if (Object.keys(formData)?.length) {
@@ -174,6 +197,8 @@ const PersonalInfo = ({
     setValue("firstName", option.details.firstName || "");
     setValue("lastName", option.details.lastName || "");
     setValue("emailId", option.details.emailId || "");
+    setValue("countryCode", option.details.countryCode || "");
+
     setValue("phoneNumber", option.details.phoneNumber || "");
     setValue("address", option.details.address || "");
     setValue("city", option.details.city || "");
@@ -182,37 +207,21 @@ const PersonalInfo = ({
     setValue("secondaryGuestName", option.details.secondaryGuestName || "");
     setValue("secondaryEmail", option.details.secondaryEmail || "");
     setValue("country", option.details.country || "");
+    console.log(option?.details, "option?.details");
 
     setVisible(true);
   };
 
-  // const extractCountryCodeAndNumber = (value) => {
-  //   // {{debugger}}
-  //   const code = value.slice(0, value.length - 10);
-  //   const number = value.slice(-10);
-  //   return { code, number };
-  // };
-  const extractCountryCodeAndNumber = (value) => {
-    if (!value) return { code: "", number: "" }; 
-    const code = value.slice(0, value.length - 10);
-    const number = value.slice(-10);
-    return { code, number };
-  };
-
   const onSubmit = async (data) => {
-    const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
-
     console.log("data", data);
 
     setErrMsz("");
 
     setLoading(true);
-
     const payload = {
       ...data,
       slipId: slipIID,
-      countryCode: `+${code}`,
-      phoneNumber: number,
+      countryCode: data?.countryCode?.value,
     };
     let memberId;
     try {
@@ -233,7 +242,7 @@ const PersonalInfo = ({
 
         memberId = res?.data?.id;
         console.log("memberid ", memberId);
-        
+
         handleSweetAlert(
           "Successfully Created",
           " Your Member Details Created Successfully",
@@ -336,6 +345,21 @@ const PersonalInfo = ({
     const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
     field.onChange(value);
   };
+
+  const countryOptions = countries.map((country) => ({
+    value: country.dial_code,
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <ReactCountryFlag
+          countryCode={country.code}
+          svg
+          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+        />
+        {country.name} ({country.dial_code})
+      </div>
+    ),
+    code: country.code,
+  }));
   return (
     <Fragment>
       <div className="content-header">
@@ -483,54 +507,6 @@ const PersonalInfo = ({
             </Col>
 
             <Col md="6" className="mb-1">
-              <Label className="form-label" for="phoneNumber">
-                Mobile Number
-                <span style={{ color: "red" }}>*</span>
-              </Label>
-             <InputGroup className="input-group-merge">
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  defaultValue={phoneNumber}
-                  rules={{
-                    required: "Mobile number is required",
-                    validate: (value) =>
-                      value && value.length >= 10
-                        ? true
-                        : "Invalid mobile number",
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <PhoneInput
-                      // country={"us"}
-                      value={value || phoneNumber}
-                      onChange={(phone) => {
-                        onChange(phone);
-                        setMobileNumber(phone);
-                      }}
-                      inputProps={{
-                        name: "phoneNumber",
-                        required: true,
-                        className: "form-control",
-                      }}
-                      containerStyle={{
-                        width: "100%",
-                      }}
-                      inputStyle={{
-                        height: "38px",
-                        border: "1px solid #ced4da",
-                        borderRadius: "0 .375rem .375rem 0",
-                        paddingLeft: "63px",
-                        width: "100%",
-                      }}
-                    />
-                  )}
-                />
-              </InputGroup>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col md="6" className="mb-1">
               <Label className="form-label" for="address">
                 Address
                 <span style={{ color: "red" }}>*</span>
@@ -554,7 +530,69 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.address.message}</FormFeedback>
               )}
             </Col>
+          </Row>
+          <Row>
+            <Col md="6" className="mb-1">
+              <Label sm="3" for="phone">
+                Country Code
+              </Label>
 
+              <Controller
+                name="countryCode"
+                control={control}
+                // defaultValue={countryOptions[0]}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={countryOptions}
+                    onChange={(option) => field.onChange(option)}
+                    value={countryOptions.find(
+                      (option) => option.value === field.value?.value
+                    )}
+                  />
+                )}
+              />
+              {errors.countryCode && (
+                <small className="text-danger">
+                  {errors.countryCode.message}
+                </small>
+              )}
+            </Col>
+
+            <Col md="6" className="mb-1">
+              <Label sm="3" for="phone">
+                Phone Number
+              </Label>
+
+              <Controller
+                name="phoneNumber"
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: "Phone number is required",
+                  pattern: {
+                    value: /^\+?[1-9]\d{1,14}$/,
+                    message: "Enter a valid international phone number",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="tel"
+                    placeholder="Enter phone number"
+                  />
+                )}
+              />
+              {errors.phoneNumber && (
+                <small className="text-danger">
+                  {errors.phoneNumber.message}
+                </small>
+              )}
+              {/* </FormGroup> */}
+            </Col>
+          </Row>
+
+          <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="city">
                 City
@@ -579,9 +617,6 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.city.message}</FormFeedback>
               )}
             </Col>
-          </Row>
-
-          <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="state">
                 State
@@ -606,7 +641,9 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.state.message}</FormFeedback>
               )}
             </Col>
+          </Row>
 
+          <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="country">
                 Country
@@ -631,8 +668,7 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.country.message}</FormFeedback>
               )}
             </Col>
-          </Row>
-          <Row>
+
             <Col md="6" className="mb-1">
               <Label className="form-label" for="postalCode">
                 Postal Code
@@ -660,7 +696,8 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.postalCode.message}</FormFeedback>
               )}
             </Col>
-
+          </Row>
+          <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="secondaryGuestName">
                 Secondary Guest Name (optional)
@@ -687,8 +724,6 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.secondaryGuestName.message}</FormFeedback>
               )}
             </Col>
-          </Row>
-          <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="secondaryEmail">
                 Secondary Email (optional)
@@ -711,7 +746,8 @@ const PersonalInfo = ({
                 <FormFeedback>{errors.secondaryEmail.message}</FormFeedback>
               )}
             </Col>
-
+          </Row>
+          <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="secondaryPhoneNumber">
                 Secondary Phone Number (optional)
@@ -769,7 +805,12 @@ const PersonalInfo = ({
                 </span>
               </Button>
 
-              <Button type="submit" color="primary" disabled={loading} className="btn-next">
+              <Button
+                type="submit"
+                color="primary"
+                disabled={loading}
+                className="btn-next"
+              >
                 <span className="align-middle d-sm-inline-block d-none">
                   {loading ? (
                     <>

@@ -67,7 +67,7 @@ const CustomTable = ({ data }) => {
           row.firstName.toLowerCase().includes(value.toLowerCase()) ||
           row.lastName.toLowerCase().includes(value.toLowerCase()) ||
           row.emailId.toLowerCase().includes(value.toLowerCase()) ||
-          row.mobileNum.includes(value)
+          row.mobileNumber.includes(value)
       );
 
       setTableData((prev) => ({
@@ -118,7 +118,7 @@ const CustomTable = ({ data }) => {
       name: "Mobile Number",
       sortable: true,
       minWidth: "150px",
-      selector: (row) => `${row.countryCode}${row.mobileNum}`,
+      selector: (row) => `${row.countryCode}${row.mobileNumber}`,
     },
 
     {

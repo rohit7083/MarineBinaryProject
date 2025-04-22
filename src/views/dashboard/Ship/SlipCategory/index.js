@@ -280,7 +280,7 @@ function Index() {
                 </Button>
                 <Button
                   className="mx-1"
-                  // disabled={loading}
+                  disabled={loading}
                   color="primary"
                   type="submit"
                 >

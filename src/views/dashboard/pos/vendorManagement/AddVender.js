@@ -7,10 +7,12 @@ import {
   Button,
   Label,
   Row,
-  InputGroup,
+  InputGroup,Input ,
 } from "reactstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
+import { countries } from "../../slip-management/CountryCode";
+import ReactCountryFlag from "react-country-flag";
 
 import { Tooltip } from "reactstrap";
 import { Link, useLocation } from "react-router-dom";
@@ -46,13 +48,7 @@ const MultipleColumnForm = () => {
   const vendorData = location.state;
   console.log("vendor ddata ", vendorData);
 
-  const [phoneNumber, setMobileNumber] = useState("");
-  const extractCountryCodeAndNumber = (value) => {
-    if (!value) return { code: "", number: "" }; // Handle undefined case
-    const code = value.slice(0, value.length - 10);
-    const number = value.slice(-10);
-    return { code, number };
-  };
+ 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -69,11 +65,9 @@ const MultipleColumnForm = () => {
   };
 
   const onSubmit = async (data) => {
-    const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
     const payload = {
       ...data,
-      countryCode: `+${code}`,
-      phoneNumber: number,
+     
     };
     if (!vendorData) {
       try {
@@ -95,6 +89,22 @@ const MultipleColumnForm = () => {
   useEffect(() => {
     reset(vendorData?.venderData);
   }, [reset, vendorData]);
+
+  
+     const countryOptions = countries.map((country) => ({
+        value: country.dial_code,
+        label: (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ReactCountryFlag
+              countryCode={country.code}
+              svg
+              style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+        code: country.code,
+      }));
 
   return (
     <Card>
@@ -266,55 +276,6 @@ const MultipleColumnForm = () => {
               )}
             </Col>
             <Col md="6" className="mb-1">
-              <Label for="mobile">Mobile Number</Label>
-
-              <InputGroup className="input-group-merge">
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  defaultValue={phoneNumber}
-                  rules={{
-                    required: "Mobile number is required",
-                    validate: (value) =>
-                      value && value.length >= 10
-                        ? true
-                        : "Invalid mobile number",
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <PhoneInput
-                      // country={"us"}
-                      value={value || phoneNumber}
-                      onChange={(phone) => {
-                        onChange(phone);
-                        setMobileNumber(phone);
-                      }}
-                      inputProps={{
-                        name: "phoneNumber",
-                        required: true,
-                        className: "form-control",
-                      }}
-                      containerStyle={{
-                        width: "100%",
-                      }}
-                      inputStyle={{
-                        height: "38px",
-                        border: "1px solid #ced4da",
-                        borderRadius: "0 .375rem .375rem 0",
-                        paddingLeft: "63px",
-                        width: "100%",
-                      }}
-                    />
-                  )}
-                />
-                 {errors.phoneNumber && (
-                <small className="text-danger">{errors.phoneNumber.message}</small>
-              )}
-              </InputGroup>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col md="6" className="mb-1">
               <Label for="email">Email Address</Label>
               <Controller
                 name="emailId"
@@ -338,6 +299,59 @@ const MultipleColumnForm = () => {
               {errors.emailId && (
                 <small className="text-danger">{errors.emailId.message}</small>
               )}
+            </Col>
+          </Row>
+
+          <Row>
+          <Col md="6" className="mb-1">
+  <Label sm="3" for="phone">
+                Country Code
+              </Label>
+              <Controller
+                name="countryCode"
+                control={control}
+                defaultValue={countryOptions[0]}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={countryOptions}
+                    onChange={(option) => field.onChange(option)}
+                    value={countryOptions.find(
+                      (option) => option.value === field.value?.value
+                    )}
+                  />
+                )}
+              />
+              {errors.countryCode && (
+                <small className="text-danger">
+                  {errors.countryCode.message}
+                </small>
+              )}
+            </Col>
+            <Col md="6" className="mb-1">
+              <Label sm="3" for="phone">
+                Phone Number
+              </Label>
+
+              <Controller
+                name="phoneNumber"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Phone number is required" }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="tel"
+                    placeholder="Enter phone number"
+                  />
+                )}
+              />
+              {errors.phoneNumber && (
+                <small className="text-danger">
+                  {errors.phoneNumber.message}
+                </small>
+              )}
+              {/* </FormGroup> */}
             </Col>
           </Row>
 

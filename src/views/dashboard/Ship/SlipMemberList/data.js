@@ -366,7 +366,39 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
     minWidth: "150px",
     selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, 
   },
+  {
+    sortable: true,
+    name: "Slip Assigned",
+    minWidth: "100px",
+    selector: (row) =>{
+// {{debugger}}
+      const SlipAssigned = row.isAssigned;
+
+      return (
+        <div className="d-flex justify-content-center">
+          {SlipAssigned ? (
+            <Badge color="success"  className="badge-glow">
+              Assigned
+            </Badge>
+          ) : (
+            <Badge color="danger" pill className="badge-glow">
+             Not Assigned
+            </Badge>
+          )}
+        </div>
+      );
+    
+      }
+      },
   
+  
+  {
+    sortable: true,
+    name: "Slip Name",
+    minWidth: "200px",
+    selector: (row) => row.slipName,
+  },
+
   {
     name: 'Status',
     minWidth: "180px",
@@ -391,13 +423,8 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
       );
     }
   },
-  
-  {
-    sortable: true,
-    name: "Slip Name",
-    minWidth: "200px",
-    selector: (row) => row.slipName,
-  },
+
+
   {
     sortable: true,
     name: "Category",
@@ -420,8 +447,8 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
   {
     sortable: true,
     name: "Mobile No",
-    minWidth: "150px",
-    selector: (row) => row.member?.phoneNumber,
+    minWidth: "200px",
+    selector: (row) =>row.member?.countryCode +" - " + row.member?.phoneNumber,
   },
   {
     sortable: true,
