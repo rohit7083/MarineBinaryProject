@@ -23,6 +23,8 @@ import {
   ListGroupItem,
   FormFeedback,
 } from "reactstrap";
+import CryptoJS from "crypto-js";
+
 import { User, Mail, Smartphone, Lock } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
@@ -35,7 +37,7 @@ import { use } from "react";
 const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const {
     reset,
     control,
@@ -62,9 +64,46 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const lastName = watch("lastName");
   const emailId = watch("emailId");
   const mobileNum = watch("mobileNumber");
+    const [encryptedPasss, setEncrypt] = useState(null);
+  
+    const watchPassword = watch("password");
+ const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey);
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16);
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+
+    return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+  }
+
+  useEffect(() => {
+    if (watchPassword) {
+      const encrypted = encryptAES(watchPassword);
+      
+      
+      setEncrypt(encrypted);
+    }
+  }, [watchPassword]);
+
 
   const validatePassword = (pwd) => {
-    if (!pwd)  return;
+    if (!pwd) return;
     const isValid = {
       length: pwd.length >= 12,
       uppercase: /[A-Z]/.test(pwd),
@@ -74,21 +113,23 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       sensitive:
         firstName && lastName
           ? !(
-              pwd.toLowerCase().includes(firstName.toLowerCase()) ||
-              pwd.toLowerCase().includes(lastName.toLowerCase()) ||
-              pwd.toLowerCase().includes(emailId.toLowerCase()) || "" ||
-              pwd.toLowerCase().includes(mobileNum || "") // Check if password contains mobile number
+              (
+                pwd.toLowerCase().includes(firstName.toLowerCase()) ||
+                pwd.toLowerCase().includes(lastName.toLowerCase()) ||
+                pwd.toLowerCase().includes(emailId.toLowerCase()) ||
+                "" ||
+                pwd.toLowerCase().includes(mobileNum || "")
+              ) // Check if password contains mobile number
             )
           : true,
     };
-    // {{debugger}}
+     
     setRequirements(isValid);
     setIsPasswordValid(Object.values(isValid).every(Boolean)); // Set true only if all conditions pass
   };
 
   const handleChange = (e) => {
     const newPwd = e.target.value;
-    console.log(newPwd);
 
     setPassword(newPwd);
     validatePassword(newPwd);
@@ -99,7 +140,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       lastName: data.lastName,
       emailId: data.emailId,
       mobileNumber: data.mobileNumber,
-      password: data.password,
+      password: encryptedPasss,
       countryCode: data.countryCode.value,
       userRoles: {
         uid: data.userRoles, // `data.userRoles` contains the selected role UID
@@ -171,7 +212,6 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       }
     })();
   }, []);
-
 
   const handleModalClosed = () => {
     setModalType("Add New");

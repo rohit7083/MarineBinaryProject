@@ -277,7 +277,7 @@ const MySwal = withReactContent(Swal);
   useEffect(() => {
     (async () => {
       try {
-        // {{debugger}}
+         
         const res = await useJwt.getProductCategory();
         console.log("getAllProduct",res?.data?.content?.result);
         setData(res?.data?.content?.result) 

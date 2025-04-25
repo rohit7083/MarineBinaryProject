@@ -22,7 +22,7 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 
 const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
-const FileUploadForm = ({ stepper, slipIID }) => {
+const FileUploadForm = ({ stepper, slipIID ,sId}) => {
   const [documents, setDocuments] = useState([]);
   const myId = useParams();
   const [loading, setLoading] = useState(false);
@@ -58,9 +58,11 @@ const FileUploadForm = ({ stepper, slipIID }) => {
   });
 
   useEffect(() => {
+
     const fetchData = async () => {
+      {{debugger}}
       try {
-        const response = await useJwt.getSingleDocuments(slipIID);
+        const response = await useJwt.getSingleDocuments(slipIID || sId?.id);
 
         const doc = response.data.content.result.reduce((object, item) => {
           const { uid, documentName, documentFilePath } = item;
@@ -80,10 +82,12 @@ const FileUploadForm = ({ stepper, slipIID }) => {
         console.error("Error fetching documents:", error);
       }
     };
-    if (slipIID) fetchData();
-  }, [slipIID, reset]);
+    if (slipIID || sId?.id) fetchData();
+  }, [slipIID ,sId?.id, reset]);
 
   const onSubmit = async (data) => {
+    
+
     const updatedDataList = Object.keys(data).reduce((obj, key) => {
       if (data[key].currentFile == null) {
         delete data[key];
@@ -94,7 +98,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
 
       formData.append("documentName", key);
       formData.append("documentFile", data[key].currentFile);
-      formData.append("slipId", slipIID);
+      formData.append("slipId", slipIID || sId?.id);
 
       obj[key] = obj[key] || {};
       obj[key]["formData"] = formData;
@@ -103,10 +107,10 @@ const FileUploadForm = ({ stepper, slipIID }) => {
     }, {});
 
     try {
-      // // {{debugger}}
-      // if (myId) {
-      //   navigate("/dashboard/slipmember_list"); // Redirect after alert
-      // }
+      //  
+      if (myId) {
+        navigate("/dashboard/slipmember_list"); // Redirect after alert
+      }
       const results = await Promise.all(
         Object.values(updatedDataList).map(async (details) => {
           if (details?.uid) {
@@ -136,7 +140,6 @@ const FileUploadForm = ({ stepper, slipIID }) => {
         message = `Successfully created ${createdCount} records!`;
       }
       if (message) {
-        {{debugger}}
         Swal.fire({
           icon: "success",
           title: "Success!",

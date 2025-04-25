@@ -46,91 +46,6 @@ const status = {
   5: { title: "Applied", color: "light-info" },
 };
 
-// ** Table Zero Config Column
-export const basicColumns = [
-  {
-    name: "ID",
-    sortable: true,
-    maxWidth: "100px",
-    selector: (row) => row.id,
-  },
-  {
-    name: "Name",
-    sortable: true,
-    minWidth: "225px",
-    selector: (row) => row.full_name,
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "310px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Position",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "Age",
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.age,
-  },
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "175px",
-    selector: (row) => row.salary,
-  },
-];
-// ** Table ReOrder Column
-export const reOrderColumns = [
-  {
-    name: "ID",
-    reorder: true,
-    sortable: true,
-    maxWidth: "100px",
-    selector: (row) => row.id,
-  },
-  {
-    name: "Name",
-    reorder: true,
-    sortable: true,
-    minWidth: "225px",
-    selector: (row) => row.full_name,
-  },
-  {
-    name: "Email",
-    reorder: true,
-    sortable: true,
-    minWidth: "310px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Position",
-    reorder: true,
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "Age",
-    reorder: true,
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.age,
-  },
-  {
-    name: "Salary",
-    reorder: true,
-    sortable: true,
-    minWidth: "175px",
-    selector: (row) => row.salary,
-  },
-];
-
 // ** Expandable table component
 const ExpandableTable = ({ data }) => {
   return (
@@ -148,213 +63,13 @@ const ExpandableTable = ({ data }) => {
   );
 };
 
-// ** Table Common Column
-export const columns = [
-  {
-    name: "Name",
-    minWidth: "250px",
-    sortable: (row) => row.full_name,
-    cell: (row) => (
-      <div className="d-flex align-items-center">
-        {row.avatar === "" ? (
-          <Avatar
-            color={`light-${states[row.status]}`}
-            content={row.full_name}
-            initials
-          />
-        ) : (
-          <Avatar img={row.avatar} />
-        )}
-        <div className="user-info text-truncate ms-1">
-          <span className="d-block fw-bold text-truncate">{row.full_name}</span>
-          <small>{row.post}</small>
-        </div>
-      </div>
-    ),
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Date",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.start_date,
-  },
-
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.salary,
-  },
-  {
-    name: "Age",
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.age,
-  },
-  {
-    name: "Status",
-    minWidth: "150px",
-    sortable: (row) => row.status.title,
-    cell: (row) => {
-      return (
-        <Badge color={status[row.status].color} pill>
-          {status[row.status].title}
-        </Badge>
-      );
-    },
-  },
-  {
-    name: "Actions",
-    allowOverflow: true,
-    cell: () => {
-      return (
-        <div className="d-flex">
-          <UncontrolledDropdown>
-            <DropdownToggle className="pe-1" tag="span">
-              <MoreVertical size={15} />
-            </DropdownToggle>
-            <DropdownMenu end>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <FileText size={15} />
-                <span className="align-middle ms-50">Details</span>
-              </DropdownItem>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Archive size={15} />
-                <span className="align-middle ms-50">Archive</span>
-              </DropdownItem>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Trash size={15} />
-                <span className="align-middle ms-50">Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <Edit size={15} />
-        </div>
-      );
-    },
-  },
-];
-
-// ** Table Intl Column
-export const multiLingColumns = [
-  {
-    name: "Name",
-    sortable: true,
-    minWidth: "200px",
-    selector: (row) => row.shipTypeName,
-  },
-  {
-    name: "Position",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Date",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.start_date,
-  },
-
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.salary,
-  },
-  {
-    name: "Status",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.status,
-    cell: (row) => {
-      console.log({ row });
-      return (
-        <Badge color={status[row.status].color} pill>
-          {status[row.status].title}
-        </Badge>
-      );
-    },
-  },
-  {
-    name: "Actions",
-    allowOverflow: true,
-    cell: () => {
-      const handleDelete = (rowId) => {
-        const isConfirmed = window.confirm(
-          "Are you sure you want to delete this item?"
-        );
-        if (isConfirmed) {
-          // Call your delete function or API here to delete the row
-          console.log("Deleted row with ID:", rowId);
-          // For example, you could call a function like:
-          // deleteData(rowId);
-        }
-      };
-      return (
-        <div className="d-flex">
-          <UncontrolledDropdown>
-            <DropdownToggle className="pe-1" tag="span">
-              <MoreVertical size={15} />
-            </DropdownToggle>
-            <DropdownMenu end>
-              <DropdownItem>
-                <FileText size={15} />
-                <span className="align-middle ms-50">Details</span>
-              </DropdownItem>
-              <DropdownItem>
-                <Archive size={15} />
-                <span className="align-middle ms-50">Archive</span>
-              </DropdownItem>
-              <DropdownItem>
-                <Trash size={15} />
-                <span className="align-middle ms-50">Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          {/* <Link to={`/dashboard/SlipCategory/${row.id}`}> */}
-          <Edit size={15} />
-          {/* </Link>/ */}
-        </div>
-      );
-    },
-  },
-];
-
 // ** Table Server Side Column
-export const serverSideColumns =(currentPage,rowsPerPage)=> [
+export const serverSideColumns = (currentPage, rowsPerPage, data, setData) => [
   {
     sortable: true,
     name: "Id",
     minWidth: " 50px",
-    selector: (row,index) => (currentPage -1)* rowsPerPage + index + 1 ,
+    selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
   },
 
   {
@@ -364,7 +79,6 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
     selector: (row) => row.shipTypeName,
   },
 
-
   {
     sortable: true,
     name: "Dimensions",
@@ -373,22 +87,16 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
       row.dimensions && row.dimensions.length > 0
         ? row.dimensions.join("   |   ")
         : "N/A",
-  }
-  
-  
-  ,
- 
+  },
+
   {
     name: "Actions",
     sortable: true,
     minWidth: "   75px",
     cell: (row) => {
-      const [data, setData] = useState([]);
+      // const [data, setData] = useState([]);
 
       const MySwal = withReactContent(Swal);
-
-
-
 
       const handleDelete = async (uid) => {
         // Show confirmation modal
@@ -409,14 +117,13 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
               // Call delete API
               const response = await useJwt.deleteslipCatogory(uid);
               if (response.status === 204) {
-                setData((prevData) =>
-                  {
-                   const newData= prevData.filter((item) => item.uid !== uid)
-                   console.log("Updated Data:", newData);
-                   return newData;
-                  })
-      
-                // Show success message
+                // {{debugger}}
+                setData((prevData) => {
+                  const newData = prevData.filter((item) => item.uid !== uid);
+                  console.log("Updated Data:", newData);
+                  return newData;
+                });
+
                 MySwal.fire({
                   icon: "success",
                   title: "Deleted!",
@@ -441,7 +148,7 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
           }
         });
       };
-      
+
       const handle = async () => {
         console.log(row.shipTypeName);
         console.log(row.dimensions);
@@ -450,20 +157,14 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
 
       return (
         <div className="d-flex">
-          {/* <Link>         <span style={{ margin: "0.5rem", cursor: "pointer" }}>
-          <Eye className="font-medium-3 text-body" />
-          </span>
-          </Link> */}
-
-<Link
-  to={`/dashboard/slipcategory`} // Don't pass UID in the path
-  state={{ 
-    shipTypeName: row.shipTypeName, 
-    dimensions: row.dimensions, 
-    uid: row.uid
-  }}
->
-                       
+          <Link
+            to={`/dashboard/slipcategory`} // Don't pass UID in the path
+            state={{
+              shipTypeName: row.shipTypeName,
+              dimensions: row.dimensions,
+              uid: row.uid,
+            }}
+          >
             <span
               style={{ margin: "0.5rem", cursor: "pointer" }}
               onClick={() => handle(row)}
@@ -484,47 +185,6 @@ export const serverSideColumns =(currentPage,rowsPerPage)=> [
         </div>
       );
     },
-  },
-];
-
-// ** Table Adv Search Column
-export const advSearchColumns = [
-  {
-    name: "shipTypeName",
-    sortable: true,
-    minWidth: "200px",
-    selector: (row) => row.shipTypeName,
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Post",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "City",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.city,
-  },
-  {
-    name: "Date",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.start_date,
-  },
-
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.salary,
   },
 ];
 

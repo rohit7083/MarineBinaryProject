@@ -54,8 +54,8 @@ const CardPayment = () => {
       paymentMethod: "card",
     },
   });
-    const MySwal = withReactContent(Swal);
-  
+  const MySwal = withReactContent(Swal);
+
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
   const { token } = useParams();
@@ -129,7 +129,20 @@ const CardPayment = () => {
     }
   };
 
-  // Expiry Month Options
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth(); // 0-based index (0 = January)
+
+  // Generate the years array (next 10 years)
+  const years = Array.from({ length: 10 }, (_, i) => {
+    const year = currentYear + i;
+    return {
+      value: year,
+      label: year,
+    };
+  });
+
+  // Generate the months array starting from the current month
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
@@ -143,22 +156,7 @@ const CardPayment = () => {
     { value: "10", label: "October" },
     { value: "11", label: "November" },
     { value: "12", label: "December" },
-  ];
-
-  // const currentYear = new Date().getFullYear();
-  // const years = Array.from({ length: 10 }, (_, i) => ({
-  //   value: (currentYear + i).toString().slice(-2), // Get last two digits (e.g., "25" for 2025)
-  //   label: currentYear + i,
-  // }));
-
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 10 }, (_, i) => {
-    const year = currentYear + i;
-    return {
-      value: year, // <--- Full year here
-      label: year,
-    };
-  });
+  ].slice(currentMonth);
 
   const selectedOption = watch("paymentMethod");
 
@@ -168,7 +166,6 @@ const CardPayment = () => {
     setErr("");
     const { cvc, ...rest } = data;
 
-    // {{debugger}}
     // const payload = {
     //   ...rest,
     //   cardExpiryYear: Number(data.cardExpiryYear),
@@ -226,7 +223,6 @@ const CardPayment = () => {
           buttonsStyling: false,
         }).then(() => {
           navigate("/dashbord");
-          
         });
       }
     } catch (error) {
@@ -248,8 +244,8 @@ const CardPayment = () => {
       visa: /^4[0-9]{0,}$/,
       mastercard: /^(5[1-5][0-9]{0,}|2[2-7][0-9]{0,})$/,
       amex: /^3[47][0-9]{0,}$/,
-      discover: /^6(?:011|5[0-9]{2}|22[1-9][0-9]|22[2-8][0-9]|229[0-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/
-,
+      discover:
+        /^6(?:011|5[0-9]{2}|22[1-9][0-9]|22[2-8][0-9]|229[0-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/,
     };
 
     if (re.visa.test(number)) return "Visa";
@@ -258,6 +254,61 @@ const CardPayment = () => {
     if (re.discover.test(number)) return "Discover";
     return "unknown";
   };
+
+  const watchInputes = watch([
+    "cardNumber",
+    "nameOnCard",
+    "cvc",
+    "accountType",
+    "bankName",
+    "nameOnAccount",
+    "accountNumber",
+    "routingNumber",
+  ]);
+
+  useEffect(() => {
+    const sanitizeValue = (value, type) => {
+      if (!value) return value;
+
+      switch (type) {
+        case "cardNumber":
+          return value
+            .replace(/\s+/g, "")
+            .replace(/[^0-9]/g, "")
+            .slice(0, 16);
+        case "nameOnCard":
+        case "bankName":
+          return value.replace(/[^a-zA-Z\s]/g, "");
+        case "cvc":
+          return value.replace(/[^0-9]/g, "").slice(0, 3);
+        case "accountNumber":
+          return value.replace(/[^0-9]/g, "");
+        case "routingNumber":
+          return value.replace(/[^0-9]/g, "").slice(0, 9);
+        default:
+          return value;
+      }
+    };
+
+    const fieldNames = [
+      "cardNumber",
+      "nameOnCard",
+      "cvc",
+      "accountType",
+      "bankName",
+      "nameOnAccount",
+      "accountNumber",
+      "routingNumber",
+    ];
+    fieldNames.forEach((fieldName, index) => {
+      const watchedValue = watchInputes[index];
+      const sanitized = sanitizeValue(watchedValue, fieldName);
+
+      if (watchedValue !== sanitized) {
+        setValue(fieldName, sanitized);
+      }
+    });
+  }, [watchInputes.join("|")]);
 
   return (
     <Row className="d-flex justify-content-center mt-3">
@@ -418,19 +469,19 @@ const CardPayment = () => {
                   </Col>
                 </CardBody>
                 <Container>
-                <Col sm="12" className="mb-2  mt-2">
-                  {err && (
-                    <React.Fragment>
-                      <UncontrolledAlert color="danger">
-                        <div className="alert-body">
-                          <span className="text-danger fw-bold">
-                            <strong>Error :</strong> {err}
-                          </span>
-                        </div>
-                      </UncontrolledAlert>
-                    </React.Fragment>
-                  )}
-                </Col>
+                  <Col sm="12" className="mb-2  mt-2">
+                    {err && (
+                      <React.Fragment>
+                        <UncontrolledAlert color="danger">
+                          <div className="alert-body">
+                            <span className="text-danger fw-bold">
+                              <strong>Error :</strong> {err}
+                            </span>
+                          </div>
+                        </UncontrolledAlert>
+                      </React.Fragment>
+                    )}
+                  </Col>
                 </Container>
                 <CardHeader>
                   <CardTitle tag="h4">Payment Information</CardTitle>
@@ -790,46 +841,6 @@ const CardPayment = () => {
 
                               <Row>
                                 <Col sm="6" className="mb-2">
-                                  <Label for="cardExpiryMonth">
-                                    Expiry Month
-                                  </Label>
-                                  <Controller
-                                    name="cardExpiryMonth"
-                                    control={control}
-                                    rules={{
-                                      required: "Expiry month is required",
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="select"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e);
-                                          handleInputChange(e);
-                                        }}
-                                        onFocus={handleInputFocus}
-                                      >
-                                        <option value="">Select Month</option>
-                                        {months.map((month) => (
-                                          <option
-                                            key={month.value}
-                                            value={month.value}
-                                          >
-                                            {month.label}
-                                          </option>
-                                        ))}
-                                      </Input>
-                                    )}
-                                  />
-
-                                  {errors.cardExpiryMonth && (
-                                    <p className="text-danger">
-                                      {errors.cardExpiryMonth.message}
-                                    </p>
-                                  )}
-                                </Col>
-
-                                <Col sm="6" className="mb-2">
                                   <Label for="cardExpiryYear">
                                     Expiry Year
                                   </Label>
@@ -861,15 +872,52 @@ const CardPayment = () => {
                                       </Input>
                                     )}
                                   />
-
                                   {errors.cardExpiryYear && (
                                     <p className="text-danger">
                                       {errors.cardExpiryYear.message}
                                     </p>
                                   )}
                                 </Col>
+
+                                <Col sm="6" className="mb-2">
+                                  <Label for="cardExpiryMonth">
+                                    Expiry Month
+                                  </Label>
+                                  <Controller
+                                    name="cardExpiryMonth"
+                                    control={control}
+                                    rules={{
+                                      required: "Expiry month is required",
+                                    }}
+                                    render={({ field }) => (
+                                      <Input
+                                        type="select"
+                                        {...field}
+                                        onChange={(e) => {
+                                          field.onChange(e);
+                                          handleInputChange(e);
+                                        }}
+                                        onFocus={handleInputFocus}
+                                      >
+                                        <option value="">Select Month</option>
+                                        {months.map((month) => (
+                                          <option
+                                            key={month.value}
+                                            value={month.value}
+                                          >
+                                            {month.label}
+                                          </option>
+                                        ))}
+                                      </Input>
+                                    )}
+                                  />
+                                  {errors.cardExpiryMonth && (
+                                    <p className="text-danger">
+                                      {errors.cardExpiryMonth.message}
+                                    </p>
+                                  )}
+                                </Col>
                               </Row>
-                              <Row></Row>
                             </Col>
                           </Row>
                         </Container>

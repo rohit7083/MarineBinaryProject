@@ -140,7 +140,7 @@ const ResetPasswordBasic = () => {
 
   const sendOtp = async () => {
     try {
-      // {{debugger}}
+       
       const otpRes = await useJwt.sendOtp(token);
     } catch (error) {
       console.log(error);
@@ -149,7 +149,7 @@ const ResetPasswordBasic = () => {
   };
 
   const checkTokenExpirey = async () => {
-    // {{debugger}}
+     
     try {
       const res = await useJwt.checktoken(token);
       const tokenStatus = res?.data?.content?.token;

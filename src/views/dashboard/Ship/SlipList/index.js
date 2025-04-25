@@ -22,11 +22,9 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 
 const DataTableServerSide = () => {
-  // ** Store Vars
   const dispatch = useDispatch();
   const store = useSelector((state) => state.dataTables);
 
-  // ** States
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
@@ -34,14 +32,14 @@ const DataTableServerSide = () => {
   const [data, setData] = useState([]);
 
   const dataToRender = () => {
+ 
+//     if (data) {
+//       return data;
+//     }
+
     const limit = currentPage * rowsPerPage;
     const start = limit - rowsPerPage;
-    // console.log({
-    //   data: data.slice(start, limit),
-    //   default: data,
-    //   limit,
-    //   start,
-    // });
+   
     return store.data
       .filter((item) => {
         const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
@@ -83,14 +81,7 @@ const DataTableServerSide = () => {
   const handlePerPage = (e) => {
     const perPage = parseInt(e.target.value);
 
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage: parseInt(e.target.value),
-    //     q: searchValue,
-    //   })
-    // );
-    // setRowsPerPage(parseInt(e.target.value));
+  
   };
 
   useEffect(() => {
@@ -100,7 +91,7 @@ const DataTableServerSide = () => {
         console.log(response.data);
 
         setData(response.data); //
-        setLoading(true); // Set loading to true when data fetching starts
+        setLoading(true); 
         await dispatch(
           getData({
             page: currentPage,
@@ -111,13 +102,12 @@ const DataTableServerSide = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Set loading to false when data fetching completes
+        setLoading(false); 
       }
     };
     fetchData();
   }, [dispatch, currentPage, rowsPerPage, searchValue]);
 
-  // ** Custom Pagination
   const CustomPagination = () => {
     const count = Math.ceil(data?.content?.count / rowsPerPage);
     console.log("myCount", count);
@@ -201,20 +191,7 @@ const DataTableServerSide = () => {
             />
           </Col>
         </Row>
-        {/* <div className='react-dataTable'>
-          <DataTable
-            noHeader
-            pagination
-            paginationServer
-            className='react-dataTable'
-            columns={serverSideColumns}
-            sortIcon={<ChevronDown size={10} />}
-            paginationComponent={CustomPagination}
-            data={dataToRender()}
-          />
-        </div> */}
-
-        {/* Add search and filter controls here */}
+       
 
         {loading ? (
           <div className="text-center "  style={{
@@ -229,31 +206,17 @@ const DataTableServerSide = () => {
           }} color="primary" />
           </div>
         ) : (
-          // <div className="react-dataTable">
-          //   <DataTable
-          //     noHeader
-          //     pagination
-          //     paginationServer
-          //     className="react-dataTable"
-          //     columns={serverSideColumns}
-          //     sortIcon={<ChevronDown size={10} />}
-          //     paginationComponent={CustomPagination}
-          //     data={dataToRender()}
-
-          //   />
-          // </div>
-
-          <div style={{ marginTop: "20px" }}>
+             <div style={{ marginTop: "20px" }}>
+              
             <DataTable
               noHeader
               pagination
               paginationServer
               className="react-dataTable"
-              columns={serverSideColumns(currentPage, rowsPerPage)}
+              columns={serverSideColumns(currentPage, rowsPerPage ,data,setData)}
               sortIcon={<ChevronDown size={10} />}
               paginationComponent={CustomPagination}
               data={dataToRender()}
-              // customStyles={customStyles}
               striped
             />
           </div>

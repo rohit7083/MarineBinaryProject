@@ -20,7 +20,7 @@ const WizardHorizontal = () => {
   const steps = [
     {
       id: 'account-details',
-      title: 'Account Details22222',
+      title: 'Account Details',
       subtitle: 'Enter Your Account Details.',
       content: <AccountDetails stepper={stepper} />
     },

@@ -416,11 +416,11 @@ function SlipDetailsForm({ assigned }) {
 
   const fetchData = async () => {
     try {
-      const payload = {}; // Add any necessary payload if required
+      const payload = {}; 
       const response = await useJwt.getslipCatogory(payload);
       console.log(response);
 
-      const options = response.data.content.result.map((item) => ({
+      const options = response?.data?.content?.result.map((item) => ({
         value: item.uid,
         label: item.shipTypeName,
         dimensions: item.dimensions, // Store dimensions for each category

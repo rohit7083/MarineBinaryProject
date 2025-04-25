@@ -68,7 +68,7 @@ const Login = () => {
   const [isPassword, setIspassword] = useState(false);
   const location = useLocation();
   const [encryptedPasss, setEncrypt] = useState(null);
-  // {{debugger}}
+   
   const loginToken = location.state;
   const {
     control,
@@ -122,7 +122,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    // {{debugger}}
+     
     if (password) {
       const encrypted = encryptAES(password);
       setEncrypt(encrypted);

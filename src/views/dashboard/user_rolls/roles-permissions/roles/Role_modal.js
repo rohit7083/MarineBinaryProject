@@ -67,7 +67,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
   };
 
   const onSubmit = async (data) => {
-    {{debugger}}
+    
     data.permissionIds = [];
     Object.keys(permissionData).forEach((key) => {
       if (data[key]) {
@@ -82,7 +82,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
 
     try{
     if (uid) {
-      // {{debugger}}
+       
       const res = await useJwt.updateRole(uid, data);
       console.log(" updated role res:", res);
 
@@ -196,7 +196,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         } else {
           hash.get(item.moduleName).push(item);
         }
-        // {{debugger}}
+         
         if (data?.permissionIds && data.permissionIds.includes(item.id)) {
           data[item.moduleName] = {};
           data[item.moduleName][item.action] = { isSelected: true };
@@ -256,7 +256,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
             <Label className="form-label" for="roleName">
-              Role Name 99
+              Role Name
             </Label>
             <Controller
               name="roleName"
@@ -336,7 +336,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
               {uid ? "Update" : "Submit"}
             </Button>
             <Button type="reset" outline onClick={onReset}>
-              Discard10
+              Discard
             </Button>
           </Col>
         </Row>

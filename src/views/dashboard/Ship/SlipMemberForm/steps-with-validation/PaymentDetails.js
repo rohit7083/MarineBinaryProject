@@ -39,37 +39,6 @@ import { DollarSign, Percent } from "lucide-react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-const paymentModes = {
-  "Credit Card": [
-    "cardNumber",
-    "cardType",
-    "cardExpiryYear",
-    "cardExpiryMonth",
-    "cardCvv",
-    "nameOnCard",
-    "address",
-    "city",
-    "state",
-    "country",
-    "pinCode",
-  ],
-  "Card Swipe": ["cardSwipeTransactionId"],
-  Cheque21: [
-    "bankName",
-    "nameOnAccount",
-    "routingNumber",
-    "accountNumber",
-    "chequeNumber",
-    "chequeImage",
-  ],
-  ChequeACH: [
-    "bankName",
-    "nameOnAccount",
-    "routingNumber",
-    "accountNumber",
-    "chequeNumber",
-  ],
-};
 import { useParams } from "react-router-dom";
 const Address = ({
   stepper,
@@ -79,7 +48,9 @@ const Address = ({
   formStatus,
   fetchLoader,
   slipId,
+  isAssigned,
 }) => {
+  {{debugger}}
   const colourOptions = [
     { value: "Monthly", label: "Monthly" },
     { value: "Annual", label: "Annual" },
@@ -138,7 +109,7 @@ const Address = ({
   const [qr, setQr] = useState(null);
   const MySwal = withReactContent(Swal);
 
-  // const [paidInOption, setPaidInOption] = useState(null);
+  const [isAssign, setIsassign] = useState(isAssigned?.isAssigned);
 
   const [picker, setPicker] = useState(new Date());
   const [totalPayment, setFinalPayment] = useState("");
@@ -378,7 +349,6 @@ const Address = ({
   //Discount Calculations
 
   const handlePercentageChange = (e) => {
-    // {{debugger}}
     const percentage = parseFloat(e.target.value);
     console.log(percentage);
     if (!isNaN(percentage)) {
@@ -391,8 +361,6 @@ const Address = ({
   };
 
   const handleFlatChange = (e) => {
-    // {{debugger}}
-
     const amount = Number(e.target.value);
     setValue("calDisAmount", amount);
     const finalPaymentcal = rentalPriceState - amount;
@@ -428,6 +396,9 @@ const Address = ({
     if (value.length < 6) {
       return "Transaction ID must be at least 6 characters";
     }
+    if (!/^\d+$/.test(value)) {
+      return "Transaction ID must contain only numbers";
+    }
     return true;
   };
 
@@ -449,8 +420,6 @@ const Address = ({
   };
 
   const handleButtonClick = () => {
-    // {{debugger}}
-
     const newIsPercentage = !isPercentage;
     setIsPercentage(newIsPercentage);
 
@@ -497,6 +466,7 @@ const Address = ({
   const companyName = watch("companyName");
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
+
   console.log(acctypeValue);
   const onSubmit = async (data) => {
     setErrMsz("");
@@ -518,7 +488,6 @@ const Address = ({
     if (otpVerify) {
       formData.append("discountAmount", Number(data.discountAmount));
       formData.append("calDisAmount", data.calDisAmount);
-      // {{debugger}}
 
       formData.append("discountType", discountTypedStatus);
     }
@@ -550,7 +519,6 @@ const Address = ({
       formData.append("chequeNumber", data.chequeNumber);
       formData.append("chequeImage", file);
     } else if (paymentMode === "ChequeACH") {
-      // {{debugger}}
       formData.append("bankName", data.bankName);
       formData.append("nameOnAccount", data.nameOnAccount);
       formData.append("routingNumber", data.routingNumber);
@@ -568,46 +536,51 @@ const Address = ({
       console.log("Choose differant payment Method ");
     }
 
-    try {
-      setLoading(true);
-      // {{debugger}}
-      const response = await useJwt.createPayment(formData);
-      const { qr_code_base64 } = response?.data;
-      setQr(qr_code_base64);
-      if (qr_code_base64) {
-        setShowQrModal(true);
-      }
+    if (isAssigned?.isAssigned) {
+      stepper.next();
+    } else {
+      try {
+        setLoading(true);
 
-      if (response?.data?.status === "success") {
-        if (paymentMode == "Payment Link") {
-          MySwal.fire({
-            title: " Payment Link send Successfully",
-            text: "Payment Link is  Successfully Send to your Email Address",
-            icon: "success",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-            buttonsStyling: false,
-          }).then(() => {
-            stepper.next();
+        const response = await useJwt.createPayment(formData);
+        const { qr_code_base64 } = response?.data;
+        setQr(qr_code_base64);
+        if (qr_code_base64) {
+          setShowQrModal(true);
+        }
+
+        if (response?.data?.status === "success") {
+          if (paymentMode == "Payment Link") {
+            MySwal.fire({
+              title: " Payment Link send Successfully",
+              text: "Payment Link is  Successfully Send to your Email Address",
+              icon: "success",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+              buttonsStyling: false,
+            }).then(() => {
+              stepper.next();
+            });
+          }
+        } else {
+        }
+
+        stepper.next();
+      } catch (error) {
+        console.error("Error submitting data:", error);
+
+        if (error.response && error.response.data) {
+          const { status, content } = error.response.data;
+
+          setErrMsz((prev) => {
+            const newMsz = content || "An unexpected error occurred";
+            return prev !== newMsz ? newMsz : prev + " ";
           });
         }
+      } finally {
+        setLoading(false);
       }
-
-      stepper.next();
-    } catch (error) {
-      console.error("Error submitting data:", error);
-
-      if (error.response && error.response.data) {
-        const { status, content } = error.response.data;
-
-        setErrMsz((prev) => {
-          const newMsz = content || "An unexpected error occurred";
-          return prev !== newMsz ? newMsz : prev + " ";
-        });
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -922,61 +895,6 @@ const Address = ({
                     </InputGroupText>
                   </InputGroup>
                 </Col>
-                {/* 
-              <Col className="me-1">
-                <Label className="form-label" for="hf-picker">
-                  Enter
-                  <strong>
-                    {isPercentage ? " Percentage " : " Amount "}
-                  </strong>{" "}
-                  For Discount
-                  <span style={{ color: "red" }}>*</span>
-                </Label>
-
-                <InputGroup className="flex-grow-1">
-                  <Controller
-                    name="discountAmount"
-                    rules={{
-                      required: "Discount is required",
-                      pattern: {
-                        value: /^[0-9]+$/,
-                        message: "Only numeric values are allowed",
-                      },
-                      validate: (value) => {
-                        if (isPercentage) {
-                          return (
-                            (value > 0 && value <= 100) ||
-                            "Percentage must be between 1 and 100"
-                          );
-                        } else {
-                          return value > 0 || "Amount must be greater than 0";
-                        }
-                      },
-                    }}
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        type="text"
-                        readOnly={formData[0]?.otpVerify}
-                        placeholder={
-                          isPercentage ? "Enter percentage" : "Enter amount"
-                        }
-                        onChange={(e) => handleInputChange(e, field)}
-                        invalid={errors.discountAmount ? true : false} // Show error style
-                      />
-                    )}
-                  />
-                  <InputGroupText className="bg-white text-muted">
-                    {isPercentage ? "%" : "$"}
-                  </InputGroupText>
-                </InputGroup>
-                {errors.discountAmount && (
-                  <div className="text-danger" style={{ fontSize: "12px" }}>
-                    {errors.discountAmount.message}
-                  </div>
-                )}
-              </Col> */}
 
                 <Col className="p-0 ">
                   <Label className="form-label" for="landmark">
@@ -1033,53 +951,6 @@ const Address = ({
           </Row>
 
           <Row>
-            {/* <Col md="6" className="mb-1">
-            <Label className="form-label" for="hf-picker">
-              Renewal Date <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Controller
-              name="renewalDate"
-              control={control}
-              rules={{
-                required: "Renewal date is required",
-                validate: (value) => {
-                  const selectedDate = new Date(value);
-                  const tomorrow = new Date();
-                  tomorrow.setDate(tomorrow.getDate() + 1); // Calculate tomorrow's date
-                  tomorrow.setHours(0, 0, 0, 0); 
-
-                  if (selectedDate < tomorrow) {
-                    return "Renewal date cannot be today or in the past.";
-                  }
-
-                  return true;
-                },
-              }}
-              render={({ field }) => (
-                <Flatpickr
-                  id="hf-picker"
-                  className={`form-control ${
-                    errors.renewalDate ? "is-invalid" : ""
-                  }`}
-                  options={{
-                    altInput: true,
-                    altFormat: "Y-m-d",
-                    dateFormat: "Y-m-d",
-                   
-                  }}
-                  value={field.value || ""}
-                  onChange={(date) => {
-                    const formattedDate = date[0]?.toISOString().split("T")[0]; // Format date to 'YYYY-MM-DD'
-                    field.onChange(formattedDate); // Update form value
-                  }}
-                />
-              )}
-            />
-            {errors.renewalDate && (
-              <FormFeedback>{errors.renewalDate.message}</FormFeedback>
-            )}
-          </Col> */}
-
             <Col md="6" className="mb-1">
               <Label className="form-label" for="renewalDate">
                 Renewal Date <span style={{ color: "red" }}>*</span>
@@ -1189,16 +1060,6 @@ const Address = ({
 
           {paymentMode === "Cash" && (
             <>
-              {/* { formData[0]?.cashOtpVerify ? (
-                    <React.Fragment>
-                      <Alert color="success">
-                        <div className="alert-body " style={{ marginTop: "10px" }}>
-                          <span className="ms-1">OTP Verified Successfully ! </span>
-                          <ThumbsUp size={15} />
-                        </div>
-                      </Alert>
-                    </React.Fragment>
-            ):( */}
               <Cash_otp
                 showModal={showModal}
                 setShowModal={setShowModal}
@@ -1377,6 +1238,15 @@ const Address = ({
                         invalid={!!errors.cardCvv}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const numericValue = e.target.value.replace(
+                            /\D/g,
+                            ""
+                          );
+                          if (numericValue.length <= getCvvLength(cardType)) {
+                            field.onChange(numericValue);
+                          }
+                        }}
                       />
                     )}
                   />
@@ -1400,7 +1270,13 @@ const Address = ({
                         invalid={!!errors.nameOnCard}
                         {...field}
                         readOnly={statusThree()}
-                        onChange={(e) => field.onChange(e.target.value)}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1429,6 +1305,13 @@ const Address = ({
                         invalid={!!errors.address}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1453,6 +1336,13 @@ const Address = ({
                         invalid={!!errors.city}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1480,6 +1370,13 @@ const Address = ({
                         invalid={!!errors.state}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1504,6 +1401,13 @@ const Address = ({
                         invalid={!!errors.country}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1535,6 +1439,15 @@ const Address = ({
                         invalid={!!errors.pinCode}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const numericValue = e.target.value.replace(
+                            /\D/g,
+                            ""
+                          );
+                          if (numericValue.length <= getCvvLength(cardType)) {
+                            field.onChange(numericValue);
+                          }
+                        }}
                       />
                     )}
                   />
@@ -1576,6 +1489,13 @@ const Address = ({
                         invalid={!!errors.bankName}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1605,6 +1525,13 @@ const Address = ({
                         invalid={!!errors.nameOnAccount}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1835,6 +1762,13 @@ const Address = ({
                         invalid={!!errors.bankName}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1873,6 +1807,13 @@ const Address = ({
                         invalid={!!errors.nameOnAccount}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
                       />
                     )}
                   />
@@ -1978,16 +1919,25 @@ const Address = ({
                     id="cardSwipeTransactionId"
                     name="cardSwipeTransactionId"
                     rules={{
-                      validate: validateCardSwipeTransactionId, // Custom validation function
+                      required: "Card Swipe Transaction ID is required",
+                      validate: validateCardSwipeTransactionId,
                     }}
                     control={control}
                     render={({ field }) => (
                       <Input
-                        type="text"
+
+                      type="text"
                         placeholder="Enter Transaction ID"
                         invalid={!!errors.cardSwipeTransactionId}
                         {...field}
                         readOnly={statusThree()}
+                        onChange={(e) => {
+                          const numericValue = e.target.value.replace(
+                            /\D/g,
+                            ""
+                          );
+                          field.onChange(numericValue);
+                        }}
                       />
                     )}
                   />
@@ -2043,9 +1993,13 @@ const Address = ({
                     <Controller
                       id="mtcn"
                       name="mtcn"
-                      // rules={{
-                      //   validate: validateCardSwipeTransactionId, // Custom validation function
-                      // }}
+                      rules={{
+                        required: "MTCN Number is required",
+                        pattern: {
+                          value: /^[0-9]{10}$/,
+                          message: "MTCN Number must be exactly 10 digits",
+                        },
+                      }}
                       control={control}
                       render={({ field }) => (
                         <Input
@@ -2054,6 +2008,16 @@ const Address = ({
                           // invalid={!!errors.cardSwipeTransactionId}
                           {...field}
                           // readOnly={statusThree()}
+
+                          onChange={(e) => {
+                            const numericValue = e.target.value.replace(
+                              /\D/g,
+                              ""
+                            );
+                            // if (numericValue.length <= getCvvLength(cardType)) {
+                            field.onChange(numericValue);
+                            // }
+                          }}
                         />
                       )}
                     />
@@ -2074,9 +2038,13 @@ const Address = ({
                     <Controller
                       id="otherTransactionId"
                       name="otherTransactionId"
-                      // rules={{
-                      //   validate: validateCardSwipeTransactionId, // Custom validation function
-                      // }}
+                      rules={{
+                        required: "Transaction ID is required",
+                        pattern: {
+                          value: /^[0-9]{10}$/,
+                          message: "Transaction ID must be exactly 10 digits",
+                        },
+                      }}
                       control={control}
                       render={({ field }) => (
                         <Input
@@ -2085,6 +2053,13 @@ const Address = ({
                           invalid={!!errors.pinCode}
                           {...field}
                           readOnly={statusThree()}
+                          onChange={(e) => {
+                            const numericValue = e.target.value.replace(
+                              /\D/g,
+                              ""
+                            );
+                            field.onChange(numericValue);
+                          }}
                         />
                       )}
                     />

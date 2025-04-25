@@ -1,0 +1,48 @@
+async function fetchTableData() {
+  try {
+    setLoading(true);
+    const { data } = await useJwt.userpermission();
+    const { content } = data;
+    setTableData({ count: content.count, results: content.result });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+
+
+const dataToRender = () => {
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  return tableData.results.slice(startIndex, endIndex);
+};
+
+
+const handlePagination = (page) => {
+  setCurrentPage(page.selected + 1);
+};
+
+
+const handlePerPage = (e) => {
+  const newLimit = parseInt(e.target.value);
+  setRowsPerPage(newLimit);
+  setCurrentPage(1);
+};
+
+
+
+const CustomPagination = () => {
+  const count = Math.ceil(tableData.results.length / rowsPerPage);
+  return (
+    <ReactPaginate
+      pageCount={count}
+      // ...rest stays the same
+    />
+  );
+};
+
+
+

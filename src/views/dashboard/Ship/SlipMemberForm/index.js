@@ -24,7 +24,7 @@ const WizardModern = () => {
   const [slipIID, setSlipIID] = useState("");
   const [memberID, setMemberID] = useState(null);
   const [fetchLoader, setFetchLoader] = useState(false);
-// {{debugger}}
+ const [sId,setId]=useState(null);
   const [formData, setFormData] = useState({
     vessel: {},
     member: {},
@@ -39,15 +39,15 @@ const uid=location.state?.uid || "";
 
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         setFetchLoader(true);
         const response = await useJwt.getslip(uid);
         const { content } = response.data;
         const { vessel, member, payment } = content;
-        console.log("content", content);
-
+        console.clear();
+        console.log("conntent Slip id ", content);
+setId(content);
         // vessel details
         vessel.slipName = {
           label: vessel.slipName,
@@ -82,7 +82,8 @@ const uid=location.state?.uid || "";
     
   }, [formData]);
 
-  // {{debugger}}
+  console.log("sui",sId);
+  
   const steps = [
     {
       id: "Vessel-details",
@@ -115,6 +116,7 @@ const uid=location.state?.uid || "";
           setMemberID={setMemberID}
           memberID={memberID}
           fetchLoader={fetchLoader}
+          sId={sId?.id}
         />
       ),
     },
@@ -132,6 +134,7 @@ const uid=location.state?.uid || "";
           memberID={memberID}
           type="wizard-modern"
           fetchLoader={fetchLoader}
+          isAssigned={sId}
         />
       ),
     },
@@ -146,6 +149,8 @@ const uid=location.state?.uid || "";
           stepper={stepper}
           type="wizard-modern"
           slipIID={slipIID}
+          sId={sId}
+
         />
       ),
     },

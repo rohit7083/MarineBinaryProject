@@ -144,7 +144,7 @@ const RoleCards = () => {
           },
           buttonsStyling: false,
         }).then(() => {
-          {{debugger}}
+          
           navigate("/dashboard/user_rolls/roles-permissions/createuser", {
             state: { forceRefresh: true },
           });
@@ -185,7 +185,7 @@ const RoleCards = () => {
 
   const fetchRole = async () => {
     try {
-      // {{debugger}}
+       
       const { data } = await useJwt.userpermission();
       const { content } = data;
 
@@ -233,7 +233,7 @@ const RoleCards = () => {
             )
           : true,
     };
-    // {{debugger}}
+     
     setRequirements(isValid);
     setIsPasswordValid(Object.values(isValid).every(Boolean)); // Set true only if all conditions pass
   };

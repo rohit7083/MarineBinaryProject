@@ -58,7 +58,7 @@ const AddCardExample = ({
 }) => {
   // ** States
   const [cardType, setCardType] = useState('')
-// {{debugger}}
+ 
   // ** Hooks
   const {
     reset,

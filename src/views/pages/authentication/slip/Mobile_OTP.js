@@ -52,7 +52,7 @@ const TwoStepsBasic = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState(""); // ** React Hook Form Setup
   const [loading, setLoading] = useState(false);
-  // {{debugger}}
+   
   const userData = location.state?.userData;
   const {
     control,
@@ -223,8 +223,7 @@ const TwoStepsBasic = () => {
               Verify OTP For Login 💬
             </CardTitle>
             <CardText className="mb-75">
-              We sent OTP to your Registered Mobile Number.Enter the code from
-              the Mobile Number in the field below.
+            We have sent an OTP to your <strong>Google Authenticator app</strong> . Please enter the code from your mobile device in the field below
             </CardText>
             <CardText className="fw-bolder mb-2"></CardText>
             <Form

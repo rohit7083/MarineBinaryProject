@@ -25,6 +25,7 @@ const AccountDetails = ({
   setSlipIID,
   fetchLoader,
 }) => {
+  
   const MySwal = withReactContent(Swal);
 
   const [slipNames, setSlipNames] = useState([]);
@@ -46,7 +47,6 @@ const AccountDetails = ({
       const response = await useJwt.getslip();
 
       const { result } = response.data.content;
-      console.log("result from the vessel ", result);
 
       const NotAssigned = result
         .filter((item) => !item.isAssigned)
@@ -57,7 +57,6 @@ const AccountDetails = ({
           dimensions: item.dimensions,
         }));
 
-      console.log("flseoption", NotAssigned);
 
       setSlipNames(NotAssigned);
 
@@ -72,8 +71,6 @@ const AccountDetails = ({
       console.log(error);
     }
   }
-
-
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
@@ -103,7 +100,6 @@ const AccountDetails = ({
     finaleData.vesselName = data.vesselName;
     finaleData.uid = data.uid ? data.uid : "";
 
-    console.log("Final data before submitting:", finaleData); // 🔍 Debugging
 
     try {
       if (slipId) {
@@ -146,8 +142,7 @@ const AccountDetails = ({
         const { status, content } = error.response.data;
 
         seterrMsz((prev) => {
-          const newMsz =
-            content || "Session Expired ! Login Again  ";
+          const newMsz = content || "Session Expired ! Login Again  ";
           return prev !== newMsz ? newMsz : prev + " ";
         });
       }
@@ -159,66 +154,7 @@ const AccountDetails = ({
   const renderField = (fields) => {
     if (!fields) return null;
 
-    // return Object.keys(fields).map((dimKey) => (
-    //   <Col key={dimKey} md="6" className="mb-1">
-    //     <Label className="form-label" htmlFor={dimKey}>
-    //       {"Vessel " + dimKey.charAt(0).toUpperCase() + dimKey.slice(1)}{" "}
-    //       <span style={{ color: "red" }}>*</span>
-    //     </Label>
-    //     <Controller
-    //       name={`dimensionVal.${dimKey}`}
-    //       control={control}
-    //       rules={{
-    //         ...(dimKey === "width" || dimKey === "height"
-    //           ? {
-    //               validate: {
-    //                 required: (value) =>
-    //                   value !== "" || `${dimKey} field is required`,
-    //                 isNumber: (value) =>
-    //                   !isNaN(parseFloat(value)) || "Value must be a number",
-    //                 maxValue: (value) => {
-    //                   const numberValue = parseFloat(value);
-    //                   return (
-    //                     numberValue <= watch("slipName").dimensions[dimKey] ||
-    //                     `Value must be less than ${
-    //                       watch("slipName").dimensions[dimKey]
-    //                     }`
-    //                   );
-    //                 },
-    //                 nonNegative: (value) => {
-    //                   const numberValue = parseFloat(value);
-    //                   return numberValue > 0 || "Value must not be negative";
-    //                 },
-    //               },
-    //             }
-    //           : {}),
-    //         ...(dimKey === "length" || dimKey === "width" || dimKey === "height"
-    //           ? {
-    //               required: {
-    //                 value: true,
-    //                 message: `${dimKey} field is required`,
-    //               },
-    //             }
-    //           : {}),
-    //       }}
-    //       render={({ field, fieldState }) => (
-    //         <div>
-    //           <Input
-    //             type="text"
-    //             placeholder={`Enter Vessel ${dimKey}`}
-    //             invalid={!!fieldState?.error}
-    //             {...field}
-    //           />
-    //           {fieldState?.error && (
-    //             <p className="text-danger">{fieldState?.error?.message}</p>
-    //           )}
-    //         </div>
-    //       )}
-    //     />
-    //   </Col>
-    // ));
-  
-  
+
     return Object.keys(fields).map((dimKey) => (
       <Col key={dimKey} md="6" className="mb-1">
         <Label className="form-label" htmlFor={dimKey}>
@@ -237,18 +173,11 @@ const AccountDetails = ({
               value: /^\d*\.?\d+$/, // ✅ Only allows numbers and floats (e.g., 123, 45.67)
               message: "Only numbers and decimals are allowed",
             },
-            // validate: {
-            //   maxValue: (value) => {
-            //     const numberValue = parseFloat(value);
-            //     return (
-            //       numberValue <= watch("slipName").dimensions[dimKey] ||
-            //       `Value must be less than ${watch("slipName").dimensions[dimKey]}`
-            //     );
-            //   },
+         
             validate: {
               maxValue: (value) => {
                 const numberValue = parseFloat(value);
-            
+
                 if (dimKey === "width" || dimKey === "height") {
                   const maxLimit = watch("slipName")?.dimensions?.[dimKey];
                   return (
@@ -256,11 +185,10 @@ const AccountDetails = ({
                     `Value must be less than or equal to ${maxLimit}`
                   );
                 }
-            
+
                 return true; // Skip validation for other keys like length, etc.
               },
-            
-            
+
               nonNegative: (value) => {
                 const numberValue = parseFloat(value);
                 return numberValue > 0 || "Value must not be negative";
@@ -278,7 +206,7 @@ const AccountDetails = ({
                 onChange={(e) => {
                   let newValue = e.target.value.replace(/[^0-9.]/g, ""); // ✅ Remove non-numeric characters
                   newValue = newValue.replace(/(\..*)\./g, "$1"); // ✅ Prevent multiple dots
-                  onChange(newValue); // ✅ Update form state
+                  onChange(newValue); 
                 }}
               />
               {fieldState?.error && (
@@ -289,12 +217,7 @@ const AccountDetails = ({
         />
       </Col>
     ));
-    
-  
-  
   };
-
- 
 
   if (fetchLoader)
     return (
@@ -360,40 +283,43 @@ const AccountDetails = ({
             {errors.slipName && (
               <FormFeedback>{errors.slipName.message}</FormFeedback>
             )}
-         </Col>
+          </Col>
 
-
-<Col md="6" className="mb-1">
-  <Label className="form-label" for="vesselName">
-    Vessel Name <span style={{ color: "red" }}>*</span>
-  </Label>
-  <Controller
-    control={control}
-    name="vesselName"
-    rules={{
-      required: "Vessel Name is required",
-      pattern: {
-        value: /^[a-zA-Z0-9\s]+$/, // Allows only letters, numbers, and spaces
-        message: "Special characters are not allowed",
-      },
-    }}
-    render={({ field: { onChange, value, ...rest } }) => (
-      <Input
-        type="text"
-        placeholder="Enter Vessel Name"
-        invalid={!!errors.vesselName}
-        value={value}
-        {...rest}
-        onChange={(e) => {
-          const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, ""); 
-          onChange(sanitizedValue); 
-        }}
-      />
-    )}
-  />
-  {errors.vesselName && <FormFeedback>{errors.vesselName.message}</FormFeedback>}
-</Col>
-
+          <Col md="6" className="mb-1">
+            <Label className="form-label" for="vesselName">
+              Vessel Name <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              control={control}
+              name="vesselName"
+              rules={{
+                required: "Vessel Name is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9\s]+$/, // Allows only letters, numbers, and spaces
+                  message: "Special characters are not allowed",
+                },
+              }}
+              render={({ field: { onChange, value, ...rest } }) => (
+                <Input
+                  type="text"
+                  placeholder="Enter Vessel Name"
+                  invalid={!!errors.vesselName}
+                  value={value}
+                  {...rest}
+                  onChange={(e) => {
+                    const sanitizedValue = e.target.value.replace(
+                      /[^a-zA-Z0-9\s]/g,
+                      ""
+                    );
+                    onChange(sanitizedValue);
+                  }}
+                />
+              )}
+            />
+            {errors.vesselName && (
+              <FormFeedback>{errors.vesselName.message}</FormFeedback>
+            )}
+          </Col>
         </Row>
         <Row>
           <Col md="6" className="mb-1">
@@ -403,23 +329,25 @@ const AccountDetails = ({
             <Controller
               control={control}
               rules={{
-                required:"Vessel Registration Number Is Required",
-                pattern:{
-                  value:/^[a-zA-Z0-9]+$/,
-                  message:"Special Character Are Not Allowed",
-                }
-
+                required: "Vessel Registration Number Is Required",
+                pattern: {
+                  value: /^[a-zA-Z0-9]+$/,
+                  message: "Special Character Are Not Allowed",
+                },
               }}
               name="vesselRegistrationNumber"
-              render={({ field:{onChange, value, ...field} }) => (
+              render={({ field: { onChange, value, ...field } }) => (
                 <Input
                   type="text"
                   placeholder="Enter Registration Number"
                   invalid={errors.vesselRegistrationNumber && true}
                   value={value}
                   {...field}
-                  onChange={(e)=>{
-                    const sanitizedNumber=e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                  onChange={(e) => {
+                    const sanitizedNumber = e.target.value.replace(
+                      /[^a-zA-Z0-9]/g,
+                      ""
+                    );
                     onChange(sanitizedNumber);
                   }}
                 />
@@ -445,13 +373,23 @@ const AccountDetails = ({
               </span>
             </Button>
 
-            <Button type="submit" color="primary" disabled={loadinng} className="btn-next">
+            <Button
+              type="submit"
+              color="primary"
+              disabled={loadinng}
+              className="btn-next"
+            >
               <span className="align-middle d-sm-inline-block d-none">
-                {loadinng ? <>
-                <span>Loading.. </span>
-               <Spinner size="sm" />  </>: "Next"}
+                {loadinng ? (
+                  <>
+                    <span>Loading.. </span>
+                    <Spinner size="sm" />{" "}
+                  </>
+                ) : (
+                  "Next"
+                )}
               </span>
-              
+
               {loadinng ? null : (
                 <ArrowRight size={14} className="align-middle ms-sm-25 ms-0" />
               )}

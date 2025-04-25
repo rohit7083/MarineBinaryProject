@@ -122,7 +122,7 @@ const uid=location.state?.uid || ""
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        // {{debugger}}
+         
         const payload = {
           slipName: userData.slipName,
           electric: userData.electric,

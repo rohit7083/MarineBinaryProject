@@ -159,7 +159,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const previousPassword = watch("previousPassword");
 
   useEffect(() => {
-    // {{debugger}}
+     
     if (onchnagePass && handleOtp && confirmPassword && previousPassword) {
       const encryptedotp = encryptAES(handleOtp);
       const encryptPass = encryptAES(onchnagePass);

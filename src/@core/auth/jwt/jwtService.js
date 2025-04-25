@@ -36,7 +36,7 @@ export default class JwtService {
         }
 
         // ** If token is present add it to request's Authorization Header
-        // {{debugger}}
+         
         if (accessToken) {
           // console.log("Access Token:", accessToken);
 
@@ -95,7 +95,7 @@ export default class JwtService {
 
   async getLocation() {
     try {
-      // {{debugger}}
+       
       if (!navigator.geolocation) {
 
         localStorage.setItem("locationEnabled","false")
@@ -263,7 +263,7 @@ export default class JwtService {
 
 
   verifyEmail(...args) {
-    // {{debugger}}
+     
     return axios.post(this.jwtConfig.verifyEmail, ...args);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
@@ -278,7 +278,7 @@ export default class JwtService {
   }
 
   sendOtp(token="") {
-    // {{debugger}}
+     
     return axios.get(this.jwtConfig.sendOtp+token);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }

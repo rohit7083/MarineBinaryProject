@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   Card,
   CardHeader,
@@ -18,6 +21,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useLocation } from "react-router-dom";
+import { Rss } from "react-feather";
 const MySwal = withReactContent(Swal);
 
 function Index() {
@@ -32,11 +36,11 @@ function Index() {
     shipTypeName: "",
     dimensions: new Set(),
   });
-// {{debugger}}
-  const location=useLocation();
-  const uid=location.state?.uid || "";
-  console.log("uid",uid);
-  
+
+  const location = useLocation();
+  const uid = location.state?.uid || "";
+  console.log("uid", uid);
+
   useEffect(() => {
     if (uid) {
       const fetchSlipCategory = async () => {
@@ -158,18 +162,23 @@ function Index() {
 
         if (uid) {
           await useJwt.updateslipCatogory(uid, payload);
-          MySwal.fire({
-            title: "Successfully Updated",
-            text: "Your Category was updated successfully",
-            icon: "success",
-          }).then(() => navigate("/slip_Management/sliplist"));
+         
+          toast.success(" Slip Category Updated Successful!", {
+            onClose: () => {
+              navigate("/slip_Management/sliplist");
+            },
+          });
+        
         } else {
-          await useJwt.postslipCatogory(payload);
-          MySwal.fire({
-            title: "Created Successfully",
-            text: "Your Category was created successfully",
-            icon: "success",
-          }).then(() => navigate("/slip_Management/sliplist"));
+          // {{debugger}}
+          const res = await useJwt.postslipCatogory(payload);
+          if (res.status === 201) {
+            toast.success(" Slip Category Created Successful!", {
+              onClose: () => {
+                navigate("/slip_Management/sliplist");
+              },
+            });
+          }
         }
       } catch (error) {
         console.error("API Error:", error);
@@ -195,6 +204,19 @@ function Index() {
 
   return (
     <Card>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition={Bounce}
+      />
       <CardHeader>
         <CardTitle tag="h4">
           {uid ? "Edit Slip Category" : "Add Slip Category"}
@@ -206,23 +228,22 @@ function Index() {
         </div>
       ) : (
         <CardBody>
-            <Row className="mb-1">
-              <Label sm="3" for=""></Label>
-              <Col sm="12">
-                {errorMessage && (
-                  <React.Fragment>
-                    <UncontrolledAlert color="danger">
-                      <div className="alert-body">
-                        <span className="text-danger fw-bold">
-                          {errorMessage}
-                        </span>
-                      </div>
-                    </UncontrolledAlert>
-                  </React.Fragment>
-                )}
-              </Col>
-            </Row>
-         
+          <Row className="mb-1">
+            <Label sm="3" for=""></Label>
+            <Col sm="12">
+              {errorMessage && (
+                <React.Fragment>
+                  <UncontrolledAlert color="danger">
+                    <div className="alert-body">
+                      <span className="text-danger fw-bold">
+                        {errorMessage}
+                      </span>
+                    </div>
+                  </UncontrolledAlert>
+                </React.Fragment>
+              )}
+            </Col>
+          </Row>
 
           <Form onSubmit={handleSubmit}>
             {/* Category Input */}
@@ -284,7 +305,15 @@ function Index() {
                   color="primary"
                   type="submit"
                 >
-                  {loading ? <>Loading... <Spinner size="sm" /></> : uid ? "Update" : "Submit"}
+                  {loading ? (
+                    <>
+                      Loading... <Spinner size="sm" />
+                    </>
+                  ) : uid ? (
+                    "Update"
+                  ) : (
+                    "Submit"
+                  )}
                 </Button>
               </Col>
             </Row>

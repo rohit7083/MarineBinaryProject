@@ -1,12 +1,14 @@
 // ** React Imports
 import { Fragment, useState, useEffect, memo } from "react";
 import { debounce } from "lodash";
+import React, { useCallback } from 'react';
+
 import { Spinner } from "reactstrap";
 // ** Table Columns
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** Third Party Components
 import ReactPaginate from "react-paginate";
-import { ChevronDown, Edit2, Trash } from "react-feather";
+import { ChevronDown, Edit2, Trash, Watch } from "react-feather";
 import DataTable from "react-data-table-component";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -69,14 +71,13 @@ const DataTableServerSide = () => {
   // ** Get data on mount
   const MySwal = withReactContent(Swal);
 
-  async function fetchTableData(offset = 0, limit = 10) {
+  async function fetchTableData() {
     try {
+       
       const { data } = await useJwt.userpermission(
-        `?offset=${offset}&limit=${limit}`
       );
       setLoading(true);
       const { content } = data;
-
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
@@ -89,18 +90,15 @@ const DataTableServerSide = () => {
     fetchTableData();
   }, []);
 
-
-  const debouncedFilter = debounce((value) => handleFilter(value), 300);
-
+  
   const handleFilter = (value) => {
     setSearchTerm(value);
-
     if (value) {
-      const filteredResults = tableData.results.filter((row) =>
-        row?.roleName?.toLowerCase().includes(value?.toLowerCase() || "")
+      const filteredResults = tableData?.results.filter((row) =>
+        row?.roleName?.toLowerCase().includes(value.toLowerCase())
       );
-      
-            setTableData((prev) => ({
+  
+      setTableData((prev) => ({
         ...prev,
         results: filteredResults,
       }));
@@ -108,25 +106,26 @@ const DataTableServerSide = () => {
       fetchTableData((currentPage - 1) * rowsPerPage, rowsPerPage);
     }
   };
+  
+  const debouncedFilter = useCallback(
+    debounce((value) => {
+      handleFilter(value);
+    }, 300),
+    [tableData?.results]
+  );
+  
 
-  // ** Function to handle Pagination and get data
+
   const handlePagination = (page) => {
     setCurrentPage(page.selected + 1);
-    fetchTableData(page.selected * 10, 10);
   };
-
-  // ** Function to handle per page
+  
   const handlePerPage = (e) => {
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage: parseInt(e.target.value),
-    //     q: searchValue
-    //   })
-    // )
-    // setRowsPerPage(parseInt(e.target.value))
+    const newLimit = parseInt(e.target.value);
+    setRowsPerPage(newLimit);
+    setCurrentPage(1);
   };
-
+  
   const handleDelete = async (uid) => {
     return MySwal.fire({
       title: "Are you sure?",
@@ -224,10 +223,11 @@ const DataTableServerSide = () => {
     },
   ];
 
-  // ** Custom Pagination
   const CustomPagination = () => {
-    const count = Math.ceil(tableData.count / rowsPerPage);
-
+    // const count = Math.ceil(tableData.count / rowsPerPage);
+      const count = Math.ceil(tableData.results.length / rowsPerPage);
+    
+    
     return (
       <ReactPaginate
         previousLabel={""}
@@ -255,9 +255,14 @@ const DataTableServerSide = () => {
   };
 
   const dataToRender = () => {
-    return tableData.results;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return tableData.results.slice(startIndex, endIndex);
+  
+    // return tableData?.results;
  
   };
+
 
   return (
     <Fragment>
@@ -296,13 +301,15 @@ const DataTableServerSide = () => {
               Search
             </Label>
             <Input
-              className="dataTable-filter"
-              type="text"
-              bsSize="sm"
-              id="search-input"
-              value={searchValue}
-              onChange={handleFilter}
-            />
+  className="dataTable-filter"
+  name="search"
+  placeholder="Search..."
+  type="text"
+  bsSize="sm"
+  id="search-input"
+  onChange={(e) => debouncedFilter(e.target.value)}
+/>
+
           </Col>
         </Row>
         {loading ? (

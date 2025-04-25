@@ -13,6 +13,7 @@ import importIcon from '../../../../assets/icons/file-import.svg'
 import AddCategoryIcon from '../../../../assets/icons/category-alt.svg'
 import addStocks from '../../../../assets/icons/supplier-alt.svg'
 import ManageStocks from '../../../../assets/icons/workflow-setting.svg'
+import vendor from '../../../../assets/icons/vendor.png'
 import addTax from '../../../../assets/icons/calendar-event-tax.svg'
 // ** Add New Modal Component
 
@@ -332,10 +333,10 @@ const DataTableWithButtons = () => {
           <div>
             <Link to="/pos/VendorManage">
               <img
-                width="25"
-                height="25"
+                width="28"
+                height="28"
                 id="Vendar"
-                src={ManageStocks}
+                src={vendor}
                 alt="list-is-empty"
               />
               <Tooltip

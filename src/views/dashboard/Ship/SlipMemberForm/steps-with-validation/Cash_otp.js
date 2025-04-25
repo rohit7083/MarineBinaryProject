@@ -49,9 +49,9 @@ const Cash_otp = ({
     setError,
     formState: { errors },
   } = useForm();
-  // {{debugger}}
+   
   const handleOTP = async () => {
-    // {{debugger}}
+     
     try {
       const payload = {
         slipId: slipIID,
@@ -62,7 +62,7 @@ const Cash_otp = ({
       if (response?.status == 200) {
         setCountdownEndTime(Date.now() + 40000);
       }
-      // {{debugger}}
+       
       const token = response?.data?.content;
       console.log("response from cash otp", response);
 
@@ -77,7 +77,7 @@ const Cash_otp = ({
 
   const onSubmit = async (data) => {
     setErrorMsz("");
-    // {{debugger}}
+     
     console.log(data);
 
     try {
@@ -86,7 +86,7 @@ const Cash_otp = ({
         return;
       }
 
-      //   {{debugger}}
+      //   
       const payload = {
         cashOtp: Number(data.otp.join("")),
       };

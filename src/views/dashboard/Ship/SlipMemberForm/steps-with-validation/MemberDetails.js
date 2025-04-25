@@ -36,6 +36,7 @@ const PersonalInfo = ({
   setMemberID,
   memberID,
   fetchLoader,
+  sId,
 }) => {
   console.log({ formData });
 
@@ -189,6 +190,11 @@ const PersonalInfo = ({
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
+    {
+      {
+        debugger;
+      }
+    }
     if (option?.details) {
       console.log("Selected Member Details:", option.details);
     }
@@ -197,17 +203,22 @@ const PersonalInfo = ({
     setValue("firstName", option.details.firstName || "");
     setValue("lastName", option.details.lastName || "");
     setValue("emailId", option.details.emailId || "");
-    setValue("countryCode", option.details.countryCode || "");
+
+    const selectedCountryCodeOption = countryOptions.find(
+      (opt) => opt.value === option.details.countryCode
+    );
+    setValue("countryCode", selectedCountryCodeOption || null);
+    
+    // setValue("countryCode", option.details.countryCode || "");
 
     setValue("phoneNumber", option.details.phoneNumber || "");
     setValue("address", option.details.address || "");
     setValue("city", option.details.city || "");
     setValue("state", option.details.state || "");
     setValue("postalCode", option.details.postalCode || "");
-    setValue("secondaryGuestName", option.details.secondaryGuestName || "");
-    setValue("secondaryEmail", option.details.secondaryEmail || "");
+    setValue("secondaryGuestName", option.details.secondaryGuestName || null);
+    setValue("secondaryEmail", option.details.secondaryEmail || null);
     setValue("country", option.details.country || "");
-    console.log(option?.details, "option?.details");
 
     setVisible(true);
   };
@@ -220,12 +231,11 @@ const PersonalInfo = ({
     setLoading(true);
     const payload = {
       ...data,
-      slipId: slipIID,
-      countryCode: data?.countryCode?.value,
+      slipId: slipIID || sId,
+      countryCode: data?.countryCode?.value || data?.countryCode,
     };
     let memberId;
     try {
-      // {{debugger}}
       if (payload.createdBy) {
         const res = await useJwt.UpdateMember(formData.uid, payload);
         // ** set here
@@ -541,6 +551,9 @@ const PersonalInfo = ({
                 name="countryCode"
                 control={control}
                 // defaultValue={countryOptions[0]}
+                rules={{
+                  required: "Country code is required",
+                }}
                 render={({ field }) => (
                   <Select
                     {...field}

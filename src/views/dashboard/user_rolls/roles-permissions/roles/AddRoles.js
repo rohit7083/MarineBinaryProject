@@ -25,6 +25,7 @@ import { Copy, Info, X } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 import { Spinner } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
@@ -47,6 +48,7 @@ const AddRoles = (props) => {
   // ** Props
   const { show, toggle, uid, modalType, row } = props;
   const MySwal = withReactContent(Swal);
+  const navigate = useNavigate(); 
 
   const [fetchLoader, setFetchLoader] = useState(false);
   // ** States
@@ -80,7 +82,7 @@ const AddRoles = (props) => {
   };
 
   const onSubmit = async (data) => {
-    // {{debugger}}
+     
     const updatedData = extractUIDFromPermissionList(data);
     try {
       setProcessing(true);
@@ -100,12 +102,12 @@ const AddRoles = (props) => {
             },
             buttonsStyling: false,
           }).then(() => {
-            {{debugger}}
-            reset();
-
+            
+            
             navigate("/dashboard/user_rolls/roles-permissions/roles", {
               state: { forceRefresh: true },
             });
+            reset();
           });
         }
 
@@ -307,10 +309,13 @@ const AddRoles = (props) => {
                 </Table>
               </Col>
               <Col className="text-center mt-2" xs={12}>
+              <Button type="reset" outline onClick={onReset}>
+                  Discard
+                </Button>
                 <Button
                   type="submit"
                   color="primary"
-                  className="me-1"
+                  className="mx-1"
                   onClick={() => clearErrors()}
                   disabled={processingData}
                 >
@@ -322,9 +327,7 @@ const AddRoles = (props) => {
                     "Submit"
                   )}
                 </Button>
-                <Button type="reset" outline onClick={onReset}>
-                  Discard
-                </Button>
+                
               </Col>
             </Row>
           </>

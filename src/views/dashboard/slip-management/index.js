@@ -4,22 +4,29 @@ import { Clipboard, DollarSign, FileText, Users } from "react-feather";
 // ** Components
 import SlipDetails from "./forms/SlipDetails";
 // import MemberInfo from "./forms/MemberInfo";
-import MemberIndex from './forms/memberInfo/index';
+import MemberIndex from "./forms/memberInfo/index";
 import Index from "./forms/slip_rental";
 import OtherPayment from "./forms/OtherPayment";
 import ViewDocuments from "./forms/ViewDocuments";
 import { Book } from "lucide-react";
 import useJwt from "@src/auth/jwt/useJwt";
-import { useParams } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 const TabsCentered = () => {
   const [error, setError] = useState("");
-const[SlipData,setSlipData]=useState({});
-const [fetchLoader,setFetchLoader]=useState(false);
-
+  const [SlipData, setSlipData] = useState({});
+  const [fetchLoader, setFetchLoader] = useState(false);
+  const location = useLocation();
+  const uid = location?.state?.uid;
+  const allData = location?.state?.slipData;
   const [active, setActive] = useState("1");
-  const { uid } = useParams();
-  console.log("uid", uid);
+  console.clear();
+  console.log("allData", allData);
+
+  useEffect(() => {
+    setSlipData(allData);
+  }, [allData]);
+  console.clear();
+console.log("SlipData", SlipData);
 
   const toggle = (tab) => {
     if (active !== tab) {
@@ -27,29 +34,8 @@ const [fetchLoader,setFetchLoader]=useState(false);
     }
   };
 
-  const fetchSlipData = async () => {
-    try {
-      if (uid) {
-        setFetchLoader(true);
 
-        const resp = await useJwt.getslip(uid);
-        console.log("all data", resp);
-        setSlipData(resp.data.content);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    finally{
-      setFetchLoader(false);
-    }
-  };
 
-  useEffect(() => {
-    fetchSlipData();
-  }, []);
-
-  console.log("SlipData", SlipData);
-  
   return (
     <React.Fragment>
       <Nav className="justify-content-center" tabs>
@@ -115,18 +101,14 @@ const [fetchLoader,setFetchLoader]=useState(false);
       <TabContent className="py-50" activeTab={active}>
         <TabPane tabId="1">
           <SlipDetails
-                    fetchLoader={fetchLoader}
-                    assigned={SlipData.isAssigned}
-                    />
+            fetchLoader={fetchLoader}
+            // assigned={SlipData.isAssigned}
+          />
         </TabPane>
 
         <TabPane tabId="2">
           {/* <MemberInfo  */}
-          <MemberIndex
-          SlipData={SlipData}
-          fetchLoader={fetchLoader}
-        
-           />
+          <MemberIndex SlipData={SlipData} fetchLoader={fetchLoader} />
         </TabPane>
 
         <TabPane tabId="3">

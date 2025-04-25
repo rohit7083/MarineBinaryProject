@@ -3,15 +3,17 @@ import React from "react";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import Table from "./Table";
 // import RoleCards from './RoleCards'
+import Createuser from "./Createuser";
+
 import { useEffect } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Card, CardBody } from "reactstrap";
 const Roles = ({ data }) => {
   // const [allRoleName, setallRoleName] = React.useState([]);
-  const [tableData, setTableData] = React.useState({
-    count: 0,
-    results: [],
-  });
+  // const [tableData, setTableData] = React.useState({
+  //   count: 0,
+  //   results: [],
+  // });
 
   // useEffect(()=>{
   //   setTableData({
@@ -19,35 +21,37 @@ const Roles = ({ data }) => {
   //     results:permisionTableList.content.result
   //   })
   // },[])
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await useJwt.getallSubuser();
-        const { content } = data;
-        console.log(data);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const { data } = await useJwt.getallSubuser();
+  //       const { content } = data;
+  //       console.log("content", content);
 
-        setTableData({ count: content.count, results: content.result });
-        // setallRoleName("roles",content.result.map((role) => role.roleName));
-      } catch (error) {
-        console.log(error);
-      } finally {
-      }
-    })();
-  }, []);
+  //       setTableData({ count: content.count, results: content.result });
+  //       // setallRoleName("roles",content.result.map((role) => role.roleName));
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //     }
+  //   })();
+  // }, []);
   return (
     <Fragment>
       <Card>
         <CardBody>
 
-       
-      <h3 className="mt-50">Add new user </h3>
-      <p className="mb-2">
-        Find all of your company’s administrator accounts and their associate
-        roles.
-      </p>
+       <div className="d-flex justify-content-between align-items-center flex-wrap ">
+      <h3 className="">Add new user </h3>
+      
+       <div className="mx-2">
+                  <Createuser />
+      
+                  </div>
+                  </div>
       <hr/>
       <div className="app-user-list">
-        <Table data={tableData} />
+        <Table  />
       </div>
       </CardBody>
       </Card>

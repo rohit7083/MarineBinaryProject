@@ -4,6 +4,8 @@ import { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PacmanLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
+
 import { Spinner } from "reactstrap";
 import {
   Row,
@@ -45,6 +47,15 @@ import {
   handleUpdatePermissionList,
 } from "../utils";
 
+
+
+    const indexes = {
+       0:'CREATE',
+       1:'VIEW',
+       2:'UPDATE',
+       3:'DELETE',
+    };
+
 const AddRoles = ({ props, refreshTable }) => {
   // ** Props
   // const { show, toggle, uid, modalType, row } = props;
@@ -57,6 +68,7 @@ const AddRoles = ({ props, refreshTable }) => {
   const [fetchLoader, setfetchLoader] = useState(false);
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const MySwal = withReactContent(Swal);
+  const navigate = useNavigate();
 
   // ** Hooks
   const {
@@ -65,6 +77,7 @@ const AddRoles = ({ props, refreshTable }) => {
     setError,
     clearErrors,
     setValue,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: { roleName: "" } });
@@ -86,9 +99,30 @@ const AddRoles = ({ props, refreshTable }) => {
     }
   };
 
+  const  handleSelectAll = (e) => {
+    
+    if (e.target.checked) {
+      Object.keys(permissionList).forEach((category, index) => {
+        if(!permissionList[category]) return;
+        // {{debugger}}
+        permissionList[category].forEach((item,idx) => {
+          setValue(`${category}.${[idx]}.isSelected`, true);
+       
+        });
+      });
+    } else {
+      Object.keys(permissionList).forEach((category, index) => {
+        permissionList[category].forEach((item,idx) => {
+          setValue(`${category}.${[idx]}.isSelected`, false);
+        });
+      });
+    }
+    
+  };
+
   const onSubmit = async (data) => {
     const updatedData = extractUIDFromPermissionList(data);
-   
+
     try {
       setProcessing(true);
 
@@ -104,13 +138,13 @@ const AddRoles = ({ props, refreshTable }) => {
           },
           buttonsStyling: false,
         }).then(() => {
-          reset();
-
           toggle();
-          setMessage("");
           navigate("/dashboard/user_rolls/roles-permissions/roles", {
             state: { forceRefresh: true },
           });
+          reset();
+
+          setMessage("");
         });
       }
     } catch (error) {
@@ -119,27 +153,25 @@ const AddRoles = ({ props, refreshTable }) => {
         const { content, message } = response?.data;
         handleError(response?.status, content || message);
       } else {
-        console.error('API Error: ', error);  // More clear error logging
+        console.error("API Error: ", error); // More clear error logging
       }
-    
-    
     } finally {
       setProcessing(false);
     }
   };
 
- 
   useEffect(() => {
     (async () => {
       try {
         setfetchLoader(true);
         const res = await useJwt.permission();
         const { result } = res?.data.content;
+
         let data = structurePermissionList(result);
-        console.log("permission", result);
 
         if (data && Object.keys(data).length) {
           const { permissionIds, roleName, uid } = data;
+
           const updatedList = handleUpdatePermissionList(permissionIds, {
             ...data,
           });
@@ -158,12 +190,21 @@ const AddRoles = ({ props, refreshTable }) => {
         setfetchLoader(false);
       }
     })();
-  }, [props,fetchTrigger]);
+  }, [props, fetchTrigger]);
 
   const onReset = () => {
     toggle();
     reset({ roleName: "" });
   };
+
+  const watchRoleName = watch("roleName");
+  useEffect(() => {
+    const inputRestriction = watchRoleName?.replace(/[^a-zA-Z ]/g, "");
+
+    if (watchRoleName !== inputRestriction) {
+      setValue("roleName", inputRestriction);
+    }
+  }, [watchRoleName, setValue]);
 
   return (
     <Fragment>
@@ -192,7 +233,7 @@ const AddRoles = ({ props, refreshTable }) => {
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
             <h1>Add New Roles</h1>
-            <p>Set role permissions</p>
+            <p>Set role permissions858</p>
             {errors?.server && (
               <Fragment>
                 <Alert color="danger">
@@ -238,7 +279,7 @@ const AddRoles = ({ props, refreshTable }) => {
                 <h4 className="mt-2 pt-50">Role Permissions</h4>
                 <Table className="table-flush-spacing" responsive>
                   <tbody>
-                    {/* <tr>
+                    <tr>
                       <td className="text-nowrap fw-bolder">
                         <span className="me-50"> Administrator Access</span>
                         <Info size={14} id="info-tooltip" />
@@ -251,17 +292,19 @@ const AddRoles = ({ props, refreshTable }) => {
                       </td>
                       <td>
                         <div className="form-check">
-                          <Input type="checkbox" id="select-all" />
+                          <Input
+                            type="checkbox"
+                            id="select-all"
+                            onChange={handleSelectAll}
+                          />
                           <Label className="form-check-label" for="select-all">
                             Select All
                           </Label>
                         </div>
                       </td>
-                    </tr> */}
-                    {/* {console.log(permissionList)} */}
+                    </tr>
                     {permissionList &&
                       Object.keys(permissionList).map((category, index) => {
-                        // console.log({ category });
                         return (
                           <tr key={index}>
                             <td className="text-nowrap fw-bolder">
@@ -269,8 +312,19 @@ const AddRoles = ({ props, refreshTable }) => {
                             </td>
                             <td>
                               <div className="d-flex">
-                                {permissionList[category].map(
-                                  ({ action, uid }, index) => (
+                                {permissionList[category].map((data, index) => {
+                                  if (data === null)
+                                    return (
+                                      <div                                     
+                                      className="form-check me-3 me-lg-5"
+                                       style={{visibility:"hidden"}} key={index}>
+                                       <Label><Input type="checkbox" />{indexes[index]}</Label> 
+                                      </div>
+                                    );
+
+                                  const { action, uid } = data;
+
+                                  return (
                                     <div
                                       key={uid}
                                       className="form-check me-3 me-lg-5"
@@ -294,8 +348,8 @@ const AddRoles = ({ props, refreshTable }) => {
                                         )}
                                       />
                                     </div>
-                                  )
-                                )}
+                                  );
+                                })}
                               </div>
                             </td>
                           </tr>
@@ -306,7 +360,7 @@ const AddRoles = ({ props, refreshTable }) => {
               </Col>
               <Col className="text-center mt-2" xs={12}>
                 <Button type="reset" outline onClick={onReset}>
-                  Discard10
+                  Discard
                 </Button>
                 <Button
                   type="submit"
@@ -334,12 +388,12 @@ const AddRoles = ({ props, refreshTable }) => {
               }}
             >
               <Spinner
-              color="primary"
-              style={{
-                height: "5rem",
-                width: "5rem",
-              }}
-            />
+                color="primary"
+                style={{
+                  height: "5rem",
+                  width: "5rem",
+                }}
+              />
               {/* <PacmanLoader /> */}
             </div>
           )}

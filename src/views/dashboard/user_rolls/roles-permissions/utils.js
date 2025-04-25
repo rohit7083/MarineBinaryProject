@@ -1,5 +1,6 @@
 // ** Structure List Acording To Form;
 export const structurePermissionList = (list) => {
+  
     const indexes = {
       CREATE: 0,
       VIEW: 1,
@@ -7,6 +8,10 @@ export const structurePermissionList = (list) => {
       DELETE: 3,
     };
   
+
+    // const data=(Object.groupBy(list, "moduleName"));
+
+
     const hash = new Map();
   
     for (let i = 0; i < list.length; i++) {
@@ -54,19 +59,21 @@ export const structurePermissionList = (list) => {
       }, [])
       .flat();
   
-    //    .log(uid.flat());
+    console.log({ permission });
     return {
       roleName,
       // ! Temp Comment Below line for Backend Changes
       // ! permission,
-      permissionIds: permission,
+      permissionIds: permission.filter((item) => item),
     };
   };
   
   export const handleUpdatePermissionList = (
+
     permissionIds = [],
     permissionList = []
   ) => {
+    
     if (!permissionIds || !permissionList) return [];
   
     const permissionIdsUpdated = permissionIds.reduce((acc, curr) => {
@@ -85,7 +92,18 @@ export const structurePermissionList = (list) => {
         }
       });
     });
+
   
+
+    for (const key in updatedList) {
+       for(let i=0;i<4;i++){
+        if(!updatedList[key][i])
+          updatedList[key][i] =null;
+       }
+    }
+// {{debugger}}
+
+
     return updatedList;
     // console.log({ permissionIdsUpdated, permissionList });
   };

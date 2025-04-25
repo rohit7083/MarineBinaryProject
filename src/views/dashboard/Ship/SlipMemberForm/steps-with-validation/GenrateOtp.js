@@ -41,10 +41,10 @@ const GenrateOtp = ({
   const {
     control,
     handleSubmit,
-    setError,
+    setError,watch,setValue,
     formState: { errors },
   } = useForm();
-  // {{debugger}}
+   
   const handleOTP = async () => {
     try {
       const payload = {
@@ -78,7 +78,7 @@ const GenrateOtp = ({
         return;
       }
 
-      // {{debugger}}
+       
       const payload = { otp: parseInt(data.Userotp) };
       setLoader(true);
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
@@ -89,7 +89,7 @@ const GenrateOtp = ({
       console.log("OTP Verified Successfully!");
       // setButtonEnabled(true);
     } catch (error) {
-      // {{debugger}}
+       
       console.error("Error verifying OTP:", error);
       console.log("Failed to verify OTP. Please try again.");
 
@@ -122,6 +122,21 @@ const GenrateOtp = ({
     }
     return () => clearInterval(timer);
   }, [show]);
+
+const watchUserotp = watch("Userotp");
+
+useEffect(()=>{
+
+  const inputRestricted = watchUserotp?.replace(/[^0-9]/g, "");
+
+  if (watchUserotp !== inputRestricted) {
+    setValue("Userotp", inputRestricted, { shouldValidate: true }); // Update the value in the form
+    
+  }
+
+
+
+},[watchUserotp,setValue])
 
   return (
     <Fragment>

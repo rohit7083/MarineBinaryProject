@@ -13,7 +13,7 @@ import Createuser from "./Createuser";
 import CreateuserModal from "./CreateUserModal";
 const CustomTable = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const [role, setRole] = useState("");
   const [RowData, setRowData] = useState(null);
@@ -25,20 +25,18 @@ const CustomTable = ({ data }) => {
     count: 0,
     results: [],
   });
-  console.log("table", tableData);
 
   const [loading, setLoading] = useState(true);
-  // ** Get data on mount
   const MySwal = withReactContent(Swal);
 
-  async function fetchTableData(offset = 0, limit = 10) {
+  async function fetchTableData() {
     try {
       setLoading(true);
-      const offset = (currentPage - 1) * rowsPerPage;
       const { data } = await useJwt.getallSubuser(
-        `?offset=${offset}&limit=${rowsPerPage}`
       );
       const { content } = data;
+      console.log("content2", content);
+
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
       console.log(error);
@@ -52,15 +50,17 @@ const CustomTable = ({ data }) => {
   }, [currentPage, rowsPerPage]);
 
   const handlePerPage = (e) => {
-    setRowsPerPage(Number(e.target.value));
-    setCurrentPage(1);
+    const newLimit = parseInt(e.target.value);
+    setRowsPerPage(newLimit);
+    setCurrentPage(1); 
+
   };
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
     setSearchTerm(value);
-
+ 
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
@@ -80,7 +80,7 @@ const CustomTable = ({ data }) => {
   };
 
   const handlePagination = (page) => {
-    console.log("Page selected:", page.selected + 1);
+    
     setCurrentPage(page.selected + 1);
   };
 
@@ -156,7 +156,9 @@ const CustomTable = ({ data }) => {
                 const response = await useJwt.deleteSubUser(uid);
                 if (response?.status === 204) {
                   setTableData((prevData) => {
-                    const newData = prevData.results.filter((item) => item.uid !== uid);
+                    const newData = prevData.results.filter(
+                      (item) => item.uid !== uid
+                    );
                     return {
                       ...prevData,
                       results: newData,
@@ -193,11 +195,11 @@ const CustomTable = ({ data }) => {
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
               onClick={() => {
-                setShowModal(false); // Reset state
+                setShowModal(false); 
                 setTimeout(() => {
                   setDataUid(row.uid);
                   setDatarow(row);
-                  setShowModal(true); // Open modal
+                  setShowModal(true);
                 }, 0);
               }}
             >
@@ -217,19 +219,20 @@ const CustomTable = ({ data }) => {
     },
   ];
 
-  const pageCount = Math.ceil(tableData.count / rowsPerPage);
   const CustomPagination = () => {
+     
+    const count = Math.ceil(tableData.count / rowsPerPage);
     return (
       <ReactPaginate
         previousLabel={""}
         nextLabel={""}
         breakLabel="..."
-        pageCount={pageCount}
+        pageCount={Math.ceil(count) || 1}
         marginPagesDisplayed={2}
         pageRangeDisplayed={2}
         activeClassName="active"
-        forcePage={currentPage - 1}
-        onPageChange={handlePagination}
+        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+        onPageChange={(page) => handlePagination(page)}
         pageClassName="page-item"
         breakClassName="page-item"
         nextLinkClassName="page-link"
@@ -247,8 +250,9 @@ const CustomTable = ({ data }) => {
 
   // ** Table data to render
   const dataToRender = () => {
-    return tableData.results;
-  };
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return tableData.results.slice(startIndex, endIndex);  };
 
   return (
     <>
@@ -271,28 +275,25 @@ const CustomTable = ({ data }) => {
               </Input>
               <label htmlFor="rows-per-page">Entries</label>
             </div>
-          </Col>
-          <Col
-            xl="6"
-            className="d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pe-lg-1 p-0 mt-lg-0 mt-1"
-          >
-            <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
-              <label className="mb-0" htmlFor="search-invoice">
+
+            <div className="w-50 d-flex align-items-center mb-sm-0 mb-1 me-1">
+              <label className="mb-0 mx-1" htmlFor="search-invoice">
                 Search:
               </label>
+
               <Input
+                className="dataTable-filter"
+                name="search"
+                placeholder="Search..."
                 type="text"
-                value={searchTerm}
-                id="search-invoice"
-                className="ms-50 w-100"
+                bsSize="sm"
+                id="search-input"
                 onChange={(e) => debouncedFilter(e.target.value)}
               />
             </div>
 
-            <div className="mx-2">
-              <Createuser />
-            </div>
           </Col>
+        
         </Row>
       </div>
       {loading ? (

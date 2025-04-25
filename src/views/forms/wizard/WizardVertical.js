@@ -20,7 +20,7 @@ const WizardVertical = () => {
   const steps = [
     {
       id: 'account-details',
-      title: 'Account Details',
+      title: 'Account Details vertical',
       subtitle: 'Enter Your Account Details.',
       content: <AccountDetails stepper={stepper} type='wizard-vertical' />
     },

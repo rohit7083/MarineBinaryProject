@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -11,17 +11,17 @@ import Swal from "sweetalert2";
 // ** Reactstrap Imports
 import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
 import { Card, CardBody, CardTitle, CardHeader, Tooltip } from "reactstrap";
-// ** Styles
+import { countries } from "../../../slip-management/CountryCode";
 import "@styles/react/libs/react-select/_react-select.scss";
 import { Link } from "react-router-dom";
+import ReactCountryFlag from "react-country-flag";
+import Select from "react-select";
 
-import RenewalContract  from '../memberInfo/RenewalContract'
+import RenewalContract from "../memberInfo/RenewalContract";
 
-const PersonalInfo = ({
-  fetchLoader,
-  SlipData,
- 
-}) => {
+const PersonalInfo = ({ fetchLoader, SlipData }) => {
+  // console.log("sllipdata",SlipData);
+
   const MySwal = withReactContent(Swal);
 
   const [fullname, setFullname] = useState([]);
@@ -29,7 +29,7 @@ const PersonalInfo = ({
   const [SelectedDetails, setSelectedDetails] = useState(null);
   const [visible, setVisible] = useState(false);
   const [View, SetView] = useState(true);
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
 
   const [ErrMsz, setErrMsz] = useState("");
 
@@ -104,35 +104,15 @@ const PersonalInfo = ({
 
   const { member } = SlipData;
 
-  // const handleMemberChange = (option) => {
-  //   setSelectedFullName(option);
-  //   if (option?.details) {
-  //     console.log("Selected Member Details:", option.details);
-  //   }
-  //   setSelectedDetails(option.details);
-
-  //   setValue("firstName", option.details.firstName || "");
-  //   setValue("lastName", option.details.lastName || "");
-  //   setValue("emailId", option.details.emailId || "");
-  //   setValue("phoneNumber", option.details.phoneNumber || "");
-  //   setValue("address", option.details.address || "");
-  //   setValue("city", option.details.city || "");
-  //   setValue("state", option.details.state || "");
-  //   setValue("postalCode", option.details.postalCode || "");
-  //   setValue("secondaryGuestName", option.details.secondaryGuestName || "");
-  //   setValue("secondaryEmail", option.details.secondaryEmail || "");
-  //   setValue("country", option.details.country || "");
-
-  //   setVisible(true);
-  // };
-
   const onSubmit = async (data) => {
+    debugger;
     setLoading(true);
     const {
       firstName,
       lastName,
       emailId,
       address,
+      countryCode,
       phoneNumber,
       city,
       state,
@@ -142,11 +122,14 @@ const PersonalInfo = ({
       secondaryEmail,
       secondaryPhoneNumber,
     } = data;
+    {
+    }
     const payload = {
       firstName,
       lastName,
       emailId,
       address,
+      countryCode: countryCode.value,
       phoneNumber,
       city,
       state,
@@ -159,26 +142,22 @@ const PersonalInfo = ({
     };
     let memberId;
     try {
-        const res = await useJwt.UpdateMember(member.uid, payload);
-        // ** set here
-        memberId = res.data.id;
-        // setMemberID(memberId);
+      const res = await useJwt.UpdateMember(member.uid, payload);
+      memberId = res.data.id;
 
-        return MySwal.fire({
-          title: "Successfully updated",
-          text: " Your Member Details Update Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          // if (Object.keys(errors).length === 0) {
-          //   stepper.next();
-          // }
-        });
-        
-     
+      return MySwal.fire({
+        title: "Successfully updated",
+        text: " Your Member Details Update Successfully",
+        icon: "success",
+        customClass: {
+          confirmButton: "btn btn-primary",
+        },
+        buttonsStyling: false,
+      }).then(() => {
+        // if (Object.keys(errors).length === 0) {
+        //   stepper.next();f
+        // }
+      });
     } catch (error) {
       console.error("Error submitting vessel details:", error);
 
@@ -207,11 +186,17 @@ const PersonalInfo = ({
   const { vessel } = SlipData;
   const { payment } = SlipData;
 
-
   useEffect(() => {
     if (member) {
+      // {{debugger}}
+      const matchedCountryOption = countryOptions.find(
+        (option) =>
+          option.value === member?.countryCode?.value ||
+          option.value === member?.countryCode
+      );
       Object.keys(member).forEach((key) => {
-        setValue(key, member[key] || "NA");
+        setValue(key, member[key] || null);
+        setValue("countryCode", matchedCountryOption || null);
       });
     }
 
@@ -230,27 +215,31 @@ const PersonalInfo = ({
         setValue("contractDate", paymentItem.contractDate);
       });
     }
+  }, [member, SlipData, vessel, payment]);
 
-    // if (payment && Array.isArray(payment) && payment.length > 0) {
-    //   payment.forEach((paymentItem, index) => {
-    //     setValue(`payment[${index}].finalPayment`, paymentItem?.finalPayment || "NA");
-    //     setValue(`payment[${index}].nextPaymentDate`, paymentItem.nextPaymentDate);
-    //     setValue(`payment[${index}].paidIn`, paymentItem.paidIn);
-    //     setValue(`payment[${index}].renewalDate`, paymentItem.renewalDate);
-    //     setValue(`payment[${index}].contractDate`, paymentItem.contractDate);
-    //   });
-    // }
-  }, [member, vessel, payment]);
+  const countryOptions = countries.map((country) => ({
+    value: country.dial_code,
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <ReactCountryFlag
+          countryCode={country.code}
+          svg
+          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+        />
+        {country.name} ({country.dial_code})
+      </div>
+    ),
+    code: country.code,
+  }));
 
   const handleEditBtn = () => {
     SetView(false);
     console.log("now i can view anything");
   };
 
-  const handleRenwalContract=()=>{
-
-setShow(true);
-  }
+  const handleRenwalContract = () => {
+    setShow(true);
+  };
 
   const getReadOnlyStyle = () => {
     return View
@@ -277,6 +266,72 @@ setShow(true);
     }));
   };
 
+  // const watchaddress = watch("address");
+  // useEffect(() => {
+  //   const inputRestriction = watchaddress?.replace(/[^a-zA-Z0-9\s]/g, "");
+
+  //   if (watchaddress !== inputRestriction) {
+  //     setValue("address", inputRestriction);
+  //   }
+  // }, [watchaddress, setValue]);
+
+  const watchFields = watch([
+    "address",
+    "lastName",
+    "firstName",
+    "city",
+    "state",
+    "phoneNumber",
+    "country",
+    "postalCode",
+    "emailId",
+  ]);
+
+  useEffect(() => {
+    const sanitizeValue = (value, type) => {
+      if (!value) return value;
+
+      switch (type) {
+        case "state":
+        case "address":
+        case "city":
+          return value.replace(/[^a-zA-Z0-9\s,.-]/g, ""); 
+        case "firstName":
+        case "lastName":
+        case "secondaryGuestName":
+        case "country":
+        case "state":
+          return value.replace(/[^a-zA-Z]/g, ""); 
+        case "emailId":
+          return value.replace(/[^a-zA-Z0-9@._-]/g, ""); 
+        case "phoneNumber":
+          return value.replace(/[^0-9]/g, ""); 
+
+        default:
+          return value.replace(/[^a-zA-Z0-9\s]/g, ""); 
+      }
+    };
+
+    const fieldNames = [ "address",
+      "lastName",
+      "firstName",
+      "city",
+      "state",
+      "phoneNumber",
+      "country",
+      "postalCode",
+      "emailId",];
+
+    fieldNames.forEach((fieldName, index) => {
+      const watchedValue = watchFields[index];
+      const sanitized = sanitizeValue(watchedValue, fieldName);
+
+      if (watchedValue !== sanitized) {
+        setValue(fieldName, sanitized);
+      }
+    });
+  }, [watchFields.join("|")]);
+
   if (fetchLoader)
     return (
       <div
@@ -300,10 +355,6 @@ setShow(true);
   return (
     <Fragment>
       <Card>
-
-
-
-        
         <CardHeader className="border-bottom">
           <CardTitle tag="h5">
             {!View ? "Edit Member Details" : "Member Details"}
@@ -330,25 +381,24 @@ setShow(true);
               </Tooltip>
             </div>
             <div>
-                <img
-                  id="RenewContract"
-                  width="25"
-                  height="25"
-                  src="https://img.icons8.com/ios/50/renew-subscription.png"
-                  alt="renew-subscription"
+              <img
+                id="RenewContract"
+                width="25"
+                height="25"
+                src="https://img.icons8.com/ios/50/renew-subscription.png"
+                alt="renew-subscription"
+                onClick={handleRenwalContract}
+                style={{ cursor: "pointer" }}
+              />
 
-                  onClick={handleRenwalContract}
-                  style={{ cursor: "pointer" }}
-                />
-
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.switchSlip}
-                  target="RenewContract"
-                  toggle={() => toggleTooltip("switchSlip")}
-                >
-                  Update/Renew Contract
-                </Tooltip>
+              <Tooltip
+                placement="top"
+                isOpen={tooltipOpen.switchSlip}
+                target="RenewContract"
+                toggle={() => toggleTooltip("switchSlip")}
+              >
+                Update/Renew Contract
+              </Tooltip>
             </div>
 
             <div>
@@ -424,10 +474,7 @@ setShow(true);
             )}
 
             <Row>
-
-<RenewalContract
-setShow={setShow}
-show={show}/>
+              <RenewalContract setShow={setShow} show={show} />
 
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="firstName">
@@ -495,29 +542,6 @@ show={show}/>
               </Col>
 
               <Col md="6" className="mb-1">
-                <Label className="form-label" for="phoneNumber">
-                  Mobile Number
-                </Label>
-                <Controller
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      invalid={errors.phoneNumber && true}
-                      {...field}
-                      readOnly={View}
-                      style={getReadOnlyStyle()}
-                    />
-                  )}
-                />
-                {errors.phoneNumber && (
-                  <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col md="6" className="mb-1">
                 <Label className="form-label" for="address">
                   Address
                 </Label>
@@ -538,7 +562,64 @@ show={show}/>
                   <FormFeedback>{errors.address.message}</FormFeedback>
                 )}
               </Col>
+            </Row>
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label sm="3" for="phone">
+                  Country Code
+                </Label>
 
+                <Controller
+                  name="countryCode"
+                  control={control}
+                  defaultValue={countryOptions[0]}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      readOnly={View}
+                      style={getReadOnlyStyle()}
+                      options={countryOptions}
+                      onChange={(option) => field.onChange(option)}
+                      value={countryOptions.find(
+                        (option) => option.value === field.value?.value
+                      )}
+                    />
+                  )}
+                />
+                {errors.countryCode && (
+                  <small className="text-danger">
+                    {errors.countryCode.message}
+                  </small>
+                )}
+              </Col>
+              <Col md="6" className="mb-1">
+                <Label sm="3" for="phone">
+                  Phone Number
+                </Label>{" "}
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: "Phone number is required" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="tel"
+                      placeholder="Enter phone number"
+                      invalid={errors.phoneNumber && true}
+                      readOnly={View}
+                      style={getReadOnlyStyle()}
+                    />
+                  )}
+                />
+                {errors.phoneNumber && (
+                  <small className="text-danger">
+                    {errors.phoneNumber.message}
+                  </small>
+                )}
+              </Col>
+            </Row>
+            <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="city">
                   City
@@ -560,9 +641,7 @@ show={show}/>
                   <FormFeedback>{errors.city.message}</FormFeedback>
                 )}
               </Col>
-            </Row>
 
-            <Row>
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="state">
                   State
@@ -606,8 +685,7 @@ show={show}/>
                   <FormFeedback>{errors.country.message}</FormFeedback>
                 )}
               </Col>
-            </Row>
-            <Row>
+
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="postalCode">
                   Postal Code
@@ -653,8 +731,7 @@ show={show}/>
                   </FormFeedback>
                 )}
               </Col>
-            </Row>
-            <Row>
+
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="secondaryEmail">
                   Secondary Email (optional)
@@ -723,7 +800,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.vesselName && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -748,7 +825,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.vesselRegistrationNumber && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -776,7 +853,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.length && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -801,7 +878,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.width && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -828,7 +905,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.height && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -860,7 +937,8 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.finalPayment && true}
                       {...field}
-                      readOnly={true}
+                      // readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -884,7 +962,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.contractDate && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -911,7 +989,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.renewalDate && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -935,7 +1013,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.nextPaymentDate && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />
@@ -961,7 +1039,7 @@ show={show}/>
                       style={getReadOnlyStyle()}
                       invalid={errors.paidIn && true}
                       {...field}
-                      readOnly={true}
+                      disabled={true}
                     />
                   )}
                 />

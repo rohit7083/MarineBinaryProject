@@ -371,7 +371,7 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
     name: "Slip Assigned",
     minWidth: "100px",
     selector: (row) =>{
-// {{debugger}}
+ 
       const SlipAssigned = row.isAssigned;
 
       return (
@@ -448,8 +448,10 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
     sortable: true,
     name: "Mobile No",
     minWidth: "200px",
-    selector: (row) =>row.member?.countryCode +" - " + row.member?.phoneNumber,
-  },
+    selector: (row) => (row.member?.countryCode && row.member?.phoneNumber
+      ? `${row.member.countryCode} - ${row.member.phoneNumber}`
+      : '')
+      },
   {
     sortable: true,
     name: "Payment",
@@ -548,14 +550,12 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
 
           <Link
             style={{ margin: "0.5rem" }}
-            to={{
-              pathname: `/marin/slip-management/${row.uid}`,
-            }}
+            to={`/marin/slip-management`}
+            state={{ slipData: row, uid: row?.uid }}
           >
             <Eye className="font-medium-3 text-body" />
           </Link>
 
-          {/* Edit Button */}
           <Link
             style={{ margin: "0.5rem" }}
             to={`/dashboard/slip_memberform`}
