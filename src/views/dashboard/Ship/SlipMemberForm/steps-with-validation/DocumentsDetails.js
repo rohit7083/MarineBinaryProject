@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { DownloadCloud, Eye, FileText, X } from "react-feather";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
+
 import {
   Button,
   Row,
@@ -18,16 +19,18 @@ import {
   CardTitle,
   Form,
   Badge,
+  UncontrolledAlert,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 
 const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
-const FileUploadForm = ({ stepper, slipIID ,sId}) => {
+const FileUploadForm = ({ Parentdocuments,stepper, slipIID ,sId}) => {
   const [documents, setDocuments] = useState([]);
   const myId = useParams();
   const [loading, setLoading] = useState(false);
   const [isDataFetch, setIsDataFetch] = useState(false);
   const navigate = useNavigate();
+const [checkDocuments,setCheckDocuments]=useState(false);
 
   const {
     handleSubmit,
@@ -57,10 +60,16 @@ const FileUploadForm = ({ stepper, slipIID ,sId}) => {
     },
   });
 
+// useEffect(() => {
+//     if (Parentdocuments === null) {
+//       setCheckDocuments(true);
+//     }
+//   }, [Parentdocuments,checkDocuments]);
+  
+
   useEffect(() => {
 
     const fetchData = async () => {
-      {{debugger}}
       try {
         const response = await useJwt.getSingleDocuments(slipIID || sId?.id);
 
@@ -281,6 +290,19 @@ const FileUploadForm = ({ stepper, slipIID ,sId}) => {
 
   return (
     <Fragment>
+      {/* {checkDocuments && (
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">
+                      <strong>Error : </strong>
+                      Please fill the Previous form first to proceed.
+      
+                      </span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )} */}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardBody>
@@ -310,11 +332,13 @@ const FileUploadForm = ({ stepper, slipIID ,sId}) => {
             </span>
           </Button>
           <Button
-            disabled={loading}
+            disabled={loading || checkDocuments
+            }
             type="submit"
             color="success"
             className="btn-next"
           >
+
             <span className="align-middle d-sm-inline-block d-none">
               Submit
             </span>

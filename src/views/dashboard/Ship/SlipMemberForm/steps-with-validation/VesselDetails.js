@@ -1,7 +1,12 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment,useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
 import {
   Form,
   Label,
@@ -27,6 +32,7 @@ const AccountDetails = ({
 }) => {
   
   const MySwal = withReactContent(Swal);
+  const toast = useRef(null);
 
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
@@ -102,38 +108,39 @@ const AccountDetails = ({
 
 
     try {
+
+      // {{debugger}}
       if (slipId) {
         setLoading(true);
-        await useJwt.updateVessel(finaleData.uid, finaleData);
-        return MySwal.fire({
-          title: "Successfully updated",
-          text: " Your Vessel Details Update Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          if (Object.keys(errors).length === 0) {
+       const updateRes= await useJwt.updateVessel(finaleData.uid, finaleData);
+     
+
+        if (updateRes.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Updated Successfully",
+            detail: "Vessel Details updated Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
             stepper.next();
-          }
-        });
-      } else {
+          }, 2000);
+        }
+      } else{
         setLoading(true);
-        await useJwt.postsVessel(finaleData);
-        return MySwal.fire({
-          title: "Successfully Created",
-          text: " Your Vessel Details Created Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          if (Object.keys(errors).length === 0) {
-            stepper.next();
-          }
+       const createRes= await useJwt.postsVessel(finaleData);
+    
+      if (createRes.status === 201) {
+        toast.current.show({
+          severity: "success",
+          summary: "Cretaed Successfully",
+          detail: "Vessel Details Created Successfully.",
+          life: 2000,
         });
+        setTimeout(() => {
+          stepper.next();
+        }, 2000);
+      }
       }
     } catch (error) {
       console.error("Error submitting vessel details:", error);
@@ -142,7 +149,7 @@ const AccountDetails = ({
         const { status, content } = error.response.data;
 
         seterrMsz((prev) => {
-          const newMsz = content || "Session Expired ! Login Again  ";
+          const newMsz = content || "Something went wrong!";
           return prev !== newMsz ? newMsz : prev + " ";
         });
       }
@@ -241,6 +248,8 @@ const AccountDetails = ({
 
   return (
     <Fragment>
+            <Toast ref={toast} />
+      
       <div className="content-header">
         <h5 className="mb-0">
           {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}

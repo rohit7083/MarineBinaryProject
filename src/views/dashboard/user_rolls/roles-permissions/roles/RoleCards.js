@@ -1,11 +1,14 @@
 //============ Create Roles ===================
 // ** React Imports
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState,useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PacmanLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import { Spinner } from "reactstrap";
 import {
   Row,
@@ -32,7 +35,6 @@ import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Custom Components
-import AvatarGroup from "@components/avatar-group";
 
 // ** FAQ Illustrations
 import illustration from "@src/assets/images/illustration/faq-illustrations.svg";
@@ -61,6 +63,7 @@ const AddRoles = ({ props, refreshTable }) => {
   // const { show, toggle, uid, modalType, row } = props;
 
   const [show, setShow] = useState(false);
+  const toast = useRef(null);
 
   const toggle = () => setShow(!show);
   const [permissionList, setPermissionList] = useState(null);
@@ -129,23 +132,38 @@ const AddRoles = ({ props, refreshTable }) => {
       const res = await useJwt.userpermissionPost(updatedData);
       setFetchTrigger(true);
       if (res.status === 201) {
-        MySwal.fire({
-          title: "Successfully Cretaed",
-          text: " Role Created Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          toggle();
+        {{debugger}}
+        // MySwal.fire({
+        //   title: "Successfully Cretaed",
+        //   text: " Role Created Successfully",
+        //   icon: "success",
+        //   customClass: {
+        //     confirmButton: "btn btn-primary",
+        //   },
+        //   buttonsStyling: false,
+        // }).then(() => {
+        //   toggle();
+          // navigate("/dashboard/user_rolls/roles-permissions/roles", {
+          //   state: { forceRefresh: true },
+          // });
+        //   reset();
+
+        //   setMessage("");
+        // });
+
+        toast.current.show({
+          severity: "success",
+          summary: "Created Successfully",
+          detail: " Role Created Successfully.",
+          life: 2000,
+        });
+        setTimeout(() => {
           navigate("/dashboard/user_rolls/roles-permissions/roles", {
             state: { forceRefresh: true },
-          });
-          reset();
-
-          setMessage("");
-        });
+          });   
+        }, 2000);
+        toggle();
+        reset();
       }
     } catch (error) {
       if (error?.response) {
@@ -226,6 +244,8 @@ const AddRoles = ({ props, refreshTable }) => {
         toggle={() => toggle()}
         className="modal-dialog-centered modal-lg"
       >
+              <Toast ref={toast} />
+        
         <ModalHeader
           className="bg-transparent"
           toggle={() => toggle()}
@@ -233,7 +253,7 @@ const AddRoles = ({ props, refreshTable }) => {
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
             <h1>Add New Roles</h1>
-            <p>Set role permissions858</p>
+            <p>Set role permissions</p>
             {errors?.server && (
               <Fragment>
                 <Alert color="danger">

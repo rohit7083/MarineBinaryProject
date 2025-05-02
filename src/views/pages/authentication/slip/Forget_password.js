@@ -1,13 +1,16 @@
 // ** React Imports
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import React from "react";
+import React, { useRef } from "react";
 // ** Icons Imports
 import { ChevronLeft } from "react-feather";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Spinner } from "reactstrap";
 // ** React Hook Form
 import { UncontrolledAlert, ListGroupItem } from "reactstrap";
-
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import { useForm, Controller, set } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -59,6 +62,7 @@ const ResetPasswordBasic = () => {
     number: false,
     specialChar: false,
   });
+  const toast = useRef(null);
 
   const validatePassword = (pwd) => {
     setRequirements({
@@ -140,7 +144,6 @@ const ResetPasswordBasic = () => {
 
   const sendOtp = async () => {
     try {
-       
       const otpRes = await useJwt.sendOtp(token);
     } catch (error) {
       console.log(error);
@@ -149,7 +152,6 @@ const ResetPasswordBasic = () => {
   };
 
   const checkTokenExpirey = async () => {
-     
     try {
       const res = await useJwt.checktoken(token);
       const tokenStatus = res?.data?.content?.token;
@@ -189,19 +191,28 @@ const ResetPasswordBasic = () => {
         confirmPassword: encryptedPasss?.confirmPassword,
       });
 
-
       if (res.status == 200 || res.status == 201) {
-        return MySwal.fire({
-          title: "Successfully ",
-          text: "Successfully Rest Password",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          navigate("/Login");
+        // return MySwal.fire({
+        //   title: "Successfully ",
+        //   text: "Successfully Rest Password",
+        //   icon: "success",
+        //   customClass: {
+        //     confirmButton: "btn btn-primary",
+        //   },
+        //   buttonsStyling: false,
+        // }).then(() => {
+        // navigate("/Login");
+        // });
+
+        toast.current.show({
+          severity: "success",
+          summary: " Successfully",
+          detail: "Successfully Rest Password",
+          life: 2000,
         });
+        setTimeout(() => {
+          navigate("/Login");
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
@@ -215,7 +226,7 @@ const ResetPasswordBasic = () => {
         setMsz(blockMsz);
         setAttempt(otpAttempt);
         if (code === 423) {
-          return  MySwal.fire({
+          return MySwal.fire({
             title: "Blocked",
             text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin",
             icon: "warning",
@@ -295,21 +306,29 @@ const ResetPasswordBasic = () => {
     <div className="auth-wrapper auth-basic px-2">
       <div className="auth-inner my-2">
         <Card className="mb-0">
+
           <CardBody>
+          <Toast ref={toast} />
+
             <Link
-                        to="/"
-                        onClick={(e) => e.preventDefault()}
-                        className="mb-4 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
-                      >
-                        <img
-                          src="src/assets/images/marinaLOGO.png"
-                          alt="Longcove Marina Logo"
-                          width={55}
-                          height={55}
-                          className="mx-2"
-                        />
-                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
-                      </Link>
+              to="/"
+              onClick={(e) => e.preventDefault()}
+              className="mb-2 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+            >
+              <img
+                src="src/assets/images/marinaLOGO.png"
+                alt="Longcove Marina Logo"
+                width={55}
+                height={55}
+                className="mx-2"
+              />
+              <h2
+                className="text-primary mt-1  "
+                style={{ fontWeight: "bold" }}
+              >
+                Longcove Marina
+              </h2>
+            </Link>
 
             <CardTitle tag="h4" className="mb-1">
               Reset Password 🔒
@@ -318,16 +337,17 @@ const ResetPasswordBasic = () => {
               Your new password must be different from previously used passwords
             </CardText>
             {msz && (
-                  <React.Fragment>
-                    <UncontrolledAlert color="danger">
-                      <div className="alert-body">
-                        <span className="text-danger fw-bold">
-                          <strong>Error : </strong>
-                        {msz}</span>
-                      </div>
-                    </UncontrolledAlert>
-                  </React.Fragment>
-                )}
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">
+                      <strong>Error : </strong>
+                      {msz}
+                    </span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
             <form
               className="auth-reset-password-form mt-2"
               onSubmit={handleSubmit(onSubmit)}
@@ -393,7 +413,7 @@ const ResetPasswordBasic = () => {
                     />
                   ))}
                 </div>
-              
+
                 {errors.otp && (
                   <small className="text-danger">{errors.otp.message}</small>
                 )}
@@ -438,7 +458,7 @@ const ResetPasswordBasic = () => {
                   </div>
                 </>
               )}
-             {attempt === 1 && (
+              {attempt === 1 && (
                 <p className="text-center mt-2">
                   {!resendCount && (
                     <>
@@ -467,7 +487,6 @@ const ResetPasswordBasic = () => {
                   )}
                 </p>
               )}
-
 
               <div className="mb-1">
                 <Label className="form-label" for="new-password">
@@ -569,7 +588,13 @@ const ResetPasswordBasic = () => {
                 allowed
               </ListGroupItem>
 
-              <Button color="primary" className="mt-2" disabled={loading} block type="submit">
+              <Button
+                color="primary"
+                className="mt-2"
+                disabled={loading}
+                block
+                type="submit"
+              >
                 {loading ? (
                   <>
                     {" "}

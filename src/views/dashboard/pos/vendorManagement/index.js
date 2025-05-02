@@ -181,7 +181,8 @@ const DataTableWithButtons = () => {
             <div className="d-flex justify-content-end gap-2">
               <div>
                 <Link to="/pos/VendorManage/addVendor">
-                  <Button>
+                  <Button                 color="primary"
+                  >
                     {/* <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
             <Tooltip
               placement="top"

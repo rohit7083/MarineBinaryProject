@@ -1,6 +1,6 @@
 // ============================ Original Code ======================================
 
-import { useContext, Fragment, useEffect, useState } from "react";
+import { useContext, Fragment, useEffect, useState,useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ChevronLeft } from "react-feather";
@@ -48,7 +48,10 @@ import withReactContent from "sweetalert2-react-content";
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
-
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 const defaultValues = {
   password: "Ro1234567899",
 };
@@ -79,6 +82,8 @@ const Login = () => {
   } = useForm({
     defaultValues,
   });
+    const toast = useRef(null);
+  
   const [password, setPassword] = useState("");
   const [requirements, setRequirements] = useState({
     length: false,
@@ -153,16 +158,50 @@ const Login = () => {
         const authStatus = res.data.content.TwoNf;
         const passCreated = res?.data?.content?.passwardCreated;
 
-        if (res.status == 200 || res.status == 201) {
-          return MySwal.fire({
-            title: "Successfully ",
-            text: "Successfully Login",
-            icon: "success",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-            buttonsStyling: false,
-          }).then(() => {
+        // if (res.status == 200 || res.status == 201) {
+        //   return  toast.current.show({
+        //     severity: "success",
+        //     summary: "Login Successfully",
+        //     detail: " You Logged In Successfully.",
+        //     life: 2000,
+        
+        //   }).then(() => {
+
+
+        //     if (passCreated === false) {
+        //       navigate("/create-new-password", {
+        //         state: {
+        //           userData: res.data?.content,
+        //         },
+        //       });
+
+
+
+        //     } else {
+        //       if (authStatus === "false" || authStatus === false) {
+        //         navigate("/EmailOTP", {
+        //           state: { userData: res.data?.content },
+        //         });
+        //       } else if (authStatus === "true" || authStatus === true) {
+        //         navigate("/mobile_otp", {
+        //           state: { userData: res.data?.content },
+        //         });
+        //       }
+        //     }
+        //   });
+        // }
+
+
+
+        if (res.status === 200 || res.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Login Successfully",
+            detail: "You Logged In Successfully.",
+            life: 2000, // 2 seconds
+          });
+        
+          setTimeout(() => {
             if (passCreated === false) {
               navigate("/create-new-password", {
                 state: {
@@ -180,8 +219,9 @@ const Login = () => {
                 });
               }
             }
-          });
+          }, 2000); 
         }
+        
       } catch (error) {
         console.error(
           "Login Error Details:",
@@ -239,6 +279,8 @@ const Login = () => {
 
   return (
     <div className="auth-wrapper auth-cover">
+            <Toast ref={toast} />
+      
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>

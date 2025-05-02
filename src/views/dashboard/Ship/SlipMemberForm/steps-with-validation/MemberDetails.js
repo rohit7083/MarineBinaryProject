@@ -1,10 +1,11 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState,useRef } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-// ** Third Party Components
-import PhoneInput from "react-phone-input-2";
-// import 'react-phone-input-2/lib/style.css'
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import "react-phone-input-2/lib/bootstrap.css";
 import { countries } from "../../../slip-management/CountryCode";
 import ReactCountryFlag from "react-country-flag";
@@ -39,6 +40,7 @@ const PersonalInfo = ({
   sId,
 }) => {
   console.log({ formData });
+  const toast = useRef(null);
 
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
@@ -190,11 +192,7 @@ const PersonalInfo = ({
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
-    {
-      {
-        debugger;
-      }
-    }
+   
     if (option?.details) {
       console.log("Selected Member Details:", option.details);
     }
@@ -242,22 +240,35 @@ const PersonalInfo = ({
         memberId = res?.data?.id;
         console.log(memberId);
 
-        handleSweetAlert(
-          "Successfully updated",
-          " Your Member Details Update Successfully",
-          stepper.next
-        );
+        if (res.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Updated Successfully",
+            detail: "Member Details updated Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            stepper.next();
+          }, 2000);
+        }
+
       } else {
         const res = await useJwt.postsMember(payload);
 
         memberId = res?.data?.id;
         console.log("memberid ", memberId);
 
-        handleSweetAlert(
-          "Successfully Created",
-          " Your Member Details Created Successfully",
-          stepper.next
-        );
+        if (res.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Cretaed Successfully",
+            detail: "Member Details Created Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            stepper.next();
+          }, 2000);
+        }
       }
       setMemberID(memberId);
     } catch (error) {
@@ -372,6 +383,7 @@ const PersonalInfo = ({
   }));
   return (
     <Fragment>
+            <Toast ref={toast} />
       <div className="content-header">
         <h5 className="mb-0">Member Info</h5>
         <small>Enter Your Personal Info.</small>

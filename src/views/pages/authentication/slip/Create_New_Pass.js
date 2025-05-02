@@ -1,6 +1,10 @@
 // ** React Imports
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import React from "react";
+import {React,useRef} from "react";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 // ** Icons Imports
 import { ChevronLeft } from "react-feather";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -42,6 +46,7 @@ const CreateNewPass = () => {
   } = useForm();
   const [msz, setMsz] = useState(null);
   const [loading, setLoading] = useState(false);
+  const toast = useRef(null);
 
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
@@ -196,18 +201,27 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
 
       console.log(res);
       if (res.status == 200 || res.status == 201) {
-        return MySwal.fire({
-          title: "Successfully ",
-          text: "Successfully Rest Password",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          navigate("/Login");
+        // return MySwal.fire({
+        //   title: "Successfully ",
+        //   text: "Successfully Rest Password",
+        //   icon: "success",
+        //   customClass: {
+        //     confirmButton: "btn btn-primary",
+        //   },
+        //   buttonsStyling: false,
+        // }).then(() => {
+        //   navigate("/Login");
         
+        // });
+
+        toast.current.show({
+          severity: "success",
+          summary: "Successfully",
+          detail: " Successfully Rest Password",
+          life: 2000,
         });
+        setTimeout(() => {
+          navigate("/Login");        }, 2000);
       }
     } catch (error) {
       console.log(error);
@@ -245,6 +259,8 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
     <div className="auth-wrapper auth-basic px-2">
       <div className="auth-inner my-2">
         <Card className="mb-0">
+                <Toast ref={toast} />
+          
           <CardBody>
            <Link
              to="/"

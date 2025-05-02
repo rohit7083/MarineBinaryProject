@@ -40,20 +40,18 @@ const Roles = ({ data }) => {
     <Fragment>
       <Card>
         <CardBody>
+          <div className="d-flex justify-content-between align-items-center flex-wrap ">
+            <h3 className="">Add new user </h3>
 
-       <div className="d-flex justify-content-between align-items-center flex-wrap ">
-      <h3 className="">Add new user </h3>
-      
-       <div className="mx-2">
-                  <Createuser />
-      
-                  </div>
-                  </div>
-      <hr/>
-      <div className="app-user-list">
-        <Table  />
-      </div>
-      </CardBody>
+            <div className="mx-2">
+              <Createuser />
+            </div>
+          </div>
+          <hr />
+          <div className="app-user-list">
+            <Table />
+          </div>
+        </CardBody>
       </Card>
     </Fragment>
   );

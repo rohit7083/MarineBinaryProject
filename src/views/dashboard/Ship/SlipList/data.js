@@ -71,7 +71,28 @@ export const serverSideColumns = (currentPage, rowsPerPage, data, setData) => [
     minWidth: " 50px",
     selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
   },
+//   {
+//     sortable: true,
+//     name: "Status",
+//     minWidth: "50px",
+//     selector: (row) =>{
+//       // {{debugger}}
+//       const checkStatus=row.isInUse;
+// console.log(row);
 
+//       return (
+//         <div className="d-flex justify-content-center">
+//           <Badge
+//             color={checkStatus ? "light-success" : "light-danger"}
+//             pill
+//             className="text-capitalize"
+//           >
+//             {checkStatus ? "Active" : "Inactive"}
+//           </Badge>
+//         </div>
+//       )
+//     },
+//   },
   {
     sortable: true,
     name: "Slip Category",
@@ -123,7 +144,6 @@ export const serverSideColumns = (currentPage, rowsPerPage, data, setData) => [
                   console.log("Updated Data:", newData);
                   return newData;
                 });
-
                 MySwal.fire({
                   icon: "success",
                   title: "Deleted!",
@@ -135,6 +155,17 @@ export const serverSideColumns = (currentPage, rowsPerPage, data, setData) => [
               }
             } catch (error) {
               console.error("Error deleting item:", error);
+              if (error.response && error.response.status === 400) {
+                const errorMessage = error?.response?.data?.content || "Item not found.";
+                  MySwal.fire({
+                    icon: "error",
+                    title: errorMessage,
+                    customClass: {
+                      confirmButton: "btn btn-danger",
+                    },
+                  });
+                }
+            
             }
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({

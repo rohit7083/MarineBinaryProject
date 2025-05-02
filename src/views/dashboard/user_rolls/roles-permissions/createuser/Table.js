@@ -44,6 +44,7 @@ const CustomTable = ({ data }) => {
       setLoading(false);
     }
   }
+  
 
   useEffect(() => {
     fetchTableData();
@@ -276,8 +277,12 @@ const CustomTable = ({ data }) => {
               <label htmlFor="rows-per-page">Entries</label>
             </div>
 
-            <div className="w-50 d-flex align-items-center mb-sm-0 mb-1 me-1">
-              <label className="mb-0 mx-1" htmlFor="search-invoice">
+          
+
+          </Col>
+          <Col xl="6" className="d-flex justify-content-end p-0 ">
+          <div className="w-48  d-flex mx-2">
+              <label className="mt-1 mx-1" htmlFor="search-invoice">
                 Search:
               </label>
 
@@ -291,7 +296,6 @@ const CustomTable = ({ data }) => {
                 onChange={(e) => debouncedFilter(e.target.value)}
               />
             </div>
-
           </Col>
         
         </Row>

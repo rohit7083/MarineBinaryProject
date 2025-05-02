@@ -32,7 +32,7 @@ export default [
   },
   {
     id: "Slip",
-    title: "Slip",
+    title: "Slip Management",
     icon: <FileText size={12} />,
     navLink: "/Ship",
     badge: "light-warning",
@@ -134,12 +134,12 @@ export default [
     badge: "light-warning",
     // badgeText: '2',
     children: [
-      {
-        id: "Vendor Manage",
-        title: "Vendor Manage",
-        icon: <Circle size={12} />,
-        navLink: "/pos/VendorManage",
-      },
+        // {
+        //   id: "Vendor Manage",
+        //   title: "Vendor Manage",
+        //   icon: <Circle size={12} />,
+        //   navLink: "/pos/VendorManage",
+        // },
       {
         id: "Product Manage",
         title: "Product Manage",
@@ -177,6 +177,7 @@ export default [
     badge: "light-warning",
   
   },
+  
 
   // {
   //   id: "ui",

@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import Select from "react-select";
 import { Spinner, UncontrolledAlert } from "reactstrap";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 // ** Utils
 import {
   Card,
@@ -21,10 +24,13 @@ import withReactContent from "sweetalert2-react-content";
 import { useNavigate, useParams } from "react-router-dom";
 import { parse } from "@babel/core/lib/parse";
 import { useLocation } from "react-router-dom";
+import { Toast } from "primereact/toast";
 
 const MySwal = withReactContent(Swal);
 function ShipDetails() {
   let navigate = useNavigate();
+    const toast = useRef(null);
+  
   const location = useLocation(); // Use location hook to get the passed state
   const [loadinng, setLoading] = useState(false);
   const [fetchLoader, setFetchLoader] = useState(false);
@@ -127,7 +133,9 @@ const uid=location.state?.uid || ""
           slipName: userData.slipName,
           electric: userData.electric,
           water: userData.water,
-          addOn: userData.addOn,
+          // addOn: userData.addOn ,
+          addOn: userData.addOn?.trim() === "" ? null : userData.addOn,
+
           amps: parseFloat(userData.amps),
           marketAnnualPrice: parseFloat(userData.marketAnnualPrice) || 0,
           marketMonthlyPrice: parseFloat(userData.marketMonthlyPrice) || 0,
@@ -184,23 +192,48 @@ const uid=location.state?.uid || ""
         setLoading(true);
 
         if (uid) {
-          await useJwt.updateslip(uid, payload);
-          MySwal.fire({
-            title: "Successfully Updated",
-            text: "Your Details Updated Successfully",
-            icon: "success",
-            customClass: { confirmButton: "btn btn-primary" },
-            buttonsStyling: false,
-          }).then(() => navigate("/dashboard/slipdetail_list"));
+        const updateRes=  await useJwt.updateslip(uid, payload);
+          // MySwal.fire({
+          //   title: "Successfully Updated",
+          //   text: "Your Details Updated Successfully",
+          //   icon: "success",
+          //   customClass: { confirmButton: "btn btn-primary" },
+          //   buttonsStyling: false,
+          // }).then(() => navigate("/dashboard/slipdetail_list"));
+          if (updateRes.status === 200) {
+            toast.current.show({
+              severity: "success",
+              summary: "Updated Successfully",
+              detail: "Slip Details updated Successfully.",
+              life: 2000,
+            });
+            setTimeout(() => {
+              navigate("/dashboard/slipdetail_list");
+            }, 2000);
+          }
+
         } else {
-          await useJwt.postslip(payload);
-          MySwal.fire({
-            title: "Successfully Created",
-            text: "Your Slip Details Created Successfully",
-            icon: "success",
-            customClass: { confirmButton: "btn btn-primary" },
-            buttonsStyling: false,
-          }).then(() => navigate("/dashboard/slipdetail_list"));
+          const createRes = await useJwt.postslip(payload);
+          // MySwal.fire({
+          //   title: "Successfully Created",
+          //   text: "Your Slip Details Created Successfully",
+          //   icon: "success",
+          //   customClass: { confirmButton: "btn btn-primary" },
+          //   buttonsStyling: false,
+          // }).then(() => navigate("/dashboard/slipdetail_list"));
+          if (createRes.status === 201) {
+
+            toast.current.show({
+              severity: "success",
+              summary: "Created Successfully",
+              detail: " Slip Details created Successfully.",
+              life: 2000,
+            });
+            setTimeout(() => {
+              navigate("/dashboard/slipdetail_list");
+            }, 2000);
+          }
+
         }
       } catch (error) {
         console.error("Error submitting form:", error);
@@ -525,6 +558,8 @@ const uid=location.state?.uid || ""
   return (
     <>
       <Card>
+      <Toast ref={toast} />
+        
         <CardHeader>
           <CardTitle tag="h4">
             {uid ? "Edit Slip Details" : "Add Slip Details"}

@@ -2,7 +2,8 @@
 import Avatar from "@components/avatar";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // ** Third Party Components
 import axios from "axios";
 import {
@@ -40,15 +41,23 @@ const states = [
 ];
 
 const status = {
-  1: { title: "Current", color: "light-primary" },
-  2: { title: "Professional", color: "light-success" },
-  3: { title: "Rejected", color: "light-danger" },
-  4: { title: "Resigned", color: "light-warning" },
-  5: { title: "Applied", color: "light-info" },
+  0: { title: "Available", color: "light-primary" },
+
+  1: { title: "Vessel Filled", color: "light-warning" },
+  2: { title: "Member Filled", color: "light-info" },
+
+  3: { title: "Payment Filled - Asigned", color: "light-success" },
+  4: { title: "Payment Failed ", color: "light-danger" },
+
+  5: { title: "Document Filled", color: "light" },
+
+  6: { title: "7D Overdue Charges" },
+  7: { title: "15D Overdue Charges ", color: "light-primary" },
+  8: { title: "30D OverDue Charges", color: "light-info" },
+  9: { title: "Notice", color: "light-danger" },
+  10: { title: "Auction", color: "light-dark" },
 };
 
-
-// ** Expandable table component
 const ExpandableTable = ({ data }) => {
   return (
     <div className="expandable-content p-2">
@@ -182,7 +191,28 @@ export const serverSideColumns = [
     //minWidth: "100px",
     selector: (row, index) => index + 1,
   },
+  // {
+  //   sortable: true,
+  //   name: "Status",
+  //   // minWidth: "170px",
+  //   selector: (row) => {
+  //     const checkStatus = row.stepStatus;
 
+  //     return (
+  //       <div className="d-flex justify-content-center">
+  //         {checkStatus === null ? (
+  //           <Badge color="light-success" className="text-capitalize">
+  //             inActive
+  //           </Badge>
+  //         ) : (
+  //           <Badge color="light-danger" pill className="text-capitalize">
+  //             Active
+  //           </Badge>
+  //         )}
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     sortable: true,
     name: "Slip Name",
@@ -244,13 +274,13 @@ export const serverSideColumns = [
   },
   {
     sortable: true,
-    name: "Market Annual Price",
+    name: "Annual Price",
     //minWidth: "150x",
     selector: (row) => row.marketAnnualPrice,
   },
   {
     sortable: true,
-    name: "Market Monthly Price",
+    name: "Monthly Price",
     //minWidth: "250px",
     selector: (row) => row.marketMonthlyPrice,
   },
@@ -262,6 +292,7 @@ export const serverSideColumns = [
       const [data, setData] = useState([]);
 
       const MySwal = withReactContent(Swal);
+console.log(row);
 
       const handleDelete = async (uid) => {
         // Show confirmation modal
@@ -296,6 +327,16 @@ export const serverSideColumns = [
               }
             } catch (error) {
               console.error("Error deleting item:", error);
+             if (error.response && error.response.status === 400) {
+              const errorMessage = error?.response?.data?.content || "Item not found.";
+                MySwal.fire({
+                  icon: "error",
+                  title: errorMessage,
+                  customClass: {
+                    confirmButton: "btn btn-danger",
+                  },
+                });
+              }
             }
           } else if (result.dismiss === MySwal.DismissReason.cancel) {
             MySwal.fire({

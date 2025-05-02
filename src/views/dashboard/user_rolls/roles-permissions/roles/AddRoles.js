@@ -1,7 +1,11 @@
 // ** React Imports
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState ,useRef} from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
 // ** Reactstrap Imports
 import {
   Row,
@@ -48,7 +52,8 @@ const AddRoles = (props) => {
   // ** Props
   const { show, toggle, uid, modalType, row } = props;
   const MySwal = withReactContent(Swal);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const toast = useRef(null);
 
   const [fetchLoader, setFetchLoader] = useState(false);
   // ** States
@@ -64,6 +69,16 @@ const AddRoles = (props) => {
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: { roleName: "" } });
+  const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    Object.keys(permissionList).forEach((category) => {
+      permissionList[category].forEach((item, index) => {
+        if (item) {
+          setValue(`${category}.${index}.isSelected`, checked);
+        }
+      });
+    });
+  };
 
   const handleError = (statusCode, message) => {
     switch (statusCode) {
@@ -82,7 +97,11 @@ const AddRoles = (props) => {
   };
 
   const onSubmit = async (data) => {
-     
+    // {
+    //   {
+    //     debugger;
+    //   }
+    // }
     const updatedData = extractUIDFromPermissionList(data);
     try {
       setProcessing(true);
@@ -93,28 +112,25 @@ const AddRoles = (props) => {
           updateRes,
         });
         if (updateRes.status === 200) {
-          MySwal.fire({
-            title: "Successfully Updated",
-            text: " Role updated Successfully",
-            icon: "success",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-            buttonsStyling: false,
-          }).then(() => {
-            
-            
-            navigate("/dashboard/user_rolls/roles-permissions/roles", {
-              state: { forceRefresh: true },
-            });
-            reset();
+          toast.current.show({
+            severity: "success",
+            summary: "Updated Successfully",
+            detail: "Role updated Successfully.",
+            life: 2000,
           });
-        }
-
-        
+          setTimeout(() => {
+            navigate("/dashboard/user_rolls/roles-permissions/roles");
+            reset();
+             
+          }, 2000);
+            
+            
+            
+          }
+            
+          }
       }
-      // toggle();
-    } catch (error) {
+     catch (error) {
       if (error?.response) {
         const { response } = error;
         const { content, message } = response?.data;
@@ -171,6 +187,8 @@ const AddRoles = (props) => {
       toggle={() => toggle()}
       className="modal-dialog-centered modal-lg"
     >
+            <Toast ref={toast} />
+      
       <ModalHeader
         className="bg-transparent"
         toggle={() => toggle()}
@@ -247,23 +265,30 @@ const AddRoles = (props) => {
                 <Table className="table-flush-spacing" responsive>
                   <tbody>
                     <tr>
-                      {/* <td className="text-nowrap fw-bolder">
-                    <span className="me-50"> Administrator Access </span>
-                    <Info size={14} id="info-tooltip" />
-                    <UncontrolledTooltip placement="top" target="info-tooltip">
-                      Allows a full access to the system
-                    </UncontrolledTooltip>
-                  </td>
-                  <td>
-                    <div className="form-check">
-                      <Input type="checkbox" id="select-all" />
-                      <Label className="form-check-label" for="select-all">
-                        Select All
-                      </Label>
-                    </div>
-                  </td> */}
+                      <td className="text-nowrap fw-bolder">
+                        <span className="me-50"> Administrator Access </span>
+                        <Info size={14} id="info-tooltip" />
+                        <UncontrolledTooltip
+                          placement="top"
+                          target="info-tooltip"
+                        >
+                          Allows a full access to the system
+                        </UncontrolledTooltip>
+                      </td>
+                      <td>
+                        <div className="form-check">
+                          <Input
+                            type="checkbox"
+                            id="select-all"
+                            onChange={handleSelectAll}
+                          />
+                          <Label className="form-check-label" for="select-all">
+                            Select All
+                          </Label>
+                        </div>
+                      </td>
                     </tr>
-                    {permissionList &&
+                    {/* {permissionList &&
                       Object.keys(permissionList).map((category, index) => {
                         // console.log({category})
                         return (
@@ -304,12 +329,48 @@ const AddRoles = (props) => {
                             </td>
                           </tr>
                         );
-                      })}
+                      })} */}
+
+                    {permissionList &&
+                      Object.keys(permissionList).map((category, catIndex) => (
+                        <tr key={catIndex}>
+                          <td className="text-nowrap fw-bolder">{category}</td>
+                          <td>
+                            <div className="d-flex flex-wrap">
+                              {permissionList[category].map((perm, permIndex) =>
+                                perm ? (
+                                  <div
+                                    key={perm.uid}
+                                    className="form-check me-3 me-lg-5"
+                                  >
+                                    <Controller
+                                      name={`${category}.${permIndex}.isSelected`}
+                                      control={control}
+                                      render={({ field }) => (
+                                        <div>
+                                          <Input
+                                            type="checkbox"
+                                            checked={field.value}
+                                            onChange={(e) =>
+                                              field.onChange(e.target.checked)
+                                            }
+                                          />
+                                          <Label>{perm.action}</Label>
+                                        </div>
+                                      )}
+                                    />
+                                  </div>
+                                ) : null
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </Table>
               </Col>
               <Col className="text-center mt-2" xs={12}>
-              <Button type="reset" outline onClick={onReset}>
+                <Button type="reset" outline onClick={onReset}>
                   Discard
                 </Button>
                 <Button
@@ -327,7 +388,6 @@ const AddRoles = (props) => {
                     "Submit"
                   )}
                 </Button>
-                
               </Col>
             </Row>
           </>

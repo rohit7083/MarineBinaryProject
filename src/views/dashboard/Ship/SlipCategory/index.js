@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 
 import {
   Card,
@@ -25,8 +29,12 @@ import { Rss } from "react-feather";
 const MySwal = withReactContent(Swal);
 
 function Index() {
+
+
   let navigate = useNavigate();
-  // let { uid } = useParams();
+
+  const toast = useRef(null);
+
   const [loading, setLoading] = useState(false);
   const [fetchLoader, setFetchLoader] = useState(false);
   const [errors, setErrors] = useState({});
@@ -67,7 +75,6 @@ function Index() {
     }
   }, [uid]);
 
-  // Function to validate input fields
   const validateField = (name, value) => {
     let errorMsz = "";
 
@@ -161,23 +168,44 @@ function Index() {
         setLoading(true);
 
         if (uid) {
-          await useJwt.updateslipCatogory(uid, payload);
-         
-          toast.success(" Slip Category Updated Successful!", {
-            onClose: () => {
+          const updateRes = await useJwt.updateslipCatogory(uid, payload);
+
+          // toast.success(" Slip Category Updated Successful!", {
+          //   onClose: () => {
+          //     navigate("/slip_Management/sliplist");
+          //   },
+          // });
+
+          if (updateRes.status === 200) {
+            toast.current.show({
+              severity: "success",
+              summary: "Updated Successfully",
+              detail: "Slip Category updated Successfully.",
+              life: 2000,
+            });
+            setTimeout(() => {
               navigate("/slip_Management/sliplist");
-            },
-          });
-        
+            }, 2000);
+          }
         } else {
           // {{debugger}}
           const res = await useJwt.postslipCatogory(payload);
           if (res.status === 201) {
-            toast.success(" Slip Category Created Successful!", {
-              onClose: () => {
-                navigate("/slip_Management/sliplist");
-              },
+            // toast.success(" Slip Category Created Successful!", {
+            //   onClose: () => {
+            //     navigate("/slip_Management/sliplist");
+            //   },
+            // });
+
+            toast.current.show({
+              severity: "success",
+              summary: "Created Successfully",
+              detail: " Slip Category created Successfully.",
+              life: 2000,
             });
+            setTimeout(() => {
+              navigate("/slip_Management/sliplist");
+            }, 2000);
           }
         }
       } catch (error) {
@@ -217,6 +245,8 @@ function Index() {
         theme="colored"
         transition={Bounce}
       />
+      <Toast ref={toast} />
+
       <CardHeader>
         <CardTitle tag="h4">
           {uid ? "Edit Slip Category" : "Add Slip Category"}

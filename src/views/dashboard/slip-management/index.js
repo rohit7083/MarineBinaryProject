@@ -64,7 +64,7 @@ console.log("SlipData", SlipData);
         {/* <NavItem>
           <NavLink disabled>Disabled</NavLink>
         </NavItem> */}
-        <NavItem>
+        {/* <NavItem>
           <NavLink
             active={active === "3"}
             onClick={() => {
@@ -96,7 +96,7 @@ console.log("SlipData", SlipData);
             <Book />
             View Documents
           </NavLink>
-        </NavItem>
+        </NavItem> */}
       </Nav>
       <TabContent className="py-50" activeTab={active}>
         <TabPane tabId="1">
@@ -111,7 +111,7 @@ console.log("SlipData", SlipData);
           <MemberIndex SlipData={SlipData} fetchLoader={fetchLoader} />
         </TabPane>
 
-        <TabPane tabId="3">
+        {/* <TabPane tabId="3">
           <Index />
         </TabPane>
 
@@ -120,7 +120,7 @@ console.log("SlipData", SlipData);
         </TabPane>
         <TabPane tabId="5">
           <ViewDocuments />
-        </TabPane>
+        </TabPane> */}
       </TabContent>
     </React.Fragment>
   );

@@ -1,7 +1,10 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState,useRef } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import {
   Row,
@@ -38,7 +41,7 @@ const RoleCards = () => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
   const MySwal = withReactContent(Swal);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const {
     reset,
     watch,
@@ -58,6 +61,7 @@ const RoleCards = () => {
 
   const [countryCode, setCountryCode] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const toast = useRef(null);
 
   const [allRoleName, setallRoleName] = useState(null);
   const [Errmessage, setMessage] = useState("");
@@ -135,24 +139,37 @@ const RoleCards = () => {
 
       console.log(res);
       if (res.status === 201) {
-        MySwal.fire({
-          title: "Successfully Created",
-          text: " User Created Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          
+        // MySwal.fire({
+        //   title: "Successfully Created",
+        //   text: " User Created Successfully",
+        //   icon: "success",
+        //   customClass: {
+        //     confirmButton: "btn btn-primary",
+        //   },
+        //   buttonsStyling: false,
+        // }).then(() => {
+          // navigate("/dashboard/user_rolls/roles-permissions/createuser", {
+          //   state: { forceRefresh: true },
+          // });
+          // setShow(false);
+          // reset();
+
+        //   setMessage("");
+        // });
+        toast.current.show({
+          severity: "success",
+          summary: " Created Successfully",
+          detail: " User created Successfully.",
+          life: 2000,
+        });
+        setTimeout(() => {
           navigate("/dashboard/user_rolls/roles-permissions/createuser", {
             state: { forceRefresh: true },
-          });
+          });   
           setShow(false);
           reset();
+     }, 2000);
 
-          setMessage("");
-        });
       } else {
         MySwal.fire({
           title: "Failed",
@@ -185,7 +202,6 @@ const RoleCards = () => {
 
   const fetchRole = async () => {
     try {
-       
       const { data } = await useJwt.userpermission();
       const { content } = data;
 
@@ -233,7 +249,7 @@ const RoleCards = () => {
             )
           : true,
     };
-     
+
     setRequirements(isValid);
     setIsPasswordValid(Object.values(isValid).every(Boolean)); // Set true only if all conditions pass
   };
@@ -287,6 +303,8 @@ const RoleCards = () => {
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
       >
+              <Toast ref={toast} />
+        
         <ModalHeader className="bg-transparent" toggle={() => setShow(!show)} />
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
@@ -358,7 +376,18 @@ const RoleCards = () => {
                     defaultValue=""
                     rules={{ required: "First Name is required" }}
                     render={({ field }) => (
-                      <Input type="text" placeholder="First Name" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="First Name"
+                        {...field}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
+                      />
                     )}
                   />
                 </InputGroup>
@@ -387,7 +416,18 @@ const RoleCards = () => {
                     defaultValue=""
                     rules={{ required: "Last Name is required" }}
                     render={({ field }) => (
-                      <Input type="text" placeholder="Last Name" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="Last Name"
+                        {...field}
+                        onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }}
+                      />
                     )}
                   />
                 </InputGroup>
@@ -448,6 +488,7 @@ const RoleCards = () => {
                 <Controller
                   name="countryCode"
                   control={control}
+                  rules={{ required: "Country code is required" }}
                   defaultValue={countryOptions[0]}
                   render={({ field }) => (
                     <Select
@@ -460,9 +501,9 @@ const RoleCards = () => {
                     />
                   )}
                 />
-                {errors.mobileNumber && (
+                {errors.countryCode && (
                   <small className="text-danger">
-                    {errors.mobileNumber.message}
+                    {errors.countryCode.message}
                   </small>
                 )}
               </Col>
@@ -472,11 +513,19 @@ const RoleCards = () => {
                   name="mobileNumber"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Phone number is required" }}
+                  rules={{
+                    required: "Phone number is required",
+
+                    maxLength: {
+                      value: 13,
+                      message: "Country code must be 13 digits",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
                       {...field}
-                      type="tel"
+                      type="number"
+                      invalid={errors.mobileNumber}
                       placeholder="Enter phone number"
                     />
                   )}

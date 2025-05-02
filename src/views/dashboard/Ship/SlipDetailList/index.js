@@ -8,7 +8,7 @@ import { serverSideColumns } from "../../../dashboard//Ship/SlipDetailList/data"
 import { getData } from "../../../dashboard/Ship/SlipDetailList/store";
 import { useSelector, useDispatch } from "react-redux";
 import ReactPaginate from "react-paginate";
-import { ChevronDown } from "react-feather";
+import { ChevronDown, Plus } from "react-feather";
 import DataTable from "react-data-table-component";
 import {
   Card,
@@ -81,7 +81,6 @@ const DataTableServerSide = () => {
         q: searchValue,
       })
     );
-    console.log(page);
 
     setCurrentPage(page.selected + 1);
   };
@@ -91,6 +90,7 @@ const DataTableServerSide = () => {
   };
 
   const CustomPagination = () => {
+    // {{debugger}}
     const count = Math.ceil(data.length / rowsPerPage);
     // console.log({count})
     return (
@@ -160,7 +160,8 @@ const DataTableServerSide = () => {
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Details</CardTitle>
           <Link to="/dashboard/slip-details">
-            <Button.Ripple color="primary">Add Slip Details +</Button.Ripple>
+            <Button.Ripple color="primary">
+              <Plus size={14} /> Add Slip Details</Button.Ripple>
           </Link>
         </CardHeader>
         <Row className="mx-0 mt-1 mb-50">

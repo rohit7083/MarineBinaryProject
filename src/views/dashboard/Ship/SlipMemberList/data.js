@@ -37,8 +37,6 @@ const states = [
   "secondary",
 ];
 
-
-
 const PaymentTypes = {
   1: "CreditCard",
   2: "CardSwipe",
@@ -47,99 +45,22 @@ const PaymentTypes = {
   5: "ChequeACH",
 };
 const status = {
-  1: { title: 'Member-Pending', color: 'light-primary' },
-  2: { title: 'Payment-Pending', color: 'light-info' },
-  3: { title: 'Document-Pending', color: 'light-warning' },
-  4: { title: 'Completed', color: 'light-success' },
-  5: { title: 'PaymentLink Send', color: 'light-info' },
-  6: { title: 'Qr Code Generate',color: "light-danger" },
+  0: { title: "Available", color: "light-primary" },
 
+  1: { title: "Vessel Filled", color: "light-warning" },
+  2: { title: "Member Filled", color: "light-info" },
 
+  3: { title: "Payment Filled - Asigned", color: "light-success" },
+  4: { title: "Payment Failed ", color: "light-danger" },
+
+  5: { title: "Document Filled", color: "light" },
+
+  6: { title: "7D Overdue Charges", color: "light" },
+  7: { title: "15D Overdue Charges ", color: "light-primary" },
+  8: { title: "30D OverDue Charges", color: "light-info" },
+  9: { title: "Notice", color: "light-danger" },
+  10: { title: "Auction", color: "light-primary" },
 };
-// ** Table Zero Config Column
-export const basicColumns = [
-  {
-    name: "ID",
-    sortable: true,
-    maxWidth: "100px",
-    selector: (row, index) => index + 1, 
-  },
-  {
-    name: "Name",
-    sortable: true,
-    minWidth: "225px",
-    selector: (row) => row.full_name,
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "310px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Position",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "Age",
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.age,
-  },
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "175px",
-    selector: (row) => row.salary,
-  },
-];
-// ** Table ReOrder Column
-export const reOrderColumns = [
-  {
-    name: "ID",
-    reorder: true,
-    sortable: true,
-    maxWidth: "100px",
-    selector: (row) => row.id,
-  },
-  {
-    name: "Name",
-    reorder: true,
-    sortable: true,
-    minWidth: "225px",
-    selector: (row) => row.full_name,
-  },
-  {
-    name: "Email",
-    reorder: true,
-    sortable: true,
-    minWidth: "310px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Position",
-    reorder: true,
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "Age",
-    reorder: true,
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.age,
-  },
-  {
-    name: "Salary",
-    reorder: true,
-    sortable: true,
-    minWidth: "175px",
-    selector: (row) => row.salary,
-  },
-];
 
 // ** Expandable table component
 const ExpandableTable = ({ data }) => {
@@ -158,338 +79,24 @@ const ExpandableTable = ({ data }) => {
   );
 };
 
-// ** Table Common Column
-export const columns = [
-  {
-    name: "Name",
-    minWidth: "250px",
-    sortable: (row) => row.full_name,
-    cell: (row) => (
-      <div className="d-flex align-items-center">
-        {row.avatar === "" ? (
-          <Avatar
-            color={`light-${states[row.status]}`}
-            content={row.full_name}
-            initials
-          />
-        ) : (
-          <Avatar img={row.avatar} />
-        )}
-        <div className="user-info text-truncate ms-1">
-          <span className="d-block fw-bold text-truncate">{row.full_name}</span>
-          <small>{row.post}</small>
-        </div>
-      </div>
-    ),
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Date",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.start_date,
-  },
-
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.salary,
-  },
-  {
-    name: "Age",
-    sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.age,
-  },
-  {
-    name: "Status",
-    minWidth: "150px",
-    sortable: (row) => row.status.title,
-    cell: (row) => {
-      return (
-        <Badge color={status[row.status].color} pill>
-          {status[row.status].title}
-        </Badge>
-      );
-    },
-  },
-  {
-    name: "Actions",
-    allowOverflow: true,
-    cell: () => {
-      return (
-        <div className="d-flex">
-          <UncontrolledDropdown>
-            <DropdownToggle className="pe-1" tag="span">
-              <MoreVertical size={15} />
-            </DropdownToggle>
-            <DropdownMenu end>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <FileText size={15} />
-                <span className="align-middle ms-50">Details</span>
-              </DropdownItem>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Archive size={15} />
-                <span className="align-middle ms-50">Archive</span>
-              </DropdownItem>
-              <DropdownItem
-                tag="a"
-                href="/"
-                className="w-100"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Trash size={15} />
-                <span className="align-middle ms-50">Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <Edit size={15} />
-        </div>
-      );
-    },
-  },
-];
-
-// ** Table Intl Column
-export const multiLingColumns = [
-  {
-    name: "Name",
-    sortable: true,
-    minWidth: "200px",
-    selector: (row) => row.shipTypeName,
-  },
-  {
-    name: "Position",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "Email",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Date",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.start_date,
-  },
-
-  {
-    name: "Salary",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.salary,
-  },
-  {
-    name: "Status",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.status,
-    cell: (row) => {
-      console.log({ row });
-      return (
-        <Badge color={status[row.status].color} pill>
-          {status[row.status].title}
-        </Badge>
-      );
-    },
-  },
-  {
-    name: "Actions",
-    allowOverflow: true,
-    cell: () => {
-      const handleDelete = (rowId) => {
-        const isConfirmed = window.confirm(
-          "Are you sure you want to delete this item?"
-        );
-        if (isConfirmed) {
-          // Call your delete function or API here to delete the row
-          console.log("Deleted row with ID:", rowId);
-          // For example, you could call a function like:
-          // deleteData(rowId);
-        }
-      };
-      return (
-        <div className="d-flex">
-          <UncontrolledDropdown>
-            <DropdownToggle className="pe-1" tag="span">
-              <MoreVertical size={15} />
-            </DropdownToggle>
-            <DropdownMenu end>
-              <DropdownItem>
-                <FileText size={15} />
-                <span className="align-middle ms-50">Details</span>
-              </DropdownItem>
-              <DropdownItem>
-                <Archive size={15} />
-                <span className="align-middle ms-50">Archive</span>
-              </DropdownItem>
-              <DropdownItem>
-                <Trash size={15} />
-                <span className="align-middle ms-50">Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          {/* <Link to={`/dashboard/SlipCategory/${row.id}`}> */}
-          <Edit size={15} />
-          {/* </Link>/ */}
-        </div>
-      );
-    },
-  },
-];
-
-export const serverSideColumns =(currentPage,rowsPerPage) => [ 
-  
+export const serverSideColumns = (currentPage, rowsPerPage) => [
   {
     sortable: true,
     name: "Id",
-    minWidth: "150px",
-    selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1, 
-  },
-  {
-    sortable: true,
-    name: "Slip Assigned",
-    minWidth: "100px",
-    selector: (row) =>{
- 
-      const SlipAssigned = row.isAssigned;
-
-      return (
-        <div className="d-flex justify-content-center">
-          {SlipAssigned ? (
-            <Badge color="success"  className="badge-glow">
-              Assigned
-            </Badge>
-          ) : (
-            <Badge color="danger" pill className="badge-glow">
-             Not Assigned
-            </Badge>
-          )}
-        </div>
-      );
-    
-      }
-      },
-  
-  
-  {
-    sortable: true,
-    name: "Slip Name",
-    minWidth: "200px",
-    selector: (row) => row.slipName,
+    width:"70px",
+    selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
   },
 
-  {
-    name: 'Status',
-    minWidth: "180px",
-
-    sortable: true,
-    cell: (row) => {
-      const stepStatus = row.stepStatus; 
-      const statusInfo = status[stepStatus]; 
-  
-      return (
-        <div className="d-flex justify-content-center">
-          {statusInfo ? (
-            <Badge color={statusInfo.color} pill className="text-dark">
-              {statusInfo.title}
-            </Badge>
-          ) : (
-            <Badge color="light-secondary" pill className="text-dark">
-              Unknown
-            </Badge>
-          )}
-        </div>
-      );
-    }
-  },
-
-
-  {
-    sortable: true,
-    name: "Category",
-    minWidth: "150px",
-    selector: (row) => row.category?.shipTypeName || "N/A", 
-  },
-  {
-    sortable: true,
-    name: "Name",
-    minWidth: "150px",
-    selector: (row) => `${row.member?.firstName || ""} ${row.member?.lastName || ""}`
-
-  },
-  {
-    sortable: true,
-    name: "Email",
-    minWidth: "250px",
-    selector: (row) =>row.member?.emailId,
-  },
-  {
-    sortable: true,
-    name: "Mobile No",
-    minWidth: "200px",
-    selector: (row) => (row.member?.countryCode && row.member?.phoneNumber
-      ? `${row.member.countryCode} - ${row.member.phoneNumber}`
-      : '')
-      },
-  {
-    sortable: true,
-    name: "Payment",
-    minWidth: "150px",
-    selector: (row) => row.finalPayment,
-  },
-  {
-    sortable: true,
-    name: "Contract Date",
-    minWidth: "200px",
-    selector: (row) => row.contractDate,
-  },
-  {
-    sortable: true,
-    name: " Next Payment Date",
-    minWidth: "250px",
-    selector: (row) =>
-      row.nextPaymentDate,
-  },
-  {
-    sortable: true,
-    name: "Contract Type",
-    minWidth: "150x",
-    selector: (row) => row.paidIn,
-  
-  },
-
-
-  
   {
     name: "Actions",
     sortable: true,
-    minWidth: "150px",
+    // minWidth: "150px",
+
     cell: (row) => {
       const [data, setData] = useState([]);
 
-      console.log("row data",row)
-      console.log("formData.stepStatus",row.stepStatus);
+      console.log("row data", row);
+      console.log("formData.stepStatus", row.stepStatus);
 
       const MySwal = withReactContent(Swal);
 
@@ -511,11 +118,10 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
               // Call delete API
               const response = await useJwt.deleteslip(uid);
               if (response.status === 204) {
-                setData((prevData) =>{
-                  const newData=prevData.filter((item) => item.uid !== uid)
+                setData((prevData) => {
+                  const newData = prevData.filter((item) => item.uid !== uid);
                   return newData;
-                })
-              ;
+                });
                 // Show success message
                 MySwal.fire({
                   icon: "success",
@@ -525,7 +131,6 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
                     confirmButton: "btn btn-success",
                   },
                 });
-               
               }
             } catch (error) {
               console.error("Error deleting item:", error);
@@ -546,8 +151,6 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
 
       return (
         <div className="d-flex">
-       
-
           <Link
             style={{ margin: "0.5rem" }}
             to={`/marin/slip-management`}
@@ -559,9 +162,7 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
           <Link
             style={{ margin: "0.5rem" }}
             to={`/dashboard/slip_memberform`}
-            state={{stepStatus:row.stepStatus,
-              uid:row.uid,
-            }}
+            state={{ stepStatus: row.stepStatus, uid: row.uid }}
           >
             <span>
               <Edit2 className="font-medium-3 text-body" />
@@ -582,46 +183,86 @@ export const serverSideColumns =(currentPage,rowsPerPage) => [
       );
     },
   },
-];
 
-// ** Table Adv Search Column
-export const advSearchColumns = [
   {
-    name: "shipTypeName",
     sortable: true,
-    minWidth: "200px",
+    name: "Slip Name",
+    // minWidth: "200px",
     selector: (row) => row.slipName,
   },
+
   {
-    name: "Email",
+    name: "Status",
+    minWidth: "180px",
+
     sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.email,
-  },
-  {
-    name: "Post",
-    sortable: true,
-    minWidth: "250px",
-    selector: (row) => row.post,
-  },
-  {
-    name: "City",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.city,
-  },
-  {
-    name: "Date",
-    sortable: true,
-    minWidth: "150px",
-    selector: (row) => row.start_date,
+    cell: (row) => {
+      const stepStatus = row.stepStatus;
+      const statusInfo = status[stepStatus];
+
+      return (
+        <div className="d-flex justify-content-center">
+          {statusInfo && (
+            <Badge color={statusInfo.color} pill className="text-dark">
+              {statusInfo.title}
+            </Badge>
+          )}
+        </div>
+      );
+    },
   },
 
   {
-    name: "Salary",
     sortable: true,
-    minWidth: "100px",
-    selector: (row) => row.salary,
+    name: "Category",
+    // minWidth: "150px",
+    selector: (row) => row.category?.shipTypeName || "N/A",
+  },
+  {
+    sortable: true,
+    name: "Name",
+    // minWidth: "150px",
+    selector: (row) =>
+      `${row.member?.firstName || ""} ${row.member?.lastName || ""}`,
+  },
+  {
+    sortable: true,
+    name: "Email",
+    // minWidth: "250px",
+    selector: (row) => row.member?.emailId,
+  },
+  {
+    sortable: true,
+    name: "Mobile No",
+    // minWidth: "200px",
+    selector: (row) =>
+      row.member?.countryCode && row.member?.phoneNumber
+        ? `${row.member.countryCode} - ${row.member.phoneNumber}`
+        : "",
+  },
+  {
+    sortable: true,
+    name: "Payment",
+    // minWidth: "150px",
+    selector: (row) => row.finalPayment,
+  },
+  {
+    sortable: true,
+    name: "Contract Date",
+    // minWidth: "200px",
+    selector: (row) => row.contractDate,
+  },
+  {
+    sortable: true,
+    name: " Next Payment Date",
+    // minWidth: "250px",
+    selector: (row) => row.nextPaymentDate,
+  },
+  {
+    sortable: true,
+    name: "Contract Type",
+    // minWidth: "150x",
+    selector: (row) => row.paidIn,
   },
 ];
 

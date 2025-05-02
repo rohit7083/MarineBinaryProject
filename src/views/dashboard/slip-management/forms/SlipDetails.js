@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import Select from "react-select";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import { Tooltip } from "reactstrap"; // ** Utils
 // import Invoice from '../../invoice_management/Invoice'
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import {
   Card,
   CardHeader,
@@ -31,6 +35,7 @@ const MySwal = withReactContent(Swal);
 function SlipDetailsForm({ assigned }) {
   let navigate = useNavigate();
   const [loadinng, setLoading] = useState(false);
+  const toast = useRef(null);
 
   // let { uid } = useParams();
   const location = useLocation();
@@ -109,20 +114,49 @@ function SlipDetailsForm({ assigned }) {
     setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
 
+  // const handleChange = ({ target }) => {
+  //   const { name, value, checked, type } = target;
+  //   if (type === "checkbox") {
+  //     setUserData((prev) => ({ ...prev, [name]: checked }));
+  //   } else {
+  //     setUserData((prev) => ({ ...prev, [name]: value }));
+  //   }
+
+  //   if (userData.electric === false) {
+  //     setUserData((prev) => ({ ...prev, amps: "" }));
+  //   }
+
+  
+  // };
+
+
   const handleChange = ({ target }) => {
     const { name, value, checked, type } = target;
+  
+    // Handle checkbox change
     if (type === "checkbox") {
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
+      // Update the value for the text field
       setUserData((prev) => ({ ...prev, [name]: value }));
+  
+      // Validate the 'addOn' value and prevent empty string or invalid characters
+      if (name === "addOn") {
+        if (value === "") {
+          errors.addOn = "Add-on cannot be empty";
+        } else if (!alphanumericRegex.test(value)) {
+          errors.addOn = "Add-on can only contain letters, periods, and hyphens";
+        } else {
+          errors.addOn = ""; // Clear any previous errors if valid
+        }
+      }
     }
-
+  
     if (userData.electric === false) {
       setUserData((prev) => ({ ...prev, amps: "" }));
     }
-
-  
   };
+  
 
   const handleSubmit = async (e, data) => {
     e.preventDefault();
@@ -137,7 +171,9 @@ function SlipDetailsForm({ assigned }) {
           slipName: userData.slipName,
           electric: userData.electric,
           water: userData.water,
-          addOn: userData.addOn,
+          // addOn: userData.addOn,
+          addOn: userData.addOn?.trim() === "" ? null : userData.addOn,
+
           amps: parseFloat(userData.amps),
           marketAnnualPrice: parseFloat(userData.marketAnnualPrice) || 0,
           marketMonthlyPrice: parseFloat(userData.marketMonthlyPrice) || 0,
@@ -195,33 +231,57 @@ function SlipDetailsForm({ assigned }) {
         if (uid) {
           // Update existing entry
 
-          await useJwt.updateslip(uid, payload);
-          return MySwal.fire({
-            title: "Successfully Updated",
-            text: " Your Details Updated Successfully",
-            icon: "success",
-            customClass: {
-              confirmButton: "btn btn-primary",
-            },
-            buttonsStyling: false,
-          }).then(() => {
-            navigate("/dashboard/slipdetail_list");
-          });
+         const updateRes= await useJwt.updateslip(uid, payload);
+          // return MySwal.fire({
+          //   title: "Successfully Updated",
+          //   text: " Your Details Updated Successfully",
+          //   icon: "success",
+          //   customClass: {
+          //     confirmButton: "btn btn-primary",
+          //   },
+          //   buttonsStyling: false,
+          // }).then(() => {
+          //   navigate("/dashboard/slipdetail_list");
+          // });
+
+          if (updateRes.status === 200) {
+            toast.current.show({
+              severity: "success",
+              summary: "Updated Successfully",
+              detail: "Slip Details Updated Successfully .",
+              life: 2000,
+            });
+            setTimeout(() => {
+              navigate("/dashboard/slipdetail_list");
+            }, 2000);
+          }
 
         } else {
-          await useJwt.postslip(payload);
           try {
-            MySwal.fire({
-              title: "Successfully Created",
-              text: " Your Slip Details Created Successfully",
-              icon: "success",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-              buttonsStyling: false,
-            }).then(() => {
-              // navigate("/marin/slip-management  ");
-            });
+            const CreateRes= await useJwt.postslip(payload);
+            // MySwal.fire({
+            //   title: "Successfully Created",
+            //   text: " Your Slip Details Created Successfully",
+            //   icon: "success",
+            //   customClass: {
+            //     confirmButton: "btn btn-primary",
+            //   },
+            //   buttonsStyling: false,
+            // }).then(() => {
+            //   // navigate("/marin/slip-management  ");
+            // });
+            if (updateRes.status === 201) {
+              toast.current.show({
+                severity: "success",
+                summary: "Created Successfully",
+                detail: "Slip Details Created Successfully .",
+                life: 2000,
+              });
+              setTimeout(() => {
+                navigate("/marin/slip-management");
+              }, 2000);
+            }
+
           } catch (error) {
             console.log(error);
           } finally {
@@ -579,6 +639,8 @@ function SlipDetailsForm({ assigned }) {
   return (
     <>
       <Card>
+              <Toast ref={toast} />
+        
         <CardHeader className="border-bottom">
           <CardTitle tag="h5">
             {" "}
@@ -605,7 +667,7 @@ function SlipDetailsForm({ assigned }) {
                 Edit
               </Tooltip>
             </div>
-            <div>
+            {/* <div>
               <Link>
                 <img
                   width="25"
@@ -662,8 +724,8 @@ function SlipDetailsForm({ assigned }) {
                   Send Rental Invoice
                 </Tooltip>
               </Link>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <Link>
                 <img
                   width="25"
@@ -681,7 +743,7 @@ function SlipDetailsForm({ assigned }) {
                   Make Empty Slip
                 </Tooltip>
               </Link>
-            </div>
+            </div> */}
           </div>
         </CardHeader>
 
@@ -891,25 +953,26 @@ function SlipDetailsForm({ assigned }) {
               </Row>
             )}
 
-            <Row className="mb-1">
-              <Label sm="3" for="addOn">
-                Add-on
-              </Label>
-              <Col sm="9">
-                <Input
-                  type="text"
-                  value={userData.addOn}
-                  onChange={handleChange}
-                  name="addOn"
-                  id="addOn"
-                  style={getReadOnlyStyle()}
-                  readOnly={View}
-                  placeholder="Enter Add-on"
-                  invalid={!!errors.addOn}
-                />
-                <FormFeedback>{errors.addOn}</FormFeedback>
-              </Col>
-            </Row>
+<Row className="mb-1">
+  <Label sm="3" for="addOn">
+    Add-on
+  </Label>
+  <Col sm="9">
+    <Input
+      type="text"
+      value={userData.addOn}
+      onChange={handleChange}
+      name="addOn"
+      id="addOn"
+      style={getReadOnlyStyle()}
+      readOnly={View}
+      placeholder="Enter Add-on"
+      invalid={!!errors.addOn}
+    />
+    <FormFeedback>{errors.addOn}</FormFeedback>
+  </Col>
+</Row>
+
 
             <Row className="mb-1">
               <Label sm="3" for="marketAnnualPrice">

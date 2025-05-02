@@ -1,124 +1,263 @@
-// import React from "react";
-// import { Row, Col, Card, CardBody, CardText, Button, Badge } from "reactstrap";
+// import React, { useEffect, useState } from "react";
+// import useJwt from "@src/auth/jwt/useJwt";
+// import { useNavigate } from "react-router-dom";
+
+// import {
+//   Row,
+//   Col,
+//   Card,
+//   CardBody,
+//   CardText,
+//   Badge,
+//   InputGroup,
+//   Input,
+//   InputGroupText,
+//   Spinner,
+// } from "reactstrap";
+// import { Search } from "react-feather";
 
 // function ParkBoat() {
+//   const navigate = useNavigate();
 
+//   // const formatDate = (isoDate) => {
+//   //   const date = new Date(isoDate);
+//   //   const day = date.getDate();
+//   //   const month = date.getMonth() + 1;
+//   //   const year = date.getFullYear();
+//   //   return `${day}-${month}-${year}`;
+//   // };
+
+//   const [allBoatData, setAllBoatData] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [searchQuery, setSearchQuery] = useState("");
+
+//   const filteredBoatData = allBoatData.filter((boat) => {
+//     return boat?.category?.shipTypeName
+//       .toLowerCase()
+//       .includes(searchQuery.toLowerCase());
+//   });
+
+//   const getAllBoats = async () => {
+//     setLoading(true);
+//     try {
+//       const res = await useJwt.getslip();
+//       console.log(res?.data?.content?.result);
+//       setAllBoatData(res?.data?.content?.result);
+//     } catch (error) {
+//       console.log(error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getAllBoats();
+//   }, []);
+
+//   console.log("allBoatData", allBoatData);
+//   const handleView = () => {
+//     navigate("/marin/slip-management");
+//   };
+//   const handleAdd = () => {
+//     navigate("/dashboard/slip-details");
+//   };
+
+//   const handleSearchChange = (e) => {
+//     setSearchQuery(e.target.value);
+//   };
 //   return (
-//     <div className="p-2">
-//       <Card className="bg-light">
-//         <CardBody>
-//           <Row>
-//             {[...Array(4)].map((_, index) => (
-//               <Col key={index} xl="3" lg="3" md="6" sm="12" className="mb-2">
-//                 <Card className="card-congratulations-medal h-100">
-//                   <CardBody>
-//                     <div className="d-flex justify-content-between align-items-center mb-1">
-//                       <h5># 1001</h5>
+//     <>
+//       <div className="p-3">
+//         {loading ? (
+//           <div style={{ textAlign: "center", marginTop: "2rem" }}>
+//             <Spinner
+//               style={{ width: "5rem", height: "5rem", color: "blue" }}
+//               type="border"
+//             />{" "}
+//           </div>
+//         ) : (
+//           <>
+//             <CardBody>
+//               <InputGroup className="input-group-merge mb-2">
+//                 <InputGroupText>
+//                   <Search size={14} />
+//                 </InputGroupText>
+//                 <Input onChange={handleSearchChange} placeholder="search..." />
+//               </InputGroup>
+//               <Row>
+//                 {filteredBoatData.map((boat, index) => (
+//                   <Col
+//                     key={index}
+//                     xl="3"
+//                     lg="4"
+//                     md="6"
+//                     sm="12"
+//                     className="mb-4"
+//                   >
+//                     <Card className="h-100 shadow rounded hover-card boat-card">
+//                       <CardBody>
+//                         <div className="d-flex justify-content-between align-items-start mb-2">
+//                           <h5 className="text-primary mb-0"># {index}</h5>
+//                           <Badge color="dark" pill>
+//                             L - {boat?.dimensions?.length || 0}
+//                           </Badge>
+//                           <Badge color="primary" pill>
+//                             W - {boat?.dimensions?.width || 0}
+//                           </Badge>
+//                           <Badge color="warning" pill>
+//                             H - {boat?.dimensions?.height || 0}
+//                           </Badge>
+//                         </div>
 
-//                       <Badge color="light-secondary">H-10 W-20 L-1</Badge>
-//                     </div>
-//                     <CardText className="d-flex justify-content-end align-items-center font-small-6">
-//                   <strong>Uncovered</strong>
+//                         <div className="mb-2">
+//                           <CardText className="mb-1">
+//                             <strong>Type:</strong>{" "}
+//                             {boat?.category?.shipTypeName}
+//                           </CardText>
+//                           {/* <CardText>
+//                         <strong>Date:</strong> {formatDate(boat.createdAt)}
+//                       </CardText> */}
+//                           <CardText>
+//                             <strong>Slip Name:</strong> {boat.slipName}
+//                           </CardText>
 
-//                     </CardText>
-//                     <CardText className="d-flex justify-content-end align-items-center font-small-6">
-//                     02-05-2024
-//                     </CardText>
-//                     <img width={40} height={80} src="src/assets/images/boat2.png"/>
-//                   </CardBody>
-//                 </Card>
-//               </Col>
-//             ))}
-//           </Row>
-//         </CardBody>
-//       </Card>
-//     </div>
+//                           {boat?.isAssigned && (
+//                             <>
+//                               <CardText>
+//                                 <strong>Member Name:</strong>{" "}
+//                                 {(boat?.member?.firstName || "") +
+//                                   " " +
+//                                   (boat?.member?.lastName || "")}
+//                               </CardText>
+//                               <CardText>
+//                                 <strong>Amount :</strong> {boat?.finalPayment}
+//                               </CardText>
+//                             </>
+//                           )}
+//                         </div>
+
+//                         <div className="text-center">
+//                           {boat?.isAssigned ? (
+//                             <img
+//                               src="src/assets/images/updatedboat2.png"
+//                               className="boat-enter-float"
+//                               alt="Boat"
+//                               style={{
+//                                 width: "170px",
+//                                 height: "auto",
+//                                 marginTop: "1px",
+//                                 cursor: "pointer",
+//                               }}
+//                               onClick={handleView}
+//                             />
+//                           ) : (
+//                             <div
+//                               style={{ textAlign: "center", marginTop: "2rem" }}
+//                             >
+//                               <img
+//                                 width="64"
+//                                 height="64"
+//                                 className="mt-4 mb-2"
+//                                 onClick={handleAdd}
+//                                 style={{
+//                                   cursor: "pointer",
+//                                 }}
+//                                 src="https://img.icons8.com/hatch/64/add.png"
+//                                 alt="add"
+//                               />
+//                             </div>
+//                           )}
+//                         </div>
+//                       </CardBody>
+//                     </Card>
+//                   </Col>
+//                 ))}
+//               </Row>
+//             </CardBody>
+//           </>
+//         )}
+//         <style>
+//           {`
+//     .hover-card:hover {
+//       transform: scale(1.03);
+//       transition: 0.3s ease-in-out;
+//       border: 2px solid rgb(19, 19, 18);
+//     }
+
+//     .boat-card {
+//       background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(37, 155, 179));
+//       border-radius: 20px 20px 60px 60px;
+//       position: relative;
+//       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+//       overflow: hidden;
+//       border: 1px solid #b2ebf2;
+//     }
+
+//     .boat-card::after {
+//       content: '';
+//       position: absolute;
+//       bottom: -12px;
+//       left: 10%;
+//       width: 80%;
+//       height: 40px;
+//       background: #8d6e63;
+//       border-radius: 10px;
+//       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+//     }
+
+//     .boat-card::before {
+//       content: '';
+//       position: absolute;
+//       bottom: -25px;
+//       left: 20%;
+//       width: 60%;
+//       height: 15px;
+//       background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
+//       opacity: 0.6;
+//     }
+
+//   @keyframes enterFromTop {
+//   0% {
+//     transform: translateY(-100px);
+//     opacity: 0;
+//   }
+//   100% {
+//     transform: translateY(0);
+//     opacity: 1;
+//   }
+// }
+
+// @keyframes floatSideToSide {
+//   0% {
+//     transform: translateY(0) translateX(0);
+//   }
+//   50% {
+//     transform: translateY(0) translateX(8px);
+//   }
+//   100% {
+//     transform: translateY(0) translateX(0);
+//   }
+// }
+
+// .boat-enter-float {
+//   animation:
+//     enterFromTop 0.8s ease-out forwards,
+//     floatSideToSide 3s ease-in-out infinite;
+//   animation-delay: 0s, 0.8s;
+// }
+
+//   `}
+//         </style>
+//       </div>
+//     </>
 //   );
 // }
 
 // export default ParkBoat;
-// import React from "react";
-// import { Row, Col, Card, CardBody, CardText, Button, Badge } from "reactstrap";
 
-// function ParkBoat() {
-
-//   return (
-//     <div className="p-2">
-//       <Card className="bg-light">
-//         <CardBody>
-//           <Row>
-//             {[...Array(4)].map((_, index) => (
-//               <Col key={index} xl="3" lg="3" md="6" sm="12" className="mb-2">
-//                 <Card className="card-congratulations-medal h-100">
-//                   <CardBody>
-//                     <div className="d-flex justify-content-between align-items-center mb-1">
-//                       <h5># 1001</h5>
-
-//                       <Badge color="light-secondary">H-10 W-20 L-1</Badge>
-//                     </div>
-//                     <CardText className="d-flex justify-content-end align-items-center font-small-6">
-//                   <strong>Uncovered</strong>
-
-//                     </CardText>
-//                     <CardText className="d-flex justify-content-end align-items-center font-small-6">
-//                     02-05-2024
-//                     </CardText>
-//                     <img width={40} height={80} src="src/assets/images/boat2.png"/>
-//                   </CardBody>
-//                 </Card>
-//               </Col>
-//             ))}
-//           </Row>
-//         </CardBody>
-//       </Card>
-//     </div>
-//   );
-// }
-
-// export default ParkBoat;
-
-// import React from "react";
-// import { Row, Col, Card, CardBody, CardText, Button, Badge } from "reactstrap";
-
-// function ParkBoat() {
-
-//   return (
-//     <div className="p-2">
-//       <Card className="bg-light">
-//         <CardBody>
-//           <Row>
-//             {[...Array(4)].map((_, index) => (
-//               <Col key={index} xl="3" lg="3" md="6" sm="12" className="mb-2">
-//                 <Card className="card-congratulations-medal h-100">
-//                   <CardBody>
-//                     <div className="d-flex justify-content-between align-items-center mb-1">
-//                       <h5># 1001</h5>
-
-//                       <Badge color="light-secondary">H-10 W-20 L-1</Badge>
-//                     </div>
-//                     <CardText className="d-flex justify-content-end align-items-center font-small-6">
-//                   <strong>Uncovered</strong>
-
-//                     </CardText>
-//                     <CardText className="d-flex justify-content-end align-items-center font-small-6">
-//                     02-05-2024
-//                     </CardText>
-//                     <img width={40} height={80} src="src/assets/images/boat2.png"/>
-//                   </CardBody>
-//                 </Card>
-//               </Col>
-//             ))}
-//           </Row>
-//         </CardBody>
-//       </Card>
-//     </div>
-//   );
-// }
-
-// export default ParkBoat;
-
-
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useJwt from "@src/auth/jwt/useJwt";
+import { useNavigate } from "react-router-dom";
 import {
   Row,
   Col,
@@ -129,182 +268,284 @@ import {
   InputGroup,
   Input,
   InputGroupText,
+  Spinner,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from "reactstrap";
 import { Search } from "react-feather";
 
-function ParkBoat() {
-  const boatData = [
-    {
-      id: 1001,
-      h: "H-10",
-      w: "W-10",
-      l: "L-5",
-      type: "Uncovered",
-      date: "02-05-2024",
-    },
-    {
-      id: 1002,
-      h: "H-8",
-      w: "W-18",
-      l: "L-2",
-      type: "Covered",
-      date: "03-05-2024",
-    },
-    {
-      id: 1003,
-      h: "H-12",
-      w: "W-22",
-      l: "L-1",
-      type: "Uncovered",
-      date: "04-05-2024",
-    },
-    {
-      id: 1004,
-      h: "H-9",
-      w: "W-19",
-      l: "L-2",
-      type: "Covered",
-      date: "05-05-2024",
-    },
-  ];
+function ParkBoat({allBoatData, loading, setLoading }) {
+  const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const filteredBoatData = allBoatData.filter(
+    (boat) =>
+      boat?.category?.shipTypeName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      boat.slipName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      boat?.member?.firstName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      boat?.finalPayment?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredBoatData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredBoatData.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  
+
+  const handleView = () => {
+    navigate("/marin/slip-management");
+  };
+
+  const handleAdd = () => {
+    navigate("/dashboard/slip-details");
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // reset to page 1 on search
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    const visiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
+    let endPage = startPage + visiblePages - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - visiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <Pagination className="d-flex justify-content-end mt-3">
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink first onClick={() => handlePageChange(1)} />
+        </PaginationItem>
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink
+            previous
+            onClick={() => handlePageChange(currentPage - 1)}
+          />
+        </PaginationItem>
+        {pageNumbers.map((page) => (
+          <PaginationItem key={page} active={page === currentPage}>
+            <PaginationLink onClick={() => handlePageChange(page)}>
+              {page}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink
+            next
+            onClick={() => handlePageChange(currentPage + 1)}
+          />
+        </PaginationItem>
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+        </PaginationItem>
+      </Pagination>
+    );
+  };
 
   return (
-    <>
-      <div className="p-3">
-        <Card className="bg-light shadow-sm border-0 rounded">
+    <div className="p-3">
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "2rem" }}>
+          <Spinner
+            style={{ width: "5rem", height: "5rem", color: "blue" }}
+            type="border"
+          />
+        </div>
+      ) : (
+        <>
           <CardBody>
             <InputGroup className="input-group-merge mb-2">
               <InputGroupText>
                 <Search size={14} />
               </InputGroupText>
-              <Input placeholder="search..." />
+              <Input
+                onChange={handleSearchChange}
+                placeholder="search Amount, Slips, category etc."
+              />
             </InputGroup>
+
             <Row>
-              {boatData.map((boat, index) => (
+              {console.log(currentItems)}
+              {currentItems.map((boat, index) => (
                 <Col key={index} xl="3" lg="4" md="6" sm="12" className="mb-4">
-                  <Card className="h-100 shadow rounded hover-card boat-card">
+                  <Card  style={{
+                  }} className="h-100 shadow rounded hover-card boat-card">
                     <CardBody>
                       <div className="d-flex justify-content-between align-items-start mb-2">
-                        <h5 className="text-primary mb-0"># {boat.id}</h5>
+                        <h5 className="text-primary mb-0">
+                          # {index + startIndex + 1}
+                        </h5>
                         <Badge color="dark" pill>
-                          {boat.h}
+                          L - {boat?.dimensions?.length || 0}
                         </Badge>
                         <Badge color="primary" pill>
-                          {boat.w}
+                          W - {boat?.dimensions?.width || 0}
                         </Badge>
                         <Badge color="warning" pill>
-                          {boat.l}
+                          H - {boat?.dimensions?.height || 0}
                         </Badge>
                       </div>
 
                       <div className="mb-2">
                         <CardText className="mb-1">
-                          <strong>Status:</strong> {boat.type}
+                          <strong>Type:</strong> {boat?.category?.shipTypeName}
                         </CardText>
                         <CardText>
-                          <strong>Date:</strong> {boat.date}
+                          <strong>Slip Name:</strong> {boat.slipName}
                         </CardText>
+
+                        {boat?.isAssigned && (
+                          <>
+                            <CardText>
+                              <strong>Member Name:</strong>{" "}
+                              {(boat?.member?.firstName || "") +
+                                " " +
+                                (boat?.member?.lastName || "")}
+                            </CardText>
+                            <CardText>
+                              <strong>Amount :</strong> {boat?.finalPayment}
+                            </CardText>
+                          </>
+                        )}
                       </div>
 
                       <div className="text-center">
-                        
-                        <img
-                          src="src/assets/images/updatedboat2.png"
-                          className="boat-enter-float"
-                          alt="Boat"
-                          style={{
-                            width: "170px",
-                            height: "auto",
-                            marginTop: "10px",
-                          }}
-                        />
-                      </div>
-                      
+  <div
+    style={{
+      width: "170px",
+      height: "150px", // Adjust as needed
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      margin: "auto",
+    }}
+  >
+    {boat?.isAssigned ? (
+      <img
+        src="src/assets/images/updatedboat2.png"
+        className="boat-enter-float"
+        alt="Boat"
+        style={{
+          width: "170px",
+          height: "auto",
+          cursor: "pointer",
+        }}
+        onClick={handleView}
+      />
+    ) : (
+      <img
+        width="64"
+        height="64"
+        className="addimg"
+        onClick={handleAdd}
+        style={{
+          cursor: "pointer",
+        }}
+        src="https://img.icons8.com/hatch/64/add.png"
+        alt="add"
+      />
+    )}
+  </div>
+</div>
+
                     </CardBody>
                   </Card>
                 </Col>
               ))}
             </Row>
+
+            {renderPagination()}
           </CardBody>
-        </Card>
+        </>
+      )}
 
-        {/* Styles */}
-        <style>
-  {`
-    .hover-card:hover {
-      transform: scale(1.03);
-      transition: 0.3s ease-in-out;
-      border: 1px solid rgb(19, 19, 18);
-    }
-
-    .boat-card {
-      background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(37, 155, 179));
-      border-radius: 20px 20px 60px 60px;
-      position: relative;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      overflow: hidden;
-      border: 1px solid #b2ebf2;
-    }
-
-    .boat-card::after {
-      content: '';
-      position: absolute;
-      bottom: -12px;
-      left: 10%;
-      width: 80%;
-      height: 40px;
-      background: #8d6e63;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .boat-card::before {
-      content: '';
-      position: absolute;
-      bottom: -25px;
-      left: 20%;
-      width: 60%;
-      height: 15px;
-      background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
-      opacity: 0.6;
-    }
-
-    @keyframes enterFromTop {
-      0% {
-        transform: translateY(-100px);
-        opacity: 0;
+      <style>
+        {`
+      .hover-card:hover {
+        transform: scale(1.03);
+        transition: 0.3s ease-in-out;
+        border: 2px solid rgb(19, 19, 18);
       }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
 
-    @keyframes floatUpDown {
-      0% {
-        transform: translateY(0);
+      .boat-card {
+        background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(37, 155, 179));
+        border-radius: 20px 20px 60px 60px;
+        position: relative;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: 1px solid #b2ebf2;
       }
-      50% {
-        transform: translateY(-5px);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
 
-    .boat-enter-float {
-      animation:
-        enterFromTop 0.8s ease-out forwards,
-        floatUpDown 2s ease-in-out infinite;
-      animation-delay: 0s, 0.8s;
-    }
-  `}
-</style>
+      .boat-card::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 10%;
+        width: 80%;
+        height: 40px;
+        background: #8d6e63;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
 
-      </div>
-    </>
+      .boat-card::before {
+        content: '';
+        position: absolute;
+        bottom: -25px;
+        left: 20%;
+        width: 60%;
+        height: 15px;
+        background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
+        opacity: 0.6;
+      }
+
+      @keyframes enterFromTop {
+        0% { transform: translateY(-100px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+      }
+
+      @keyframes floatSideToSide {
+        0% { transform: translateY(0) translateX(0); }
+        50% { transform: translateY(0) translateX(8px); }
+        100% { transform: translateY(0) translateX(0); }
+      }
+
+      .boat-enter-float {
+        animation:
+          enterFromTop 0.8s ease-out forwards,
+          floatSideToSide 3s ease-in-out infinite;
+        animation-delay: 0s, 0.8s;
+      }
+    `}
+      </style>
+    </div>
   );
 }
 
 export default ParkBoat;
-

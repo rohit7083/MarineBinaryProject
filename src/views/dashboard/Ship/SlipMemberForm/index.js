@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import PaymentDetails from "./steps-with-validation/PaymentDetails";
 import DocumentsDetails from "./steps-with-validation/DocumentsDetails";
@@ -24,7 +23,7 @@ const WizardModern = () => {
   const [slipIID, setSlipIID] = useState("");
   const [memberID, setMemberID] = useState(null);
   const [fetchLoader, setFetchLoader] = useState(false);
- const [sId,setId]=useState(null);
+  const [sId, setId] = useState(null);
   const [formData, setFormData] = useState({
     vessel: {},
     member: {},
@@ -34,9 +33,8 @@ const WizardModern = () => {
   // ** Hooks
   // const { uid } = useParams();
 
-  const location=useLocation();
-const uid=location.state?.uid || "";
-
+  const location = useLocation();
+  const uid = location.state?.uid || "";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +45,7 @@ const uid=location.state?.uid || "";
         const { vessel, member, payment } = content;
         console.clear();
         console.log("conntent Slip id ", content);
-setId(content);
+        setId(content);
         // vessel details
         vessel.slipName = {
           label: vessel.slipName,
@@ -79,11 +77,10 @@ setId(content);
   useEffect(() => {
     console.log(formData);
     console.log("memeber id from index", memberID);
-    
   }, [formData]);
 
-  console.log("sui",sId);
-  
+  console.log("sui", sId);
+
   const steps = [
     {
       id: "Vessel-details",
@@ -135,6 +132,9 @@ setId(content);
           type="wizard-modern"
           fetchLoader={fetchLoader}
           isAssigned={sId}
+          sId={sId?.id}
+          mId={sId?.member?.id}
+          member={sId?.member}
         />
       ),
     },
@@ -145,12 +145,12 @@ setId(content);
       icon: <FileText size={18} />,
       content: (
         <DocumentsDetails
-        formDataParent={{ ...formData.documents }}
+          formDataParent={{ ...formData.documents }}
           stepper={stepper}
           type="wizard-modern"
           slipIID={slipIID}
           sId={sId}
-
+          Parentdocuments={sId?.documents}
         />
       ),
     },

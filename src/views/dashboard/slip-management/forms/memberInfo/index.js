@@ -20,11 +20,15 @@ import Select from "react-select";
 import RenewalContract from "../memberInfo/RenewalContract";
 
 const PersonalInfo = ({ fetchLoader, SlipData }) => {
-  // console.log("sllipdata",SlipData);
+  console.log("sllipdata",SlipData);
 
   const MySwal = withReactContent(Swal);
+  const [checkvesel,   setCheckvessel
+  ] = useState(null);
+  const [checkMember, setCheckMember] = useState(null);
 
-  const [fullname, setFullname] = useState([]);
+  
+  const [isAssign, setIsAssigned] = useState(null);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -104,8 +108,18 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
 
   const { member } = SlipData;
 
+  useEffect(()=>{
+    // {{debugger}}
+    setIsAssigned(SlipData?.isAssigned);
+    setCheckvessel(SlipData?.vessel);
+    setCheckMember(SlipData?.member);
+    console.clear();
+  // console.log("assigne",SlipData?.vessel);
+  
+  },[SlipData])
   const onSubmit = async (data) => {
-    debugger;
+
+
     setLoading(true);
     const {
       firstName,
@@ -187,6 +201,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
   const { payment } = SlipData;
 
   useEffect(() => {
+
+
     if (member) {
       // {{debugger}}
       const matchedCountryOption = countryOptions.find(
@@ -266,14 +282,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
     }));
   };
 
-  // const watchaddress = watch("address");
-  // useEffect(() => {
-  //   const inputRestriction = watchaddress?.replace(/[^a-zA-Z0-9\s]/g, "");
-
-  //   if (watchaddress !== inputRestriction) {
-  //     setValue("address", inputRestriction);
-  //   }
-  // }, [watchaddress, setValue]);
+  
 
   const watchFields = watch([
     "address",
@@ -380,7 +389,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                 Edit
               </Tooltip>
             </div>
-            <div>
+            {/* <div>
               <img
                 id="RenewContract"
                 width="25"
@@ -457,7 +466,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                   Make Empty Slip
                 </Tooltip>
               </Link>
-            </div>
+            </div> */}
           </div>
         </CardHeader>
 
@@ -473,6 +482,10 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
               </React.Fragment>
             )}
 
+
+            {checkMember && (
+<>
+           
             <Row>
               <RenewalContract setShow={setShow} show={show} />
 
@@ -778,6 +791,14 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                 )}
               </Col>
             </Row>
+
+           
+           </>
+             
+            )}
+
+            {checkvesel ? (
+              <>
             <CardTitle tag="h5" className="mt-2">
               {" "}
               Vessel Details
@@ -914,7 +935,18 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                 )}
               </Col>
             </Row>
+            </>
+):(
+  <CardTitle tag="h5" className="d-flex justify-content-center text-align-center ">
+  {" "}
+  Data Not Found
+</CardTitle>
 
+)}
+
+
+{isAssign && (
+  <>
             <CardTitle tag="h5" className="mt-2">
               {" "}
               Payment Details
@@ -1048,6 +1080,10 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                 )}
               </Col>
             </Row>
+            </>
+            )}
+{checkvesel &&(<>
+
             <div className="d-flex mt-2 justify-content-end gap-2">
               <div className="d-flex">
                 <Button
@@ -1073,6 +1109,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                 </Button>
               </div>
             </div>
+
+            </>)}
           </Form>
         </CardBody>
       </Card>

@@ -46,24 +46,35 @@ export const structurePermissionList = (list) => {
     const { roleName } = data;
     delete data.roleName;
   
+    // const permission = Object.keys(data)
+    //   .reduce((arr, category) => {
+    //     if (category == "uid") return arr;
+    //     const selectAction = data[category]
+    //       ? data[category]
+    //           .filter((action) => action.isSelected)
+    //           .map((action) => action.uid)
+    //       : [];
+    //     if (selectAction.length) arr.push([...selectAction]);
+    //     return arr;
+    //   }, [])
+    //   .flat();
     const permission = Object.keys(data)
-      .reduce((arr, category) => {
-        if (category == "uid") return arr;
-        const selectAction = data[category]
-          ? data[category]
-              .filter((action) => action.isSelected)
-              .map((action) => action.uid)
-          : [];
-        if (selectAction.length) arr.push([...selectAction]);
-        return arr;
-      }, [])
-      .flat();
+    .reduce((arr, category) => {
+      if (category === "uid") return arr;
+      const selectAction = data[category]
+        ? data[category]
+            .filter((action) => action && action.isSelected) // <-- SAFE FILTER
+            .map((action) => action.uid)
+        : [];
+      if (selectAction.length) arr.push([...selectAction]);
+      return arr;
+    }, [])
+    .flat();
   
     console.log({ permission });
     return {
       roleName,
-      // ! Temp Comment Below line for Backend Changes
-      // ! permission,
+     
       permissionIds: permission.filter((item) => item),
     };
   };

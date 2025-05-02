@@ -181,9 +181,9 @@ const CardPayment = () => {
     //   cardCvc: cvc,
     // };
 
-    {
-      debugger;
-    }
+    // {
+    //   debugger;
+    // }
     let payload = {
       finalPayment: Number(memberDetail?.amount),
       slipId: memberDetail?.slipId,

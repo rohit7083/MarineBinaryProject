@@ -1,5 +1,4 @@
-
-import { Table, Card, Input, Button } from "reactstrap";
+import { Table, Card, Input, Button, Row, Col, Label } from "reactstrap";
 import { useState } from "react";
 // ** Icons Imports
 import { Trash2 } from "react-feather";
@@ -14,60 +13,89 @@ const CompanyTable = () => {
     e.preventDefault(); // Prevents page refresh
     setData([...data, { id: Date.now() }]); // Unique id for key
   };
-console.log(data);
+  console.log(data);
 
   // Function to remove a row
   const removeField = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
 
-  
   return (
     <Card className="card-company-table p-3">
-      {/* Move Add Row Button to Left */}
-     
-      <Table responsive>
-        <thead>
-          <tr>
-            <th>Package Size</th>
-            <th></th>
-            <th>MRP Price</th>
-            <th></th>
-            <th>Stocks</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
-            <tr key={row.id}>
-              <td>
-                <Input type="text" placeholder="Product Name" />
-              </td>
-              <td>
-                <Input type="text" placeholder="Product Name" />
-              </td>
-              <td>
-                <Input type="text" placeholder="Product Name" />
-              </td>
-              <td>
-                <Input type="text" placeholder="Product Name" />
-              </td>
-              <td>
-                <Input type="text" placeholder="Product Name" />
-              </td>
-              <td>
-              <Trash2 style={{ cursor: "pointer" }} onClick={() => removeField(row.id)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-        <div className="d-flex justify-content-start ms-2 mt-2 mb-1">
-        <Button color="primary" onClick={addField}>
-          Add
-        </Button>
-      </div>
+      <div className="">
+        {data.map((row) => (
+          <>
+          <Row
+            className="p-2"
+            style={{ border: "2px solid black", borderRadius: "10px" }}
+            key={row.id}
+          >
+            <Col md="2" sm="12" className="mb-1 ">
+              <Label className="form-label" for="productName">
+                Product Name
+              </Label>
+              <Input type="text" id="productName" placeholder="Product Name" />
+            </Col>
+            <Col md="2" sm="12" className="mb-1 ">
+              <Label className="form-label" for="productName">
+                Product type
+              </Label>
+              <Input type="text" id="productName" placeholder="Product Name" />
+            </Col>
+            <Col md="2" sm="12" className="mb-1 ">
+              <Label className="form-label" for="productName">
+                Product type
+              </Label>
+              <Input type="text" id="productName" placeholder="Product Name" />
+            </Col>
+         
+            <Col md="6" sm="12" className="mb-1 ">
+              <Label className="form-label" for="productImage">
+                Product Image
+              </Label>
+              <Input type="file" id="productImage" accept="image/*" />
+            </Col>
+            <Row>
+              <Col md="2" sm="12" className="mb-1 ">
+                <Label className="form-label" for="productName">
+                  Product Name
+                </Label>
+                <Input
+                  type="text"
+                  id="productName"
+                  placeholder="Product Name"
+                />
+              </Col>
+              <Col md="2" sm="12" className="mb-1 ">
+                <Label className="form-label" for="productName">
+                  Product type
+                </Label>
+                <Input
+                  type="text"
+                  id="productName"
+                  placeholder="Product Name"
+                />
+              </Col>
+              <Col md="2" sm="12" className="mb-1 ">
+                <Label className="form-label" for="productName">
+                  Product type
+                </Label>
+                <Input
+                  type="text"
+                  id="productName"
+                  placeholder="Product Name"
+                />
+              </Col>
+              <Col md="6" sm="12" className="mt-4 d-flex justify-content-end">
 
-      </Table>
+            <Trash2 className="d-flex" style={{ cursor: "pointer" }} />
+              </Col>
+            </Row>
+            </Row>
+
+          </>
+        ))}
+      </div>
     </Card>
   );
 };

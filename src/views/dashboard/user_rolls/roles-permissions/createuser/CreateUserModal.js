@@ -1,8 +1,11 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState ,useRef} from "react";
 import Swal from "sweetalert2";
 import InputPasswordToggle from "@components/input-password-toggle";
 import { useNavigate } from "react-router-dom";
-
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import React from "react";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import { countries } from "../../../slip-management/CountryCode";
@@ -46,6 +49,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
     formState: { errors },
   } = useForm();
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const toast = useRef(null);
 
   const [allRoleName, setallRoleName] = useState(null);
   const [Errmessage, setMessage] = useState("");
@@ -153,19 +157,30 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         setLoading(true);
         const res = await useJwt.updateSubuser(uid, transformedData);
         console.log("Add role res:", res);
-        MySwal.fire({
-          title: "Successfully Updated",
-          text: "User Updated Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
+        // MySwal.fire({
+        //   title: "Successfully Updated",
+        //   text: "User Updated Successfully",
+        //   icon: "success",
+        //   customClass: {
+        //     confirmButton: "btn btn-primary",
+        //   },
+        //   buttonsStyling: false,
+        // }).then(() => {
+          // navigate("/dashboard/user_rolls/roles-permissions/createuser");
+          // setShow(false);
+          // reset();
+        // });
+        toast.current.show({
+          severity: "success",
+          summary: "Updated Successfully",
+          detail: "User updated Successfully.",
+          life: 2000,
+        });
+        setTimeout(() => {
           navigate("/dashboard/user_rolls/roles-permissions/createuser");
           setShow(false);
-          reset();
-        });
+          reset();        }, 2000);
+
       } else {
         setLoading(true);
         const res2 = await useJwt.createUser(transformedData);
@@ -287,6 +302,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
       >
+              <Toast ref={toast} />
+        
         <ModalHeader className="bg-transparent" toggle={() => setShow(!show)} />
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">

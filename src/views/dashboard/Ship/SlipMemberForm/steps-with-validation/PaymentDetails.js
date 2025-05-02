@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
@@ -11,6 +11,10 @@ import { selectThemeColors } from "@utils";
 import Select from "react-select";
 import useJwt from "@src/auth/jwt/useJwt";
 import QRCode from "react-qr-code";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import QrCodePayment from "./QrCodePayment";
 import {
   Label,
@@ -45,16 +49,19 @@ const Address = ({
   formData,
   slipIID,
   memberID,
+  mId,
+  sId,
   formStatus,
   fetchLoader,
   slipId,
   isAssigned,
+  member,
 }) => {
-  {{debugger}}
   const colourOptions = [
     { value: "Monthly", label: "Monthly" },
     { value: "Annual", label: "Annual" },
   ];
+  const toast = useRef(null);
 
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
@@ -109,12 +116,12 @@ const Address = ({
   const [qr, setQr] = useState(null);
   const MySwal = withReactContent(Swal);
 
-  const [isAssign, setIsassign] = useState(isAssigned?.isAssigned);
+  const [isAssign, setIsassign] = useState(null);
 
   const [picker, setPicker] = useState(new Date());
   const [totalPayment, setFinalPayment] = useState("");
   const [showQrModal, setShowQrModal] = useState(false);
-
+const [checkMember,setMember]=useState(false);
   const [availableMonths, setAvailableMonths] = useState([]);
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [discounttoggle, setDiscountToggle] = useState(false);
@@ -201,6 +208,10 @@ const Address = ({
   };
 
   useEffect(() => {
+    setIsassign(isAssigned?.isAssigned);
+  }, [isAssigned]);
+
+  useEffect(() => {
     setAvailableMonths(months);
   }, []);
 
@@ -251,7 +262,7 @@ const Address = ({
       const { marketAnnualPrice, id, marketMonthlyPrice } =
         response.data.content.result.find((item) => {
           // const fakeID = 18;
-          if (item.id === slipIID) {
+          if (item.id === slipIID || sId) {
             return item;
           }
         });
@@ -291,8 +302,8 @@ const Address = ({
   };
 
   useEffect(() => {
-    if (slipIID) fetchMarketPrices();
-  }, [slipIID]);
+    if (slipIID || sId) fetchMarketPrices();
+  }, [slipIID, sId]);
 
   // const handlePaidInChange = (option) => {
   //   console.log("handlePaidInChange function", slipDetail);
@@ -438,6 +449,16 @@ const Address = ({
     }
     return false;
   };
+  useEffect(() => {
+    // {{debugger}}
+    if (member || memberID) {
+      setMember(false); // member is now filled
+    } else {
+      setMember(true); // still missing
+    }
+  }, [mId,memberID]);
+  
+  
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
@@ -467,14 +488,12 @@ const Address = ({
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
 
-  console.log(acctypeValue);
   const onSubmit = async (data) => {
     setErrMsz("");
     data.paymentMode = data.paymentMode?.value;
-
     console.log("Payment data:", data);
     const formData = new FormData();
-    formData.append("SlipId", slipIID);
+    formData.append("SlipId", slipIID || sId);
     formData.append("contractDate", data.contractDate);
     formData.append("paidIn", data.paidIn?.value);
     formData.append("rentalPrice", data.rentalPrice);
@@ -483,7 +502,7 @@ const Address = ({
     formData.append("nextPaymentDate", data.nextPaymentDate);
     formData.append("paymentMode", data.paymentMode);
     formData.append("otpVerify", otpVerify);
-    formData.append("memberId", memberID);
+    formData.append("memberId", memberID || mId);
 
     if (otpVerify) {
       formData.append("discountAmount", Number(data.discountAmount));
@@ -539,34 +558,50 @@ const Address = ({
     if (isAssigned?.isAssigned) {
       stepper.next();
     } else {
+     
+        if (typeof mId !== "undefined" && mId !== null || typeof memberID !== "undefined" && memberID !== null) {
+          
       try {
         setLoading(true);
 
         const response = await useJwt.createPayment(formData);
+       
         const { qr_code_base64 } = response?.data;
         setQr(qr_code_base64);
         if (qr_code_base64) {
           setShowQrModal(true);
         }
 
+        // {{debugger}}
         if (response?.data?.status === "success") {
-          if (paymentMode == "Payment Link") {
+          toast.current.show({
+            severity: "success",
+            summary: "Created Successfully",
+            detail: "Payment Details Created Successfully.",
+            life: 2000,
+          });
+        
+          if (paymentMode === "Payment Link") {
+            // Show SweetAlert instead of auto-stepping
             MySwal.fire({
-              title: " Payment Link send Successfully",
-              text: "Payment Link is  Successfully Send to your Email Address",
+              title: "Payment Link Sent Successfully",
+              text: "Payment link has been sent to your email address.",
               icon: "success",
               customClass: {
                 confirmButton: "btn btn-primary",
               },
               buttonsStyling: false,
             }).then(() => {
-              stepper.next();
+              stepper.next(); // Go to next step after user closes the alert
             });
+          } else {
+            // For other payment modes, auto step after toast
+            setTimeout(() => {
+              stepper.next();
+            }, 2000);
           }
-        } else {
         }
-
-        stepper.next();
+        
       } catch (error) {
         console.error("Error submitting data:", error);
 
@@ -582,6 +617,8 @@ const Address = ({
         setLoading(false);
       }
     }
+
+  }
   };
 
   if (fetchLoader)
@@ -606,6 +643,8 @@ const Address = ({
 
   return (
     <Fragment>
+                  <Toast ref={toast} />
+      
       <div className="content-header">
         <h5 className="mb-0">Payment</h5>
         <small>Enter Your Payment Details.</small>
@@ -615,11 +654,30 @@ const Address = ({
         <React.Fragment>
           <UncontrolledAlert color="danger">
             <div className="alert-body">
-              <span className="text-danger fw-bold">{errMsz}</span>
+              <span className="text-danger fw-bold">
+                <strong>Error : </strong>
+                {errMsz }
+                </span>
             </div>
           </UncontrolledAlert>
         </React.Fragment>
       )}
+
+{checkMember && (
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">
+                <strong>Error : </strong>
+                Please fill the Member form first to proceed.
+
+                </span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
+
+
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <>
@@ -821,8 +879,8 @@ const Address = ({
                 <GenrateOtp
                   otpVerify={otpVerify}
                   setotpVerify={setotpVerify}
-                  slipIID={slipIID}
-                  memberId={memberID}
+                  slipIID={slipIID || sId}
+                  memberId={memberID || mId}
                   fetchDiscountFields={formData[0]?.otpVerify}
                 />
               </Col>
@@ -1064,8 +1122,8 @@ const Address = ({
                 showModal={showModal}
                 setShowModal={setShowModal}
                 totalPayment={totalPayment}
-                slipIID={slipIID}
-                memberId={memberID}
+                slipIID={slipIID || sId}
+                memberId={memberID || mId}
                 cashOtpVerify={formData[0]?.cashOtpVerify}
               />
 
@@ -1925,8 +1983,7 @@ const Address = ({
                     control={control}
                     render={({ field }) => (
                       <Input
-
-                      type="text"
+                        type="text"
                         placeholder="Enter Transaction ID"
                         invalid={!!errors.cardSwipeTransactionId}
                         {...field}
@@ -2129,7 +2186,7 @@ const Address = ({
                 type="submit"
                 color="primary"
                 className="btn-next"
-                disabled={loading}
+                disabled={loading || checkMember}
                 onClick={() => clearErrors()}
               >
                 <span className="align-middle d-sm-inline-block d-none">
@@ -2138,7 +2195,10 @@ const Address = ({
                       Loading.. <Spinner size="sm" />{" "}
                     </>
                   ) : (
-                    "Submit"
+                    <>
+                    
+                    Submit
+                    </>
                   )}
                 </span>
                 {loading ? null : (
