@@ -92,4 +92,8 @@ getMemberDetails: "/sPayment/decrypt-token?token=",
   getProductCategory:'/productCategory',
   editProductCategory:'/productCategory/',
   deleteProductCategory:`/productCategory/`,
+
+  //pos add producct
+  addProduct:"/product/",
+
 };

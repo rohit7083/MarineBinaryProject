@@ -9,14 +9,12 @@ import {
   Button,
   Label,
   Row,
-  CardText,
+  Tooltip,FormFeedback
 } from "reactstrap";
-import { Tooltip } from "reactstrap";
-import AddCategory from "./addproductCategory/AddCategory";
-import { Link } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
 import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
 import importIcon from "../../../../assets/icons/file-import.svg";
 import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
@@ -24,32 +22,28 @@ import addStocks from "../../../../assets/icons/supplier-alt.svg";
 import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
 import addTax from "../../../../assets/icons/calendar-event-tax.svg";
 import ProductAdd_Table from "./ProductAdd_Table";
-import { Plus } from "react-feather";
+import Add_Specification from "./Add_Specification";
+import useJwt from "@src/auth/jwt/useJwt";
 const MultipleColumnForm = () => {
   const {
     control,
     handleSubmit,
-    setValue,
-    watch,
     reset,
-    register,
     formState: { errors },
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      invoiceID: "Sequent",
-      currency: "USD",
-      InvoiceNotes: "",
-      IBANCode: "",
-      InvoicePrefix: "",
-      WalletID: "",
-      InvoiceTerms: "",
-      invoiceSignature: null,
-      profilePicture: null,
+      name: "",
+      productType: "",
+      category: "",
+      vendor: "",
+      taxChargesType: "",
+      taxes: "",
+      description: "",
+      variations: [],
+
     },
   });
-  const [files, setFiles] = useState({});
-  const [show, setShow] = useState(false);
 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
@@ -59,65 +53,55 @@ const MultipleColumnForm = () => {
     addStock: false,
     stockManage: false,
   });
+
   const toggleTooltip = (tooltip) => {
     setTooltipOpen((prevState) => ({
       ...prevState,
       [tooltip]: !prevState[tooltip],
     }));
   };
-  const handleFileChange = (e, fieldName) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFiles((prevFiles) => ({
-        ...prevFiles,
-        [fieldName]: selectedFile,
-      }));
+
+  const onSubmit =async (data) => {
+
+    try {
+      const res=await useJwt.addProduct(data);
+      console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+      
     }
+    console.log("Form Submitted:", data);
   };
 
-  const selectedValue = watch("WithStocks");
-  const selectedTax = watch("selectedTax");
-
-  console.log("selectedValue", selectedValue);
-  console.log("selectedTax", selectedTax);
-
   return (
-    <>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">Add New Products</CardTitle>
-
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex justify-content-end gap-2">
-              <div>
-                <Link to="/dashboard/pos/product_management/addProduct">
-                  <img
-                    src={addProductIcon}
-                    id="ANP"
-                    alt="Shopping Bag"
-                    width="25"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.ANP}
-                    target="ANP"
-                    toggle={() => toggleTooltip("ANP")}
-                  >
-                    Add New Producct
-                  </Tooltip>
-                </Link>
-              </div>
+              <Link to="/dashboard/pos/product_management/addProduct">
+                <img src={addProductIcon} id="ANP" alt="Add Product" width="25" />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.ANP}
+                  target="ANP"
+                  toggle={() => toggleTooltip("ANP")}
+                >
+                  Add New Product
+                </Tooltip>
+              </Link>
+
               <div>
                 <img
                   id="importProduct"
                   width="25"
                   height="25"
                   src={importIcon}
-                  alt="importProduct"
-                  onClick={() => setShow(true)}
+                  alt="Import"
                   style={{ cursor: "pointer" }}
                 />
-
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.importProduct}
@@ -128,213 +112,184 @@ const MultipleColumnForm = () => {
                 </Tooltip>
               </div>
 
-              <div>
-                <Link to="/dashboard/pos/product_management/addproductCategory">
-                  <img
-                    width="25"
-                    height="25"
-                    id="addProductCate"
-                    src={AddCategoryIcon}
-                    alt="sorting-answers"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addProductCate}
-                    target="addProductCate"
-                    toggle={() => toggleTooltip("addProductCate")}
-                  >
-                    Add Product Category
-                  </Tooltip>
-                </Link>
-              </div>
-              <div>
-                <Link to="/dashboard/pos/product_management/addTaxes">
-                  <img
-                    width="25"
-                    height="25"
-                    id="addProducttaxes"
-                    src={addTax}
-                    alt="addProducttaxes"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addProducttaxes}
-                    target="addProducttaxes"
-                    toggle={() => toggleTooltip("addProducttaxes")}
-                  >
-                    Add Product Taxes
-                  </Tooltip>
-                </Link>
-              </div>
-              <div>
-                <Link to="/dashboard/pos/product_management/AddStocks">
-                  <img
-                    width="25"
-                    height="25"
-                    id="addStock"
-                    src={addStocks}
-                    alt="list-is-empty"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addStock}
-                    target="addStock"
-                    toggle={() => toggleTooltip("addStock")}
-                  >
-                    Add Stock
-                  </Tooltip>
-                </Link>
-              </div>
+              <Link to="/dashboard/pos/product_management/addproductCategory">
+                <img id="addProductCate" src={AddCategoryIcon} width="25" height="25" alt="Category" />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.addProductCate}
+                  target="addProductCate"
+                  toggle={() => toggleTooltip("addProductCate")}
+                >
+                  Add Product Category
+                </Tooltip>
+              </Link>
 
-              <div>
-                <Link>
-                  <img
-                    width="25"
-                    height="25"
-                    id="stockManage"
-                    src={ManageStocks}
-                    alt="list-is-empty"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.stockManage}
-                    target="stockManage"
-                    toggle={() => toggleTooltip("stockManage")}
-                  >
-                    Stock Manage
-                  </Tooltip>
-                </Link>
-              </div>
+              <Link to="/dashboard/pos/product_management/addTaxes">
+                <img id="addProducttaxes" src={addTax} width="25" height="25" alt="Tax" />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.addProducttaxes}
+                  target="addProducttaxes"
+                  toggle={() => toggleTooltip("addProducttaxes")}
+                >
+                  Add Product Taxes
+                </Tooltip>
+              </Link>
+
+              <Link to="/dashboard/pos/product_management/AddStocks">
+                <img id="addStock" src={addStocks} width="25" height="25" alt="Stock" />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.addStock}
+                  target="addStock"
+                  toggle={() => toggleTooltip("addStock")}
+                >
+                  Add Stock
+                </Tooltip>
+              </Link>
+
+              <Link to="#">
+                <img id="stockManage" src={ManageStocks} width="25" height="25" alt="Manage" />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.stockManage}
+                  target="stockManage"
+                  toggle={() => toggleTooltip("stockManage")}
+                >
+                  Stock Manage
+                </Tooltip>
+              </Link>
             </div>
           </div>
         </CardHeader>
-        <CardBody className="mt-2">
-          <Row>
-            <Col md="6" sm="12" className="mb-1 ">
-              <Label className="form-label" for="productName">
-                Product Name
-              </Label>
-              <Input type="text" id="productName" placeholder="Product Name" />
-            </Col>
-            <Col md="6" sm="12" className="mb-1 ">
-              <Label className="form-label" for="productName">
-                Product type
-              </Label>
-              <Input type="text" id="productName" placeholder="Product Name" />
-            </Col>
-          </Row>
+
+        <CardBody>
           <Row>
             <Col md="6" sm="12" className="mb-1">
-              <Label className="form-label" for="category">
-                Category
-              </Label>
-              <Input type="select" id="category">
-                <option>Select Category</option>
-              </Input>
+              <Label for="name">Product Name</Label>
+              <Controller
+                name="name"
+                control={control}
+                rules={{
+                  required:"Product Name is required"
+                }}
+                render={({ field }) =><> <Input {...field} id="name" placeholder="Product Name" />
+              
+              <FormFeedback>{errors.name?.message}</FormFeedback>
+
+              </>
+              }
+              />
+
             </Col>
+
             <Col md="6" sm="12" className="mb-1">
-              <Label className="form-label" for="taxes">
-                Vendor
-              </Label>
-              <Input type="select" id="taxes">
-                <option>Select Vendor</option>
-              </Input>
+              <Label for="productType">Product Type</Label>
+              <Controller
+                name="productType"
+                control={control}
+                render={({ field }) => <Input {...field} id="productType" placeholder="Product Type" />}
+              />
             </Col>
           </Row>
+
           <Row>
             <Col md="6" sm="12" className="mb-1">
-              <Label className="form-label" for="category">
-                Tax Charges
-              </Label>
-              <Input type="select" id="category">
-                <option>Select Tax Charges</option>
-              </Input>
+              <Label for="category">Category</Label>
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <Input type="select" {...field} id="category">
+                    <option value="">Select Category</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                  </Input>
+                )}
+              />
             </Col>
+
             <Col md="6" sm="12" className="mb-1">
-              <Label className="form-label" for="taxes">
-                Taxes
-              </Label>
-              <Input type="select" id="taxes">
-                <option>Select Taxes</option>
-              </Input>
+              <Label for="vendor">Vendor</Label>
+              <Controller
+                name="vendor"
+                control={control}
+                render={({ field }) => (
+                  <Input type="select" {...field} id="vendor">
+                    <option value="">Select Vendor</option>
+                    <option value="vendor1">Vendor 1</option>
+                    <option value="vendor2">Vendor 2</option>
+                  </Input>
+                )}
+              />
             </Col>
           </Row>
+
+          <Row>
+            <Col md="6" sm="12" className="mb-1">
+              <Label for="taxChargesType">Tax Charges</Label>
+              <Controller
+                name="taxChargesType"
+                control={control}
+                render={({ field }) => (
+                  <Input type="select" {...field} id="taxChargesType">
+                    <option value="">Select Tax Charges</option>
+                    <option value="5">5%</option>
+                    <option value="18">18%</option>
+                  </Input>
+                )}
+              />
+            </Col>
+
+            <Col md="6" sm="12" className="mb-1">
+              <Label for="taxes">Taxes</Label>
+              <Controller
+                name="taxes"
+                control={control}
+                render={({ field }) => (
+                  <Input type="select" {...field} id="taxes">
+                    <option value="">Select Taxes</option>
+                    <option value="gst">GST</option>
+                    <option value="vat">VAT</option>
+                  </Input>
+                )}
+              />
+            </Col>
+          </Row>
+
           <Row>
             <Col md="12" sm="12" className="mb-1">
-              <Label className="form-label" for="description">
-                Description (optional)
-              </Label>
-              <Input
-                type="textarea"
-                id="description"
-                rows="3"
-                placeholder="Description"
+              <Label for="description">Description (optional)</Label>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <Input type="textarea" rows="3" {...field} id="description" placeholder="Description" />
+                )}
               />
             </Col>
           </Row>
         </CardBody>
       </Card>
 
-      <Card className="mt-2">
-        <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start ">
-          <CardTitle className="mt-3 mb-2" tag="h4">
-            Variants
-          </CardTitle>
-          <CardTitle className="mt-3 mb-2" style={{ color: "#607dd2" }} tag="h4">
-            <Plus /> Add variations
-          </CardTitle>
-        </CardHeader>
-        <CardBody className="mt-2">
-        
-        <ProductAdd_Table />
-
-        </CardBody>
+      <Card>
+        <ProductAdd_Table control={control} />
       </Card>
 
-
-      <Card className="mt-2">
-        <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start ">
-          <CardTitle className="mt-3 mb-2" tag="h4">
-            Specifications
-          </CardTitle>
-          <CardTitle className="mt-3 mb-2" style={{ color: "#607dd2"}} tag="h4">
-            <Plus /> Add Specifications
-          </CardTitle>
-        </CardHeader>
-        <CardBody className="mt-2">
-          <Row>
-           
-          </Row>
-        </CardBody>
+      <Card>
+        <Add_Specification control={control} />
       </Card>
 
-       
-
-      <Button color="primary" type="submit">
-        Submit
-      </Button>
-      <Button outline color="secondary" type="reset" className="ms-2">
-        Reset
-      </Button>
-    </>
+      <div className="mt-2">
+        <Button color="primary" type="submit">
+          Submit
+        </Button>
+        <Button outline color="secondary" type="button" className="ms-2" onClick={() => reset()}>
+          Reset
+        </Button>
+      </div>
+    </Form>
   );
 };
 
 export default MultipleColumnForm;
-
-{
-  /* <AddCategory show={show} setShow={setShow} /> */
-}
-
-// <Col md="6" sm="12" className="mb-1">
-{/* <Label className="form-label" for="productImage">
-  Product Image
-</Label>
-<Input
-  type="file"
-  id="productImage"
-  accept="image/*"
-  onChange={(e) => handleFileChange(e, "productImage")}
-/> */}
-// {files.productImage && <p>{files.productImage.name}</p>}
-// </Col>

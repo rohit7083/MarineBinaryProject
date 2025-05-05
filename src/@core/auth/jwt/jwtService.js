@@ -1,8 +1,7 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "http://192.168.29.190:8000";
-
+axios.defaults.baseURL = "http://35.184.206.64:8000";
 export default class JwtService {
   // ** jwtConfig <= Will be used by this service
   jwtConfig = { ...jwtDefaultConfig };
@@ -457,6 +456,13 @@ getAlltax() {
     return axios.delete(`${this.jwtConfig.editProductCategory}${uid}`);
   }
 
+
+
+  addProduct(...args) {
+    return axios.post(this.jwtConfig.addProduct, ...args);
+  }
+
+  
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

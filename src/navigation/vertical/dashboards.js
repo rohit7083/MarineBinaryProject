@@ -91,40 +91,40 @@ export default [
     ],
   },
 
-  {
-    id: "Invoice Management",
-    title: "Invoice Management",
-    icon: <img width="20" className="me-1" height="20" src="https://img.icons8.com/ios/50/check--v1.png" alt="check--v1"/>,
-    // navLink: '/dashboard/create-user',
-    badge: "light-warning",
-    // badgeText: '2',
-    children: [
-      {
-        id: "Invoice",
-        title: "Create Invoice",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/invoice_management/invoice",
-      },
-      {
-        id: "Manage Invoice ",
-        title: "Manage Invoice",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/invoice_management/manageInvoice",
-      },
-      {
-        id: "Invoice Setting",
-        title: "Invoice Setting",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/invoice_management/invoice_setting",
-      },
-      {
-        id: "Recurring Invoice ",
-        title: "Recurring Invoice ",
-        icon: <Circle size={12} />,
-        // navLink: '/dashboard/invoice_management/'
-      },
-    ],
-  },
+  // {
+  //   id: "Invoice Management",
+  //   title: "Invoice Management",
+  //   icon: <img width="20" className="me-1" height="20" src="https://img.icons8.com/ios/50/check--v1.png" alt="check--v1"/>,
+  //   // navLink: '/dashboard/create-user',
+  //   badge: "light-warning",
+  //   // badgeText: '2',
+  //   children: [
+  //     {
+  //       id: "Invoice",
+  //       title: "Create Invoice",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/dashboard/invoice_management/invoice",
+  //     },
+  //     {
+  //       id: "Manage Invoice ",
+  //       title: "Manage Invoice",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/dashboard/invoice_management/manageInvoice",
+  //     },
+  //     {
+  //       id: "Invoice Setting",
+  //       title: "Invoice Setting",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/dashboard/invoice_management/invoice_setting",
+  //     },
+  //     {
+  //       id: "Recurring Invoice ",
+  //       title: "Recurring Invoice ",
+  //       icon: <Circle size={12} />,
+  //       // navLink: '/dashboard/invoice_management/'
+  //     },
+  //   ],
+  // },
 
   {
     id: "POS",
@@ -169,14 +169,14 @@ export default [
     ],
   },
 
-  {
-    id: "Member management",
-    title: "Memeber Manage",
-    icon: <Users size={12} />,
-    navLink: '/member_management',
-    badge: "light-warning",
+  // {
+  //   id: "Member management",
+  //   title: "Memeber Manage",
+  //   icon: <Users size={12} />,
+  //   navLink: '/member_management',
+  //   badge: "light-warning",
   
-  },
+  // },
   
 
   // {

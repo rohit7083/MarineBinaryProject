@@ -33,8 +33,8 @@ const [checkEmptySlip,setEmptySlip]=useState({ empty: 0, occupied: 0 });
   }, []);
   return (
     <>
-      <Index count={allBoatData.length} emptySlip={checkEmptySlip.empty} occupied={checkEmptySlip.occupied}/>
       <Authenticate isAssigne={allBoatData.isAssigned}/>
+      <Index count={allBoatData.length} emptySlip={checkEmptySlip.empty} occupied={checkEmptySlip.occupied}/>
       <ParkBoat allBoatData={allBoatData} loading={loading} setLoading={setLoading} setAllBoatData={setAllBoatData} />
     </>
   );
