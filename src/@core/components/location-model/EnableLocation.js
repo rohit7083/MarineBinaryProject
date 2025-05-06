@@ -1,5 +1,5 @@
 import React from "react";
-
+import LocationGuide from '../../../../src/views/pages/authentication/Images/locationguide.png';
 function EnableLocation() {
   const [show, setShow] = useState(false);
 
@@ -37,7 +37,7 @@ function EnableLocation() {
               className="gy-1 gx-2 mt-75"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <img src="src/views/pages/authentication/Images/locationguide.png" />
+              <img src={LocationGuide} />
 
               <Button
                 color="primary"

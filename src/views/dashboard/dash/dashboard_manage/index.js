@@ -6,7 +6,7 @@ import { Row, Col } from 'reactstrap'
 import StatsHorizontal from '@components/widgets/stats/StatsHorizontal'
 
 // ** Icons Imports
-import { User, UserPlus, UserCheck, UserX } from 'react-feather'
+import { User, UserPlus, UserCheck, UserX, File } from 'react-feather'
 
 // ** Styles
 import '@styles/react/apps/app-users.scss'
@@ -19,7 +19,7 @@ const UsersList = ({count,emptySlip,occupied}) => {
           <StatsHorizontal
             color='primary'
             statTitle='Total Slips'
-            icon={<User size={20} />}
+            icon={<File size={20} />}
             renderStats={<h3 className='fw-bolder mb-75'>{count}</h3>}
           />
         </Col>

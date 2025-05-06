@@ -44,11 +44,10 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
  import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
-
+import LocationImage from '../../../../../src/views/pages/authentication/Images/locationguide.png';
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
-
 // Default Form Values
 const defaultValues = {
   // password: "101010",
@@ -181,7 +180,7 @@ const Login = () => {
               className="gy-1 gx-2 mt-75"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <img src="src/views/pages/authentication/Images/locationguide.png" />
+              <img src={LocationImage} />
 
               <Button
                 color="primary"
