@@ -4,7 +4,7 @@ import { Send } from "react-feather";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import {BeatLoader} from 'react-spinners';
 import Countdown from "react-countdown";
-
+import WatchNew from '../../../../../../src/assets/images/updatedWatchnew.jpg'
 import {
   Row,
   Col,
@@ -244,7 +244,7 @@ useEffect(()=>{
                                     style={{ position: "relative", display: "inline-block" }}
                                   >
                                     <img
-                                      src="/src/assets/images/updatedWatchnew.jpg"
+                                      src={WatchNew}
                                       alt="Phone Call"
                                       style={{
                                         width: "120px",

@@ -7,6 +7,8 @@ import React, { useEffect } from "react";
 import { Alert } from "reactstrap";
 import { UncontrolledAlert } from "reactstrap";
 import toast from "react-hot-toast";
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg'
 
 // ** Reactstrap Imports
 import {
@@ -234,7 +236,7 @@ const TwoStepsBasic = () => {
                         className="mb-2 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
                       >
                         <img
-                          src="src/assets/images/marinaLOGO.png"
+                          src={MARinLogo}
                           alt="Longcove Marina Logo"
                           width={55}
                           height={55}
@@ -343,7 +345,7 @@ const TwoStepsBasic = () => {
                       style={{ position: "relative", display: "inline-block" }}
                     >
                       <img
-                        src="/src/assets/images/updatedWatchnew.jpg"
+                        src={WatchNew}
                         alt="Phone Call"
                         style={{
                           width: "120px",

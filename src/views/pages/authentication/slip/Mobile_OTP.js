@@ -40,6 +40,7 @@ import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
 
 const TwoStepsBasic = () => {
   const MySwal = withReactContent(Swal);
@@ -195,7 +196,7 @@ const TwoStepsBasic = () => {
                         className=" d-flex flex-row  align-items-center justify-content-center text-decoration-none"
                       >
                         <img
-                          src="src/assets/images/marinaLOGO.png"
+                          src={MARinLogo}
                           alt="Longcove Marina Logo"
                           width={55}
                           height={55}

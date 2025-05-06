@@ -43,6 +43,7 @@ import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+ import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
 
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -199,7 +200,7 @@ const Login = () => {
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
         <img
-               src="src/assets/images/marinaLOGO.png"
+               src={MARinLogo}
                alt="Longcove Marina Logo"
                width={55}
                height={55}

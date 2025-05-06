@@ -52,6 +52,8 @@ import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+
 const defaultValues = {
   password: "Ro1234567899",
 };
@@ -287,7 +289,7 @@ const Login = () => {
   
                    
                       <img
-                        src="src/assets/images/marinaLOGO.png"
+                        src={MARinLogo}
                         alt="Longcove Marina Logo"
                         width={55}
                         height={55}

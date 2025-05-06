@@ -273,7 +273,7 @@ const MultipleColumnForm = () => {
       </Card>
 
       <Card>
-        <ProductAdd_Table control={control} />
+        <ProductAdd_Table  control={control} />
       </Card>
 
       <Card>

@@ -20,18 +20,10 @@ const Add_Specification = ({ control }) => {
   return (
     <>
       <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start">
-        <CardTitle className="mt-3 mb-2" tag="h4">
+        <CardTitle className="" tag="h4">
           Specifications
         </CardTitle>
-        <CardTitle
-          className="mt-3 mb-2"
-          style={{ cursor: "pointer", color: "#607dd2" }}
-          tag="h4"
-          onClick={() => append({ name: "", value: "" })}
-
-        >
-          <Plus /> Add Specifications
-        </CardTitle>
+       
       </CardHeader>
 
       <Card className="card-company-table px-1">
@@ -101,8 +93,15 @@ const Add_Specification = ({ control }) => {
 
         <div className="d-flex justify-content-start ms-2 mt-2 mb-1">
          
-            <PlusCircle style={{cursor:"pointer"}}  size={28}           onClick={() => append({ name: "", value: "" })}
- />
+        <CardTitle
+          className=""
+          style={{ cursor: "pointer", color: "#607dd2" }}
+          tag="h4"
+          onClick={() => append({ name: "", value: "" })}
+
+        >
+          <Plus /> Add Specifications
+        </CardTitle>
         </div>
       </Card>
     </>

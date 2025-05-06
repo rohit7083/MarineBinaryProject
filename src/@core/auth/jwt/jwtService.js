@@ -1,7 +1,9 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "http://35.184.206.64:8000";
+// axios.defaults.baseURL = "http://34.9.211.122:8000";
+axios.defaults.baseURL = "http://192.168.29.190:8000";
+
 export default class JwtService {
   // ** jwtConfig <= Will be used by this service
   jwtConfig = { ...jwtDefaultConfig };

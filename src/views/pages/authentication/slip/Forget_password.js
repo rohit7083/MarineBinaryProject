@@ -15,6 +15,9 @@ import { useForm, Controller, set } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg'
+
 import {
   Card,
   Input,
@@ -306,9 +309,8 @@ const ResetPasswordBasic = () => {
     <div className="auth-wrapper auth-basic px-2">
       <div className="auth-inner my-2">
         <Card className="mb-0">
-
           <CardBody>
-          <Toast ref={toast} />
+            <Toast ref={toast} />
 
             <Link
               to="/"
@@ -316,7 +318,7 @@ const ResetPasswordBasic = () => {
               className="mb-2 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
             >
               <img
-                src="src/assets/images/marinaLOGO.png"
+                src={MARinLogo}
                 alt="Longcove Marina Logo"
                 width={55}
                 height={55}
@@ -425,7 +427,7 @@ const ResetPasswordBasic = () => {
                       style={{ position: "relative", display: "inline-block" }}
                     >
                       <img
-                        src="/src/assets/images/updatedWatchnew.jpg"
+                        src={WatchNew}
                         alt="Phone Call"
                         style={{
                           width: "120px",

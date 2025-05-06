@@ -13,6 +13,7 @@ import { ChevronLeft } from "react-feather";
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
 
 const VerifyEmailBasic = () => {
   // Initialize the useForm hook
@@ -93,7 +94,7 @@ const VerifyEmailBasic = () => {
                       className="mb-3 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
                     >
                       <img
-                        src="src/assets/images/marinaLOGO.png"
+                        src={MARinLogo}
                         alt="Longcove Marina Logo"
                         width={55}
                         height={55}

@@ -4,6 +4,7 @@ import { Send } from "react-feather";
 import { Link } from "react-router-dom";
 import Countdown from "react-countdown";
 import { Spinner, UncontrolledAlert } from "reactstrap";
+import WatchNew from '../../../../../../src/assets/images/updatedWatchnew.jpg'
 
 import {
   Row,
@@ -273,7 +274,7 @@ const Cash_otp = ({
                       style={{ position: "relative", display: "inline-block" }}
                     >
                       <img
-                        src="/src/assets/images/updatedWatchnew.jpg"
+                        src={WatchNew}
                         alt="Phone Call"
                         style={{
                           width: "120px",
