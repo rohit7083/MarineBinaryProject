@@ -44,7 +44,6 @@ const HorizontalForm = () => {
       data,
       ...files,
     };
-    console.log("Form Data:", payload);
   };
 
   const [files, setFiles] = useState({});

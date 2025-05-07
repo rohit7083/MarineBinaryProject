@@ -99,7 +99,6 @@ const Add_Member = () => {
 
   const selectedOption = watch("paymentMethod");
   const onSubmit = (data) => {
-    console.log(data);
   };
   return (
     <Card>

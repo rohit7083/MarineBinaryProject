@@ -110,18 +110,19 @@ const Address = ({
       label: currentYear + i,
     };
   });
+  // {{debugger}}
 
   const [isPercentage, setIsPercentage] = useState(true);
   const [value, setValuee] = useState("");
   const [qr, setQr] = useState(null);
   const MySwal = withReactContent(Swal);
 
-  const [isAssign, setIsassign] = useState(null);
+  const [isAssign, setIsassign] = useState(false);
 
   const [picker, setPicker] = useState(new Date());
   const [totalPayment, setFinalPayment] = useState("");
   const [showQrModal, setShowQrModal] = useState(false);
-const [checkMember,setMember]=useState(false);
+  const [checkMember,setMember]=useState(false);
   const [availableMonths, setAvailableMonths] = useState([]);
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [discounttoggle, setDiscountToggle] = useState(false);
@@ -206,9 +207,10 @@ const [checkMember,setMember]=useState(false);
       setAvailableMonths(months);
     }
   };
-
   useEffect(() => {
-    setIsassign(isAssigned?.isAssigned);
+    const assignDone=isAssigned?.isAssigned;
+    
+    setIsassign(assignDone);
   }, [isAssigned]);
 
   useEffect(() => {
@@ -272,15 +274,7 @@ const [checkMember,setMember]=useState(false);
         return;
       }
 
-      /*
-      const paydata = response.data.content.result.map((item) => ({
-        marketAnnualPrice: item.marketAnnualPrice,
-        marketMonthlyPrice: item.marketMonthlyPrice,
-        id: item.id,
-      }));
-*/
-
-      // console.log("filteredData", filteredData);
+      
 
       setSlipDetail({
         Monthly: marketMonthlyPrice,
@@ -305,21 +299,6 @@ const [checkMember,setMember]=useState(false);
     if (slipIID || sId) fetchMarketPrices();
   }, [slipIID, sId]);
 
-  // const handlePaidInChange = (option) => {
-  //   console.log("handlePaidInChange function", slipDetail);
-  //   if (option?.value === "Monthly") {
-  //     setValue("rentalPrice", slipDetail.marketMonthlyPrice);
-
-  //     console.log("rentalPrice", slipDetail.marketMonthlyPrice);
-  //   } else if (option?.value === "Annual") {
-  //     setValue("rentalPrice", slipDetail.marketAnnualPrice);
-  //     console.log("rentalPrice", slipDetail.marketAnnualPrice);
-  //   } else {
-  //     setValue("rentalPrice", "");
-
-  //     console.log("Cleared Rental Price");
-  //   }
-  // };
 
   const handleDiscount = (event) => {
     console.clear();
@@ -444,11 +423,17 @@ const [checkMember,setMember]=useState(false);
     console.log(discountTypedStatus);
   };
   const statusThree = () => {
-    if (formStatus === 3) {
+
+    if (isAssign === true) {
       return true;
     }
     return false;
   };
+
+useEffect(()=>{
+  statusThree();
+},[isAssign])
+
   useEffect(() => {
     // {{debugger}}
     if (member || memberID) {
@@ -1094,7 +1079,7 @@ const [checkMember,setMember]=useState(false);
                     className={`react-select ${
                       errors.paymentMode ? "is-invalid" : ""
                     }`}
-                    isDisabled={statusThree()}
+                    isDisabled={statusThree}
                     onChange={(selectedOption) => {
                       const value = selectedOption ? selectedOption.value : "";
                       field.onChange(selectedOption); // Update React Hook Form with the value
@@ -1160,7 +1145,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Card Number"
                         invalid={!!errors.cardNumber}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                         onChange={(e) => handleOnchangeCardNum(e, field)}
                       />
                     )}
@@ -1295,7 +1281,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter CVV Number"
                         invalid={!!errors.cardCvv}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(
                             /\D/g,
@@ -1327,7 +1313,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Card Holder's Name"
                         invalid={!!errors.nameOnCard}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1362,7 +1348,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Address"
                         invalid={!!errors.address}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1393,7 +1379,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter City"
                         invalid={!!errors.city}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1427,7 +1413,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter State"
                         invalid={!!errors.state}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1458,7 +1444,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Country"
                         invalid={!!errors.country}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1496,7 +1482,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Pincode"
                         invalid={!!errors.pinCode}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(
                             /\D/g,
@@ -1546,7 +1532,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Bank Name"
                         invalid={!!errors.bankName}
                         {...field}
-                        readOnly={statusThree()}
+                        disabled={isAssign}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1582,7 +1568,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Account Name"
                         invalid={!!errors.nameOnAccount}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1619,7 +1605,8 @@ const [checkMember,setMember]=useState(false);
                         type="number"
                         placeholder="Enter Routing Number"
                         invalid={!!errors.routingNumber}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                         {...field}
                       />
                     )}
@@ -1657,7 +1644,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Account Number"
                         invalid={!!errors.accountNumber}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                       />
                     )}
                   />
@@ -1694,7 +1682,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Cheque Number"
                         invalid={!!errors.chequeNumber}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                       />
                     )}
                   />
@@ -1720,7 +1709,8 @@ const [checkMember,setMember]=useState(false);
                       id="fileUpload"
                       onChange={handleFileChange}
                       accept="image/*"
-                      readOnly={statusThree()}
+                      isDisabled={statusThree}
+
                     />
                   </FormGroup>
 
@@ -1774,7 +1764,8 @@ const [checkMember,setMember]=useState(false);
                         className={`react-select ${
                           errors.accountType ? "is-invalid" : ""
                         }`}
-                        isDisabled={statusThree()}
+                        isDisabled={statusThree}
+
                         // onChange={(selectedOption) => {
                         //   const value = selectedOption ? selectedOption.value : "";
                         //   field.onChange(selectedOption); // Update React Hook Form with the value
@@ -1819,7 +1810,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Bank Name"
                         invalid={!!errors.bankName}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1864,7 +1856,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Account Name"
                         invalid={!!errors.nameOnAccount}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1898,7 +1891,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Routing Number"
                         invalid={!!errors.routingNumber}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                       />
                     )}
                   />
@@ -1927,7 +1921,8 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Account Number"
                         invalid={!!errors.accountNumber}
                         {...field}
-                        readOnly={statusThree()}
+                        isDisabled={statusThree}
+
                       />
                     )}
                   />
@@ -1987,7 +1982,7 @@ const [checkMember,setMember]=useState(false);
                         placeholder="Enter Transaction ID"
                         invalid={!!errors.cardSwipeTransactionId}
                         {...field}
-                        readOnly={statusThree()}
+                        disabled={statusThree}
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(
                             /\D/g,

@@ -1,6 +1,6 @@
 // ============================ Original Code ======================================
 
-import { useContext, Fragment, useEffect, useState,useRef } from "react";
+import { useContext, Fragment, useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { ChevronLeft } from "react-feather";
@@ -52,10 +52,10 @@ import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 
 const defaultValues = {
-  password: "Ro1234567899",
+  // password: "Ro1234567899",
 };
 
 const Login = () => {
@@ -73,7 +73,7 @@ const Login = () => {
   const [isPassword, setIspassword] = useState(false);
   const location = useLocation();
   const [encryptedPasss, setEncrypt] = useState(null);
-   
+
   const loginToken = location.state;
   const {
     control,
@@ -84,8 +84,8 @@ const Login = () => {
   } = useForm({
     defaultValues,
   });
-    const toast = useRef(null);
-  
+  const toast = useRef(null);
+
   const [password, setPassword] = useState("");
   const [requirements, setRequirements] = useState({
     length: false,
@@ -129,7 +129,6 @@ const Login = () => {
   };
 
   useEffect(() => {
-     
     if (password) {
       const encrypted = encryptAES(password);
       setEncrypt(encrypted);
@@ -166,9 +165,8 @@ const Login = () => {
         //     summary: "Login Successfully",
         //     detail: " You Logged In Successfully.",
         //     life: 2000,
-        
-        //   }).then(() => {
 
+        //   }).then(() => {
 
         //     if (passCreated === false) {
         //       navigate("/create-new-password", {
@@ -176,8 +174,6 @@ const Login = () => {
         //           userData: res.data?.content,
         //         },
         //       });
-
-
 
         //     } else {
         //       if (authStatus === "false" || authStatus === false) {
@@ -193,8 +189,6 @@ const Login = () => {
         //   });
         // }
 
-
-
         if (res.status === 200 || res.status === 201) {
           toast.current.show({
             severity: "success",
@@ -202,7 +196,7 @@ const Login = () => {
             detail: "You Logged In Successfully.",
             life: 2000, // 2 seconds
           });
-        
+
           setTimeout(() => {
             if (passCreated === false) {
               navigate("/create-new-password", {
@@ -221,9 +215,8 @@ const Login = () => {
                 });
               }
             }
-          }, 2000); 
+          }, 2000);
         }
-        
       } catch (error) {
         console.error(
           "Login Error Details:",
@@ -281,20 +274,19 @@ const Login = () => {
 
   return (
     <div className="auth-wrapper auth-cover">
-            <Toast ref={toast} />
-      
+      <Toast ref={toast} />
+
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
-  
-                   
-                      <img
-                        src={MARinLogo}
-                        alt="Longcove Marina Logo"
-                        width={55}
-                        height={55}
-                        className="mx-2"
-                      />
+
+          <img
+            src={MARinLogo}
+            alt="Longcove Marina Logo"
+            width={55}
+            height={55}
+            className="mx-2"
+          />
           <h2 className="brand-text text-primary ms-1 mt-1">Longcove Marina</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
@@ -384,7 +376,6 @@ const Login = () => {
                             {errors.password.message}
                           </FormFeedback>
                         )}
-                       
                       </div>
                     )}
                   />
@@ -473,12 +464,7 @@ const Login = () => {
                   </Label>
                 </div> */}
               </div>
-              <Button
-                type="submit"
-                color="primary"
-                disabled={loading}
-                block
-              >
+              <Button type="submit" color="primary" disabled={loading} block>
                 {loading ? (
                   <>
                     Loading.. <Spinner size="sm" />

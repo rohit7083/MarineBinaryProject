@@ -40,13 +40,13 @@ export default [
     children: [
       {
         id: "SlipList",
-        title: "Slip Category List",
+        title: "Slip Category ",
         icon: <Circle size={12} />,
         navLink: "slip_Management/sliplist",
       },
       {
         id: "SlipDetailList",
-        title: "Slip Details List",
+        title: "Slip Details ",
         icon: <Circle size={12} />,
         navLink: "/dashboard/slipdetail_list",
       },
@@ -58,7 +58,7 @@ export default [
       // },
       {
         id: "SlipMemberList",
-        title: "Slip Member List",
+        title: "Slip Member ",
         icon: <Circle size={12} />,
         navLink: "/dashboard/slipmember_list",
       },
@@ -84,7 +84,7 @@ export default [
       },
       {
         id: "permissions",
-        title: "Users",
+        title: "Users List",
         icon: <Circle size={12} />,
         navLink: "/dashboard/user_rolls/roles-permissions/createuser",
       },
@@ -146,24 +146,24 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/product_management",
       },
-      {
-        id: "Point Of Sale ",
-        title: "Point Of Sale ",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/point_of_sale/shop",
-      },
-      {
-        id: "Cusstomer manage",
-        title: "Customer Manage",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/customer_management",
-      },
-      {
-        id: "Virtual Terminal",
-        title: "Virtual Terminal ",
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/pos/point_of_sale/virtual-terminal'
-      },
+      // {
+      //   id: "Point Of Sale ",
+      //   title: "Point Of Sale ",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/pos/point_of_sale/shop",
+      // },
+      // {
+      //   id: "Cusstomer manage",
+      //   title: "Customer Manage",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/pos/customer_management",
+      // },
+      // {
+      //   id: "Virtual Terminal",
+      //   title: "Virtual Terminal ",
+      //   icon: <Circle size={12} />,
+      //   navLink: '/dashboard/pos/point_of_sale/virtual-terminal'
+      // },
 
      
     ],

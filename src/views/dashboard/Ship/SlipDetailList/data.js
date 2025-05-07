@@ -184,7 +184,7 @@ export const columns = [
 
 
 // ** Table Server Side Column
-export const serverSideColumns = [
+export const serverSideColumns = (currentPage, rowsPerPage)=> [
   {
     sortable: true,
     name: "Id",

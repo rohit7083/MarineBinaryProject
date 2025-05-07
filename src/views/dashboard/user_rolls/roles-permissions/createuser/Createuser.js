@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState,useRef } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
@@ -25,7 +25,7 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { User, Mail, Smartphone, Lock, Watch } from "react-feather";
+import { User, Mail, Smartphone, Lock, Watch, Plus } from "react-feather";
 import { Controller, set, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
@@ -50,11 +50,11 @@ const RoleCards = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      firstName: "Rohit",
-      lastName: "son",
-      emailId: "sidd31Son1223@gmail.com",
-      mobileNumber: "256123456789012",
-      password: "India10203040",
+      // firstName: "Rohit",
+      // lastName: "son",
+      // emailId: "sidd31Son1223@gmail.com",
+      // mobileNumber: "256123456789012",
+      // password: "India10203040",
     },
   });
   const [password, setPassword] = useState("");
@@ -105,8 +105,7 @@ const RoleCards = () => {
     });
 
     const combined = iv.concat(encrypted.ciphertext);
-
-    return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+    return CryptoJS.enc.Base64.stringify(combined);
   }
 
   useEffect(() => {
@@ -114,6 +113,7 @@ const RoleCards = () => {
       const encrypted = encryptAES(password);
       setEncrypt(encrypted);
     }
+
   }, [password]);
 
   const onSubmit = async (data) => {
@@ -130,12 +130,15 @@ const RoleCards = () => {
       },
     };
 
-    console.log("Transformed Data:", transformedData);
+
+    const payload = encryptAES(JSON.stringify(transformedData));
+    console.log("Transformed Data:", payload);
 
     try {
       setloading(true);
-      const res = await useJwt.createUser(transformedData);
+      const res = await useJwt.createUser({payload});
       console.log("data is created ", data);
+      console.log(res);
 
       console.log(res);
       if (res.status === 201) {
@@ -148,11 +151,11 @@ const RoleCards = () => {
         //   },
         //   buttonsStyling: false,
         // }).then(() => {
-          // navigate("/dashboard/user_rolls/roles-permissions/createuser", {
-          //   state: { forceRefresh: true },
-          // });
-          // setShow(false);
-          // reset();
+        // navigate("/dashboard/user_rolls/roles-permissions/createuser", {
+        //   state: { forceRefresh: true },
+        // });
+        // setShow(false);
+        // reset();
 
         //   setMessage("");
         // });
@@ -165,11 +168,10 @@ const RoleCards = () => {
         setTimeout(() => {
           navigate("/dashboard/user_rolls/roles-permissions/createuser", {
             state: { forceRefresh: true },
-          });   
+          });
           setShow(false);
           reset();
-     }, 2000);
-
+        }, 2000);
       } else {
         MySwal.fire({
           title: "Failed",
@@ -294,7 +296,7 @@ const RoleCards = () => {
             setShow(true);
           }}
         >
-          Create User +
+          <Plus size={14}/> Create User
         </Button>
       </Row>
       <Modal
@@ -303,8 +305,8 @@ const RoleCards = () => {
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
       >
-              <Toast ref={toast} />
-        
+        <Toast ref={toast} />
+
         <ModalHeader className="bg-transparent" toggle={() => setShow(!show)} />
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">

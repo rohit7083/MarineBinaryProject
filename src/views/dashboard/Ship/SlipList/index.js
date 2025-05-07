@@ -1,15 +1,248 @@
-import { Spinner } from "reactstrap";
-import { Button } from "reactstrap";
-import { Link } from "react-router-dom";
-import { Fragment, useState, useEffect, memo } from "react";
-import { serverSideColumns } from "../../../dashboard/Ship/SlipList/data";
-import { getData } from "../../../dashboard/Ship/SlipList/store";
-import { useSelector, useDispatch } from "react-redux";
-import ReactPaginate from "react-paginate";
-import { ChevronDown, Plus } from "react-feather";
-import DataTable from "react-data-table-component";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
+// import { Spinner } from "reactstrap";
+// import { Button } from "reactstrap";
+// import { Link } from "react-router-dom";
+// import { Fragment, useState, useEffect, memo } from "react";
+// import { serverSideColumns } from "../../../dashboard/Ship/SlipList/data";
+// import { getData } from "../../../dashboard/Ship/SlipList/store";
+// import { useSelector, useDispatch } from "react-redux";
+// import ReactPaginate from "react-paginate";
+// import { ChevronDown, Plus } from "react-feather";
+// import DataTable from "react-data-table-component";
+// import "@styles/react/libs/tables/react-dataTable-component.scss";
 
+// import {
+//   Card,
+//   CardHeader,
+//   CardTitle,
+//   Input,
+//   Label,
+//   Row,
+//   Col,
+// } from "reactstrap";
+// import useJwt from "@src/auth/jwt/useJwt";
+
+// const DataTableServerSide = () => {
+//   const dispatch = useDispatch();
+//   const store = useSelector((state) => state.dataTables);
+
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [rowsPerPage, setRowsPerPage] = useState(10);
+//   const [searchValue, setSearchValue] = useState("");
+//   const [tableData, setTableData] = useState([]);
+//   const [data, setData] = useState([]);
+
+//   const dataToRender = () => {
+ 
+// //     if (data) {
+// //       return data;
+// //     }
+
+//     const limit = currentPage * rowsPerPage;
+//     const start = limit - rowsPerPage;
+   
+//     return store.data
+//       .filter((item) => {
+//         const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
+//         const categoryMatch = item.shipTypeName
+//           .toLowerCase()
+//           .includes(searchValue.toLowerCase());
+
+//         return categoryMatch || idMatch;
+//       })
+//       .slice(start, limit);
+//   };
+
+//   // ** Function to handle filter
+//   const handleFilter = (e) => {
+//     const query = e.target.value;
+//     setSearchValue(query);
+//     dispatch(
+//       getData({
+//         page: currentPage,
+//         perPage: rowsPerPage,
+//         q: query,
+//       })
+//     );
+//   };
+
+//   // ** Function to handle Pagination and get data
+//   const handlePagination = (page) => {
+//     dispatch(
+//       getData({
+//         page: page.selected + 1,
+//         perPage: rowsPerPage,
+//         q: searchValue,
+//       })
+//     );
+//     setCurrentPage(page.selected + 1);
+//   };
+
+//   // ** Function to handle per page
+//   const handlePerPage = (e) => {
+//     // const perPage = parseInt(e.target.value);
+
+//     const perPage = parseInt(e.target.value);
+//       setRowsPerPage(perPage); // Update state
+//       setCurrentPage(1); // Reset to first page
+//       dispatch(
+//         getData({
+//           page: 1,
+//           perPage: perPage,
+//           q: searchValue
+//         })
+//       );
+//   };
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const response = await useJwt.getslipCatogory(); // Assuming this fetches all categories
+//         console.log(response.data);
+
+//         setData(response.data); //
+//         setLoading(true); 
+//         await dispatch(
+//           getData({
+//             page: currentPage,
+//             perPage: rowsPerPage,
+//             q: searchValue,
+//           })
+//         );
+//       } catch (error) {
+//         console.error("Error fetching data:", error);
+//       } finally {
+//         setLoading(false); 
+//       }
+//     };
+//     fetchData();
+//   }, [dispatch,]);
+
+//   const CustomPagination = () => {
+//     const count = Math.ceil(data?.content?.count / rowsPerPage);
+//     console.log("myCount", count);
+
+//     return (
+//       <ReactPaginate
+//         previousLabel={""}
+//         nextLabel={""}
+//         breakLabel="..."
+//         pageCount={Math.ceil(count) || 1}
+
+//         marginPagesDisplayed={2}
+//         pageRangeDisplayed={2}
+//         activeClassName="active"
+//         forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+//         onPageChange={handlePagination}
+//         pageClassName="page-item"
+//         breakClassName="page-item"
+//         nextLinkClassName="page-link"
+//         pageLinkClassName="page-link"
+//         breakLinkClassName="page-link"
+//         previousLinkClassName="page-link"
+//         nextClassName="page-item next-item"
+//         previousClassName="page-item prev-item"
+//         containerClassName={
+//           "pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1"
+//         }
+//       />
+//     );
+//   };
+
+//   // ** Table data to render
+
+//   const [loading, setLoading] = useState(true); // Add loading state
+
+//   return (
+//     <Fragment>
+//       <Card>
+//         <CardHeader className="border-bottom">
+//           <CardTitle tag="h4">Slip Category</CardTitle>
+//           <Link to="/dashboard/slipcategory">
+//             <Button.Ripple color="primary">
+//               <Plus size={14} className="me-25" />
+//               Add Category
+//                </Button.Ripple>
+//           </Link>
+//         </CardHeader>
+//         <Row className="mx-0 mt-1 mb-50">
+//           <Col sm="6">
+//             <div className="d-flex align-items-center">
+//               <Label for="sort-select">show</Label>
+//               <Input
+//                 className="dataTable-select"
+//                 type="select"
+//                 id="sort-select"
+//                 value={rowsPerPage}
+//                 onChange={handlePerPage}
+//               >
+//               {[7,10,25,50,75,100].map((num)=>(
+//                   <option key={num} value={num}>
+//                     {num}
+//                   </option>
+//                 ))}
+//               </Input>
+//               <Label for="sort-select">entries</Label>
+//             </div>
+//           </Col>
+//           <Col
+//             className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1"
+//             sm="6"
+//           >
+//             <Label className="me-1" for="search-input">
+//               Search
+//             </Label>
+//             <Input
+//               className="dataTable-filter"
+//               type="text"
+//               bsSize="sm"
+//               id="search-input"
+//               value={searchValue}
+//               onChange={handleFilter}
+//             />
+//           </Col>
+//         </Row>
+       
+
+//         {loading ? (
+//           <div className="text-center "  style={{
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//             marginTop: "4rem",
+//           }}>
+//             <Spinner className="me-25 "  style={{
+//             height: "5rem",
+//             width: "5rem",
+//           }} color="primary" />
+//           </div>
+//         ) : (
+//              <div style={{ marginTop: "20px" }}>
+              
+//             <DataTable
+//               noHeader
+//               pagination
+//               paginationServer
+//               className="react-dataTable"
+//               columns={serverSideColumns(currentPage, rowsPerPage ,data,setData)}
+//               sortIcon={<ChevronDown size={10} />}
+//               paginationComponent={CustomPagination}
+//               data={dataToRender()}
+//               striped
+//             />
+//           </div>
+//         )}
+//       </Card>
+//     </Fragment>
+//   );
+// };
+
+// export default memo(DataTableServerSide);
+
+
+
+
+
+import React, { Fragment, useState, useEffect, memo } from "react";
 import {
   Card,
   CardHeader,
@@ -18,130 +251,113 @@ import {
   Label,
   Row,
   Col,
+  Spinner,
+  Button
 } from "reactstrap";
+import { Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+import { ChevronDown, Plus } from "react-feather";
+import DataTable from "react-data-table-component";
 import useJwt from "@src/auth/jwt/useJwt";
+import { serverSideColumns } from "../../../dashboard/Ship/SlipList/data";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 const DataTableServerSide = () => {
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.dataTables);
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const [tableData, setTableData] = useState([]);
-  const [data, setData] = useState([]);
-
-  const dataToRender = () => {
- 
-//     if (data) {
-//       return data;
-//     }
-
-    const limit = currentPage * rowsPerPage;
-    const start = limit - rowsPerPage;
-   
-    return store.data
-      .filter((item) => {
-        const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
-        const categoryMatch = item.shipTypeName
-          .toLowerCase()
-          .includes(searchValue.toLowerCase());
-
-        return categoryMatch || idMatch;
-      })
-      .slice(start, limit);
-  };
-
-  // ** Function to handle filter
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await useJwt.getslipCatogory();
+        console.log("API Response:", data); // Log here
+  
+        const result = data?.content?.result || []; // Adjust depending on structure
+        console.log("Parsed Result:", result); // Log here
+  
+        setData(result);
+        setFilteredData(result);
+      } catch (error) {
+        console.error("API Error:", error);
+        setData([]);
+        setFilteredData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  // Filter handler
+  // {{debugger}}
   const handleFilter = (e) => {
-    const query = e.target.value;
-    setSearchValue(query);
-    dispatch(
-      getData({
-        page: currentPage,
-        perPage: rowsPerPage,
-        q: query,
-      })
-    );
+    const value = e.target.value.toLowerCase();
+    setSearchValue(value);
+    const filtered = data.filter((item) => {
+      const slipMatch = item.shipTypeName?.toLowerCase().includes(value);
+      const idMatch = item.id?.toString().includes(value);
+      return slipMatch || idMatch ;
+    });
+
+    setFilteredData(filtered);
+    setCurrentPage(1); // Reset to first page on search
   };
 
-  // ** Function to handle Pagination and get data
+  // Pagination handlers
+  const handlePerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+  };
+
   const handlePagination = (page) => {
-    dispatch(
-      getData({
-        page: page.selected + 1,
-        perPage: rowsPerPage,
-        q: searchValue,
-      })
-    );
     setCurrentPage(page.selected + 1);
   };
 
-  // ** Function to handle per page
-  const handlePerPage = (e) => {
-    const perPage = parseInt(e.target.value);
-
-  
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await useJwt.getslipCatogory(); // Assuming this fetches all categories
-        console.log(response.data);
-
-        setData(response.data); //
-        setLoading(true); 
-        await dispatch(
-          getData({
-            page: currentPage,
-            perPage: rowsPerPage,
-            q: searchValue,
-          })
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false); 
-      }
-    };
-    fetchData();
-  }, [dispatch,]);
-
   const CustomPagination = () => {
-    const count = Math.ceil(data?.content?.count / rowsPerPage);
-    console.log("myCount", count);
+    const filtered = filteredData.filter((item) => item); // again filter here
+
+    const pageCount = Math.ceil(filtered.length / rowsPerPage);
 
     return (
       <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
+        previousLabel=""
+        nextLabel=""
         breakLabel="..."
-        pageCount={Math.ceil(count) || 1}
-
+        pageCount={pageCount || 1}
         marginPagesDisplayed={2}
         pageRangeDisplayed={2}
-        activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
         onPageChange={handlePagination}
+        forcePage={currentPage - 1}
+        containerClassName="pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1"
+        activeClassName="active"
         pageClassName="page-item"
-        breakClassName="page-item"
-        nextLinkClassName="page-link"
         pageLinkClassName="page-link"
-        breakLinkClassName="page-link"
-        previousLinkClassName="page-link"
-        nextClassName="page-item next-item"
         previousClassName="page-item prev-item"
-        containerClassName={
-          "pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1"
-        }
+        nextClassName="page-item next-item"
+        previousLinkClassName="page-link"
+        nextLinkClassName="page-link"
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
       />
     );
   };
 
-  // ** Table data to render
+  // Paginate filtered data
+  const paginatedData = () => {
+    const filtered = filteredData.filter((item) => item); // filter here
+console.log("fiter",filtered);
 
-  const [loading, setLoading] = useState(true); // Add loading state
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    return filtered.slice(start, start + rowsPerPage);
+  };
 
   return (
     <Fragment>
@@ -152,13 +368,15 @@ const DataTableServerSide = () => {
             <Button.Ripple color="primary">
               <Plus size={14} className="me-25" />
               Add Category
-               </Button.Ripple>
+            </Button.Ripple>
           </Link>
         </CardHeader>
+
+        {/* Filter and Pagination Controls */}
         <Row className="mx-0 mt-1 mb-50">
           <Col sm="6">
             <div className="d-flex align-items-center">
-              <Label for="sort-select">show</Label>
+              <Label for="sort-select">Show</Label>
               <Input
                 className="dataTable-select"
                 type="select"
@@ -166,21 +384,16 @@ const DataTableServerSide = () => {
                 value={rowsPerPage}
                 onChange={handlePerPage}
               >
-                <option value={2}>2</option>
-                <option value={7}>7</option>
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={75}>75</option>
-                <option value={100}>100</option>
+                {[7, 10, 25, 50, 75, 100].map((num) => (
+                  <option key={num} value={num}>
+                    {num}
+                  </option>
+                ))}
               </Input>
-              <Label for="sort-select">entries</Label>
+              <Label className="ms-1">entries</Label>
             </div>
           </Col>
-          <Col
-            className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1"
-            sm="6"
-          >
+          <Col className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1" sm="6">
             <Label className="me-1" for="search-input">
               Search
             </Label>
@@ -194,32 +407,25 @@ const DataTableServerSide = () => {
             />
           </Col>
         </Row>
-       
 
         {loading ? (
-          <div className="text-center "  style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "4rem",
-          }}>
-            <Spinner className="me-25 "  style={{
-            height: "5rem",
-            width: "5rem",
-          }} color="primary" />
+          <div
+            className="text-center"
+            style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "4rem" }}
+          >
+            <Spinner style={{ height: "5rem", width: "5rem" }} color="primary" />
           </div>
         ) : (
-             <div style={{ marginTop: "20px" }}>
-              
+          <div className="react-dataTable" style={{ marginTop: "2rem" }}>
             <DataTable
               noHeader
               pagination
               paginationServer
               className="react-dataTable"
-              columns={serverSideColumns(currentPage, rowsPerPage ,data,setData)}
+              columns={serverSideColumns(currentPage, rowsPerPage)}
               sortIcon={<ChevronDown size={10} />}
               paginationComponent={CustomPagination}
-              data={dataToRender()}
+              data={paginatedData()}
               striped
             />
           </div>

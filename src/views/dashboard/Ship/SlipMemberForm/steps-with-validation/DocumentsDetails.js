@@ -31,7 +31,7 @@ const FileUploadForm = ({ Parentdocuments,stepper, slipIID ,sId}) => {
   const [isDataFetch, setIsDataFetch] = useState(false);
   const navigate = useNavigate();
 const [checkDocuments,setCheckDocuments]=useState(false);
-
+const [ermsz,setErrmsz]=useState("");
   const {
     handleSubmit,
     setValue,
@@ -96,7 +96,7 @@ const [checkDocuments,setCheckDocuments]=useState(false);
 
   const onSubmit = async (data) => {
     
-
+    setErrmsz("");
     const updatedDataList = Object.keys(data).reduce((obj, key) => {
       if (data[key].currentFile == null) {
         delete data[key];
@@ -161,10 +161,16 @@ const [checkDocuments,setCheckDocuments]=useState(false);
       }
     } catch (error) {
       console.log(error);
+      const errMsz=error.response.data?.content;
+      console.log(errMsz);
+      
+      if (errMsz) {
+        setErrmsz(errMsz);
+      }
       Swal.fire({
         icon: "error",
-        title: "Error!",
-        text: "Something went wrong. Please try again.",
+        title: "Document Error!",
+        text:errMsz,
       });
     }
   };
@@ -290,19 +296,18 @@ const [checkDocuments,setCheckDocuments]=useState(false);
 
   return (
     <Fragment>
-      {/* {checkDocuments && (
+      {ermsz && (
               <React.Fragment>
                 <UncontrolledAlert color="danger">
                   <div className="alert-body">
                     <span className="text-danger fw-bold">
                       <strong>Error : </strong>
-                      Please fill the Previous form first to proceed.
-      
+                      {ermsz}      
                       </span>
                   </div>
                 </UncontrolledAlert>
               </React.Fragment>
-            )} */}
+            )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardBody>

@@ -1,14 +1,12 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "http://34.9.211.122:8000";
-// axios.defaults.baseURL = "http://192.168.29.190:8000";
+// axios.defaults.baseURL = "https://locktrustdev.com:8000";
+axios.defaults.baseURL = "http://192.168.29.190:8000";
 
 export default class JwtService {
-  // ** jwtConfig <= Will be used by this service
   jwtConfig = { ...jwtDefaultConfig };
 
-  // ** For Refreshing Token
   isAlreadyFetchingAccessToken = false;
 
   // ** For Refreshing Token
@@ -162,6 +160,12 @@ export default class JwtService {
   // login(...args) {
   //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
   // }
+
+  getVendor() {
+  return axios.get(this.jwtConfig.getVendor);
+}
+
+
 
   // ==================== Slip Category
 

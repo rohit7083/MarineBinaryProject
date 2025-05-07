@@ -370,6 +370,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
           </CardTitle>
 
           <div className="d-flex justify-content-end gap-2">
+        
+        {checkMember &&(<>
             <div>
               <img
                 width="20"
@@ -389,6 +391,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
                 Edit
               </Tooltip>
             </div>
+            </>)}
+
             {/* <div>
               <img
                 id="RenewContract"

@@ -28,7 +28,7 @@ import {
 } from "reactstrap";
 
 // ** Third Party Components
-import { Copy, Info, X } from "react-feather";
+import { Copy, Info, Plus, X } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
 // import { BeatLoader } from "react-spinners";
@@ -234,7 +234,7 @@ const AddRoles = ({ props, refreshTable }) => {
             toggle();
           }}
         >
-          Add New Role +
+         <Plus size={14}/> Add New Role
         </Button>
       </Row>
 

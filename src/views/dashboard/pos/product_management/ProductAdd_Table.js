@@ -54,14 +54,14 @@ const ProductAdd_Table = ({ control }) => {
       cursor: "pointer",
       marginBottom: "20px",
     },
-    previewGrid: { 
+    previewGrid: {
       display: "flex",
       gap: "10px",
       flexWrap: "wrap",
-      alignItems: "center",     // vertical centering (if height is set)
+      alignItems: "center", // vertical centering (if height is set)
       justifyContent: "center", // horizontal centering
     },
-    
+
     imagePreview: {
       width: "60px",
       height: "60px",
@@ -112,103 +112,123 @@ const ProductAdd_Table = ({ control }) => {
       <Card className="card-company-table ">
         {fields.map((field, index) => (
           <div key={field.id}>
+            <Row className="p-2 ">
+              <Col md="12" sm="12 mb-2">
+                <Label className="form-label">Upload Images </Label>
 
-            
-            <Row className="p-2 mb-2 ">
-            <Col md="12" sm="12 mb-2">
-              <Label className="form-label">imgeas </Label>
+                <div {...getRootProps()} style={styles.dropzone}>
+                  <input {...getInputProps()} />
+                  <FaCloudUploadAlt
+                    size={40}
+                    color="#888"
+                    style={{ marginBottom: 10 }}
+                  />
 
-              <div {...getRootProps()} style={styles.dropzone}>
-        <input {...getInputProps()} />
-        <FaCloudUploadAlt size={40} color="#888" style={{ marginBottom: 10 }} />
+                  <p>Drag and drop images here, or click to select</p>
+                </div>
 
-        <p>Drag and drop images here, or click to select</p>
-      </div>
+                {imagePreviews.length > 0 && (
+                  <div style={styles.previewGrid}>
+                    {visibleImages.map((src, index) => (
+                      <img
+                        key={index}
+                        src={src}
+                        alt={`Preview ${index}`}
+                        style={styles.imagePreview}
+                      />
+                    ))}
 
-      {imagePreviews.length > 0 && (
-        <div style={styles.previewGrid}>
-          {visibleImages.map((src, index) => (
-            <img key={index} src={src} alt={`Preview ${index}`} style={styles.imagePreview} />
-          ))}
-
-          {extraCount > 0 && (
-            <div style={styles.moreOverlay}>+{extraCount} more</div>
-          )}
-        </div>
-      )}
-      </Col>
-
+                    {extraCount > 0 && (
+                      <div style={styles.moreOverlay}>+{extraCount} more</div>
+                    )}
+                  </div>
+                )}
+              </Col>
 
               {/* <Col md="6" sm="12" className="mb-1"> */}
-                {/* <Row> */}
-                  <Col md="3" sm="12" className="mb-1">
-                    <Label className="form-label">MRP</Label>
-                    <Controller
-                      name={`variations[${index}].mrp`}
-                      control={control}
-                      render={({ field }) => (
-                        <Input type="text" placeholder="Enter MRP" {...field} />
-                      )}
-                    />
-                  </Col>
-                  <Col md="3" sm="12" className="mb-1">
-                    <Label className="form-label">Stock QTY</Label>
-                    <Controller
-                      name={`variations[${index}].stockQty`}
-                      control={control}
-                      render={({ field }) => <Input type="text" placeholder="Enter MRP"{...field} />}
-                    />
-                  </Col>
-                  <Col md="3" sm="12" className="mb-1">
-                    <Label className="form-label">QTY</Label>
-                    <Controller
-                      name={`variations[${index}].qty`}
-                      control={control}
-                      render={({ field }) => <Input type="text" placeholder="Enter MRP" {...field} />}
-                    />
-                  </Col>
-                {/* </Row> */}
+              {/* <Row> */}
+              <Col md="3" sm="12" className="mb-1">
+                <Label className="form-label">MRP</Label>
+                <Controller
+                  name={`variations[${index}].mrp`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input type="text" placeholder="Enter MRP" {...field} />
+                  )}
+                />
+              </Col>
+              <Col md="3" sm="12" className="mb-1">
+                <Label className="form-label">Stock QTY</Label>
+                <Controller
+                  name={`variations[${index}].stockQty`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input type="text" placeholder="Enter MRP" {...field} />
+                  )}
+                />
+              </Col>
+              <Col md="3" sm="12" className="mb-1">
+                <Label className="form-label">QTY</Label>
+                <Controller
+                  name={`variations[${index}].qty`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input type="text" placeholder="Enter MRP" {...field} />
+                  )}
+                />
+              </Col>
+              {/* </Row> */}
 
-                {/* <Row> */}
-                  <Col md="3" sm="12" className="mb-1">
-                    <Label className="form-label">Unit</Label>
-                    <Controller
-                      name={`variations[${index}].unit`}
-                      control={control}
-                      render={({ field }) => <Input type="text" placeholder="Enter MRP" {...field} />}
+              {/* <Row> */}
+              <Col md="3" sm="12" className="mb-1">
+                <Label className="form-label">Unit</Label>
+                <Controller
+                  name={`variations[${index}].unit`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input type="text" placeholder="Enter MRP" {...field} />
+                  )}
+                />
+              </Col>
+              <Col md="3" sm="12" className="mb-1">
+                <Label className="form-label">Calculate Amount</Label>
+                <Controller
+                  name={`variations[${index}].calcAmount`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input type="text" placeholder="" {...field} />
+                  )}
+                />
+              </Col>
+              <Col md="3" sm="12" className="mb-1">
+                <Label className="form-label">Final Amount</Label>
+                <Controller
+                  name={`variations[${index}].finalAmount`}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter finalAmount"
+                      {...field}
                     />
-                  </Col>
-                  <Col md="3" sm="12" className="mb-1">
-                    <Label className="form-label">Calculate Amount</Label>
-                    <Controller
-                      name={`variations[${index}].calcAmount`}
-                      control={control}
-                      render={({ field }) => <Input type="text" placeholder="" {...field} />}
-                    />
-                  </Col>
-                  <Col md="3" sm="12" className="mb-1">
-                    <Label className="form-label">Final Amount</Label>
-                    <Controller
-                      name={`variations[${index}].finalAmount`}
-                      control={control}
-                      render={({ field }) => <Input type="text" placeholder="Enter finalAmount"{...field} />}
-                    />
-                  </Col>
-                
-                {/* </Row> */}
+                  )}
+                />
+              </Col>
+
+              {/* </Row> */}
               {/* </Col> */}
 
-
-
-
-
-
-
-
-{/* 
+              {/* 
               <Col md="6" sm="12">
              
               </Col> */}
+              <Col md="6" sm="12" className="mt-4 d-flex justify-content-end">
+                <Trash2
+                  onClick={() => remove(index)}
+                  className="d-flex"
+                  style={{color:"red", cursor: "pointer" }}
+                />
+              </Col>
             </Row>
 
             <hr />
@@ -270,22 +290,22 @@ export default ProductAdd_Table;
 
 //   return (
 // <Col md="3" sm="12">
-      // <div {...getRootProps()} style={styles.dropzone}>
-      //   <input {...getInputProps()} />
-      //   <p>Drag and drop images here, or click to select</p>
-      // </div>
+// <div {...getRootProps()} style={styles.dropzone}>
+//   <input {...getInputProps()} />
+//   <p>Drag and drop images here, or click to select</p>
+// </div>
 
-      // {imagePreviews.length > 0 && (
-      //   <div style={styles.previewGrid}>
-      //     {visibleImages.map((src, index) => (
-      //       <img key={index} src={src} alt={`Preview ${index}`} style={styles.imagePreview} />
-      //     ))}
+// {imagePreviews.length > 0 && (
+//   <div style={styles.previewGrid}>
+//     {visibleImages.map((src, index) => (
+//       <img key={index} src={src} alt={`Preview ${index}`} style={styles.imagePreview} />
+//     ))}
 
-      //     {extraCount > 0 && (
-      //       <div style={styles.moreOverlay}>+{extraCount} more</div>
-      //     )}
-      //   </div>
-      // )}
+//     {extraCount > 0 && (
+//       <div style={styles.moreOverlay}>+{extraCount} more</div>
+//     )}
+//   </div>
+// )}
 // </Col>
 //   );
 // };
@@ -352,17 +372,3 @@ export default ProductAdd_Table;
                 />
               </Col> */
 }
-
-
-
-// <Col
-// md="6"
-// sm="12"
-// className="mt-4 d-flex justify-content-end"
-// >
-// <Trash2
-//   onClick={() => remove(index)}
-//   className="d-flex"
-//   style={{ cursor: "pointer" }}
-// />
-// </Col>

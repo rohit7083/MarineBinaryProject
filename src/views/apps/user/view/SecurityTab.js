@@ -163,7 +163,7 @@ const SecurityTab = () => {
 
   const onSubmit = data => {
     trigger()
-    console.log(data)
+    // console.log(data)
   }
   const handleContinue = () => {
     setShow(false)

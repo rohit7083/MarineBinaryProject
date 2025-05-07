@@ -28,7 +28,6 @@ const TabsCentered = () => {
 
   const [active, setActive] = useState("1");
   const { uid } = useParams();
-  console.log("uid", uid);
 
   const toggle = (tab) => {
     if (active !== tab) {
@@ -42,7 +41,6 @@ const TabsCentered = () => {
         setFetchLoader(true);
 
         const resp = await useJwt.getslip(uid);
-        console.log("all data", resp);
         setSlipData(resp.data.content);
       }
     } catch (error) {
@@ -56,7 +54,6 @@ const TabsCentered = () => {
     fetchSlipData();
   }, []);
 
-  console.log("SlipData", SlipData);
 
   return (
     <React.Fragment>

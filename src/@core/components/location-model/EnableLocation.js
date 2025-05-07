@@ -7,15 +7,12 @@ function EnableLocation() {
     const isLoacationEnabled = localStorage.getItem("locationEnabled");
     if (isLoacationEnabled === true || isLoacationEnabled === "true") {
       setShow(false);
-      console.log(isLoacationEnabled);
     } else {
       setShow(true);
-      console.log(isLoacationEnabled);
     }
   }, []);
 
   const onSubmit=(data)=>{
-    console.log(data);
     
   }
   return (

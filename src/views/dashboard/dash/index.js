@@ -15,7 +15,6 @@ const [checkEmptySlip,setEmptySlip]=useState({ empty: 0, occupied: 0 });
     try {
       const res = await useJwt.getslip();
       setAllBoatData(res?.data?.content?.result || []);
-      console.log(res);
 
        const empty=res?.data?.content?.result.filter(boat=> !boat.isAssigned).length;
        const occupied=res?.data?.content?.result.filter(boat=> boat.isAssigned).length;

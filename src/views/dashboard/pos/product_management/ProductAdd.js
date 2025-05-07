@@ -9,10 +9,11 @@ import {
   Button,
   Label,
   Row,
-  Tooltip,FormFeedback
+  Tooltip,
+  FormFeedback,
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
-import { useState } from "react";
+import { useForm, Controller, get } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
@@ -41,10 +42,9 @@ const MultipleColumnForm = () => {
       taxes: "",
       description: "",
       variations: [],
-
     },
   });
-
+  const [getvendorss, setVendors] = useState([]);
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -61,15 +61,40 @@ const MultipleColumnForm = () => {
     }));
   };
 
-  const onSubmit =async (data) => {
-
+  const fetchVendors = async () => {
     try {
-      const res=await useJwt.addProduct(data);
-      console.log(res);
-      
+      {{debugger}}
+      const getVendors = await useJwt.getVendor();
+      console.log(getVendors);
+      const vendorList = getVendors?.data?.content?.result || [];
+      const vendorDetails = vendorList.map((x) => ({
+        label: x.vendorName,
+        value: x.uid,
+      }));
+
+      setVendors(vendorDetails);
+
+      console.log(vendorDetails);
+
+      const allNameOfVendor = vendorDetails.forEach((item) => {
+        console.log(item.vendorName);
+      });
+
+      console.log(allNameOfVendor);
     } catch (error) {
       console.log(error);
-      
+    }
+  };
+  useEffect(() => {
+    fetchVendors();
+  }, []);
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await useJwt.addProduct(data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
     }
     console.log("Form Submitted:", data);
   };
@@ -82,7 +107,12 @@ const MultipleColumnForm = () => {
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex justify-content-end gap-2">
               <Link to="/dashboard/pos/product_management/addProduct">
-                <img src={addProductIcon} id="ANP" alt="Add Product" width="25" />
+                <img
+                  src={addProductIcon}
+                  id="ANP"
+                  alt="Add Product"
+                  width="25"
+                />
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.ANP}
@@ -113,7 +143,13 @@ const MultipleColumnForm = () => {
               </div>
 
               <Link to="/dashboard/pos/product_management/addproductCategory">
-                <img id="addProductCate" src={AddCategoryIcon} width="25" height="25" alt="Category" />
+                <img
+                  id="addProductCate"
+                  src={AddCategoryIcon}
+                  width="25"
+                  height="25"
+                  alt="Category"
+                />
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.addProductCate}
@@ -125,7 +161,13 @@ const MultipleColumnForm = () => {
               </Link>
 
               <Link to="/dashboard/pos/product_management/addTaxes">
-                <img id="addProducttaxes" src={addTax} width="25" height="25" alt="Tax" />
+                <img
+                  id="addProducttaxes"
+                  src={addTax}
+                  width="25"
+                  height="25"
+                  alt="Tax"
+                />
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.addProducttaxes}
@@ -137,7 +179,13 @@ const MultipleColumnForm = () => {
               </Link>
 
               <Link to="/dashboard/pos/product_management/AddStocks">
-                <img id="addStock" src={addStocks} width="25" height="25" alt="Stock" />
+                <img
+                  id="addStock"
+                  src={addStocks}
+                  width="25"
+                  height="25"
+                  alt="Stock"
+                />
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.addStock}
@@ -149,7 +197,13 @@ const MultipleColumnForm = () => {
               </Link>
 
               <Link to="#">
-                <img id="stockManage" src={ManageStocks} width="25" height="25" alt="Manage" />
+                <img
+                  id="stockManage"
+                  src={ManageStocks}
+                  width="25"
+                  height="25"
+                  alt="Manage"
+                />
                 <Tooltip
                   placement="top"
                   isOpen={tooltipOpen.stockManage}
@@ -164,23 +218,23 @@ const MultipleColumnForm = () => {
         </CardHeader>
 
         <CardBody>
-          <Row>
+          <Row className="mt-2">
             <Col md="6" sm="12" className="mb-1">
               <Label for="name">Product Name</Label>
               <Controller
                 name="name"
                 control={control}
                 rules={{
-                  required:"Product Name is required"
+                  required: "Product Name is required",
                 }}
-                render={({ field }) =><> <Input {...field} id="name" placeholder="Product Name" />
-              
-              <FormFeedback>{errors.name?.message}</FormFeedback>
-
-              </>
-              }
+                render={({ field }) => (
+                  <>
+                    {" "}
+                    <Input {...field} id="name" placeholder="Product Name" />
+                    <FormFeedback>{errors.name?.message}</FormFeedback>
+                  </>
+                )}
               />
-
             </Col>
 
             <Col md="6" sm="12" className="mb-1">
@@ -188,7 +242,13 @@ const MultipleColumnForm = () => {
               <Controller
                 name="productType"
                 control={control}
-                render={({ field }) => <Input {...field} id="productType" placeholder="Product Type" />}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="productType"
+                    placeholder="Product Type"
+                  />
+                )}
               />
             </Col>
           </Row>
@@ -264,7 +324,13 @@ const MultipleColumnForm = () => {
                 name="description"
                 control={control}
                 render={({ field }) => (
-                  <Input type="textarea" rows="3" {...field} id="description" placeholder="Description" />
+                  <Input
+                    type="textarea"
+                    rows="3"
+                    {...field}
+                    id="description"
+                    placeholder="Description"
+                  />
                 )}
               />
             </Col>
@@ -273,7 +339,7 @@ const MultipleColumnForm = () => {
       </Card>
 
       <Card>
-        <ProductAdd_Table  control={control} />
+        <ProductAdd_Table control={control} />
       </Card>
 
       <Card>
@@ -284,7 +350,13 @@ const MultipleColumnForm = () => {
         <Button color="primary" type="submit">
           Submit
         </Button>
-        <Button outline color="secondary" type="button" className="ms-2" onClick={() => reset()}>
+        <Button
+          outline
+          color="secondary"
+          type="button"
+          className="ms-2"
+          onClick={() => reset()}
+        >
           Reset
         </Button>
       </div>

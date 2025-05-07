@@ -64,7 +64,7 @@ const ExpandableTable = ({ data }) => {
 };
 
 // ** Table Server Side Column
-export const serverSideColumns = (currentPage, rowsPerPage, data, setData) => [
+export const serverSideColumns = (currentPage, rowsPerPage) => [
   {
     sortable: true,
     name: "Id",

@@ -47,7 +47,6 @@ const DefaultAlert = () => {
       setLoading(true);
 
       const res = await useJwt.generate();
-      console.log(res.data);
 
       if (res && res.data) {
         const base64 = `data:image/png;base64,${res.data.qr_code_base64}`; // Ensure the correct MIME type (image/png) is used
@@ -263,12 +262,10 @@ const AppAuthComponent = ({
       const resverify = await useJwt.verifyQr({
         otp: data?.otp, // Use the form data
       });
-      if (resverify.status == 200) {
-
-      
+      if (resverify?.status == 200) {
         toast.success('Success! Two Step Authentication succesfully Completed.', {
           position: 'top-right',
-          autoClose: 3000,
+          autoClose: 2000,
           theme: 'colored',
         });
 

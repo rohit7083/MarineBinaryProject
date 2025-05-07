@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { useNavigate } from "react-router-dom";
-import BoatNew from '../../../../src/assets/images/updatedboat2.png';
-import AddBoat from '../../../../src/assets/images/addBoat.png'
+import BoatNew from "../../../../src/assets/images/updatedboat2.png";
+import AddBoat from "../../../../src/assets/images/addBoat.png";
 import {
   Row,
   Col,
@@ -20,7 +20,7 @@ import {
 } from "reactstrap";
 import { Search } from "react-feather";
 
-function ParkBoat({allBoatData, loading, setLoading }) {
+function ParkBoat({ allBoatData, loading, setLoading }) {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,14 +29,11 @@ function ParkBoat({allBoatData, loading, setLoading }) {
 
   const filteredBoatData = allBoatData.filter(
     (boat) =>
-      boat?.category?.shipTypeName
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
+      boat?.category?.shipTypeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+
       boat.slipName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      boat?.member?.firstName
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      boat?.finalPayment?.toLowerCase().includes(searchQuery.toLowerCase())
+
+      boat?.member?.firstName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredBoatData.length / itemsPerPage);
@@ -46,10 +43,8 @@ function ParkBoat({allBoatData, loading, setLoading }) {
     startIndex + itemsPerPage
   );
 
-  
-
   const handleView = () => {
-    navigate("/marin/slip-management");
+    // navigate("/marin/slip-management");
   };
 
   const handleAdd = () => {
@@ -136,11 +131,13 @@ function ParkBoat({allBoatData, loading, setLoading }) {
             </InputGroup>
 
             <Row>
-              {console.log(currentItems)}
+              {currentItems && currentItems.length > 0 ?(<>
               {currentItems.map((boat, index) => (
-                <Col key={index} xl="3" lg="4" md="6" sm="12" className="mb-4">
-                  <Card  style={{
-                  }} className="h-100 shadow rounded hover-card boat-card">
+                <Col key={index} xl="4" lg="4" md="4" sm="12" className="mb-4">
+                <Card
+                    style={{}}
+                    className="h-100 shadow rounded hover-card boat-card"
+                  >
                     <CardBody>
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <h5 className="text-primary mb-0">
@@ -181,48 +178,53 @@ function ParkBoat({allBoatData, loading, setLoading }) {
                       </div>
 
                       <div className="text-center">
-  <div
-    style={{
-      width: "170px",
-      height: "150px", // Adjust as needed
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      margin: "auto",
-    }}
-  >
-    {boat?.isAssigned ? (
-      <img
-        src={BoatNew}
-        className="boat-enter-float"
-        alt="Boat"
-        style={{
-          width: "170px",
-          height: "auto",
-          cursor: "pointer",
-        }}
-        onClick={handleView}
-      />
-    ) : (
-      <img
-        width="64"
-        height="64"
-        className="addimg"
-        onClick={handleAdd}
-        style={{
-          cursor: "pointer",
-        }}
-        src={AddBoat}
-        alt="add"
-      />
-    )}
-  </div>
-</div>
-
+                        <div
+                          style={{
+                            width: "170px",
+                            height: "150px", 
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            margin: "auto",
+                          }}
+                        >
+                          {boat?.isAssigned ? (
+                            <img
+                              src={BoatNew}
+                              className="boat-enter-float"
+                              alt="Boat"
+                              style={{
+                                width: "170px",
+                                height: "auto",
+                                cursor: "pointer",
+                              }}
+                              onClick={handleView}
+                            />
+                          ) : (
+                            <img
+                              width="64"
+                              height="64"
+                              className="addimg"
+                              onClick={handleAdd}
+                              style={{
+                                cursor: "pointer",
+                              }}
+                              src={AddBoat}
+                              alt="add"
+                            />
+                          )}
+                        </div>
+                      </div>
                     </CardBody>
                   </Card>
                 </Col>
               ))}
+              </>):(<><Col sm="12">
+    <div className="text-center mt-4">
+      <h5>No data found</h5>
+    </div>
+  </Col>
+</>)}
             </Row>
 
             {renderPagination()}

@@ -18,7 +18,6 @@ const WizardModern = () => {
   // ** RefselectedSlipname
   const ref = useRef(null);
 
-  // ** State
   const [stepper, setStepper] = useState(null);
   const [slipIID, setSlipIID] = useState("");
   const [memberID, setMemberID] = useState(null);

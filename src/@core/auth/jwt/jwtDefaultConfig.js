@@ -96,4 +96,8 @@ getMemberDetails: "/sPayment/decrypt-token?token=",
   //pos add producct
   addProduct:"/product/",
 
+
+  //get all vendor
+  getVendor:"/vendor",
+
 };

@@ -8,13 +8,13 @@ import { ArrowLeft } from "react-feather"; // Using Feather Icons
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 import { data, columns } from "./Data";
-import addProductIcon from '../../../../assets/icons/shopping-bag-add.svg'
-import importIcon from '../../../../assets/icons/file-import.svg'
-import AddCategoryIcon from '../../../../assets/icons/category-alt.svg'
-import addStocks from '../../../../assets/icons/supplier-alt.svg'
-import ManageStocks from '../../../../assets/icons/workflow-setting.svg'
-import vendor from '../../../../assets/icons/vendor.png'
-import addTax from '../../../../assets/icons/calendar-event-tax.svg'
+import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
+import importIcon from "../../../../assets/icons/file-import.svg";
+import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
+import addStocks from "../../../../assets/icons/supplier-alt.svg";
+import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
+import vendor from "../../../../assets/icons/vendor.png";
+import addTax from "../../../../assets/icons/calendar-event-tax.svg";
 // ** Add New Modal Component
 
 // ** Third Party Components
@@ -57,7 +57,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 const DataTableWithButtons = () => {
   // ** States
   // const [modal, setModal] = useState(false);
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
@@ -210,154 +210,180 @@ const DataTableWithButtons = () => {
     <Fragment>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">
-    
-    
-         
-            Product List
-          </CardTitle>
+          <CardTitle tag="h4">Product List</CardTitle>
           <div className="d-flex mt-md-0 mt-1">
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+              <div>
+                <Link to="/dashboard/pos/product_management/addProduct">
+                  <div className="d-flex">
+                    <img
+                      src={addProductIcon}
+                      id="ANP"
+                      alt="Shopping Bag"
+                      width="18"
+                      className="mx-1 "
+                    />
+                    <p className="mt-1"> Add Producct</p>
+                  </div>
+                  {/* <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.ANP}
+                    target="ANP"
+                    toggle={() => toggleTooltip("ANP")}
+                  >
+                    Add New Producct
+                  </Tooltip> */}
+                </Link>
+              </div>
+              {/* <div>
+                <div className="d-flex" style={{ cursor: "pointer" }}>
+                  <img
+                    id="importProduct"
+                    width="20"
+                    height="20"
+                    src={importIcon}
+                    alt="importProduct"
+                    className="mx-1 mt-1"
+                    onClick={() => setShow(true)}
+                    
+                  />
+                  <p className="mt-1"> Import Product</p>
+                </div> */}
+                {/* <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.importProduct}
+                  target="importProduct"
+                  toggle={() => toggleTooltip("importProduct")}
+                >
+                  Import Product
+                </Tooltip> */}
+              {/* </div> */}
 
-          <div className="d-flex justify-content-end gap-2">
-          <div>
-            <Link to="/dashboard/pos/product_management/addProduct">
-            <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.ANP}
-              target="ANP"
-              toggle={() => toggleTooltip("ANP")}
-            >
-              Add New Producct
-            </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <img
-              id="importProduct"
-              width="25"
-              height="25"
-              src={importIcon}
-              alt="importProduct"
-              onClick={() => setShow(true)}  
-                          style={{ cursor: "pointer" }}
-            />
+              <div>
+                <Link to="/dashboard/pos/product_management/addproductCategory">
+                  <div className="d-flex">
+                    <img
+                      width="20"
+                      height="20"
+                      id="addProductCate"
+                      src={AddCategoryIcon}
+                      alt="sorting-answers"
+                      className="mx-1 mt-1"
+                    />
+                    <p className="mt-1">Add Category</p>
 
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.importProduct}
-              target="importProduct"
-              toggle={() => toggleTooltip("importProduct")}
-            >
-              Import Product
-            </Tooltip>
-          </div>
+                    {/* <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.addProductCate}
+                    target="addProductCate"
+                    toggle={() => toggleTooltip("addProductCate")}
+                  >
+                    Add Product Category
+                  </Tooltip> */}
+                  </div>
+                </Link>
+              </div>
+              <div>
+                <Link to="/dashboard/pos/product_management/addTaxes">
+                  <div className="d-flex">
+                    <img
+                      width="20"
+                      height="20"
+                      id="addProducttaxes"
+                      src={addTax}
+                      alt="addProducttaxes"
+                      className="mx-1 mt-1"
+                    />
+                    <p className="mt-1">Add Taxes</p>
 
-          <div>
-            <Link to="/dashboard/pos/product_management/addproductCategory">
-              <img
-                width="25"
-                height="25"
-                id="addProductCate"
-    src={AddCategoryIcon}
-                alt="sorting-answers"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProductCate}
-                target="addProductCate"
-                toggle={() => toggleTooltip("addProductCate")}
-              >
-                Add Product Category
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/dashboard/pos/product_management/addTaxes">
-              <img
-                width="25"
-                height="25"
-                id="addProducttaxes"
-                src={addTax}
-                alt="addProducttaxes"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProducttaxes}
-                target="addProducttaxes"
-                toggle={() => toggleTooltip("addProducttaxes")}
-              >
-                Add Product Taxes
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/dashboard/pos/product_management/AddStocks">
-              <img
-                width="25"
-                height="25"
-                id="addStock"
-                src={addStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addStock}
-                target="addStock"
-                toggle={() => toggleTooltip("addStock")}
-              >
-                Add Stock
-              </Tooltip>
-            </Link>
-          </div>
+                    {/* <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.addProducttaxes}
+                    target="addProducttaxes"
+                    toggle={() => toggleTooltip("addProducttaxes")}
+                  >
+                    Add Product Taxes
+                  </Tooltip> */}
+                  </div>
+                </Link>
+              </div>
+              <div>
+                <Link to="/dashboard/pos/product_management/AddStocks">
+                  <div className="d-flex">
+                    <img
+                      width="20"
+                      height="20"
+                      id="addStock"
+                      src={addStocks}
+                      alt="list-is-empty"
+                      className="mx-1 mt-1"
+                    />
+                    <p className="mt-1">Add Stock</p>
+                    {/* <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.addStock}
+                    target="addStock"
+                    toggle={() => toggleTooltip("addStock")}
+                  >
+                    Add Stock
+                  </Tooltip> */}
+                  </div>
+                </Link>
+              </div>
 
-          <div>
-            <Link to="/dashboard/pos/product_management/manageStocks">
-              <img
-                width="25"
-                height="25"
-                id="stockManage"
-                src={ManageStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.stockManage}
-                target="stockManage"
-                toggle={() => toggleTooltip("stockManage")}
-              >
-                Stock Manage
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/pos/VendorManage">
-              <img
-                width="28"
-                height="28"
-                id="Vendar"
-                src={vendor}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.Vendar}
-                target="Vendar"
-                toggle={() => toggleTooltip("Vendar")}
-              >
-                Vendar 
-              </Tooltip>
-            </Link>
-          </div>
-        </div>
+              <div>
+                <Link to="/dashboard/pos/product_management/manageStocks">
+                  <div className="d-flex">
+                    <img
+                      width="20"
+                      height="20"
+                      id="stockManage"
+                      src={ManageStocks}
+                      alt="list-is-empty"
+                      className="mx-1 mt-1"
+                    />
+                    <p className="mt-1"> Stock Manage</p>
+                    {/* <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.stockManage}
+                    target="stockManage"
+                    toggle={() => toggleTooltip("stockManage")}
+                  >
+                 Stock Manage
+                  </Tooltip> */}
+                  </div>
+                </Link>
+              </div>
+              <div>
+                <Link to="/pos/VendorManage">
+                  <div className="d-flex">
+                    <img
+                      width="20"
+                      height="20"
+                      id="Vendar"
+                      src={vendor}
+                      alt="list-is-empty"
+                      className="mx-1 mt-1"
+                    />
+                    <p className="mt-1">Add Vendar</p>
 
+                    {/* <Tooltip
+                    placement="top"
+                    isOpen={tooltipOpen.Vendar}
+                    target="Vendar"
+                    toggle={() => toggleTooltip("Vendar")}
+                  >
+                    Vendar
+                  </Tooltip> */}
+                  </div>
+                </Link>
+              </div>
+            </div>
           </div>
         </CardHeader>
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
-          <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-
-          </Col>
+          <Col md="6" sm="12" className="d-flex align-items-center mt-1"></Col>
 
           {/* Right Side - Search Bar */}
           <Col

@@ -8,6 +8,7 @@ import Createuser from "./Createuser";
 import { useEffect } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Card, CardBody } from "reactstrap";
+import { Plus } from "react-feather";
 const Roles = ({ data }) => {
   // const [allRoleName, setallRoleName] = React.useState([]);
   // const [tableData, setTableData] = React.useState({

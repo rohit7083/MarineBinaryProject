@@ -78,7 +78,6 @@ try {
   };
 
   const res=await useJwt.addVender(payload);
-  console.log("Response from API", res);
 
   
 } catch (error) {
@@ -86,7 +85,6 @@ try {
   
 }
 
-    console.log("Submitted data", data);
   };
 
   const productOptions = [
