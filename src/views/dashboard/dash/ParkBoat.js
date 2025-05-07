@@ -48,7 +48,7 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
   };
 
   const handleAdd = () => {
-    navigate("/dashboard/slip-details");
+    navigate("/dashboard/slip_memberform");
   };
 
   const handleSearchChange = (e) => {

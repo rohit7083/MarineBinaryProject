@@ -422,17 +422,20 @@ const Address = ({
     setdiscountTypedStatus(handleTypeDiscount?.discountType);
     console.log(discountTypedStatus);
   };
-  const statusThree = () => {
+//   const statusThree = () => {
 
-    if (isAssign === true) {
-      return true;
-    }
-    return false;
-  };
+//     if (isAssign) {
+//       return true;
+//     }else{
+//     return false;
+//     }
+//   };
 
-useEffect(()=>{
-  statusThree();
-},[isAssign])
+// useEffect(()=>{
+//   statusThree();
+// },[isAssign])
+
+
 
   useEffect(() => {
     // {{debugger}}
@@ -774,7 +777,7 @@ useEffect(()=>{
                     {...field}
                     theme={selectThemeColors}
                     className="react-select"
-                    isDisabled={statusThree()}
+                    // isDisabled={statusThree()}
                     classNamePrefix="select"
                     isClearable
                     options={colourOptions}
@@ -1079,13 +1082,14 @@ useEffect(()=>{
                     className={`react-select ${
                       errors.paymentMode ? "is-invalid" : ""
                     }`}
-                    isDisabled={statusThree}
                     onChange={(selectedOption) => {
                       const value = selectedOption ? selectedOption.value : "";
                       field.onChange(selectedOption); // Update React Hook Form with the value
                       handlepaymentMode(selectedOption); // Run your custom function with the full option
                     }}
                     menuPlacement="top"
+                    // isDisabled={statusThree}
+                    
                   />
                 )}
               />
@@ -1145,7 +1149,7 @@ useEffect(()=>{
                         placeholder="Enter Card Number"
                         invalid={!!errors.cardNumber}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                         onChange={(e) => handleOnchangeCardNum(e, field)}
                       />
@@ -1281,7 +1285,7 @@ useEffect(()=>{
                         placeholder="Enter CVV Number"
                         invalid={!!errors.cardCvv}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(
                             /\D/g,
@@ -1313,7 +1317,7 @@ useEffect(()=>{
                         placeholder="Enter Card Holder's Name"
                         invalid={!!errors.nameOnCard}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1348,7 +1352,7 @@ useEffect(()=>{
                         placeholder="Enter Address"
                         invalid={!!errors.address}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1379,7 +1383,7 @@ useEffect(()=>{
                         placeholder="Enter City"
                         invalid={!!errors.city}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1413,7 +1417,7 @@ useEffect(()=>{
                         placeholder="Enter State"
                         invalid={!!errors.state}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1444,7 +1448,7 @@ useEffect(()=>{
                         placeholder="Enter Country"
                         invalid={!!errors.country}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1482,7 +1486,7 @@ useEffect(()=>{
                         placeholder="Enter Pincode"
                         invalid={!!errors.pinCode}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(
                             /\D/g,
@@ -1568,7 +1572,7 @@ useEffect(()=>{
                         placeholder="Enter Account Name"
                         invalid={!!errors.nameOnAccount}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z]/g,
@@ -1605,7 +1609,7 @@ useEffect(()=>{
                         type="number"
                         placeholder="Enter Routing Number"
                         invalid={!!errors.routingNumber}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                         {...field}
                       />
@@ -1644,7 +1648,7 @@ useEffect(()=>{
                         placeholder="Enter Account Number"
                         invalid={!!errors.accountNumber}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                       />
                     )}
@@ -1682,7 +1686,7 @@ useEffect(()=>{
                         placeholder="Enter Cheque Number"
                         invalid={!!errors.chequeNumber}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                       />
                     )}
@@ -1709,7 +1713,7 @@ useEffect(()=>{
                       id="fileUpload"
                       onChange={handleFileChange}
                       accept="image/*"
-                      isDisabled={statusThree}
+                      // isDisabled={statusThree}
 
                     />
                   </FormGroup>
@@ -1764,7 +1768,7 @@ useEffect(()=>{
                         className={`react-select ${
                           errors.accountType ? "is-invalid" : ""
                         }`}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                         // onChange={(selectedOption) => {
                         //   const value = selectedOption ? selectedOption.value : "";
@@ -1810,7 +1814,7 @@ useEffect(()=>{
                         placeholder="Enter Bank Name"
                         invalid={!!errors.bankName}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
@@ -1856,7 +1860,7 @@ useEffect(()=>{
                         placeholder="Enter Account Name"
                         invalid={!!errors.nameOnAccount}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
@@ -1891,7 +1895,7 @@ useEffect(()=>{
                         placeholder="Enter Routing Number"
                         invalid={!!errors.routingNumber}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                       />
                     )}
@@ -1921,7 +1925,7 @@ useEffect(()=>{
                         placeholder="Enter Account Number"
                         invalid={!!errors.accountNumber}
                         {...field}
-                        isDisabled={statusThree}
+                        // isDisabled={statusThree}
 
                       />
                     )}
@@ -1982,7 +1986,7 @@ useEffect(()=>{
                         placeholder="Enter Transaction ID"
                         invalid={!!errors.cardSwipeTransactionId}
                         {...field}
-                        disabled={statusThree}
+                        // disabled={statusThree}
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(
                             /\D/g,
@@ -2023,7 +2027,7 @@ useEffect(()=>{
                         {...field}
                         theme={selectThemeColors}
                         className="react-select"
-                        isDisabled={statusThree()}
+                        // isDisabled={statusThree()}
                         classNamePrefix="select"
                         isClearable
                         options={CompanyOptions}
@@ -2104,7 +2108,7 @@ useEffect(()=>{
                           placeholder="Enter Pincode"
                           invalid={!!errors.pinCode}
                           {...field}
-                          readOnly={statusThree()}
+                          // readOnly={statusThree()}
                           onChange={(e) => {
                             const numericValue = e.target.value.replace(
                               /\D/g,

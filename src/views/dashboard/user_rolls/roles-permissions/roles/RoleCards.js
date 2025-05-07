@@ -132,7 +132,7 @@ const AddRoles = ({ props, refreshTable }) => {
       const res = await useJwt.userpermissionPost(updatedData);
       setFetchTrigger(true);
       if (res.status === 201) {
-        {{debugger}}
+        // {{debugger}}
         // MySwal.fire({
         //   title: "Successfully Cretaed",
         //   text: " Role Created Successfully",
@@ -150,20 +150,20 @@ const AddRoles = ({ props, refreshTable }) => {
 
         //   setMessage("");
         // });
-
         toast.current.show({
           severity: "success",
           summary: "Created Successfully",
           detail: " Role Created Successfully.",
           life: 2000,
         });
+       
         setTimeout(() => {
+          toggle(); // Close modal
+          reset();  // Reset form
           navigate("/dashboard/user_rolls/roles-permissions/roles", {
             state: { forceRefresh: true },
-          });   
-        }, 2000);
-        toggle();
-        reset();
+          });
+        }, 1000);
       }
     } catch (error) {
       if (error?.response) {

@@ -131,12 +131,12 @@ const RoleCards = () => {
     };
 
 
-    const payload = encryptAES(JSON.stringify(transformedData));
-    console.log("Transformed Data:", payload);
+    // const payload = encryptAES(JSON.stringify(transformedData));
+    // console.log("Transformed Data:", payload);
 
     try {
       setloading(true);
-      const res = await useJwt.createUser({payload});
+      const res = await useJwt.createUser(transformedData);
       console.log("data is created ", data);
       console.log(res);
 

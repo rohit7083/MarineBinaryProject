@@ -266,7 +266,7 @@ function Index() {
                   <UncontrolledAlert color="danger">
                     <div className="alert-body">
                       <span className="text-danger fw-bold">
-                        {errorMessage}
+                      <strong>Error : </strong>  {errorMessage}
                       </span>
                     </div>
                   </UncontrolledAlert>

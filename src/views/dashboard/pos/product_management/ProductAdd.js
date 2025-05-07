@@ -63,7 +63,7 @@ const MultipleColumnForm = () => {
 
   const fetchVendors = async () => {
     try {
-      {{debugger}}
+      
       const getVendors = await useJwt.getVendor();
       console.log(getVendors);
       const vendorList = getVendors?.data?.content?.result || [];

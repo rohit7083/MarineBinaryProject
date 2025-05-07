@@ -120,7 +120,6 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
       const MySwal = withReactContent(Swal);
 
       const handleDelete = async (uid) => {
-        // Show confirmation modal
         return MySwal.fire({
           title: "Are you sure?",
           text: "You won't be able to revert this!",
@@ -135,15 +134,8 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
         }).then(async (result) => {
           if (result.value) {
             try {
-              // Call delete API
               const response = await useJwt.deleteslipCatogory(uid);
               if (response.status === 204) {
-                // {{debugger}}
-                setData((prevData) => {
-                  const newData = prevData.filter((item) => item.uid !== uid);
-                  console.log("Updated Data:", newData);
-                  return newData;
-                });
                 MySwal.fire({
                   icon: "success",
                   title: "Deleted!",
@@ -151,6 +143,11 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                   customClass: {
                     confirmButton: "btn btn-success",
                   },
+                });
+                setData((prevData) => {
+                  const newData = prevData.filter((item) => item.uid !== uid);
+                  console.log("Updated Data:", newData);
+                  return newData;
                 });
               }
             } catch (error) {
