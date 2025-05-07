@@ -299,7 +299,7 @@ const Login = () => {
           lg="4"
           sm="12"
         >
-          <Col className="px-xl-4 mx-auto" sm="8" md="6" lg="12">
+          <Col className="px-xl-8 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
               Login - Password 👋
             </CardTitle>
