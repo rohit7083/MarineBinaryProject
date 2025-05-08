@@ -1,7 +1,7 @@
 // // ============================ Original Code ======================================
 
 import { useContext, Fragment, useEffect, useState } from "react";
-import { json, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ** Custom Hooks
 import { useSkin } from "@hooks/useSkin";
@@ -43,11 +43,11 @@ import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+ import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import LocationImage from '../../../../../src/views/pages/authentication/Images/locationguide.png';
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
-import LocationModal from "../../../../@core/layouts/LocationModal";
 // Default Form Values
 const defaultValues = {
   // password: "101010",
@@ -70,15 +70,10 @@ const Login = () => {
   const MySwal = withReactContent(Swal);
   const [message, setMessage] = useState(""); // ** React Hook Form Setup
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
   const [location, setLocation] = useState(null);
   const [ip, setIP] = useState(null);
-  const [show, setShow] = useState(false);
-  const [isLocationOn] = useState(
-    localStorage.getItem("locationEnabled") ? false : true
-  );
 
-  console.log(isLocationOn);
-  
   const {
     control,
     handleSubmit,
@@ -98,7 +93,6 @@ const Login = () => {
   };
 
   const onSubmit = async (data) => {
-  
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
@@ -115,12 +109,6 @@ const Login = () => {
           "Login Error Details:",
           error.response || error.message || error
         );
-// if (isLocationOn) {  
-  
-// console.log("2 time",isLocationOn);
-
-//         setShow(true);
-// }
 
         if (error.response) {
           const { status, data } = error.response;
@@ -142,6 +130,8 @@ const Login = () => {
             });
             return;
           }
+        } else {
+          setMessage(errorMessage);
         }
       } finally {
         setLoading(false);
@@ -161,48 +151,63 @@ const Login = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // Check if the location is already enabled from localStorage
-  //   const isLocationEnabled = localStorage.getItem("locationEnabled");
-  //   if (isLocationEnabled === "true") {
-  //     setShow(false); // Hide the modal if location is enabled
-  //   } else {
-  //     setShow(true); // Show the modal if location is not enabled
-  //   }
-  // }, []);
-
-  // useEffect(()=>{
-
-  //   const isLocationEnabled = localStorage.getItem("locationEnabled");
-  //    if (isLocationEnabled === "true") {
-  //     setShow(false); // Hide the modal if location is enabled
-  //   } else {
-  //     setShow(true); // Show the modal if location is not enabled
-  //   }
-  // },[])
+  useEffect(() => {
+    // Check if the location is already enabled from localStorage
+    const isLocationEnabled = localStorage.getItem("locationEnabled");
+    if (isLocationEnabled === "true") {
+      setShow(false); // Hide the modal if location is enabled
+    } else {
+      setShow(true); // Show the modal if location is not enabled
+    }
+  }, []);
 
   return (
     <div className="auth-wrapper auth-cover">
-      <LocationModal show={show} setShow={setShow} />
+      <Fragment>
+        <Modal
+          isOpen={show}
+          toggle={() => setShow(!show)}
+          className="modal-dialog-centered"
+        >
+          <ModalHeader
+            className="bg-transparent"
+            toggle={() => setShow(!show)}
+          ></ModalHeader>
+          <ModalBody className="px-sm-5 mx-50 pb-5">
+            <h1 className="text-center mb-1">Turn On Your Location</h1>
+            <Row
+              tag="form"
+              className="gy-1 gx-2 mt-75"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <img src={LocationImage} />
+
+              <Button
+                color="primary"
+                onClick={() => {
+                  localStorage.setItem("locationEnabled", "true"); // Set location as enabled
+                  setShow(false); // Close the modal
+                }}
+              >
+                OK
+              </Button>
+            </Row>
+          </ModalBody>
+        </Modal>
+      </Fragment>
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-          <img
-            src={MARinLogo}
-            alt="Longcove Marina Logo"
-            width={55}
-            height={55}
-            className="mx-2"
-          />
-
-          <h2
-            className="brand-text text-primary ms-1 mt-1"
-            style={{ fontWeight: "bold" }}
-          >
-            Longcove Marina
-          </h2>
+        <img
+               src={MARinLogo}
+               alt="Longcove Marina Logo"
+               width={55}
+               height={55}
+               className="mx-2"
+             /> 
+            
+          <h2 className="brand-text text-primary ms-1 mt-1" style={{ fontWeight: 'bold' }}  >Longcove Marina</h2>
         </Link>
-
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
             <img className="img-fluid" src={source} alt="Login Cover" />
@@ -221,18 +226,6 @@ const Login = () => {
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
               <br />
-              {isLocationOn ? (
-                <React.Fragment>
-                  <UncontrolledAlert color="danger">
-                    <div className="alert-body">
-                      <span className="text-danger fw-bold">
-                        <strong>Error : </strong>
-                        Turn On Location Please
-                      </span>
-                    </div>
-                  </UncontrolledAlert>
-                </React.Fragment>
-              ) : null}
               {message && (
                 <React.Fragment>
                   <UncontrolledAlert color="danger">
@@ -283,21 +276,22 @@ const Login = () => {
               <Button
                 type="submit"
                 color="primary"
-                disabled={loading || isLocationOn}
-                // onClick={async (e) => {
+                disabled={loading}
+                onClick={async (e) => {
+                  e.preventDefault();
 
-                // Check if location is enabled from localStorage
-                // const isLocationEnabled =
-                //   localStorage.getItem("locationEnabled");
+                  // Check if location is enabled from localStorage
+                  const isLocationEnabled =
+                    localStorage.getItem("locationEnabled");
 
-                // if (isLocationEnabled === "true") {
-                //   // If location is enabled, proceed with login
-                //   handleSubmit(onSubmit)();
-                // } else {
-                //   // If location is not enabled, show the modal to enable it
-                //   setShow(true);
-                // }
-                // }}
+                  if (isLocationEnabled === "true") {
+                    // If location is enabled, proceed with login
+                    handleSubmit(onSubmit)();
+                  } else {
+                    // If location is not enabled, show the modal to enable it
+                    setShow(true);
+                  }
+                }}
                 block
               >
                 {loading ? (
@@ -604,3 +598,4 @@ export default Login;
 //   )
 // }
 // export default Login
+  

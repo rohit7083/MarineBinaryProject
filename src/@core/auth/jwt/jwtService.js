@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000";
 
 export default class JwtService {
@@ -18,13 +18,12 @@ export default class JwtService {
     // ** Request Interceptor
     axios.interceptors.request.use(
       async (config) => {
-
         // ** Get token from localStorage
         const accessToken =  this.getToken();
         
         // ** Get Location
         const location = await this.getLocation();
-       
+
         // ** Get IP
         const ipResponse = await fetch("https://api.ipify.org?format=json");
         const ipData = await ipResponse.json();
@@ -95,11 +94,11 @@ export default class JwtService {
 
   async getLocation() {
     try {
-    
+       
       if (!navigator.geolocation) {
 
-        localStorage.removeItem("locationEnabled")
-
+        localStorage.setItem("locationEnabled","false")
+        // window.location.reload()
         throw new Error("Geolocation is not supported by your browser.");
 
       }
@@ -113,22 +112,18 @@ export default class JwtService {
         long: position.coords.longitude,
       };
       localStorage.setItem("locationEnabled", "true");
+
     
       return location;
     } catch (error) {
-      localStorage.removeItem("locationEnabled")
-
+      localStorage.setItem("locationEnabled", "false");
+    
       // window.location.reload()
       if(error?.code ==1 && error?.message){
         localStorage.removeItem('userData');
-     if (location.pathname !== "/login") {
-      
-      window.location.href = '/login'
-    }
-    if(location.pathname == "/login"){
-// alert('Turn on location please')
-    } 
+        window.location.replace='/login';
       }
+      // userData
 
       console.error("Error fetching location:", error.message);
       throw error;
