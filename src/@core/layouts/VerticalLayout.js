@@ -39,6 +39,7 @@ import '@styles/base/core/menu/menu-types/vertical-overlay-menu.scss'
 const VerticalLayout = props => {
   // ** Props
   const { menu, navbar, footer, children, menuData } = props
+  const [show, setShow] = useState(false);
 
   // ** Hooks
   const [isRtl, setIsRtl] = useRTL()
@@ -143,6 +144,8 @@ const VerticalLayout = props => {
       )}
       {...(isHidden ? { 'data-col': '1-column' } : {})}
     >
+                  <LocationModal show={show} setShow={setShow}/>
+
       {!isHidden ? (
         <SidebarComponent
           skin={skin}
@@ -227,6 +230,7 @@ const VerticalLayout = props => {
         </div>
       ) : null}
     </div>
+    
   )
 }
 

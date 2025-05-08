@@ -1,7 +1,7 @@
 // // ============================ Original Code ======================================
 
 import { useContext, Fragment, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { json, Link, useNavigate } from "react-router-dom";
 
 // ** Custom Hooks
 import { useSkin } from "@hooks/useSkin";
@@ -44,7 +44,6 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
  import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
-import LocationImage from '../../../../../src/views/pages/authentication/Images/locationguide.png';
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
@@ -70,7 +69,6 @@ const Login = () => {
   const MySwal = withReactContent(Swal);
   const [message, setMessage] = useState(""); // ** React Hook Form Setup
   const [loading, setLoading] = useState(false);
-  const [show, setShow] = useState(false);
   const [location, setLocation] = useState(null);
   const [ip, setIP] = useState(null);
 
@@ -92,6 +90,7 @@ const Login = () => {
     return undefined; // Valid case
   };
 
+  {{debugger}}
   const onSubmit = async (data) => {
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
@@ -130,9 +129,7 @@ const Login = () => {
             });
             return;
           }
-        } else {
-          setMessage(errorMessage);
-        }
+        } 
       } finally {
         setLoading(false);
       }
@@ -161,54 +158,19 @@ const Login = () => {
   //   }
   // }, []);
 
-  useEffect(()=>{
-    (async()=>{
-      try{
-        await useJwt.getLocation();
-        const isLocationEnabled = localStorage.getItem("locationEnabled");
-     if (isLocationEnabled === "true") {
-      setShow(false); // Hide the modal if location is enabled
-    } else {
-      setShow(true); // Show the modal if location is not enabled
-    }
-      }catch(error){}finally{}
-    })()
-  },[])
+  // useEffect(()=>{
+    
+  //   const isLocationEnabled = localStorage.getItem("locationEnabled");
+  //    if (isLocationEnabled === "true") {
+  //     setShow(false); // Hide the modal if location is enabled
+  //   } else {
+  //     setShow(true); // Show the modal if location is not enabled
+  //   }
+  // },[])
 
   return (
     <div className="auth-wrapper auth-cover">
-      <Fragment>
-        <Modal
-          isOpen={show}
-          toggle={() => setShow(!show)}
-          className="modal-dialog-centered"
-        >
-          <ModalHeader
-            className="bg-transparent"
-            toggle={() => setShow(!show)}
-          ></ModalHeader>
-          <ModalBody className="px-sm-5 mx-50 pb-5">
-            <h1 className="text-center mb-1">Turn On Your Location</h1>
-            <Row
-              tag="form"
-              className="gy-1 gx-2 mt-75"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <img src={LocationImage} />
-
-              <Button
-                color="primary"
-                onClick={() => {
-                  localStorage.setItem("locationEnabled", "true"); // Set location as enabled
-                  setShow(false); // Close the modal
-                }}
-              >
-                OK
-              </Button>
-            </Row>
-          </ModalBody>
-        </Modal>
-      </Fragment>
+     
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
@@ -291,21 +253,20 @@ const Login = () => {
                 type="submit"
                 color="primary"
                 disabled={loading}
-                onClick={async (e) => {
-                  e.preventDefault();
+                // onClick={async (e) => {
 
                   // Check if location is enabled from localStorage
-                  const isLocationEnabled =
-                    localStorage.getItem("locationEnabled");
+                  // const isLocationEnabled =
+                  //   localStorage.getItem("locationEnabled");
 
-                  if (isLocationEnabled === "true") {
-                    // If location is enabled, proceed with login
-                    handleSubmit(onSubmit)();
-                  } else {
-                    // If location is not enabled, show the modal to enable it
-                    setShow(true);
-                  }
-                }}
+                  // if (isLocationEnabled === "true") {
+                  //   // If location is enabled, proceed with login
+                  //   handleSubmit(onSubmit)();
+                  // } else {
+                  //   // If location is not enabled, show the modal to enable it
+                  //   setShow(true);
+                  // }
+                // }}
                 block
               >
                 {loading ? (

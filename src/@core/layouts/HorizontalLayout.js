@@ -38,6 +38,7 @@ import '@styles/base/core/menu/menu-types/horizontal-menu.scss'
 const HorizontalLayout = props => {
   // ** Props
   const { navbar, menuData, footer, children, menu } = props
+  const [show, setShow] = useState(false);
 
   // ** Hooks
   const { skin, setSkin } = useSkin()
