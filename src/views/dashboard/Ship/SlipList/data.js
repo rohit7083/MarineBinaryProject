@@ -113,9 +113,9 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
   {
     name: "Actions",
     sortable: true,
-    minWidth: "   75px",
+    minWidth: "75px",
     cell: (row) => {
-      // const [data, setData] = useState([]);
+      const [data, setData] = useState([]);
 
       const MySwal = withReactContent(Swal);
 
@@ -144,11 +144,14 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                     confirmButton: "btn btn-success",
                   },
                 });
-                setData((prevData) => {
-                  const newData = prevData.filter((item) => item.uid !== uid);
-                  console.log("Updated Data:", newData);
-                  return newData;
-                });
+                // setData((prevData) => {
+                //   const newData = prevData.filter((item) => item.uid !== uid);
+                //   console.log("Updated Data:", newData);
+                //   return newData;
+                // });
+
+                window.location.reload();
+
               }
             } catch (error) {
               console.error("Error deleting item:", error);

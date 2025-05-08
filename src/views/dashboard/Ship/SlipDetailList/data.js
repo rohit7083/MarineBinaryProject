@@ -74,7 +74,6 @@ const ExpandableTable = ({ data }) => {
   );
 };
 
-// ** Table Common Column
 export const columns = [
   {
     name: "Name",
@@ -183,7 +182,9 @@ export const columns = [
 ];
 
 
-// ** Table Server Side Column
+
+
+
 export const serverSideColumns = (currentPage, rowsPerPage)=> [
   {
     sortable: true,
@@ -289,10 +290,8 @@ export const serverSideColumns = (currentPage, rowsPerPage)=> [
     sortable: true,
     //minWidth: "150px",
     cell: (row) => {
-      const [data, setData] = useState([]);
-
+      
       const MySwal = withReactContent(Swal);
-console.log(row);
 
       const handleDelete = async (uid) => {
         // Show confirmation modal
@@ -312,10 +311,6 @@ console.log(row);
             try {
               const response = await useJwt.deleteslip(uid);
               if (response.status === 204) {
-                setData((prevData) => {
-                  const newData = prevData.filter((item) => item.uid !== uid);
-                  return newData;
-                });
                 MySwal.fire({
                   icon: "success",
                   title: "Deleted!",
@@ -324,6 +319,8 @@ console.log(row);
                     confirmButton: "btn btn-success",
                   },
                 });
+                window.location.reload();
+
               }
             } catch (error) {
               console.error("Error deleting item:", error);

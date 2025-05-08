@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000";
 
 export default class JwtService {

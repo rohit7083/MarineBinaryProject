@@ -212,7 +212,7 @@ function Index() {
         console.error("API Error:", error);
         setLoading(false);
         setErrorMessage(
-          error?.response?.data?.content || "Failed to submit the form"
+          error?.response?.data?.content
         );
       } finally {
         setLoading(false);

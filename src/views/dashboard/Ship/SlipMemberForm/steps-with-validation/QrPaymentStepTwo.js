@@ -312,7 +312,7 @@ const CardPayment = () => {
 
   return (
     <Row className="d-flex justify-content-center mt-3">
-      <Col xs="8">
+      <Col xs="10">
         <Card>
           <CardHeader>
             <CardTitle tag="h4">Member Details</CardTitle>

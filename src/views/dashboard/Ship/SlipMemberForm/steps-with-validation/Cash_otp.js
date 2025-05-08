@@ -78,7 +78,8 @@ const Cash_otp = ({
 
   const onSubmit = async (data) => {
     setErrorMsz("");
-     
+    setAttempt(0);
+    setCountdownEndTime(0);
     console.log(data);
 
     try {
@@ -116,6 +117,22 @@ const Cash_otp = ({
 
         const errorMessage = error?.response?.data?.content;
         setErrorMsz(errorMessage);
+        const otpAttempt = data.otpAttempts;
+
+        setAttempt(otpAttempt);
+        if (code === 423) {
+          return MySwal.fire({
+            title: "Blocked",
+            text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin",
+            icon: "warning",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            navigate("/Login");
+          });
+        }
       }
     } finally {
       setLoading(false);
@@ -139,6 +156,48 @@ const Cash_otp = ({
     return () => clearInterval(timer); // Cleanup on unmount
   }, [showModal]);
 
+  const [attempt, setAttempt] = useState(0);
+
+    const [resendcallCount, setResendcallCount] = useState(false);
+  
+
+  const handleResendOTP = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await useJwt.resend_Otp(token);
+      if (res?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+
+        // setResendcount(true);
+      }
+      console.log("resentOTP", res.status);
+    } catch (error) {
+      console.log(error.response);
+    } finally {
+      //   setTimeout(() => {
+      //     setResendcount(false);
+      //   }, countdownEndTime);
+    }
+  };
+
+  const handleResendCall = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await useJwt.resend_OtpCall(token);
+      if (res?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+
+        setResendcallCount(true);
+      }
+      console.log("resentCall", res);
+    } catch (error) {
+      console.log(error.response);
+    } finally {
+      // setTimeout(() => {
+      //   setResendcallLoading(false);
+      // }, 30000);
+    }
+  };
   return (
     <Fragment>
       {verify || cashOtpVerify ? (
@@ -268,8 +327,10 @@ const Cash_otp = ({
                       />
                     ))}
                   </div>
+                  {/* {attempt < 3 && ( */}
 
-                  <div className="d-flex flex-column align-items-center position-relative">
+<>  
+                <div className="d-flex flex-column align-items-center position-relative">
                     <div
                       style={{ position: "relative", display: "inline-block" }}
                     >
@@ -308,6 +369,8 @@ const Cash_otp = ({
                   {errors.otp && (
                     <small className="text-danger">{errors.otp.message}</small>
                   )}
+                  </>
+                {/* )} */}
                 </div>
                 <Button block type="submit" color="primary">
                   {loading ? (
@@ -319,14 +382,39 @@ const Cash_otp = ({
                   )}
                 </Button>
               </Form>
+            
+              {/* {attempt === 1 && ( */}
+              {/* <div className="d-flex"> */}
+               <p className="text-center mt-2">
+                  {/* {!resendCount && ( */}
+                    <>
+                      <span>Didn’t get the code?</span>{" "}
+                      <a
+                        href="#"
+                        onClick={handleResendOTP}
+                        className="text-blue-600  hover:underline"
+                      >
+                        Resend
+                      </a>
+                    </>
+                  {/* )} */}
+                </p>
+              {/* )}  */}
 
-              <p className="text-center mt-2">
-                <span>Didn’t get the code?</span>{" "}
-                {/* <a href="" onClick={handleResendOTP}> */}
-                <a href="">Resend</a> <span>or</span>{" "}
-                {/* <a href="/" onClick={handleResendCall}> */}
-                <a href="/">Call us</a>
-              </p>
+             {/* {attempt === 2 && ( */}
+                {/* <p className="text-center mt-2"> */}
+                  {/* {!resendcallCount && ( */}
+                    <>
+                  {/* <span className="mx-1">Or</span> */}
+                      {/* <span>Didn’t get the code?</span>{" "} */}
+                      {/* <a href="#" onClick={handleResendCall}> */}
+                        {/* Call us */}
+                      {/* </a> */}
+                    </>
+                  {/* )}   */}
+                {/* </p> */}
+                {/* </div> */}
+              {/* )}  */}
             </CardBody>
           </Card>
         </div>

@@ -476,7 +476,11 @@ const Address = ({
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
 
+
+
+
   const onSubmit = async (data) => {
+    
     setErrMsz("");
     data.paymentMode = data.paymentMode?.value;
     console.log("Payment data:", data);
@@ -531,17 +535,30 @@ const Address = ({
       formData.append("routingNumber", data.routingNumber);
       formData.append("accountNumber", data.accountNumber);
       formData.append("accountType", data.accountType?.value);
-    } else if (paymentMode === "Money Order") {
+    }
+     else if (paymentMode === "Money Order") {
       formData.append("companyName", data.companyName?.value);
+
       if (companyName?.label !== "Other") {
         formData.append("mtcn", data.mtcn);
-      } else {
+
+      } 
+      if(companyName?.label == "Other") {
+        
         formData.append("otherCompanyName", data.otherCompanyName);
+        
         formData.append("otherTransactionId", data.otherTransactionId);
       }
     } else {
       console.log("Choose differant payment Method ");
     }
+    console.log(data.otherCompanyName);
+    console.log(companyName?.label);
+    console.log(data.companyName?.value);
+
+
+
+
 
     if (isAssigned?.isAssigned) {
       stepper.next();
@@ -560,15 +577,18 @@ const Address = ({
           setShowQrModal(true);
         }
 
-        // {{debugger}}
-        if (response?.data?.status === "success") {
+        {{debugger}}
+        if (response?.status === 200) {
+          if (paymentMode !== "Payment Link") {
+            
+          
           toast.current.show({
             severity: "success",
             summary: "Created Successfully",
             detail: "Payment Details Created Successfully.",
             life: 2000,
           });
-        
+          }
           if (paymentMode === "Payment Link") {
             // Show SweetAlert instead of auto-stepping
             MySwal.fire({
@@ -794,7 +814,6 @@ const Address = ({
               )}
             </Col>
           </Row>
-          {console.log("paymentMode", watch("paymentMode"))}
           <Row>
             <Col md="12" className="mb-1">
               <Label className="form-label" for="landmark">
@@ -919,8 +938,11 @@ const Address = ({
                       rules={{
                         required: "Discount Type is required",
                         validate: (value) => {
-                          if (isPercentage == "percentage") {
+
+                          if (isPercentage == true) {
+                            return parseFloat(value) <= 100 || "Percentage cannot exceed 100";
                           }
+                          return true; 
                         },
                       }}
                       control={control}
@@ -1477,7 +1499,7 @@ const Address = ({
                       pattern: {
                         value: /^\d{6}$/,
                         message: "Pincode must be exactly 6 digits",
-                      },
+                      },  
                     }}
                     control={control}
                     render={({ field }) => (
@@ -1486,15 +1508,10 @@ const Address = ({
                         placeholder="Enter Pincode"
                         invalid={!!errors.pinCode}
                         {...field}
-                        // isDisabled={statusThree}
                         onChange={(e) => {
-                          const numericValue = e.target.value.replace(
-                            /\D/g,
-                            ""
-                          );
-                          if (numericValue.length <= getCvvLength(cardType)) {
-                            field.onChange(numericValue);
-                          }
+                          // Allow only numbers
+                          const onlyNumbers = e.target.value.replace(/\D/g, "");
+                          field.onChange(onlyNumbers);
                         }}
                       />
                     )}
@@ -2086,64 +2103,73 @@ const Address = ({
 
               {companyName?.label === "Other" && (
                 <Row>
-                  <Col md="6" className="mb-1">
-                    <Label className="form-label" for="otherTransactionId">
-                      Other Transaction ID
-                      <span style={{ color: "red" }}>*</span>
-                    </Label>
-                    <Controller
-                      id="otherTransactionId"
-                      name="otherTransactionId"
-                      rules={{
-                        required: "Transaction ID is required",
-                        pattern: {
-                          value: /^[0-9]{10}$/,
-                          message: "Transaction ID must be exactly 10 digits",
-                        },
-                      }}
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          type="text"
-                          placeholder="Enter Pincode"
-                          invalid={!!errors.pinCode}
-                          {...field}
-                          // readOnly={statusThree()}
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(
-                              /\D/g,
-                              ""
-                            );
-                            field.onChange(numericValue);
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.otherTransactionId && (
-                      <FormFeedback>
-                        {errors.otherTransactionId.message}
-                      </FormFeedback>
-                    )}
-                  </Col>
+                 <Col md="6" className="mb-1">
+  <Label className="form-label" for="otherTransactionId">
+    Other Transaction ID <span style={{ color: "red" }}>*</span>
+  </Label>
+
+  <Controller
+    name="otherTransactionId"
+    control={control}
+    rules={{
+      required: "Transaction ID is required",
+      pattern: {
+        value: /^[0-9]{10}$/,
+        message: "Transaction ID must be exactly 10 digits",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        placeholder="Enter Transaction ID"
+        invalid={!!errors.otherTransactionId}
+        {...field}
+        onChange={(e) => {
+          const numericValue = e.target.value.replace(/\D/g, "");
+          field.onChange(numericValue);
+        }}
+      />
+    )}
+  />
+  {errors.otherTransactionId && (
+    <FormFeedback>{errors.otherTransactionId.message}</FormFeedback>
+  )}
+</Col>
+
 
                   <Col md="6" className="mb-1">
-                    <Label className="form-label" for="landmark">
-                      Other Company Name
-                      <span style={{ color: "red" }}>*</span>
-                    </Label>
+  <Label className="form-label" for="otherCompanyName">
+    Other Company Name <span style={{ color: "red" }}>*</span>
+  </Label>
 
-                    <Controller
-                      name="otherCompanyName"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          placeholder="otherCompanyName"
-                          invalid={errors.otherCompanyName && true}
-                          {...field}
-                        />
-                      )}
-                    />
-                  </Col>
+  <Controller
+    name="otherCompanyName"
+    control={control}
+    rules={{
+      required: "Company Name is required",
+      pattern: {
+        value: /^[A-Za-z0-9 ]+$/,  // only letters, numbers, spaces
+        message: "Special characters are not allowed",
+      },
+    }}
+    render={({ field }) => (
+      <div>
+        <Input
+          id="otherCompanyName"
+          placeholder="Enter Other Company Name"
+          invalid={!!errors.otherCompanyName}
+          {...field}
+        />
+        {errors.otherCompanyName && (
+          <span className="text-danger small">
+            {errors.otherCompanyName.message}
+          </span>
+        )}
+      </div>
+    )}
+  />
+</Col>
+
                 </Row>
               )}
             </>
