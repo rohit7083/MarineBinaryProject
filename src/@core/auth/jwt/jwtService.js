@@ -18,12 +18,13 @@ export default class JwtService {
     // ** Request Interceptor
     axios.interceptors.request.use(
       async (config) => {
+
         // ** Get token from localStorage
         const accessToken =  this.getToken();
         
         // ** Get Location
         const location = await this.getLocation();
-
+       
         // ** Get IP
         const ipResponse = await fetch("https://api.ipify.org?format=json");
         const ipData = await ipResponse.json();
@@ -94,11 +95,11 @@ export default class JwtService {
 
   async getLocation() {
     try {
-      //  {{debugger}}
+    
       if (!navigator.geolocation) {
 
-        localStorage.setItem("locationEnabled","false")
-        // window.location.reload()
+        localStorage.removeItem("locationEnabled")
+
         throw new Error("Geolocation is not supported by your browser.");
 
       }
@@ -112,18 +113,22 @@ export default class JwtService {
         long: position.coords.longitude,
       };
       localStorage.setItem("locationEnabled", "true");
-
     
       return location;
     } catch (error) {
-      localStorage.setItem("locationEnabled", "false");
-    
+      localStorage.removeItem("locationEnabled")
+
       // window.location.reload()
       if(error?.code ==1 && error?.message){
         localStorage.removeItem('userData');
-        window.location.replace='/login';
+     if (location.pathname !== "/login") {
+      
+      window.location.href = '/login'
+    }
+    if(location.pathname == "/login"){
+// alert('Turn on location please')
+    } 
       }
-      // userData
 
       console.error("Error fetching location:", error.message);
       throw error;

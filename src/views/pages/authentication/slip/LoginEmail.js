@@ -43,10 +43,11 @@ import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
- import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
+import LocationModal from "../../../../@core/layouts/LocationModal";
 // Default Form Values
 const defaultValues = {
   // password: "101010",
@@ -71,7 +72,13 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState(null);
   const [ip, setIP] = useState(null);
+  const [show, setShow] = useState(false);
+  const [isLocationOn] = useState(
+    localStorage.getItem("locationEnabled") ? false : true
+  );
 
+  console.log(isLocationOn);
+  
   const {
     control,
     handleSubmit,
@@ -90,8 +97,8 @@ const Login = () => {
     return undefined; // Valid case
   };
 
-  {{debugger}}
   const onSubmit = async (data) => {
+  
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
@@ -108,6 +115,12 @@ const Login = () => {
           "Login Error Details:",
           error.response || error.message || error
         );
+if (!isLocationOn) {
+  
+console.log("2 time",isLocationOn);
+
+        setShow(true);
+}
 
         if (error.response) {
           const { status, data } = error.response;
@@ -129,7 +142,7 @@ const Login = () => {
             });
             return;
           }
-        } 
+        }
       } finally {
         setLoading(false);
       }
@@ -159,7 +172,7 @@ const Login = () => {
   // }, []);
 
   // useEffect(()=>{
-    
+
   //   const isLocationEnabled = localStorage.getItem("locationEnabled");
   //    if (isLocationEnabled === "true") {
   //     setShow(false); // Hide the modal if location is enabled
@@ -170,20 +183,26 @@ const Login = () => {
 
   return (
     <div className="auth-wrapper auth-cover">
-     
+      <LocationModal show={show} setShow={setShow} />
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-        <img
-               src={MARinLogo}
-               alt="Longcove Marina Logo"
-               width={55}
-               height={55}
-               className="mx-2"
-             /> 
-            
-          <h2 className="brand-text text-primary ms-1 mt-1" style={{ fontWeight: 'bold' }}  >Longcove Marina</h2>
+          <img
+            src={MARinLogo}
+            alt="Longcove Marina Logo"
+            width={55}
+            height={55}
+            className="mx-2"
+          />
+
+          <h2
+            className="brand-text text-primary ms-1 mt-1"
+            style={{ fontWeight: "bold" }}
+          >
+            Longcove Marina
+          </h2>
         </Link>
+
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
             <img className="img-fluid" src={source} alt="Login Cover" />
@@ -202,6 +221,18 @@ const Login = () => {
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
               <br />
+              {isLocationOn ? (
+                <React.Fragment>
+                  <UncontrolledAlert color="danger">
+                    <div className="alert-body">
+                      <span className="text-danger fw-bold">
+                        <strong>Error : </strong>
+                        Turn On Location Please
+                      </span>
+                    </div>
+                  </UncontrolledAlert>
+                </React.Fragment>
+              ) : null}
               {message && (
                 <React.Fragment>
                   <UncontrolledAlert color="danger">
@@ -252,20 +283,20 @@ const Login = () => {
               <Button
                 type="submit"
                 color="primary"
-                disabled={loading}
+                disabled={loading || isLocationOn}
                 // onClick={async (e) => {
 
-                  // Check if location is enabled from localStorage
-                  // const isLocationEnabled =
-                  //   localStorage.getItem("locationEnabled");
+                // Check if location is enabled from localStorage
+                // const isLocationEnabled =
+                //   localStorage.getItem("locationEnabled");
 
-                  // if (isLocationEnabled === "true") {
-                  //   // If location is enabled, proceed with login
-                  //   handleSubmit(onSubmit)();
-                  // } else {
-                  //   // If location is not enabled, show the modal to enable it
-                  //   setShow(true);
-                  // }
+                // if (isLocationEnabled === "true") {
+                //   // If location is enabled, proceed with login
+                //   handleSubmit(onSubmit)();
+                // } else {
+                //   // If location is not enabled, show the modal to enable it
+                //   setShow(true);
+                // }
                 // }}
                 block
               >
@@ -573,4 +604,3 @@ export default Login;
 //   )
 // }
 // export default Login
-  
