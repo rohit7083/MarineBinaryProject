@@ -86,7 +86,6 @@ const Address = ({
     { value: "10", label: "Business Checking Account" },
     { value: "11", label: "Business Savings Account" },
   ];
-  // Create month and year options
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
@@ -110,15 +109,12 @@ const Address = ({
       label: currentYear + i,
     };
   });
-  // {{debugger}}
 
   const [isPercentage, setIsPercentage] = useState(true);
   const [value, setValuee] = useState("");
   const [qr, setQr] = useState(null);
   const MySwal = withReactContent(Swal);
-
   const [isAssign, setIsassign] = useState(false);
-
   const [picker, setPicker] = useState(new Date());
   const [totalPayment, setFinalPayment] = useState("");
   const [showQrModal, setShowQrModal] = useState(false);
@@ -991,31 +987,34 @@ const Address = ({
           )}
 
           <Row>
-            <Col md="12" className="mb-1">
-              <Label className="form-label" for="landmark">
-                Total Amount <span style={{ color: "red" }}>*</span>
-              </Label>
+          <Col md="12" className="mb-1">
+  <Label className="form-label" for="landmark">
+    Total Amount <span style={{ color: "red" }}>*</span>
+  </Label>
 
-              <Controller
-                name="finalPayment"
-                control={control}
-                rules={{
-                  required: "Final Payment is required",
-                }}
-                render={({ field }) => (
-                  <Input
-                    placeholder="Final Amount"
-                    invalid={errors.finalPayment && true}
-                    {...field}
-                    readOnly
-                  />
-                )}
-              />
+  <Controller
+    name="finalPayment"
+    control={control}
+    rules={{
+      required: "Final Payment is required",
+      validate: (value) =>
+        parseFloat(value) >= 0 || "Final Payment cannot be negative",
+    }}
+    render={({ field }) => (
+      <Input
+        placeholder="Final Amount"
+        invalid={errors.finalPayment && true}
+        {...field}
+        readOnly
+      />
+    )}
+  />
 
-              {errors.finalPayment && (
-                <FormFeedback>{errors.finalPayment.message}</FormFeedback>
-              )}
-            </Col>
+  {errors.finalPayment && (
+    <FormFeedback>{errors.finalPayment.message}</FormFeedback>
+  )}
+</Col>
+
           </Row>
 
           <Row>
