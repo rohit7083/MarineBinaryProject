@@ -100,34 +100,67 @@ const CardPayment = () => {
     }));
   };
 
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+
+  //   setValue(name, value); // Update React Hook Form
+
+  //   if (name === "cardExpiryMonth" || name === "cardExpiryYear") {
+  //     const updatedMonth =
+  //       name === "cardExpiryMonth" ? value : watch("cardExpiryMonth");
+  //     const updatedYear =
+  //       name === "cardExpiryYear" ? value : watch("cardExpiryYear");
+
+  //     const formattedExpiry =
+  //       updatedMonth && updatedYear
+  //         ? `${updatedMonth}/${updatedYear.slice(-2)}`
+  //         : "";
+
+  //     setCardDetails((prev) => ({
+  //       ...prev,
+  //       expiry: formattedExpiry,
+  //     }));
+  //   } else {
+  //     // ✅ Handle other fields like name, number, cvc
+  //     setCardDetails((prev) => ({
+  //       ...prev,
+  //       [name]: value,
+  //     }));
+  //   }
+  // };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    setValue(name, value); // Update React Hook Form
-
+  
+    setValue(name, value); // React Hook Form update
+  
+    if (name === "cardExpiryYear") {
+      setSelectedYear(value); // update year selection state
+    }
+  
     if (name === "cardExpiryMonth" || name === "cardExpiryYear") {
       const updatedMonth =
         name === "cardExpiryMonth" ? value : watch("cardExpiryMonth");
       const updatedYear =
         name === "cardExpiryYear" ? value : watch("cardExpiryYear");
-
+  
       const formattedExpiry =
         updatedMonth && updatedYear
           ? `${updatedMonth}/${updatedYear.slice(-2)}`
           : "";
-
+  
       setCardDetails((prev) => ({
         ...prev,
         expiry: formattedExpiry,
       }));
     } else {
-      // ✅ Handle other fields like name, number, cvc
       setCardDetails((prev) => ({
         ...prev,
         [name]: value,
       }));
     }
   };
+  
 
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -141,22 +174,31 @@ const CardPayment = () => {
       label: year,
     };
   });
+  const [selectedYear, setSelectedYear] = useState("");
 
   // Generate the months array starting from the current month
-  const months = [
-    { value: "01", label: "January" },
-    { value: "02", label: "February" },
-    { value: "03", label: "March" },
-    { value: "04", label: "April" },
-    { value: "05", label: "May" },
-    { value: "06", label: "June" },
-    { value: "07", label: "July" },
-    { value: "08", label: "August" },
-    { value: "09", label: "September" },
-    { value: "10", label: "October" },
-    { value: "11", label: "November" },
-    { value: "12", label: "December" },
-  ].slice(currentMonth);
+  const getFilteredMonths = (selectedYear) => {
+    const allMonths = [
+      { value: "01", label: "January" },
+      { value: "02", label: "February" },
+      { value: "03", label: "March" },
+      { value: "04", label: "April" },
+      { value: "05", label: "May" },
+      { value: "06", label: "June" },
+      { value: "07", label: "July" },
+      { value: "08", label: "August" },
+      { value: "09", label: "September" },
+      { value: "10", label: "October" },
+      { value: "11", label: "November" },
+      { value: "12", label: "December" },
+    ];
+  
+    if (selectedYear === String(currentYear)) {
+      return allMonths.slice(currentMonth); // Exclude past months for current year
+    }
+    return allMonths;
+  };
+  
 
   const selectedOption = watch("paymentMethod");
 
@@ -900,7 +942,7 @@ const CardPayment = () => {
                                         onFocus={handleInputFocus}
                                       >
                                         <option value="">Select Month</option>
-                                        {months.map((month) => (
+                                        {getFilteredMonths(selectedYear).map((month) => (
                                           <option
                                             key={month.value}
                                             value={month.value}

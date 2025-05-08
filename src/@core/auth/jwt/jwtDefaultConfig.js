@@ -73,7 +73,7 @@ getMemberDetails: "/sPayment/decrypt-token?token=",
   storageTokenKeyName: "accessToken",
   storageRefreshTokenKeyName: "refreshToken",
 
-  totalPayment: "/sPayment/",
+  totalPayment: "/auth/sPayment/",
   //POS : Vender Management
 
   addVender: "/vendor/",
