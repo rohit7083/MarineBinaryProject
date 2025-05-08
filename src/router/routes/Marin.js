@@ -214,7 +214,8 @@ export default [
   {
     element: <QrPaymentStepTwo />,
     path: "/slip_memberform/qr_paymentsteptwo/:token",
-    meta: {
+    meta: { 
+      publicRoute: true,
       layout: "blank",
     },
   },
