@@ -94,7 +94,7 @@ export default class JwtService {
 
   async getLocation() {
     try {
-       
+       {{debugger}}
       if (!navigator.geolocation) {
 
         localStorage.setItem("locationEnabled","false")

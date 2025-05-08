@@ -1,12 +1,15 @@
 // ** React Imports
 import { Navigate } from 'react-router-dom'
-import { useContext, Suspense } from 'react'
+import { useContext, Suspense, useEffect } from 'react'
 
 // ** Context Imports
 import { AbilityContext } from '@src/utility/context/Can'
 
 // ** Spinner Import
 import Spinner from '../spinner/Loading-spinner'
+
+import useJwt from "@src/auth/jwt/useJwt";
+import toast from 'react-hot-toast';
 
 const PrivateRoute = ({ children, route }) => {
   // ** Hooks & Vars
@@ -36,6 +39,16 @@ const PrivateRoute = ({ children, route }) => {
     //   return <Navigate to='/misc/not-authorized' replace />
     // }
   }
+
+  useEffect(()=>{
+    (async()=>{
+      try{
+       await useJwt.getLocation()
+      }catch(error){
+        toast.error("Location Not Found")
+      }finally{}
+    })()
+  },[])
 
   return <Suspense fallback={<Spinner className='content-loader' />}>{children}</Suspense>
 }

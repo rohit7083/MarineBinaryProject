@@ -151,15 +151,29 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    // Check if the location is already enabled from localStorage
-    const isLocationEnabled = localStorage.getItem("locationEnabled");
-    if (isLocationEnabled === "true") {
+  // useEffect(() => {
+  //   // Check if the location is already enabled from localStorage
+  //   const isLocationEnabled = localStorage.getItem("locationEnabled");
+  //   if (isLocationEnabled === "true") {
+  //     setShow(false); // Hide the modal if location is enabled
+  //   } else {
+  //     setShow(true); // Show the modal if location is not enabled
+  //   }
+  // }, []);
+
+  useEffect(()=>{
+    (async()=>{
+      try{
+        await useJwt.getLocation();
+        const isLocationEnabled = localStorage.getItem("locationEnabled");
+     if (isLocationEnabled === "true") {
       setShow(false); // Hide the modal if location is enabled
     } else {
       setShow(true); // Show the modal if location is not enabled
     }
-  }, []);
+      }catch(error){}finally{}
+    })()
+  },[])
 
   return (
     <div className="auth-wrapper auth-cover">

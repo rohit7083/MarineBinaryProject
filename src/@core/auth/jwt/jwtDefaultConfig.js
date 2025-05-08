@@ -21,7 +21,7 @@ export default {
   retriveMember: "/sMember/",
   UpdateMember: "/sMember/",
 
-  createPayment: "/sPayment/",
+  createPayment: "/auth/sPayment/",
   // user  login
   checktoken: "/auth/user/check_token/",
   chnagePassword: "/auth/user/change_password/",
@@ -60,7 +60,7 @@ export default {
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
 
-getMemberDetails: "/sPayment/decrypt-token?token=",
+getMemberDetails: "/auth/sPayment/decrypt-token?token=",
 
 
   slipAssignmentGet: "/slipAssignmentGet",

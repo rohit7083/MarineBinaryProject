@@ -57,6 +57,7 @@ const root = createRoot(container)
 
 root.render(
   <BrowserRouter basename='/crm/marine-resort'>
+
     <Provider store={store}>
       <Suspense fallback={<Spinner />}>
         <AbilityContext.Provider value={ability}>
