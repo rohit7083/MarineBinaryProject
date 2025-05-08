@@ -79,7 +79,7 @@ const Cash_otp = ({
   const onSubmit = async (data) => {
     setErrorMsz("");
     setAttempt(0);
-    setCountdownEndTime(0);
+    // setCountdownEndTime(0);
     console.log(data);
 
     try {
@@ -164,7 +164,7 @@ const Cash_otp = ({
   const handleResendOTP = async (e) => {
     e.preventDefault();
     try {
-      const res = await useJwt.resend_Otp(token);
+      const res = await useJwt.resend_Otp(accessTokenotp);
       if (res?.status == 200) {
         setCountdownEndTime(Date.now() + 40000);
 
@@ -183,11 +183,11 @@ const Cash_otp = ({
   const handleResendCall = async (e) => {
     e.preventDefault();
     try {
-      const res = await useJwt.resend_OtpCall(token);
+      const res = await useJwt.resend_OtpCall(accessTokenotp);
       if (res?.status == 200) {
         setCountdownEndTime(Date.now() + 40000);
 
-        setResendcallCount(true);
+        // setResendcallCount(true);
       }
       console.log("resentCall", res);
     } catch (error) {

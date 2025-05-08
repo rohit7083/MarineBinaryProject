@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
@@ -118,7 +118,7 @@ const Address = ({
   const [picker, setPicker] = useState(new Date());
   const [totalPayment, setFinalPayment] = useState("");
   const [showQrModal, setShowQrModal] = useState(false);
-  const [checkMember,setMember]=useState(false);
+  const [checkMember, setMember] = useState(false);
   const [availableMonths, setAvailableMonths] = useState([]);
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [discounttoggle, setDiscountToggle] = useState(false);
@@ -204,8 +204,8 @@ const Address = ({
     }
   };
   useEffect(() => {
-    const assignDone=isAssigned?.isAssigned;
-    
+    const assignDone = isAssigned?.isAssigned;
+
     setIsassign(assignDone);
   }, [isAssigned]);
 
@@ -270,8 +270,6 @@ const Address = ({
         return;
       }
 
-      
-
       setSlipDetail({
         Monthly: marketMonthlyPrice,
         Annual: marketAnnualPrice,
@@ -294,7 +292,6 @@ const Address = ({
   useEffect(() => {
     if (slipIID || sId) fetchMarketPrices();
   }, [slipIID, sId]);
-
 
   const handleDiscount = (event) => {
     console.clear();
@@ -418,20 +415,18 @@ const Address = ({
     setdiscountTypedStatus(handleTypeDiscount?.discountType);
     console.log(discountTypedStatus);
   };
-//   const statusThree = () => {
+  //   const statusThree = () => {
 
-//     if (isAssign) {
-//       return true;
-//     }else{
-//     return false;
-//     }
-//   };
+  //     if (isAssign) {
+  //       return true;
+  //     }else{
+  //     return false;
+  //     }
+  //   };
 
-// useEffect(()=>{
-//   statusThree();
-// },[isAssign])
-
-
+  // useEffect(()=>{
+  //   statusThree();
+  // },[isAssign])
 
   useEffect(() => {
     // {{debugger}}
@@ -440,9 +435,7 @@ const Address = ({
     } else {
       setMember(true); // still missing
     }
-  }, [mId,memberID]);
-  
-  
+  }, [mId, memberID]);
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
@@ -472,11 +465,7 @@ const Address = ({
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
 
-
-
-
   const onSubmit = async (data) => {
-    
     setErrMsz("");
     data.paymentMode = data.paymentMode?.value;
     console.log("Payment data:", data);
@@ -531,18 +520,15 @@ const Address = ({
       formData.append("routingNumber", data.routingNumber);
       formData.append("accountNumber", data.accountNumber);
       formData.append("accountType", data.accountType?.value);
-    }
-     else if (paymentMode === "Money Order") {
+    } else if (paymentMode === "Money Order") {
       formData.append("companyName", data.companyName?.value);
 
       if (companyName?.label !== "Other") {
         formData.append("mtcn", data.mtcn);
-
-      } 
-      if(companyName?.label == "Other") {
-        
+      }
+      if (companyName?.label == "Other") {
         formData.append("otherCompanyName", data.otherCompanyName);
-        
+
         formData.append("otherTransactionId", data.otherTransactionId);
       }
     } else {
@@ -552,77 +538,74 @@ const Address = ({
     console.log(companyName?.label);
     console.log(data.companyName?.value);
 
-
-
-
-
     if (isAssigned?.isAssigned) {
       stepper.next();
     } else {
-     
-        if (typeof mId !== "undefined" && mId !== null || typeof memberID !== "undefined" && memberID !== null) {
-          
-      try {
-        setLoading(true);
+      if (
+        (typeof mId !== "undefined" && mId !== null) ||
+        (typeof memberID !== "undefined" && memberID !== null)
+      ) {
+        try {
+          setLoading(true);
 
-        const response = await useJwt.createPayment(formData);
-       
-        const { qr_code_base64 } = response?.data;
-        setQr(qr_code_base64);
-        if (qr_code_base64) {
-          setShowQrModal(true);
-        }
+          const response = await useJwt.createPayment(formData);
 
-        {{debugger}}
-        if (response?.status === 200) {
-          if (paymentMode !== "Payment Link") {
-            
-          
-          toast.current.show({
-            severity: "success",
-            summary: "Created Successfully",
-            detail: "Payment Details Created Successfully.",
-            life: 2000,
-          });
+          const { qr_code_base64 } = response?.data;
+          setQr(qr_code_base64);
+          if (qr_code_base64) {
+            setShowQrModal(true);
           }
-          if (paymentMode === "Payment Link") {
-            // Show SweetAlert instead of auto-stepping
-            MySwal.fire({
-              title: "Payment Link Sent Successfully",
-              text: "Payment link has been sent to your email address.",
-              icon: "success",
-              customClass: {
-                confirmButton: "btn btn-primary",
-              },
-              buttonsStyling: false,
-            }).then(() => {
-              stepper.next(); // Go to next step after user closes the alert
+
+          {
+            {
+              debugger;
+            }
+          }
+          if (response?.status === 200) {
+            if (paymentMode !== "Payment Link") {
+              toast.current.show({
+                severity: "success",
+                summary: "Created Successfully",
+                detail: "Payment Details Created Successfully.",
+                life: 2000,
+              });
+            }
+            if (paymentMode === "Payment Link") {
+              // Show SweetAlert instead of auto-stepping
+              MySwal.fire({
+                title: "Payment Link Sent Successfully",
+                text: "Payment link has been sent to your email address.",
+                icon: "success",
+                customClass: {
+                  confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
+              }).then(() => {
+                stepper.next(); // Go to next step after user closes the alert
+              });
+            } else {
+              // For other payment modes, auto step after toast
+              setTimeout(() => {
+                stepper.next();
+              }, 2000);
+            }
+          }
+        } catch (error) {
+          console.error("Error submitting data:", error);
+
+          if (error.response && error.response.data) {
+            const { status, content } = error.response.data;
+
+            setErrMsz((prev) => {
+              const newMsz = content || "An unexpected error occurred";
+              return prev !== newMsz ? newMsz : prev + " ";
             });
-          } else {
-            // For other payment modes, auto step after toast
-            setTimeout(() => {
-              stepper.next();
-            }, 2000);
           }
+        } finally {
+          setLoading(false);
         }
-        
-      } catch (error) {
-        console.error("Error submitting data:", error);
-
-        if (error.response && error.response.data) {
-          const { status, content } = error.response.data;
-
-          setErrMsz((prev) => {
-            const newMsz = content || "An unexpected error occurred";
-            return prev !== newMsz ? newMsz : prev + " ";
-          });
-        }
-      } finally {
-        setLoading(false);
       }
     }
-
-  }
   };
 
   if (fetchLoader)
@@ -647,8 +630,8 @@ const Address = ({
 
   return (
     <Fragment>
-                  <Toast ref={toast} />
-      
+      <Toast ref={toast} />
+
       <div className="content-header">
         <h5 className="mb-0">Payment</h5>
         <small>Enter Your Payment Details.</small>
@@ -660,28 +643,25 @@ const Address = ({
             <div className="alert-body">
               <span className="text-danger fw-bold">
                 <strong>Error : </strong>
-                {errMsz }
-                </span>
+                {errMsz}
+              </span>
             </div>
           </UncontrolledAlert>
         </React.Fragment>
       )}
 
-{checkMember && (
+      {checkMember && (
         <React.Fragment>
           <UncontrolledAlert color="danger">
             <div className="alert-body">
               <span className="text-danger fw-bold">
                 <strong>Error : </strong>
                 Please fill the Member form first to proceed.
-
-                </span>
+              </span>
             </div>
           </UncontrolledAlert>
         </React.Fragment>
       )}
-
-
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <>
@@ -934,11 +914,13 @@ const Address = ({
                       rules={{
                         required: "Discount Type is required",
                         validate: (value) => {
-
-                          if (isPercentage == true) {
-                            return parseFloat(value) <= 100 || "Percentage cannot exceed 100";
+                          if (isPercentage) {
+                            return (
+                              parseFloat(value) <= 100 ||
+                              "Percentage cannot exceed 100"
+                            );
                           }
-                          return true; 
+                          return true;
                         },
                       }}
                       control={control}
@@ -987,34 +969,34 @@ const Address = ({
           )}
 
           <Row>
-          <Col md="12" className="mb-1">
-  <Label className="form-label" for="landmark">
-    Total Amount <span style={{ color: "red" }}>*</span>
-  </Label>
+            <Col md="12" className="mb-1">
+              <Label className="form-label" for="landmark">
+                Total Amount <span style={{ color: "red" }}>*</span>
+              </Label>
 
-  <Controller
-    name="finalPayment"
-    control={control}
-    rules={{
-      required: "Final Payment is required",
-      validate: (value) =>
-        parseFloat(value) >= 0 || "Final Payment cannot be negative",
-    }}
-    render={({ field }) => (
-      <Input
-        placeholder="Final Amount"
-        invalid={errors.finalPayment && true}
-        {...field}
-        readOnly
-      />
-    )}
-  />
+              <Controller
+                name="finalPayment"
+                control={control}
+                rules={{
+                  required: "Final Payment is required",
+                  validate: (value) =>
+                    parseFloat(value) >= 0 ||
+                    "Final Payment cannot be negative",
+                }}
+                render={({ field }) => (
+                  <Input
+                    placeholder="Final Amount"
+                    invalid={errors.finalPayment && true}
+                    {...field}
+                    readOnly
+                  />
+                )}
+              />
 
-  {errors.finalPayment && (
-    <FormFeedback>{errors.finalPayment.message}</FormFeedback>
-  )}
-</Col>
-
+              {errors.finalPayment && (
+                <FormFeedback>{errors.finalPayment.message}</FormFeedback>
+              )}
+            </Col>
           </Row>
 
           <Row>
@@ -1110,7 +1092,6 @@ const Address = ({
                     }}
                     menuPlacement="top"
                     // isDisabled={statusThree}
-                    
                   />
                 )}
               />
@@ -1498,7 +1479,7 @@ const Address = ({
                       pattern: {
                         value: /^\d{6}$/,
                         message: "Pincode must be exactly 6 digits",
-                      },  
+                      },
                     }}
                     control={control}
                     render={({ field }) => (
@@ -1665,7 +1646,6 @@ const Address = ({
                         invalid={!!errors.accountNumber}
                         {...field}
                         // isDisabled={statusThree}
-
                       />
                     )}
                   />
@@ -1703,7 +1683,6 @@ const Address = ({
                         invalid={!!errors.chequeNumber}
                         {...field}
                         // isDisabled={statusThree}
-
                       />
                     )}
                   />
@@ -1730,7 +1709,6 @@ const Address = ({
                       onChange={handleFileChange}
                       accept="image/*"
                       // isDisabled={statusThree}
-
                     />
                   </FormGroup>
 
@@ -1912,7 +1890,6 @@ const Address = ({
                         invalid={!!errors.routingNumber}
                         {...field}
                         // isDisabled={statusThree}
-
                       />
                     )}
                   />
@@ -1942,7 +1919,6 @@ const Address = ({
                         invalid={!!errors.accountNumber}
                         {...field}
                         // isDisabled={statusThree}
-
                       />
                     )}
                   />
@@ -2102,73 +2078,77 @@ const Address = ({
 
               {companyName?.label === "Other" && (
                 <Row>
-                 <Col md="6" className="mb-1">
-  <Label className="form-label" for="otherTransactionId">
-    Other Transaction ID <span style={{ color: "red" }}>*</span>
-  </Label>
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="otherTransactionId">
+                      Other Transaction ID{" "}
+                      <span style={{ color: "red" }}>*</span>
+                    </Label>
 
-  <Controller
-    name="otherTransactionId"
-    control={control}
-    rules={{
-      required: "Transaction ID is required",
-      pattern: {
-        value: /^[0-9]{10}$/,
-        message: "Transaction ID must be exactly 10 digits",
-      },
-    }}
-    render={({ field }) => (
-      <Input
-        type="text"
-        placeholder="Enter Transaction ID"
-        invalid={!!errors.otherTransactionId}
-        {...field}
-        onChange={(e) => {
-          const numericValue = e.target.value.replace(/\D/g, "");
-          field.onChange(numericValue);
-        }}
-      />
-    )}
-  />
-  {errors.otherTransactionId && (
-    <FormFeedback>{errors.otherTransactionId.message}</FormFeedback>
-  )}
-</Col>
-
+                    <Controller
+                      name="otherTransactionId"
+                      control={control}
+                      rules={{
+                        required: "Transaction ID is required",
+                        pattern: {
+                          value: /^[0-9]{10}$/,
+                          message: "Transaction ID must be exactly 10 digits",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          type="text"
+                          placeholder="Enter Transaction ID"
+                          invalid={!!errors.otherTransactionId}
+                          {...field}
+                          onChange={(e) => {
+                            const numericValue = e.target.value.replace(
+                              /\D/g,
+                              ""
+                            );
+                            field.onChange(numericValue);
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.otherTransactionId && (
+                      <FormFeedback>
+                        {errors.otherTransactionId.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
 
                   <Col md="6" className="mb-1">
-  <Label className="form-label" for="otherCompanyName">
-    Other Company Name <span style={{ color: "red" }}>*</span>
-  </Label>
+                    <Label className="form-label" for="otherCompanyName">
+                      Other Company Name <span style={{ color: "red" }}>*</span>
+                    </Label>
 
-  <Controller
-    name="otherCompanyName"
-    control={control}
-    rules={{
-      required: "Company Name is required",
-      pattern: {
-        value: /^[A-Za-z0-9 ]+$/,  // only letters, numbers, spaces
-        message: "Special characters are not allowed",
-      },
-    }}
-    render={({ field }) => (
-      <div>
-        <Input
-          id="otherCompanyName"
-          placeholder="Enter Other Company Name"
-          invalid={!!errors.otherCompanyName}
-          {...field}
-        />
-        {errors.otherCompanyName && (
-          <span className="text-danger small">
-            {errors.otherCompanyName.message}
-          </span>
-        )}
-      </div>
-    )}
-  />
-</Col>
-
+                    <Controller
+                      name="otherCompanyName"
+                      control={control}
+                      rules={{
+                        required: "Company Name is required",
+                        pattern: {
+                          value: /^[A-Za-z0-9 ]+$/, // only letters, numbers, spaces
+                          message: "Special characters are not allowed",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <div>
+                          <Input
+                            id="otherCompanyName"
+                            placeholder="Enter Other Company Name"
+                            invalid={!!errors.otherCompanyName}
+                            {...field}
+                          />
+                          {errors.otherCompanyName && (
+                            <span className="text-danger small">
+                              {errors.otherCompanyName.message}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </Col>
                 </Row>
               )}
             </>
@@ -2219,10 +2199,7 @@ const Address = ({
                       Loading.. <Spinner size="sm" />{" "}
                     </>
                   ) : (
-                    <>
-                    
-                    Submit
-                    </>
+                    <>Submit</>
                   )}
                 </span>
                 {loading ? null : (
