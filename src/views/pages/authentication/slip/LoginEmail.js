@@ -115,12 +115,12 @@ const Login = () => {
           "Login Error Details:",
           error.response || error.message || error
         );
-if (!isLocationOn) {
+// if (isLocationOn) {  
   
-console.log("2 time",isLocationOn);
+// console.log("2 time",isLocationOn);
 
-        setShow(true);
-}
+//         setShow(true);
+// }
 
         if (error.response) {
           const { status, data } = error.response;

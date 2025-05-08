@@ -25,10 +25,10 @@ const BlankLayout = () => {
     return () => setIsMounted(false)
   }, [])
 
-  useEffect(()=>{
+  // useEffect(()=>{
 
     
-  },[])
+  // },[])
 
 
   useEffect(()=>{

@@ -21,30 +21,30 @@ const PublicRoute = ({ children, route }) => {
       return <Navigate to={getHomeRouteForLoggedInUser(user.role)} />
     }
   }
-  useEffect(()=>{
+//   useEffect(()=>{
     
    
-      (async()=>{
-        try{
-         await useJwt.getLocation()
-        }catch(error){
-          toast.error("Location Not Found")
-          setShow(true);
-        }finally{}
-      })()
-    },[])
+//       (async()=>{
+//         try{
+//          await useJwt.getLocation()
+//         }catch(error){
+//           toast.error("Location Not Found")
+//           setShow(true);
+//         }finally{}
+//       })()
+//     },[])
 
 
-    useEffect(()=>{
-      console.log("render")
-console.log(show)
+//     useEffect(()=>{
+//       console.log("render")
+// console.log(show)
 
-    },[show])
+//     },[show])
   
     return (
       <>
         <Suspense fallback={null}>{children}</Suspense>
-        <LocationModal show={show} setShow={setShow} />
+        {/* <LocationModal show={show} setShow={setShow} /> */}
       </>
     )
   }    
