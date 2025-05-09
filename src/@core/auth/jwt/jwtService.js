@@ -4,6 +4,15 @@ import jwtDefaultConfig from "./jwtDefaultConfig";
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000";
 
+
+
+// ** SweetAlert2
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
+
 export default class JwtService {
   jwtConfig = { ...jwtDefaultConfig };
 
@@ -91,16 +100,11 @@ export default class JwtService {
 
 
 
-
-  async getLocation() {
+ async getLocation() {
     try {
-       
       if (!navigator.geolocation) {
-
-        localStorage.setItem("locationEnabled","false")
-        // window.location.reload()
+        localStorage.setItem("locationEnabled", "false");
         throw new Error("Geolocation is not supported by your browser.");
-
       }
 
       const position = await new Promise((resolve, reject) => {
@@ -111,26 +115,33 @@ export default class JwtService {
         lat: position.coords.latitude,
         long: position.coords.longitude,
       };
-      localStorage.setItem("locationEnabled", "true");
 
-    
+      localStorage.setItem("locationEnabled", "true");
       return location;
     } catch (error) {
       localStorage.setItem("locationEnabled", "false");
-    
-      // window.location.reload()
-      if(error?.code ==1 && error?.message){
-        localStorage.removeItem('userData');
-        window.location.replace='/login';
+
+      // Handle permission denied
+      if (error.code === 1) {
+        Swal.fire({
+          icon: "warning",
+          title: "Location Access Denied",
+          text: "Please allow location access to continue.",
+        }).then(() => {
+          localStorage.removeItem("userData");
+          // window.location.replace("/login");
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Location Error",
+          text: error.message || "Unable to fetch location.",
+        });
       }
 
-      
-      // userData
-
-      console.error("Error fetching location:", error.message);
-      throw error;
-    }}
-    
+      throw error; // Rethrow to prevent request from proceeding
+    }
+  }
   onAccessTokenFetched(accessToken) {
     this.subscribers = this.subscribers.filter((callback) =>
       callback(accessToken)

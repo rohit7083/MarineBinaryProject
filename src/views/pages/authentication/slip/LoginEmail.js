@@ -43,8 +43,8 @@ import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
- import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
-import LocationImage from '../../../../../src/views/pages/authentication/Images/locationguide.png';
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import LocationImage from "../../../../../src/views/pages/authentication/Images/locationguide.png";
 import "@styles/react/pages/page-authentication.scss";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
@@ -87,26 +87,17 @@ const Login = () => {
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   const validateEmail = (value) => {
-    const isLocationEnabled = localStorage.getItem("locationEnabled");
-
-    if (isLocationEnabled !== "true") {
-      setShow(true);
-      return;
-    }
-  
-  
     if (!value) return "Email is required";
     if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email format";
     return undefined; // Valid case
   };
 
   const onSubmit = async (data) => {
-     const isLocationEnabled = localStorage.getItem("locationEnabled");
-
-  if (isLocationEnabled !== "true") {
-    setShow(true);
-    return;
-  }
+    {
+      {
+        debugger;
+      }
+    }
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
@@ -164,200 +155,26 @@ const Login = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // Check if the location is already enabled from localStorage
-  //   const isLocationEnabled = localStorage.getItem("locationEnabled");
-  //   // if (isLocationEnabled === "true") {
-  //   //   setShow(false);
-  //   // } else {
-  //   //   setShow(true); // Show the modal if location is not enabled
-  //   // }
-  //   console.log("islocationEnbled",isLocationEnabled);
-    
-  // }, []);
-
-
-  // useEffect(() => {
-  //   const checkLocation = async () => {
-  //     try {
-  //       const position = await new Promise((resolve, reject) => {
-  //         navigator.geolocation.getCurrentPosition(resolve, reject);
-  //       });
-  //       setLocation(position.coords);
-  //       localStorage.setItem("locationEnabled", "true");
-  //       setShow(false);
-  //     } catch (err) {
-  //       localStorage.setItem("locationEnabled", "false");
-  //       setShow(true);
-  //     }
-  //   };
-  
-  //   checkLocation();
-  // }, []);
-   
-  useEffect(() => {
-  // const checkPermission = async () => {
-  //   {{debugger}}
-  //   if (!navigator.geolocation) {
-  //     localStorage.setItem("locationEnabled", "false");
-  //     setShow(true);
-  //     return;
-  //   }
-
-  //   try {
-  //     const permission = await navigator.permissions.query({ name: "geolocation" });
-
-  //     if (permission.state === "denied") {
-  //       localStorage.setItem("locationEnabled", "false");
-  //       setShow(true);
-  //       return;
-  //     }
-
-  //     // Only try getCurrentPosition after checking it's not denied
-  //     navigator.geolocation.getCurrentPosition(
-  //       (pos) => {
-  //         setLocation(pos.coords);
-  //         localStorage.setItem("locationEnabled", "true");
-  //         setShow(false);
-  //       },
-  //       (err) => {
-  //         localStorage.setItem("locationEnabled", "false");
-  //         setShow(true);
-  //       }
-  //     );
-  //   } catch (error) {
-  //     localStorage.setItem("locationEnabled", "false");
-  //     setShow(true);
-  //   }
-  // };
-
-const checkPermission = async () => {
-  if (!navigator.geolocation) {
-    localStorage.setItem("locationEnabled", "false");
-    setShow(true);
-    return;
-  }
-
-  try {
-    const permission = await navigator.permissions.query({ name: "geolocation" });
-
-    if (permission.state === "denied") {
-      localStorage.setItem("locationEnabled", "false");
-      setShow(true);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation(pos.coords);
-        localStorage.setItem("locationEnabled", "true");
-        setShow(false);
-      },
-      (err) => {
-        console.error("Error from geolocation:", err); // Add for debugging
-        localStorage.setItem("locationEnabled", "false");
-        setShow(true);
-      }
-    );
-  } catch (error) {
-    console.error("Error during permission check:", error); // Add for debugging
-    localStorage.setItem("locationEnabled", "false");
-    setShow(true);
-  }
-};
-
-
-  checkPermission();
-}, []);
-
   return (
     <div className="auth-wrapper auth-cover">
-      <Fragment>
-        <Modal
-          isOpen={show}
-          toggle={() => setShow(!show)}
-          className="modal-dialog-centered"
-        >
-          <ModalHeader
-            className="bg-transparent"
-            toggle={() => setShow(!show)}
-          ></ModalHeader>
-          <ModalBody className="px-sm-5 mx-50 pb-5">
-            <h1 className="text-center mb-1">Turn On Your Location</h1>
-            <Row
-              tag="form"
-              className="gy-1 gx-2 mt-75"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <img src={LocationImage} />
-
-              {/* <Button
-  color="primary"
-  onClick={async () => {
-    try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-      setLocation(position.coords);
-      localStorage.setItem("locationEnabled", "true");
-      setShow(false);
-    } catch (err) {
-      toast.error("Please enable location from browser settings.");
-    }
-  }}
->
-  OK
-</Button> */}
-
-
-
-<Button
-  color="primary"
-  onClick={async () => {
-    try {
-      const permission = await navigator.permissions.query({ name: "geolocation" });
-
-      if (permission.state === "denied") {
-        toast.error("Location access is blocked. Enable it in browser settings.");
-        return;
-      }
-
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-
-      const coords = position.coords;
-      setLocation(coords);
-      localStorage.setItem("locationEnabled", "true");
-      setShow(false);
-      toast.success("Location access granted.");
-    } catch (err) {
-      console.error("Location error:", err);
-      localStorage.setItem("locationEnabled", "false");
-      toast.error("Please enable location from browser settings.");
-    }
-  }}
->
-  OK
-</Button>
-
-
-            </Row>
-          </ModalBody>
-        </Modal>
-      </Fragment>
+      
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-        <img
-               src={MARinLogo}
-               alt="Longcove Marina Logo"
-               width={55}
-               height={55}
-               className="mx-2"
-             /> 
-            
-          <h2 className="brand-text text-primary ms-1 mt-1" style={{ fontWeight: 'bold' }}  >Longcove Marina</h2>
+          <img
+            src={MARinLogo}
+            alt="Longcove Marina Logo"
+            width={55}
+            height={55}
+            className="mx-2"
+          />
+
+          <h2
+            className="brand-text text-primary ms-1 mt-1"
+            style={{ fontWeight: "bold" }}
+          >
+            Longcove Marina
+          </h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -428,21 +245,7 @@ const checkPermission = async () => {
                 type="submit"
                 color="primary"
                 disabled={loading}
-                onClick={async (e) => {
-                  e.preventDefault();
-
-                  // Check if location is enabled from localStorage
-                  const isLocationEnabled =
-                    localStorage.getItem("locationEnabled");
-
-                  if (isLocationEnabled === "true") {
-                    // If location is enabled, proceed with login
-                    handleSubmit(onSubmit)();
-                  } else {
-                    // If location is not enabled, show the modal to enable it
-                    setShow(true);
-                  }
-                }}
+    
                 block
               >
                 {loading ? (
@@ -462,7 +265,31 @@ const checkPermission = async () => {
 };
 
 export default Login;
+/**
+ * 
+ * <Modal
+          isOpen={show}
+          toggle={() => setShow(!show)}
+          className="modal-dialog-centered"
+        >
+          <ModalHeader
+            className="bg-transparent"
+            toggle={() => setShow(!show)}
+          ></ModalHeader>
+          <ModalBody className="px-sm-5 mx-50 pb-5">
+            <h1 className="text-center mb-1">Turn On Your Location</h1>
+            <Row
+              tag="form"
+              className="gy-1 gx-2 mt-75"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <img src={LocationImage} />
 
+          
+            </Row>
+          </ModalBody>
+        </Modal>
+ */
 // ===========================================
 
 // // ** React Imports
@@ -749,4 +576,3 @@ export default Login;
 //   )
 // }
 // export default Login
-  
