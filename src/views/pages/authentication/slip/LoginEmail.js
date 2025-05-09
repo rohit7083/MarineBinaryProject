@@ -177,24 +177,62 @@ const Login = () => {
   // }, []);
 
 
+  // useEffect(() => {
+  //   const checkLocation = async () => {
+  //     try {
+  //       const position = await new Promise((resolve, reject) => {
+  //         navigator.geolocation.getCurrentPosition(resolve, reject);
+  //       });
+  //       setLocation(position.coords);
+  //       localStorage.setItem("locationEnabled", "true");
+  //       setShow(false);
+  //     } catch (err) {
+  //       localStorage.setItem("locationEnabled", "false");
+  //       setShow(true);
+  //     }
+  //   };
+  
+  //   checkLocation();
+  // }, []);
+   
   useEffect(() => {
-    const checkLocation = async () => {
-      try {
-        const position = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
-        });
-        setLocation(position.coords);
-        localStorage.setItem("locationEnabled", "true");
-        setShow(false);
-      } catch (err) {
+  const checkPermission = async () => {
+    if (!navigator.geolocation) {
+      localStorage.setItem("locationEnabled", "false");
+      setShow(true);
+      return;
+    }
+
+    try {
+      const permission = await navigator.permissions.query({ name: "geolocation" });
+
+      if (permission.state === "denied") {
         localStorage.setItem("locationEnabled", "false");
         setShow(true);
+        return;
       }
-    };
-  
-    checkLocation();
-  }, []);
-   
+
+      // Only try getCurrentPosition after checking it's not denied
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLocation(pos.coords);
+          localStorage.setItem("locationEnabled", "true");
+          setShow(false);
+        },
+        (err) => {
+          localStorage.setItem("locationEnabled", "false");
+          setShow(true);
+        }
+      );
+    } catch (error) {
+      localStorage.setItem("locationEnabled", "false");
+      setShow(true);
+    }
+  };
+
+  checkPermission();
+}, []);
+
   return (
     <div className="auth-wrapper auth-cover">
       <Fragment>
@@ -216,7 +254,7 @@ const Login = () => {
             >
               <img src={LocationImage} />
 
-              <Button
+              {/* <Button
   color="primary"
   onClick={async () => {
     try {
@@ -232,7 +270,40 @@ const Login = () => {
   }}
 >
   OK
+</Button> */}
+
+
+
+<Button
+  color="primary"
+  onClick={async () => {
+    try {
+      const permission = await navigator.permissions.query({ name: "geolocation" });
+
+      if (permission.state === "denied") {
+        toast.error("Location access is blocked. Enable it in browser settings.");
+        return;
+      }
+
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+
+      const coords = position.coords;
+      setLocation(coords);
+      localStorage.setItem("locationEnabled", "true");
+      setShow(false);
+      toast.success("Location access granted.");
+    } catch (err) {
+      console.error("Location error:", err);
+      localStorage.setItem("locationEnabled", "false");
+      toast.error("Please enable location from browser settings.");
+    }
+  }}
+>
+  OK
 </Button>
+
 
             </Row>
           </ModalBody>
