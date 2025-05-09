@@ -556,11 +556,11 @@ const Address = ({
             setShowQrModal(true);
           }
 
-          {
-            {
-              debugger;
-            }
-          }
+          // {
+          //   {
+          //     debugger;
+          //   }
+          // }
           if (response?.status === 200) {
             if (paymentMode !== "Payment Link") {
               toast.current.show({
