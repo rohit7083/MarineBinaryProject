@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
 import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
-import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg'
+import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
 
 import {
   Card,
@@ -58,6 +58,11 @@ const ResetPasswordBasic = () => {
   const [encryptedPasss, setEncrypt] = useState(null);
   const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const [attempt, setAttempt] = useState(0);
+  const [key, setKey] = useState(1);
+
+  const alreadyUpdatedRef = useRef(false);
+
+
   const [requirements, setRequirements] = useState({
     length: false,
     uppercase: false,
@@ -101,37 +106,37 @@ const ResetPasswordBasic = () => {
 
     return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
   }
+  
 
   const handlePass = watch("password") || "";
   const handleConfirm = watch("confirmPassword");
   const handleOtp = watch("otp");
-  console.log("handleOtp", handleOtp);
 
   const handleResendOTP = async (e) => {
     e.preventDefault();
     try {
       const res = await useJwt.resend_Otp(token);
+      setKey(k=>k+1)
+      alreadyUpdatedRef.current = false;
       if (res?.status == 200) {
-        setCountdownEndTime(Date.now() + 40000);
+        // setCountdownEndTime(Date.now() + 40000);
 
         setResendcount(true);
       }
       console.log("resentOTP", res.status);
     } catch (error) {
       console.log(error.response);
-    } finally {
-      //   setTimeout(() => {
-      //     setResendcount(false);
-      //   }, countdownEndTime);
     }
   };
 
   const handleResendCall = async (e) => {
     e.preventDefault();
     try {
+       setKey(k=>k+1)
+      alreadyUpdatedRef.current = false;
       const res = await useJwt.resend_OtpCall(token);
       if (res?.status == 200) {
-        setCountdownEndTime(Date.now() + 40000);
+        // setCountdownEndTime(Date.now() + 40000);
 
         setResendcallCount(true);
       }
@@ -195,18 +200,6 @@ const ResetPasswordBasic = () => {
       });
 
       if (res.status == 200 || res.status == 201) {
-        // return MySwal.fire({
-        //   title: "Successfully ",
-        //   text: "Successfully Rest Password",
-        //   icon: "success",
-        //   customClass: {
-        //     confirmButton: "btn btn-primary",
-        //   },
-        //   buttonsStyling: false,
-        // }).then(() => {
-        // navigate("/Login");
-        // });
-
         toast.current.show({
           severity: "success",
           summary: " Successfully",
@@ -264,25 +257,10 @@ const ResetPasswordBasic = () => {
     }
   }, [handlePass, handleOtp, handleConfirm]);
 
-  // const returnBlockMsz = async () => {
-  //   if (attempt > 3) {
-  //     await MySwal.fire({
-  //       title: "Blocked",
-  //       text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin.",
-  //       icon: "error",
-  //       customClass: {
-  //         confirmButton: "btn btn-primary",
-  //       },
-  //       buttonsStyling: false,
-  //     }).then(() => {
-  //       navigate("/Login");
-  //     });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   returnBlockMsz();
-  // }, [attempt]);
+  useEffect(() => {
+    console.log("render");
+    console.log({ attempt });
+  }, [attempt]);
 
   if (expireTokenLoader) {
     return (
@@ -437,24 +415,46 @@ const ResetPasswordBasic = () => {
                       />
 
                       <Countdown
-                        key={countdownEndTime} // resets the countdown on update
-                        date={countdownEndTime}
-                        // onComplete={() => setResendLoading(false)} // re-enable the button
-                        renderer={({ minutes, seconds }) => (
-                          <span
-                            className="position-absolute top-50 start-50 translate-middle"
-                            style={{
-                              marginTop: "-4px",
-
-                              fontSize: "14px",
-                              fontWeight: "bold",
-                              color: "White",
-                            }}
-                          >
-                            {String(minutes).padStart(2, "0")}:
-                            {String(seconds).padStart(2, "0")}
-                          </span>
-                        )}
+                      key={key}
+                        date={Date.now() + 40000}
+                        renderer={({ minutes, seconds, completed }) => {
+                          if (completed) {
+                            if (!alreadyUpdatedRef.current) {
+                              alreadyUpdatedRef.current = true;
+                              setAttempt((x) => x + 1);
+                            }
+                            return (
+                              <span
+                                className="position-absolute top-50 start-50 translate-middle"
+                                style={{
+                                  marginTop: "-4px",
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                  color: "White",
+                                }}
+                              >
+                                00:00
+                              </span>
+                            );
+                          } else {
+                            // Reset flag when it's not completed
+                            alreadyUpdatedRef.current = false;
+                            return (
+                              <span
+                                className="position-absolute top-50 start-50 translate-middle"
+                                style={{
+                                  marginTop: "-4px",
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                  color: "White",
+                                }}
+                              >
+                                {String(minutes).padStart(2, "0")}:
+                                {String(seconds).padStart(2, "0")}
+                              </span>
+                            );
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -622,83 +622,3 @@ const ResetPasswordBasic = () => {
 };
 
 export default ResetPasswordBasic;
-
-// <p className="text-center mt-2">
-// <span>Didn’t get the code?</span>{" "}
-// <a href="#" onClick={handleResendOTP}>
-//   {resendLoading ? (
-//     <>
-//       {/* <Countdown date={Date.now() + 100000} /> */}
-//       <Countdown
-//         style={{ pointerEvents: "none", userSelect: "none" }}
-//         date={Date.now() + 30000} // 30 seconds countdown
-//         renderer={({ minutes, seconds }) => (
-//           <span
-//             style={{
-//               pointerEvents: "none",
-//               userSelect: "none",
-//               fontSize: "24px",
-//               fontWeight: "bold",
-//             }}
-//           >{`${String(minutes).padStart(2, "0")}:${String(
-//             seconds
-//           ).padStart(2, "0")}`}</span>
-//         )}
-//       />
-//     </>
-//   ) : (
-//     "Resend"
-//   )}
-// </a>{" "}
-// <span>or</span>{" "}
-// <a href="#" onClick={handleResendCall}>
-// {  resendcallLoading? (
-//     <>
-//       {/* <Countdown date={Date.now() + 100000} /> */}
-//       {/* <Countdown
-//         style={{ pointerEvents: "none", userSelect: "none" }}
-//         date={Date.now() + 30000} // 30 seconds countdown
-//         renderer={({ minutes, seconds }) => (
-//           <span
-//             style={{
-//               pointerEvents: "none",
-//               userSelect: "none",
-//               fontSize: "24px",
-//               fontWeight: "bold",
-//             }}
-//           >{`${String(minutes).padStart(2, "0")}:${String(
-//             seconds
-//           ).padStart(2, "0")}`}</span>
-//         )}
-//       /> */}
-//       <img
-//      className="d-flex justify-content-center align-items-center"
-//         src=" /src/assets/images/clock.jpg"
-//         alt="Phone Call"
-//         style={{ width: "100px", height: "80px",display:'block' }}/>
-//         {/* <Countdown
-// date={Date.now() + 30000} // 30 seconds countdown
-// renderer={({ minutes, seconds }) => (
-// <span
-// style={{
-// position: "absolute",
-// top: "40%",
-// left: "50%",
-// transform: "translate(-50%, -50%)",
-// fontSize: "14px",
-// fontWeight: "bold",
-// color: "white",
-// padding: "10px 20px",
-// borderRadius: "10px",
-// }}
-// >
-// {`${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`}
-// </span>
-// )}
-// /> */}
-//     </>
-//   ) : (
-//     "Call us"
-//   )}
-// </a>
-// </p>

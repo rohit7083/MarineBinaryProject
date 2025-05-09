@@ -21,7 +21,7 @@ export default {
   retriveMember: "/sMember/",
   UpdateMember: "/sMember/",
 
-  createPayment: "/auth/sPayment/",
+  createPayment: "/sPayment/",
   // user  login
   checktoken: "/auth/user/check_token/",
   chnagePassword: "/auth/user/change_password/",
