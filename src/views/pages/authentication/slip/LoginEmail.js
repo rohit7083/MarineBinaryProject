@@ -196,39 +196,76 @@ const Login = () => {
   // }, []);
    
   useEffect(() => {
-  const checkPermission = async () => {
-    if (!navigator.geolocation) {
+  // const checkPermission = async () => {
+  //   {{debugger}}
+  //   if (!navigator.geolocation) {
+  //     localStorage.setItem("locationEnabled", "false");
+  //     setShow(true);
+  //     return;
+  //   }
+
+  //   try {
+  //     const permission = await navigator.permissions.query({ name: "geolocation" });
+
+  //     if (permission.state === "denied") {
+  //       localStorage.setItem("locationEnabled", "false");
+  //       setShow(true);
+  //       return;
+  //     }
+
+  //     // Only try getCurrentPosition after checking it's not denied
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         setLocation(pos.coords);
+  //         localStorage.setItem("locationEnabled", "true");
+  //         setShow(false);
+  //       },
+  //       (err) => {
+  //         localStorage.setItem("locationEnabled", "false");
+  //         setShow(true);
+  //       }
+  //     );
+  //   } catch (error) {
+  //     localStorage.setItem("locationEnabled", "false");
+  //     setShow(true);
+  //   }
+  // };
+
+const checkPermission = async () => {
+  if (!navigator.geolocation) {
+    localStorage.setItem("locationEnabled", "false");
+    setShow(true);
+    return;
+  }
+
+  try {
+    const permission = await navigator.permissions.query({ name: "geolocation" });
+
+    if (permission.state === "denied") {
       localStorage.setItem("locationEnabled", "false");
       setShow(true);
       return;
     }
 
-    try {
-      const permission = await navigator.permissions.query({ name: "geolocation" });
-
-      if (permission.state === "denied") {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocation(pos.coords);
+        localStorage.setItem("locationEnabled", "true");
+        setShow(false);
+      },
+      (err) => {
+        console.error("Error from geolocation:", err); // Add for debugging
         localStorage.setItem("locationEnabled", "false");
         setShow(true);
-        return;
       }
+    );
+  } catch (error) {
+    console.error("Error during permission check:", error); // Add for debugging
+    localStorage.setItem("locationEnabled", "false");
+    setShow(true);
+  }
+};
 
-      // Only try getCurrentPosition after checking it's not denied
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setLocation(pos.coords);
-          localStorage.setItem("locationEnabled", "true");
-          setShow(false);
-        },
-        (err) => {
-          localStorage.setItem("locationEnabled", "false");
-          setShow(true);
-        }
-      );
-    } catch (error) {
-      localStorage.setItem("locationEnabled", "false");
-      setShow(true);
-    }
-  };
 
   checkPermission();
 }, []);
