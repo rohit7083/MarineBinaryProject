@@ -144,7 +144,6 @@ const VerticalLayout = props => {
       )}
       {...(isHidden ? { 'data-col': '1-column' } : {})}
     >
-                  <LocationModal show={show} setShow={setShow}/>
 
       {!isHidden ? (
         <SidebarComponent

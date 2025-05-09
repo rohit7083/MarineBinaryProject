@@ -93,11 +93,11 @@ const Login = () => {
   };
 
   const onSubmit = async (data) => {
-    {
-      {
-        debugger;
-      }
-    }
+    // {
+    //   {
+    //     debugger;
+    //   }
+    // }
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
