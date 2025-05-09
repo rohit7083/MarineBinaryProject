@@ -87,12 +87,26 @@ const Login = () => {
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   const validateEmail = (value) => {
+    const isLocationEnabled = localStorage.getItem("locationEnabled");
+
+    if (isLocationEnabled !== "true") {
+      setShow(true);
+      return;
+    }
+  
+  
     if (!value) return "Email is required";
     if (!/\S+@\S+\.\S+/.test(value)) return "Invalid email format";
     return undefined; // Valid case
   };
 
   const onSubmit = async (data) => {
+     const isLocationEnabled = localStorage.getItem("locationEnabled");
+
+  if (isLocationEnabled !== "true") {
+    setShow(true);
+    return;
+  }
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
@@ -137,7 +151,6 @@ const Login = () => {
         setLoading(false);
       }
     } else {
-      // Validate fields and show errors if empty
       for (const key in data) {
         if (data[key].length === 0) {
           setError(key, {
@@ -151,16 +164,37 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    // Check if the location is already enabled from localStorage
-    const isLocationEnabled = localStorage.getItem("locationEnabled");
-    if (isLocationEnabled === "true") {
-      setShow(false); // Hide the modal if location is enabled
-    } else {
-      setShow(true); // Show the modal if location is not enabled
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Check if the location is already enabled from localStorage
+  //   const isLocationEnabled = localStorage.getItem("locationEnabled");
+  //   // if (isLocationEnabled === "true") {
+  //   //   setShow(false);
+  //   // } else {
+  //   //   setShow(true); // Show the modal if location is not enabled
+  //   // }
+  //   console.log("islocationEnbled",isLocationEnabled);
+    
+  // }, []);
 
+
+  useEffect(() => {
+    const checkLocation = async () => {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        setLocation(position.coords);
+        localStorage.setItem("locationEnabled", "true");
+        setShow(false);
+      } catch (err) {
+        localStorage.setItem("locationEnabled", "false");
+        setShow(true);
+      }
+    };
+  
+    checkLocation();
+  }, []);
+   
   return (
     <div className="auth-wrapper auth-cover">
       <Fragment>
@@ -183,14 +217,23 @@ const Login = () => {
               <img src={LocationImage} />
 
               <Button
-                color="primary"
-                onClick={() => {
-                  localStorage.setItem("locationEnabled", "true"); // Set location as enabled
-                  setShow(false); // Close the modal
-                }}
-              >
-                OK
-              </Button>
+  color="primary"
+  onClick={async () => {
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      setLocation(position.coords);
+      localStorage.setItem("locationEnabled", "true");
+      setShow(false);
+    } catch (err) {
+      toast.error("Please enable location from browser settings.");
+    }
+  }}
+>
+  OK
+</Button>
+
             </Row>
           </ModalBody>
         </Modal>
@@ -277,21 +320,21 @@ const Login = () => {
                 type="submit"
                 color="primary"
                 disabled={loading}
-                onClick={async (e) => {
-                  e.preventDefault();
+                // onClick={async (e) => {
+                //   e.preventDefault();
 
-                  // Check if location is enabled from localStorage
-                  const isLocationEnabled =
-                    localStorage.getItem("locationEnabled");
+                //   // Check if location is enabled from localStorage
+                //   const isLocationEnabled =
+                //     localStorage.getItem("locationEnabled");
 
-                  if (isLocationEnabled === "true") {
-                    // If location is enabled, proceed with login
-                    handleSubmit(onSubmit)();
-                  } else {
-                    // If location is not enabled, show the modal to enable it
-                    setShow(true);
-                  }
-                }}
+                //   if (isLocationEnabled === "true") {
+                //     // If location is enabled, proceed with login
+                //     handleSubmit(onSubmit)();
+                //   } else {
+                //     // If location is not enabled, show the modal to enable it
+                //     setShow(true);
+                //   }
+                // }}
                 block
               >
                 {loading ? (
