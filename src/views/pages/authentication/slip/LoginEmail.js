@@ -375,7 +375,7 @@ const checkPermission = async () => {
             </CardTitle>
 
             <CardText className="mb-2">
-              Please sign-in to your account and start the adventure
+              Please sign-in to your account and start the adventure's
               <br />
               {message && (
                 <React.Fragment>
