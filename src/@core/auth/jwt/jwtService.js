@@ -123,6 +123,8 @@ export default class JwtService {
         localStorage.removeItem('userData');
         window.location.replace='/login';
       }
+
+      
       // userData
 
       console.error("Error fetching location:", error.message);

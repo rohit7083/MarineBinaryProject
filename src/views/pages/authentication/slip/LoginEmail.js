@@ -391,21 +391,21 @@ const Login = () => {
                 type="submit"
                 color="primary"
                 disabled={loading}
-                // onClick={async (e) => {
-                //   e.preventDefault();
+                onClick={async (e) => {
+                  e.preventDefault();
 
-                //   // Check if location is enabled from localStorage
-                //   const isLocationEnabled =
-                //     localStorage.getItem("locationEnabled");
+                  // Check if location is enabled from localStorage
+                  const isLocationEnabled =
+                    localStorage.getItem("locationEnabled");
 
-                //   if (isLocationEnabled === "true") {
-                //     // If location is enabled, proceed with login
-                //     handleSubmit(onSubmit)();
-                //   } else {
-                //     // If location is not enabled, show the modal to enable it
-                //     setShow(true);
-                //   }
-                // }}
+                  if (isLocationEnabled === "true") {
+                    // If location is enabled, proceed with login
+                    handleSubmit(onSubmit)();
+                  } else {
+                    // If location is not enabled, show the modal to enable it
+                    setShow(true);
+                  }
+                }}
                 block
               >
                 {loading ? (
