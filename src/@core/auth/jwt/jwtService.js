@@ -119,6 +119,7 @@ export default class JwtService {
       localStorage.setItem("locationEnabled", "true");
       return location;
     } catch (error) {
+      console.log({jwtServiceError:error})
       localStorage.setItem("locationEnabled", "false");
 
       // Handle permission denied

@@ -37,6 +37,7 @@ const App = () => {
           }
         );
       } catch (error) {
+        console.log({appErrorLocation:error})
         showLocationAlert();
       }
     };
