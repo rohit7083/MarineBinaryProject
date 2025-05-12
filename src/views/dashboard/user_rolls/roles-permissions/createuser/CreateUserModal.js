@@ -38,6 +38,10 @@ import { selectThemeColors } from "@utils";
 import withReactContent from "sweetalert2-react-content";
 import { use } from "react";
 const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
+  
+
+
+  const [passwordCreated,setPasswordCreated]=useState(false);
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
   const navigate = useNavigate();
@@ -105,6 +109,10 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
     }
   }, [watchPassword]);
 
+
+useEffect(()=>{
+setPasswordCreated(row?.isPasswordCreated)
+},[row])
 
   const validatePassword = (pwd) => {
     if (!pwd) return;
@@ -203,6 +211,11 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       }
     } catch (error) {
       console.error("Error occurred:", error);
+         if (error.response) {
+        const { status, content } = error.response.data;
+        const errorMessage = content;
+        setMessage(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -302,16 +315,28 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
       >
+         
               <Toast ref={toast} />
         
         <ModalHeader className="bg-transparent" toggle={() => setShow(!show)} />
         <ModalBody className="px-5 pb-5">
-          <div className="text-center mb-4">
+          <div className="text-center mb-2">
             <h1>{modalType} Users</h1>
             {/* <p>{uid ? "Update User" : "Add new user"}</p> */}
           </div>
 
           <Form onSubmit={handleSubmit(onSubmit)}>
+            {Errmessage && (
+                      <React.Fragment>
+                        <UncontrolledAlert color="danger">
+                          <div className="alert-body">
+                            <span className="text-danger fw-bold">
+                              <strong>❌ Error : </strong>
+                              {Errmessage}</span>
+                          </div>
+                        </UncontrolledAlert>
+                      </React.Fragment>
+                    )}
             <Row className="mb-2">
               <Label sm="3" for="roleName">
                 Role Name
@@ -495,6 +520,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                 {/* </FormGroup> */}
               </Col>
             </Row>
+{!passwordCreated && (<>
 
             <Row className="mb-2">
               <Label sm="3" for="password">
@@ -600,6 +626,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                 </ListGroupItem>
               </Col>
             </Row>
+</>)}
 
             <Row className="mt-2">
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>

@@ -310,7 +310,9 @@ const Login = () => {
                 <React.Fragment>
                   <UncontrolledAlert color="danger">
                     <div className="alert-body">
-                      <span className="text-danger fw-bold">{message}</span>
+                      <span className="text-danger fw-bold">
+                        <strong>Error : </strong>
+                        {message}</span>
                     </div>
                   </UncontrolledAlert>
                 </React.Fragment>
@@ -432,17 +434,17 @@ const Login = () => {
                       name="captcha"
                       control={control}
                       rules={{
-                        required: "Captcha is required.", // Validation message
+                        required: "Captcha is required.", 
                       }}
                       render={({ field }) => (
                         <div>
                           <ReCAPTCHA
-                            sitekey="6LedoDMrAAAAABROCHy6e-Bkxd1TifHf90FmUzSk" // Replace with your actual site key
+                            sitekey="6LedoDMrAAAAABROCHy6e-Bkxd1TifHf90FmUzSk" 
                             onChange={(value) => {
                               setValue("captcha", value, {
                                 shouldValidate: true,
-                              }); // Update value and trigger validation
-                              field.onChange(value); // React Hook Form integration
+                              }); 
+                              field.onChange(value); 
                             }}
                           />
                           {errors.captcha && (

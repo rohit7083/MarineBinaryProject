@@ -273,7 +273,7 @@ const PersonalInfo = ({
       setMemberID(memberId);
     } catch (error) {
       console.error("Error submitting vessel details:", error);
-
+{{debugger}}
       if (error.response && error.response.data) {
         const { status } = error.response;
         const { content } = error.response.data;

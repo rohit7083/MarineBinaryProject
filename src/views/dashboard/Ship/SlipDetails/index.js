@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -15,6 +15,7 @@ import {
   Form,
   Button,
   Label,
+  Table,
   Row,
   FormFeedback,
 } from "reactstrap";
@@ -29,8 +30,8 @@ import { Toast } from "primereact/toast";
 const MySwal = withReactContent(Swal);
 function ShipDetails() {
   let navigate = useNavigate();
-    const toast = useRef(null);
-  
+  const toast = useRef(null);
+
   const location = useLocation(); // Use location hook to get the passed state
   const [loadinng, setLoading] = useState(false);
   const [fetchLoader, setFetchLoader] = useState(false);
@@ -72,8 +73,7 @@ function ShipDetails() {
     overDueChagesForAuction: "",
   });
 
-
-const uid=location.state?.uid || ""
+  const uid = location.state?.uid || "";
 
   const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
@@ -93,7 +93,6 @@ const uid=location.state?.uid || ""
     setDimensions(option?.dimensions || []); // Update dimensions for the selected category
   };
 
-
   const [errors, setErrors] = useState({});
   const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
 
@@ -103,9 +102,8 @@ const uid=location.state?.uid || ""
 
     // If it's a switch input (Electric or Water), update boolean state
 
-
     if (type === "checkbox") {
-      console.log(`${name} ${checked}`)
+      console.log(`${name} ${checked}`);
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
       setUserData((prev) => ({ ...prev, [name]: value }));
@@ -114,8 +112,6 @@ const uid=location.state?.uid || ""
     if (userData.electric === false) {
       setUserData((prev) => ({ ...prev, amps: "" }));
     }
-
-   
   };
 
   const handleSubmit = async (e, data) => {
@@ -128,7 +124,6 @@ const uid=location.state?.uid || ""
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-         
         const payload = {
           slipName: userData.slipName,
           electric: userData.electric,
@@ -150,7 +145,7 @@ const uid=location.state?.uid || ""
 
             // Explicitly reorder dimensions to prioritize 'height' over 'width'
             const orderedDimensions = {};
-            
+
             if ("height" in unorderedDimensions)
               orderedDimensions.height = unorderedDimensions.height;
             if ("width" in unorderedDimensions)
@@ -192,7 +187,7 @@ const uid=location.state?.uid || ""
         setLoading(true);
 
         if (uid) {
-        const updateRes=  await useJwt.updateslip(uid, payload);
+          const updateRes = await useJwt.updateslip(uid, payload);
           // MySwal.fire({
           //   title: "Successfully Updated",
           //   text: "Your Details Updated Successfully",
@@ -211,7 +206,6 @@ const uid=location.state?.uid || ""
               navigate("/dashboard/slipdetail_list");
             }, 2000);
           }
-
         } else {
           const createRes = await useJwt.postslip(payload);
           // MySwal.fire({
@@ -222,7 +216,6 @@ const uid=location.state?.uid || ""
           //   buttonsStyling: false,
           // }).then(() => navigate("/dashboard/slipdetail_list"));
           if (createRes.status === 201) {
-
             toast.current.show({
               severity: "success",
               summary: "Created Successfully",
@@ -233,7 +226,6 @@ const uid=location.state?.uid || ""
               navigate("/dashboard/slipdetail_list");
             }, 2000);
           }
-
         }
       } catch (error) {
         console.error("Error submitting form:", error);
@@ -255,7 +247,7 @@ const uid=location.state?.uid || ""
 
   const validate = () => {
     const newErrors = {};
-    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/; // 
+    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/; //
     const alphabeticRegex = /^[A-Za-z.-]+$/; // accept a-z . -
     const NonSpecialChar = /[^a-zA-Z0-9 ]/g;
 
@@ -290,8 +282,6 @@ const uid=location.state?.uid || ""
     //   }
     // });
 
-
-
     dimensions.forEach((dim) => {
       if (!userData[dim]) {
         newErrors[dim] = `${dim.toUpperCase()} is required`;
@@ -304,7 +294,7 @@ const uid=location.state?.uid || ""
         }
       }
     });
-    
+
     // Validate Add-On
     if (userData.addOn && !alphanumericRegex.test(userData.addOn)) {
       newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
@@ -347,7 +337,7 @@ const uid=location.state?.uid || ""
       newErrors.overDueAmountFor7Days =
         "Percentage amount must be less than or equal to 100.";
     } else if (!selections.overDueChargesFor7Days) {
-      newErrors.overDueAmountFor7Days = "Please select a type.";
+      newErrors.overDueAmountFor7Days = "Please select a Charge type.";
     }
 
     if (
@@ -364,7 +354,7 @@ const uid=location.state?.uid || ""
       newErrors.overDueAmountFor15Days =
         "Percentage amount must be less than or equal to 100.";
     } else if (!selections.overDueChargesFor15Days) {
-      newErrors.overDueAmountFor15Days = "Please select a type.";
+      newErrors.overDueAmountFor15Days = "Please select a Charge type.";
     }
 
     if (
@@ -381,7 +371,7 @@ const uid=location.state?.uid || ""
       newErrors.overDueAmountFor30Days =
         "Percentage amount must be less than or equal to 100.";
     } else if (!selections.overDueChargesFor30Days) {
-      newErrors.overDueAmountFor30Days = "Please select a type.";
+      newErrors.overDueAmountFor30Days = "Please select Charge type.";
     }
 
     if (
@@ -398,7 +388,7 @@ const uid=location.state?.uid || ""
       newErrors.overDueAmountForNotice =
         "Percentage amount must be less than or equal to 100.";
     } else if (!selections.overDueChargesForNotice) {
-      newErrors.overDueAmountForNotice = "Please select a type.";
+      newErrors.overDueAmountForNotice = "Please select a Charge type.";
     }
 
     if (
@@ -415,7 +405,7 @@ const uid=location.state?.uid || ""
       newErrors.overDueAmountForAuction =
         "Percentage amount must be less than or equal to 100.";
     } else if (!selections.overDueChagesForAuction) {
-      newErrors.overDueAmountForAuction = "Please select a type.";
+      newErrors.overDueAmountForAuction = "Please select a Charge type.";
     }
 
     return newErrors;
@@ -431,17 +421,17 @@ const uid=location.state?.uid || ""
         const options = response.data.content.result.map((item) => ({
           value: item.uid,
           label: item.shipTypeName,
-          dimensions: item.dimensions, // Store dimensions for each category
+          dimensions: item.dimensions, 
         }));
 
         setShipTypeNames(options);
+        console.log(options);
+        
       } catch (error) {
         console.error("Error fetching category:", error);
         const { response } = error;
         const { data, status } = response;
-        if (status == 400) {
-          alert(data.content);
-        }
+      
       }
 
       console.log("Category", selectedCategory);
@@ -558,8 +548,8 @@ const uid=location.state?.uid || ""
   return (
     <>
       <Card>
-      <Toast ref={toast} />
-        
+        <Toast ref={toast} />
+
         <CardHeader>
           <CardTitle tag="h4">
             {uid ? "Edit Slip Details" : "Add Slip Details"}
@@ -626,7 +616,6 @@ const uid=location.state?.uid || ""
                     placeholder="Enter Slip Name"
                     invalid={!!errors.slipName}
                     disabled={view}
-
                   />
                   {errors.slipName && (
                     <FormFeedback>{errors.slipName}</FormFeedback>
@@ -669,10 +658,15 @@ const uid=location.state?.uid || ""
                       type="text"
                       value={userData[dim] || ""}
                       onChange={(e) => {
-                        let validatedDimension = e.target.value.replace(/[^0-9.]/g, ""); // Ensure only numbers and dots are allowed
-                        setUserData((prev) => ({ ...prev, [dim]: validatedDimension })); // Correct state update
-                      }} 
-                      
+                        let validatedDimension = e.target.value.replace(
+                          /[^0-9.]/g,
+                          ""
+                        ); // Ensure only numbers and dots are allowed
+                        setUserData((prev) => ({
+                          ...prev,
+                          [dim]: validatedDimension,
+                        })); // Correct state update
+                      }}
                       name={dim}
                       id={dim}
                       placeholder={`Enter ${dim.toLowerCase()}`}
@@ -809,8 +803,11 @@ const uid=location.state?.uid || ""
                     onChange={(e) => {
                       let marketAnnual = e.target.value; // Use "let" instead of "const"
                       marketAnnual = marketAnnual.replace(/[^0-9.]/g, ""); // Apply replace correctly
-                  
-                      setUserData((prev) => ({ ...prev, marketAnnualPrice: marketAnnual })); // Fix state update
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        marketAnnualPrice: marketAnnual,
+                      })); // Fix state update
                     }}
                     name="marketAnnualPrice"
                     id="marketAnnualPrice"
@@ -834,10 +831,13 @@ const uid=location.state?.uid || ""
                     onChange={(e) => {
                       let marketMonth = e.target.value; // Use "let" instead of "const"
                       marketMonth = marketMonth.replace(/[^0-9.]/g, ""); // Apply replace correctly
-                  
-                      setUserData((prev) => ({ ...prev, marketMonthlyPrice: marketMonth })); // Fix state update
-                    }}  
-                                      name="marketMonthlyPrice"
+
+                      setUserData((prev) => ({
+                        ...prev,
+                        marketMonthlyPrice: marketMonth,
+                      })); // Fix state update
+                    }}
+                    name="marketMonthlyPrice"
                     id="marketMonthlyPrice"
                     placeholder="Enter Monthly Price"
                     disabled={view}
@@ -846,7 +846,7 @@ const uid=location.state?.uid || ""
                   <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
                 </Col>
               </Row>
-
+              {/* 
               <Row className="mb-1">
                 <Label sm="3" for="marketMonthlyPrice">
                   7 Days Charges
@@ -1206,13 +1206,375 @@ const uid=location.state?.uid || ""
 
                   <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
                 </Col>
-              </Row>
+              </Row> */}
 
-              <Row>
-                <Col className="d-flex justify-content-end" md={{ size: 9, offset: 3 }}>
-                
-                <Button
-className="me-1" 
+              <Table responsive className="mt-2">
+                <thead>
+                  <tr>
+                    <th>Charges</th>
+
+                    <th>Charges Type</th>
+
+                    <th>Charges Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        7 Days Charges
+                                          <span style={{ color: "red" }}>*</span>
+
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          name="overDueChargesFor7Days"
+                          value="Percentage"
+                          id="Percentage"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor7Days === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor7Days",
+                              "Percentage"
+                            )
+                          }
+                          invalid={!!errors.overDueChargesFor7Days}
+                          className="me-2"
+                        />
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          className="me-2"
+                          name="overDueChargesFor7Days"
+                          value="Flat"
+                          id="Flat"
+                          disabled={view}
+                          checked={selections.overDueChargesFor7Days === "Flat"}
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor7Days",
+                              "Flat"
+                            )
+                          }
+                          invalid={!!errors.overDueChargesFor7Days}
+                        />
+                      </div>
+                    </td>
+
+                    <td>
+                      <Input
+                        type="text"
+                        name="overDueAmountFor7Days"
+                        disabled={view}
+                        value={userData.overDueAmountFor7Days || ""}
+                        onChange={(e) => {
+                          let sevenDays = e.target.value; // Use "let" instead of "const"
+                          sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountFor7Days: sevenDays,
+                          })); // Fix state update
+                        }}
+                        placeholder="Enter 7 Days Charges"
+                        invalid={!!errors.overDueAmountFor7Days}
+                      />
+                        <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback> {/* corrected key */}
+
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        15 Days Charges                  <span style={{ color: "red" }}>*</span>
+
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor15Days === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor15Days",
+                              "Percentage"
+                            )
+                          }
+                          name="overDueChargesFor15Days"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          checked={
+                            selections.overDueChargesFor15Days === "Flat"
+                          }
+                          disabled={view}
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor15Days",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesFor15Days "
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountFor15Days"
+                        value={userData.overDueAmountFor15Days || ""}
+                        onChange={(e) => {
+                          let fiftinDays = e.target.value;
+                          fiftinDays = fiftinDays.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountFor15Days: fiftinDays,
+                          })); // Fix state update
+                        }}
+                        placeholder="Enter 15 Days Charges"
+                        invalid={!!errors.overDueAmountFor15Days}
+                        />
+                        <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
+                    </td>
+               
+
+                  </tr>
+
+
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        30 Days Charges                  <span style={{ color: "red" }}>*</span>
+
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor30Days === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor30Days",
+                              "Percentage"
+                            )
+                          }
+                          name="overDueChargesFor30Days"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor30Days === "Flat"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor30Days",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesFor30Days"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountFor30Days"
+                        placeholder="Enter 30 Days Charges"
+                        value={userData.overDueAmountFor30Days || ""}
+                        onChange={(e) => {
+                          let thirty = e.target.value;
+                          thirty = thirty.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountFor30Days: thirty,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountFor30Days}
+                        
+                      />
+                                          <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
+
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        Notice Charges                  <span style={{ color: "red" }}>*</span>
+
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesForNotice === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesForNotice",
+                              "Percentage"
+                            )
+                          }
+                          name="overDueChargesForNotice"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesForNotice === "Flat"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesForNotice",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesForNotice"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountForNotice"
+                        value={userData.overDueAmountForNotice || ""}
+                        onChange={(e) => {
+                          let noticeCharge = e.target.value;
+                          noticeCharge = noticeCharge.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountForNotice: noticeCharge,
+                          })); // Fix state update
+                        }}
+                        placeholder="Enter Notice Charges"
+                        invalid={!!errors.overDueAmountForNotice}
+                      />
+                                        <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
+
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        Auction Charges                  <span style={{ color: "red" }}>*</span>
+
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChagesForAuction === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChagesForAuction",
+                              "Percentage"
+                            )
+                          }
+                          name="overDueChagesForAuction"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChagesForAuction === "Flat"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChagesForAuction",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChagesForAuction"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountForAuction"
+                        placeholder="Enter Auction Charges"
+                        value={userData.overDueAmountForAuction || ""}
+                        onChange={(e) => {
+                          let AuctionCharge = e.target.value;
+                          AuctionCharge = AuctionCharge.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountForAuction: AuctionCharge,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountForAuction}
+                      />
+                                        <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
+
+                    </td>
+                  </tr>
+                </tbody>
+
+              </Table>
+
+              <Row className="mt-3" >
+                <Col
+                  className="d-flex justify-content-end"
+                  md={{ size: 9, offset: 3 }}
+                >
+                  <Button
+                    className="me-1"
                     outline
                     onClick={resetForm}
                     color="secondary"
@@ -1228,12 +1590,12 @@ className="me-1"
                         "Submit"
                       )
                     ) : (
-                    <>
-                      <span className="me-1">Loading..</span>
-                      <Spinner size="sm" />
-                    </>                    )}
+                      <>
+                        <span className="me-1">Loading..</span>
+                        <Spinner size="sm" />
+                      </>
+                    )}
                   </Button>
-                 
                 </Col>
               </Row>
             </Form>

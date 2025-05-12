@@ -1,385 +1,327 @@
-import React, { useState } from "react";
-import {
-  Container,
-  Card,
-  CardBody,
-  Collapse,
-  Button,
-} from "reactstrap";
-import { ChevronDown, ChevronUp } from "lucide-react";
-
-// Updated content with structured HTML for bullet points and paragraphs
-const sections = [
-  {
-    id: "1",
-    title: "🔮 Forward-Looking Nature",
-    content: `
-      <p>Any reference to the conversion of TATs into TTTs or to the future tradability of TTTs on cryptocurrency exchanges constitutes a forward-looking statement.</p>
-      <p>These references are based on planned, aspirational objectives currently under internal evaluation by the xTalentru development team. They are speculative and not a guarantee, representation, or commitment by xTalentru or any affiliated party.</p>
-    `,
-  },
-  {
-    id: "2",
-    title: "🚫 No Guarantee or Obligation",
-    content: `
-      <p>xTalentru does not guarantee or commit to:</p>
-      <ul>
-        <li>The future existence or deployment of TTT as a digital token.</li>
-        <li>The listing or tradability of TTT on any crypto exchange or digital asset marketplace.</li>
-        <li>The availability of a TAT-to-TTT conversion mechanism.</li>
-        <li>The monetary value, liquidity, or regulatory approval of TTT in any jurisdiction.</li>
-        <li>The user's ability to derive any income, return, or financial benefit from holding TATs or future TTTs.</li>
-      </ul>
-    `,
-  },
-  {
-    id: "3",
-    title: "🛡️ Not Securities",
-    content: `
-      <p>TATs and any future TTTs are not securities, financial products, investment instruments, or legal tender.</p>
-      <p>These tokens serve as utility tools for in-platform activity and do not convey ownership rights, dividends, or equity in xTalentru or any affiliated entity.</p>
-    `,
-  },
-  {
-    id: "4",
-    title: "💼 Token Functionality",
-    content: `
-      <p>xTalentru offers three distinct wallets for TAT holdings:</p>
-      <ul>
-        <li><strong>Wallet 1</strong> and <strong>Wallet 2</strong>: Hold TATs that can only be used for accessing other users' profiles.</li>
-        <li><strong>Wallet 3</strong>: Holds TATs earned through verified database sharing. These may be eligible for future conversion to TTT if such functionality is created and approved.</li>
-      </ul>
-      <p>This eligibility does not imply or guarantee future redemption, cash-out, or trade opportunities.</p>
-    `,
-  },
-  {
-    id: "5",
-    title: "⚠️ Regulatory & Technical Risk",
-    content: `
-      <p>The xTalentru team recognizes that any blockchain-based token system is subject to:</p>
-      <ul>
-        <li>Regulatory change or enforcement actions</li>
-        <li>Evolving crypto compliance requirements</li>
-        <li>Market volatility and economic disruptions</li>
-        <li>Technical limitations and cybersecurity concerns</li>
-      </ul>
-      <p>Accordingly, the entire TTT roadmap is conditional, non-binding, and subject to change or cancellation without notice.</p>
-    `,
-  },
-  {
-    id: "6",
-    title: "📉 Limitation of Liability",
-    content: `
-      <p>To the fullest extent permitted by law, xTalentru and its directors, officers, employees, or agents are not liable for any direct, indirect, incidental, or consequential damages — including but not limited to:</p>
-      <ul>
-        <li>Loss of data or access</li>
-        <li>Unrealized profit expectations</li>
-        <li>Regulatory ineligibility</li>
-        <li>Platform modifications or roadmap delays</li>
-      </ul>
-      <p>Users accept all risks associated with TAT or future TTT use and waive any claim against xTalentru for unrealized benefits.</p>
-    `,
-  },
-  {
-    id: "7",
-    title: "🧾 User Acknowledgment",
-    content: `
-      <p>By participating in xTalentru services and using any TAT-based functionality, you acknowledge that:</p>
-      <ul>
-        <li>You have read and understood this disclaimer.</li>
-        <li>You are not relying on the realization of TTT for financial return.</li>
-        <li>You accept that all TTT discussions are speculative and non-binding.</li>
-        <li>You assume full risk and responsibility for any decisions involving TATs or Wallet 3.</li>
-      </ul>
-    `,
-  },
-  {
-    id: "8",
-    title: "⚖️ Jurisdiction",
-    content: `
-      <p>This disclaimer shall be governed and interpreted in accordance with the laws of the jurisdiction in which xTalentru is legally registered.</p>
-      <p>Any disputes arising from this document will be subject to the exclusive jurisdiction of the courts in that jurisdiction.</p>
-    `,
-  },
-];
-
-const LegalDisclaimerAccordion = () => {
-  const [openId, setOpenId] = useState(null);
-
-  const toggle = (id) => {
-    setOpenId(openId === id ? null : id);
-  };
-
-  return (
-    <div style={styles.page}>
-      <Container className="py-5">
-        <div style={styles.header}>
-          <h1 style={styles.title}>📜 Legal Disclaimer</h1>
-          <p style={styles.subtitle}>
-            Forward-Looking Statements for Talent Transaction Token (TTT)
-          </p>
-        </div>
-
-        {sections.map((sec) => (
-          <Card key={sec.id} style={styles.card} className="mb-2">
-            <Button
-              onClick={() => toggle(sec.id)}
-              style={styles.cardHeader}
-              color="light"
-              className="text-start w-100 d-flex justify-content-between align-items-center"
-            >
-              <span>{sec.title}</span>
-              {openId === sec.id ? (
-                <ChevronUp size={20} color="#6b7280" />
-              ) : (
-                <ChevronDown size={20} color="#6b7280" />
-              )}
-            </Button>
-            <Collapse isOpen={openId === sec.id}>
-              <CardBody
-                style={styles.cardBody}
-                dangerouslySetInnerHTML={{ __html: sec.content }}
-              />
-            </Collapse>
-          </Card>
-        ))}
-
-        <div className="text-center mt-5">
-          <p style={{ color: "#374151" }}>
-            📧 Contact:{" "}
-            <a href="mailto:legal@xtalentru.com" style={{ color: "#0d6efd" }}>
-              legal@xtalentru.com
-            </a>
-          </p>
-          <p className="small text-muted">
-            © xTalentru. Subject to legal and regulatory updates.
-          </p>
-        </div>
-      </Container>
-    </div>
-  );
-};
-
-const styles = {
-  page: {
-    background: "#f8fafc",
-    color: "#1f2937",
-    minHeight: "100vh",
-    fontFamily: "Poppins, sans-serif",
-  },
-  header: {
-    textAlign: "center",
-    marginBottom: "2rem",
-  },
-  title: {
-    fontSize: "2.75rem",
-    fontWeight: "700",
-    color: "#f59e0b",
-  },
-  subtitle: {
-    color: "#6b7280",
-    fontSize: "1.1rem",
-    marginTop: "0.5rem",
-  },
-  card: {
-    borderRadius: "20px",
-    border: "1px solid #e5e7eb",
-    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.05)",
-    backgroundColor: "#ffffff",
-  },
-  cardHeader: {
-    padding: "1rem 1.5rem",
-    fontSize: "1.15rem",
-    fontWeight: "600",
-    backgroundColor: "transparent",
-  },
-  cardBody: {
-    fontSize: "1rem",
-    color: "#374151",
-    paddingTop: 0,
-    padding: "0 1.5rem 1rem 1.5rem",
-    lineHeight: "1.6",
-  },
-};
-
-export default LegalDisclaimerAccordion;
-
-
-// import React, { useState } from "react";
+// import AvatarGroup from "@components/avatar-group";
+// import react from "@src/assets/images/icons/react.svg";
+// import vuejs from "@src/assets/images/icons/vuejs.svg";
+// import angular from "@src/assets/images/icons/angular.svg";
+// import bootstrap from "@src/assets/images/icons/bootstrap.svg";
+// import avatar1 from "@src/assets/images/portrait/small/avatar-s-5.jpg";
+// import avatar2 from "@src/assets/images/portrait/small/avatar-s-6.jpg";
+// import avatar3 from "@src/assets/images/portrait/small/avatar-s-7.jpg";
+// import { MoreVertical, Edit, Trash } from "react-feather";
 // import {
-//   Container,
-//   Card,
-//   CardBody,
-//   Collapse,
-//   Button,
-//   Row,
-//   Col,
+//   Table,
+//   Badge,
+//   UncontrolledDropdown,
+//   DropdownMenu,
+//   DropdownItem,
+//   DropdownToggle,
+//   Input,
 // } from "reactstrap";
 
-// const sections = [
-//   {
-//     id: "1",
-//     title: "Forward-Looking Nature of Statements",
-//     content:
-//       "References to TAT-to-TTT conversion are speculative and not commitments. They reflect internal aspirations, not guaranteed outcomes.",
-//   },
-//   {
-//     id: "2",
-//     title: "No Guarantee or Obligation",
-//     content:
-//       "xTalentru does not guarantee the deployment, tradability, or monetary value of TTT. No promises or obligations are made.",
-//   },
-//   {
-//     id: "3",
-//     title: "TATs and TTTs Are Not Securities",
-//     content:
-//       "TATs and TTTs are not financial products or legal tender. They do not imply ownership or dividends.",
-//   },
-//   {
-//     id: "4",
-//     title: "Platform Use and Token Functionality",
-//     content:
-//       "TATs in Wallet 1 and 2 access profiles. Wallet 3 tokens may be eligible for conversion but not guaranteed.",
-//   },
-//   {
-//     id: "5",
-//     title: "Regulatory and Technical Uncertainties",
-//     content:
-//       "The roadmap is conditional. Blockchain development may be canceled due to regulations or tech limitations.",
-//   },
-//   {
-//     id: "6",
-//     title: "Limitation of Liability",
-//     content:
-//       "xTalentru isn’t liable for losses due to access issues, profit expectations, or platform changes.",
-//   },
-//   {
-//     id: "7",
-//     title: "User Acknowledgment",
-//     content:
-//       "By using xTalentru, you accept all risks. You understand that TTT discussion is speculative.",
-//   },
-//   {
-//     id: "8",
-//     title: "Jurisdiction and Dispute Resolution",
-//     content:
-//       "This disclaimer is governed by the laws of the country where xTalentru is registered.",
-//   },
-// ];
-
-// const LegalDisclaimerAdvanced = () => {
-//   const [openId, setOpenId] = useState(null);
-
-//   const toggle = (id) => {
-//     setOpenId(openId === id ? null : id);
-//   };
-
+// const TableBasic = () => {
 //   return (
-//     <div style={styles.wrapper}>
-//       <Container className="py-5">
-//         <div style={styles.header}>
-//           <h2 style={styles.title}>⚖️ Legal Disclaimer</h2>
-//           <p style={styles.subtitle}>
-//             Forward-Looking Statements Regarding Talent Transaction Token (TTT)
-//           </p>
-//         </div>
+//     // <Table responsive>
+//     //   <thead>
+//     //     <tr>
+//     //       <th>Charges</th>
 
-//         <Row>
-//           {sections.map((section) => (
-//             <Col md="6" className="mb-4" key={section.id}>
-//               <Card style={styles.card}>
-//                 <div
-//                   style={styles.cardHeader}
-//                   onClick={() => toggle(section.id)}
-//                 >
-//                   <span style={styles.cardTitle}>{section.title}</span>
-//                   <span style={styles.arrow}>
-//                     {openId === section.id ? "−" : "+"}
-//                   </span>
-//                 </div>
-//                 <Collapse isOpen={openId === section.id}>
-//                   <CardBody style={styles.cardBody}>{section.content}</CardBody>
-//                 </Collapse>
-//               </Card>
-//             </Col>
-//           ))}
-//         </Row>
+//     //       <th>Charges Type</th>
 
-//         <div className="text-center mt-5">
-//           <p style={styles.contactText}>
-//             📧 For inquiries: <a href="mailto:legal@xtalentru.com" style={styles.link}>legal@xtalentru.com</a>
-//           </p>
-//           <p style={styles.footerText}>© xTalentru. Document subject to revision.</p>
-//         </div>
-//       </Container>
-//     </div>
+//     //       <th>Charges Value</th>
+//     //     </tr>
+//     //   </thead>
+//     //   <tbody>
+//     //     <tr>
+//     //       <td>
+//     //         <span className="align-middle fw-bold">7 Days Charges</span>
+//     //       </td>
+//     //       <td>
+//     //         <div>
+//     //           <span className="me-1">Percentage</span>
+//     //           <Input  type="radio"
+//     //                   name="overDueChargesFor7Days"
+//     //                   value="Percentage"
+//     //                   id="Percentage"
+//     //                   disabled={view}
+//     //                   checked={
+//     //                     selections.overDueChargesFor7Days === "Percentage"
+//     //                   }
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesFor7Days",
+//     //                       "Percentage"
+//     //                     )
+//     //                   }
+//     //                   invalid={!!errors.overDueChargesFor7Days}  className="me-2"  />
+//     //           <span className="me-1">Flat</span>
+//     //           <Input type="radio" className="me-2" name="overDueChargesFor7Days"
+//     //                   value="Flat"
+//     //                   id="Flat"
+//     //                   disabled={view}
+//     //                   checked={selections.overDueChargesFor7Days === "Flat"}
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange("overDueChargesFor7Days", "Flat")
+//     //                   }
+//     //                   invalid={!!errors.overDueChargesFor7Days} />
+//     //         </div>
+//     //       </td>
+
+//     //       <td>
+//     //         <Input  type="text"
+//     //                   name="overDueAmountFor7Days"
+//     //                   disabled={view}
+//     //                   value={userData.overDueAmountFor7Days || ""}
+//     //                   onChange={(e) => {
+//     //                     let sevenDays = e.target.value; // Use "let" instead of "const"
+//     //                     sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
+                    
+//     //                     setUserData((prev) => ({ ...prev, overDueAmountFor7Days: sevenDays })); // Fix state update
+//     //                   }}
+//     //                   placeholder="Enter 7 Days Charges"
+//     //                   invalid={!!errors.overDueAmountFor7Days} />
+//     //       </td>
+//     //     </tr>
+//     //     <tr>
+//     //       <td>
+//     //         <span className="align-middle fw-bold">15 Days Charges</span>
+//     //       </td>
+//     //       <td>
+//     //         <div>
+//     //           <span className="me-1">Percentage</span>
+//     //           <Input type="radio" 
+//     //                   disabled={view}
+//     //                   checked={
+//     //                     selections.overDueChargesFor15Days === "Percentage"
+//     //                   }
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesFor15Days",
+//     //                       "Percentage"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChargesFor15Days"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //           <span className="me-1">Flat</span>
+//     //           <Input type="radio"  checked={selections.overDueChargesFor15Days === "Flat"}
+//     //                   disabled={view}
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesFor15Days",
+//     //                       "Flat"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChargesFor15Days "
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //         </div>
+//     //       </td>
+//     //       <td>
+//     //         <Input   type="text"
+//     //                   disabled={view}
+//     //                   name="overDueAmountFor15Days"
+//     //                   value={userData.overDueAmountFor15Days || ""}
+//     //                   onChange={(e) => {
+//     //                     let fiftinDays = e.target.value; 
+//     //                     fiftinDays = fiftinDays.replace(/[^0-9.]/g, ""); 
+                    
+//     //                     setUserData((prev) => ({ ...prev, overDueAmountFor15Days: fiftinDays })); // Fix state update
+//     //                   }}
+//     //                   placeholder="Enter 15 Days Charges"
+//     //                   invalid={!!errors.overDueAmountFor15Days}
+//     //              />
+//     //       </td>
+//     //     </tr>
+//     //     <tr>
+//     //       <td>
+//     //         <span className="align-middle fw-bold">30 Days Charges</span>
+//     //       </td>
+//     //       <td>
+//     //         <div>
+//     //           <span className="me-1">Percentage</span>
+//     //           <Input type="radio"   disabled={view}
+//     //                   checked={
+//     //                     selections.overDueChargesFor30Days === "Percentage"
+//     //                   }
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesFor30Days",
+//     //                       "Percentage"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChargesFor30Days"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //           <span className="me-1">Flat</span>
+//     //           <Input type="radio"  disabled={view}
+//     //                   checked={selections.overDueChargesFor30Days === "Flat"}
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesFor30Days",
+//     //                       "Flat"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChargesFor30Days"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //         </div>
+//     //       </td>
+//     //       <td>
+//     //         <Input  type="text"
+//     //                   disabled={view}
+//     //                   name="overDueAmountFor30Days"
+//     //                   placeholder="Enter 30 Days Charges"
+//     //                   value={userData.overDueAmountFor30Days || ""}
+//     //                   onChange={(e) =>{
+//     //                     let thirty = e.target.value; 
+//     //                     thirty = thirty.replace(/[^0-9.]/g, ""); 
+                    
+//     //                     setUserData((prev) => ({ ...prev, overDueAmountFor30Days: thirty })); // Fix state update
+//     //                   }}
+//     //                   invalid={!!errors.overDueAmountFor30Days}
+//     //                />
+//     //       </td>
+//     //     </tr>
+//     //     <tr>
+//     //       <td>
+//     //         <span className="align-middle fw-bold">Notice Charges</span>
+//     //       </td>
+//     //       <td>
+//     //         <div>
+//     //           <span className="me-1">Percentage</span>
+//     //           <Input type="radio"   
+//     //                   disabled={view}
+//     //                   checked={
+//     //                     selections.overDueChargesForNotice === "Percentage"
+//     //                   }
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesForNotice",
+//     //                       "Percentage"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChargesForNotice"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //           <span className="me-1">Flat</span>
+//     //           <Input type="radio"   disabled={view}
+//     //                   checked={selections.overDueChargesForNotice === "Flat"}
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChargesForNotice",
+//     //                       "Flat"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChargesForNotice"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //         </div>
+//     //       </td>
+//     //       <td>
+//     //         <Input  type="text"
+//     //                   disabled={view}
+//     //                   name="overDueAmountForNotice"
+//     //                   value={userData.overDueAmountForNotice || ""}
+//     //                   onChange={(e) =>{
+//     //                     let noticeCharge = e.target.value; 
+//     //                     noticeCharge = noticeCharge.replace(/[^0-9.]/g, ""); 
+                    
+//     //                     setUserData((prev) => ({ ...prev, overDueAmountForNotice: noticeCharge })); // Fix state update
+//     //                   }}
+//     //                   placeholder="Enter Notice Charges"
+//     //                   invalid={!!errors.overDueAmountForNotice}
+//     //            />
+//     //       </td>
+//     //     </tr>
+
+//     //     <tr>
+//     //       <td>
+//     //         <span className="align-middle fw-bold">Auction Charges</span>
+//     //       </td>
+//     //       <td>
+//     //         <div>
+//     //           <span className="me-1">Percentage</span>
+//     //           <Input type="radio"  disabled={view}
+//     //                   checked={
+//     //                     selections.overDueChagesForAuction === "Percentage"
+//     //                   }
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChagesForAuction",
+//     //                       "Percentage"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChagesForAuction"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //           <span className="me-1">Flat</span>
+//     //           <Input type="radio"  disabled={view}
+//     //                   checked={selections.overDueChagesForAuction === "Flat"}
+//     //                   onChange={() =>
+//     //                     handleSelectTypeChange(
+//     //                       "overDueChagesForAuction",
+//     //                       "Flat"
+//     //                     )
+//     //                   }
+//     //                   name="overDueChagesForAuction"
+//     //                   id="basic-cb-unchecked" className="me-2" />
+//     //         </div>
+//     //       </td>
+//     //       <td>
+//     //         <Input   type="text"
+//     //                   disabled={view}
+//     //                   name="overDueAmountForAuction"
+//     //                   placeholder="Enter Auction Charges"
+//     //                   value={userData.overDueAmountForAuction || ""}
+//     //                   onChange={(e) =>{
+//     //                     let AuctionCharge = e.target.value; 
+//     //                     AuctionCharge = AuctionCharge.replace(/[^0-9.]/g, ""); 
+                    
+//     //                     setUserData((prev) => ({ ...prev, overDueAmountForAuction: AuctionCharge })); // Fix state update
+//     //                   }}
+//     //                   invalid={!!errors.overDueAmountForAuction}/>
+//     //       </td>
+//     //     </tr>
+//     //   </tbody>
+//     // </Table>
 //   );
 // };
 
-// const styles = {
-//   wrapper: {
-//     background: "linear-gradient(to right, #0f2027, #203a43, #2c5364)",
-//     minHeight: "100vh",
-//     color: "#f1f1f1",
-//     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-//   },
-//   header: {
-//     textAlign: "center",
-//     marginBottom: "3rem",
-//   },
-//   title: {
-//     fontSize: "2.8rem",
-//     fontWeight: "bold",
-//     color: "#fbbf24",
-//   },
-//   subtitle: {
-//     color: "#ddd",
-//     fontSize: "1.1rem",
-//   },
-//   card: {
-//     background: "#1f2937",
-//     border: "1px solid #374151",
-//     borderRadius: "1rem",
-//     transition: "all 0.3s ease",
-//     boxShadow: "0 8px 20px rgba(0,0,0,0.4)",
-//   },
-//   cardHeader: {
-//     padding: "1.2rem 1.5rem",
-//     cursor: "pointer",
-//     display: "flex",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     fontSize: "1rem",
-//     fontWeight: "600",
-//     color: "#facc15",
-//   },
-//   cardTitle: {
-//     flex: 1,
-//   },
-//   arrow: {
-//     fontSize: "1.5rem",
-//     color: "#9ca3af",
-//     marginLeft: "1rem",
-//   },
-//   cardBody: {
-//     backgroundColor: "#111827",
-//     borderTop: "1px solid #374151",
-//     padding: "1.25rem",
-//     fontSize: "0.95rem",
-//     color: "#d1d5db",
-//   },
-//   contactText: {
-//     color: "#ccc",
-//     fontSize: "0.95rem",
-//   },
-//   footerText: {
-//     fontSize: "0.8rem",
-//     color: "#aaa",
-//   },
-//   link: {
-//     color: "#fbbf24",
-//     textDecoration: "underline",
-//   },
-// };
+// export default TableBasic;
 
-// export default LegalDisclaimerAdvanced;
+
+import React, { useState } from "react";
+import { Alert, Button } from "reactstrap";
+import { X } from "react-feather"; // Feather icons
+
+const ModernInteractiveAlert = () => {
+  const [visible, setVisible] = useState(true);
+
+  return (
+    <>
+      {visible && (
+        <Alert
+          color="danger"
+          className="d-flex justify-content-between align-items-center shadow-sm p-3 rounded-3"
+          style={{
+            background: "#ffe6e6",
+            borderColor: "#ffcccc",
+            color: "#b30000",
+            animation: "fadeIn 0.5s ease-in-out",
+          }}
+        >
+          <div className="d-flex align-items-center gap-2">
+            <span style={{ fontSize: "1.5rem" }}>⚠️</span>
+            <div>
+              <strong>Error:</strong> Something went wrong. Please check your input.
+            </div>
+          </div>
+          <div className="d-flex align-items-center gap-2">
+            <Button size="sm" color="light" onClick={() => alert("Retrying...")}>
+              Retry
+            </Button>
+            <X
+              onClick={() => setVisible(false)}
+              style={{ cursor: "pointer" }}
+              size={18}
+            />
+          </div>
+        </Alert>
+      )}
+    </>
+  );
+};
+
+export default ModernInteractiveAlert;

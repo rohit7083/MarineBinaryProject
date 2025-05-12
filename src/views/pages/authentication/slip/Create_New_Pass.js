@@ -1,6 +1,8 @@
 // ** React Imports
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import {React,useRef} from "react";
+import {useRef} from "react";
+import React, { Fragment } from "react";
+
 import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import "primereact/resources/primereact.min.css";
@@ -184,6 +186,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   }, [handleOtp, onchnagePass, confirmPassword, previousPassword]);
 
   const onSubmit = async (data) => {
+    {{debugger}}
     setCountdownEndTime(0);
     setAttempt(0);
     setErrorMsz("");
@@ -203,18 +206,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
 
       console.log(res);
       if (res.status == 200 || res.status == 201) {
-        // return MySwal.fire({
-        //   title: "Successfully ",
-        //   text: "Successfully Rest Password",
-        //   icon: "success",
-        //   customClass: {
-        //     confirmButton: "btn btn-primary",
-        //   },
-        //   buttonsStyling: false,
-        // }).then(() => {
-        //   navigate("/Login");
-        
-        // });
+     
 
         toast.current.show({
           severity: "success",
@@ -285,6 +277,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
             <CardText className="mb-2">
               Your new password must be different from previously used passwords
             </CardText>
+          
             {errorMsz && (
               <React.Fragment>
                 <UncontrolledAlert color="danger">

@@ -31,6 +31,7 @@ const CustomTable = ({ data }) => {
 
   async function fetchTableData() {
     try {
+      // {{debugger}}
       setLoading(true);
       const { data } = await useJwt.getallSubuser(
       );
@@ -47,6 +48,7 @@ const CustomTable = ({ data }) => {
   
 
   useEffect(() => {
+    // {{debugger}}
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 

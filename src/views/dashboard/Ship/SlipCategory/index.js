@@ -300,7 +300,7 @@ function Index() {
             <Row className="mb-1">
               <Label sm="3">Dimensions</Label>
               <Col sm="9">
-                {["height", "width", "length"].map((dim) => (
+                {["height", "width", "length","power"].map((dim) => (
                   <div className="form-check form-check-inline" key={dim}>
                     <Input
                       type="checkbox"
