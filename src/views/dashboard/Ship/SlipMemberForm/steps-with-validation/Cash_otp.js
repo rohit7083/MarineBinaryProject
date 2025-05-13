@@ -35,8 +35,9 @@ const Cash_otp = ({
   setShowModal,
   totalPayment,
   cashOtpVerify,
+  setErrMsz,
+
 }) => {
-  // ** States
   const [loading, setLoading] = useState(false);
 
   const [time, setTime] = useState(100);
@@ -44,6 +45,8 @@ const Cash_otp = ({
   const [verify, setVerify] = useState(false);
   const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const [errorMessage, setErrorMsz] = useState("");
+    // const [errMsz, setErrMsz] = useState("");
+  
   const {
     control,
     handleSubmit,
@@ -73,6 +76,15 @@ const Cash_otp = ({
     } catch (error) {
       console.error("Error generating OTP:", error);
       console.log("Failed to generate OTP. Please try again.");
+
+      
+       if (error.response) {
+        console.error("Error verifying OTP:", error);
+        const errorMessage = error?.response?.data?.content;
+        setErrMsz(errorMessage);
+
+    }
+
     }
   };
 
@@ -97,20 +109,7 @@ const Cash_otp = ({
       setVerify(true);
       setShowModal(false);
       setotpVerify(true);
-      console.log("OTP Verified Successfully!");
-      //   return MySwal.fire({
-      //     title: "Successfully Verified",
-      //     text: " Your OTP is Verified Successfull",
-      //     icon: "success",
-      //     customClass: {
-      //       confirmButton: "btn btn-primary",
-      //     },
-      //     buttonsStyling: false,
-      //   }).then(() => {
-      //     if (Object.keys(errors).length === 0) {
-      //       stepper.next();
-      //     }
-      //   });
+      
     } catch (error) {
       if (error.response) {
         console.error("Error verifying OTP:", error);

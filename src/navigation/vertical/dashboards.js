@@ -179,23 +179,23 @@ export default [
   // },
   
 
-  {
-    id: "ui",
-    title: "ui",
-    icon: <Circle size={12} />,
-    // navLink: '/dashboard/create-user',
-    badge: "light-warning",
-    // badgeText: '2',
-    children: [
-      {
-        id: "ui1",
-        title: "ui  1",
-        icon: <Circle size={12} />,
-        navLink: "/dashbord/ship/ui",
-      },
+  // {
+  //   id: "ui",
+  //   title: "ui",
+  //   icon: <Circle size={12} />,
+  //   // navLink: '/dashboard/create-user',
+  //   badge: "light-warning",
+  //   // badgeText: '2',
+  //   children: [
+  //     {
+  //       id: "ui1",
+  //       title: "ui  1",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/dashbord/ship/ui",
+  //     },
       
  
      
-    ],
-  },
+  //   ],
+  // },
 ];

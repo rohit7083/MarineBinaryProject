@@ -1111,6 +1111,7 @@ const Address = ({
             <>
               <Cash_otp
                 showModal={showModal}
+                setErrMsz={setErrMsz}
                 setShowModal={setShowModal}
                 totalPayment={totalPayment}
                 slipIID={slipIID || sId}

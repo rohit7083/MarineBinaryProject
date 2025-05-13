@@ -42,6 +42,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
 
 
   const [passwordCreated,setPasswordCreated]=useState(false);
+    const [DefaultPasswardUsed,setDefaultPasswardUsed]=useState(false);
+
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
   const navigate = useNavigate();
@@ -112,6 +114,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
 
 useEffect(()=>{
 setPasswordCreated(row?.isPasswordCreated)
+setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
 },[row])
 
   const validatePassword = (pwd) => {
@@ -520,7 +523,9 @@ setPasswordCreated(row?.isPasswordCreated)
                 {/* </FormGroup> */}
               </Col>
             </Row>
-{!passwordCreated && (<>
+{(!passwordCreated && ! DefaultPasswardUsed || !passwordCreated && DefaultPasswardUsed) &&
+
+(<>
 
             <Row className="mb-2">
               <Label sm="3" for="password">
