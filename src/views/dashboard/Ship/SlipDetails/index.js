@@ -188,13 +188,7 @@ function ShipDetails() {
 
         if (uid) {
           const updateRes = await useJwt.updateslip(uid, payload);
-          // MySwal.fire({
-          //   title: "Successfully Updated",
-          //   text: "Your Details Updated Successfully",
-          //   icon: "success",
-          //   customClass: { confirmButton: "btn btn-primary" },
-          //   buttonsStyling: false,
-          // }).then(() => navigate("/dashboard/slipdetail_list"));
+
           if (updateRes.status === 200) {
             toast.current.show({
               severity: "success",
@@ -208,13 +202,7 @@ function ShipDetails() {
           }
         } else {
           const createRes = await useJwt.postslip(payload);
-          // MySwal.fire({
-          //   title: "Successfully Created",
-          //   text: "Your Slip Details Created Successfully",
-          //   icon: "success",
-          //   customClass: { confirmButton: "btn btn-primary" },
-          //   buttonsStyling: false,
-          // }).then(() => navigate("/dashboard/slipdetail_list"));
+
           if (createRes.status === 201) {
             toast.current.show({
               severity: "success",
@@ -411,8 +399,6 @@ function ShipDetails() {
     return newErrors;
   };
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -421,17 +407,15 @@ function ShipDetails() {
         const options = response.data.content.result.map((item) => ({
           value: item.uid,
           label: item.shipTypeName,
-          dimensions: item.dimensions, 
+          dimensions: item.dimensions,
         }));
 
         setShipTypeNames(options);
         console.log(options);
-        
       } catch (error) {
         console.error("Error fetching category:", error);
         const { response } = error;
         const { data, status } = response;
-      
       }
 
       console.log("Category", selectedCategory);
@@ -1212,7 +1196,6 @@ function ShipDetails() {
                 <thead>
                   <tr>
                     <th>Charges</th>
-
                     <th>Charges Type</th>
 
                     <th>Charges Value</th>
@@ -1223,8 +1206,7 @@ function ShipDetails() {
                     <td>
                       <span className="align-middle fw-bold">
                         7 Days Charges
-                                          <span style={{ color: "red" }}>*</span>
-
+                        <span style={{ color: "red" }}>*</span>
                       </span>
                     </td>
                     <td>
@@ -1286,16 +1268,16 @@ function ShipDetails() {
                         placeholder="Enter 7 Days Charges"
                         invalid={!!errors.overDueAmountFor7Days}
                       />
-                        <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback> {/* corrected key */}
-
+                      <FormFeedback>
+                        {errors.overDueAmountFor7Days}
+                      </FormFeedback>{" "}
                     </td>
                   </tr>
 
                   <tr>
                     <td>
                       <span className="align-middle fw-bold">
-                        15 Days Charges                  <span style={{ color: "red" }}>*</span>
-
+                        15 Days Charges <span style={{ color: "red" }}>*</span>
                       </span>
                     </td>
                     <td>
@@ -1353,19 +1335,17 @@ function ShipDetails() {
                         }}
                         placeholder="Enter 15 Days Charges"
                         invalid={!!errors.overDueAmountFor15Days}
-                        />
-                        <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
+                      />
+                      <FormFeedback>
+                        {errors.overDueAmountFor15Days}
+                      </FormFeedback>
                     </td>
-               
-
                   </tr>
-
 
                   <tr>
                     <td>
                       <span className="align-middle fw-bold">
-                        30 Days Charges                  <span style={{ color: "red" }}>*</span>
-
+                        30 Days Charges <span style={{ color: "red" }}>*</span>
                       </span>
                     </td>
                     <td>
@@ -1423,17 +1403,16 @@ function ShipDetails() {
                           })); // Fix state update
                         }}
                         invalid={!!errors.overDueAmountFor30Days}
-                        
                       />
-                                          <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
-
+                      <FormFeedback>
+                        {errors.overDueAmountFor30Days}
+                      </FormFeedback>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <span className="align-middle fw-bold">
-                        Notice Charges                  <span style={{ color: "red" }}>*</span>
-
+                        Notice Charges <span style={{ color: "red" }}>*</span>
                       </span>
                     </td>
                     <td>
@@ -1492,16 +1471,16 @@ function ShipDetails() {
                         placeholder="Enter Notice Charges"
                         invalid={!!errors.overDueAmountForNotice}
                       />
-                                        <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
-
+                      <FormFeedback>
+                        {errors.overDueAmountForNotice}
+                      </FormFeedback>
                     </td>
                   </tr>
 
                   <tr>
                     <td>
                       <span className="align-middle fw-bold">
-                        Auction Charges                  <span style={{ color: "red" }}>*</span>
-
+                        Auction Charges <span style={{ color: "red" }}>*</span>
                       </span>
                     </td>
                     <td>
@@ -1560,15 +1539,15 @@ function ShipDetails() {
                         }}
                         invalid={!!errors.overDueAmountForAuction}
                       />
-                                        <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
-
+                      <FormFeedback>
+                        {errors.overDueAmountForAuction}
+                      </FormFeedback>
                     </td>
                   </tr>
                 </tbody>
-
               </Table>
 
-              <Row className="mt-3" >
+              <Row className="mt-3">
                 <Col
                   className="d-flex justify-content-end"
                   md={{ size: 9, offset: 3 }}

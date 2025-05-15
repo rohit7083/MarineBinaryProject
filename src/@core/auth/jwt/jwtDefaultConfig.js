@@ -18,6 +18,7 @@ export default {
   sVesselGet: "/sVessel",
   retriveVessel: "/sVessel/",
   sMember: "/sMember/",
+
   retriveMember: "/sMember/",
   UpdateMember: "/sMember/",
 
@@ -99,5 +100,17 @@ getMemberDetails: "/auth/sPayment/decrypt-token?token=",
 
   //get all vendor
   getVendor:"/vendor",
+
+
+  //parking pass add
+  addPass:"/parkingPass/" ,
+  editpass:"/parkingPass/",
+  getAll:"/parkingPass",
+  Delete:"/parkingPass/",
+    GetMember: "/sMember",
+
+  guest:"/sMember/guest",
+memberpark:"/parkingPaymnet/allocation",
+
 
 };

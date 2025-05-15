@@ -1,5 +1,5 @@
 // ** Icons Import
-import { Home, Circle, Plus, FileText, Users } from "react-feather";
+import { Home, Circle, Plus, FileText, Users, Square } from "react-feather";
 
 export default [
   // {
@@ -198,4 +198,16 @@ export default [
      
   //   ],
   // },
+
+
+
+   {
+    id: "Parking Pass",
+    title: "Parking Pass",
+    icon: <Square size={12} />,
+    navLink: '/parking_pass',
+    badge: "light-warning",
+    // badgeText: '2',
+ 
+  },
 ];

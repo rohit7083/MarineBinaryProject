@@ -481,6 +481,37 @@ getAlltax() {
     return axios.post(this.jwtConfig.addProduct, ...args);
   }
 
+
+  // create parking pass
+
+    addPass(...args) {
+    return axios.post(this.jwtConfig.addPass, ...args);
+  }
+    editpass(uid, ...args) {
+    return axios.put(`${this.jwtConfig.editpass}${uid}`, ...args);
+  }
+  getAll() {
+    return axios.get(this.jwtConfig.getAll);
+  }
+  
+  
+  Delete(uid) {
+    return axios.delete(`${this.jwtConfig.Delete}${uid}`);
+  }
+
+  guest() {
+    return axios.get(this.jwtConfig.guest);
+  }
+
+   memberpark() {
+    return axios.post(this.jwtConfig.memberpark);
+  }
+
+  
+ GetMember() {
+    return axios.get(this.jwtConfig.GetMember);
+  }
+  
   
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

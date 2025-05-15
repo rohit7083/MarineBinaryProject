@@ -394,7 +394,8 @@ const PersonalInfo = ({
           <React.Fragment>
             <UncontrolledAlert color="danger">
               <div className="alert-body">
-                <span className="text-danger fw-bold">{ErrMsz}</span>
+                <span className="text-danger fw-bold">
+                  <strong>Error : </strong>{ErrMsz}</span>
               </div>
             </UncontrolledAlert>
           </React.Fragment>

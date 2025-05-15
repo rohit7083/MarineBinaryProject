@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
+import ParkingPassListing from "../../views/dashboard/parking_pass/index";
 
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
@@ -90,6 +91,19 @@ const MemberManagement_List = lazy(() =>
 const AddCategory = lazy(() =>
   import(
     "../../views/dashboard/pos/product_management/addproductCategory/AddCategory"
+  )
+);
+
+const CreatePass = lazy(() =>
+  import(
+    "../../views/dashboard/parking_pass/Park_Pass"
+  )
+);
+
+
+const SellPass = lazy(() =>
+  import(
+    "../../views/dashboard/parking_pass/SellPass"
   )
 );
 
@@ -249,4 +263,21 @@ export default [
     element: <AddCategory/>,
     path: "/pos/product_management/add-category",
   },
+
+
+   {
+    element: <ParkingPassListing/>,
+    path: "/parking_pass",
+  },
+
+    {
+    element: <CreatePass/>,
+    path: "/parking_pass/add_pass",
+  },
+   {
+    element: <SellPass/>,
+    path: "/parking_pass/sellpass",
+  },
+   
+   
 ];
