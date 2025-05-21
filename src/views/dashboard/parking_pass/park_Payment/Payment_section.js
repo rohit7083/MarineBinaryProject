@@ -27,7 +27,7 @@ import {
   Spinner,
   UncontrolledAlert,
 } from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import {
   Home,
   Check,
@@ -42,8 +42,11 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import GenrateOtp from "./GenrateOtp";
-
-const Payment_section = () => {
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+const Payment_section = ({ FinalAmountRes }) => {
   const {
     control,
     register,
@@ -55,14 +58,19 @@ const Payment_section = () => {
   } = useForm({
     defaultValues: {
       paymentMethod: "card",
+      Cash: FinalAmountRes?.totalAmount || "",
     },
   });
+
+
   const MySwal = withReactContent(Swal);
 
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
   const { token } = useParams();
   const navigate = useNavigate();
+      const toast = useRef(null);
+  
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
   const getMember = async () => {
@@ -115,35 +123,6 @@ const Payment_section = () => {
     }));
   };
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-
-  //   setValue(name, value); // Update React Hook Form
-
-  //   if (name === "cardExpiryMonth" || name === "cardExpiryYear") {
-  //     const updatedMonth =
-  //       name === "cardExpiryMonth" ? value : watch("cardExpiryMonth");
-  //     const updatedYear =
-  //       name === "cardExpiryYear" ? value : watch("cardExpiryYear");
-
-  //     const formattedExpiry =
-  //       updatedMonth && updatedYear
-  //         ? `${updatedMonth}/${updatedYear.slice(-2)}`
-  //         : "";
-
-  //     setCardDetails((prev) => ({
-  //       ...prev,
-  //       expiry: formattedExpiry,
-  //     }));
-  //   } else {
-  //     // ✅ Handle other fields like name, number, cvc
-  //     setCardDetails((prev) => ({
-  //       ...prev,
-  //       [name]: value,
-  //     }));
-  //   }
-  // };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -190,7 +169,6 @@ const Payment_section = () => {
   });
   const [selectedYear, setSelectedYear] = useState("");
 
-  // Generate the months array starting from the current month
   const getFilteredMonths = (selectedYear) => {
     const allMonths = [
       { value: "01", label: "January" },
@@ -208,7 +186,7 @@ const Payment_section = () => {
     ];
 
     if (selectedYear === String(currentYear)) {
-      return allMonths.slice(currentMonth); // Exclude past months for current year
+      return allMonths.slice(currentMonth);
     }
     return allMonths;
   };
@@ -221,65 +199,51 @@ const Payment_section = () => {
     setErr("");
     const { cvc, ...rest } = data;
 
-    // const payload = {
-    //   ...rest,
-    //   cardExpiryYear: Number(data.cardExpiryYear),
-    //   cardExpiryMonth: Number(data.cardExpiryMonth),
-    //   finalPayment: Number(memberDetail?.amount),
-    //   slipId: memberDetail?.slipId,
-    //   memberId: memberDetail?.memberId,
-    //   // finalPayment: memberDetail?.amount,
-    //   paymentMode: selectedOption === "ach" ? 5 : 1,
-    //   accountType: Number(
-    //     selectedOption === "ach" && data?.accountType?.value
-    //   ),
-    //   cardCvc: cvc,
-    // };
-
-    // {
-    //   debugger;
-    // }
     let payload = {
-      finalPayment: Number(memberDetail?.amount),
-      slipId: memberDetail?.slipId,
-      memberId: memberDetail?.memberId,
-      paymentMode: selectedOption === "ach" ? 5 : 1,
+      allocation: {
+        uid: FinalAmountRes?.allocationUid,
+      },
+
+      finalPayment: FinalAmountRes?.totalAmount,
+      paymentMode:
+        selectedOption === "Cash" ? 3 : selectedOption === "cardSwipe" ? 2 : 1,
     };
 
-    if (selectedOption === "card") {
-      payload.cardExpiryYear = Number(data.cardExpiryYear);
-      payload.cardExpiryMonth = Number(data.cardExpiryMonth);
-      payload.cardCvv = cvc;
-      payload.cardNumber = data.cardNumber.replace(/\s+/g, ""); // Remove spaces from card number
-
-      payload.cardType = data.cardType;
-      payload.nameOnCard = data.nameOnCard;
-      payload.accountType = Number(data?.accountType?.value);
+    if (selectedOption === "cardSwipe") {
+      payload = {
+        ...payload,
+        cardSwipeTransactionId: data.cardSwipeTransactionId,
+      };
     } else {
-      payload.accountNumber = data.accountNumber;
-      payload.routingNumber = data.routingNumber;
-      payload.bankName = data.bankName;
-      payload.nameOnAccount = data.nameOnAccount;
-      payload.accountType = Number(data?.accountType?.value);
+      payload = {
+        ...payload,
+        cardExpiryYear: Number(data.cardExpiryYear),
+        cardExpiryMonth: Number(data.cardExpiryMonth),
+        cardCvv: cvc,
+        cardNumber: data.cardNumber.replace(/\s+/g, ""), 
+        cardType: data.cardType,
+        nameOnCard: data.nameOnCard,
+        accountType: data?.accountType,
+      };
     }
+
+    const { allocation } = payload;
+    delete payload.allocation;
 
     try {
       setLoadPayment(true);
-      // const res = await useJwt.totalPayment(token, payload);
+      const res = await useJwt.ParkingPayment({ allocation, payment: payload });
       console.log(res);
-      if (res.status === 200) {
-        return MySwal.fire({
-          title: "  Success",
-          text: "Your Payment Completed  Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          navigate("/dashbord");
-        });
-      }
+        toast.current.show({
+  severity: "success",
+  summary: "Payment Successful",
+  detail: "Thank you! Your payment has been completed.",
+  life: 3000,
+});
+
+          setTimeout(() => {
+            navigate('/parking_pass')
+          }, 2000);
     } catch (error) {
       console.log(error);
       if (error.response) {
@@ -318,7 +282,6 @@ const Payment_section = () => {
     "bankName",
     "nameOnAccount",
     "accountNumber",
-    "routingNumber",
   ]);
 
   useEffect(() => {
@@ -338,8 +301,7 @@ const Payment_section = () => {
           return value.replace(/[^0-9]/g, "").slice(0, 3);
         case "accountNumber":
           return value.replace(/[^0-9]/g, "");
-        case "routingNumber":
-          return value.replace(/[^0-9]/g, "").slice(0, 9);
+
         default:
           return value;
       }
@@ -353,7 +315,6 @@ const Payment_section = () => {
       "bankName",
       "nameOnAccount",
       "accountNumber",
-      "routingNumber",
     ];
     fieldNames.forEach((fieldName, index) => {
       const watchedValue = watchInputes[index];
@@ -365,17 +326,50 @@ const Payment_section = () => {
     });
   }, [watchInputes.join("|")]);
 
+  useEffect(()=>{
+    if(FinalAmountRes?.totalAmount){
+      setValue('Cash',FinalAmountRes?.totalAmount)
+    }
+  },[FinalAmountRes])
+
+  useEffect(()=>{
+    console.clear();
+    console.log(watch("Cash"))
+  },[watch('Cash')])
+
+const maskCardNumberForCard = (number = "") => {
+  const clean = number.replace(/\D/g, "");
+  const len = clean.length;
+
+  if (len <= 6) return clean; // Not enough digits to mask
+
+  const first4 = clean.slice(0, 4);
+  const middleLen = len - 6; // number of *s
+  const maskedMiddle = "*".repeat(middleLen);
+  const last2 = clean.slice(-2);
+
+  return first4 + maskedMiddle + last2;
+};
+
+
+
+const maskCVC = (cvc = "") => {
+  return cvc ? "*".repeat(cvc.length) : "";
+};
+
   return (
     <Row className="d-flex justify-content-center mt-3">
+                        <Toast ref={toast} />
+      
       <Col xs="12">
         <Row>
           <Col xl="12" xs="12">
             <Card className="card-payment">
               <CardHeader>
                 <CardTitle tag="h4">Payment Method</CardTitle>
-                {/* <CardTitle className="text-primary" tag="h4">
-                $455.60
-              </CardTitle> */}
+                <CardTitle className="text-primary" tag="h4">
+                  {/* {FinalAmountRes?.totalAmount} */}
+                </CardTitle>
               </CardHeader>
 
               <Form className="form" onSubmit={handleSubmit(onSubmit)}>
@@ -418,17 +412,17 @@ const Payment_section = () => {
                           render={({ field }) => (
                             <Input
                               type="radio"
-                              id="ach"
+                              id="Cash"
                               {...field}
-                              value="ach"
-                              checked={field.value === "ach"}
+                              value="Cash"
+                              checked={field.value === "Cash"}
                               className="custom-option-item-check"
                             />
                           )}
                         />
                         <label
                           className="custom-option-item px-2 py-1"
-                          htmlFor="ach"
+                          htmlFor="Cash"
                         >
                           <CheckSquare className="font-medium-10 me-50 mb-1" />
                           <span className="d-flex align-items-center mb-50">
@@ -489,196 +483,55 @@ const Payment_section = () => {
                 </CardHeader>
                 <CardBody>
                   <Row>
-                    {selectedOption === "ach" && (
+                    {selectedOption === "Cash" && (
                       <>
-                        {/* <Col sm="6" className="mb-2">
-                          <Label className="form-label" for="acctype">
-                            Account Type <span style={{ color: "red" }}>*</span>
-                          </Label>
-
-                          <Controller
-                            name="accountType"
-                            control={control}
-                            rules={{
-                              required: "Account Typed is required",
-                            }}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                options={AccountType}
-                                className={`react-select ${
-                                  errors.accountType ? "is-invalid" : ""
-                                }`}
-                              />
-                            )}
-                          />
-                          {errors.accountType && (
-                            <p className="text-danger">
-                              {errors.accountType.message}
-                            </p>
-                          )}
-                        </Col>
-
-                        <Col sm="6" className="mb-2">
-                          <Label for="bankName">Bank Name</Label>
-                          <Controller
-                            name="bankName"
-                            control={control}
-                            rules={{
-                              required: "Bank Name is required",
-                              pattern: {
-                                value: /^[A-Za-z\s]+$/,
-                                message:
-                                  "Only alphabetic characters are allowed",
-                              },
-                            }}
-                            render={({ field }) => (
-                              <Input {...field} placeholder="Enter Bank Name" />
-                            )}
-                          />
-                          {errors.bankName && (
-                            <p className="text-danger">
-                              {errors.bankName.message}
-                            </p>
-                          )}
-                        </Col>
-
-                        <Col sm="6" className="mb-2">
-                          <Label for="nameOnAccount">Account Name</Label>
-                          <Controller
-                            name="nameOnAccount"
-                            control={control}
-                            rules={{
-                              required: "Account Name is required",
-                              pattern: {
-                                value: /^[A-Za-z\s]+$/,
-                                message:
-                                  "Only alphabetic characters are allowed",
-                              },
-                            }}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter Account Name"
-                              />
-                            )}
-                          />
-                          {errors.nameOnAccount && (
-                            <p className="text-danger">
-                              {errors.nameOnAccount.message}
-                            </p>
-                          )}
-                        </Col>
-
-                        <Col sm="6" className="mb-2">
-                          <Label for="accountNumber">Account Number</Label>
-                          <Controller
-                            name="accountNumber"
-                            control={control}
-                            rules={{
-                              required: "Account Number is required",
-                              pattern: {
-                                value: /^[0-9]+$/,
-                                message: "Only numbers allowed",
-                              },
-                            }}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter Account Number"
-                              />
-                            )}
-                          />
-                          {errors.accountNumber && (
-                            <p className="text-danger">
-                              {errors.accountNumber.message}
-                            </p>
-                          )}
-                        </Col>
-
-                        <Col sm="6" className="mb-2">
-                          <Label for="routingNumber">Routing Number</Label>
-                          <Controller
-                            name="routingNumber"
-                            control={control}
-                            rules={{
-                              required: "Routing Number is required",
-                              pattern: {
-                                value: /^[0-9]+$/,
-                                message: "Only numbers allowed",
-                              },
-                              maxLength: {
-                                value: 9,
-                                message:
-                                  "Routing Number must be exactly 9 digits",
-                              },
-                              minLength: {
-                                value: 9,
-                                message:
-                                  "Routing Number must be exactly 9 digits",
-                              },
-                            }}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter Routing Number"
-                                maxLength={9} // Also prevents typing beyond 9 digits in UI
-                              />
-                            )}
-                          />
-                          {errors.routingNumber && (
-                            <p className="text-danger">
-                              {errors.routingNumber.message}
-                            </p>
-                          )}
-                        </Col> */}
-
                         <Container>
                           <Row className="justify-content-center align-items-center">
                             <Col md={6}>
                               <img src={cashpayment} width={300} height={240} />
                             </Col>
                             <Col md={6}>
-                              {/* <Col sm="6" className="mb-2">
-                          <Label for="routingNumber">Routing Number</Label>
-                          <Controller
-                            name="routingNumber"
-                            control={control}
-                            rules={{
-                              required: "Routing Number is required",
-                              pattern: {
-                                value: /^[0-9]+$/,
-                                message: "Only numbers allowed",
-                              },
-                              maxLength: {
-                                value: 9,
-                                message:
-                                  "Routing Number must be exactly 9 digits",
-                              },
-                              minLength: {
-                                value: 9,
-                                message:
-                                  "Routing Number must be exactly 9 digits",
-                              },
-                            }}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                placeholder="Enter Routing Number"
-                                maxLength={9} // Also prevents typing beyond 9 digits in UI
-                              />
-                            )}
-                          />
-                          {errors.routingNumber && (
-                            <p className="text-danger">
-                              {errors.routingNumber.message}
-                            </p>
-                          )}
-                        </Col> */}
+                              <CardTitle>Total Amount To Pay </CardTitle>
 
-                              <CardTitle>Generate OTP to Proceed </CardTitle>
-
-                              <GenrateOtp />
+                              {/* <GenrateOtp /> */}
+                              <Row>
+                                <Col md="12" className="mb-1">
+                                  <Label className="form-label" for="Cash">
+                                    Total Amount
+                                    <span style={{ color: "red" }}>*</span>
+                                  </Label>
+                                  <Controller
+                                    id="Cash"
+                                    name="Cash"
+                                    rules={{
+                                      required: "Cash is required",
+                                      // validate: validateCardSwipeTransactionId,
+                                    }}
+                                    control={control}
+                                    render={({ field }) => (
+                                      <Input
+                                        type="text"
+                                        placeholder="Total Cash"
+                                        
+                                       defaultValues={FinalAmountRes?.totalAmount}
+                                        invalid={!!errors.Cash}
+                                        {...field}
+                                        disabled={true}
+                                        // onChange={(e) => {
+                                        //   const numericValue =
+                                        //     e.target.value.replace(/\D/g, "");
+                                        //   field.onChange(numericValue);
+                                        // }}
+                                      />
+                                    )}
+                                  />
+                                  {errors.Cash && (
+                                    <FormFeedback>
+                                      {errors.Cash.message}
+                                    </FormFeedback>
+                                  )}
+                                </Col>
+                              </Row>
                             </Col>
                           </Row>
                         </Container>
@@ -690,13 +543,18 @@ const Payment_section = () => {
                           <Row className="justify-content-center align-items-center">
                             {/* Credit Card Preview on Left */}
                             <Col md={6} className="text-center">
-                              <Cards
-                                number={cardDetails.cardNumber}
-                                name={cardDetails.nameOnCard}
-                                expiry={cardDetails.expiry}
-                                cvc={cardDetails.cvc}
-                                focused={cardDetails.focus}
-                              />
+                         <Col md={6} className="text-center position-relative">
+<Cards
+  number={maskCardNumberForCard(cardDetails.cardNumber)} // ⚠️ only partially masked
+  name={cardDetails.nameOnCard}
+  expiry={cardDetails.expiry}
+  cvc={maskCVC(cardDetails.cvc)}                           // Shows ***
+  focused={cardDetails.focus}
+/>
+
+
+</Col>
+
                             </Col>
 
                             {/* Form on Right */}
@@ -704,44 +562,7 @@ const Payment_section = () => {
                               <Row>
                                 <Col sm="6" className="mb-2">
                                   <Label for="number">Card Number</Label>
-                                  {/*    <Controller
-                                    name="cardNumber"
-                                    control={control}
-                                    rules={{
-                                      required: "CardNumber  is required",
-                                      pattern: {
-                                        value: /^[0-9]+$/,
-                                        message: "Only number allowed",
-                                      },
-                                      maxLength: {
-                                        value: 16,
-                                        message: "Maximum 16 digits allowed",
-                                      },
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="tel"
-                                        maxLength="19"
-                                        name="cardNumber"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e);
-                                          setCardDetails((prev) => ({
-                                            ...prev,
-                                            cardNumber: e.target.value,
-                                          }));
-                                        }}
-                                        onFocus={handleInputFocus}
-                                        placeholder="Card Number"
-                                      />
-                                    )}
-                                  />
-                                  {errors.cardNumber && (
-                                    <p className="text-danger">
-                                      {errors.cardNumber.message}
-                                    </p>
-                                  )}
-                                </Col> */}
+                                  
 
                                   <Controller
                                     name="cardNumber"
@@ -843,6 +664,7 @@ const Payment_section = () => {
                                       <Input
                                         {...field}
                                         id="cardType"
+                                        disabled={true}
                                         // readOnly={true}
                                         onChange={(e) => {
                                           field.onChange(e); // keep react-hook-form state updated
@@ -869,7 +691,7 @@ const Payment_section = () => {
                                     }}
                                     render={({ field }) => (
                                       <Input
-                                        type="text"
+                                        type="password"
                                         placeholder="Enter CVV"
                                         maxLength="3"
                                         {...field}
@@ -985,45 +807,51 @@ const Payment_section = () => {
                               <img src={cardSwipe} width={300} height={240} />
                             </Col>
                             <Col md={6}>
-                              <CardTitle>Please Swipe Your Card to Continue </CardTitle>
-                               <Row>
-                                              <Col md="12" className="mb-1">
-                                                <Label className="form-label" for="cardSwipeTransactionId">
-                                                  Card Swipe Transaction ID
-                                                  <span style={{ color: "red" }}>*</span>
-                                                </Label>
-                                                <Controller
-                                                  id="cardSwipeTransactionId"
-                                                  name="cardSwipeTransactionId"
-                                                  rules={{
-                                                    required: "Card Swipe Transaction ID is required",
-                                                    validate: validateCardSwipeTransactionId,
-                                                  }}
-                                                  control={control}
-                                                  render={({ field }) => (
-                                                    <Input
-                                                      type="text"
-                                                      placeholder="Enter Transaction ID"
-                                                      invalid={!!errors.cardSwipeTransactionId}
-                                                      {...field}
-                                                      // disabled={statusThree}
-                                                      onChange={(e) => {
-                                                        const numericValue = e.target.value.replace(
-                                                          /\D/g,
-                                                          ""
-                                                        );
-                                                        field.onChange(numericValue);
-                                                      }}
-                                                    />
-                                                  )}
-                                                />
-                                                {errors.cardSwipeTransactionId && (
-                                                  <FormFeedback>
-                                                    {errors.cardSwipeTransactionId.message}
-                                                  </FormFeedback>
-                                                )}
-                                              </Col>
-                                            </Row>
+                              <CardTitle>
+                                Please Swipe Your Card to Continue{" "}
+                              </CardTitle>
+                              <Row>
+                                <Col md="12" className="mb-1">
+                                  <Label
+                                    className="form-label"
+                                    for="cardSwipeTransactionId"
+                                  >
+                                    Card Swipe Transaction ID
+                                    <span style={{ color: "red" }}>*</span>
+                                  </Label>
+                                  <Controller
+                                    id="cardSwipeTransactionId"
+                                    name="cardSwipeTransactionId"
+                                    rules={{
+                                      required:
+                                        "Card Swipe Transaction ID is required",
+                                      validate: validateCardSwipeTransactionId,
+                                    }}
+                                    control={control}
+                                    render={({ field }) => (
+                                      <Input
+                                        type="text"
+                                        placeholder="Enter Transaction ID"
+                                        invalid={
+                                          !!errors.cardSwipeTransactionId
+                                        }
+                                        {...field}
+                                        // disabled={statusThree}
+                                        onChange={(e) => {
+                                          const numericValue =
+                                            e.target.value.replace(/\D/g, "");
+                                          field.onChange(numericValue);
+                                        }}
+                                      />
+                                    )}
+                                  />
+                                  {errors.cardSwipeTransactionId && (
+                                    <FormFeedback>
+                                      {errors.cardSwipeTransactionId.message}
+                                    </FormFeedback>
+                                  )}
+                                </Col>
+                              </Row>
                             </Col>
                           </Row>
                         </Container>
@@ -1035,12 +863,15 @@ const Payment_section = () => {
                         <Button
                           color="secondary"
                           className="me-2"
+                                                    size="sm"
+
                           onClick={() => reset()}
                         >
                           Reset
                         </Button>
                         <Button
                           color="primary"
+                          size="sm"
                           disabled={loadPayment}
                           type="submit"
                         >

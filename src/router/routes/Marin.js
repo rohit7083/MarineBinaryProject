@@ -107,6 +107,26 @@ const SellPass = lazy(() =>
   )
 );
 
+const Event_Info=lazy(()=>import("../../views/dashboard/event_management/Event_info"))
+const venueLocation=lazy(()=>import("../../views/dashboard/event_management/VenueLocation"))
+
+const Client_info=lazy(()=>import("../../views/dashboard/event_management/Client_info"))
+const Event_Type=lazy(()=>import("../../views/dashboard/event_management/event_type"))
+const Cretae_Event_Type=lazy(()=>import("../../views/dashboard/event_management/event_type/AddEventTypes"))
+
+const EventIndex=lazy(()=>import("../../views/dashboard/event_management"))
+const CreateEvent=lazy(()=>import("../../views/dashboard/event_management/CreateEvent"))
+
+const CreateVenue=lazy(()=>import("../../views/dashboard/event_management/createVenue/CreateVenue"))
+const VenueList=lazy(()=>import("../../views/dashboard/event_management/createVenue"))
+const Logistic=lazy(()=>import("../../views/dashboard/event_management/Logistic"))
+const ClientDetails=lazy(()=>import("../../views/dashboard/event_management/client_Information"))
+
+const ViewClient=lazy(()=>import("../../views/dashboard/event_management/client_Information/ViewClient"))
+const Payment=lazy(()=>import("../../views/dashboard/event_management/Payment"))
+const Preview=lazy(()=>import("../../views/dashboard/event_management/Preview"))
+const GenerateDiscountOtp=lazy(()=>import("../../views/dashboard/event_management/GenerateDiscountOtp"))
+
 
 export default [
   {
@@ -279,5 +299,82 @@ export default [
     path: "/parking_pass/sellpass",
   },
    
+
+     {
+    element: <Event_Info/>,
+    path: "/event_info",
+  },
    
+    {
+    element: <Client_info/>,
+    path: "/Client_info",
+  },
+   {
+    element: <Event_Type/>,
+    path: "/addEvent_type",
+  },
+
+    {
+    element: <EventIndex/>,
+    path: "/event_index",
+  },
+
+
+   {
+    element: <CreateEvent/>,
+    path: "/CreateEvent",
+  },
+
+   {
+    element: <CreateVenue/>,
+    path: "/venue",
+  },
+
+
+   {
+    element: <VenueList/>,
+    path: "/VenueList",
+  },
+
+    {
+    element: <Cretae_Event_Type/>,
+    path: "/eventTypes",
+  },
+  
+  
+     {
+    element: <venueLocation/>,
+    path: "/venueLocation",
+  },
+  
+   {
+    element: <Logistic/>,
+    path: "/logistic",
+  },
+  
+     {
+    element: <ClientDetails/>,
+    path: "/ClientDetails",
+  },
+  
+      {
+    element: <ViewClient/>,
+    path: "/ViewClient",
+  },
+
+     {
+    element: <Payment/>,
+    path: "/payment",
+  },
+  
+  
+     {
+    element: <Preview/>,
+    path: "/preview",
+  },
+
+    {
+    element: <GenerateDiscountOtp/>,
+    path: "/genrateotp",
+  },
 ];

@@ -439,7 +439,7 @@ const Login = () => {
                       render={({ field }) => (
                         <div>
                           <ReCAPTCHA
-                            sitekey="6LedoDMrAAAAABROCHy6e-Bkxd1TifHf90FmUzSk" 
+                            sitekey="6LfxZqoqAAAAAHn7n2rN_PJtVu18uUebEmzCs8vr" 
                             onChange={(value) => {
                               setValue("captcha", value, {
                                 shouldValidate: true,

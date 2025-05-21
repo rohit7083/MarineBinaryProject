@@ -1,7 +1,9 @@
+import { Venus } from "lucide-react";
+
 // ** Auth Endpoints
 export default {
   // loginEndpoint: "/jwt/login",  // temp
-  // loginEndpoint: '/login',
+  loginEndpoint: "/login",
 
   registerEndpoint: "/jwt/register",
   refreshEndpoint: "/auth/refresh_token",
@@ -61,8 +63,7 @@ export default {
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
 
-getMemberDetails: "/auth/sPayment/decrypt-token?token=",
-
+  getMemberDetails: "/auth/sPayment/decrypt-token?token=",
 
   slipAssignmentGet: "/slipAssignmentGet",
   GenerateOtp: "/sPayment/generate",
@@ -80,37 +81,49 @@ getMemberDetails: "/auth/sPayment/decrypt-token?token=",
   addVender: "/vendor/",
   editvender: "/vendor/",
   deleteVender: "/vendor/",
-  getAllVendor:"/vendor",
+  getAllVendor: "/vendor",
 
-  //pos: Tax 
-  productTax:"/productTax/",
-  updateTax:"/productTax/",
-  deleteTax:"/productTax/",
-  getAlltax:"/productTax",
+  //pos: Tax
+  productTax: "/productTax/",
+  updateTax: "/productTax/",
+  deleteTax: "/productTax/",
+  getAlltax: "/productTax",
 
   //add Category
-  addProductCategory:'/productCategory/',
-  getProductCategory:'/productCategory',
-  editProductCategory:'/productCategory/',
-  deleteProductCategory:`/productCategory/`,
+  addProductCategory: "/productCategory/",
+  getProductCategory: "/productCategory",
+  editProductCategory: "/productCategory/",
+  deleteProductCategory: `/productCategory/`,
 
   //pos add producct
-  addProduct:"/product/",
-
+  addProduct: "/product/",
 
   //get all vendor
-  getVendor:"/vendor",
-
+  getVendor: "/vendor",
 
   //parking pass add
-  addPass:"/parkingPass/" ,
-  editpass:"/parkingPass/",
-  getAll:"/parkingPass",
-  Delete:"/parkingPass/",
-    GetMember: "/sMember",
+  addPass: "/parkingPass/",
+  editpass: "/parkingPass/",
+  getAll: "/parkingPass",
+  Delete: "/parkingPass/",
+  GetMember: "/sMember",
+  ParkingPayment: "/parkingPaymnet/payment",
 
-  guest:"/sMember/guest",
-memberpark:"/parkingPaymnet/allocation",
+  guest: "/sMember/guest",
+  memberpark: "/parkingPaymnet/allocation",
 
+  //Event and vendor management
+DeleteEtype:"/eventType/",
+  EventType: "/eventType/",
+  VendorType: "/vendorType/",
+  getAllEventType: "/eventType",
+  Venue: "/venue/",
+  getAllVenue:"venue",
+  UpdateEventType:"/eventType/",
+  updateVenue:"/venue/",
+ DeleteVenue:"/venue/",
 
+   getAllVendor: "/vendor",
+getAllEvents:"/events",
+createEvent:"/events/",
 };

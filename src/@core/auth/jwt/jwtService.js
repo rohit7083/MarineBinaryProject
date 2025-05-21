@@ -503,8 +503,8 @@ getAlltax() {
     return axios.get(this.jwtConfig.guest);
   }
 
-   memberpark() {
-    return axios.post(this.jwtConfig.memberpark);
+   memberpark(...args) {
+    return axios.post(this.jwtConfig.memberpark , ...args);
   }
 
   
@@ -512,6 +512,61 @@ getAlltax() {
     return axios.get(this.jwtConfig.GetMember);
   }
   
+ParkingPayment(...args) {
+    return axios.post(this.jwtConfig.ParkingPayment, ...args);
+  }
+
+  
+ EventType(...args) {
+    return axios.post(this.jwtConfig.EventType, ...args);
+  }
+
+ VendorType(...args) {
+    return axios.post(this.jwtConfig.VendorType, ...args);
+  }
+
+getAllEventType() {
+    return axios.get(this.jwtConfig.getAllEventType);
+  }
+
+  getAllVenue() {
+    return axios.get(this.jwtConfig.getAllVenue);
+  }
+
+ Venue(...args) {
+    return axios.post(this.jwtConfig.Venue, ...args);
+  }
+
+   DeleteEtype(uid) {
+    return axios.delete(`${this.jwtConfig.DeleteEtype}${uid}`);
+  }
+
+ UpdateEventType(uid, ...args) {
+    return axios.put(`${this.jwtConfig.UpdateEventType}${uid}`, ...args);
+  }
+  
+
+  updateVenue(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateVenue}${uid}`, ...args);
+  }
+
+  
+   DeleteVenue(uid) {
+    return axios.delete(`${this.jwtConfig.DeleteVenue}${uid}`);
+  }
+  
+
+  getAllVendor() {
+    return axios.get(this.jwtConfig.getAllVendor);
+  }
+
+getAllEvents() {
+    return axios.get(this.jwtConfig.getAllEvents);
+  }
+
+   createEvent(...args) {
+    return axios.post(this.jwtConfig.createEvent, ...args);
+  }
   
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

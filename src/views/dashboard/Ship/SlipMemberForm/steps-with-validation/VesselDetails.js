@@ -139,7 +139,7 @@ const AccountDetails = ({
         });
         setTimeout(() => {
           stepper.next();
-        }, 2000);
+        }, 2000); 
       }
       }
     } catch (error) {

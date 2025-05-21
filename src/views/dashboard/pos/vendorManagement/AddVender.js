@@ -355,6 +355,56 @@ const MultipleColumnForm = () => {
             </Col>
           </Row>
 
+           <Col sm="12" className="mb-1">
+                          <Label for="typeName">Vendor Type</Label>
+          
+                          <Controller
+                            name="typeName"
+                            control={control}
+                            defaultValue=""
+                            rules={{ required: "Event Type is required" }}
+                            render={({ field }) => (
+                              <Input
+                                id="typeName"
+                                type="text"
+                                placeholder="Enter Vendor type"
+                                invalid={!!errors.typeName}
+                                {...field}
+                              />
+                            )}
+                          />
+          
+                          {errors.typeName && (
+                            <p style={{ color: "red" }}>{errors.typeName.message}</p>
+                          )}
+                        </Col>
+                        <Col sm="12">
+                          <Label for="description">Vendor Type Description</Label>
+          
+                          <Controller
+                            name="description"
+                            control={control}
+                            defaultValue=""
+                            rules={{ required: "Event Type Description is required" }}
+                            render={({ field }) => (
+                              <Input
+                                id="description"
+                                type="textarea"
+                                rows="4"
+                                placeholder="Enter Vendor type description"
+                                invalid={!!errors.description}
+                                {...field}
+                              />
+                            )}
+                          />
+          
+                          {errors.description && (
+                            <p style={{ color: "red" }}>
+                              {errors.description.message}
+                            </p>
+                          )}
+                        </Col>
+
           {/* <CardTitle tag="h4" className="mt-3 mb-2">
             Variations
           </CardTitle> */}

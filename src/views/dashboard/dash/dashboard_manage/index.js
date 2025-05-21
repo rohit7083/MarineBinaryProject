@@ -16,7 +16,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
   return (
     <div className="app-user-list">
       <Row>
-        <Col lg="4" sm="6">
+        <Col lg="3" sm="6">
           <StatsHorizontal
  
             statTitle="Total Slips"
@@ -32,7 +32,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
           />
         
         </Col>
-        <Col lg="4" sm="6">
+        <Col lg="3" sm="6">
           <StatsHorizontal
             statTitle="Empty Slips"
             icon={
@@ -46,9 +46,37 @@ const UsersList = ({ count, emptySlip, occupied }) => {
                 renderStats={<h3 className="fw-bolder mb-75">{emptySlip}</h3>}
           />
         </Col>
-        <Col lg="4" sm="6">
+        <Col lg="3" sm="6">
           <StatsHorizontal
             statTitle="Occupied Slips"
+            icon={
+              <img
+                src={OccupiedIcon}
+                alt="Occupied"
+                height={40}
+                width={40}
+              />
+            }
+            renderStats={<h3 className="fw-bolder mb-75">{occupied}</h3>}
+          />
+        </Col>
+         <Col lg="3" sm="6">
+          <StatsHorizontal
+            statTitle="Offline Slips"
+            icon={
+              <img
+                src={OccupiedIcon}
+                alt="Occupied"
+                height={40}
+                width={40}
+              />
+            }
+            renderStats={<h3 className="fw-bolder mb-75">{occupied}</h3>}
+          />
+        </Col>
+         <Col lg="3" sm="6">
+          <StatsHorizontal
+            statTitle="Waiting Slips"
             icon={
               <img
                 src={OccupiedIcon}

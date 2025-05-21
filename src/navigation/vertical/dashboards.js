@@ -1,5 +1,5 @@
 // ** Icons Import
-import { Home, Circle, Plus, FileText, Users, Square } from "react-feather";
+import { Home, Circle, Plus, FileText, Users, Square, MessageSquare } from "react-feather";
 
 export default [
   // {
@@ -210,4 +210,47 @@ export default [
     // badgeText: '2',
  
   },
+   {
+    id: "Event Management",
+    title: "Event Management",
+    icon: <MessageSquare size={12} />,
+    navLink: '/event_index',
+    badge: "light-warning",
+    // badgeText: '2',
+ 
+   children: [
+
+     {
+          id: "Index",
+          title: "Create Event",
+          icon: <Circle size={12} />,
+          navLink: "/event_index",
+        },
+
+        // {
+        //   id: "client",
+        //   title: "ClientInfo",
+        //   icon: <Circle size={12} />,
+        //   navLink: "/Client_info",
+        // },
+        //   {
+        //   id: "/event_info",
+        //   title: "event_info",
+        //   icon: <Circle size={12} />,
+        //   navLink: "/event_info",
+        // },
+          {
+          id: "/add_EventType",
+          title: " Create Event Types",
+          icon: <Circle size={12} />,
+          navLink: "/addEvent_type",
+        },
+         {
+          id: "/CreateVenue",
+          title: " Create Venue",
+          icon: <Circle size={12} />,
+          navLink: "/VenueList",
+        },
+  ]
+   }
 ];
