@@ -1,5 +1,9 @@
-import { Fragment, useState, useEffect } from "react";
-import ViewClient from './ViewClient'
+import { Fragment, useState, useEffect ,useRef } from "react";
+import ViewClient from "./ViewClient";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import Sidebar from "@components/sidebar";
 import Repeater from "@components/repeater";
 import { countries } from "../../../dashboard/slip-management/CountryCode";
@@ -49,8 +53,9 @@ const CustomLabel = ({ htmlFor }) => {
     </Label>
   );
 };
-const ClientDetaiils = ({}) => {
+const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData }) => {
   const [childData, setGuestChildData] = useState(null);
+
   const [options, setOptions] = useState([
     {
       value: "add-new",
@@ -61,7 +66,7 @@ const ClientDetaiils = ({}) => {
   ]);
   console.log(childData);
 
-  const OptionComponent = ({ data, ...props }) => {
+  const OptionComponent = ({  data, ...props }) => {
     if (data.type === "button") {
       return (
         <Button
@@ -79,8 +84,11 @@ const ClientDetaiils = ({}) => {
     }
   };
 
+
   const [count, setCount] = useState(1);
   const [value, setValue] = useState({});
+    const toast = useRef(null);
+  
   const [open, setOpen] = useState(false);
   const [clients, setClients] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -156,7 +164,7 @@ const ClientDetaiils = ({}) => {
       console.log(error);
     }
   };
-
+// {{debugger}}
   useEffect(() => {
     fetchExistingMem();
   }, [selectedValue]);
@@ -165,48 +173,74 @@ const ClientDetaiils = ({}) => {
 
   const qty = watch("quantity");
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     const isGuest = watch("memberType") === "guest";
     const sourceData = isGuest ? childData : existingMemberData;
 
+    // const payload = {
+    //   member: {
+    //     // uid: sourceData?.uid,
+    //     firstName: sourceData?.firstName,
+    //     lastName: sourceData?.lastName,
+    //     emailId: sourceData?.emailId,
+    //     phoneNumber: sourceData?.phoneNumber,
+    //     countryCode: sourceData?.countryCode,
+    //     address: sourceData?.address,
+    //     city: sourceData?.city,
+    //     state: sourceData?.state,
+    //     country: sourceData?.country,
+    //     postalCode: sourceData?.postalCode,
+    //   },
+
+    //   quantity: p?.quantity || qty,
+    //   calculatedAmount: p.calculatedAmount,
+
+    //   totalAmount: totalPrice,
+    // };
+
     const payload = {
-      member: {
-        uid: sourceData?.uid,
-        firstName: sourceData?.firstName,
-        lastName: sourceData?.lastName,
-        emailId: sourceData?.emailId,
-        phoneNumber: sourceData?.phoneNumber,
-        countryCode: sourceData?.countryCode,
-        address: sourceData?.address,
-        city: sourceData?.city,
-        state: sourceData?.state,
-        country: sourceData?.country,
-        postalCode: sourceData?.postalCode,
-      },
-
-      quantity: p?.quantity || qty,
-      calculatedAmount: p.calculatedAmount,
-
-      totalAmount: totalPrice,
+      firstName: data?.firstName,
+      lastName: data?.lastName,
+      emailId: data?.emailId,
+      phoneNumber: data?.phoneNumber,
+      countryCode: data?.countryCode?.value,
+      address: data?.address,
+      city: data?.city,
+      state: data?.state,
+      country: data?.country,
+      postalCode: data?.postalCode,
     };
-
     console.log("data", payload);
+    setMemberAppendData(payload);
 
-    try {
-      const res = await useJwt.memberpark(payload);
-      console.log(res);
-      console.log("Sucessfully");
-    } catch (error) {
-      console.log(error);
-    }
+      toast.current.show({
+        severity: "success",
+        summary: "Successfully",
+        detail: "Member Added Successfully.",
+        life: 2000,
+      });
+
+      setTimeout(() => {
+        setOpen(false);
+      }, 2000);
+    reset();
   };
 
   const selectedMember = watch("selectedMember");
-  console.log("selectedMember", selectedMember);
+
+  useEffect(() => {
+    if (selectedMember) {
+      setSelectedMember(selectedMember);
+    }
+  }, [selectedMember]);
+
+  const hasSelectedMember = selectedMember && Object.keys(selectedMember).length > 0;
+const hasMemberAppendData = memberAppendData && Object.keys(memberAppendData).length > 0;
 
   return (
     <Fragment>
-      <Form className="mb-2" onSubmit={handleSubmit(onSubmit)}>
+            <Toast ref={toast} />
+      
         <Row className="row-bill-to invoice-spacing mb-2">
           <Col className="col-bill-to ps-0 mx-1" xl="12">
             <Label for="totalPrice">Select Member</Label>
@@ -240,12 +274,10 @@ const ClientDetaiils = ({}) => {
             </div>
           </Col>
         </Row>
-      </Form>
 
-{selectedMember && (
-        <ViewClient selectedMember={selectedMember} />
+{(hasSelectedMember || hasMemberAppendData) && (
+  <ViewClient selectedMember={hasSelectedMember ? selectedMember : memberAppendData} />
 )}
-
       <Sidebar
         size="lg"
         open={open}
@@ -565,11 +597,7 @@ const ClientDetaiils = ({}) => {
             <Button color="secondary" onClick={() => setOpen(false)} outline>
               Cancel
             </Button>
-            <Button
-              className="mx-1"
-              color="primary"
-              // onClick={() => setOpen(false)}
-            >
+            <Button className="mx-1" color="primary" type="submit">
               Add
             </Button>
           </div>

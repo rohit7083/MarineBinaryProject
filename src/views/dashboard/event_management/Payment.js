@@ -173,7 +173,7 @@ function Payment({ stepper }) {
       watch("advancePayment")
     ) {
       if (watch("discount_amt") && watch("advance")) {
-        debugger
+        // debugger
         const percentageAmount =
           (handleFinal * watch("discount_amt")) / 100 
         const afterDiscount = handleFinal - percentageAmount - watch("advance");
@@ -206,7 +206,7 @@ function Payment({ stepper }) {
   ]);
 
   useEffect(() => {
-    {{debugger}}
+    // {{debugger}}
     if (
       !watch("discount") &&
       !watch("advancePayment") &&
@@ -216,31 +216,15 @@ function Payment({ stepper }) {
     }
   }, [watch("discount"), watch("advancePayment")]);
 
-  // useEffect(() => {
-  //   if (handleAdvance ) {
-  //     const remaining = handleFinal - handleAdvance;
-  //     setValue("remainingPayment", remaining);
-  //   }
 
-  // }, [advancePayment, handleAdvance, handleFinal]);
-  // useEffect(() => {
-  //   if (isDiscount ) {
-  //     if (mode === "flat") {
-  //       const afterDiscount = handleFinal - value;
-  //       setValue("finalAmount", afterDiscount);
+  const onSubmit = async (data) => {
+    stepper.next();
 
-  //     }else if (mode === "percentage") {
-  //       const percentage = (handleFinal * value) / 100;
-  //   setValue("finalAmount", percentage);
-  //       }  }
-  // }, []);
-  // const onSubmit = async (data) => {
-  //   stepper.next();
-  // };
+  };
 
   return (
     <>
-      {/* <Form onSubmit={handleSubmit(onSubmit)}> */}
+      <Form onSubmit={handleSubmit(onSubmit)}>
 
       <h4 className="mb-2">Payment Information</h4>
       <Row>
@@ -1404,11 +1388,11 @@ function Payment({ stepper }) {
                       marginBottom: "8px",
                     }}
                   >
-                    <div className="details-title">Discount</div>
+                    {/* <div className="details-title">Discount</div>
                     <div className="detail-amt discount-amt text-danger">
                       {isDiscount ? isDiscount : "0"}
                       {mode === "percentage" ? " %" : " $"}
-                    </div>
+                    </div> */}
                   </li>
                 </ul>
                 <hr />
@@ -1444,7 +1428,7 @@ function Payment({ stepper }) {
         />
       )} */}
 
-      {/* </Form> */}
+      </Form>
     </>
   );
 }

@@ -44,15 +44,15 @@ postalCode: "560038",
   ],
 };
 
-const EventPreview = ({allEventData,stepper}) => {
-    console.log("eventData",allEventData);
+const EventPreview = ({stepper}) => {
+    // console.log("eventData",allEventData);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const eventData = location.state || defaultDummyData;
+  const allEventData =  defaultDummyData;
 
   const { handleSubmit } = useForm({
-    defaultValues: eventData,
+    // defaultValues: eventData,
   });
 
   const onSubmit = (data) => {
@@ -60,40 +60,41 @@ const EventPreview = ({allEventData,stepper}) => {
     // Proceed with submission/payment
   };
 
+//  return <div>helo</div>
  
   return (
-    <div className="container mt-4">
+    <div className="mt-4">
       <h3>Event Confirmation</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card className="mt-3">
           <CardBody>
             <Row className="mb-2">
-              <Col md="6"><strong>Event Name:</strong> {eventData.eventName}</Col>
-              <Col md="6"><strong>Event Type:</strong> {eventData.eventType?.label || eventData.eventType}</Col>
+              <Col md="6"><strong>Event Name:</strong> {allEventData?.eventName}</Col>
+              <Col md="6"><strong>Event Type:</strong> {allEventData?.eventType?.label}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Theme:</strong> {eventData.eventTheme || "N/A"}</Col>
-              <Col md="6"><strong>Date:</strong> {new Date(eventData.startDate).toLocaleString()} - {new Date(eventData.endDate).toLocaleString()}</Col>
+              <Col md="6"><strong>Theme:</strong> {allEventData?.eventTheme || "N/A"}</Col>
+              <Col md="6"><strong>Date:</strong> {new Date(allEventData?.eventStartDate).toLocaleString()} - {new Date(allEventData?.eventEndDate).toLocaleString()}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Recurring:</strong> {eventData.isRecurring ? "Yes" : "No"}</Col>
-              <Col md="6"><strong>Pattern:</strong> {eventData.recurrencePattern || "N/A"}</Col>
+              <Col md="6"><strong>Recurring:</strong> {allEventData?.isRecurringEvent ? "Yes" : "No"}</Col>
+              <Col md="6"><strong>Pattern:</strong> {allEventData?.recurrencePattern || "N/A"}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Venue:</strong> {eventData.venue?.label || "Other"}</Col>
-              <Col md="6"><strong>Total Price:</strong> $ {eventData.totalPrice}</Col>
+              <Col md="6"><strong>Venue:</strong> {allEventData?.venue?.label || "Other"}</Col>
+              <Col md="6"><strong>Total Price:</strong> $ {allEventData?.totalPrice}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Extra Staff:</strong> {eventData.isExtraStaffRequired ? "Yes" : "No"}</Col>
-              {eventData.isExtraStaffRequired && (
+              <Col md="6"><strong>Extra Staff:</strong> {allEventData?.isExtraStaff ? "Yes" : "No"}</Col>
+              {allEventData?.isExtraStaffRequired && (
                 <Col md="6">
-                  <strong>Staff Count:</strong> {eventData.extraNoOfStaff} |
-                  <strong> Amount:</strong> $ {eventData.extraNoOfStaffAmount}
+                  <strong>Staff Count:</strong> {allEventData?.extraNoOfStaff} |
+                  <strong> Amount:</strong> $ {allEventData?.extraNoOfStaffAmount}
                 </Col>
               )}
             </Row>
             <Row className="mb-2">
-              <Col><strong>Description:</strong> {eventData.eventDescription}</Col>
+              <Col><strong>Description:</strong> {allEventData?.eventDescription}</Col>
             </Row>
           </CardBody>
         </Card>
@@ -103,23 +104,23 @@ const EventPreview = ({allEventData,stepper}) => {
          <Card className="mt-3">
           <CardBody>
             <Row className="mb-2">
-              <Col md="6"><strong>First Name:</strong> {eventData.firstName}</Col>
-              <Col md="6"><strong>Last  Name:</strong> {eventData.lastName}</Col>
+              <Col md="6"><strong>First Name:</strong> {allEventData?.member?.firstName}</Col>
+              <Col md="6"><strong>Last  Name:</strong> {allEventData?.lastName}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Email ID:</strong> {eventData.email || "N/A"}</Col>
-              <Col md="6"><strong>phone Number:</strong> {eventData.phoneNumber}</Col>
+              <Col md="6"><strong>Email ID:</strong> {allEventData?.email || "N/A"}</Col>
+              <Col md="6"><strong>phone Number:</strong> {allEventData?.phoneNumber}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Address:</strong> {eventData.address || ""}</Col>
-              <Col md="6"><strong>City:</strong> {eventData.city || "N/A"}</Col>
+              <Col md="6"><strong>Address:</strong> {allEventData?.address || ""}</Col>
+              <Col md="6"><strong>City:</strong> {allEventData?.city || "N/A"}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>State:</strong> {eventData.state  || "Other"}</Col>
-              <Col md="6"><strong>Country:</strong> ₹{eventData.country}</Col>
+              <Col md="6"><strong>State:</strong> {allEventData?.state  || "Other"}</Col>
+              <Col md="6"><strong>Country:</strong> ₹{allEventData?.country}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Postal Code</strong> {eventData.postalCode || "N/A"}</Col>
+              <Col md="6"><strong>Postal Code</strong> {allEventData?.postalCode || "N/A"}</Col>
              
              
             </Row>
@@ -129,12 +130,12 @@ const EventPreview = ({allEventData,stepper}) => {
 
         <hr />
       <h3>Vendor</h3>
-        {eventData.vendorN && eventData.vendorN.length > 0 ? (
-          eventData.vendorN.map((vendor, i) => (
+        {allEventData?.vendorN && allEventData?.vendorN.length > 0 ? (
+          allEventData?.vendorN?.map((vendor, i) => (
             <div key={i} className="border rounded p-2 mb-2 bg-light">
-              <strong>{vendor.vName}</strong> ({vendor.vtype}) <br />
-              Email: {vendor.vEmail} <br />
-              Phone: {vendor.vPhone}
+              <strong>{vendor?.vName}</strong> ({vendor?.vtype}) <br />
+              Email: {vendor?.vEmail} <br />
+              Phone: {vendor?.vPhone}
             </div>
           ))
         ) : (
@@ -142,10 +143,10 @@ const EventPreview = ({allEventData,stepper}) => {
         )}
 
         <div className="d-flex justify-content-between mt-4">
-          <Button color="secondary"  type="button"               onClick={() => stepper.previous()}
+          {/* <Button color="secondary"  type="button"               onClick={() => stepper.previous()}
 >
             Edit Details
-          </Button>
+          </Button> */}
           <Button color="success" type="submit" onClick={() => stepper.next()}>
             Confirm & Proceed to Payment
           </Button>

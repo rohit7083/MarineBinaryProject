@@ -106,6 +106,12 @@ function CreateVenue() {
         noOfStaff: rowData.noOfStaff || "",
         staffPrice: rowData.staffPrice || "",
         totalPrice: rowData.totalPrice || "",
+        city: rowData.city || "",
+        address: rowData.address || "",
+        state: rowData.state || "",
+        country: rowData.country || "",
+        postCode: rowData.postCode || "",
+        
       });
     }
   }, []);
@@ -176,6 +182,152 @@ function CreateVenue() {
                   <p className="text-danger">{errors.capacity.message}</p>
                 )}
               </Col>
+
+
+   <Row>
+              <Col sm="6" className="mb-1">
+                <Label for="address">Address</Label>
+                <Controller
+                  name="address"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "address is required",
+                    // pattern: {
+                    //   value: /^[0-9]+$/,
+                    //   message: "address must be a number",
+                    // },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="address"
+                      type="text"
+                      placeholder="Enter venue address"
+                      invalid={!!errors.address}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.address && (
+                  <p className="text-danger">{errors.address.message}</p>
+                )}
+              </Col>
+              <Col sm="6" className="mb-1">
+                <Label for="capacity">City</Label>
+                <Controller
+                  name="city"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "city is required",
+                    // pattern: {
+                    //   value: /^[0-9]+$/,
+                    //   message: "city must be a number",
+                    // },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="city"
+                      type="text"
+                      placeholder="Enter venue city"
+                      invalid={!!errors.city}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.city && (
+                  <p className="text-danger">{errors.city.message}</p>
+                )}
+              </Col>
+            </Row>
+            <Row>
+              {" "}
+              <Col sm="6" className="mb-1">
+                <Label for="state">state</Label>
+                <Controller
+                  name="state"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "state is required",
+                    // pattern: {
+                    //   value: /^[0-9]+$/,
+                    //   message: "state must be a number",
+                    // },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="state"
+                      type="text"
+                      placeholder="Enter venue state"
+                      invalid={!!errors.state}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.state && (
+                  <p className="text-danger">{errors.state.message}</p>
+                )}
+              </Col>
+              <Col sm="6" className="mb-1">
+                <Label for="country">country</Label>
+                <Controller
+                  name="country"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "country is required",
+                    // pattern: {
+                    //   value: /^[0-9]+$/,
+                    //   message: "country must be a number",
+                    // },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="country"
+                      type="text"
+                      placeholder="Enter venue country"
+                      invalid={!!errors.country}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.country && (
+                  <p className="text-danger">{errors.country.message}</p>
+                )}
+              </Col>
+            </Row>
+            <Row>
+              {" "}
+              <Col sm="12" className="mb-1">
+                <Label for="postCode">Postal Code</Label>
+                <Controller
+                  name="postCode"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "postCode is required",
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "postCode must be a number",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="postCode"
+                      type="number"
+                      placeholder="Enter venue postCode"
+                      invalid={!!errors.postCode}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.postCode && (
+                  <p className="text-danger">{errors.postCode.message}</p>
+                )}
+              </Col>
+            </Row>
+
 
               {/* Venue Type */}
               <Col sm="12" className="mb-1">
