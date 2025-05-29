@@ -755,20 +755,21 @@ const SellPass = () => {
                             </CardText>
                           </Col>
                         </Row>
-                        <div className="d-flex justify-content-center border-start invoice-product-actions py-50 px-25">
+                        {/* <div className="d-flex justify-content-center border-start invoice-product-actions py-50 px-25">
                           <X
                             size={18}
                             className="cursor-pointer"
                             onClick={deleteForm}
                           />
-                        </div>
+                        </div> */}
                       </Col>
                     </Row>
                   </Tag>
                 );
               }}
             </Repeater>
-            <Row className="mt-1">
+
+          {/*  <Row className="mt-1">
               <Col sm="12" className="px-0">
                 <Button
                   color="primary"
@@ -780,7 +781,8 @@ const SellPass = () => {
                   <span className="align-middle">Add item</span>
                 </Button>
               </Col>
-            </Row>
+            </Row> */}
+
           </div>
           <Row className="mt-2">
             <Col className="text-end me-4">

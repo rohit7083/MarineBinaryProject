@@ -40,7 +40,7 @@ import {
 import { data } from "jquery";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
+import { BarLoader, BeatLoader } from "react-spinners";
 import GenrateOtp from "./GenrateOtp";
 import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -62,15 +62,14 @@ const Payment_section = ({ FinalAmountRes }) => {
     },
   });
 
-
   const MySwal = withReactContent(Swal);
 
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
   const { token } = useParams();
   const navigate = useNavigate();
-      const toast = useRef(null);
-  
+  const toast = useRef(null);
+
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
   const getMember = async () => {
@@ -197,6 +196,10 @@ const Payment_section = ({ FinalAmountRes }) => {
 
   const onSubmit = async (data) => {
     setErr("");
+
+
+    
+
     const { cvc, ...rest } = data;
 
     let payload = {
@@ -214,18 +217,25 @@ const Payment_section = ({ FinalAmountRes }) => {
         ...payload,
         cardSwipeTransactionId: data.cardSwipeTransactionId,
       };
-    } else {
+    } else if (selectedOption === "card") {
       payload = {
         ...payload,
         cardExpiryYear: Number(data.cardExpiryYear),
         cardExpiryMonth: Number(data.cardExpiryMonth),
         cardCvv: cvc,
-        cardNumber: data.cardNumber.replace(/\s+/g, ""), 
+        cardNumber: data.cardNumber.replace(/\s+/g, ""),
         cardType: data.cardType,
         nameOnCard: data.nameOnCard,
         accountType: data?.accountType,
       };
     }
+    else{
+console.log("NA");
+
+    }
+  
+
+    
 
     const { allocation } = payload;
     delete payload.allocation;
@@ -234,16 +244,16 @@ const Payment_section = ({ FinalAmountRes }) => {
       setLoadPayment(true);
       const res = await useJwt.ParkingPayment({ allocation, payment: payload });
       console.log(res);
-        toast.current.show({
-  severity: "success",
-  summary: "Payment Successful",
-  detail: "Thank you! Your payment has been completed.",
-  life: 3000,
-});
+      toast.current.show({
+        severity: "success",
+        summary: "Payment Successful",
+        detail: "Thank you! Your payment has been completed.",
+        life: 3000,
+      });
 
-          setTimeout(() => {
-            navigate('/parking_pass')
-          }, 2000);
+      setTimeout(() => {
+        navigate("/parking_pass");
+      }, 2000);
     } catch (error) {
       console.log(error);
       if (error.response) {
@@ -326,49 +336,47 @@ const Payment_section = ({ FinalAmountRes }) => {
     });
   }, [watchInputes.join("|")]);
 
-  useEffect(()=>{
-    if(FinalAmountRes?.totalAmount){
-      setValue('Cash',FinalAmountRes?.totalAmount)
+  useEffect(() => {
+    if (FinalAmountRes?.totalAmount) {
+      setValue("Cash", FinalAmountRes?.totalAmount);
     }
-  },[FinalAmountRes])
+  }, [FinalAmountRes]);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.clear();
-    console.log(watch("Cash"))
-  },[watch('Cash')])
+    console.log(watch("Cash"));
+  }, [watch("Cash")]);
 
-const maskCardNumberForCard = (number = "") => {
-  const clean = number.replace(/\D/g, "");
-  const len = clean.length;
+  const maskCardNumberForCard = (number = "") => {
+    const clean = number.replace(/\D/g, "");
+    const len = clean.length;
 
-  if (len <= 6) return clean; // Not enough digits to mask
+    if (len <= 6) return clean; // Not enough digits to mask
 
-  const first4 = clean.slice(0, 4);
-  const middleLen = len - 6; // number of *s
-  const maskedMiddle = "*".repeat(middleLen);
-  const last2 = clean.slice(-2);
+    const first4 = clean.slice(0, 4);
+    const middleLen = len - 6; // number of *s
+    const maskedMiddle = "*".repeat(middleLen);
+    const last2 = clean.slice(-2);
 
-  return first4 + maskedMiddle + last2;
-};
+    return first4 + maskedMiddle + last2;
+  };
 
-
-
-const maskCVC = (cvc = "") => {
-  return cvc ? "*".repeat(cvc.length) : "";
-};
+  const maskCVC = (cvc = "") => {
+    return cvc ? "*".repeat(cvc.length) : "";
+  };
 
   return (
     <Row className="d-flex justify-content-center mt-3">
-                        <Toast ref={toast} />
-      
+      <Toast ref={toast} />
+
       <Col xs="12">
         <Row>
           <Col xl="12" xs="12">
             <Card className="card-payment">
               <CardHeader>
                 <CardTitle tag="h4">Payment Method</CardTitle>
-                <CardTitle className="text-primary" tag="h4">
-                  {/* {FinalAmountRes?.totalAmount} */}
+                <CardTitle className="text-success" tag="h4">
+                <span style={{color:"rgb(94, 88, 115)"}}>  Amount : </span> $ {FinalAmountRes?.totalAmount}
                 </CardTitle>
               </CardHeader>
 
@@ -512,8 +520,9 @@ const maskCVC = (cvc = "") => {
                                       <Input
                                         type="text"
                                         placeholder="Total Cash"
-                                        
-                                       defaultValues={FinalAmountRes?.totalAmount}
+                                        defaultValues={
+                                          FinalAmountRes?.totalAmount
+                                        }
                                         invalid={!!errors.Cash}
                                         {...field}
                                         disabled={true}
@@ -543,18 +552,20 @@ const maskCVC = (cvc = "") => {
                           <Row className="justify-content-center align-items-center">
                             {/* Credit Card Preview on Left */}
                             <Col md={6} className="text-center">
-                         <Col md={6} className="text-center position-relative">
-<Cards
-  number={maskCardNumberForCard(cardDetails.cardNumber)} // ⚠️ only partially masked
-  name={cardDetails.nameOnCard}
-  expiry={cardDetails.expiry}
-  cvc={maskCVC(cardDetails.cvc)}                           // Shows ***
-  focused={cardDetails.focus}
-/>
-
-
-</Col>
-
+                              <Col
+                                md={6}
+                                className="text-center position-relative"
+                              >
+                                <Cards
+                                  number={maskCardNumberForCard(
+                                    cardDetails.cardNumber
+                                  )} // ⚠️ only partially masked
+                                  name={cardDetails.nameOnCard}
+                                  expiry={cardDetails.expiry}
+                                  cvc={maskCVC(cardDetails.cvc)} // Shows ***
+                                  focused={cardDetails.focus}
+                                />
+                              </Col>
                             </Col>
 
                             {/* Form on Right */}
@@ -562,7 +573,6 @@ const maskCVC = (cvc = "") => {
                               <Row>
                                 <Col sm="6" className="mb-2">
                                   <Label for="number">Card Number</Label>
-                                  
 
                                   <Controller
                                     name="cardNumber"
@@ -863,8 +873,7 @@ const maskCVC = (cvc = "") => {
                         <Button
                           color="secondary"
                           className="me-2"
-                                                    size="sm"
-
+                          size="sm"
                           onClick={() => reset()}
                         >
                           Reset

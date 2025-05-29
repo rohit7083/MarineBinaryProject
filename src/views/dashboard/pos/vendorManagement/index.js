@@ -157,8 +157,6 @@ const DataTableWithButtons = () => {
     />
   );
 
- 
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -181,8 +179,7 @@ const DataTableWithButtons = () => {
             <div className="d-flex justify-content-end gap-2">
               <div>
                 <Link to="/pos/VendorManage/addVendor">
-                  <Button                 color="primary"
-                  >
+                  <Button size="sm" color="primary">
                     {/* <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
             <Tooltip
               placement="top"
@@ -196,7 +193,9 @@ const DataTableWithButtons = () => {
                 </Link>
               </div>
               <div>
-                {/* <img
+                <Link to="/pos/vendor_typeList">
+                  <Button size="sm" color="warning">
+                    {/* <img
               id="importProduct"
               width="25"
               height="25"
@@ -204,7 +203,9 @@ const DataTableWithButtons = () => {
               alt="importProduct"
               
             /> */}
-
+                    Vendor Types
+                  </Button>
+                </Link>
                 {/* <Tooltip
               placement="top"
               isOpen={tooltipOpen.importProduct}

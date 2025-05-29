@@ -14,11 +14,12 @@ import {
   Col,
   Card,
   CardBody,
+  FormFeedback,
   Spinner,
 } from "reactstrap";
 import Sidebar from "@components/sidebar";
 import ViewClient from "./client_Information/ViewClient";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import Select from "react-select";
 import { X, Plus, Hash } from "react-feather";
 
@@ -31,7 +32,7 @@ import { useWatch } from "react-hook-form";
 import moment from "moment"; // or use native Date methods if preferred
 import { UncontrolledAlert } from "reactstrap";
 
-const EventForm = ({ stepper, setAllEventData }) => {
+const EventForm = ({ stepper, setAllEventData, listData }) => {
   const [EventType, setEventsType] = useState([]);
   const [venueType, setVenueType] = useState([]);
   const [vendor, setVendorType] = useState([]);
@@ -49,10 +50,20 @@ const EventForm = ({ stepper, setAllEventData }) => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      eventName: "gina bday",
+      eventName: "",
+      amount: "",
+      eventDescription: "",
+      eventEndDate: "",
+      eventEndTime: "",
+      eventName: "",
+      eventStartDate: "",
+      eventStartTime: "",
+      eventTheme: "",
+      eventTypeName: "",
     },
   });
 
@@ -61,10 +72,32 @@ const EventForm = ({ stepper, setAllEventData }) => {
   // const FinalPrice = Number(venueType?.totalPrice)+Number(StaffAmount);
   // console.log("FinalPrice", venueType);
 
+ useEffect(() => {
+  if (listData?.uid && listData?.Rowdata) {
+    const { eventEndDate, eventEndTime,eventStartTime,eventStartDate, ...rest } = listData.Rowdata;
+
+    let endDateTime = null;
+    let startDateTime=null;
+    if (eventEndDate && eventEndTime) {
+      endDateTime = new Date(`${eventEndDate}T${eventEndTime}`);
+    }
+      if (eventStartDate && eventStartTime) {
+      startDateTime = new Date(`${eventStartDate}T${eventStartTime}`);
+    }
+
+    reset({
+      ...rest,
+      endDateTime,
+      startDateTime,
+    });
+  }
+}, [listData]);
+
+
   const FetchEventsType = async () => {
     try {
       const res = await useJwt.getAllEventType();
-      console.log(res?.data?.content?.result);
+      // console.log(res?.data?.content?.result);
 
       const eventTypeNames = res?.data?.content?.result?.map((x) => ({
         label: x.eventTypeName,
@@ -81,7 +114,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
     try {
       const { data } = await useJwt.getAllVenue();
       const { content } = data;
-      console.log("content2", content);
+      // console.log("content2", content);
 
       const venueTypeNames = content?.result?.map((x) => ({
         label: x.venueName,
@@ -103,7 +136,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
     try {
       const { data } = await useJwt.getAllVendor();
       const { content } = data;
-      console.log("getAllVendor", content);
+      // console.log("getAllVendor", content);
       const vendorTypeNames = content?.result?.map((x) => ({
         label: `${x.vendorName} ( ${x.vendorType?.typeName} )`,
         value: x.uid,
@@ -131,8 +164,6 @@ const EventForm = ({ stepper, setAllEventData }) => {
     { label: "Annually", value: "Annually" },
   ];
 
-  console.log("memberAppendData from event", memberAppendData);
-
   const onSubmit = async (data) => {
     // {
     //   {
@@ -144,11 +175,10 @@ const EventForm = ({ stepper, setAllEventData }) => {
     let venuePayload;
 
     if (data.venue?.value !== "other") {
-      // If not "other", send only the venue UID
       venuePayload = { uid: data.venue.value };
     } else {
-      // If "other", send detailed venue info (replace with your actual data)
       venuePayload = {
+        uid: null,
         venueName: data.venueName,
         capacity: data.capacity,
         price: data.price,
@@ -166,21 +196,49 @@ const EventForm = ({ stepper, setAllEventData }) => {
       memberPayload = { ...memberAppendData };
     }
 
+    const eventType =
+      data.eventType?.value !== "other"
+        ? {
+            uid: data.eventType?.value,
+          }
+        : {
+            uid: null,
+            eventTypeName: data.eventTypeName,
+          };
+
+    {
+      {
+        debugger;
+      }
+    }
     const payload = {
       ...data,
-      // eventType: data.eventType?.value,
-      eventType: data.eventType ? { uid: data.eventType.value } : null,
+      eventType,
 
-      eventStartDate: startDateTime
-        ? moment(startDateTime).format("YYYY-MM-DD")
+      // eventStartDate: startDateTime
+      //   ? moment(startDateTime).format("YYYY-MM-DD")
+      //   : null,
+      // eventEndDate: endDateTime
+      //   ? moment(endDateTime).format("YYYY-MM-DD")
+      //   : null,
+      // eventStartTime: startDateTime
+      //   ? moment(startDateTime).format("HH:mm")
+      //   : null,
+      // eventEndTime: endDateTime ? moment(endDateTime).format("HH:mm") : null,
+
+      eventStartDate: data.startDateTime
+        ? moment(data.startDateTime).format("YYYY-MM-DD")
         : null,
-      eventEndDate: endDateTime
-        ? moment(endDateTime).format("YYYY-MM-DD")
+      eventEndDate: data.endDateTime
+        ? moment(data.endDateTime).format("YYYY-MM-DD")
         : null,
-      eventStartTime: startDateTime
-        ? moment(startDateTime).format("HH:mm")
+      eventStartTime: data.startDateTime
+        ? moment(data.startDateTime).format("HH:mm")
         : null,
-      eventEndTime: endDateTime ? moment(endDateTime).format("HH:mm") : null,
+      eventEndTime: data.endDateTime
+        ? moment(data.endDateTime).format("HH:mm")
+        : null,
+
       vendors: data.vendors?.map((v) => ({ uid: v.value })),
       venue: venuePayload,
       member: memberPayload,
@@ -188,20 +246,35 @@ const EventForm = ({ stepper, setAllEventData }) => {
       isExtraStaff: data?.isExtraStaff ? true : false,
       amount: basePrice,
     };
-
+    // {{debugger}}
     const allData = {
       ...data,
       ...payload,
       ...memberPayload,
       ...memberAppendData,
+      ...selectMem,
+      vendorN: {
+        selectedVendors,
+      },
+      ...isVenue,
+      eventTypes: seletctType?.label,
     };
+
+    console.log("data", allData);
 
     try {
       setLoading(true);
 
       const res = await useJwt.createEvent(payload);
       console.log("res", res);
-      // console.log("payload",payload);
+      setAllEventData({
+        ...allData,
+        eventId: res?.data?.id,
+        memberId: selectMem?.id,
+        eventUid: res?.data?.uid,
+      });
+
+      console.log(allData);
 
       toast.current.show({
         severity: "success",
@@ -214,7 +287,6 @@ const EventForm = ({ stepper, setAllEventData }) => {
         stepper.next();
       }, 1500);
 
-      setAllEventData(allData);
       // navigate("/preview", { state: data });
     } catch (error) {
       console.log(error);
@@ -234,6 +306,8 @@ const EventForm = ({ stepper, setAllEventData }) => {
   const seletctType = watch("eventType");
   const isExtraStaffRequired = watch("isExtraStaff");
   const isVenue = watch("venue");
+  console.log("isVenue", isVenue);
+
   const [picker, setPicker] = useState(new Date());
 
   const selectedVendors = useWatch({
@@ -248,12 +322,13 @@ const EventForm = ({ stepper, setAllEventData }) => {
   };
 
   const extraNoOfStaffAmount = watch("extraNoOfStaffAmount") || 0;
-  const basePrice = isVenue?.totalPrice || 0;
 
   const staffPrice = Number(watch("staffPrice")) || 0;
   const price = Number(watch("price")) || 0;
+  const basePrice = isVenue?.totalPrice || staffPrice + price;
 
   const venue = watch("venue");
+  console.log("venue", venue);
 
   useEffect(() => {
     if (!isExtraStaffRequired && venue?.label !== "Other") {
@@ -282,6 +357,11 @@ const EventForm = ({ stepper, setAllEventData }) => {
     }
   }, [isExtraStaffRequired, venue, staffPrice, extraNoOfStaffAmount, price]);
 
+  useEffect(() => {
+    if (staffPrice && price) {
+      setValue("totalPrice", Number(staffPrice) + Number(price));
+    }
+  }, [staffPrice, price, setValue]);
   return (
     <>
       <h4 className="mb-2">Event Information</h4>
@@ -299,7 +379,6 @@ const EventForm = ({ stepper, setAllEventData }) => {
         </React.Fragment>
       )}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        {/* Event Name */}
         <Row>
           <Col md={6} className="mb-1">
             <Label for="eventName">Event Name</Label>
@@ -308,12 +387,19 @@ const EventForm = ({ stepper, setAllEventData }) => {
               control={control}
               rules={{ required: "Event Name is required" }}
               render={({ field }) => (
-                <Input {...field} type="text" placeholder="Enter event name" />
+                <>
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Enter event name"
+                    invalid={!!errors.eventName}
+                  />
+                  {errors.eventName && (
+                    <FormFeedback>{errors.eventName.message}</FormFeedback>
+                  )}
+                </>
               )}
             />
-            {errors.eventName && (
-              <p className="text-danger">{errors.eventName.message}</p>
-            )}
           </Col>
 
           {/* Event Type */}
@@ -322,19 +408,27 @@ const EventForm = ({ stepper, setAllEventData }) => {
             <Controller
               name="eventType"
               control={control}
+              rules={{ required: "Event Type Is Required" }}
               render={({ field }) => (
-                <Select
-                  {...field}
-                  options={[...EventType, { label: "Other", value: "other" }]}
-                  isClearable
-                  className="react-select"
-                  classNamePrefix="select"
-                />
+                <div>
+                  <Select
+                    {...field}
+                    options={[...EventType, { label: "Other", value: "other" }]}
+                    isClearable
+                    className={`react-select ${
+                      errors.eventType ? "is-invalid" : ""
+                    }`}
+                    classNamePrefix="select"
+                    onChange={(selected) => field.onChange(selected)}
+                  />
+                  {errors.eventType && (
+                    <div className="invalid-feedback d-block">
+                      {errors.eventType.message}
+                    </div>
+                  )}
+                </div>
               )}
             />
-            {errors.eventType && (
-              <p className="text-danger">{errors.eventType.message}</p>
-            )}
           </Col>
         </Row>
         {seletctType?.label === "Other" && (
@@ -343,13 +437,13 @@ const EventForm = ({ stepper, setAllEventData }) => {
             <Controller
               name="eventTypeName"
               control={control}
-              rules={{ required: "Event Name is required" }}
+              rules={{ required: "Event Type Name is required" }}
               render={({ field }) => (
                 <Input {...field} type="text" placeholder="Enter event name" />
               )}
             />
             {errors.eventTypeName && (
-              <p className="text-danger">{errors.eventTypeName.message}</p>
+              <p className="invalid-feedback">{errors.eventTypeName.message}</p>
             )}
           </Col>
         )}
@@ -375,25 +469,54 @@ const EventForm = ({ stepper, setAllEventData }) => {
             <Label className="form-label" for="start-date-time-picker">
               Start Date & Time
             </Label>
-            <Flatpickr
-              value={startDateTime}
-              data-enable-time
-              id="start-date-time-picker"
-              className="form-control"
-              onChange={(date) => setStartDateTime(date[0])}
+            <Controller
+              name="startDateTime"
+              control={control}
+              rules={{ required: "Start Date & Time is required" }}
+              render={({ field }) => (
+                <Flatpickr
+                  {...field}
+                  id="start-date-time-picker"
+                  data-enable-time
+                  className={`form-control ${
+                    errors.startDateTime ? "is-invalid" : ""
+                  }`}
+                  onChange={(date) => field.onChange(date[0])}
+                />
+              )}
             />
+            {errors.startDateTime && (
+              <div className="invalid-feedback">
+                {errors.startDateTime.message}
+              </div>
+            )}
           </Col>
+
           <Col md={6} className="mb-2">
             <Label className="form-label" for="end-date-time-picker">
               End Date & Time
             </Label>
-            <Flatpickr
-              value={endDateTime}
-              data-enable-time
-              id="end-date-time-picker"
-              className="form-control"
-              onChange={(date) => setEndDateTime(date[0])}
+            <Controller
+              name="endDateTime"
+              control={control}
+              rules={{ required: "End Date & Time is required" }}
+              render={({ field }) => (
+                <Flatpickr
+                  {...field}
+                  id="end-date-time-picker"
+                  data-enable-time
+                  className={`form-control ${
+                    errors.endDateTime ? "is-invalid" : ""
+                  }`}
+                  onChange={(date) => field.onChange(date[0])}
+                />
+              )}
             />
+            {errors.endDateTime && (
+              <div className="invalid-feedback">
+                {errors.endDateTime.message}
+              </div>
+            )}
           </Col>
         </Row>
 
@@ -420,22 +543,28 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   "Recurrence pattern is required when event is recurring",
               }}
               render={({ field }) => (
-                <Select
-                  {...field}
-                  options={recurrenceOptions}
-                  className="react-select"
-                  classNamePrefix="select"
-                  placeholder="Select Pattern"
-                  value={recurrenceOptions.find(
-                    (option) => option.value === field.value
+                <div>
+                  <Select
+                    {...field}
+                    options={recurrenceOptions}
+                    className={`react-select ${
+                      errors.recurrencePattern ? "is-invalid" : ""
+                    }`}
+                    classNamePrefix="select"
+                    placeholder="Select Pattern"
+                    value={recurrenceOptions.find(
+                      (option) => option.value === field.value
+                    )}
+                    onChange={(selected) => field.onChange(selected?.value)}
+                  />
+                  {errors.recurrenceOptions && (
+                    <FormFeedback>
+                      {errors.recurrenceOptions.message}
+                    </FormFeedback>
                   )}
-                  onChange={(selected) => field.onChange(selected?.value)}
-                />
+                </div>
               )}
             />
-            {errors.recurrencePattern && (
-              <p className="text-danger">{errors.recurrencePattern.message}</p>
-            )}
           </Col>
         )}
 
@@ -476,7 +605,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.extraNoOfStaff && (
-                  <p className="text-danger">{errors.extraNoOfStaff.message}</p>
+                  <FormFeedback>{errors.extraNoOfStaff.message}</FormFeedback>
                 )}
               </Col>
 
@@ -498,15 +627,15 @@ const EventForm = ({ stepper, setAllEventData }) => {
                       id="extraNoOfStaffAmount"
                       type="number"
                       placeholder="Enter Extra staff Amount "
-                      invalid={!!errors.price}
+                      invalid={!!errors.extraNoOfStaffAmount}
                       {...field}
                     />
                   )}
                 />
                 {errors.extraNoOfStaffAmount && (
-                  <p className="text-danger">
+                  <FormFeedback>
                     {errors.extraNoOfStaffAmount.message}
-                  </p>
+                  </FormFeedback>
                 )}
               </Col>
             </Row>
@@ -534,19 +663,25 @@ const EventForm = ({ stepper, setAllEventData }) => {
           <Controller
             name="venue"
             control={control}
+            rules={{ required: "Venue Name is required" }} // <-- add this if required
             render={({ field }) => (
-              <Select
-                {...field}
-                options={[...venueType, { label: "Other", value: "other" }]}
-                isClearable
-                className="react-select"
-                classNamePrefix="select"
-              />
+              <div>
+                <Select
+                  {...field}
+                  options={[...venueType, { label: "Other", value: "other" }]}
+                  isClearable
+                  className={`react-select ${errors.venue ? "is-invalid" : ""}`}
+                  classNamePrefix="select"
+                  onChange={(selected) => field.onChange(selected)}
+                />
+                {errors.venue && (
+                  <div className="invalid-feedback d-block">
+                    {errors.venue.message}
+                  </div>
+                )}
+              </div>
             )}
           />
-          {errors.venue && (
-            <p className="text-danger">{errors.venue.message}</p>
-          )}
         </Col>
 
         {isVenue?.label === "Other" && (
@@ -571,7 +706,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.venueName && (
-                  <p className="text-danger">{errors.venueName.message}</p>
+                  <FormFeedback>{errors.venueName.message}</FormFeedback>
                 )}
               </Col>
 
@@ -600,7 +735,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.capacity && (
-                  <p className="text-danger">{errors.capacity.message}</p>
+                  <FormFeedback>{errors.capacity.message}</FormFeedback>
                 )}
               </Col>
             </Row>
@@ -629,7 +764,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.address && (
-                  <p className="text-danger">{errors.address.message}</p>
+                  <FormFeedback>{errors.address.message}</FormFeedback>
                 )}
               </Col>
               <Col sm="6" className="mb-1">
@@ -656,7 +791,7 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.city && (
-                  <p className="text-danger">{errors.city.message}</p>
+                  <FormFeedback>{errors.city.message}</FormFeedback>
                 )}
               </Col>
             </Row>
@@ -685,8 +820,9 @@ const EventForm = ({ stepper, setAllEventData }) => {
                     />
                   )}
                 />
+
                 {errors.state && (
-                  <p className="text-danger">{errors.state.message}</p>
+                  <FormFeedback>{errors.state.message}</FormFeedback>
                 )}
               </Col>
               <Col sm="6" className="mb-1">
@@ -713,13 +849,13 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.country && (
-                  <p className="text-danger">{errors.country.message}</p>
+                  <FormFeedback>{errors.country.message}</FormFeedback>
                 )}
               </Col>
             </Row>
             <Row>
               {" "}
-              <Col sm="12" className="mb-1">
+              <Col sm="6" className="mb-1">
                 <Label for="postCode">Postal Code</Label>
                 <Controller
                   name="postCode"
@@ -743,12 +879,9 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.postCode && (
-                  <p className="text-danger">{errors.postCode.message}</p>
+                  <FormFeedback>{errors.postCode.message}</FormFeedback>
                 )}
               </Col>
-            </Row>
-            <Row>
-              {/* Venue Type */}
               <Col sm="6" className="mb-1">
                 <Label for="venueType">Venue Type</Label>
                 <Controller
@@ -766,14 +899,17 @@ const EventForm = ({ stepper, setAllEventData }) => {
                       <option value="">Select venue type</option>
                       <option value="Indoor">Indoor</option>
                       <option value="Outdoor">Outdoor</option>
-                      <option value="Hybrid">Hybrid</option>
+                      <option value="Both">Both</option>
                     </Input>
                   )}
                 />
                 {errors.venueType && (
-                  <p className="text-danger">{errors.venueType.message}</p>
+                  <FormFeedback>{errors.venueType.message}</FormFeedback>
                 )}
               </Col>
+            </Row>
+            <Row>
+              {/* Venue Type */}
 
               <Col sm="6" className="mb-1">
                 <Label for="price">price</Label>
@@ -799,12 +935,9 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.price && (
-                  <p className="text-danger">{errors.price.message}</p>
+                  <FormFeedback>{errors.price.message}</FormFeedback>
                 )}
               </Col>
-            </Row>
-
-            <Row>
               <Col sm="6" className="mb-1">
                 <Label for="noOfStaff">No of Staff</Label>
                 <Controller
@@ -829,9 +962,12 @@ const EventForm = ({ stepper, setAllEventData }) => {
                   )}
                 />
                 {errors.noOfStaff && (
-                  <p className="text-danger">{errors.noOfStaff.message}</p>
+                  <FormFeedback>{errors.noOfStaff.message}</FormFeedback>
                 )}
               </Col>
+            </Row>
+
+            <Row>
               <Col sm="6" className="mb-1">
                 <Label for="staffPrice">Staff Price</Label>
                 <Controller
@@ -855,40 +991,40 @@ const EventForm = ({ stepper, setAllEventData }) => {
                     />
                   )}
                 />
-                {errors.price && (
-                  <p className="text-danger">{errors.price.message}</p>
+                {errors.staffPrice && (
+                  <FormFeedback>{errors.staffPrice.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col sm="6" className="mb-1">
+                <Label for="totalPrice">Total Venue Price</Label>
+                <Controller
+                  name="totalPrice"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: "total Price is required",
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: " Total price must be a number",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="totalPrice"
+                      type="number"
+                      disabled={true}
+                      placeholder="Enter Total price"
+                      invalid={!!errors.price}
+                      {...field}
+                    />
+                  )}
+                />
+                {errors.totalPrice && (
+                  <FormFeedback>{errors.totalPrice.message}</FormFeedback>
                 )}
               </Col>
             </Row>
-
-            {/* <Col sm="12" className="mb-1">
-              <Label for="totalPrice">Total Price</Label>
-              <Controller
-                name="totalPrice"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "total Price is required",
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: " Total price must be a number",
-                  },
-                }}
-                render={({ field }) => (
-                  <Input
-                    id="totalPrice"
-                    type="number"
-                    disabled={true}
-                    placeholder="Enter Total price"
-                    invalid={!!errors.price}
-                    {...field}
-                  />
-                )}
-              />
-              {errors.totalPrice && (
-                <p className="text-danger">{errors.totalPrice.message}</p>
-              )}
-            </Col> */}
           </>
         )}
 
@@ -897,24 +1033,31 @@ const EventForm = ({ stepper, setAllEventData }) => {
           <Controller
             name="vendors"
             control={control}
-            // defaultValue={[colorOptions[2], colorOptions[3]]}
+            rules={{ required: "Vendors  Is Required" }}
             render={({ field }) => (
-              <Select
-                {...field}
-                isClearable={false}
-                theme={selectThemeColors}
-                isMulti
-                options={vendor}
-                className="react-select"
-                classNamePrefix="select"
-                onChange={(val) => field.onChange(val)}
-                // onChange={(val) => field.onChange(val.map(v => ({ uid: v.uid, vName: v.vName, vEmail: v.vEmail, vPhone: v.vPhone, vtype: v.vtype })))} // important for multi-select
-              />
+              <div>
+                <Select
+                  {...field}
+                  isClearable={false}
+                  theme={selectThemeColors}
+                  isMulti
+                  options={vendor}
+                  className={`react-select ${
+                    errors.vendors ? "is-invalid" : ""
+                  }`}
+                  classNamePrefix="select"
+                  onChange={(val) => field.onChange(val)}
+                  // onChange={(val) => field.onChange(val.map(v => ({ uid: v.uid, vName: v.vName, vEmail: v.vEmail, vPhone: v.vPhone, vtype: v.vtype })))} // important for multi-select
+                />
+
+                {errors.vendors && (
+                  <div className="invalid-feedback d-block">
+                    {errors.vendors.message}
+                  </div>
+                )}
+              </div>
             )}
           />
-          {errors.venue && (
-            <p className="text-danger">{errors.venue.message}</p>
-          )}
         </Col>
 
         {selectedVendors && selectedVendors.length > 0 && (
@@ -931,7 +1074,6 @@ const EventForm = ({ stepper, setAllEventData }) => {
                     cursor: "pointer",
                   }}
                 >
-                  {console.log("xvendor", xvendor)};
                   <div className="d-flex flex-wrap align-items-center gap-2">
                     <span>
                       <strong>#{idx + 1}</strong>
@@ -986,13 +1128,13 @@ const EventForm = ({ stepper, setAllEventData }) => {
                 id="totalAmount"
                 type="number"
                 placeholder="Enter Total price"
-                invalid={!!errors.price}
+                invalid={!!errors.totalAmount}
                 {...field}
               />
             )}
           />
           {errors.totalAmount && (
-            <p className="text-danger">{errors.totalAmount.message}</p>
+            <FormFeedback>{errors.totalAmount.message}</FormFeedback>
           )}
         </Col>
         <div className="d-flex justify-content-end">

@@ -1,4 +1,5 @@
 import { Venus } from "lucide-react";
+import { Delete } from "react-feather";
 
 // ** Auth Endpoints
 export default {
@@ -113,17 +114,25 @@ export default {
   memberpark: "/parkingPaymnet/allocation",
 
   //Event and vendor management
-DeleteEtype:"/eventType/",
+  DeleteEtype: "/eventType/",
   EventType: "/eventType/",
   VendorType: "/vendorType/",
   getAllEventType: "/eventType",
   Venue: "/venue/",
-  getAllVenue:"venue",
-  UpdateEventType:"/eventType/",
-  updateVenue:"/venue/",
- DeleteVenue:"/venue/",
-
-   getAllVendor: "/vendor",
-getAllEvents:"/events",
-createEvent:"/events/",
+  getAllVenue: "venue",
+  UpdateEventType: "/eventType/",
+  updateVenue: "/venue/",
+  DeleteVenue: "/venue/",
+  DeleteVendorType: "/vendorType/",
+  getAllVendor: "/vendor",
+  getAllVendorType: "/vendorType",
+  updateVendor: "/vendorType/",
+  getAllEvents: "/events",
+  createEvent: "/events/",
+DeleteEvent:"/events/",
+  //payment
+  GenerateOtp:"/sPayment/generate/discount",
+  verifyOtp:"/sPayment/discount/",
+  payment:"/event/payment",
+  
 };

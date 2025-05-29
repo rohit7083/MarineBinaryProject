@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 import ParkingPassListing from "../../views/dashboard/parking_pass/index";
+import AddVTypes from "../../views/dashboard/pos/vendorManagement/vendorTypes/AddVTypes";
 
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
@@ -119,13 +120,30 @@ const CreateEvent=lazy(()=>import("../../views/dashboard/event_management/Create
 
 const CreateVenue=lazy(()=>import("../../views/dashboard/event_management/createVenue/CreateVenue"))
 const VenueList=lazy(()=>import("../../views/dashboard/event_management/createVenue"))
-const Logistic=lazy(()=>import("../../views/dashboard/event_management/Logistic"))
+const PaymentHistory=lazy(()=>import("../../views/dashboard/event_management/PaymentHistory"))
 const ClientDetails=lazy(()=>import("../../views/dashboard/event_management/client_Information"))
 
 const ViewClient=lazy(()=>import("../../views/dashboard/event_management/client_Information/ViewClient"))
 const Payment=lazy(()=>import("../../views/dashboard/event_management/Payment"))
 const Preview=lazy(()=>import("../../views/dashboard/event_management/Preview"))
 const GenerateDiscountOtp=lazy(()=>import("../../views/dashboard/event_management/GenerateDiscountOtp"))
+
+const VendorTypeList=lazy(()=>import("../../views/dashboard/pos/vendorManagement/vendorTypes"))
+
+const ManageRoomType=lazy(()=>import("../../views/dashboard/room_management/manage_roomType"))
+const AddRoomType=lazy(()=>import("../../views/dashboard/room_management/manage_roomType/AddRoomType"))
+const RoomDetails=lazy(()=>import("../../views/dashboard/room_management/manage_room"))
+const AddRoomDetails=lazy(()=>import("../../views/dashboard/room_management/manage_room/Add_RoomDetails"))
+
+const RoomBooking
+=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/calendar"))
+
+
+const AddRoomBooking
+=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking"))
+
+const BookingListing
+=lazy(()=>import("../../views/dashboard/room_management/list_of_roomBooking"))
 
 
 export default [
@@ -348,8 +366,8 @@ export default [
   },
   
    {
-    element: <Logistic/>,
-    path: "/logistic",
+    element: <PaymentHistory/>,
+    path: "/PaymentHistory",
   },
   
      {
@@ -376,5 +394,52 @@ export default [
     {
     element: <GenerateDiscountOtp/>,
     path: "/genrateotp",
+  },
+
+  {
+    element: <VendorTypeList/>,
+    path: "/pos/vendor_typeList",
+  },
+
+    {
+    element: <AddVTypes/>,
+    path: "/pos/vendor_typeList/addVendorType",
+  },
+      {
+    element: <ManageRoomType/>,
+    path: "/manage_room_types",
+  },
+  
+   {
+    element: <AddRoomType/>,
+    path: "/add_room_types",
+  },
+  
+
+     {
+    element: <RoomDetails/>,
+    path: "/room_details",
+  },
+  
+   {
+    element: <AddRoomDetails/>,
+    path: "/room_details/add_room_details",
+  },
+
+
+   {
+    element: <RoomBooking/>,
+    path: "/manage_roomBooking",
+  },
+
+  
+   {
+    element: <AddRoomBooking/>,
+    path: "/addNew_room_booking",
+  },
+  
+   {
+    element: <BookingListing/>,
+    path: "/bookingListing",
   },
 ];

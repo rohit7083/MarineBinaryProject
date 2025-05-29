@@ -10,6 +10,8 @@ import Wizard from "@components/wizard";
 
 // Icons
 import { User, MapPin, Settings, Users, Clipboard } from "react-feather";
+import { useLocation } from "react-router-dom";
+import PaymentHistory from "./PaymentHistory";
 
 const CreateEvent = () => {
   const ref = useRef(null);
@@ -20,9 +22,12 @@ const CreateEvent = () => {
     EventInfo: {},
     clientInfo: {},
     venueLocation: {},
-    logistics: {},
     vendors: {},
   });
+
+  const location=useLocation();
+const listData=location.state || "";
+console.log("listData",listData);
 
   useEffect(() => {
     // Optional: Fetch existing data to prefill
@@ -31,8 +36,8 @@ const CreateEvent = () => {
   const steps = [
     {
       id: "Event-info",
-      title: "Event Information",
-      subtitle: "Enter Event details",
+      title: "Event",
+      subtitle: "Event details",
       icon: <User size={18} />,
       content: (
         <Event_Info
@@ -40,16 +45,32 @@ const CreateEvent = () => {
           formData={{ ...formData.EventInfo }}
           setFormData={setFormData}
           setAllEventData={setAllEventData}
+          listData={listData}
         />
       ),
     },
      {
       id: "review",
       title: "Preview",
-      subtitle: "Final review & submit",
+      subtitle: "Preview details",
       icon: <Clipboard size={18} />,
       content: (
         <Preview
+          stepper={stepper}
+          formData={formData}
+          // fetchLoader={fetchLoader}
+          allEventData={allEventData}
+        />
+      ),
+    },
+
+     {
+      id: "PaymentHistory",
+      title: "Payment History",
+      subtitle: "Your Last Payment History",
+      icon: <Clipboard size={18} />,
+      content: (
+        <PaymentHistory
           stepper={stepper}
           formData={formData}
           // fetchLoader={fetchLoader}
@@ -69,6 +90,8 @@ const CreateEvent = () => {
           formData={{ ...formData.logistics }}
           setFormData={setFormData}
           // fetchLoader={fetchLoader}
+                    allEventData={allEventData}
+
         />
       ),
     },

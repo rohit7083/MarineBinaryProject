@@ -1,55 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Card, CardBody, Row, Col, Button } from "reactstrap";
 
-const defaultDummyData = {
-  eventName: "Corporate Gala",
-  eventType: { label: "Corporate", value: "corp123" },
-  eventTheme: "Black Tie",
-  startDate: new Date(),
-  endDate: new Date(new Date().getTime() + 3 * 60 * 60 * 1000),
-  isRecurring: true,
-  recurrencePattern: "Monthly",
-  eventDescription: "A high-end corporate networking event.",
-  venue: { label: "Grand Ballroom", value: "venue001", totalPrice: 25000 },
-  totalPrice: 30000,
-  isExtraStaffRequired: true,
-  extraNoOfStaff: 5,
-  extraNoOfStaffAmount: 5000,
+// const defaultDummyData = {
+//   eventName: "Corporate Gala",
+//   eventType: { label: "Corporate", value: "corp123" },
+//   eventTheme: "Black Tie",
+//   startDate: new Date(),
+//   endDate: new Date(new Date().getTime() + 3 * 60 * 60 * 1000),
+//   isRecurring: true,
+//   recurrencePattern: "Monthly",
+//   eventDescription: "A high-end corporate networking event.",
+//   venue: { label: "Grand Ballroom", value: "venue001", totalPrice: 25000 },
+//   totalPrice: 30000,
+//   isExtraStaffRequired: true,
+//   extraNoOfStaff: 5,
+//   extraNoOfStaffAmount: 5000,
   
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@example.com",
-  phoneNumber: "+91-9876543210",
-  address: "123 MG Road, Indiranagar",
-  city: "Bangalore",
-  state: "Karnataka",
-  country: "India",
-postalCode: "560038",
+//   firstName: "John",
+//   lastName: "Doe",
+//   email: "john.doe@example.com",
+//   phoneNumber: "+91-9876543210",
+//   address: "123 MG Road, Indiranagar",
+//   city: "Bangalore",
+//   state: "Karnataka",
+//   country: "India",
+// postalCode: "560038",
 
-  vendorN: [
-    {
-      vName: "Catering Kings",
-      vEmail: "contact@cateringkings.com",
-      vPhone: "+91 98765 43210",
-      vtype: "Catering",
-    },
-    {
-      vName: "EventDecor",
-      vEmail: "info@eventdecor.com",
-      vPhone: "+91 91234 56789",
-      vtype: "Decoration",
-    },
-  ],
-};
+//   vendorN: [
+//     {
+//       vName: "Catering Kings",
+//       vEmail: "contact@cateringkings.com",
+//       vPhone: "+91 98765 43210",
+//       vtype: "Catering",
+//     },
+//     {
+//       vName: "EventDecor",
+//       vEmail: "info@eventdecor.com",
+//       vPhone: "+91 91234 56789",
+//       vtype: "Decoration",
+//     },
+//   ],
+// };
 
-const EventPreview = ({stepper}) => {
-    // console.log("eventData",allEventData);
+const EventPreview = ({stepper, allEventData}) => {
+    console.log("eventData",allEventData);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const allEventData =  defaultDummyData;
+  // const allEventData =  defaultDummyData;
 
   const { handleSubmit } = useForm({
     // defaultValues: eventData,
@@ -60,17 +60,32 @@ const EventPreview = ({stepper}) => {
     // Proceed with submission/payment
   };
 
-//  return <div>helo</div>
+  // const handlePreview=async()=>{
+
+  //   try {
+      
+  //     const res=await useJwt.api();
+  //     log("Response from API:", res);
+  //   } catch (error) {
+  //     console.log("Error in handlePreview:", error);
+      
+  //   }
+  
+  // }
+
+  // useEffect(()=>{
+  //   handlePreview();
+  // },[])
  
   return (
-    <div className="mt-4">
+    <div className="">
       <h3>Event Confirmation</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="mt-3">
+        <Card className="mt-2">
           <CardBody>
             <Row className="mb-2">
               <Col md="6"><strong>Event Name:</strong> {allEventData?.eventName}</Col>
-              <Col md="6"><strong>Event Type:</strong> {allEventData?.eventType?.label}</Col>
+              <Col md="6"><strong>Event Type:</strong> {allEventData?.eventTypes}</Col>
             </Row>
             <Row className="mb-2">
               <Col md="6"><strong>Theme:</strong> {allEventData?.eventTheme || "N/A"}</Col>
@@ -81,8 +96,8 @@ const EventPreview = ({stepper}) => {
               <Col md="6"><strong>Pattern:</strong> {allEventData?.recurrencePattern || "N/A"}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Venue:</strong> {allEventData?.venue?.label || "Other"}</Col>
-              <Col md="6"><strong>Total Price:</strong> $ {allEventData?.totalPrice}</Col>
+              <Col md="6"><strong>Venue:</strong> {allEventData?.label || "Other"}</Col>
+              <Col md="6"><strong>Total Price:</strong> $ {allEventData?.totalAmount}</Col>
             </Row>
             <Row className="mb-2">
               <Col md="6"><strong>Extra Staff:</strong> {allEventData?.isExtraStaff ? "Yes" : "No"}</Col>
@@ -101,14 +116,14 @@ const EventPreview = ({stepper}) => {
 
       <h3>Member Details</h3>
 
-         <Card className="mt-3">
+         <Card className="mt-2">
           <CardBody>
             <Row className="mb-2">
-              <Col md="6"><strong>First Name:</strong> {allEventData?.member?.firstName}</Col>
+              <Col md="6"><strong>First Name:</strong> {allEventData?.firstName}</Col>
               <Col md="6"><strong>Last  Name:</strong> {allEventData?.lastName}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Email ID:</strong> {allEventData?.email || "N/A"}</Col>
+              <Col md="6"><strong>Email ID:</strong> {allEventData?.emailId || "N/A"}</Col>
               <Col md="6"><strong>phone Number:</strong> {allEventData?.phoneNumber}</Col>
             </Row>
             <Row className="mb-2">
@@ -117,7 +132,7 @@ const EventPreview = ({stepper}) => {
             </Row>
             <Row className="mb-2">
               <Col md="6"><strong>State:</strong> {allEventData?.state  || "Other"}</Col>
-              <Col md="6"><strong>Country:</strong> ₹{allEventData?.country}</Col>
+              <Col md="6"><strong>Country:</strong> {allEventData?.country}</Col>
             </Row>
             <Row className="mb-2">
               <Col md="6"><strong>Postal Code</strong> {allEventData?.postalCode || "N/A"}</Col>
@@ -130,8 +145,8 @@ const EventPreview = ({stepper}) => {
 
         <hr />
       <h3>Vendor</h3>
-        {allEventData?.vendorN && allEventData?.vendorN.length > 0 ? (
-          allEventData?.vendorN?.map((vendor, i) => (
+        {allEventData?.vendorN?.selectedVendors && allEventData?.vendorN?.selectedVendors?.length > 0 ? (
+          allEventData?.vendorN?.selectedVendors?.map((vendor, i) => (
             <div key={i} className="border rounded p-2 mb-2 bg-light">
               <strong>{vendor?.vName}</strong> ({vendor?.vtype}) <br />
               Email: {vendor?.vEmail} <br />

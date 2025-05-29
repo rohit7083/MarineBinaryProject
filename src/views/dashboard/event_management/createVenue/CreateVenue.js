@@ -5,6 +5,7 @@ import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other 
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { useNavigate } from "react-router-dom";
+import { UncontrolledAlert } from "reactstrap";
 
 import { Navigate, useLocation } from "react-router-dom";
 
@@ -27,15 +28,34 @@ function CreateVenue() {
   const location = useLocation();
   const rowData = location.state?.row;
   const uid = rowData?.uid;
+  const [errMsz, seterrMsz] = useState("");
 
   const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm();
+  control,
+  handleSubmit,
+  watch,
+  setValue,
+  reset,
+  formState: { errors },
+} = useForm({
+  defaultValues: {
+    // venueName: "Grand Ballroom",
+    // capacity: "300",
+    // price: "5000",
+    // venueType: "Indoor", // Options: "Indoor", "Outdoor", "Hybrid"
+    // noOfStaff: "15",
+    // staffPrice: "1500",
+    // totalPrice: 6500, // Should be price + staffPrice
+    // city: "New York",
+    // address: "123 Event Plaza, Manhattan",
+    // state: "NY",
+    // country: "USA",
+    // postCode: "10001",
+  },
+
+
+
+  });
   const toast = useRef(null);
 
   const [loading, setLoading] = useState(false);
@@ -50,50 +70,113 @@ function CreateVenue() {
     setValue("totalPrice", total);
   }, [staffPrice, price, setValue]);
 
+  // const onSubmit = async (data) => {
+  //       seterrMsz("");
+
+  //   console.log("Form data:", data);
+  //   try {
+  //     setLoading(true);
+    
+  //     if (!uid) {
+  //       const res = await useJwt.Venue(data); // <-- update to your actual API call
+  //       console.log("API Response:", res);
+  //       if (res.status === 200) {
+  //         toast.current.show({
+  //           severity: "success",
+  //           summary: "Updated Successfully",
+  //           detail: "Event Type  updated Successfully.",
+  //           life: 2000,
+  //         });
+  //         setTimeout(() => {
+  //           navigate("/VenueList");
+  //         }, 2000);
+  //       }
+  //     } else {
+  //       const res = await useJwt.updateVenue(uid, data);
+  //       if (res.status === 201) {
+  //         toast.current.show({
+  //           severity: "success",
+  //           summary: "Created Successfully",
+  //           detail: "Event Type  created Successfully.",
+  //           life: 2000,
+  //         });
+  //         setTimeout(() => {
+  //           navigate("/VenueList");
+  //         }, 2000);
+  //       }
+  //       console.log("Created:", res);
+  //     }
+  //   } catch (error) {
+  //     console.error("API Error:", error);
+  //       if (error.response && error.response.data) {
+  //       const { status, content } = error.response.data;
+
+  //       seterrMsz((prev) => {
+  //         const newMsz = content || "Something went wrong!";
+  //         return prev !== newMsz ? newMsz : prev + " ";
+  //       });
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
   const onSubmit = async (data) => {
-    console.log("Form data:", data);
-    try {
-      setLoading(true);
-      {
-        {
-          debugger;
-        }
+  seterrMsz("");
+  console.log("Form data:", data);
+
+  try {
+    setLoading(true);
+
+    let res;
+
+    if (!uid) {
+      // Create new venue
+      res = await useJwt.Venue(data);
+      if (res.status === 201) {
+        toast.current.show({
+          severity: "success",
+          summary: "Created Successfully",
+          detail: "Venue created successfully.",
+          life: 2000,
+        });
+        setTimeout(() => {
+          navigate("/VenueList");
+        }, 2000);
       }
-      if (!uid) {
-        const res = await useJwt.Venue(data); // <-- update to your actual API call
-        console.log("API Response:", res);
-        if (res.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Updated Successfully",
-            detail: "Event Type  updated Successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/VenueList");
-          }, 2000);
-        }
-      } else {
-        const res = await useJwt.updateVenue(uid, data);
-        if (res.status === 201) {
-          toast.current.show({
-            severity: "success",
-            summary: "Created Successfully",
-            detail: "Event Type  created Successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/VenueList");
-          }, 2000);
-        }
-        console.log("Created:", res);
+    } else {
+      // Update existing venue
+      res = await useJwt.updateVenue(uid, data);
+      if (res.status === 200) {
+        toast.current.show({
+          severity: "success",
+          summary: "Updated Successfully",
+          detail: "Venue updated successfully.",
+          life: 2000,
+        });
+        setTimeout(() => {
+          navigate("/VenueList");
+        }, 2000);
       }
-    } catch (error) {
-      console.error("API Error:", error);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    console.log("API Response:", res);
+  } catch (error) {
+    console.error("API Error:", error);
+    if (error.response && error.response.data) {
+      const { content } = error.response.data;
+      seterrMsz((prev) => {
+        const newMsz = content || "Something went wrong!";
+        return prev !== newMsz ? newMsz : prev + " ";
+      });
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     if (uid) {
@@ -111,7 +194,6 @@ function CreateVenue() {
         state: rowData.state || "",
         country: rowData.country || "",
         postCode: rowData.postCode || "",
-        
       });
     }
   }, []);
@@ -122,13 +204,23 @@ function CreateVenue() {
         <CardBody>
           <CardTitle>
             <CardText>
-              
-              {!uid ?" Create ":" Update "
-}
-              Venue</CardText>
+              {!uid ? " Create " : " Update "}
+              Venue
+            </CardText>
           </CardTitle>
           <Toast ref={toast} />
-
+{errMsz && (
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">
+                <strong>Error : </strong>
+                {errMsz}
+              </span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup row>
               {/* Venue Name */}
@@ -183,151 +275,149 @@ function CreateVenue() {
                 )}
               </Col>
 
-
-   <Row>
-              <Col sm="6" className="mb-1">
-                <Label for="address">Address</Label>
-                <Controller
-                  name="address"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "address is required",
-                    // pattern: {
-                    //   value: /^[0-9]+$/,
-                    //   message: "address must be a number",
-                    // },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="address"
-                      type="text"
-                      placeholder="Enter venue address"
-                      invalid={!!errors.address}
-                      {...field}
-                    />
+              <Row>
+                <Col sm="6" className="mb-1">
+                  <Label for="address">Address</Label>
+                  <Controller
+                    name="address"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "address is required",
+                      // pattern: {
+                      //   value: /^[0-9]+$/,
+                      //   message: "address must be a number",
+                      // },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="address"
+                        type="text"
+                        placeholder="Enter venue address"
+                        invalid={!!errors.address}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.address && (
+                    <p className="text-danger">{errors.address.message}</p>
                   )}
-                />
-                {errors.address && (
-                  <p className="text-danger">{errors.address.message}</p>
-                )}
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="capacity">City</Label>
-                <Controller
-                  name="city"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "city is required",
-                    // pattern: {
-                    //   value: /^[0-9]+$/,
-                    //   message: "city must be a number",
-                    // },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="city"
-                      type="text"
-                      placeholder="Enter venue city"
-                      invalid={!!errors.city}
-                      {...field}
-                    />
+                </Col>
+                <Col sm="6" className="mb-1">
+                  <Label for="capacity">City</Label>
+                  <Controller
+                    name="city"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "city is required",
+                      // pattern: {
+                      //   value: /^[0-9]+$/,
+                      //   message: "city must be a number",
+                      // },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="city"
+                        type="text"
+                        placeholder="Enter venue city"
+                        invalid={!!errors.city}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.city && (
+                    <p className="text-danger">{errors.city.message}</p>
                   )}
-                />
-                {errors.city && (
-                  <p className="text-danger">{errors.city.message}</p>
-                )}
-              </Col>
-            </Row>
-            <Row>
-              {" "}
-              <Col sm="6" className="mb-1">
-                <Label for="state">state</Label>
-                <Controller
-                  name="state"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "state is required",
-                    // pattern: {
-                    //   value: /^[0-9]+$/,
-                    //   message: "state must be a number",
-                    // },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="state"
-                      type="text"
-                      placeholder="Enter venue state"
-                      invalid={!!errors.state}
-                      {...field}
-                    />
+                </Col>
+              </Row>
+              <Row>
+                {" "}
+                <Col sm="6" className="mb-1">
+                  <Label for="state">state</Label>
+                  <Controller
+                    name="state"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "state is required",
+                      // pattern: {
+                      //   value: /^[0-9]+$/,
+                      //   message: "state must be a number",
+                      // },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="state"
+                        type="text"
+                        placeholder="Enter venue state"
+                        invalid={!!errors.state}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.state && (
+                    <p className="text-danger">{errors.state.message}</p>
                   )}
-                />
-                {errors.state && (
-                  <p className="text-danger">{errors.state.message}</p>
-                )}
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="country">country</Label>
-                <Controller
-                  name="country"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "country is required",
-                    // pattern: {
-                    //   value: /^[0-9]+$/,
-                    //   message: "country must be a number",
-                    // },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="country"
-                      type="text"
-                      placeholder="Enter venue country"
-                      invalid={!!errors.country}
-                      {...field}
-                    />
+                </Col>
+                <Col sm="6" className="mb-1">
+                  <Label for="country">country</Label>
+                  <Controller
+                    name="country"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "country is required",
+                      // pattern: {
+                      //   value: /^[0-9]+$/,
+                      //   message: "country must be a number",
+                      // },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="country"
+                        type="text"
+                        placeholder="Enter venue country"
+                        invalid={!!errors.country}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.country && (
+                    <p className="text-danger">{errors.country.message}</p>
                   )}
-                />
-                {errors.country && (
-                  <p className="text-danger">{errors.country.message}</p>
-                )}
-              </Col>
-            </Row>
-            <Row>
-              {" "}
-              <Col sm="12" className="mb-1">
-                <Label for="postCode">Postal Code</Label>
-                <Controller
-                  name="postCode"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "postCode is required",
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: "postCode must be a number",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="postCode"
-                      type="number"
-                      placeholder="Enter venue postCode"
-                      invalid={!!errors.postCode}
-                      {...field}
-                    />
+                </Col>
+              </Row>
+              <Row>
+                {" "}
+                <Col sm="12" className="mb-1">
+                  <Label for="postCode">Postal Code</Label>
+                  <Controller
+                    name="postCode"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "postCode is required",
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: "postCode must be a number",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id="postCode"
+                        type="number"
+                        placeholder="Enter venue postCode"
+                        invalid={!!errors.postCode}
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.postCode && (
+                    <p className="text-danger">{errors.postCode.message}</p>
                   )}
-                />
-                {errors.postCode && (
-                  <p className="text-danger">{errors.postCode.message}</p>
-                )}
-              </Col>
-            </Row>
-
+                </Col>
+              </Row>
 
               {/* Venue Type */}
               <Col sm="12" className="mb-1">
@@ -467,6 +557,7 @@ function CreateVenue() {
                 )}
               </Col>
             </FormGroup>
+{/* <div className="d-flex justify-content-end"> */}
 
             <Button type="submit" disabled={loading} color="primary">
               {loading ? (
@@ -475,10 +566,12 @@ function CreateVenue() {
                   <Spinner size="sm" />{" "}
                 </>
               ) : (
-
-                "Submit"
+<>
+                {uid ? "Update":"Submit"}
+               </> 
               )}
             </Button>
+            {/* </div> */}
           </form>
         </CardBody>
       </Card>

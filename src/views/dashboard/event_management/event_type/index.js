@@ -215,9 +215,7 @@ const index = () => {
   };
 
   const handleEdit = (row) => {
-    // setMode("edit");
-    // setDatarow(row);
-    // setDataUid(row.uid);
+   
     navigate('/eventTypes', { state: { row } });
 
   };

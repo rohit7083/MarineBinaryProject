@@ -4,13 +4,10 @@ import jwtDefaultConfig from "./jwtDefaultConfig";
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000";
 
-
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
-
 
 export default class JwtService {
   jwtConfig = { ...jwtDefaultConfig };
@@ -27,8 +24,8 @@ export default class JwtService {
     axios.interceptors.request.use(
       async (config) => {
         // ** Get token from localStorage
-        const accessToken =  this.getToken();
-        
+        const accessToken = this.getToken();
+
         // ** Get Location
         const location = await this.getLocation();
 
@@ -43,16 +40,18 @@ export default class JwtService {
         }
 
         // ** If token is present add it to request's Authorization Header
-         
+
         if (accessToken) {
           // console.log("Access Token:", accessToken);
 
           // ** eslint-disable-next-line no-param-reassign
           // config.headers.Authorization = `${
           //   this.jwtConfig.tokenType
-          // } ${accessToken.slice(1, -1)}`; 
+          // } ${accessToken.slice(1, -1)}`;
 
-          config.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken.slice(1, -1)}`;
+          config.headers.Authorization = `${
+            this.jwtConfig.tokenType
+          } ${accessToken.slice(1, -1)}`;
         }
         return config;
       },
@@ -84,7 +83,6 @@ export default class JwtService {
           }
           const retryOriginalRequest = new Promise((resolve) => {
             this.addSubscriber((accessToken) => {
-             
               originalRequest.headers.Authorization = `${this.jwtConfig.tokenType} ${accessToken}`;
               resolve(this.axios(originalRequest));
             });
@@ -96,10 +94,7 @@ export default class JwtService {
     );
   }
 
-
-
-
- async getLocation() {
+  async getLocation() {
     try {
       if (!navigator.geolocation) {
         localStorage.setItem("locationEnabled", "false");
@@ -118,7 +113,7 @@ export default class JwtService {
       localStorage.setItem("locationEnabled", "true");
       return location;
     } catch (error) {
-      console.log({jwtServiceError:error})
+      console.log({ jwtServiceError: error });
       localStorage.setItem("locationEnabled", "false");
 
       // Handle permission denied
@@ -168,17 +163,15 @@ export default class JwtService {
     localStorage.setItem(this.jwtConfig.storageRefreshTokenKeyName, value);
   }
 
-// temp
+  // temp
 
   // login(...args) {
   //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
   // }
 
   getVendor() {
-  return axios.get(this.jwtConfig.getVendor);
-}
-
-
+    return axios.get(this.jwtConfig.getVendor);
+  }
 
   // ==================== Slip Category
 
@@ -200,10 +193,10 @@ export default class JwtService {
   postslip(...args) {
     return axios.post(this.jwtConfig.slip, ...args);
   }
-  getslip(id="") {
-    return axios.get(`${this.jwtConfig.slipGet}${id?"/"+id:''}`);
+  getslip(id = "") {
+    return axios.get(`${this.jwtConfig.slipGet}${id ? "/" + id : ""}`);
   }
- 
+
   updateslip(uid, ...args) {
     return axios.put(`${this.jwtConfig.slip}${uid}`, ...args);
   }
@@ -221,8 +214,8 @@ export default class JwtService {
   getVessel(uid = "") {
     return axios.get(`${this.jwtConfig.sVesselGet}/${uid}`);
   }
-  retriveVessel(uid="") {
-    return axios.get(this.jwtConfig.retriveVessel+uid);
+  retriveVessel(uid = "") {
+    return axios.get(this.jwtConfig.retriveVessel + uid);
   }
   // ==================== Slip Member
 
@@ -230,27 +223,24 @@ export default class JwtService {
     return axios.post(this.jwtConfig.sMember, ...args);
   }
 
-  retriveMember(uid="") {
-    return axios.get(this.jwtConfig.retriveMember+uid);
+  retriveMember(uid = "") {
+    return axios.get(this.jwtConfig.retriveMember + uid);
   }
-  
+
   UpdateMember(uid, ...args) {
     return axios.put(`${this.jwtConfig.UpdateMember}${uid}`, ...args);
   }
 
-  
   // =================== Payment
-  
+
   createPayment(...args) {
     return axios.post(this.jwtConfig.createPayment, ...args);
   }
 
-    
   totalPayment(token, ...args) {
     return axios.post(`${this.jwtConfig.totalPayment}${token}`, ...args);
   }
-  
- 
+
   getPayment(...args) {
     return axios.get(this.jwtConfig.getPayment, ...args);
   }
@@ -274,30 +264,25 @@ export default class JwtService {
   // }
 
   // =================== Login
-  checktoken(token , ...args) {
-    return axios.get(this.jwtConfig.checktoken+token, ...args);
+  checktoken(token, ...args) {
+    return axios.get(this.jwtConfig.checktoken + token, ...args);
   }
 
-
-
   verifyEmail(...args) {
-     
     return axios.post(this.jwtConfig.verifyEmail, ...args);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
 
-  loginPassword(token, ...args){
-    return axios.post(this.jwtConfig.loginPassword+token, ...args);
-
+  loginPassword(token, ...args) {
+    return axios.post(this.jwtConfig.loginPassword + token, ...args);
   }
 
-  chnagePassword(token, ...args){
-    return axios.post(this.jwtConfig.chnagePassword+token,...args);
+  chnagePassword(token, ...args) {
+    return axios.post(this.jwtConfig.chnagePassword + token, ...args);
   }
 
-  sendOtp(token="") {
-     
-    return axios.get(this.jwtConfig.sendOtp+token);
+  sendOtp(token = "") {
+    return axios.get(this.jwtConfig.sendOtp + token);
     // return axios.post(this.jwtConfig.loginEndpoint, ...args);
   }
 
@@ -328,38 +313,31 @@ export default class JwtService {
     return axios.post(this.jwtConfig.verifyQr, ...args);
   }
 
-  disable(){
+  disable() {
     return axios.post(this.jwtConfig.disable);
-
   }
-  mobileOtp(token="", ...args){
-    return axios.post(this.jwtConfig.mobileOtp+token , ...args);
-
+  mobileOtp(token = "", ...args) {
+    return axios.post(this.jwtConfig.mobileOtp + token, ...args);
   }
 
-  status(){
+  status() {
     return axios.get(this.jwtConfig.status);
-
   }
-  // =================== roles and permissions 
+  // =================== roles and permissions
 
-  createUser(payload){
-    return axios.post(this.jwtConfig.createUser , payload);
-
+  createUser(payload) {
+    return axios.post(this.jwtConfig.createUser, payload);
   }
 
-  userpermissionPost(...data){
-    return axios.post(this.jwtConfig.userpermissionPost , ...data);
-
-  } 
-
-  userpermission(params=""){
-    return axios.get(this.jwtConfig.userpermission+params);
-
+  userpermissionPost(...data) {
+    return axios.post(this.jwtConfig.userpermissionPost, ...data);
   }
-  permission(){
+
+  userpermission(params = "") {
+    return axios.get(this.jwtConfig.userpermission + params);
+  }
+  permission() {
     return axios.get(this.jwtConfig.permission);
-
   }
 
   deleteRole(uid) {
@@ -373,7 +351,7 @@ export default class JwtService {
   updateRole(uid, ...args) {
     return axios.put(`${this.jwtConfig.updateRole}${uid}`, ...args);
   }
-  getallSubuser(paramas="") {
+  getallSubuser(paramas = "") {
     return axios.get(`${this.jwtConfig.getallSubuser}${paramas}`);
   }
 
@@ -397,52 +375,55 @@ export default class JwtService {
   //   return axios.post(this.jwtConfig.verifyOTP + token, ...data);
   // }
 
+  // Pos- Vender management
 
-// Pos- Vender management
+  addVender(...args) {
+    return axios.post(this.jwtConfig.addVender, ...args);
+  }
+  editvender(uid, ...args) {
+    return axios.put(`${this.jwtConfig.editvender}${uid}`, ...args);
+  }
 
-addVender(...args) {
-  return axios.post(this.jwtConfig.addVender, ...args); 
-}
-editvender(uid, ...args) {
-  return axios.put(`${this.jwtConfig.editvender}${uid}`, ...args);
-}
+  deleteVender(uid) {
+    return axios.delete(`${this.jwtConfig.deleteVender}${uid}`);
+  }
 
-deleteVender(uid) {
-  return axios.delete(`${this.jwtConfig.deleteVender}${uid}`);  
-}
+  getAllVendor() {
+    return axios.get(`${this.jwtConfig.getAllVendor}`);
+  }
+  // ===== tax product ====
+  productTax(...args) {
+    return axios.post(this.jwtConfig.productTax, ...args);
+  }
 
-getAllVendor() {
-  return axios.get(`${this.jwtConfig.getAllVendor}`);  
-}
-// ===== tax product ====
-productTax(...args) {
-  return axios.post(this.jwtConfig.productTax, ...args); 
-}
+  updateTax(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateTax}${uid}`, ...args);
+  }
 
+  deleteTax(uid) {
+    return axios.delete(`${this.jwtConfig.deleteTax}${uid}`);
+  }
 
-updateTax(uid, ...args) {
-  return axios.put(`${this.jwtConfig.updateTax}${uid}`, ...args);
-}
-
-deleteTax(uid) {
-  return axios.delete(`${this.jwtConfig.deleteTax}${uid}`);  
-}
-
-getAlltax() {
-  return axios.get(`${this.jwtConfig.getAlltax}`);  
-}
-
+  getAlltax() {
+    return axios.get(`${this.jwtConfig.getAlltax}`);
+  }
 
   async verifyOTP(token, ...data) {
     try {
-      const response = await axios.post(`${this.jwtConfig.verifyOTP}${token}`, ...data);
+      const response = await axios.post(
+        `${this.jwtConfig.verifyOTP}${token}`,
+        ...data
+      );
       return response.data;
     } catch (error) {
-      console.error("OTP Verification Failed:", error.response?.data || error.message);
+      console.error(
+        "OTP Verification Failed:",
+        error.response?.data || error.message
+      );
       throw error;
     }
   }
-  
+
   slipDocument(...args) {
     return axios.post(this.jwtConfig.slipDocument, ...args);
   }
@@ -452,49 +433,41 @@ getAlltax() {
   }
 
   updateDoc(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateDoc}${uid}`,...args);
+    return axios.put(`${this.jwtConfig.updateDoc}${uid}`, ...args);
   }
-
 
   addProductCategory(...args) {
     return axios.post(this.jwtConfig.addProductCategory, ...args);
   }
 
-
-  
   getProductCategory() {
     return axios.get(this.jwtConfig.getProductCategory);
   }
-  
 
   editProductCategory(uid, ...args) {
-    return axios.put(`${this.jwtConfig.editProductCategory}${uid}`,...args);
+    return axios.put(`${this.jwtConfig.editProductCategory}${uid}`, ...args);
   }
 
   deleteProductCategory(uid) {
     return axios.delete(`${this.jwtConfig.editProductCategory}${uid}`);
   }
 
-
-
   addProduct(...args) {
     return axios.post(this.jwtConfig.addProduct, ...args);
   }
 
-
   // create parking pass
 
-    addPass(...args) {
+  addPass(...args) {
     return axios.post(this.jwtConfig.addPass, ...args);
   }
-    editpass(uid, ...args) {
+  editpass(uid, ...args) {
     return axios.put(`${this.jwtConfig.editpass}${uid}`, ...args);
   }
   getAll() {
     return axios.get(this.jwtConfig.getAll);
   }
-  
-  
+
   Delete(uid) {
     return axios.delete(`${this.jwtConfig.Delete}${uid}`);
   }
@@ -503,29 +476,27 @@ getAlltax() {
     return axios.get(this.jwtConfig.guest);
   }
 
-   memberpark(...args) {
-    return axios.post(this.jwtConfig.memberpark , ...args);
+  memberpark(...args) {
+    return axios.post(this.jwtConfig.memberpark, ...args);
   }
 
-  
- GetMember() {
+  GetMember() {
     return axios.get(this.jwtConfig.GetMember);
   }
-  
-ParkingPayment(...args) {
+
+  ParkingPayment(...args) {
     return axios.post(this.jwtConfig.ParkingPayment, ...args);
   }
 
-  
- EventType(...args) {
+  EventType(...args) {
     return axios.post(this.jwtConfig.EventType, ...args);
   }
 
- VendorType(...args) {
+  VendorType(...args) {
     return axios.post(this.jwtConfig.VendorType, ...args);
   }
 
-getAllEventType() {
+  getAllEventType() {
     return axios.get(this.jwtConfig.getAllEventType);
   }
 
@@ -533,47 +504,69 @@ getAllEventType() {
     return axios.get(this.jwtConfig.getAllVenue);
   }
 
- Venue(...args) {
+  Venue(...args) {
     return axios.post(this.jwtConfig.Venue, ...args);
   }
 
-   DeleteEtype(uid) {
+  DeleteEtype(uid) {
     return axios.delete(`${this.jwtConfig.DeleteEtype}${uid}`);
   }
 
- UpdateEventType(uid, ...args) {
+  UpdateEventType(uid, ...args) {
     return axios.put(`${this.jwtConfig.UpdateEventType}${uid}`, ...args);
   }
-  
 
   updateVenue(uid, ...args) {
     return axios.put(`${this.jwtConfig.updateVenue}${uid}`, ...args);
   }
 
-  
-   DeleteVenue(uid) {
+  DeleteVenue(uid) {
     return axios.delete(`${this.jwtConfig.DeleteVenue}${uid}`);
   }
-  
 
   getAllVendor() {
     return axios.get(this.jwtConfig.getAllVendor);
   }
 
-getAllEvents() {
+  getAllEvents() {
     return axios.get(this.jwtConfig.getAllEvents);
   }
 
-   createEvent(...args) {
+  createEvent(...args) {
     return axios.post(this.jwtConfig.createEvent, ...args);
   }
-  
+
+  DeleteVendorType(uid) {
+    return axios.delete(`${this.jwtConfig.DeleteVendorType}${uid}`);
+  }
+
+  getAllVendorType() {
+    return axios.get(this.jwtConfig.getAllVendorType);
+  }
+
+  updateVendor(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateVendor}${uid}`, ...args);
+  }
+
+  GenerateOtp(...args) {
+    return axios.post(this.jwtConfig.GenerateOtp, ...args);
+  }
+
+  verifyOtp(token, ...args) {
+    return axios.post(`${this.jwtConfig.verifyOtp}${token}`, ...args);
+  }
+
+  payment(...args) {
+    return axios.post(this.jwtConfig.payment, ...args);
+  }
+  DeleteEvent(uid) {
+    return axios.delete(`${this.jwtConfig.DeleteEvent}${uid}`);
+  }
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),
   //   });
   // }
-
 
   async refreshToken() {
     try {
@@ -586,5 +579,4 @@ getAllEvents() {
       throw error;
     }
   }
-  
 }

@@ -5,7 +5,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 import {
   Card,
@@ -56,25 +56,33 @@ const CardPayment = () => {
     },
   });
 
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
-    
+  const decryptToken = (encryptedToken) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      return decrypted || "Invalid decryption";
+    } catch (e) {
+      return "Error decrypting token";
+    }
+  };
+
+  const decryptedToken = decryptToken(token);
 
   const MySwal = withReactContent(Swal);
 
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
-  const { token } = useParams();
+  
   const navigate = useNavigate();
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
   const getMember = async () => {
     try {
       setLoading(true);
-      const res = await useJwt.getMemberDetails(token);
+      const res = await useJwt.getMemberDetails(decryptedToken);
       console.log("res", res);
-      // const eventId=res?.data?.eventId;
-
-
       setMemberDetails(res?.data);
     } catch (error) {
       console.log("error", error);
@@ -110,24 +118,24 @@ const CardPayment = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
+
     setValue(name, value); // React Hook Form update
-  
+
     if (name === "cardExpiryYear") {
       setSelectedYear(value); // update year selection state
     }
-  
+
     if (name === "cardExpiryMonth" || name === "cardExpiryYear") {
       const updatedMonth =
         name === "cardExpiryMonth" ? value : watch("cardExpiryMonth");
       const updatedYear =
         name === "cardExpiryYear" ? value : watch("cardExpiryYear");
-  
+
       const formattedExpiry =
         updatedMonth && updatedYear
           ? `${updatedMonth}/${updatedYear.slice(-2)}`
           : "";
-  
+
       setCardDetails((prev) => ({
         ...prev,
         expiry: formattedExpiry,
@@ -139,7 +147,6 @@ const CardPayment = () => {
       }));
     }
   };
-  
 
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -170,40 +177,25 @@ const CardPayment = () => {
       { value: "11", label: "November" },
       { value: "12", label: "December" },
     ];
-  
+
     if (selectedYear === String(currentYear)) {
       return allMonths.slice(currentMonth); // Exclude past months for current year
     }
     return allMonths;
   };
-  
 
   const selectedOption = watch("paymentMethod");
-
-  console.log("selectedOption ", selectedOption);
 
   const onSubmit = async (data) => {
     setErr("");
     const { cvc, ...rest } = data;
 
-let payload={};
-   if (memberDetail?.slipId) {
-        
-    payload={  
+    let payload = {
       finalPayment: Number(memberDetail?.amount),
       slipId: memberDetail?.slipId,
       memberId: memberDetail?.memberId,
       paymentMode: selectedOption === "ach" ? 5 : 1,
-      }}
-      else{
-        payload={
-      finalPayment: Number(memberDetail?.amount),
-      eventId: memberDetail?.eventId,
-      memberId: memberDetail?.memberId,
-      paymentMode: selectedOption === "ach" ? 5 : 1,
-        }
-      }
-   
+    };
 
     if (selectedOption === "card") {
       payload.cardExpiryYear = Number(data.cardExpiryYear);
@@ -323,25 +315,6 @@ let payload={};
       }
     });
   }, [watchInputes.join("|")]);
-
-
-    const maskCardNumberForCard = (number = "") => {
-    const clean = number.replace(/\D/g, "");
-    const len = clean.length;
-
-    if (len <= 6) return clean; // Not enough digits to mask
-
-    const first4 = clean.slice(0, 4);
-    const middleLen = len - 6; // number of *s
-    const maskedMiddle = "*".repeat(middleLen);
-    const last2 = clean.slice(-2);
-
-    return first4 + maskedMiddle + last2;
-  };
-
-   const maskCVC = (cvc = "") => {
-    return cvc ? "*".repeat(cvc.length) : "";
-  };
 
   return (
     <Row className="d-flex justify-content-center mt-3">
@@ -672,22 +645,13 @@ let payload={};
                           <Row className="justify-content-center align-items-center">
                             {/* Credit Card Preview on Left */}
                             <Col md={6} className="text-center">
-                              {/* <Cards
+                              <Cards
                                 number={cardDetails.cardNumber}
                                 name={cardDetails.nameOnCard}
                                 expiry={cardDetails.expiry}
                                 cvc={cardDetails.cvc}
                                 focused={cardDetails.focus}
-                              /> */}
-                               <Cards
-                                  number={maskCardNumberForCard(
-                                    cardDetails.cardNumber
-                                  )} // ⚠️ only partially masked
-                                  name={cardDetails.nameOnCard}
-                                  expiry={cardDetails.expiry}
-                                  cvc={maskCVC(cardDetails.cvc)} // Shows ***
-                                  focused={cardDetails.focus}
-                                />
+                              />
                             </Col>
 
                             {/* Form on Right */}
@@ -834,7 +798,7 @@ let payload={};
                                       <Input
                                         {...field}
                                         id="cardType"
-                                        disabled={true}
+                                        // readOnly={true}
                                         onChange={(e) => {
                                           field.onChange(e); // keep react-hook-form state updated
                                           handleInputChange(e); // your custom logic
@@ -942,14 +906,16 @@ let payload={};
                                         onFocus={handleInputFocus}
                                       >
                                         <option value="">Select Month</option>
-                                        {getFilteredMonths(selectedYear).map((month) => (
-                                          <option
-                                            key={month.value}
-                                            value={month.value}
-                                          >
-                                            {month.label}
-                                          </option>
-                                        ))}
+                                        {getFilteredMonths(selectedYear).map(
+                                          (month) => (
+                                            <option
+                                              key={month.value}
+                                              value={month.value}
+                                            >
+                                              {month.label}
+                                            </option>
+                                          )
+                                        )}
                                       </Input>
                                     )}
                                   />
@@ -1017,7 +983,7 @@ let payload={};
                         marginBottom: "8px",
                       }}
                     >
-                      <div className="details-title">Amount</div>
+                      <div className="details-title">Price of items</div>
                       <div className="detail-amt">
                         <strong>$ {memberDetail?.amount}</strong>
                       </div>

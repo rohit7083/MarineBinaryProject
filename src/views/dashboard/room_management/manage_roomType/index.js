@@ -1,120 +1,3 @@
-// import React, { useState, useRef, useEffect } from "react";
-// import Event_Info from "./Event_info";
-// // import VenueLocation from "./steps-with-validation/VenueLocation";
-// // import LogisticsServices from "./steps-with-validation/LogisticsServices";
-// // import VendorsCoordination from "./steps-with-validation/VendorsCoordination";
-// // import FinalReview from "./steps-with-validation/FinalReview";
-
-// // Custom Components
-// import Wizard from "@components/wizard";
-
-// // Icons
-// import { User, MapPin, Settings, Users, Clipboard } from "react-feather";
-
-// const index = () => {
-//   const ref = useRef(null);
-//   const [stepper, setStepper] = useState(null);
-//   const [fetchLoader, setFetchLoader] = useState(false);
-
-//   const [formData, setFormData] = useState({
-//         EventInfo: {},
-//     clientInfo: {},
-//     venueLocation: {},
-//     logistics: {},
-//     vendors: {},
-//   });
-
-//   useEffect(() => {
-//     // Optional: Fetch existing data to prefill
-//   }, []);
-
-//   const steps = [
-//     {
-//       id: "Event-info",
-//       title: "Event Information",
-//       subtitle: "Enter Event details",
-//       icon: <User size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.EventInfo }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "venue-location",
-//       title: "Venue & Location",
-//       subtitle: "Choose venue & setup",
-//       icon: <MapPin size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.venueLocation }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "logistics",
-//       title: "Logistics & Services",
-//       subtitle: "Plan services",
-//       icon: <Settings size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.logistics }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "vendors",
-//       title: "Vendors & Coordination",
-//       subtitle: "Manage vendors",
-//       icon: <Users size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.vendors }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "review",
-//       title: "Review",
-//       subtitle: "Final review & submit",
-//       icon: <Clipboard size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={formData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div className="modern-horizontal-wizard">
-//       <Wizard
-//         type="modern-horizontal"
-//         ref={ref}
-//         steps={steps}
-//         options={{ linear: false }}
-//         instance={(el) => setStepper(el)}
-//       />
-//     </div>
-//   );
-// };
-
-// export default index;
-
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -130,8 +13,7 @@ import {
   Button,
   Badge,
 } from "reactstrap";
-import Add_parkDetails from "../parking_pass/Add_parkDetails";
-import { Link } from "react-router-dom";
+import { Link ,Navigate,useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import { debounce } from "lodash";
@@ -146,6 +28,7 @@ const index = () => {
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
+    const navigate=useNavigate();
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -158,7 +41,7 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-      const { data } = await useJwt.getAllEvents();
+      const { data } = await useJwt.getAllVsendorType();
       const { content } = data;
       console.log("getAllEvents", content);
 
@@ -169,6 +52,12 @@ const index = () => {
       setLoading(false);
     }
   }
+
+    const handleEdit = (row) => {
+   
+    navigate('/pos/vendor_typeList/addVendorType', { state: { row } });
+
+  };
 
   useEffect(() => {
     // {{debugger}}
@@ -190,7 +79,7 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.eventName?.toLowerCase().includes(value.toLowerCase()) ||
+          row.parkingName?.toLowerCase().includes(value.toLowerCase()) ||
           row.perDayDueChargesType
             ?.toLowerCase()
             .includes(value.toLowerCase()) ||
@@ -223,32 +112,26 @@ const index = () => {
     },
 
     {
-      name: "Event Name",
+      name: "Room Type",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.eventName,
+      selector: (row) => row.typeName,
     },
-
     {
-      name: "Description",
+      name: "Tax Name",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.eventDescription,
+      selector: (row) => row.description,
     },
 
-    {
-      name: "Start Date & Time",
+       {
+      name: "Tax Value",
       sortable: true,
-      minWidth: "250px",
-      selector: (row) => `${row.eventStartDate} - ${row.eventStartTime}`,
-    },
-    {
-      name: "End Date & Time",
-      sortable: true,
-      minWidth: "250px",
-      selector: (row) => `${row.eventEndDate} - ${row.eventEndTime}`,
+      // minWidth: "150px",
+      selector: (row) => row.description,
     },
 
+   
     {
       name: "Actions",
       minWidth: "150px",
@@ -274,7 +157,7 @@ const index = () => {
             if (result.value) {
               try {
                 // Call delete API
-                const response = await useJwt.DeleteEvent(uid);
+                const response = await useJwt.DeleteVendorType(uid);
                 if (response?.status === 204) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(
@@ -321,19 +204,18 @@ const index = () => {
               Sell
             </Badge> */}
             {/* </span> */}
-            <Link
-              style={{ margin: "0.5rem" }}
-              to={`/CreateEvent`}
-              state={{ Rowdata: row, uid: row.uid }}
+
+            <span
+              color="danger"
+              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                            onClick={()=>handleEdit(row)}
+
+                
+            
             >
-              <span
-                color="danger"
-                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-               
-              >
-                <Edit2 className="font-medium-3 text-body" />
-              </span>
-            </Link>
+              <Edit2 className="font-medium-3 text-body" />
+            </span>
+
             <span
               color="danger"
               style={{ cursor: "pointer", color: "red" }}
@@ -387,7 +269,8 @@ const index = () => {
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <h3 className="">Event Management</h3>
+            <h3 className="">Room Type List
+</h3>
 
             <div className="mx-2">
               <Row
@@ -395,14 +278,14 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Link to={"/CreateEvent"}>
+                  <Link to={"/add_room_types"}>
                     <Button
                       // color="danger"
                       color="primary"
                       size="sm"
                       className="text-nowrap mb-1"
                     >
-                      <Plus size={14} /> Create Event
+                      <Plus size={14} /> Add Room Type
                     </Button>
                   </Link>
                 </Col>

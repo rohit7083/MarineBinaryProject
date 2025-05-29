@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect ,useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import ViewClient from "./ViewClient";
 import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -53,7 +53,11 @@ const CustomLabel = ({ htmlFor }) => {
     </Label>
   );
 };
-const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData }) => {
+const ClientDetaiils = ({
+  memberAppendData,
+  setSelectedMember,
+  setMemberAppendData,
+}) => {
   const [childData, setGuestChildData] = useState(null);
 
   const [options, setOptions] = useState([
@@ -66,7 +70,7 @@ const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData
   ]);
   console.log(childData);
 
-  const OptionComponent = ({  data, ...props }) => {
+  const OptionComponent = ({ data, ...props }) => {
     if (data.type === "button") {
       return (
         <Button
@@ -84,11 +88,10 @@ const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData
     }
   };
 
-
   const [count, setCount] = useState(1);
   const [value, setValue] = useState({});
-    const toast = useRef(null);
-  
+  const toast = useRef(null);
+
   const [open, setOpen] = useState(false);
   const [clients, setClients] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -164,7 +167,7 @@ const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData
       console.log(error);
     }
   };
-// {{debugger}}
+  // {{debugger}}
   useEffect(() => {
     fetchExistingMem();
   }, [selectedValue]);
@@ -213,16 +216,16 @@ const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData
     console.log("data", payload);
     setMemberAppendData(payload);
 
-      toast.current.show({
-        severity: "success",
-        summary: "Successfully",
-        detail: "Member Added Successfully.",
-        life: 2000,
-      });
+    toast.current.show({
+      severity: "success",
+      summary: "Successfully",
+      detail: "Member Added Successfully.",
+      life: 2000,
+    });
 
-      setTimeout(() => {
-        setOpen(false);
-      }, 2000);
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000);
     reset();
   };
 
@@ -234,28 +237,33 @@ const ClientDetaiils = ({memberAppendData, setSelectedMember,setMemberAppendData
     }
   }, [selectedMember]);
 
-  const hasSelectedMember = selectedMember && Object.keys(selectedMember).length > 0;
-const hasMemberAppendData = memberAppendData && Object.keys(memberAppendData).length > 0;
+  const hasSelectedMember =
+    selectedMember && Object.keys(selectedMember).length > 0;
+  const hasMemberAppendData =
+    memberAppendData && Object.keys(memberAppendData).length > 0;
 
   return (
     <Fragment>
-            <Toast ref={toast} />
-      
-        <Row className="row-bill-to invoice-spacing mb-2">
-          <Col className="col-bill-to ps-0 mx-1" xl="12">
-            <Label for="totalPrice">Select Member</Label>
+      <Toast ref={toast} />
 
-            <div className="invoice-customer">
-              <Fragment>
-                <Controller
-                  control={control}
-                  name="selectedMember"
-                  render={({ field }) => {
-                    return (
-                      <Fragment>
+      <Row className="row-bill-to invoice-spacing mb-2">
+        <Col className="col-bill-to ps-0 mx-1" xl="12">
+          <Label for="totalPrice">Select Member</Label>
+
+          <div className="invoice-customer">
+            <Fragment>
+              <Controller
+                control={control}
+                name="selectedMember"
+                render={({ field }) => {
+                  return (
+                    <Fragment>
+                      <div>
                         <Select
                           {...field}
-                          className="react-select"
+                          className={`react-select ${
+                            errors.selectedMember ? "is-invalid" : ""
+                          }`}
                           classNamePrefix="select"
                           id="label"
                           options={[...options, ...memberNames]}
@@ -266,18 +274,26 @@ const hasMemberAppendData = memberAppendData && Object.keys(memberAppendData).le
                             handleInvoiceToChange(val); // your custom function
                           }}
                         />
-                      </Fragment>
-                    );
-                  }}
-                />
-              </Fragment>
-            </div>
-          </Col>
-        </Row>
+                        {errors.selectedMember && (
+                          <div className="invalid-feedback d-block">
+                            {errors.selectedMember.message}
+                          </div>
+                        )}
+                      </div>
+                    </Fragment>
+                  );
+                }}
+              />
+            </Fragment>
+          </div>
+        </Col>
+      </Row>
 
-{(hasSelectedMember || hasMemberAppendData) && (
-  <ViewClient selectedMember={hasSelectedMember ? selectedMember : memberAppendData} />
-)}
+      {(hasSelectedMember || hasMemberAppendData) && (
+        <ViewClient
+          selectedMember={hasSelectedMember ? selectedMember : memberAppendData}
+        />
+      )}
       <Sidebar
         size="lg"
         open={open}

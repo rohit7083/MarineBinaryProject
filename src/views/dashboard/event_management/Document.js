@@ -118,7 +118,7 @@ const [ermsz,setErrmsz]=useState("");
     try {
       //  
       if (myId) {
-        navigate("/dashboard/slipmember_list"); // Redirect after alert
+        navigate("/event_index"); // Redirect after alert
       }
       const results = await Promise.all(
         Object.values(updatedDataList).map(async (details) => {
@@ -156,7 +156,7 @@ const [ermsz,setErrmsz]=useState("");
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
-          navigate("/dashboard/slipmember_list");
+          navigate("/event_index");
         });
       }
     } catch (error) {
