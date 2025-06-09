@@ -223,7 +223,7 @@ const DataTableWithButtons = () => {
                       width="18"
                       className="mx-1 "
                     />
-                    <p className="mt-1"> Add Producct</p>
+                    <p className="mt-1" style={{fontSize:"0.9em"}}> Add Producct</p>
                   </div>
                   {/* <Tooltip
                     placement="top"
@@ -263,14 +263,14 @@ const DataTableWithButtons = () => {
                 <Link to="/dashboard/pos/product_management/addproductCategory">
                   <div className="d-flex">
                     <img
-                      width="20"
-                      height="20"
+                      width="18"
+                      height="18"
                       id="addProductCate"
                       src={AddCategoryIcon}
                       alt="sorting-answers"
                       className="mx-1 mt-1"
                     />
-                    <p className="mt-1">Add Category</p>
+                    <p className="mt-1" style={{fontSize:"0.9em"}}>Add Category</p>
 
                     {/* <Tooltip
                     placement="top"
@@ -287,14 +287,14 @@ const DataTableWithButtons = () => {
                 <Link to="/dashboard/pos/product_management/addTaxes">
                   <div className="d-flex">
                     <img
-                      width="20"
-                      height="20"
+                      width="18"
+                      height="18"
                       id="addProducttaxes"
                       src={addTax}
                       alt="addProducttaxes"
                       className="mx-1 mt-1"
                     />
-                    <p className="mt-1">Add Taxes</p>
+                    <p className="mt-1" style={{fontSize:"0.9em"}}>Add Taxes</p>
 
                     {/* <Tooltip
                     placement="top"
@@ -311,14 +311,14 @@ const DataTableWithButtons = () => {
                 <Link to="/dashboard/pos/product_management/AddStocks">
                   <div className="d-flex">
                     <img
-                      width="20"
-                      height="20"
+                      width="18"
+                      height="18"
                       id="addStock"
                       src={addStocks}
                       alt="list-is-empty"
                       className="mx-1 mt-1"
                     />
-                    <p className="mt-1">Add Stock</p>
+                    <p className="mt-1"style={{fontSize:"0.9em"}} >Add Stock</p>
                     {/* <Tooltip
                     placement="top"
                     isOpen={tooltipOpen.addStock}
@@ -335,14 +335,14 @@ const DataTableWithButtons = () => {
                 <Link to="/dashboard/pos/product_management/manageStocks">
                   <div className="d-flex">
                     <img
-                      width="20"
-                      height="20"
+                      width="18"
+                      height="18"
                       id="stockManage"
                       src={ManageStocks}
                       alt="list-is-empty"
                       className="mx-1 mt-1"
                     />
-                    <p className="mt-1"> Stock Manage</p>
+                    <p className="mt-1"  style={{fontSize:"0.9em"}}> Stock Manage</p>
                     {/* <Tooltip
                     placement="top"
                     isOpen={tooltipOpen.stockManage}
@@ -358,14 +358,14 @@ const DataTableWithButtons = () => {
                 <Link to="/pos/VendorManage">
                   <div className="d-flex">
                     <img
-                      width="20"
-                      height="20"
+                      width="18"
+                      height="18"
                       id="Vendar"
                       src={vendor}
                       alt="list-is-empty"
                       className="mx-1 mt-1"
                     />
-                    <p className="mt-1">Add Vendar</p>
+                    <p className="mt-1" style={{fontSize:"0.9em"}}>Add Vendar</p>
 
                     {/* <Tooltip
                     placement="top"

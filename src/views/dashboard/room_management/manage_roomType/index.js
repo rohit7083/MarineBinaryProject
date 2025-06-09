@@ -41,7 +41,7 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-      const { data } = await useJwt.getAllVsendorType();
+      const { data } = await useJwt.getAllRoomTypes();
       const { content } = data;
       console.log("getAllEvents", content);
 
@@ -79,11 +79,11 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.parkingName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.perDayDueChargesType
+          row.roomTypeName?.toLowerCase().includes(value.toLowerCase()) ||
+          row.taxName
             ?.toLowerCase()
             .includes(value.toLowerCase()) ||
-          row.parkingAmount?.toString().includes(value)
+          row.peopleCapacity?.toString().includes(value)
       );
 
       setTableData((prev) => ({
@@ -115,20 +115,20 @@ const index = () => {
       name: "Room Type",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.typeName,
+      selector: (row) => row.roomTypeName,
     },
     {
       name: "Tax Name",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => row.taxName,
     },
 
        {
-      name: "Tax Value",
+      name: "People Capacity",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => row.peopleCapacity,
     },
 
    

@@ -1,0 +1,763 @@
+// import React from "react";
+// import {
+//   Card,
+//   CardBody,
+//   Badge,
+//   Button,
+//   FormGroup,
+//   Label,
+//   Input,
+//   Col,
+//   CardTitle,
+// } from "reactstrap";
+// import { useForm, Controller } from "react-hook-form";
+// import { Users, Coffee, Wifi, Car, Eye, Star, Minus } from "lucide-react";
+// import { Plus } from "react-feather";
+// import InputNumber from "rc-input-number";
+// import "@styles/react/libs/input-number/input-number.scss";
+
+// const RoomCard = () => {
+//   const { control, handleSubmit, watch } = useForm({
+//     defaultValues: {
+//       serviceType: "room-only",
+//       discount: false,
+//     },
+//   });
+
+//   const selectedService = watch("serviceType");
+//   const nights = 3;
+
+//   const room = {
+//     id: "1",
+//     roomNumber: "101",
+//     capacity: 2,
+//     isAvailable: true,
+//   };
+
+//   const serviceOptions = [
+//     { id: "room-only", name: "Room Only", price: 50 },
+//     { id: "room-breakfast", name: "Room + Breakfast", price: 70 },
+//     { id: "room-meals", name: "Room + All Meals", price: 100 },
+//   ];
+
+//   const selectedServiceOption = serviceOptions.find(
+//     (s) => s.id === selectedService
+//   );
+//   const totalPrice = selectedServiceOption
+//     ? selectedServiceOption.price * nights
+//     : 0;
+
+//   const onSubmit = (data) => {
+//     console.log("Booking Data:", {
+//       ...data,
+//       totalPrice,
+//       roomNumber: room.roomNumber,
+//     });
+//     alert("Booking submitted!");
+//   };
+
+//   const isExtraPeople=watch('ExtraPeople');
+
+//   return (
+//     <>
+//       <CardTitle className="mb-2 fs-2 fw-bold">Available Rooms (1)</CardTitle>
+//       <Col md="6" lg="4" className="mb-4">
+//         <form onSubmit={handleSubmit(onSubmit)}>
+//           <Card className="shadow">
+//             <div className="d-flex mt-1 mx-1 justify-content-between align-items-center">
+//               <Badge color="primary" className="me-auto">
+//                 <svg
+//                   xmlns="http://www.w3.org/2000/svg"
+//                   viewBox="0 0 14 14"
+//                   width="1em"
+//                   height="1em"
+//                 >
+//                   <path
+//                     fill="none"
+//                     stroke="currentColor"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     d="M13.5 6.94a1 1 0 0 0-.32-.74L7 .5L.82 6.2a1 1 0 0 0-.32.74v5.56a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1Z"
+//                   />
+//                 </svg>{" "}
+//                 Room {room.roomNumber}
+//               </Badge>
+//               {room.isAvailable && (
+//                 <Badge color="success" className="ms-auto">
+//                   Available
+//                 </Badge>
+//               )}
+//             </div>
+
+//             <CardBody>
+//               <div className="d-flex align-items-center mb-2">
+//                 <Users size={16} className="me-2 text-secondary" />
+//                 <span>
+//                   Up to {room.capacity}{" "}
+//                   {room.capacity === 1 ? "person" : "people"}
+//                 </span>
+//               </div>
+
+//               {/* Service Type Radio Buttons */}
+//               <h6 className="text-muted">Select Service Package:</h6>
+//               {serviceOptions.map((service) => (
+//                 <FormGroup
+//                   key={service.id}
+//                   check
+//                   className="d-flex justify-content-between align-items-center mb-1"
+//                 >
+//                   <Label check className="d-flex align-items-center">
+//                     <Controller
+//                       name="serviceType"
+//                       control={control}
+//                       render={({ field }) => (
+//                         <Input
+//                           type="radio"
+//                           {...field}
+//                           value={service.id}
+//                           checked={field.value === service.id}
+//                         />
+//                       )}
+//                     />
+//                     <span className="ms-1 fs-6">{service.name}</span>
+//                   </Label>
+//                   <span className="text-primary fw-semibold fs-6">
+//                     ${service.price}/night
+//                   </span>
+//                 </FormGroup>
+//               ))}
+
+//               {/* Discount Checkbox */}
+//               {/* <FormGroup check>
+//                 <Label check>Extra People </Label>
+//                 <Controller
+//                   name="discount"
+//                   control={control}
+//                   render={({ field }) => (
+//                     <Input
+//                       type="checkbox"
+//                       {...field}
+//                       checked={field.value}
+//                       className="me-1"
+//                     />
+//                   )}
+//                 />{" "}
+//                 <div className="item-quantity">
+//                   <InputNumber
+//                     min={1}
+//                     max={10}
+//                     upHandler={<Plus />}
+//                     className="cart-input"
+//                     defaultValue={0}
+//                     downHandler={<Minus />}
+//                   />
+//                 </div>
+//               </FormGroup> */}
+
+//           <FormGroup>
+//   <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+//     <div className="d-flex align-items-center me-2">
+//       <Controller
+//         name="ExtraPeople"
+//         control={control}
+//         render={({ field }) => (
+//           <Input
+//             type="checkbox"
+//             {...field}
+//             checked={field.value}
+//             className="me-1"
+//           />
+//         )}
+//       />
+//       <Label check className="mb-0">Extra People</Label>
+//     </div>
+
+//     {isExtraPeople && (
+//       <>
+//         <div className="item-quantity ">
+//           <InputNumber
+//             min={1}
+//             max={5}
+//             upHandler={<Plus />}
+//             downHandler={<Minus />}
+//             className="cart-input"
+//             defaultValue={0}
+//           />
+//         </div>
+
+//       </>
+//     )}
+//   </div>
+// </FormGroup>
+
+//               {/* Total Price */}
+//               <div className="mt-3">
+//                 <div className="h4 text-primary mb-1">
+//                   <strong>${totalPrice}</strong>
+//                 </div>
+//                 <div className="text-muted small">
+//                   ₹{selectedServiceOption?.price}/night • {nights}{" "}
+//                   {nights === 1 ? "night" : "nights"}
+//                 </div>
+//                   <div className="text-muted small">
+//                   3 Extra people
+//                 </div>
+//                 <div className="text-muted small">
+//                   {selectedServiceOption?.name}
+//                 </div>
+
+//               </div>
+
+//               {/* Book Now Button */}
+//               <div className="mt-2 text-end">
+//                 <Button color="primary" size="sm" type="submit">
+//                   Book
+//                 </Button>
+//               </div>
+//             </CardBody>
+//           </Card>
+//         </form>
+//       </Col>
+//     </>
+//   );
+// };
+
+// export default RoomCard;
+
+import React, { useEffect, useState, useId } from "react";
+import { debounce, flatMap } from "lodash";
+
+import {
+  Card,
+  CardBody,
+  Badge,
+  Button,
+  FormGroup,
+  Label,
+  Row,
+  Input,
+  Col,
+  CardTitle,
+} from "reactstrap";
+import { useForm, Controller } from "react-hook-form";
+import { Users, Minus } from "lucide-react";
+import { Home, Plus } from "react-feather";
+import InputNumber from "rc-input-number";
+import "@styles/react/libs/input-number/input-number.scss";
+import "./style.css";
+const RoomCard = ({ allRooms, index }) => {
+  const {
+    control,
+    handleSubmit,
+    watch,
+    getValues,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      serviceType: {},
+      ExtraPeople: false,
+    },
+  });
+
+  const [perNightValues, setPerNightValue] = useState({});
+  const [bookedRooms, setBookedRooms] = useState([]);
+  const [peopleCount, setPeopleCount] = useState(null);
+  console.log("perNightValues", perNightValues);
+
+  const [isBooked, setIsbook] = useState([]);
+
+  const handleBooked = (roomId, index) => {
+    const selectedService = getValues(`serviceType.${index}`);
+
+    const extraPeople = watch(`ExtraPeople.${index}`);
+    const extraPeopleCount = watch(`extraPeopleCount.${index}`) || 0;
+
+    if (!selectedService) {
+      setError(`serviceType.${index}`, {
+        type: "manual",
+        message: `Please select a service package !`,
+      });
+      return;
+    } else {
+      clearErrors(`serviceType.${index}`);
+    }
+
+    if (isBooked.includes(roomId)) {
+      // Remove booking
+      setIsbook(isBooked.filter((id) => id !== roomId));
+      setBookedRooms((prev) => prev.filter((room) => room.roomId !== roomId));
+    } else {
+      // Add booking
+      setIsbook([...isBooked, roomId]);
+      setBookedRooms((prev) => [
+        ...prev,
+        {
+          roomId,
+          index,
+          servicePackage: selectedService,
+          extraPeople,
+          extraPeopleCount,
+        },
+      ]);
+    }
+    console.log("Booked Rooms:", bookedRooms);
+  };
+
+  const [tableData, setTableData] = useState({
+    count: allRooms?.length,
+    results: [],
+  });
+
+  useEffect(() => {
+    if (allRooms) {
+      setTableData({
+        count: allRooms.length,
+        results: allRooms,
+      });
+    }
+  }, [allRooms]);
+
+  const debouncedFilter = debounce((value) => handleFilter(value), 300);
+
+  const handleFilter = (value) => {
+    if (value) {
+      const filteredResults = allRooms.filter(
+        (room) =>
+          room.roomTypeName?.toLowerCase().includes(value.toLowerCase()) ||
+          room.perDayDueChargesType
+            ?.toLowerCase()
+            .includes(value.toLowerCase()) ||
+          room.parkingAmount?.toString().includes(value)
+      );
+
+      setTableData({
+        count: filteredResults.length,
+        results: filteredResults,
+      });
+    } else {
+      setTableData({
+        count: allRooms.length,
+        results: allRooms,
+      });
+    }
+  };
+
+  const handleCheckErrors = () => {
+    const selectedPackages = getValues("serviceType");
+    const unselected = tableData?.results?.filter(
+      (_, index) => !selectedPackages?.[index]
+    );
+
+    if (unselected.length > 0) {
+      alert("Please select a package for all rooms!");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handlePeopleCount = (index, value) => {
+    setPeopleCount((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
+
+    // setPerNightValue(pre=>({...pre,pre[index]:{}}))
+
+    const vl={...perNightValues};
+  
+
+
+  };
+
+  const onSubmit = (data) => {
+    // {{ }}
+    //  console.log("Form Data:", data);
+    //   console.log("Booked Rooms:", bookedRooms);
+    //   const selections = tableData.results.map((room, index) => ({
+    //   roomLabel: room.label,
+    //   selectedService: data.serviceType?.[index],
+    //   extraPeople: data.ExtraPeople?.[index] || false,
+    //   extraPeopleCount: data.extraPeopleCount?.[index] || 0
+    // }));
+    // console.log("Selections per room:", selections);
+  };
+
+  return (
+    <>
+      {tableData.count > 0 && (
+        <>
+          <Row className="align-items-center mb-3 mt-1">
+            <Col className="d-flex align-items-center">
+              <CardTitle className="fs-2 fw-bold mb-0">
+                Available Rooms ({allRooms?.length})
+              </CardTitle>
+            </Col>
+            <Col className="d-flex justify-content-end">
+              <Input
+                className="dataTable-filter"
+                name="search"
+                placeholder="Search..."
+                type="text"
+                bsSize="sm"
+                id="search-input"
+                onChange={(e) => debouncedFilter(e.target.value)}
+              />
+            </Col>
+          </Row>
+        </>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Col md="12" className="mb-4">
+          <Row className="row">
+            {tableData?.results?.map((room, index) => (
+              <Col key={index} md={4}>
+                <Card key={index} className="shadow">
+                  <div className="d-flex mt-1 mx-1 justify-content-between align-items-center">
+                    <Badge color="primary" className="me-auto">
+                      Room {room?.label}
+                    </Badge>
+                    {isBooked.includes(room.value) ? (
+                      <Badge color="danger" className="ms-auto">
+                        Booked
+                      </Badge>
+                    ) : (
+                      <Badge color="success" className="ms-auto">
+                        Available
+                      </Badge>
+                    )}
+                  </div>
+
+                  <CardBody>
+                    <div className="d-flex align-items-center mb-1">
+                      <Home size={16} className="me-2 text-secondary" />
+                      <span>
+                        Room Type <strong>{room?.roomTypeName} </strong>
+                        {/* {room.capacity === 1 ? "person" : "people"} */}
+                      </span>
+                    </div>
+
+                    {/* Capacity */}
+                    <div className="d-flex align-items-center mb-2">
+                      <Users size={16} className="me-2 text-secondary" />
+                      <span>
+                        Up to {room?.peopleCapacity}{" "}
+                        {room.capacity === 1 ? "person" : "people"}
+                      </span>
+                    </div>
+
+                    {/* Service Options */}
+                    <h6 className="text-muted">Select Service Package:</h6>
+                    {errors?.serviceType?.[index] && (
+                      <div className="text-danger mb-1 fs-6">
+                        {errors.serviceType[index].message}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        marginBottom: "0 !important",
+                      }}
+                    >
+                      <Controller
+                        name={`serviceType.${index}`} // Use dynamic name for each room
+                        control={control}
+                        rules={{ required: "Please select a package." }}
+                        render={({ field }) => {
+                          const currentValue = watch(`serviceType.${index}`);
+
+                          return (
+                            <>
+                              {/* Room-Only */}
+                              <FormGroup
+                                check
+                                className="d-flex justify-content-between align-items-center mb-1"
+                              >
+                                <Label
+                                  check
+                                  className="d-flex align-items-center"
+                                >
+                                  <Input
+                                    type="radio"
+                                    id={`room-only-${index}`}
+                                    {...field}
+                                    value="room-only"
+                                    checked={currentValue === "room-only"}
+                                    onChange={(e) => {
+                                      const roomOnlyName = e.target.value;
+                                      field.onChange(roomOnlyName);
+
+                                      setPerNightValue((prev) => ({
+                                        ...prev,
+                                        [index]: {
+                                          name: "room-only", // or the selected service type
+                                          price: parseInt(
+                                            room?.grandTotalPrice /
+                                              room?.totalNoOfDays
+                                          ),
+                                          withTaxAmt: room?.grandTotalTaxAmount,
+                                         
+                                          weekdayCount: room?.weekdayCount,
+                                          weekendCount: room?.weekendCount,
+                                        },
+                                      }));
+                                    }}
+                                    // disabled={isBooked == room.value}
+                                  />
+                                  <span className="ms-1 fs-6">Room-only</span>
+                                </Label>
+                                <span className="text-primary fw-semibold fs-6">
+                                  $
+                                  {parseInt(
+                                    room?.grandTotalPrice / room?.totalNoOfDays
+                                  )}
+                                  /night
+                                </span>
+                              </FormGroup>
+
+                              {/* Room-Breakfast */}
+                              <FormGroup
+                                check
+                                className="d-flex justify-content-between align-items-center mb-1"
+                              >
+                                <Label
+                                  check
+                                  className="d-flex align-items-center"
+                                >
+                                  <Input
+                                    type="radio"
+                                    id={`room-breakfast-${index}`}
+                                    {...field}
+                                    value="room-breakfast"
+                                    checked={currentValue === "room-breakfast"}
+                                    onChange={(e) => {
+                                      const serviceName = e.target.value;
+                                      field.onChange(serviceName);
+
+                                      setPerNightValue((prev) => ({
+                                        ...prev,
+                                        [index]: {
+                                          name: "room-breakfast", // or the selected service type
+                                          price: parseInt(
+                                            room?.roomAndBreakFast /
+                                              room?.totalNoOfDays
+                                          ),
+                                          withTaxAmt:
+                                            room?.roomAndBreakFastTaxAmount,
+                                       
+                                          weekdayCount: room?.weekdayCount,
+                                          weekendCount: room?.weekendCount,
+                                        },
+                                      }));
+                                    }}
+                                    // disabled={isBooked.includes(room.value) === room.value}
+                                  />
+                                  <span className="ms-1 fs-6">
+                                    Room-Breakfast
+                                  </span>
+                                </Label>
+                                <span className="text-primary fw-semibold fs-6">
+                                  $
+                                  {parseInt(
+                                    room?.roomAndBreakFast / room?.totalNoOfDays
+                                  )}
+                                  /night
+                                </span>
+                              </FormGroup>
+
+                              {/* Room-Meals */}
+                              <FormGroup
+                                check
+                                className="d-flex justify-content-between align-items-center"
+                              >
+                                <Label
+                                  check
+                                  className="d-flex align-items-center"
+                                >
+                                  <Input
+                                    type="radio"
+                                    id={`room-meals-${index}`}
+                                    {...field}
+                                    value="room-meals"
+                                    checked={currentValue === "room-meals"}
+                                    onChange={(e) => {
+                                      field.onChange(e.target.value);
+                                      // setPerNightValue((prev) => ({
+                                      //   ...prev,
+                                      //   [index]: parseInt(
+                                      //     room?.roomAndAllMeal /
+                                      //       room?.totalNoOfDays
+                                      //   ),
+                                      // }));
+
+                                      setPerNightValue((prev) => ({
+                                        ...prev,
+                                        [index]: {
+                                          name: "room-meals", // or the selected service type
+                                          price: parseInt(
+                                            room?.roomAndAllMeal /
+                                              room?.totalNoOfDays
+                                          ),
+                                          withTaxAmt:
+                                            room?.roomAndAllMealTaxAmount,
+                                        },
+                                      }));
+                                    }}
+                                    // disabled={isBooked == room.value}
+                                  />
+                                  <span className="ms-1 fs-6">Room-meals</span>
+                                </Label>
+                                <span className="text-primary fw-semibold fs-6">
+                                  $
+                                  {parseInt(
+                                    room?.roomAndAllMeal / room?.totalNoOfDays
+                                  )}
+                                  /night
+                                </span>
+                              </FormGroup>
+                              {errors && (
+                                <span className="text-danger fs-6">
+                                  {errors.message}
+                                </span>
+                              )}
+                            </>
+                          );
+                        }}
+                      />
+                    </div>
+
+                    {/* Extra People */}
+                    <div className="mt-1">
+                      <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div className="d-flex align-items-center me-2">
+                          <Controller
+                            name={`ExtraPeople.${index}`}
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                type="checkbox"
+                                {...field}
+                                checked={field.value}
+                                className="me-1"
+                                // disabled={isBooked == room.value}
+                              />
+                            )}
+                          />
+                          <Label check className="mb-0">
+                            Extra People
+                          </Label>
+                        </div>
+
+                        {watch(`ExtraPeople.${index}`) && (
+                          <div className="item-quantity">
+                            Rogit Chi Gand
+                            <Controller
+                              name={`extraPeopleCount.${index}`} // use a dynamic name for each room
+                              control={control}
+                              defaultValue={0}
+                              render={({ field }) => (
+                                <InputNumber
+                                  value={field.value}
+                                  upHandler={<Plus />}
+                                  downHandler={<Minus />}
+                                  onChange={(number) => {
+                                    console.log(number);
+                                    field.onChange(number);
+                                    handlePeopleCount(index, number);
+                                  }}
+                                />
+                                // <InputNumber
+                                //   min={0}
+                                //   max={room?.peopleCapacity - 1}
+                                //   upHandler={<Plus />}
+                                //   downHandler={<Minus />}
+                                //   className="cart-input"
+                                //   value={field.value}
+                                //   onChange={(value) => {
+                                //
+                                //     field.onChange(value);
+
+                                //     handlePeopleCount(index, value);
+                                //   }}
+                                //   // disabled={isBooked == room.value}
+                                // />
+                              )}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Total Price */}
+                    <div className="mt-3">
+                      <div className="h4 text-primary mb-1">
+                        <strong>
+                          $
+                          {(perNightValues[index]?.price || 0) *
+                            (room?.totalNoOfDays || 0) +
+                            (perNightValues[index]?.withTaxAmt || 0)}
+                        </strong>
+                        <div className="text-muted small">
+                          (including all taxes: {room?.taxValue}%)
+                        </div>
+                      </div>
+
+                      <div className="text-muted small">
+                        ${perNightValues[index]?.price || 0}/night •{" "}
+                        {room?.totalNoOfDays}{" "}
+                        {room?.totalNoOfDays === 1 ? "night" : "nights"}
+                      </div>
+                      <div className="text-muted small">
+                        {/* {(watch(`extraPeopleCount.${index}`)>1) ? watch(`extraPeopleCount.${index}`) :""}  {(watch(`ExtraPeople.${index}`)) ? "Extra people" :""}</div> */}
+
+                        {watch(`ExtraPeople.${index}`) === true && (
+                          <>
+                            {watch(`extraPeopleCount.${index}`) > 0
+                              ? watch(`extraPeopleCount.${index}`)
+                              : ""}
+
+                            {watch(`ExtraPeople.${index}`)
+                              ? "Extra people"
+                              : ""}
+                          </>
+                        )}
+                      </div>
+                      <div className="text-muted small">
+                        {perNightValues[index]?.name}
+                      </div>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="mt-2 text-end">
+                      <Button
+                        color={
+                          isBooked.includes(room.value) ? "success" : "primary"
+                        }
+                        size="sm"
+                        onClick={() => handleBooked(room.value, index)}
+                        type="button"
+                      >
+                        {isBooked.includes(room.value) ? "Cancel Book" : "Book"}
+                      </Button>
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Col>
+
+        {tableData.count > 0 && (
+          <div className="d-flex justify-content-start">
+            <Button type="submit" color="primary">
+              Submit
+            </Button>
+          </div>
+        )}
+      </form>
+    </>
+  );
+};
+
+export default RoomCard;

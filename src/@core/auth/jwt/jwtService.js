@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000";
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -165,9 +165,9 @@ export default class JwtService {
 
   // temp
 
-  // login(...args) {
-  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  // }
+  login(...args) {
+    return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  }
 
   getVendor() {
     return axios.get(this.jwtConfig.getVendor);
@@ -562,6 +562,25 @@ export default class JwtService {
   DeleteEvent(uid) {
     return axios.delete(`${this.jwtConfig.DeleteEvent}${uid}`);
   }
+
+  CreateRoomType(...args) {
+    return axios.post(this.jwtConfig.CreateRoomType, ...args);
+  }
+
+  CreateRoom(...args) {
+    return axios.post(this.jwtConfig.CreateRoom, ...args);
+  }
+
+  getAllRoomTypes() {
+    return axios.get(this.jwtConfig.getAllRoomTypes);
+  }
+
+    SearchRoom(...args) {
+    return axios.post(this.jwtConfig.SearchRoom, ...args);
+  }
+
+  
+
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

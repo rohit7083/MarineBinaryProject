@@ -62,6 +62,7 @@ const [errMsz,setErrMsz] = useState("");
     control,
     handleSubmit,
     setError,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -112,8 +113,8 @@ const [errMsz,setErrMsz] = useState("");
           otp: Number(data.otp.join("")),
         };
         setLoading(true);
-        const response = await useJwt.verifyOtp(accessTokenotp, payload);
-      console.log(response);
+        // const response = await useJwt.verifyOtp(accessTokenotp, payload);
+        // console.log(response);
       
         setVerify(true);
         setShowModal(false);
@@ -204,6 +205,7 @@ const [errMsz,setErrMsz] = useState("");
   //       // }, 30000);
   //     }
   //   };
+  const discountType = watch("discountType")?.value || "Flat";
   return (
     <Fragment>
       {/* {verify || cashOtpVerify ? ( */}
@@ -236,7 +238,7 @@ const [errMsz,setErrMsz] = useState("");
 
         {verify && (
           <>
-            <Col md="12" className="mb-2 ">
+         <Col md="12" className="mb-2 ">
               <Label for="discountType">Discount Type</Label>
               <Select
                 id="discountType"
@@ -261,11 +263,16 @@ const [errMsz,setErrMsz] = useState("");
                   }}
                 />
               </InputGroup>
-            </Col>
+            </Col> 
+
+
+
+
+    
           </>
         )}
       </>
-      {/* )} */}
+     
 
       <Modal
         isOpen={showModal}

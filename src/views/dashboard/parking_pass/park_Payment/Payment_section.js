@@ -714,9 +714,9 @@ console.log("NA");
                                     )}
                                   />
 
-                                  {errors.cardCvv && (
+                                  {errors.cvc && (
                                     <p className="text-danger">
-                                      {errors.cardCvv.message}
+                                      {errors.cvc.message}
                                     </p>
                                   )}
                                 </Col>

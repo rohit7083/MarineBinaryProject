@@ -24,7 +24,8 @@ import {
   FormGroup,
   Spinner,
   Table,
-  Row,
+  Row,UncontrolledAlert ,
+  FormFeedback,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 
@@ -44,6 +45,9 @@ function AddVTypes() {
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);
   const [roomCount, setRoomCount] = useState(0);
+  const [errorMessage, setErrorMsz] = useState("");
+
+  const [roomtyp, setRoomTypeName] = useState([]);
   useEffect(() => {
     if (uid) {
       reset({
@@ -53,54 +57,12 @@ function AddVTypes() {
     }
   }, []);
 
-  const onSubmit = async (data) => {
-    console.log(data);
-
-    try {
-      setLoading(true);
-      if (uid) {
-        const res = await useJwt.updateVendor(uid, data);
-        console.log("Updated:", res);
-
-        if (res.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Updated Successfully",
-            detail: "Vendor Type  updated Successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/pos/vendor_typeList");
-          }, 2000);
-        }
-      } else {
-        const res = await useJwt.VendorType(data);
-        if (res.status === 201) {
-          toast.current.show({
-            severity: "success",
-            summary: "Created Successfully",
-            detail: "Vendor Type  created Successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/pos/vendor_typeList");
-          }, 2000);
-        }
-        console.log("Created:", res);
-      }
-    } catch (error) {
-      console.error("API Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "attributeKeys",
+    name: "specialDays",
   });
 
-  const noOfRooms = parseInt(watch("noOfRooms")) || 0;
+  const noOfRooms = parseInt(watch("roomUnits")) || 0;
   useEffect(() => {
     if (noOfRooms) {
       setRoomCount(noOfRooms);
@@ -108,9 +70,88 @@ function AddVTypes() {
 
     if (noOfRooms === 0 || noOfRooms === "") {
       setRoomCount(0);
-        
     }
   }, [noOfRooms, roomCount]);
+
+  const roomTypeOptions = async () => {
+    try {
+      const res = await useJwt.getAllRoomTypes();
+      console.log(res);
+
+      const { result } = res?.data?.content;
+      const roomtypes = result?.map((x) => ({
+        label: x.roomTypeName,
+        value: x.uid,
+      }));
+      setRoomTypeName(roomtypes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    roomTypeOptions();
+  }, []);
+
+  const WatchroomUnits = watch("roomUnits");
+  const onSubmit = async (data) => {
+    // {{debugger  }}
+        setErrorMsz("");
+
+    const payload = {
+      ...data,
+      roomUnits: data.roomUnits.map((room) => ({
+        roomNumber: room.roomNumber,
+        active: true,
+      })),
+      roomType: { uid: data?.roomType?.value },
+    };
+    console.log("payload0", payload);
+
+    try {
+      setLoading(true);
+      if (uid) {
+        const res = await useJwt.updateVendor(uid, payload);
+        console.log("Updated:", res);
+
+        if (res.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Updated Successfully",
+            detail: "Room   updated Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            navigate("/room_details");
+          }, 2000);
+        }
+      } else {
+        const res = await useJwt.CreateRoom(payload);
+        if (res.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Created Successfully",
+            detail: "Room created Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            navigate("/room_details");
+          }, 2000);
+        }
+        console.log("Created:", res);
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      if (error.response) {
+        const errorMessage=error?.response?.data?.content;
+                setErrorMsz(errorMessage);
+
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Fragment>
       <Toast ref={toast} />
@@ -123,46 +164,71 @@ function AddVTypes() {
               Room Details
             </CardText>
           </CardTitle>
-
+  <Col sm="12">
+            {errorMessage && (
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">
+                      <strong>Error ! </strong>
+                      {errorMessage}
+                    </span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
+          </Col>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup row>
               <Col sm="12" className="mb-1">
                 <Label for="typeName">Room Type</Label>
 
                 <Controller
-                  name="typeName"
+                  name="roomType"
                   control={control}
-                  defaultValue=""
-                  rules={{ required: "Event Type is required" }}
+                  rules={{ required: "Room Type is required" }}
                   render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={{ label: "Other", value: "other" }}
-                      isClearable
-                      className="react-select"
-                      classNamePrefix="select"
-                    />
+                    <div>
+                      <Select
+                        {...field}
+                        options={roomtyp}
+                        isClearable
+                        className={
+                          errors.roomType
+                            ? "react-select is-invalid"
+                            : "react-select"
+                        }
+                        classNamePrefix="select"
+                      />
+                      <FormFeedback>{errors.roomType?.message}</FormFeedback>
+                    </div>
                   )}
                 />
-
-                {errors.typeName && (
-                  <p style={{ color: "red" }}>{errors.typeName.message}</p>
-                )}
               </Col>
               <Col sm="12" className="mb-1">
                 <Label for="typeName">Number of Rooms</Label>
 
                 <Controller
-                  name="noOfRooms"
+                  name="roomUnits"
                   control={control}
-                  defaultValue="0"
-                  rules={{ required: "Tax Name is required" }}
+                  // defaultValue="0"
+                  rules={{
+                    required: "Number of Rooms is required",
+                    pattern: {
+                      value: /^\d+$/,
+                      message: "Only numeric values are allowed.",
+                    },
+                    min: {
+                      value: 1,
+                      message: "Minimum value is 1",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
-                      id="noOfRooms"
+                      id="roomUnits"
                       type="text"
-                      placeholder="Enter Tax Name "
-                      invalid={!!errors.noOfRooms}
+                      placeholder="Enter Number of Rooms "
+                      invalid={!!errors.roomUnits}
                       {...field}
                       onChange={(e) => {
                         const val = e.target.value;
@@ -172,154 +238,181 @@ function AddVTypes() {
                     />
                   )}
                 />
-
-                {errors.noOfRooms && (
-                  <p style={{ color: "red" }}>{errors.noOfRooms.message}</p>
-                )}
+                <FormFeedback>{errors.roomUnits?.message}</FormFeedback>
               </Col>
-              <Row>
-                {[...Array(roomCount)].map((_, index) => (
-                  <Col sm="6" key={index} className="mb-2">
-                    <div className="p-1 border rounded">
-                      <h6>Room {index + 1}</h6>
-                      <Label>Room Name</Label>
-                      <Controller
-                        control={control}
-                        name={`rooms[${index}].name`}
-                        rules={{ required: "Room name is required" }}
-                        render={({ field, fieldState: { error } }) => (
-                          <>
-                            <Input
-                              {...field}
-                              placeholder={`Room ${index + 1} Name`}
-                              invalid={!!error}
-                            />
-                            {error && (
-                              <span className="text-danger">
-                                {error.message}
-                              </span>
-                            )}
-                          </>
-                        )}
-                      />
-                    </div>
-                  </Col>
-                ))}
-              </Row>
-              <Col sm="6" className="mb-1">
+              {WatchroomUnits > 0 && (
+                <Row>
+                  {[...Array(roomCount)].map((_, index) => (
+                    <Col sm="6" key={index} className="mb-2">
+                      <div className="p-1 border rounded">
+                        <div className="d-flex">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 14 14"
+                            width="1em"
+                            height="1em"
+                            className="me-1"
+                          >
+                            <g
+                              fill="none"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M.5 9L7 2.5L13.5 9"></path>
+                              <path d="M2.5 7v6.5h9V7M7 13.5v-4"></path>
+                            </g>
+                          </svg>
+                          <h6>Room {index + 1}</h6>
+                        </div>
+                        <Label>Room Name </Label>
+                        <Controller
+                          control={control}
+                          name={`roomUnits[${index}].roomNumber`}
+                          rules={{ required: "Room name is required" }}
+                          render={({ field, fieldState: { error } }) => (
+                            <>
+                              <Input
+                                {...field}
+                                placeholder={`Room ${index + 1} Name`}
+                                invalid={!!error}
+                              />
+                              <FormFeedback>{error?.message}</FormFeedback>
+
+                              {/* <FormFeedback>
+                              {errors.roomNumber?.message}
+                            </FormFeedback> */}
+                            </>
+                          )}
+                        />
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              )}
+              {/* <Col sm="6" className="mb-1">
                 <Label for="typeName">Room Tax</Label>
 
                 <Controller
                   name="taxValue"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{
+                    required: "Room Tax is required",
+                    pattern: {
+                      value: /^\d+$/,
+                      message: "Only numeric values are allowed.",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
                       id="taxValue"
                       type="text"
+                      disabled={true}
                       placeholder="Enter Tax Value "
                       invalid={!!errors.taxValue}
                       {...field}
                     />
                   )}
                 />
-
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
-              </Col>
+                <FormFeedback>{errors.taxValue?.message}</FormFeedback>
+              </Col> */}
               <Col sm="6" className="mb-1">
                 <Label for="typeName">Only Room Weekdays Price</Label>
 
                 <Controller
-                  name="taxValue"
+                  name="onlyRoomWeekdaysPrice"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{
+                    required: "Room Weekdays Price is required",
+                    pattern: {
+                      value: /^\d+$/,
+                      message: "Only numeric values are allowed.",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="onlyRoomWeekdaysPrice"
                       type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      placeholder="Enter Room Weekdays Price "
+                      invalid={!!errors.onlyRoomWeekdaysPrice}
                       {...field}
                     />
                   )}
                 />
 
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.onlyRoomWeekdaysPrice?.message}
+                </FormFeedback>
               </Col>{" "}
               <Col sm="6" className="mb-1">
                 <Label for="typeName">Only Room Weekend Price</Label>
 
                 <Controller
-                  name="taxValue"
+                  name="onlyRoomWeekendPrice"
                   control={control}
-                  defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  // defaultValue=""
+                  rules={{ required: "Room Weekend Price is required" }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="onlyRoomWeekendPrice"
                       type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      placeholder="Enter Room Weekend Price Value "
+                      invalid={!!errors.onlyRoomWeekendPrice}
                       {...field}
                     />
                   )}
                 />
 
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.onlyRoomWeekendPrice?.message}
+                </FormFeedback>
               </Col>{" "}
               <Col sm="6" className="mb-1">
                 <Label for="typeName">2 People Breakfast Price</Label>
 
                 <Controller
-                  name="taxValue"
+                  name="twoPeopleBreakfastPrice"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{ required: "2 People Breakfast Price is required" }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="twoPeopleBreakfastPrice"
                       type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      placeholder="Enter 2 People Breakfast Price "
+                      invalid={!!errors.twoPeopleBreakfastPrice}
                       {...field}
                     />
                   )}
                 />
 
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.twoPeopleBreakfastPrice?.message}
+                </FormFeedback>
               </Col>
               <Col sm="6" className="mb-1">
                 <Label for="typeName">2 People All Meal Price</Label>
 
                 <Controller
-                  name="taxValue"
+                  name="twoPeopleAllMealPrice"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{ required: "2 People All Meal Price is required" }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="twoPeopleAllMealPrice"
                       type="text"
                       placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      invalid={!!errors.twoPeopleAllMealPrice}
                       {...field}
                     />
                   )}
                 />
-
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.twoPeopleAllMealPrice?.message}
+                </FormFeedback>
               </Col>
               <Col sm="6" className="mb-1">
                 <Label for="typeName">
@@ -327,24 +420,26 @@ function AddVTypes() {
                 </Label>
 
                 <Controller
-                  name="taxValue"
+                  name="additionalPersonRoomOnlyWeekdays"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{
+                    required:
+                      "Additional Person Room Only Week Days  is required",
+                  }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="additionalPersonRoomOnlyWeekdays"
                       type="text"
                       placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      invalid={!!errors.additionalPersonRoomOnlyWeekdays}
                       {...field}
                     />
                   )}
                 />
-
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.additionalPersonRoomOnlyWeekdays?.message}
+                </FormFeedback>
               </Col>
               <Col sm="6" className="mb-1">
                 <Label for="typeName">
@@ -352,70 +447,74 @@ function AddVTypes() {
                 </Label>
 
                 <Controller
-                  name="taxValue"
+                  name="additionalPersonRoomOnlyWeekend"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{
+                    required: "Additional Person Room Only Weekend is required",
+                  }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="additionalPersonRoomOnlyWeekend"
                       type="text"
                       placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      invalid={!!errors.additionalPersonRoomOnlyWeekend}
                       {...field}
                     />
                   )}
                 />
 
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.additionalPersonRoomOnlyWeekend?.message}
+                </FormFeedback>
               </Col>
               <Col sm="6" className="mb-1">
                 <Label for="typeName">Additional Person Breakfast </Label>
 
                 <Controller
-                  name="taxValue"
+                  name="additionalPersonBreakfast"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{
+                    required: "Additional Person Breakfast is required",
+                  }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="additionalPersonBreakfast"
                       type="text"
                       placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      invalid={!!errors.additionalPersonBreakfast}
                       {...field}
                     />
                   )}
                 />
 
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.additionalPersonBreakfast?.message}
+                </FormFeedback>
               </Col>
               <Col sm="6" className="mb-1">
                 <Label for="typeName">Additional Person All Meal </Label>
 
                 <Controller
-                  name="taxValue"
+                  name="additionalPersonAllMeal"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Tax Value is required" }}
+                  rules={{ required: "Additional Person All Meal is required" }}
                   render={({ field }) => (
                     <Input
-                      id="taxValue"
+                      id="additionalPersonAllMeal"
                       type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
+                      placeholder="Enter Additional Person All Meal "
+                      invalid={!!errors.additionalPersonAllMeal}
                       {...field}
                     />
                   )}
                 />
 
-                {errors.taxValue && (
-                  <p style={{ color: "red" }}>{errors.taxValue.message}</p>
-                )}
+                <FormFeedback>
+                  {errors.additionalPersonAllMeal?.message}
+                </FormFeedback>
               </Col>
             </FormGroup>
 
@@ -438,76 +537,72 @@ function AddVTypes() {
                     <tr key={item.id}>
                       <td>
                         <Controller
-                          name="nextPaymentDate"
+                          name={`specialDays.${index}.date`}
                           control={control}
-                          rules={{
-                            required: "Next Payment date is required",
+                          rules={{ required: "Start Date & Time is required" }}
+                          render={({ field }) => {
+                            const { ref, ...rest } = field;
+                            return (
+                              <Flatpickr
+                                {...rest}
+                                id="start-date-time-picker"
+                                className={`form-control ${
+                                  errors?.specialDays?.[index]?.date
+                                    ? "is-invalid"
+                                    : ""
+                                }`}
+                                onChange={(date) => {
+                                  const formatted = date?.[0]
+                                    ?.toISOString()
+                                    .split("T")[0];
+                                  field.onChange(formatted);
+                                }}
+                                options={{ dateFormat: "Y-m-d" }}
+                              />
+                            );
                           }}
-                          render={({ field }) => (
-                            <Flatpickr
-                              id="hf-picker"
-                              className={`form-control ${
-                                errors.nextPaymentDate ? "is-invalid" : ""
-                              }`}
-                              options={{
-                                altInput: true,
-                                altFormat: "Y-m-d",
-                                dateFormat: "Y-m-d",
-                                minDate: "today", // Disable past dates
-                              }}
-                              value={field.value}
-                              onChange={(date) => {
-                                const formattedDate = format(
-                                  date[0],
-                                  "yyyy-MM-dd"
-                                ); // Format date
-                                field.onChange(formattedDate); // Update value in the form
-                              }}
-                            />
-                          )}
                         />
-                        {errors.nextPaymentDate && (
+                        {errors?.specialDays?.[index]?.date && (
                           <FormFeedback>
-                            {errors.nextPaymentDate.message}
+                            {errors.specialDays[index].date.message}
                           </FormFeedback>
-                        )}
+                        )}{" "}
                       </td>
 
                       <td>
                         <Controller
-                          name={`attributeKeys.${index}.attributeName`}
+                          name={`specialDays.${index}.price`}
                           control={control}
                           rules={{
-                            required: "Variations Name is required",
+                            required: "Price is required",
                             pattern: {
-                              value: /^[A-Za-z ]+$/,
-                              message:
-                                "Only alphabetic characters (A–Z) are allowed",
+                              value: /^\d+$/,
+                              message: "Only numeric values are allowed",
                             },
                           }}
                           render={({ field }) => (
                             <Input
                               type="text"
-                              placeholder="Variation Name"
+                              placeholder="Enter Price "
                               {...field}
                             />
                           )}
                         />
-                        {errors.attributeKeys?.[index]?.attributeName && (
+                        {errors.specialDays?.[index]?.price && (
                           <span className="text-danger">
-                            {errors.attributeKeys[index].attributeName.message}
+                            {errors.specialDays[index].price.message}
                           </span>
                         )}
                       </td>
 
                       <td>
                         <Controller
-                          name={`attributeKeys.${index}.attributeName`}
+                          name={`specialDays.${index}.description`}
                           control={control}
                           rules={{
-                            required: "Variations Name is required",
+                            required: "Description is required",
                             pattern: {
-                              value: /^[A-Za-z ]+$/,
+                              value: /^[A-Za-z]+$/,
                               message:
                                 "Only alphabetic characters (A–Z) are allowed",
                             },
@@ -515,14 +610,14 @@ function AddVTypes() {
                           render={({ field }) => (
                             <Input
                               type="text"
-                              placeholder="Variation Name"
+                              placeholder="Description"
                               {...field}
                             />
                           )}
                         />
-                        {errors.attributeKeys?.[index]?.attributeName && (
+                        {errors.specialDays?.[index]?.description && (
                           <span className="text-danger">
-                            {errors.attributeKeys[index].attributeName.message}
+                            {errors.specialDays[index].description.message}
                           </span>
                         )}
                       </td>
@@ -536,13 +631,12 @@ function AddVTypes() {
                   ))}
                 </tbody>
               </Table>
-
               <div className="d-flex justify-content-start ms-2 mt-2 mb-1">
                 <Button
                   color="primary"
                   type="button"
                   onClick={() =>
-                    append({ attributeName: "", isRequired: false })
+                    append({ date: "", price: "", description: "" })
                   }
                 >
                   Add New

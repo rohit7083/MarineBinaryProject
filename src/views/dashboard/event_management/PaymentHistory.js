@@ -184,7 +184,7 @@ const PaymentHistory = () => {
                 <Col md="3">
                   <div
                     className="d-flex align-items-center rounded shadow-sm p-1"
-                    style={{ backgroundColor: "#2b0948", color: "white" }}
+                    style={{ backgroundColor: "#595cff", color: "white" }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

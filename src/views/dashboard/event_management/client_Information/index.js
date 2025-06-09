@@ -255,6 +255,9 @@ const ClientDetaiils = ({
               <Controller
                 control={control}
                 name="selectedMember"
+                rules={{
+                  required:"Member Is required"
+                }}
                 render={({ field }) => {
                   return (
                     <Fragment>

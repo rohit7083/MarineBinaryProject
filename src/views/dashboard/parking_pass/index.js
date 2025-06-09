@@ -295,8 +295,8 @@ const index = () => {
 
                 <Col xs="auto">
                   <Link to={"/parking_pass/add_pass"}>
-                    <Button
-                      color="danger"
+                    <Button 
+                      color="primary"
                       size="sm"
                       className="text-nowrap mb-1"
                     >

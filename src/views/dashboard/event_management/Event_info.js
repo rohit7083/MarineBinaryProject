@@ -65,6 +65,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       eventTheme: "",
       eventTypeName: "",
     },
+    shouldFocusError: false,
   });
 
   const isRecurring = watch("isRecurringEvent");
@@ -419,6 +420,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
                       errors.eventType ? "is-invalid" : ""
                     }`}
                     classNamePrefix="select"
+                    inputRef={field.ref}
                     onChange={(selected) => field.onChange(selected)}
                   />
                   {errors.eventType && (

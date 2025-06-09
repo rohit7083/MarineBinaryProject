@@ -285,6 +285,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/manage_room_types",
       },
+          {
+        id: "chout",
+        title: "Review Booking",
+        icon: <Circle size={12} />,
+        navLink: "/search-rooms/checkout",
+      },
 
         {
         id: "Rooms Details",

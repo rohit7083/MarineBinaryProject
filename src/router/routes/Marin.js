@@ -145,6 +145,18 @@ const AddRoomBooking
 const BookingListing
 =lazy(()=>import("../../views/dashboard/room_management/list_of_roomBooking"))
 
+const SearchRoom
+=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/SearchRooms"))
+
+
+
+const Checkout
+=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/Checkout"))
+
+const CheckInDetails
+=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/CheckInDetails"))
+
+
 
 export default [
   {
@@ -441,5 +453,18 @@ export default [
    {
     element: <BookingListing/>,
     path: "/bookingListing",
+  },
+
+     {
+    element: <SearchRoom/>,
+    path: "/search-rooms",
+  },
+    {
+    element: <Checkout/>,
+    path: "/search-rooms/checkout",
+  },
+     {
+    element: <CheckInDetails/>,
+    path: "/search-rooms/CheckInDetails",
   },
 ];

@@ -1,0 +1,40 @@
+/* Transition for Card */
+.card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Transition for Badge */
+.badge {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.badge:hover {
+  background-color: #198754; /* A green badge hover effect */
+  color: #fff;
+}
+
+/* Transition for Button */
+.btn {
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background-color: #0a58ca; /* Darker blue */
+}
+
+/* Transition for Radio Input Label */
+label {
+  transition: color 0.25s ease, font-weight 0.25s ease;
+}
+
+label:hover {
+  color: #198754; /* Greenish highlight */
+  font-weight: 600;
+}

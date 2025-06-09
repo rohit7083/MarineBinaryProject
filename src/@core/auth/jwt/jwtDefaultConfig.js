@@ -3,8 +3,8 @@ import { Delete } from "react-feather";
 
 // ** Auth Endpoints
 export default {
-  // loginEndpoint: "/jwt/login",  // temp
-  loginEndpoint: "/login",
+  loginEndpoint: "/jwt/login",  // temp
+  // loginEndpoint: "/login",
 
   registerEndpoint: "/jwt/register",
   refreshEndpoint: "/auth/refresh_token",
@@ -130,9 +130,17 @@ export default {
   getAllEvents: "/events",
   createEvent: "/events/",
 DeleteEvent:"/events/",
+
   //payment
   GenerateOtp:"/sPayment/generate/discount",
   verifyOtp:"/sPayment/discount/",
   payment:"/event/payment",
+
   
+  //Room management
+
+  CreateRoomType:"/roomType/",
+  CreateRoom:"/room/",
+  getAllRoomTypes:"/roomType",
+  SearchRoom:"/room/search",
 };
