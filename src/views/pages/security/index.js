@@ -1,4 +1,3 @@
-// ** React Imports
 import { Fragment, useEffect, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 // ** Reactstrap Imports
@@ -124,12 +123,7 @@ const AppAuthComponent = ({
       </p>
       <div className="d-flex justify-content-center my-2 py-50">
         {qrCode ? (
-          <img
-            src={`data:image/png;base64,${qrCode}`}
-            alt="QR Code"
-            className="img-fluid"
-            width="122"
-          />
+          <img src={qrCode} alt="QR Code" className="img-fluid" width="122" />
         ) : (
           <p>Loading QR Code...</p>
         )}{" "}
@@ -220,7 +214,7 @@ const AuthenticationExample = () => {
           setIsAuthenticated(res.data.is_2fa_activated);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -254,8 +248,7 @@ const AuthenticationExample = () => {
               {!loading ? (
                 <>
                   <CardText>
-
-                   Click On below to enhance your application security by
+                    Click On below to enhance your application security by
                     enabling two factor authentication.
                   </CardText>
                   <Button

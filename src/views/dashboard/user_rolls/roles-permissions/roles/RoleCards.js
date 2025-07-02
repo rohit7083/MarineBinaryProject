@@ -107,7 +107,7 @@ const AddRoles = ({ props, refreshTable }) => {
     if (e.target.checked) {
       Object.keys(permissionList).forEach((category, index) => {
         if(!permissionList[category]) return;
-        // {{debugger}}
+        // {{ }}
         permissionList[category].forEach((item,idx) => {
           setValue(`${category}.${[idx]}.isSelected`, true);
        
@@ -132,7 +132,7 @@ const AddRoles = ({ props, refreshTable }) => {
       const res = await useJwt.userpermissionPost(updatedData);
       setFetchTrigger(true);
       if (res.status === 201) {
-        // {{debugger}}
+        // {{ }}
         // MySwal.fire({
         //   title: "Successfully Cretaed",
         //   text: " Role Created Successfully",

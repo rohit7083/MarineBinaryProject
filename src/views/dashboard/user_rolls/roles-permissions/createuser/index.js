@@ -32,7 +32,7 @@ const Roles = ({ data }) => {
   //       setTableData({ count: content.count, results: content.result });
   //       // setallRoleName("roles",content.result.map((role) => role.roleName));
   //     } catch (error) {
-  //       console.log(error);
+  //        console.error(error);
   //     } finally {
   //     }
   //   })();

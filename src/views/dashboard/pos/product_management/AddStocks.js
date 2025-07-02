@@ -26,6 +26,8 @@ import addTax from "../../../../assets/icons/calendar-event-tax.svg";
 import ProductAdd_Table from "./ProductAdd_Table";
 import { data } from "jquery";
 import useJwt from "@src/auth/jwt/useJwt";
+import NavItems from "./NavItems";
+import { ArrowLeft } from "react-feather";
 
 const MultipleColumnForm = () => {
   const {
@@ -95,89 +97,31 @@ try {
   return (
     <Card>
       <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
-        <CardTitle tag="h4">Add Product Stocks</CardTitle>
-        <div className="d-flex gap-2">
-          <Link to="/dashboard/pos/product_management/addProduct">
-            <img src={addProductIcon} id="ANP" alt="Add Product" width="25" />
-            <Tooltip
-              isOpen={tooltipOpen.ANP}
-              target="ANP"
-              toggle={() => toggleTooltip("ANP")}
-            >
-              Add New Product
-            </Tooltip>
-          </Link>
+        <CardTitle tag="h4">  <ArrowLeft
+                                   style={{
+                                     cursor: "pointer",
+                                   marginRight:"10px",
+                                     transition: "color 0.1s",
+                                   }}
+                                   onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                   onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                   onClick={() => window.history.back()}
+                                 />Add Product Stocks</CardTitle>
+        <div className="d-flex mt-md-0 mt-1">
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+            <NavItems/>
+              <div>
+                <Link to="/pos/VendorManage">
+                  <div className="d-flex">
+                    <Button color="primary" outline size="sm">
+                  Import Product
+                    </Button>
+                  </div>
+                </Link>
+              </div>
 
-          <img
-            id="importProduct"
-            width="25"
-            height="25"
-            src={importIcon}
-            alt="Import Product"
-            style={{ cursor: "pointer" }}
-          />
-          <Tooltip
-            isOpen={tooltipOpen.importProduct}
-            target="importProduct"
-            toggle={() => toggleTooltip("importProduct")}
-          >
-            Import Product
-          </Tooltip>
-
-          <Link to="/dashboard/pos/product_management/addproductCategory">
-            <img
-              id="addProductCate"
-              width="25"
-              src={AddCategoryIcon}
-              alt="Add Category"
-            />
-            <Tooltip
-              isOpen={tooltipOpen.addProductCate}
-              target="addProductCate"
-              toggle={() => toggleTooltip("addProductCate")}
-            >
-              Add Product Category
-            </Tooltip>
-          </Link>
-
-          <Link to="/dashboard/pos/product_management/addTaxes">
-            <img id="addProducttaxes" width="25" src={addTax} alt="Add Tax" />
-            <Tooltip
-              isOpen={tooltipOpen.addProducttaxes}
-              target="addProducttaxes"
-              toggle={() => toggleTooltip("addProducttaxes")}
-            >
-              Add Product Taxes
-            </Tooltip>
-          </Link>
-
-          <Link to="/dashboard/pos/product_management/AddStocks">
-            <img id="addStock" width="25" src={addStocks} alt="Add Stock" />
-            <Tooltip
-              isOpen={tooltipOpen.addStock}
-              target="addStock"
-              toggle={() => toggleTooltip("addStock")}
-            >
-              Add Stock
-            </Tooltip>
-          </Link>
-
-          <Link>
-            <img
-              id="stockManage"
-              width="25"
-              src={ManageStocks}
-              alt="Manage Stock"
-            />
-            <Tooltip
-              isOpen={tooltipOpen.stockManage}
-              target="stockManage"
-              toggle={() => toggleTooltip("stockManage")}
-            >
-              Stock Manage
-            </Tooltip>
-          </Link>
-        </div>
+            </div>
+          </div>
       </CardHeader>
 
       <CardBody className="mt-2">

@@ -112,7 +112,7 @@ export const structurePermissionList = (list) => {
           updatedList[key][i] =null;
        }
     }
-// {{debugger}}
+// {{ }}
 
 
     return updatedList;

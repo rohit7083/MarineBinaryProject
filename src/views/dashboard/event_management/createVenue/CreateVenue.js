@@ -23,6 +23,7 @@ import {
   Spinner,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 
 function CreateVenue() {
   const location = useLocation();
@@ -31,30 +32,27 @@ function CreateVenue() {
   const [errMsz, seterrMsz] = useState("");
 
   const {
-  control,
-  handleSubmit,
-  watch,
-  setValue,
-  reset,
-  formState: { errors },
-} = useForm({
-  defaultValues: {
-    // venueName: "Grand Ballroom",
-    // capacity: "300",
-    // price: "5000",
-    // venueType: "Indoor", // Options: "Indoor", "Outdoor", "Hybrid"
-    // noOfStaff: "15",
-    // staffPrice: "1500",
-    // totalPrice: 6500, // Should be price + staffPrice
-    // city: "New York",
-    // address: "123 Event Plaza, Manhattan",
-    // state: "NY",
-    // country: "USA",
-    // postCode: "10001",
-  },
-
-
-
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      // venueName: "Grand Ballroom",
+      // capacity: "300",
+      // price: "5000",
+      // venueType: "Indoor", // Options: "Indoor", "Outdoor", "Hybrid"
+      // noOfStaff: "15",
+      // staffPrice: "1500",
+      // totalPrice: 6500, // Should be price + staffPrice
+      // city: "New York",
+      // address: "123 Event Plaza, Manhattan",
+      // state: "NY",
+      // country: "USA",
+      // postCode: "10001",
+    },
   });
   const toast = useRef(null);
 
@@ -76,7 +74,7 @@ function CreateVenue() {
   //   console.log("Form data:", data);
   //   try {
   //     setLoading(true);
-    
+
   //     if (!uid) {
   //       const res = await useJwt.Venue(data); // <-- update to your actual API call
   //       console.log("API Response:", res);
@@ -121,62 +119,59 @@ function CreateVenue() {
   //   }
   // };
 
-
-
-
   const onSubmit = async (data) => {
-  seterrMsz("");
-  console.log("Form data:", data);
+    seterrMsz("");
+    console.log("Form data:", data);
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    let res;
+      let res;
 
-    if (!uid) {
-      // Create new venue
-      res = await useJwt.Venue(data);
-      if (res.status === 201) {
-        toast.current.show({
-          severity: "success",
-          summary: "Created Successfully",
-          detail: "Venue created successfully.",
-          life: 2000,
-        });
-        setTimeout(() => {
-          navigate("/VenueList");
-        }, 2000);
+      if (!uid) {
+        // Create new venue
+        res = await useJwt.Venue(data);
+        if (res.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Created Successfully",
+            detail: "Venue created successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            navigate("/VenueList");
+          }, 2000);
+        }
+      } else {
+        // Update existing venue
+        res = await useJwt.updateVenue(uid, data);
+        if (res.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Updated Successfully",
+            detail: "Venue updated successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            navigate("/VenueList");
+          }, 2000);
+        }
       }
-    } else {
-      // Update existing venue
-      res = await useJwt.updateVenue(uid, data);
-      if (res.status === 200) {
-        toast.current.show({
-          severity: "success",
-          summary: "Updated Successfully",
-          detail: "Venue updated successfully.",
-          life: 2000,
-        });
-        setTimeout(() => {
-          navigate("/VenueList");
-        }, 2000);
-      }
-    }
 
-    console.log("API Response:", res);
-  } catch (error) {
-    console.error("API Error:", error);
-    if (error.response && error.response.data) {
-      const { content } = error.response.data;
-      seterrMsz((prev) => {
-        const newMsz = content || "Something went wrong!";
-        return prev !== newMsz ? newMsz : prev + " ";
-      });
+      console.log("API Response:", res);
+    } catch (error) {
+      console.error("API Error:", error);
+      if (error.response && error.response.data) {
+        const { content } = error.response.data;
+        seterrMsz((prev) => {
+          const newMsz = content || "Something went wrong!";
+          return prev !== newMsz ? newMsz : prev + " ";
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     if (uid) {
@@ -204,23 +199,33 @@ function CreateVenue() {
         <CardBody>
           <CardTitle>
             <CardText>
+              <ArrowLeft
+                style={{
+                  cursor: "pointer",
+                  marginRight: "10px",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                onClick={() => window.history.back()}
+              />{" "}
               {!uid ? " Create " : " Update "}
               Venue
             </CardText>
           </CardTitle>
           <Toast ref={toast} />
-{errMsz && (
-        <React.Fragment>
-          <UncontrolledAlert color="danger">
-            <div className="alert-body">
-              <span className="text-danger fw-bold">
-                <strong>Error : </strong>
-                {errMsz}
-              </span>
-            </div>
-          </UncontrolledAlert>
-        </React.Fragment>
-      )}
+          {errMsz && (
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error : </strong>
+                    {errMsz}
+                  </span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup row>
               {/* Venue Name */}
@@ -437,7 +442,7 @@ function CreateVenue() {
                       <option value="">Select venue type</option>
                       <option value="Indoor">Indoor</option>
                       <option value="Outdoor">Outdoor</option>
-                      <option value="Hybrid">Hybrid</option>
+                      <option value="Hybrid">Both</option>
                     </Input>
                   )}
                 />
@@ -557,7 +562,7 @@ function CreateVenue() {
                 )}
               </Col>
             </FormGroup>
-{/* <div className="d-flex justify-content-end"> */}
+            {/* <div className="d-flex justify-content-end"> */}
 
             <Button type="submit" disabled={loading} color="primary">
               {loading ? (
@@ -566,9 +571,7 @@ function CreateVenue() {
                   <Spinner size="sm" />{" "}
                 </>
               ) : (
-<>
-                {uid ? "Update":"Submit"}
-               </> 
+                <>{uid ? "Update" : "Submit"}</>
               )}
             </Button>
             {/* </div> */}

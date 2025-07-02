@@ -82,7 +82,7 @@
 //         // Assuming the structure of `response` matches the original template
 //       } catch (error) {
 //         // Handle errors gracefully
-//         console.log(error);
+//          console.error(error);
 //       }
 //     };
 //     fetchdata();

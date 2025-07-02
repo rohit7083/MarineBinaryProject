@@ -165,9 +165,9 @@ export default class JwtService {
 
   // temp
 
-  login(...args) {
-    return axios.post(this.jwtConfig.loginEndpoint, ...args);
-  }
+  // login(...args) {
+  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  // }
 
   getVendor() {
     return axios.get(this.jwtConfig.getVendor);
@@ -575,11 +575,21 @@ export default class JwtService {
     return axios.get(this.jwtConfig.getAllRoomTypes);
   }
 
-    SearchRoom(...args) {
+  SearchRoom(...args) {
     return axios.post(this.jwtConfig.SearchRoom, ...args);
   }
 
-  
+  submitBookedRooms(...args) {
+    return axios.post(this.jwtConfig.submitBookedRooms, ...args);
+  }
+
+  PreviewSubmit(...args) {
+    return axios.post(this.jwtConfig.PreviewSubmit, ...args);
+  }
+
+  bookingPayment(...args) {
+    return axios.post(this.jwtConfig.bookingPayment, ...args);
+  }
 
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

@@ -31,7 +31,7 @@ const CustomTable = ({ data }) => {
 
   async function fetchTableData() {
     try {
-      // {{debugger}}
+      // {{ }}
       setLoading(true);
       const { data } = await useJwt.getallSubuser();
       const { content } = data;
@@ -39,14 +39,14 @@ const CustomTable = ({ data }) => {
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    // {{debugger}}
+    // {{ }}
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 

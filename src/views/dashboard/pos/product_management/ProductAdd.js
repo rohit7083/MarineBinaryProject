@@ -25,6 +25,8 @@ import addTax from "../../../../assets/icons/calendar-event-tax.svg";
 import ProductAdd_Table from "./ProductAdd_Table";
 import Add_Specification from "./Add_Specification";
 import useJwt from "@src/auth/jwt/useJwt";
+import NavItems from "./NavItems";
+import { ArrowLeft } from "react-feather";
 const MultipleColumnForm = () => {
   const {
     control,
@@ -63,7 +65,6 @@ const MultipleColumnForm = () => {
 
   const fetchVendors = async () => {
     try {
-      
       const getVendors = await useJwt.getVendor();
       console.log(getVendors);
       const vendorList = getVendors?.data?.content?.result || [];
@@ -82,7 +83,7 @@ const MultipleColumnForm = () => {
 
       console.log(allNameOfVendor);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
   useEffect(() => {
@@ -94,7 +95,7 @@ const MultipleColumnForm = () => {
       const res = await useJwt.addProduct(data);
       console.log(res);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
     console.log("Form Submitted:", data);
   };
@@ -103,116 +104,29 @@ const MultipleColumnForm = () => {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">Add New Products</CardTitle>
+          <CardTitle tag="h4"> <ArrowLeft
+                                                     style={{
+                                                       cursor: "pointer",
+                                                     // marginRight:"10px",
+                                                       transition: "color 0.1s",
+                                                     }}
+                                                     onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                                     onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                                     onClick={() => window.history.back()}
+                                                   />   Add New Products</CardTitle>
           <div className="d-flex mt-md-0 mt-1">
-            <div className="d-flex justify-content-end gap-2">
-              <Link to="/dashboard/pos/product_management/addProduct">
-                <img
-                  src={addProductIcon}
-                  id="ANP"
-                  alt="Add Product"
-                  width="25"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.ANP}
-                  target="ANP"
-                  toggle={() => toggleTooltip("ANP")}
-                >
-                  Add New Product
-                </Tooltip>
-              </Link>
-
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+            <NavItems/>
               <div>
-                <img
-                  id="importProduct"
-                  width="25"
-                  height="25"
-                  src={importIcon}
-                  alt="Import"
-                  style={{ cursor: "pointer" }}
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.importProduct}
-                  target="importProduct"
-                  toggle={() => toggleTooltip("importProduct")}
-                >
+                <Link to="/pos/VendorManage">
+                  <div className="d-flex">
+                    <Button color="primary" outline size="sm">
                   Import Product
-                </Tooltip>
+                    </Button>
+                  </div>
+                </Link>
               </div>
 
-              <Link to="/dashboard/pos/product_management/addproductCategory">
-                <img
-                  id="addProductCate"
-                  src={AddCategoryIcon}
-                  width="25"
-                  height="25"
-                  alt="Category"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.addProductCate}
-                  target="addProductCate"
-                  toggle={() => toggleTooltip("addProductCate")}
-                >
-                  Add Product Category
-                </Tooltip>
-              </Link>
-
-              <Link to="/dashboard/pos/product_management/addTaxes">
-                <img
-                  id="addProducttaxes"
-                  src={addTax}
-                  width="25"
-                  height="25"
-                  alt="Tax"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.addProducttaxes}
-                  target="addProducttaxes"
-                  toggle={() => toggleTooltip("addProducttaxes")}
-                >
-                  Add Product Taxes
-                </Tooltip>
-              </Link>
-
-              <Link to="/dashboard/pos/product_management/AddStocks">
-                <img
-                  id="addStock"
-                  src={addStocks}
-                  width="25"
-                  height="25"
-                  alt="Stock"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.addStock}
-                  target="addStock"
-                  toggle={() => toggleTooltip("addStock")}
-                >
-                  Add Stock
-                </Tooltip>
-              </Link>
-
-              <Link to="#">
-                <img
-                  id="stockManage"
-                  src={ManageStocks}
-                  width="25"
-                  height="25"
-                  alt="Manage"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.stockManage}
-                  target="stockManage"
-                  toggle={() => toggleTooltip("stockManage")}
-                >
-                  Stock Manage
-                </Tooltip>
-              </Link>
             </div>
           </div>
         </CardHeader>

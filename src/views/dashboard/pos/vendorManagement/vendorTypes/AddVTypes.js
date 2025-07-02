@@ -21,6 +21,7 @@ import {
   Spinner,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 
 function AddVTypes() {
   const {
@@ -50,14 +51,14 @@ function AddVTypes() {
 
 
    const onSubmit = async (data) => {
-      console.log(data);
+      
   
       try {
         setLoading(true);
         if (uid) {
       const res = await useJwt.updateVendor(uid,data);
           console.log("Updated:", res);
-          {{debugger}}
+          {{ }}
           if (res.status === 200) {
             toast.current.show({
               severity: "success",
@@ -101,7 +102,16 @@ function AddVTypes() {
         <CardBody>
           <CardTitle>
             <CardText>
-              
+                <ArrowLeft
+                                         style={{
+                                           cursor: "pointer",
+                                         marginRight:"10px",
+                                           transition: "color 0.1s",
+                                         }}
+                                         onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                         onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                         onClick={() => window.history.back()}
+                                       />
               {uid ? "Update": "Create "}
                Vendor Types</CardText>
           </CardTitle>

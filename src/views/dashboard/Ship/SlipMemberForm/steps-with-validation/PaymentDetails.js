@@ -276,7 +276,7 @@ const Address = ({
         id,
       });
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
   // console.log(slipDetail);
@@ -429,7 +429,7 @@ const Address = ({
   // },[isAssign])
 
   useEffect(() => {
-    // {{debugger}}
+    // {{ }}
     if (member || memberID) {
       setMember(false); // member is now filled
     } else {
@@ -561,7 +561,7 @@ const Address = ({
 
           // {
           //   {
-          //     debugger;
+          //      ;
           //   }
           // }
           if (response?.status === 200) {

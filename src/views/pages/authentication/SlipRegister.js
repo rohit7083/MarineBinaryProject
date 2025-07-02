@@ -62,7 +62,7 @@ const RegisterCover = () => {
           buttonsStyling: false,
         })
       } catch (error) {
-        console.log(error);
+         console.error(error);
         return MySwal.fire({
           title: "Error!",
           text: "An error occurred while submitting the form.",

@@ -29,6 +29,7 @@ import {
   Plus,
   Edit2,
   Trash,
+  ArrowLeft,
 } from "react-feather";
 
 // ** Reactstrap Imports
@@ -49,7 +50,9 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";const BootstrapCheckbox = forwardRef((props, ref) => (
+import withReactContent from "sweetalert2-react-content";
+import NavItems from "../NavItems";
+const BootstrapCheckbox = forwardRef((props, ref) => (
   <div className="form-check">
     <Input type="checkbox" ref={ref} {...props} />
   </div>
@@ -59,7 +62,7 @@ const DataTableWithButtons = () => {
   // ** States
   const [parentData, setparentData] = useState({});
   const [show, setShow] = useState(false);
-const [data,setData]=useState([]);
+  const [data, setData] = useState([]);
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -157,12 +160,7 @@ const [data,setData]=useState([]);
     />
   );
 
-
-  
-
-const MySwal = withReactContent(Swal);
-
-
+  const MySwal = withReactContent(Swal);
 
   const handleDelete = async (uid) => {
     return MySwal.fire({
@@ -184,8 +182,8 @@ const MySwal = withReactContent(Swal);
           if (response.status === 204) {
             setData((prevData) => {
               const newData = prevData.filter((item) => item.uid !== uid);
-              console.log("newData",newData);
-              
+              console.log("newData", newData);
+
               return newData;
             });
             MySwal.fire({
@@ -238,7 +236,7 @@ const MySwal = withReactContent(Swal);
       minWidth: "250px",
       selector: (row) => row.description,
     },
-   
+
     {
       name: "Actions",
       sortable: true,
@@ -246,17 +244,18 @@ const MySwal = withReactContent(Swal);
       cell: (row) => {
         return (
           <div className="d-flex">
-            <Link  style={{ margin: "0.5rem" }} to="/pos/product_management/add-category"
-            state={{row:row,
-              uid:row.uid,
-              parentCategoryData:parentData,
-            }}>
-            <span
-             
-              // onClick={() => handleEdit(row)}
+            <Link
+              style={{ margin: "0.5rem" }}
+              to="/pos/product_management/add-category"
+              state={{ row: row, uid: row.uid, parentCategoryData: parentData }}
             >
-              <Edit2 className="font-medium-3 text-body" />
-            </span></Link>
+              <span
+
+              // onClick={() => handleEdit(row)}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            </Link>
 
             <Link style={{ margin: "0.5rem" }}>
               {" "}
@@ -277,20 +276,17 @@ const MySwal = withReactContent(Swal);
   useEffect(() => {
     (async () => {
       try {
-         
         const res = await useJwt.getProductCategory();
-        console.log("getAllProduct",res?.data?.content?.result);
-        setData(res?.data?.content?.result) 
+        console.log("getAllProduct", res?.data?.content?.result);
+        setData(res?.data?.content?.result);
         const parentCategory = res?.data?.content?.result?.map((x) => ({
           parentCateName: x.name,
           parentUid: x.uid,
         }));
         setparentData(parentCategory);
         console.log("parentCategory", parentCategory);
-        
-        
       } catch (error) {
-        console.log(error);
+         console.error(error);
       }
     })();
   }, []);
@@ -299,123 +295,26 @@ const MySwal = withReactContent(Swal);
     <Fragment>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">Add Product Category</CardTitle>
+          <CardTitle tag="h4"> <ArrowLeft
+                                                     style={{
+                                                       cursor: "pointer",
+                                                     // marginRight:"10px",
+                                                       transition: "color 0.1s",
+                                                     }}
+                                                     onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                                     onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                                     onClick={() => window.history.back()}
+                                                   />  Add Product Category</CardTitle>
           <div className="d-flex mt-md-0 mt-1">
-            <div className="d-flex justify-content-end gap-2">
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+              <NavItems />
               <div>
-                <Link to="/dashboard/pos/product_management/addProduct">
-                  <img
-                    src={addProductIcon}
-                    id="ANP"
-                    alt="Shopping Bag"
-                    width="25"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.ANP}
-                    target="ANP"
-                    toggle={() => toggleTooltip("ANP")}
-                  >
-                    Add New Producct
-                  </Tooltip>
-                </Link>
-              </div>
-              <div>
-                <img
-                  id="importProduct"
-                  width="25"
-                  height="25"
-                  src={importIcon}
-                  alt="importProduct"
-                  onClick={() => setShow(true)}
-                  style={{ cursor: "pointer" }}
-                />
-
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.importProduct}
-                  target="importProduct"
-                  toggle={() => toggleTooltip("importProduct")}
-                >
-                  Import Product
-                </Tooltip>
-              </div>
-
-              <div>
-                <Link to="/dashboard/pos/product_management/addproductCategory">
-                  <img
-                    width="25"
-                    height="25"
-                    id="addProductCate"
-                    src={AddCategoryIcon}
-                    alt="sorting-answers"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addProductCate}
-                    target="addProductCate"
-                    toggle={() => toggleTooltip("addProductCate")}
-                  >
-                    Add Product Category
-                  </Tooltip>
-                </Link>
-              </div>
-              <div>
-                <Link to="/dashboard/pos/product_management/addTaxes">
-                  <img
-                    width="25"
-                    height="25"
-                    id="addProducttaxes"
-                    src={addTax}
-                    alt="addProducttaxes"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addProducttaxes}
-                    target="addProducttaxes"
-                    toggle={() => toggleTooltip("addProducttaxes")}
-                  >
-                    Add Product Taxes
-                  </Tooltip>
-                </Link>
-              </div>
-              <div>
-                <Link to="/dashboard/pos/product_management/AddStocks">
-                  <img
-                    width="25"
-                    height="25"
-                    id="addStock"
-                    src={addStocks}
-                    alt="list-is-empty"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addStock}
-                    target="addStock"
-                    toggle={() => toggleTooltip("addStock")}
-                  >
-                    Add Stock
-                  </Tooltip>
-                </Link>
-              </div>
-
-              <div>
-                <Link>
-                  <img
-                    width="25"
-                    height="25"
-                    id="stockManage"
-                    src={ManageStocks}
-                    alt="list-is-empty"
-                  />
-                  <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.stockManage}
-                    target="stockManage"
-                    toggle={() => toggleTooltip("stockManage")}
-                  >
-                    Stock Manage
-                  </Tooltip>
+                <Link to="/pos/VendorManage">
+                  <div className="d-flex">
+                    <Button color="primary" outline size="sm">
+                      Import Product
+                    </Button>
+                  </div>
                 </Link>
               </div>
             </div>
@@ -425,11 +324,13 @@ const MySwal = withReactContent(Swal);
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
           <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-            <Link to="/pos/product_management/add-category"
-            state={{
-              parentCategoryData:parentData,
-            }}>
-              <Button className="me-2" color="primary">
+            <Link
+              to="/pos/product_management/add-category"
+              state={{
+                parentCategoryData: parentData,
+              }}
+            >
+              <Button className="me-2" size="sm" color="primary">
                 <Plus size={15} />
                 <span className="align-middle ms-50">Add Category</span>
               </Button>
@@ -470,7 +371,6 @@ const MySwal = withReactContent(Swal);
             selectableRowsComponent={BootstrapCheckbox}
             data={data}
           />
-          
         </div>
       </Card>
     </Fragment>

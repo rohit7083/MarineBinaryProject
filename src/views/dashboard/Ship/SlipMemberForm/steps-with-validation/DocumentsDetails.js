@@ -160,7 +160,7 @@ const [ermsz,setErrmsz]=useState("");
         });
       }
     } catch (error) {
-      console.log(error);
+       console.error(error);
       const errMsz=error.response.data?.content;
       console.log(errMsz);
       
@@ -382,7 +382,7 @@ export default FileUploadForm;
     }
   
     formData.append("slipId", slipIID); // Always append slipIID
-  console.log(data);
+  
    try {
       setLoading(true);
       

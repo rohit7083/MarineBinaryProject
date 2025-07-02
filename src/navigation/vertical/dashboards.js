@@ -36,7 +36,7 @@ export default [
   // ,
   {
     id: "dashboard",
-    title: "dashboard",
+    title: "Dashboard",
     icon: <Circle size={12} />,
     navLink: "/dashbord",
   },
@@ -285,12 +285,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/manage_room_types",
       },
-          {
-        id: "chout",
-        title: "Review Booking",
-        icon: <Circle size={12} />,
-        navLink: "/search-rooms/checkout",
-      },
+      //     {
+      //   id: "chout",
+      //   title: "Review Booking",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/search-rooms/previewBooking",
+      // },
 
         {
         id: "Rooms Details",

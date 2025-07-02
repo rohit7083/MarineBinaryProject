@@ -7,6 +7,7 @@ import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import { UncontrolledAlert } from "reactstrap";
 import {
   Card,
   CardBody,
@@ -21,6 +22,7 @@ import {
   FormFeedback,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 
 function AddVTypes() {
   const {
@@ -51,7 +53,7 @@ function AddVTypes() {
   const onSubmit = async (data) => {
     seterrMsz("");
 
-    console.log(data);
+    
 
     const payload = {
       taxType: "Percentage",
@@ -112,6 +114,16 @@ function AddVTypes() {
         <CardBody>
           <CardTitle>
             <CardText>
+              <ArrowLeft
+                style={{
+                  cursor: "pointer",
+                  cursor: "pointer",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                onClick={() => window.history.back()}
+              />{" "}
               {uid ? "Update" : "Create "}
               Room Types
             </CardText>
@@ -188,7 +200,7 @@ function AddVTypes() {
                 <Label for="">Room Capacity</Label>
 
                 <Controller
-                  name="peopleCapacity  "
+                  name="peopleCapacity"
                   control={control}
                   defaultValue=""
                   rules={{

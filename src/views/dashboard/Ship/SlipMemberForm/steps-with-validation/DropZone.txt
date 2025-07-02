@@ -133,7 +133,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
 
   //   toast.success("Files uploaded successfully!");
 
-  //   console.log(data);
+  //   
 
   //   console.log('API Response:', response.data);
   //   // } else {
@@ -189,7 +189,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
 
       console.log(results);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
     }
   };
@@ -361,7 +361,7 @@ export default FileUploadForm;
     }
   
     formData.append("slipId", slipIID); // Always append slipIID
-  console.log(data);
+  
    try {
       setLoading(true);
       

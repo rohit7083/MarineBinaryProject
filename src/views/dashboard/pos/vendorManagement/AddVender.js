@@ -25,7 +25,7 @@ import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import { UncontrolledAlert } from "reactstrap";
 import React from "react";
-import { useEffect, useState ,useRef }from "react";
+import { useEffect, useState, useRef } from "react";
 import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
 import importIcon from "../../../../assets/icons/file-import.svg";
 import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
@@ -34,6 +34,8 @@ import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
 import addTax from "../../../../assets/icons/calendar-event-tax.svg";
 import { data } from "jquery";
 import useJwt from "@src/auth/jwt/useJwt";
+import NavItems from "../product_management/NavItems";
+import { ArrowLeft } from "react-feather";
 
 const MultipleColumnForm = () => {
   const {
@@ -43,23 +45,23 @@ const MultipleColumnForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      vendorName: "aa",
-      companyName: "bb",
-      address: "cc",
-      phoneNumber: "912345678901",
-      emailId: "aa@gmail.com",
+      // vendorName: "aa",
+      // companyName: "bb",
+      // address: "cc",
+      // phoneNumber: "912345678901",
+      // emailId: "aa@gmail.com",
     },
   });
 
   const location = useLocation();
-    const toast = useRef(null);
-    const [errMsz, seterrMsz] = useState("");
+  const toast = useRef(null);
+  const [errMsz, seterrMsz] = useState("");
 
   const vendorData = location.state;
   console.log("vendor ddata ", vendorData);
   const [vType, setVType] = useState([]);
-    const [loading, setLoading] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -75,72 +77,67 @@ const MultipleColumnForm = () => {
     }));
   };
 
-  // {{debugger}}
+  // {{ }}
   const onSubmit = async (data) => {
-        seterrMsz("");
+    seterrMsz("");
 
     const payload = {
       ...data,
       countryCode: data.countryCode?.value || "",
-      vendorType:{
-      uid:data.vendorType?.value || "",
-      }
+      vendorType: {
+        uid: data.vendorType?.value || "",
+      },
     };
-    console.log("data",data);
-    
+    console.log("data", data);
+
     if (!vendorData) {
       try {
-              setLoading(true);
+        setLoading(true);
 
         const res = await useJwt.addVender(payload);
         console.log("Response from API", res);
-         toast.current.show({
-        severity: "success",
-        summary: " Successfully",
-        detail: "Vendor Created Successfully.",
-        life: 2000,
-      });
-
+        toast.current.show({
+          severity: "success",
+          summary: " Successfully",
+          detail: "Vendor Created Successfully.",
+          life: 2000,
+        });
       } catch (error) {
         console.log("Error submitting form", error);
-           if (error.response && error.response.data) {
-        const { status, content } = error.response.data;
+        if (error.response && error.response.data) {
+          const { status, content } = error.response.data;
 
-        seterrMsz((prev) => {
-          const newMsz = content || "Something went wrong!";
-          return prev !== newMsz ? newMsz : prev + " ";
-        });
+          seterrMsz((prev) => {
+            const newMsz = content || "Something went wrong!";
+            return prev !== newMsz ? newMsz : prev + " ";
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-      }
-      finally {
-      setLoading(false);
-    }
     } else {
-
       try {
         const updatedRes = await useJwt.editvender(vendorData?.uid, payload);
         console.log(updatedRes);
-         toast.current.show({
-        severity: "success",
-        summary: " Successfully",
-        detail: "Vendor Updated Successfully.",
-        life: 2000,
-      });
-
+        toast.current.show({
+          severity: "success",
+          summary: " Successfully",
+          detail: "Vendor Updated Successfully.",
+          life: 2000,
+        });
       } catch (error) {
         console.log("Error submitting form", error);
-          if (error.response && error.response.data) {
-        const { status, content } = error.response.data;
+        if (error.response && error.response.data) {
+          const { status, content } = error.response.data;
 
-        seterrMsz((prev) => {
-          const newMsz = content || "Something went wrong!";
-          return prev !== newMsz ? newMsz : prev + " ";
-        });
+          seterrMsz((prev) => {
+            const newMsz = content || "Something went wrong!";
+            return prev !== newMsz ? newMsz : prev + " ";
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-      }
-      finally {
-      setLoading(false);
-    }
     }
   };
 
@@ -163,133 +160,72 @@ const MultipleColumnForm = () => {
     code: country.code,
   }));
 
+  const fetchVendorType = async () => {
+    try {
+      const res = await useJwt.getAllVendorType();
+      console.log("Vendor Type Data", res);
 
+      const vendorTypeOptions = res?.data?.content?.result?.map((type) => ({
+        value: type.uid,
+        label: type.typeName,
+      }));
 
-  const fetchVendorType=async()=>{
-try {
-  const res=await useJwt.getAllVendorType();
-  console.log("Vendor Type Data", res);
-
-  const vendorTypeOptions = res?.data?.content?.result?.map((type) => ({
-    value: type.uid,
-    label: type.typeName,
-  }));
-
-  setVType(vendorTypeOptions);
-  
-} catch (error) {
-  console.log(error);
-  
-}
-  }
-  useEffect(()=>{
-fetchVendorType();
-  },[])
+      setVType(vendorTypeOptions);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchVendorType();
+  }, []);
   return (
     <Card>
-            <Toast ref={toast} />
-      
+      <Toast ref={toast} />
+
       <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
-        <CardTitle tag="h4">Add Vender</CardTitle>
-        <div className="d-flex gap-2">
-          <Link to="/dashboard/pos/product_management/addProduct">
-            <img src={addProductIcon} id="ANP" alt="Add Product" width="25" />
-            <Tooltip
-              isOpen={tooltipOpen.ANP}
-              target="ANP"
-              toggle={() => toggleTooltip("ANP")}
-              >
-              Add New Product
-            </Tooltip>
-          </Link>
-
-          
-
-          <img
-            id="importProduct"
-            width="25"
-            height="25"
-            src={importIcon}
-            alt="Import Product"
-            style={{ cursor: "pointer" }}
-            />
-          <Tooltip
-            isOpen={tooltipOpen.importProduct}
-            target="importProduct"
-            toggle={() => toggleTooltip("importProduct")}
-            >
-            Import Product
-          </Tooltip>
-
-          <Link to="/dashboard/pos/product_management/addproductCategory">
-            <img
-              id="addProductCate"
-              width="25"
-              src={AddCategoryIcon}
-              alt="Add Category"
-              />
-            <Tooltip
-              isOpen={tooltipOpen.addProductCate}
-              target="addProductCate"
-              toggle={() => toggleTooltip("addProductCate")}
-              >
-              Add Product Category
-            </Tooltip>
-          </Link>
-
-          <Link to="/dashboard/pos/product_management/addTaxes">
-            <img id="addProducttaxes" width="25" src={addTax} alt="Add Tax" />
-            <Tooltip
-              isOpen={tooltipOpen.addProducttaxes}
-              target="addProducttaxes"
-              toggle={() => toggleTooltip("addProducttaxes")}
-              >
-              Add Product Taxes
-            </Tooltip>
-          </Link>
-
-          <Link to="/dashboard/pos/product_management/AddStocks">
-            <img id="addStock" width="25" src={addStocks} alt="Add Stock" />
-            <Tooltip
-              isOpen={tooltipOpen.addStock}
-              target="addStock"
-              toggle={() => toggleTooltip("addStock")}
-              >
-              Add Stock
-            </Tooltip>
-          </Link>
-
-          <Link>
-            <img
-              id="stockManage"
-              width="25"
-              src={ManageStocks}
-              alt="Manage Stock"
-              />
-            <Tooltip
-              isOpen={tooltipOpen.stockManage}
-              target="stockManage"
-              toggle={() => toggleTooltip("stockManage")}
-              >
-              Stock Manage
-            </Tooltip>
-          </Link>
+        <CardTitle tag="h4">
+          {" "}
+          <ArrowLeft
+            style={{
+              cursor: "pointer",
+              marginRight: "10px",
+              transition: "color 0.1s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+            onClick={() => window.history.back()}
+          />
+          Add Vendor
+        </CardTitle>
+        <div className="d-flex mt-md-0 mt-1">
+          <div className="d-flex  mt-2 justify-content-start gap-2">
+            <NavItems />
+            <div>
+              <Link to="/pos/VendorManage">
+                <div className="d-flex">
+                  <Button color="primary" outline size="sm">
+                    Import Product
+                  </Button>
+                </div>
+              </Link>
+            </div>
+          </div>
         </div>
       </CardHeader>
 
       <CardBody className="mt-2">
-              {errMsz && (
-                <React.Fragment>
-                  <UncontrolledAlert color="danger">
-                    <div className="alert-body">
-                      <span className="text-danger fw-bold">
-                        <strong>Error : </strong>
-                        {errMsz}
-                      </span>
-                    </div>
-                  </UncontrolledAlert>
-                </React.Fragment>
-              )}
+        {errMsz && (
+          <React.Fragment>
+            <UncontrolledAlert color="danger">
+              <div className="alert-body">
+                <span className="text-danger fw-bold">
+                  <strong>Error : </strong>
+                  {errMsz}
+                </span>
+              </div>
+            </UncontrolledAlert>
+          </React.Fragment>
+        )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Row>
             <Col md="6" className="mb-1">
@@ -475,7 +411,7 @@ fetchVendorType();
               <p style={{ color: "red" }}>{errors.vendorType.message}</p>
             )}
           </Col>
-          <Col sm="12"className="mb-2">
+          <Col sm="12" className="mb-2">
             <Label for="description">Vendor Type Description</Label>
 
             <Controller
@@ -505,14 +441,15 @@ fetchVendorType();
           </CardTitle> */}
 
           <Button color="primary" disabled={loading} className="" type="submit">
-  {loading ? (
+            {loading ? (
               <>
                 <span>Loading.. </span>
                 <Spinner size="sm" />{" "}
               </>
             ) : (
               "Submit"
-            )}          </Button>
+            )}{" "}
+          </Button>
           <Button
             outline
             color="secondary"

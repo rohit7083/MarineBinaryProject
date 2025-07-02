@@ -238,7 +238,7 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
 
         setallRoleName(roles);
       } catch (error) {
-        console.log(error);
+         console.error(error);
       } finally {
       }
     })();

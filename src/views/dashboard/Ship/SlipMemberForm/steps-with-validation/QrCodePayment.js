@@ -84,7 +84,7 @@ const AddCardExample = ({
         className='modal-dialog-centered'
        
       >
-        {/* <ModalHeader className='bg-transparent' toggle={() => setShowQrModal(!showQrModal)}></ModalHeader> */}
+        <ModalHeader className='bg-transparent' toggle={() => setShowQrModal(!showQrModal)}></ModalHeader>
         <ModalBody className='px-sm-5 mx-50 pb-5'>
           <h1 className='text-center mb-1'>Scan QR Code</h1>
           {/* <p className='text-center'>Add card for future billing</p> */}

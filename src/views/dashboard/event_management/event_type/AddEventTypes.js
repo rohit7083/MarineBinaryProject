@@ -19,7 +19,7 @@ import {
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 import { Navigate, useLocation } from "react-router-dom";
-
+import { ArrowLeft } from "react-feather";
 function AddEventTypes() {
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -45,7 +45,7 @@ function AddEventTypes() {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    
 
     try {
       setLoading(true);
@@ -92,7 +92,16 @@ function AddEventTypes() {
         <CardBody>
           <CardTitle>
             <CardText>
-              
+           <ArrowLeft
+                style={{
+                  cursor: "pointer",
+                marginRight:"10px",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                onClick={() => window.history.back()}
+              />    
               {!uid ? "Create ":
               "update "}
               Event Types</CardText>

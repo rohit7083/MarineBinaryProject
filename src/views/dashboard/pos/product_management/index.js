@@ -46,6 +46,7 @@ import {
   DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
+import NavItems from "./NavItems";
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -213,168 +214,13 @@ const DataTableWithButtons = () => {
           <CardTitle tag="h4">Product List</CardTitle>
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex  mt-2 justify-content-start gap-2">
-              <div>
-                <Link to="/dashboard/pos/product_management/addProduct">
-                  <div className="d-flex">
-                    <img
-                      src={addProductIcon}
-                      id="ANP"
-                      alt="Shopping Bag"
-                      width="18"
-                      className="mx-1 "
-                    />
-                    <p className="mt-1" style={{fontSize:"0.9em"}}> Add Producct</p>
-                  </div>
-                  {/* <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.ANP}
-                    target="ANP"
-                    toggle={() => toggleTooltip("ANP")}
-                  >
-                    Add New Producct
-                  </Tooltip> */}
-                </Link>
-              </div>
-              {/* <div>
-                <div className="d-flex" style={{ cursor: "pointer" }}>
-                  <img
-                    id="importProduct"
-                    width="20"
-                    height="20"
-                    src={importIcon}
-                    alt="importProduct"
-                    className="mx-1 mt-1"
-                    onClick={() => setShow(true)}
-                    
-                  />
-                  <p className="mt-1"> Import Product</p>
-                </div> */}
-                {/* <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.importProduct}
-                  target="importProduct"
-                  toggle={() => toggleTooltip("importProduct")}
-                >
-                  Import Product
-                </Tooltip> */}
-              {/* </div> */}
-
-              <div>
-                <Link to="/dashboard/pos/product_management/addproductCategory">
-                  <div className="d-flex">
-                    <img
-                      width="18"
-                      height="18"
-                      id="addProductCate"
-                      src={AddCategoryIcon}
-                      alt="sorting-answers"
-                      className="mx-1 mt-1"
-                    />
-                    <p className="mt-1" style={{fontSize:"0.9em"}}>Add Category</p>
-
-                    {/* <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addProductCate}
-                    target="addProductCate"
-                    toggle={() => toggleTooltip("addProductCate")}
-                  >
-                    Add Product Category
-                  </Tooltip> */}
-                  </div>
-                </Link>
-              </div>
-              <div>
-                <Link to="/dashboard/pos/product_management/addTaxes">
-                  <div className="d-flex">
-                    <img
-                      width="18"
-                      height="18"
-                      id="addProducttaxes"
-                      src={addTax}
-                      alt="addProducttaxes"
-                      className="mx-1 mt-1"
-                    />
-                    <p className="mt-1" style={{fontSize:"0.9em"}}>Add Taxes</p>
-
-                    {/* <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addProducttaxes}
-                    target="addProducttaxes"
-                    toggle={() => toggleTooltip("addProducttaxes")}
-                  >
-                    Add Product Taxes
-                  </Tooltip> */}
-                  </div>
-                </Link>
-              </div>
-              <div>
-                <Link to="/dashboard/pos/product_management/AddStocks">
-                  <div className="d-flex">
-                    <img
-                      width="18"
-                      height="18"
-                      id="addStock"
-                      src={addStocks}
-                      alt="list-is-empty"
-                      className="mx-1 mt-1"
-                    />
-                    <p className="mt-1"style={{fontSize:"0.9em"}} >Add Stock</p>
-                    {/* <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.addStock}
-                    target="addStock"
-                    toggle={() => toggleTooltip("addStock")}
-                  >
-                    Add Stock
-                  </Tooltip> */}
-                  </div>
-                </Link>
-              </div>
-
-              <div>
-                <Link to="/dashboard/pos/product_management/manageStocks">
-                  <div className="d-flex">
-                    <img
-                      width="18"
-                      height="18"
-                      id="stockManage"
-                      src={ManageStocks}
-                      alt="list-is-empty"
-                      className="mx-1 mt-1"
-                    />
-                    <p className="mt-1"  style={{fontSize:"0.9em"}}> Stock Manage</p>
-                    {/* <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.stockManage}
-                    target="stockManage"
-                    toggle={() => toggleTooltip("stockManage")}
-                  >
-                 Stock Manage
-                  </Tooltip> */}
-                  </div>
-                </Link>
-              </div>
+             <NavItems/>
               <div>
                 <Link to="/pos/VendorManage">
                   <div className="d-flex">
-                    <img
-                      width="18"
-                      height="18"
-                      id="Vendar"
-                      src={vendor}
-                      alt="list-is-empty"
-                      className="mx-1 mt-1"
-                    />
-                    <p className="mt-1" style={{fontSize:"0.9em"}}>Add Vendar</p>
-
-                    {/* <Tooltip
-                    placement="top"
-                    isOpen={tooltipOpen.Vendar}
-                    target="Vendar"
-                    toggle={() => toggleTooltip("Vendar")}
-                  >
-                    Vendar
-                  </Tooltip> */}
+                    <Button color="primary" outline size="sm">
+                      Add Vendor
+                    </Button>
                   </div>
                 </Link>
               </div>

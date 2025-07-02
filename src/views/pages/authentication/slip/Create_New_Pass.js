@@ -186,7 +186,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   }, [handleOtp, onchnagePass, confirmPassword, previousPassword]);
 
   const onSubmit = async (data) => {
-    {{debugger}}
+    {{ }}
     setCountdownEndTime(0);
     setAttempt(0);
     setErrorMsz("");
@@ -218,7 +218,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
           navigate("/Login");        }, 2000);
       }
     } catch (error) {
-      console.log(error);
+       console.error(error);
 
       if (error.response) {
         const { status, data } = error.response;

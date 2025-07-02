@@ -48,6 +48,7 @@ const GenrateOtp = ({
   const handleOTP = async () => {
     try {
       const payload = {
+        type:1,
         slipId: slipIID,
         memberId: memberId,
       };

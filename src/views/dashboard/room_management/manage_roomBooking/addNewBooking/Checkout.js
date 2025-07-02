@@ -1,183 +1,316 @@
-import { useForm, Controller, set } from "react-hook-form";
-import Cards from "react-credit-cards-2";
-import "react-credit-cards-2/dist/es/styles-compiled.css";
-import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
-import CryptoJS from "crypto-js";
+import React, { useEffect, useState, Fragment, useRef } from "react";
+// ** Custom Components
+import ChecloutCode from "./ChecloutCode";
+import { CheckoutInfo, ClientInfo } from "./CheckoutInfo";
+import CreateUserForm from "./CreateUserForm";
 
+// ** Hooks
+import { useLocation } from "react-router-dom";
+
+// ** Reactstrap Imports
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
   Button,
+  Form,
+  Offcanvas,
+  OffcanvasBody,
   Row,
   Col,
-  Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
-  FormFeedback,
-  Spinner,
-  UncontrolledAlert,
-  CardText,
+  OffcanvasHeader,
+  Card,
+  CardBody,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  CardTitle,
+  CardHeader,
+  Label,
+  Input,
 } from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+import { useNavigate } from "react-router-dom";
+// **React Form Hook
+import { Controller, set, useForm } from "react-hook-form";
 
-import { data } from "jquery";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
+// ** Third Party Components
+import Select, { components } from "react-select";
+import { X, Plus, Hash } from "react-feather";
+
+// ** Utils
+import { selectThemeColors } from "@utils";
+
+// ** Jwtclasss
+import useJwt from "@src/auth/jwt/useJwt";
+// import DiscountDetails from "./DiscountDetails";
+import VerifyOtp from "./VerifyOtp";
+import OtpGenerate from "./OtpGenerate";
+
+// ** Select Custom Components
+const OptionComponent = ({ data, ...props }) => {
+  if (data.type === "button") {
+    return (
+      <Button
+        className="text-start rounded-0 px-50"
+        color={data.color}
+        block
+        onClick={() => data.toggle()}
+      >
+        <Plus className="font-medium-1 me-50" />
+        <span className="align-middle">{data.label}</span>
+      </Button>
+    );
+  } else {
+    return <components.Option {...props}> {data.label} </components.Option>;
+  }
+};
 
 const Checkout = () => {
-  const {
-    control,
-    register,
-    watch,
-    setValue,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {},
+  // ** State
+  const [isOpenForm, setIsOpenForm] = useState(false);
+  const [isVerify, setIsVerify] = useState(false);
+  const [isVerifyOtp, setIsVerifyOtp] = useState(false);
+  const [verify, setVerify] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [mode, setMode] = useState(""); // "flat" or "percentage"
+  const [discountAmt, setDiscountAmt] = useState({});
+  const [clientInfo, setClientInfo] = useState(null);
+  const toast = useRef(null);
+  const [accessTokenotp, setAccessTokenOtp] = useState("");
+
+  const [err, setErr] = useState("");
+  const [selectMemberOptions, setSelectMemberOptions] = useState([
+    {
+      value: "add-new",
+      label: "Add New Customer",
+      type: "button",
+      color: "flat-success",
+    },
+  ]);
+  // ** Form State & Hook
+  const { control, handleSubmit, watch, setValue } = useForm({
+    defaultValues: {
+      selectedMember: null,
+    },
   });
 
-  const MySwal = withReactContent(Swal);
-
-  const [loading, setLoading] = useState(false);
-  const [memberDetail, setMemberDetails] = useState();
-  const { token } = useParams();
   const navigate = useNavigate();
-  const [loadPayment, setLoadPayment] = useState(false);
-  const [err, setErr] = useState("");
-  const getMember = async () => {
-    try {
-      setLoading(true);
-      const res = await useJwt.getMemberDetails(token);
-      console.log("res", res);
-      // const eventId=res?.data?.eventId;
+  // ** Hook
+  const location = useLocation();
+  const state = location.state;
+  const deta= state?.alldata;
+  // ** Function to toggle Offcanvas
+  const toggleForm = () => setIsOpenForm(!isOpenForm);
 
-      setMemberDetails(res?.data);
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setLoading(false);
-    }
+  // ** Verify Member toggle
+  const verifyMember = () => {
+    setIsVerifyOtp(!isVerifyOtp);
   };
 
+  // ** Function to verify OTP by Member
+  const isVerifyOtpByMember = () => {
+    setIsVerify(!isVerify);
+    setIsVerifyOtp(!isVerifyOtp);
+  };
+
+  // ** Function to handle set new Client
+  const handleClose = (data) => {
+    setValue("selectedMember", data);
+    const lastSelectedMemberList = [...selectMemberOptions];
+    lastSelectedMemberList.splice(1, 0, data);
+    setSelectMemberOptions(lastSelectedMemberList);
+
+    toggleForm();
+  };
+
+  // ** Fetching Select Options
   useEffect(() => {
-    getMember();
+    (async () => {
+      try {
+        const { data } = await useJwt.GetMember();
+
+        setSelectMemberOptions([
+          {
+            value: "add-new",
+            label: "Add New Customer",
+            type: "button",
+            color: "flat-success",
+            toggle: toggleForm,
+          },
+          ...data.content.result.map((item) => ({
+            label: `${item.firstName} ${item.lastName}`,
+            value: item.uid,
+            data: JSON.stringify(item),
+          })),
+        ]);
+      } catch (error) {
+        console.error("Error fetching select options:", error);
+      }
+    })();
   }, []);
+
+  //track  discount field
+
+  const isDiscount = watch("discount");
+
+  // {{debugger}}
 
   const onSubmit = async (data) => {
     setErr("");
 
+    const finalPayment =
+      state?.alldata?.totalAmount - discountAmt?.discountValue ||
+      state?.alldata?.totalAmount;
+
+    let memberdata;
+    if (clientInfo?.uid) {
+      memberdata = { uid: clientInfo?.uid };
+    } else {
+      memberdata = {
+        firstName: clientInfo?.firstName || "",
+        lastName: clientInfo?.lastName || "",
+        emailId: clientInfo?.emailId || "",
+        phoneNumber: clientInfo?.phoneNumber || "",
+        countryCode: clientInfo?.countryCode || "",
+        address: clientInfo?.address || "",
+        city: clientInfo?.city || "",
+        state: clientInfo?.state || "",
+        country: clientInfo?.country || "",
+        postalCode: clientInfo?.postalCode || "",
+      };
+    }
+
+    const payload = {
+      roomSearch: {
+        uid: state?.searchUid,
+      },
+      member: memberdata,
+      checkInDate: state?.alldata?.checkInDate,
+      checkOutDate: state?.alldata?.checkOutDate,
+      numberOfGuests: state?.alldata?.numberOfGuests,
+      subtotal: state?.alldata?.totalAmount,
+      isDiscountApply: isDiscount || false,
+      discountType: discountAmt?.type,
+      discountAmount: discountAmt?.enterValue,
+
+      ...(isDiscount && {
+        discountedFinalAmount: discountAmt?.discountValue || 0,
+      }),
+      finalAmount: finalPayment,
+    };
+
     try {
-      setLoadPayment(true);
-      const res = await useJwt.totalPayment(token, payload);
+      // setLoadPayment(true);
+
+      const res = await useJwt.PreviewSubmit(payload);
       console.log(res);
-      if (res.status === 200) {
-        return MySwal.fire({
-          title: "  Success",
-          text: "Your Payment Completed  Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          navigate("/dashbord");
-        });
-      }
+      toast.current.show({
+        severity: "success",
+        summary: "Successfully",
+        detail: "You Successfully Proceed To Pyament.",
+        life: 2000,
+      });
+      navigate("/search-rooms/previewBooking/roomPayment", {
+        state: {
+          resAlldata: state,
+          roomUid: res?.data?.bookingId,
+          finalAmount: finalPayment,
+        },
+      });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.response) {
         console.log("Error data", error.response.data);
         console.log("Error status", error.response.status);
         console.log("Error headers", error.response.headers);
+
         setErr(error.response.data.content);
+        console.log(err);
+        toast.current.show({
+          severity: "error",
+          summary: "Failed",
+          detail: error.response.data.content,
+          life: 2000, // 2 seconds
+        });
       }
     } finally {
-      setLoadPayment(false);
+      // setLoadPayment(false);
     }
-    console.log(data);
+  };
+  // return <ChecloutCode />;
+// {{debugger}}
+useEffect(() => {
+  const generateOtpIfNeeded = async () => {
+    if (watch("discount") == true) {
+      try {
+        const payload = { type: 3, roomId: state?.searchId };
+        const response = await useJwt.GenerateOtp(payload);
+        if (response?.status === 200) {
+          setAccessTokenOtp(response?.data?.content);
+          setShowModal(true);
+
+        }
+      } catch (error) {
+        console.error("Error generating OTP:", error);
+      }
+    }
   };
 
+  generateOtpIfNeeded();
+}, [watch("discount")]);
+
   return (
-    <Row className="d-flex justify-content-center mt-3">
-      <Col xs="12">
+    <>
+      <Toast ref={toast} />
+
+      <CheckoutInfo propsData={state} />
+      {/* <ClientInfo  /> */}
+
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col xl="8" xs="12">
             <Card>
               <CardBody>
-                <CardTitle className="mb-1" tag="h4">
-                  Review your Booking
-                </CardTitle>
+                <CardTitle>Guest Details</CardTitle>
                 <Row>
-                  <Col>
-                    <CardText className="">Check In</CardText>
-                    <CardTitle className="m-auto">
-                      <span
-                        style={{
-                          fontFamily: "sans-serif",
-                          fontWeight: "bold",
-                          fontSize: "2em",
-                        }}
-                      >
-                        09
-                      </span>{" "}
-                      <span style={{ fontSize: "0.8em" }}>Jun 2025</span>
-                    </CardTitle>
-                    <CardText
-                      className=""
-                      style={{ fontSize: "0.8em", margin: "-1em 0.5em" }}
-                    >
-                      Monday
-                    </CardText>
+                  <Col sm="12" className="mb-2">
+                    <Controller
+                      control={control}
+                      name="selectedMember"
+                      rules={{
+                        required: "Member Is required",
+                      }}
+                      render={({ field, fieldState }) => {
+                        return (
+                          <Fragment>
+                            <Select
+                              {...field}
+                              className={`react-select ${
+                                fieldState.error ? "is-invalid" : ""
+                              }`}
+                              classNamePrefix="select"
+                              id="label"
+                              options={selectMemberOptions}
+                              theme={selectThemeColors}
+                              components={{ Option: OptionComponent }}
+                            />
+                            {fieldState.error && (
+                              <small className="text-danger d-block">
+                                {fieldState.error.message}
+                              </small>
+                            )}
+                          </Fragment>
+                        );
+                      }}
+                    />
                   </Col>
-                  <Col>
-                    {" "}
-                    <CardText className="">Check Out</CardText>
-                    <CardTitle className="m-auto">
-                      <span
-                        style={{
-                          fontFamily: "sans-serif",
-                          fontWeight: "bold",
-                          fontSize: "2em",
-                        }}
-                      >
-                        12
-                      </span>{" "}
-                      <span style={{ fontSize: "0.8em" }}>Jun 2025</span>{" "}
-                    </CardTitle>
-                    <CardText
-                      className=""
-                      style={{ fontSize: "0.8em", margin: "-1em 0.5em" }}
-                    >
-                      Saturday
-                    </CardText>
-                  </Col>
-
-                  <Col>
-                    {" "}
-                    <CardText className="">Total Days</CardText>
-                    <CardTitle className="m-auto">
-                      <span
-                        style={{
-                          fontFamily: "sans-serif",
-                          fontWeight: "bold",
-                          fontSize: "2em",
-                        }}
-                      >
-                        03
-                      </span>
-                      <span style={{ fontSize: "0.8em" }}>Days</span>
-                    </CardTitle>
+                  <Col sm="12" className="mb-2">
+                    <ClientInfo
+                      clientInfo={clientInfo}
+                      setClientInfo={setClientInfo}
+                      selectedMember={watch("selectedMember")}
+                    />
                   </Col>
                 </Row>
               </CardBody>
@@ -187,243 +320,164 @@ const Checkout = () => {
           <Col xl="4" xs="12">
             <Card>
               <CardBody>
-                <CardTitle>Booking Information</CardTitle>
-                <CardText>Room 201 : $ 550 x 1 Night</CardText>
-                <CardText>Room 202 : $ 550 x 1 Night</CardText>
-                <CardText>Room 205 : $ 650 x 2 Night</CardText>
-
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col xl="8" xs="12">
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h4">Guest Details</CardTitle>
-              </CardHeader>
-              <CardBody>
-                {loading ? (
-                  <>
-                    <div className="text-center">
-                      Please Wait ..
-                      <BeatLoader className="mt-1" />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Row>
-                      <Col xl="7" xs="12">
-                        <Row tag="dl" className="mb-0">
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            First Name:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.firstName}
-                          </Col>
-
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Last Name :
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.lastName}
-                          </Col>
-
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Email:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.memberEmail}
-                          </Col>
-
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Address:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.address}
-                          </Col>
-
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Mobile Number :
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.countryCode}{" "}
-                            {memberDetail?.mobileNumber}
-                          </Col>
-                        </Row>
-                      </Col>
-                      <Col xl="5" xs="12">
-                        <Row tag="dl" className="mb-0">
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            State :{" "}
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.state}
-                          </Col>
-
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Country:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.country}
-                          </Col>
-
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Postal Code :
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.postalCode}
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </>
-                )}
-              </CardBody>
-            </Card>
-            {/* </Card> */}
-          </Col>
-
-          <Col xl="4" xs="12">
-            <div
-              className="amount-payable checkout-options"
-              style={{ maxWidth: "400px", margin: "auto" }}
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle tag="h4">
-                    {" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="1em"
-                      height="1em"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z"
-                      ></path>
-                      <path
-                        fill="currentColor"
-                        d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z"
-                      ></path>
-                      <circle
-                        cx="7.25"
-                        cy="4.25"
-                        r="1.25"
-                        fill="currentColor"
-                      ></circle>
-                    </svg>{" "}
-                    Discount
-                  </CardTitle>
-                </CardHeader>
-
-                <CardBody>
-                  <Input type="text" placeholder="Enter Discount Amount" />
-                </CardBody>
-                <hr />
-                <CardHeader>
-                  <CardTitle tag="h4">Price Details</CardTitle>
-                </CardHeader>
-                <CardBody>
+                <Col sm="12" className="mb-2">
                   <div
                     className="amount-payable checkout-options"
                     style={{ maxWidth: "400px", margin: "auto" }}
                   >
-                    <ul
-                      className="list-unstyled price-details"
-                      style={{ padding: 0 }}
-                    >
-                      <li
-                        className="price-detail"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "8px",
-                        }}
+                    <CardTitle tag="h4">
+                      {" "}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="1em"
+                        height="1em"
                       >
-                        <div className="details-title">Total Amount</div>
-                        <div className="detail-amt">
-                          <strong>$4</strong>
-                        </div>
-                      </li>
-                      <li
-                        className="price-detail"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "8px",
-                        }}
-                      >
-                        {/* {verify && ( */}
-                        <>
-                          <div className="details-title">Discount Amount</div>
-                          <div className="detail-amt discount-amt text-danger">
-                            {/* {isDiscount ? isDiscount : "0"}{" "}
-                                            {mode === "Percentage"
-                                              ? -discountPercentage.toFixed(2)
-                                              : -discountAmt} */}
-                          </div>  
-                        </>
-                        {/* )} */}
-                      </li>
-                      <li
-                        className="price-detail"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "8px",
-                        }}
-                      >
-                        <div className="details-title">Advance Amount</div>
-                        <div className="detail-amt">
-                          <strong>$0</strong>
-                        </div>
-                      </li>
+                        <path
+                          fill="currentColor"
+                          d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z"
+                        ></path>
+                        <path
+                          fill="currentColor"
+                          d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z"
+                        ></path>
+                        <circle
+                          cx="7.25"
+                          cy="4.25"
+                          r="1.25"
+                          fill="currentColor"
+                        ></circle>
+                      </svg>{" "}
+                      Discount
+                    </CardTitle>
 
-                      <li
-                        className="price-detail"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "8px",
-                        }}
-                      >
-                        <div className="details-title">Remaining Amount</div>
-                        <div className="detail-amt">
-                          <strong> 8 </strong>
-                        </div>
-                      </li>
-                    </ul>
+                    <Col  className="mb-1">
+                      <Label >
+                        <Controller
+                          name="discount"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              type="checkbox"
+                              disabled={verify}
+                            />
+                          )}
+                        />{" "}
+                        Apply discount?
+                      </Label>
+                    </Col>
+                    {watch("discount") === true && (
+                       <>
+                        <OtpGenerate
+                          accessTokenotp={accessTokenotp}
+                          setAccessTokenOtp={setAccessTokenOtp}
+                          setShowModal={setShowModal}
+                          showModal={showModal}
+                          mode={mode}
+                          setMode={setMode}
+                          setValueInParent={setValue}
+                          alldata={deta}
+                          searchId={state?.searchId}
+                          setVerify={setVerify}
+                          verify={verify}
+                          discountAmt={discountAmt}
+                          setDiscountAmt={setDiscountAmt}
+                        />
+                      </>
+                    )} 
+
                     <hr />
-                    <ul
-                      className="list-unstyled price-details"
-                      style={{ padding: 0 }}
+                    <CardTitle tag="h4">Price Details</CardTitle>
+                    <div
+                      className="amount-payable checkout-options"
+                      style={{ maxWidth: "400px", margin: "auto" }}
                     >
-                      <li
-                        className="price-detail"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          fontWeight: "bold",
-                        }}
+                      <ul
+                        className="list-unstyled price-details"
+                        style={{ padding: 0 }}
                       >
-                        <div className="details-title">Amount Payable</div>
-                        <div className="detail-amt">$ 10</div>
-                      </li>
-                    </ul>
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div className="details-title">Total Amount</div>
+                          <div className="detail-amt">
+                            <strong>${state?.alldata?.totalAmount}</strong>
+                          </div>
+                        </li>
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          {verify && (
+                            <>
+                              <div className="details-title">
+                                Discount Amount
+                              </div>
+                              <div className="detail-amt discount-amt text-danger">
+                                {discountAmt?.discountValue
+                                  ? `- $ ${discountAmt?.discountValue}`
+                                  : "$ 0"}
+                              </div>
+                            </>
+                          )}
+                        </li>
+                      </ul>
+                      <hr />
+                      <ul
+                        className="list-unstyled price-details"
+                        style={{ padding: 0 }}
+                      >
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          <div className="details-title">Amount Payable</div>
+                          <div className="detail-amt">
+                            $
+                            {(
+                              state?.alldata?.totalAmount -
+                                discountAmt?.discountValue ||
+                              state?.alldata?.totalAmount
+                            ).toFixed(2)}
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </CardBody>
-              </Card>
-            </div>
+                </Col>
+              </CardBody>
+            </Card>
           </Col>
         </Row>
         <Button type="submit" color="primary" className="btn-next">
-          Submit
+          Next
         </Button>
-      </Col>
-    </Row>
+      </Form>
+      <Offcanvas direction="end" toggle={toggleForm} isOpen={isOpenForm}>
+        <OffcanvasHeader toggle={toggleForm} isOpen={isOpenForm}>
+          Offcanvas
+        </OffcanvasHeader>
+        <OffcanvasBody>
+          <CreateUserForm onClose={handleClose} />
+        </OffcanvasBody>
+      </Offcanvas>
+
+    
+    </>
   );
 };
 

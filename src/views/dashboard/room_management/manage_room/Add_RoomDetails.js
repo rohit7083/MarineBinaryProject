@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Toast } from "primereact/toast";
 import Select from "react-select";
 import { useFieldArray } from "react-hook-form";
-import { Plus, Trash2 } from "react-feather";
+import { ArrowLeft, Plus, Trash2 } from "react-feather";
 import Flatpickr from "react-flatpickr";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -24,7 +24,8 @@ import {
   FormGroup,
   Spinner,
   Table,
-  Row,UncontrolledAlert ,
+  Row,
+  UncontrolledAlert,
   FormFeedback,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -85,7 +86,7 @@ function AddVTypes() {
       }));
       setRoomTypeName(roomtypes);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
 
@@ -94,17 +95,22 @@ function AddVTypes() {
   }, []);
 
   const WatchroomUnits = watch("roomUnits");
+  console.log("WatchroomUnits", WatchroomUnits);
+  
   const onSubmit = async (data) => {
-    // {{debugger  }}
-        setErrorMsz("");
+    // {{   }}
+    setErrorMsz("");
+    reset();
 
     const payload = {
       ...data,
+numberOfRooms:WatchroomUnits.length,
       roomUnits: data.roomUnits.map((room) => ({
         roomNumber: room.roomNumber,
         active: true,
       })),
       roomType: { uid: data?.roomType?.value },
+
     };
     console.log("payload0", payload);
 
@@ -143,9 +149,8 @@ function AddVTypes() {
     } catch (error) {
       console.error("API Error:", error);
       if (error.response) {
-        const errorMessage=error?.response?.data?.content;
-                setErrorMsz(errorMessage);
-
+        const errorMessage = error?.response?.data?.content;
+        setErrorMsz(errorMessage);
       }
     } finally {
       setLoading(false);
@@ -160,11 +165,21 @@ function AddVTypes() {
         <CardBody>
           <CardTitle>
             <CardText>
+              <ArrowLeft
+                style={{
+                  cursor: "pointer",
+                  cursor: "pointer",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                onClick={() => window.history.back()}
+              />{" "}
               {uid ? "Update" : "Create "}
               Room Details
             </CardText>
           </CardTitle>
-  <Col sm="12">
+          <Col sm="12">
             {errorMessage && (
               <React.Fragment>
                 <UncontrolledAlert color="danger">

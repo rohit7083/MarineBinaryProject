@@ -154,7 +154,7 @@ const ClientDetaiils = ({
   const fetchExistingMem = async () => {
     try {
       const { data } = await useJwt.GetMember();
-      console.log(data);
+      
       const memberName = data?.content?.result?.map((x) => ({
         label: `${x.firstName} ${x.lastName}`,
 
@@ -164,10 +164,10 @@ const ClientDetaiils = ({
 
       setMemberNames(memberName);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
-  // {{debugger}}
+  // {{ }}
   useEffect(() => {
     fetchExistingMem();
   }, [selectedValue]);
@@ -175,6 +175,7 @@ const ClientDetaiils = ({
   const existingMemberData = watch("selectedMember");
 
   const qty = watch("quantity");
+// {{ }}
 
   const onSubmit = (data) => {
     const isGuest = watch("memberType") === "guest";
@@ -200,7 +201,6 @@ const ClientDetaiils = ({
 
     //   totalAmount: totalPrice,
     // };
-
     const payload = {
       firstName: data?.firstName,
       lastName: data?.lastName,
@@ -255,9 +255,9 @@ const ClientDetaiils = ({
               <Controller
                 control={control}
                 name="selectedMember"
-                rules={{
-                  required:"Member Is required"
-                }}
+                // rules={{
+                //   required:"Member Is required"
+                // }}
                 render={({ field }) => {
                   return (
                     <Fragment>

@@ -25,7 +25,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useLocation } from "react-router-dom";
-import { Rss } from "react-feather";
+import { ArrowLeft, Rss } from "react-feather";
 const MySwal = withReactContent(Swal);
 
 function Index() {
@@ -188,7 +188,7 @@ function Index() {
             }, 2000);
           }
         } else {
-          // {{debugger}}
+          // {{ }}
           const res = await useJwt.postslipCatogory(payload);
           if (res.status === 201) {
             // toast.success(" Slip Category Created Successful!", {
@@ -249,7 +249,16 @@ function Index() {
 
       <CardHeader>
         <CardTitle tag="h4">
-          {uid ? "Edit Slip Category" : "Add Slip Category"}
+        <ArrowLeft
+                        style={{
+                          cursor: "pointer",
+                          marginRight: "10px",
+                          transition: "color 0.1s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                        onClick={() => window.history.back()}
+                      />{" "}  {uid ? "Edit Slip Category" : "Add Slip Category"}
         </CardTitle>
       </CardHeader>
       {fetchLoader ? (

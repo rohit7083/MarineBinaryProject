@@ -98,7 +98,7 @@ const SellPass = () => {
       console.log(parkingName?.ParkingAmount);
       setparkingName(parkingName);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
 
@@ -144,7 +144,7 @@ const SellPass = () => {
   const fetchExistingMem = async () => {
     try {
       const { data } = await useJwt.GetMember();
-      console.log(data);
+      
       const memberName = data?.content?.result?.map((x) => ({
         label: `${x.firstName} ${x.lastName}`,
 
@@ -154,7 +154,7 @@ const SellPass = () => {
 
       setMemberNames(memberName);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
 
@@ -242,7 +242,7 @@ const payload = {
       console.log(res);
       console.log("Sucessfully");
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
 

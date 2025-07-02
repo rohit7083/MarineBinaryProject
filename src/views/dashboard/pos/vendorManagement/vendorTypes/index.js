@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import { ArrowLeft, ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
 import {
   Table as ReactstrapTable,
   Input,
@@ -47,7 +47,7 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ const index = () => {
   };
 
   useEffect(() => {
-    // {{debugger}}
+    // {{ }}
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 
@@ -73,7 +73,7 @@ const index = () => {
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
-    // {{debugger}}
+    // {{ }}
     setSearchTerm(value);
 
     if (value) {
@@ -262,7 +262,16 @@ const index = () => {
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <h3 className="">Vendor Type List</h3>
+            <h3 className="">  <ArrowLeft
+                                       style={{
+                                         cursor: "pointer",
+                                       marginRight:"10px",
+                                         transition: "color 0.1s",
+                                       }}
+                                       onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                       onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                       onClick={() => window.history.back()}
+                                     />Vendor Type List</h3>
 
             <div className="mx-2">
               <Row

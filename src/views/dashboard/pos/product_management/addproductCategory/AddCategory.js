@@ -14,7 +14,7 @@ import {
   Table,
   Spinner,UncontrolledAlert,
 } from "reactstrap";
-import { Plus, Trash2 } from "react-feather";
+import { ArrowLeft, Plus, Trash2 } from "react-feather";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { Tooltip } from "reactstrap";
@@ -34,6 +34,7 @@ import ProductAdd_Table from "../ProductAdd_Table";
 import { useFieldArray } from "react-hook-form";
 import useJwt from "@src/auth/jwt/useJwt";
 import { useNavigate } from "react-router-dom";
+import NavItems from "../NavItems";
 
 const MultipleColumnForm = () => {
   const navigate = useNavigate();
@@ -158,7 +159,7 @@ const [err,setErr]=useState("");
         });
         
       } catch (error) {
-        console.log(error);
+         console.error(error);
         if (error.response) {
           const errMsz=error?.response?.data?.content || "Please check all fields and try again ";
           setErr(errMsz);
@@ -184,7 +185,7 @@ const [err,setErr]=useState("");
           Navigate("/dashboard/pos/product_management/addproductCategory");
         });
       } catch (error) {
-        console.log(error);
+         console.error(error);
         if (error.response) {
           const errMsz=error?.response?.data?.content || "Please check all fields and try again ";
           setErr(errMsz);
@@ -198,128 +199,33 @@ const [err,setErr]=useState("");
   return (
     <Card>
       <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-        <CardTitle tag="h4">Add New Category</CardTitle>
+       
+        <CardTitle tag="h4"> <ArrowLeft
+                                           style={{
+                                             cursor: "pointer",
+                                           marginRight:"10px",
+                                             transition: "color 0.1s",
+                                           }}
+                                           onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                           onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                           onClick={() => window.history.back()}
+                                         />  Add New Category</CardTitle>
 
-        <div className="d-flex mt-md-0 mt-1">
-          <div className="d-flex justify-content-end gap-2">
-            <div>
-              <Link to="/dashboard/pos/product_management/addProduct">
-                <img
-                  src={addProductIcon}
-                  id="ANP"
-                  alt="Shopping Bag"
-                  width="25"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.ANP}
-                  target="ANP"
-                  toggle={() => toggleTooltip("ANP")}
-                >
-                  Add New Producct
-                </Tooltip>
-              </Link>
-            </div>
-            <div>
-              <img
-                id="importProduct"
-                width="25"
-                height="25"
-                src={importIcon}
-                alt="importProduct"
-                onClick={() => setShow(true)}
-                style={{ cursor: "pointer" }}
-              />
+         <div className="d-flex mt-md-0 mt-1">
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+            <NavItems />
+              <div>
+                <Link to="/pos/VendorManage">
+                  <div className="d-flex">
+                    <Button color="primary" outline size="sm">
+                      Import Product
+                    </Button>
+                  </div>
+                </Link>
+              </div>
 
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.importProduct}
-                target="importProduct"
-                toggle={() => toggleTooltip("importProduct")}
-              >
-                Import Product
-              </Tooltip>
-            </div>
-
-            <div>
-              <Link to="/dashboard/pos/product_management/addproductCategory">
-                <img
-                  width="25"
-                  height="25"
-                  id="addProductCate"
-                  src={AddCategoryIcon}
-                  alt="sorting-answers"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.addProductCate}
-                  target="addProductCate"
-                  toggle={() => toggleTooltip("addProductCate")}
-                >
-                  Add Product Category
-                </Tooltip>
-              </Link>
-            </div>
-            <div>
-              <Link to="/dashboard/pos/product_management/addTaxes">
-                <img
-                  width="25"
-                  height="25"
-                  id="addProducttaxes"
-                  src={addTax}
-                  alt="addProducttaxes"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.addProducttaxes}
-                  target="addProducttaxes"
-                  toggle={() => toggleTooltip("addProducttaxes")}
-                >
-                  Add Product Taxes
-                </Tooltip>
-              </Link>
-            </div>
-            <div>
-              <Link to="/dashboard/pos/product_management/AddStocks">
-                <img
-                  width="25"
-                  height="25"
-                  id="addStock"
-                  src={addStocks}
-                  alt="list-is-empty"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.addStock}
-                  target="addStock"
-                  toggle={() => toggleTooltip("addStock")}
-                >
-                  Add Stock
-                </Tooltip>
-              </Link>
-            </div>
-
-            <div>
-              <Link>
-                <img
-                  width="25"
-                  height="25"
-                  id="stockManage"
-                  src={ManageStocks}
-                  alt="list-is-empty"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.stockManage}
-                  target="stockManage"
-                  toggle={() => toggleTooltip("stockManage")}
-                >
-                  Stock Manage
-                </Tooltip>
-              </Link>
             </div>
           </div>
-        </div>
       </CardHeader>
       <CardBody className="mt-2">
       {err && (

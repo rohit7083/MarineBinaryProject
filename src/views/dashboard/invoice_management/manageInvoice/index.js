@@ -44,7 +44,7 @@ const TabsCentered = () => {
         setSlipData(resp.data.content);
       }
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setFetchLoader(false);
     }

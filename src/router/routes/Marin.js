@@ -135,6 +135,9 @@ const AddRoomType=lazy(()=>import("../../views/dashboard/room_management/manage_
 const RoomDetails=lazy(()=>import("../../views/dashboard/room_management/manage_room"))
 const AddRoomDetails=lazy(()=>import("../../views/dashboard/room_management/manage_room/Add_RoomDetails"))
 
+
+const RoomPayment=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/payment/RoomPayment"))
+
 const RoomBooking
 =lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/calendar"))
 
@@ -461,10 +464,17 @@ export default [
   },
     {
     element: <Checkout/>,
-    path: "/search-rooms/checkout",
+    path: "/search-rooms/previewBooking",
   },
      {
     element: <CheckInDetails/>,
     path: "/search-rooms/CheckInDetails",
   },
+
+   {
+    element: <RoomPayment/>,
+    path: "/search-rooms/previewBooking/roomPayment",
+  },
+
+
 ];

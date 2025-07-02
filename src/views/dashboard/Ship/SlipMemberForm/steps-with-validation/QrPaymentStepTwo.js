@@ -77,7 +77,7 @@ const CardPayment = () => {
 
       setMemberDetails(res?.data);
     } catch (error) {
-      console.log("error", error);
+       console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -240,7 +240,7 @@ let payload={};
         });
       }
     } catch (error) {
-      console.log(error);
+       console.error(error);
       if (error.response) {
         console.log("Error data", error.response.data);
         console.log("Error status", error.response.status);
@@ -250,7 +250,7 @@ let payload={};
     } finally {
       setLoadPayment(false);
     }
-    console.log(data);
+    
   };
 
   const detectCardType = (number) => {

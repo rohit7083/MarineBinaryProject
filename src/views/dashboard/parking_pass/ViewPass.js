@@ -92,7 +92,7 @@ const ViewPass = ({ watch ,setGuestChildData  }) => {
       setMemberDetails(data);
       setGuestChildData(data);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
   useEffect(() => {

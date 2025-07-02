@@ -154,7 +154,7 @@ const ResetPasswordBasic = () => {
     try {
       const otpRes = await useJwt.sendOtp(token);
     } catch (error) {
-      console.log(error);
+       console.error(error);
       console.log("failed to get otp");
     }
   };
@@ -169,7 +169,7 @@ const ResetPasswordBasic = () => {
         sendOtp();
       }
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setExpireTokenLoader(false);
     }
@@ -180,7 +180,7 @@ const ResetPasswordBasic = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    
 
     setMsz("");
 
@@ -211,7 +211,7 @@ const ResetPasswordBasic = () => {
         }, 2000);
       }
     } catch (error) {
-      console.log(error);
+       console.error(error);
 
       if (error.response) {
         const { status, data } = error.response;

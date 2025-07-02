@@ -174,7 +174,20 @@ const DataTableWithButtons = () => {
     <Fragment>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">Product List</CardTitle>
+          <CardTitle tag="h4">
+            {" "}
+            <ArrowLeft
+              style={{
+                cursor: "pointer",
+                marginRight: "10px",
+                transition: "color 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+              onClick={() => window.history.back()}
+            />
+            Vendor List
+          </CardTitle>
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex justify-content-end gap-2">
               <div>
@@ -187,7 +200,7 @@ const DataTableWithButtons = () => {
               target="ANP"
               toggle={() => toggleTooltip("ANP")}
             > */}
-                    Add Vender
+                    Add Vendor
                     {/* </Tooltip> */}
                   </Button>
                 </Link>
@@ -212,6 +225,8 @@ const DataTableWithButtons = () => {
               target="importProduct"
               toggle={() => toggleTooltip("importProduct")}
             > */}
+
+            
                 {/* </Tooltip> */}
               </div>
 

@@ -73,27 +73,32 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   // const FinalPrice = Number(venueType?.totalPrice)+Number(StaffAmount);
   // console.log("FinalPrice", venueType);
 
- useEffect(() => {
-  if (listData?.uid && listData?.Rowdata) {
-    const { eventEndDate, eventEndTime,eventStartTime,eventStartDate, ...rest } = listData.Rowdata;
+  useEffect(() => {
+    if (listData?.uid && listData?.Rowdata) {
+      const {
+        eventEndDate,
+        eventEndTime,
+        eventStartTime,
+        eventStartDate,
+        ...rest
+      } = listData.Rowdata;
 
-    let endDateTime = null;
-    let startDateTime=null;
-    if (eventEndDate && eventEndTime) {
-      endDateTime = new Date(`${eventEndDate}T${eventEndTime}`);
-    }
+      let endDateTime = null;
+      let startDateTime = null;
+      if (eventEndDate && eventEndTime) {
+        endDateTime = new Date(`${eventEndDate}T${eventEndTime}`);
+      }
       if (eventStartDate && eventStartTime) {
-      startDateTime = new Date(`${eventStartDate}T${eventStartTime}`);
+        startDateTime = new Date(`${eventStartDate}T${eventStartTime}`);
+      }
+
+      reset({
+        ...rest,
+        endDateTime,
+        startDateTime,
+      });
     }
-
-    reset({
-      ...rest,
-      endDateTime,
-      startDateTime,
-    });
-  }
-}, [listData]);
-
+  }, [listData]);
 
   const FetchEventsType = async () => {
     try {
@@ -107,7 +112,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
 
       setEventsType(eventTypeNames);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -129,7 +134,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
 
       setVenueType(venueTypeNames);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -149,7 +154,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
 
       setVendorType(vendorTypeNames);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -168,7 +173,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   const onSubmit = async (data) => {
     // {
     //   {
-    //     debugger;
+    //      ;
     //   }
     // }
     seterrMsz("");
@@ -207,11 +212,6 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             eventTypeName: data.eventTypeName,
           };
 
-    {
-      {
-        debugger;
-      }
-    }
     const payload = {
       ...data,
       eventType,
@@ -246,8 +246,9 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       isRecurringEvent: data?.isRecurringEvent ? true : false,
       isExtraStaff: data?.isExtraStaff ? true : false,
       amount: basePrice,
+      isRoomRequired:false,
     };
-    // {{debugger}}
+    // {{ }}
     const allData = {
       ...data,
       ...payload,
@@ -290,7 +291,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
 
       // navigate("/preview", { state: data });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.response && error.response.data) {
         const { status, content } = error.response.data;
 
@@ -643,6 +644,17 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             </Row>
           </>
         )}
+
+        <Col check className="mb-2">
+          <Label check>
+            <Controller
+              name="isRoomRequired"
+              control={control}
+              render={({ field }) => <Input {...field} type="checkbox" />}
+            />{" "}
+            Is Room Required
+          </Label>
+        </Col>
 
         {/* Event Description */}
         <Col className="mb-2">

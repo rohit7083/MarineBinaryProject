@@ -79,7 +79,7 @@ const Payment_section = ({ FinalAmountRes }) => {
       console.log("res", res);
       setMemberDetails(res?.data);
     } catch (error) {
-      console.log("error", error);
+       console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -197,9 +197,6 @@ const Payment_section = ({ FinalAmountRes }) => {
   const onSubmit = async (data) => {
     setErr("");
 
-
-    
-
     const { cvc, ...rest } = data;
 
     let payload = {
@@ -228,14 +225,9 @@ const Payment_section = ({ FinalAmountRes }) => {
         nameOnCard: data.nameOnCard,
         accountType: data?.accountType,
       };
+    } else {
+      console.log("NA");
     }
-    else{
-console.log("NA");
-
-    }
-  
-
-    
 
     const { allocation } = payload;
     delete payload.allocation;
@@ -255,7 +247,7 @@ console.log("NA");
         navigate("/parking_pass");
       }, 2000);
     } catch (error) {
-      console.log(error);
+       console.error(error);
       if (error.response) {
         console.log("Error data", error.response.data);
         console.log("Error status", error.response.status);
@@ -265,7 +257,7 @@ console.log("NA");
     } finally {
       setLoadPayment(false);
     }
-    console.log(data);
+    
   };
 
   const detectCardType = (number) => {
@@ -366,8 +358,8 @@ console.log("NA");
   };
 
   return (
+    <>      <Toast ref={toast} />
     <Row className="d-flex justify-content-center mt-3">
-      <Toast ref={toast} />
 
       <Col xs="12">
         <Row>
@@ -376,7 +368,8 @@ console.log("NA");
               <CardHeader>
                 <CardTitle tag="h4">Payment Method</CardTitle>
                 <CardTitle className="text-success" tag="h4">
-                <span style={{color:"rgb(94, 88, 115)"}}>  Amount : </span> $ {FinalAmountRes?.totalAmount}
+                  <span style={{ color: "rgb(94, 88, 115)" }}> Amount : </span>{" "}
+                  $ {FinalAmountRes?.totalAmount}
                 </CardTitle>
               </CardHeader>
 
@@ -902,6 +895,8 @@ console.log("NA");
         </Row>
       </Col>
     </Row>
+    </>
+
   );
 };
 

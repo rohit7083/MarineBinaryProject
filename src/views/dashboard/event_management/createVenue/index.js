@@ -167,14 +167,14 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    // {{debugger}}
+    // {{ }}
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 
@@ -187,7 +187,7 @@ const index = () => {
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
-    // {{debugger}}
+    // {{ }}
     setSearchTerm(value);
 
     if (value) {
@@ -218,7 +218,7 @@ const index = () => {
   };
 
   const handleEdit = (row) => {
-  //  {{debugger}}
+  //  {{ }}
     navigate("/venue", { state: { row } });
   };
 

@@ -74,7 +74,7 @@ const AccountDetails = ({
       //   }))
       // );
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   }
 
@@ -109,7 +109,7 @@ const AccountDetails = ({
 
     try {
 
-      // {{debugger}}
+      // {{ }}
       if (slipId) {
         setLoading(true);
        const updateRes= await useJwt.updateVessel(finaleData.uid, finaleData);
@@ -252,7 +252,16 @@ const AccountDetails = ({
       
       <div className="content-header">
         <h5 className="mb-0">
-          {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}
+       <ArrowLeft
+                       style={{
+                         cursor: "pointer",
+                         marginRight: "10px",
+                         transition: "color 0.1s",
+                       }}
+                       onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                       onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                       onClick={() => window.history.back()}
+                     />{" "}   {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}
         </h5>
         <small className="text-muted">Enter Your Vessel Details.</small>
       </div>

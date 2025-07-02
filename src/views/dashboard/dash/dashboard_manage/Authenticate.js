@@ -105,6 +105,7 @@ const DefaultAlert = () => {
                   <Button
                     color="relief-primary"
                     type="submit"
+                    size="sm"
                     onClick={() => setShow(true)}
                   >
                     Enable Authentication

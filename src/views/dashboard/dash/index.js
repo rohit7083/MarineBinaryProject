@@ -21,7 +21,7 @@ const [checkEmptySlip,setEmptySlip]=useState({ empty: 0, occupied: 0 });
 
        setEmptySlip({empty,occupied});
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setLoading(false);
     }

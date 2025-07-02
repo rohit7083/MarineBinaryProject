@@ -92,7 +92,7 @@ const Cash_otp = ({
     setErrorMsz("");
     setAttempt(0);
     setCountdownEndTime(0);
-    console.log(data);
+    
 
     try {
       if (!accessTokenotp) {
@@ -161,7 +161,7 @@ const Cash_otp = ({
   
 
   const handleResendOTP = async (e) => {
-    // {{debugger}}
+    // {{ }}
     e.preventDefault();
     try {
       const res = await useJwt.resend_Otp(accessTokenotp);

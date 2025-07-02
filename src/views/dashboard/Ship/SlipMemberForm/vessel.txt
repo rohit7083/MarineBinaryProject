@@ -482,7 +482,7 @@ const AccountDetails = ({ stepper, setSlipId, formData = {}, vuid }) => {
 
         // console.log("FilterData".filteredData);
       } catch (error) {
-        console.log(error);
+         console.error(error);
       }
     };
 

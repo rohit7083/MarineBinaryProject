@@ -10,7 +10,14 @@ import useJwt from "@src/auth/jwt/useJwt";
 import axios from "axios";
 import Flatpickr from "react-flatpickr";
 import { SlideDown } from "react-slidedown";
-import { X, Plus, Hash, ArrowRight } from "react-feather";
+import {
+  X,
+  Plus,
+  Hash,
+  ArrowRight,
+  ArrowLeft,
+  ArrowLeftCircle,
+} from "react-feather";
 import Select from "react-select";
 import { Check } from "react-feather";
 import { useForm, Controller } from "react-hook-form";
@@ -84,7 +91,7 @@ const SellPass = () => {
       }));
       setparkingName(parkingName);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
 
@@ -119,7 +126,7 @@ const SellPass = () => {
       }));
       setClients(memberName);
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
   };
 
@@ -130,74 +137,71 @@ const SellPass = () => {
   }, [selectedValue]);
 
   const onSubmit = async (formData) => {
+    if (Object.keys(errors).length === 0) {
+      const isGuest = formData.memberType === "guest";
+      const sourceData = isGuest ? childData : formData.selectedMember;
 
+      const allocatedDetails = (formData.fields || []).map((item) => {
+        const parkingPass = parkName.find(
+          (p) => p.value === item.parking_name?.value
+        );
+        return {
+          parkingPass: { uid: item.parking_name?.value },
+          quantity: Number(item.quantity),
+          calculatedAmount: (
+            Number(parkingPass?.ParkingAmount || 0) * Number(item.quantity)
+          ).toFixed(2),
+        };
+      });
 
-  if (Object.keys(errors).length === 0) {
+      const totalAmount = allocatedDetails
+        .reduce((acc, item) => acc + parseFloat(item.calculatedAmount), 0)
+        .toFixed(2);
 
-    const isGuest = formData.memberType === "guest";
-    const sourceData = isGuest ? childData : formData.selectedMember;
-
-    const allocatedDetails = (formData.fields || []).map((item) => {
-      const parkingPass = parkName.find(
-        (p) => p.value === item.parking_name?.value
-      );
-      return {
-        parkingPass: { uid: item.parking_name?.value },
-        quantity: Number(item.quantity),
-        calculatedAmount: (
-          Number(parkingPass?.ParkingAmount || 0) * Number(item.quantity)
-        ).toFixed(2),
+      const payload = {
+        member: {
+          uid: sourceData?.uid,
+          firstName: sourceData?.firstName,
+          lastName: sourceData?.lastName,
+          emailId: sourceData?.emailId,
+          phoneNumber: sourceData?.phoneNumber,
+          countryCode: sourceData?.countryCode,
+          address: sourceData?.address,
+          city: sourceData?.city,
+          state: sourceData?.state,
+          country: sourceData?.country,
+          postalCode: sourceData?.postalCode,
+        },
+        allocatedDetails,
+        totalAmount,
       };
-    });
 
-    const totalAmount = allocatedDetails
-      .reduce((acc, item) => acc + parseFloat(item.calculatedAmount), 0)
-      .toFixed(2);
+      console.log("Final Payload:", payload);
 
-    const payload = {
-      member: {
-        uid: sourceData?.uid,
-        firstName: sourceData?.firstName,
-        lastName: sourceData?.lastName,
-        emailId: sourceData?.emailId,
-        phoneNumber: sourceData?.phoneNumber,
-        countryCode: sourceData?.countryCode,
-        address: sourceData?.address,
-        city: sourceData?.city,
-        state: sourceData?.state,
-        country: sourceData?.country,
-        postalCode: sourceData?.postalCode,
-      },
-      allocatedDetails,
-      totalAmount,
-    };
+      try {
+        setLoading(true);
+        const res = await useJwt.memberpark(payload);
 
-    console.log("Final Payload:", payload);
-
-    try {
-      setLoading(true);
-      const res = await useJwt.memberpark(payload);
-
-      if (res?.status === 200) {
-        setPaymentShow(true);
-        setFinalAmountRes(res?.data);
-        toast.current.show({
-          severity: "success",
-          summary: "Successfully Add",
-          detail: "Successfully Proceed To Payment",
-          life: 2000,
-        });
+        if (res?.status === 200) {
+          setPaymentShow(true);
+          setFinalAmountRes(res?.data);
+          toast.current.show({
+            severity: "success",
+            summary: "Successfully Add",
+            detail: "Successfully Proceed To Payment",
+            life: 2000,
+          });
+        }
+        console.log("API Response:", res);
+      } catch (error) {
+        console.error("API Error:", error);
+        if (error.response) {
+          setPaymentShow(false);
+        }
+      } finally {
+        setLoading(false);
       }
-      console.log("API Response:", res);
-    } catch (error) {
-      console.error("API Error:", error);
-      if (error.response) {
-        setPaymentShow(false);
-      }
-    } finally {
-      setLoading(false);
     }
-  }
   };
 
   useEffect(() => {
@@ -208,14 +212,23 @@ const SellPass = () => {
 
   return (
     <Fragment>
-      <Toast ref={toast} />
 
+      <Toast ref={toast} />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
           <CardBody className="invoice-padding pt-0">
             <div className="demo-inline-spacing">
+              <ArrowLeft
+                style={{
+                  cursor: "pointer",
+                  // marginRight:"10px",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                onClick={() => window.history.back()}
+              />{" "}
               <h6 className="mb-0 invoice-to-title">Select Member Type </h6>
-
               {/* <Controller
                 name="memberType"
                 control={control}
@@ -258,7 +271,6 @@ const SellPass = () => {
               )} 
 
               */}
-
               <Controller
                 name="memberType"
                 control={control}

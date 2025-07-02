@@ -76,7 +76,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 //     name: "Status",
 //     minWidth: "50px",
 //     selector: (row) =>{
-//       // {{debugger}}
+//       // {{ }}
 //       const checkStatus=row.isInUse;
 // console.log(row);
 

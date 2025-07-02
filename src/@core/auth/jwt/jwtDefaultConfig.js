@@ -3,8 +3,8 @@ import { Delete } from "react-feather";
 
 // ** Auth Endpoints
 export default {
-  loginEndpoint: "/jwt/login",  // temp
-  // loginEndpoint: "/login",
+  // loginEndpoint: "/jwt/login",  // temp
+  loginEndpoint: "/login",
 
   registerEndpoint: "/jwt/register",
   refreshEndpoint: "/auth/refresh_token",
@@ -68,7 +68,10 @@ export default {
 
   slipAssignmentGet: "/slipAssignmentGet",
   GenerateOtp: "/sPayment/generate",
-  verifyOTP: "/sPayment/verify/",
+  // verifyOTP: "/sPayment/verify/",
+
+  verifyOTP: "/sPayment/discount/",
+
   slipDocument: "/sDocuments/",
   getSingleDocuments: "/sDocuments/slip/",
   updateDoc: "/sDocuments/",
@@ -143,4 +146,8 @@ DeleteEvent:"/events/",
   CreateRoom:"/room/",
   getAllRoomTypes:"/roomType",
   SearchRoom:"/room/search",
+PreviewSubmit:"/booking/",
+  submitBookedRooms:"/roomSearch/",
+
+  bookingPayment:"/booking/payment",
 };

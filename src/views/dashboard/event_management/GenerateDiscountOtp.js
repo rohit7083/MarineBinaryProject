@@ -45,7 +45,7 @@ const Cash_otp = ({
   keyName,
   allEventData,
   verify,
-  setVerify,  
+  setVerify,
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +53,7 @@ const Cash_otp = ({
   const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
   const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const [errorMessage, setErrorMsz] = useState("");
-const [errMsz,setErrMsz] = useState("");
+  const [errMsz, setErrMsz] = useState("");
   const discountTypeOptions = [
     { label: "Flat ($)", value: "Flat" },
     { label: "Percentage (%)", value: "Percentage" },
@@ -72,8 +72,6 @@ const [errMsz,setErrMsz] = useState("");
         type: 2,
         eventId: allEventData?.eventId,
         memberId: allEventData?.memberId,
-        // eventId: 1,
-        // memberId: 1,
       };
       console.log("payload", payload);
 
@@ -95,80 +93,79 @@ const [errMsz,setErrMsz] = useState("");
         setErrMsz(errorMessage);
       }
     }
-  }
+  };
 
-    const onSubmit = async (data) => {
-      setErrorMsz("");
-      // setAttempt(0);
-      setCountdownEndTime(0);
-      // console.log(data);
+  const onSubmit = async (data) => {
+    setErrorMsz("");
+    // setAttempt(0);
+    setCountdownEndTime(0);
+    // 
 
-      try {
-        if (!accessTokenotp) {
-          console.log("Access token is missing. Please regenerate OTP.");
-          return;
-        }
-
-        const payload = {
-          otp: Number(data.otp.join("")),
-        };
-        setLoading(true);
-        // const response = await useJwt.verifyOtp(accessTokenotp, payload);
-        // console.log(response);
-      
-        setVerify(true);
-        setShowModal(false);
-      } catch (error) {
-        if (error.response) {
-          console.error("Error verifying OTP:", error);
-
-          const errorMessage = error?.response?.data?.content;
-          setErrorMsz(errorMessage);
-          // const otpAttempt = data.otpAttempts;
-
-          //     setAttempt(otpAttempt);
-          //     if (code === 423) {
-          //       return MySwal.fire({
-          //         title: "Blocked",
-          //         text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin",
-          //         icon: "warning",
-          //         customClass: {
-          //           confirmButton: "btn btn-primary",
-          //         },
-          //         buttonsStyling: false,
-          //       }).then(() => {
-          //         navigate("/Login");
-          //       });
-        }
-      } finally {
-        setLoading(false);
+    try {
+      if (!accessTokenotp) {
+        console.log("Access token is missing. Please regenerate OTP.");
+        return;
       }
-    };
-  
+
+      const payload = {
+        otp: Number(data.otp.join("")),
+      };
+      setLoading(true);
+      // const response = await useJwt.verifyOtp(accessTokenotp, payload);
+      // console.log(response);
+
+      setVerify(true);
+      setShowModal(false);
+    } catch (error) {
+      if (error.response) {
+        console.error("Error verifying OTP:", error);
+
+        const errorMessage = error?.response?.data?.content;
+        setErrorMsz(errorMessage);
+        // const otpAttempt = data.otpAttempts;
+
+        //     setAttempt(otpAttempt);
+        //     if (code === 423) {
+        //       return MySwal.fire({
+        //         title: "Blocked",
+        //         text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin",
+        //         icon: "warning",
+        //         customClass: {
+        //           confirmButton: "btn btn-primary",
+        //         },
+        //         buttonsStyling: false,
+        //       }).then(() => {
+        //         navigate("/Login");
+        //       });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Timer Countdown
-    useEffect(() => {
-  let timer;
-  if (showModal) {
-    timer = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime <= 0) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-  }
-  return () => clearInterval(timer); // Cleanup on unmount
-    }, [showModal]);
+  useEffect(() => {
+    let timer;
+    if (showModal) {
+      timer = setInterval(() => {
+        setTime((prevTime) => {
+          if (prevTime <= 0) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, [showModal]);
 
   const [attempt, setAttempt] = useState(0);
 
   const [resendcallCount, setResendcallCount] = useState(false);
 
   //   const handleResendOTP = async (e) => {
-  //     // {{debugger}}
+  //     // {{ }}
   //     e.preventDefault();
   //     try {
   //       const res = await useJwt.resend_Otp(accessTokenotp);
@@ -238,7 +235,7 @@ const [errMsz,setErrMsz] = useState("");
 
         {verify && (
           <>
-         <Col md="12" className="mb-2 ">
+            <Col md="12" className="mb-2 ">
               <Label for="discountType">Discount Type</Label>
               <Select
                 id="discountType"
@@ -263,16 +260,10 @@ const [errMsz,setErrMsz] = useState("");
                   }}
                 />
               </InputGroup>
-            </Col> 
-
-
-
-
-    
+            </Col>
           </>
         )}
       </>
-     
 
       <Modal
         isOpen={showModal}

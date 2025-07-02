@@ -83,7 +83,7 @@
 //   ;
 
 //   const CustomPagination = () => {
-//     // {{debugger}}
+//     // {{ }}
 //     const count = Math.ceil(data.length / rowsPerPage);
 //     // console.log({count})
 //     return (
@@ -362,7 +362,7 @@ const DataTableServerSide = () => {
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Details</CardTitle>
           <Link to="/dashboard/slip-details">
-            <Button.Ripple color="primary">
+            <Button.Ripple color="primary" size="sm">
                          <Plus size={14} /> Add Slip Details</Button.Ripple>
 
           </Link>

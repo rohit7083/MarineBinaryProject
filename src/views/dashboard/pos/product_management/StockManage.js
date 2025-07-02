@@ -44,6 +44,7 @@ import {
   DropdownToggle,
   UncontrolledButtonDropdown,
 } from "reactstrap";
+import NavItems from "./NavItems";
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -213,125 +214,32 @@ const DataTableWithButtons = () => {
       <ArrowLeft size={10} className="me-1" /> Previous
     </Button> */}
     
-         
+       <ArrowLeft
+                                style={{
+                                  cursor: "pointer",
+                                marginRight:"10px",
+                                  transition: "color 0.1s",
+                                }}
+                                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                                onClick={() => window.history.back()}
+                              />    
     Manage Stocks
     </CardTitle>
           <div className="d-flex mt-md-0 mt-1">
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+            <NavItems/>
+              <div>
+                <Link to="/pos/VendorManage">
+                  <div className="d-flex">
+                    <Button color="primary" outline size="sm">
+                  Import Product
+                    </Button>
+                  </div>
+                </Link>
+              </div>
 
-          <div className="d-flex justify-content-end gap-2">
-          <div>
-            <Link to="/dashboard/pos/product_management/addProduct">
-            <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.ANP}
-              target="ANP"
-              toggle={() => toggleTooltip("ANP")}
-            >
-              Add New Producct
-            </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <img
-              id="importProduct"
-              width="25"
-              height="25"
-              src={importIcon}
-              alt="importProduct"
-              onClick={() => setShow(true)}  
-                          style={{ cursor: "pointer" }}
-            />
-
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.importProduct}
-              target="importProduct"
-              toggle={() => toggleTooltip("importProduct")}
-            >
-              Import Product
-            </Tooltip>
-          </div>
-
-          <div>
-            <Link to="/dashboard/pos/product_management/addproductCategory">
-              <img
-                width="25"
-                height="25"
-                id="addProductCate"
-    src={AddCategoryIcon}
-                alt="sorting-answers"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProductCate}
-                target="addProductCate"
-                toggle={() => toggleTooltip("addProductCate")}
-              >
-                Add Product Category
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/dashboard/pos/product_management/addTaxes">
-              <img
-                width="25"
-                height="25"
-                id="addProducttaxes"
-                src={addTax}
-                alt="addProducttaxes"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProducttaxes}
-                target="addProducttaxes"
-                toggle={() => toggleTooltip("addProducttaxes")}
-              >
-                Add Product Taxes
-              </Tooltip>
-            </Link>
-          </div>
-          <div>
-            <Link to="/dashboard/pos/product_management/AddStocks">
-              <img
-                width="25"
-                height="25"
-                id="addStock"
-                src={addStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addStock}
-                target="addStock"
-                toggle={() => toggleTooltip("addStock")}
-              >
-                Add Stock
-              </Tooltip>
-            </Link>
-          </div>
-
-          <div>
-            <Link>
-              <img
-                width="25"
-                height="25"
-                id="stockManage"
-                src={ManageStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.stockManage}
-                target="stockManage"
-                toggle={() => toggleTooltip("stockManage")}
-              >
-                Stock Manage
-              </Tooltip>
-            </Link>
-          </div>
-        </div>
-
+            </div>
           </div>
         </CardHeader>
         <Row className="justify-content-between mx-0">

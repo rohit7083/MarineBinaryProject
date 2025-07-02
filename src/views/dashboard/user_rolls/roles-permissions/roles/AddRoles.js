@@ -97,11 +97,7 @@ const AddRoles = (props) => {
   };
 
   const onSubmit = async (data) => {
-    // {
-    //   {
-    //     debugger;
-    //   }
-    // }
+    
     const updatedData = extractUIDFromPermissionList(data);
     try {
       setProcessing(true);

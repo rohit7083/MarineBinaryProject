@@ -26,6 +26,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { parse } from "@babel/core/lib/parse";
 import { useLocation } from "react-router-dom";
 import { Toast } from "primereact/toast";
+import { ArrowLeft } from "react-feather";
 
 const MySwal = withReactContent(Swal);
 function ShipDetails() {
@@ -536,7 +537,16 @@ function ShipDetails() {
 
         <CardHeader>
           <CardTitle tag="h4">
-            {uid ? "Edit Slip Details" : "Add Slip Details"}
+        <ArrowLeft
+                        style={{
+                          cursor: "pointer",
+                          marginRight: "10px",
+                          transition: "color 0.1s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                        onClick={() => window.history.back()}
+                      />{" "}    {uid ? "Edit Slip Details" : "Add Slip Details"}
           </CardTitle>
         </CardHeader>
 

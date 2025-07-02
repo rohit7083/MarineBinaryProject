@@ -75,7 +75,7 @@ const DataTableServerSide = () => {
       const { content } = data;
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
-      console.log(error);
+       console.error(error);
     } finally {
       setLoading(false);
     }

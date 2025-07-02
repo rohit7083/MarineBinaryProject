@@ -117,7 +117,7 @@ try {
   });
 
 } catch (error) {
-  console.log(error);
+   console.error(error);
   
 }
 
@@ -844,7 +844,7 @@ const Login = () => {
           console.error("Error fetching IP address:", error);
         });
     } catch (error) {
-      console.log(error);
+       console.error(error);
     }
 
     if (!navigator.geolocation) {

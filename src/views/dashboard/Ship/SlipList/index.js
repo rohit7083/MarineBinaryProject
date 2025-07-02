@@ -296,7 +296,7 @@ const DataTableServerSide = () => {
   }, []);
   
   // Filter handler
-  // {{debugger}}
+  // {{ }}
   const handleFilter = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchValue(value);
@@ -365,7 +365,7 @@ console.log("fiter",filtered);
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Category</CardTitle>
           <Link to="/dashboard/slipcategory">
-            <Button.Ripple color="primary">
+            <Button.Ripple color="primary" size="sm">
               <Plus size={14} className="me-25" />
               Add Category
             </Button.Ripple>

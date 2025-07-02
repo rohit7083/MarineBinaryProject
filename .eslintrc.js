@@ -20,7 +20,7 @@ module.exports = {
   },
   rules: {
     'no-console': 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no- ': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
     // Best Practices
     eqeqeq: 'error',
@@ -80,7 +80,7 @@ module.exports = {
 
   // rules: {
   //   'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-  //   'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+  //   'no- ': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   //   semi: ['error', 'never'],
   //   'max-len': 'off',
   //   camelcase: ['error', { properties: 'never', ignoreDestructuring: true, ignoreImports: true }]

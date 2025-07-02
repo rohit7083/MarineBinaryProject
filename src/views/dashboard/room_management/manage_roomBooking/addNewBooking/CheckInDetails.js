@@ -80,7 +80,7 @@ const Checkout = () => {
 
       setMemberDetails(res?.data);
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -111,7 +111,7 @@ const Checkout = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.response) {
         console.log("Error data", error.response.data);
         console.log("Error status", error.response.status);
@@ -121,32 +121,31 @@ const Checkout = () => {
     } finally {
       setLoadPayment(false);
     }
-    console.log(data);
   };
 
   const specialDays = [
-  {
-    id: 1,
-    guestName: "John Doe",
-    age: "25",
-    photo: "",
-    idName: "ABC1234"
-  },
-  {
-    id: 2,
-    guestName: "Jane Smith",
-    age: "30",
-    photo: "",
-    idName: "XYZ5678"
-  },
-  {
-    id: 3,
-    guestName: "Alice Johnson",
-    age: "28",
-    photo: "",
-    idName: "LMN9101"
-  }
-];
+    {
+      id: 1,
+      guestName: "John Doe",
+      age: "25",
+      photo: "",
+      idName: "ABC1234",
+    },
+    {
+      id: 2,
+      guestName: "Jane Smith",
+      age: "30",
+      photo: "",
+      idName: "XYZ5678",
+    },
+    {
+      id: 3,
+      guestName: "Alice Johnson",
+      age: "28",
+      photo: "",
+      idName: "LMN9101",
+    },
+  ];
 
   return (
     <Row className="d-flex justify-content-center mt-3">
@@ -273,7 +272,6 @@ const Checkout = () => {
                   <tbody>
                     {fields.map((item, index) => (
                       <tr key={item.id}>
-
                         <td>
                           <Controller
                             name={`specialDays.${index}.guestName`}
@@ -394,7 +392,7 @@ const Checkout = () => {
                     type="button"
                     size="sm"
                     onClick={() =>
-append({ guestName: "", age: "", photo: "", idName: "" })
+                      append({ guestName: "", age: "", photo: "", idName: "" })
                     }
                   >
                     Add New

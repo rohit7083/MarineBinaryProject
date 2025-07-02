@@ -55,7 +55,7 @@ function CardPayment() {
           console.log("res", res);
           setMemberDetails(res?.data);
         } catch (error) {
-          console.log("error", error);
+           console.error("error", error);
         } finally {
           setLoading(false);
         }
@@ -135,7 +135,7 @@ function CardPayment() {
       console.log("selectedOption ", selectedOption);
     
       const onSubmit = (data) => {
-        console.log(data);
+        
       };
   return (
     <div>  

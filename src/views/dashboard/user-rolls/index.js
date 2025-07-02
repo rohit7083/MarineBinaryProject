@@ -21,7 +21,7 @@ const index = ({ data }) => {
 
   //       setTableData({ count: content.count, results: content.result });
   //     } catch (error) {
-  //       console.log(error);
+  //        console.error(error);
   //     } finally {
   //     }
   //   })();

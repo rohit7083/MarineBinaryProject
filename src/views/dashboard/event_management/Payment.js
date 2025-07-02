@@ -67,7 +67,7 @@ function Payment({ stepper, allEventData }) {
       finalAmount: allEventData?.totalAmount || 0,
     },
   });
-  // {{debugger}}
+  // {{ }}
 
   const months = [
     { value: "01", label: "January" },
@@ -266,7 +266,7 @@ function Payment({ stepper, allEventData }) {
       watch("advancePayment")
     ) {
       if (watch("discount_amt") && watch("advance")) {
-        // debugger
+        //  
         const percentageAmount = (handleFinal * watch("discount_amt")) / 100;
         const afterDiscount = handleFinal - percentageAmount - watch("advance");
 
@@ -295,7 +295,7 @@ function Payment({ stepper, allEventData }) {
   ]);
 
   useEffect(() => {
-    // {{debugger}}
+    // {{ }}
     if (
       !watch("discount") &&
       !watch("advancePayment") &&
@@ -321,7 +321,7 @@ function Payment({ stepper, allEventData }) {
       if (mode === "Flat") {
         // {
         //   {
-        //     debugger;
+        //      ;
         //   }
         // }
         const discountAmt = watch("discount_amt");
@@ -419,7 +419,7 @@ function Payment({ stepper, allEventData }) {
       }
       stepper.next();
     } catch (error) {
-      console.log(error);
+       console.error(error);
 
       if (error.res) {
         console.error("Error verifying OTP:", error);

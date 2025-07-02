@@ -273,7 +273,6 @@ const PersonalInfo = ({
       setMemberID(memberId);
     } catch (error) {
       console.error("Error submitting vessel details:", error);
-{{debugger}}
       if (error.response && error.response.data) {
         const { status } = error.response;
         const { content } = error.response.data;
@@ -409,11 +408,13 @@ const PersonalInfo = ({
             }}
             color="primary"
             className="btn-next"
+            size="sm"
           >
             <UserPlus className="me-1" size={20} />
             Add New Member
           </Button>
           <Button
+          size="sm" 
             onClick={() => {
               setExMember(true);
               setNewMember(false);
