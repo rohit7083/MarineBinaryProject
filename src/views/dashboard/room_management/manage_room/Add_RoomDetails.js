@@ -27,9 +27,9 @@ import {
   Row,
   UncontrolledAlert,
   FormFeedback,
+  CardHeader,
 } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
-
 function AddVTypes() {
   const {
     control,
@@ -38,166 +38,139 @@ function AddVTypes() {
     watch,
     formState: { errors },
   } = useForm();
-
   const navigate = useNavigate();
   const location = useLocation();
   const rowData = location.state?.row;
   const uid = rowData?.uid;
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [roomCount, setRoomCount] = useState(0);
-  const [errorMessage, setErrorMsz] = useState("");
-
   const [roomtyp, setRoomTypeName] = useState([]);
-  useEffect(() => {
-    if (uid) {
-      reset({
-        typeName: rowData.typeName || "",
-        description: rowData.description || "",
-      });
-    }
-  }, []);
-
+  const [errorMessage, setErrorMsz] = useState("");
   const { fields, append, remove } = useFieldArray({
     control,
     name: "specialDays",
   });
 
-  const noOfRooms = parseInt(watch("roomUnits")) || 0;
+  // Set initial form values if editing
+
+  // Fetch room types
   useEffect(() => {
-    if (noOfRooms) {
-      setRoomCount(noOfRooms);
-    }
-
-    if (noOfRooms === 0 || noOfRooms === "") {
-      setRoomCount(0);
-    }
-  }, [noOfRooms, roomCount]);
-
-  const roomTypeOptions = async () => {
-    try {
-      const res = await useJwt.getAllRoomTypes();
-      console.log(res);
-
-      const { result } = res?.data?.content;
-      const roomtypes = result?.map((x) => ({
-        label: x.roomTypeName,
-        value: x.uid,
-      }));
-      setRoomTypeName(roomtypes);
-    } catch (error) {
-       console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    roomTypeOptions();
+    (async () => {
+      try {
+        const res = await useJwt.getAllRoomTypes();
+        const result = res?.data?.content?.result || [];
+        setRoomTypeName(
+          result.map((x) => ({ label: x.roomTypeName, value: x.uid }))
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    })();
   }, []);
+  useEffect(() => {
+    if (uid && rowData) {
+      // {
+      //   {
+      //     debugger;
+      //   }
+      // }
+      const selectedRoomType = roomtyp?.find(
+        (option) => option.value === rowData?.roomType?.uid
+      );
 
-  const WatchroomUnits = watch("roomUnits");
-  console.log("WatchroomUnits", WatchroomUnits);
-  
+      // const seletedRoomNumber=
+
+      reset;
+      reset({
+        ...rowData,
+        numberOfRooms: rowData?.numberOfRooms || [],
+        roomType: selectedRoomType || null,
+      });
+    }
+  }, [uid, rowData, roomtyp, reset]);
+
+  // Room count logic
+  const noOfRooms = parseInt(watch("numberOfRooms")) || 0;
+
+  // Watchers
+  const watchroomUnits = watch("numberOfRooms");
+
+  // Submit handler
   const onSubmit = async (data) => {
-    // {{   }}
     setErrorMsz("");
-    reset();
 
     const payload = {
       ...data,
-numberOfRooms:WatchroomUnits.length,
-      roomUnits: data.roomUnits.map((room) => ({
-        roomNumber: room.roomNumber,
+      numberOfRooms: watchroomUnits,
+      roomUnits: Array.from({ length: watchroomUnits }, (_, i) => ({
+        roomNumber: data.roomUnits?.[i]?.roomNumber || "",
         active: true,
       })),
       roomType: { uid: data?.roomType?.value },
-
     };
-    console.log("payload0", payload);
-
     try {
       setLoading(true);
+      let res;
       if (uid) {
-        const res = await useJwt.updateVendor(uid, payload);
-        console.log("Updated:", res);
-
-        if (res.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Updated Successfully",
-            detail: "Room   updated Successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/room_details");
-          }, 2000);
-        }
+        res = await useJwt.UpdateRooms(uid, payload);
       } else {
-        const res = await useJwt.CreateRoom(payload);
-        if (res.status === 201) {
-          toast.current.show({
-            severity: "success",
-            summary: "Created Successfully",
-            detail: "Room created Successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/room_details");
-          }, 2000);
-        }
-        console.log("Created:", res);
+        res = await useJwt.CreateRoom(payload);
+      }
+      if (res?.status === 200 || res?.status === 201) {
+        toast.current.show({
+          severity: "success",
+          summary: uid ? "Updated Successfully" : "Created Successfully",
+          detail: uid
+            ? "Room updated Successfully."
+            : "Room created Successfully.",
+          life: 2000,
+        });
+        setTimeout(() => navigate("/room_details"), 2000);
+        reset();
       }
     } catch (error) {
-      console.error("API Error:", error);
-      if (error.response) {
-        const errorMessage = error?.response?.data?.content;
-        setErrorMsz(errorMessage);
-      }
+      setErrorMsz(error?.response?.data?.content || "An error occurred");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    console.log({ noOfRooms });
+  }, [noOfRooms]);
+
   return (
     <Fragment>
       <Toast ref={toast} />
-
       <Card>
         <CardBody>
           <CardTitle>
             <CardText>
               <ArrowLeft
-                style={{
-                  cursor: "pointer",
-                  cursor: "pointer",
-                  transition: "color 0.1s",
-                }}
+                style={{ cursor: "pointer", transition: "color 0.1s" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
                 onClick={() => window.history.back()}
               />{" "}
-              {uid ? "Update" : "Create "}
-              Room Details
+              {uid ? "Update " : "Create "}Room Details
             </CardText>
           </CardTitle>
           <Col sm="12">
             {errorMessage && (
-              <React.Fragment>
-                <UncontrolledAlert color="danger">
-                  <div className="alert-body">
-                    <span className="text-danger fw-bold">
-                      <strong>Error ! </strong>
-                      {errorMessage}
-                    </span>
-                  </div>
-                </UncontrolledAlert>
-              </React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error ! </strong>
+                    {errorMessage}
+                  </span>
+                </div>
+              </UncontrolledAlert>
             )}
           </Col>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup row>
               <Col sm="12" className="mb-1">
-                <Label for="typeName">Room Type</Label>
-
+                <Label>Room Type</Label>
                 <Controller
                   name="roomType"
                   control={control}
@@ -221,29 +194,24 @@ numberOfRooms:WatchroomUnits.length,
                 />
               </Col>
               <Col sm="12" className="mb-1">
-                <Label for="typeName">Number of Rooms</Label>
-
+                <Label>Number of Rooms</Label>
                 <Controller
-                  name="roomUnits"
+                  name="numberOfRooms"
                   control={control}
-                  // defaultValue="0"
                   rules={{
                     required: "Number of Rooms is required",
                     pattern: {
                       value: /^\d+$/,
                       message: "Only numeric values are allowed.",
                     },
-                    min: {
-                      value: 1,
-                      message: "Minimum value is 1",
-                    },
+                    min: { value: 1, message: "Minimum value is 1" },
                   }}
                   render={({ field }) => (
                     <Input
-                      id="roomUnits"
+                      id="numberOfRooms"
                       type="text"
-                      placeholder="Enter Number of Rooms "
-                      invalid={!!errors.roomUnits}
+                      placeholder="Enter Number of Rooms"
+                      invalid={!!errors.numberOfRooms}
                       {...field}
                       onChange={(e) => {
                         const val = e.target.value;
@@ -253,290 +221,147 @@ numberOfRooms:WatchroomUnits.length,
                     />
                   )}
                 />
-                <FormFeedback>{errors.roomUnits?.message}</FormFeedback>
+                <FormFeedback>{errors.numberOfRooms?.message}</FormFeedback>
               </Col>
-              {WatchroomUnits > 0 && (
-                <Row>
-                  {[...Array(roomCount)].map((_, index) => (
-                    <Col sm="6" key={index} className="mb-2">
-                      <div className="p-1 border rounded">
-                        <div className="d-flex">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 14 14"
-                            width="1em"
-                            height="1em"
-                            className="me-1"
-                          >
-                            <g
-                              fill="none"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
+
+              {/* {noOfRooms
+                ? Array.from({ length: noOfRooms })
+                    .fill(0)
+                    .map((_, index) => (
+                      <Col sm="6" key={index} className="mb-2">
+                       
+                        <Card className={"border"}>
+                         
+                          <CardHeader>Room {index + 1}</CardHeader>
+                          <CardBody>
+                            <Controller
+                              control={control}
+                              name={`roomUnits.${index}.roomNumber`}
+                              render={({ field, fieldState }) => (
+                                <>
+                                  <Input {...field} />
+                                </>
+                              )}
+                            />
+                          </CardBody>
+                       
+                        </Card>
+                       
+                      </Col>
+                    ))
+                : null} */}
+              <Row>
+                {noOfRooms
+                  ? Array.from({ length: noOfRooms }).map((_, index) => (
+                      <Col sm="6" key={index} className="mb-2">
+                        <Card className="border-0 bg-light p-2">
+                          <div className="d-flex align-items-center mb-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 16 16"
+                              width="16"
+                              height="16"
+                              className="me-1 text-secondary"
                             >
-                              <path d="M.5 9L7 2.5L13.5 9"></path>
-                              <path d="M2.5 7v6.5h9V7M7 13.5v-4"></path>
-                            </g>
-                          </svg>
-                          <h6>Room {index + 1}</h6>
-                        </div>
-                        <Label>Room Name </Label>
-                        <Controller
-                          control={control}
-                          name={`roomUnits[${index}].roomNumber`}
-                          rules={{ required: "Room name is required" }}
-                          render={({ field, fieldState: { error } }) => (
-                            <>
+                              <path
+                                fill="none"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M1 10L8 3l7 7M3 8v6h10V8M8 14v-3"
+                              />
+                            </svg>
+                            <small className="text-muted">
+                              Room {index + 1}
+                            </small>
+                          </div>
+
+                          <Controller
+                            control={control}
+                            name={`roomUnits.${index}.roomNumber`}
+                            render={({ field, fieldState }) => (
                               <Input
                                 {...field}
-                                placeholder={`Room ${index + 1} Name`}
-                                invalid={!!error}
+                                size="sm"
+                                placeholder="Room No."
+                                className="form-control-sm"
+                                invalid={fieldState.invalid}
                               />
-                              <FormFeedback>{error?.message}</FormFeedback>
+                            )}
+                          />
+                        </Card>
+                      </Col>
+                    ))
+                  : null}
+              </Row>
 
-                              {/* <FormFeedback>
-                              {errors.roomNumber?.message}
-                            </FormFeedback> */}
-                            </>
-                          )}
-                        />
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
-              )}
-              {/* <Col sm="6" className="mb-1">
-                <Label for="typeName">Room Tax</Label>
-
-                <Controller
-                  name="taxValue"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Room Tax is required",
-                    pattern: {
-                      value: /^\d+$/,
-                      message: "Only numeric values are allowed.",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="taxValue"
-                      type="text"
-                      disabled={true}
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.taxValue}
-                      {...field}
-                    />
-                  )}
-                />
-                <FormFeedback>{errors.taxValue?.message}</FormFeedback>
-              </Col> */}
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">Only Room Weekdays Price</Label>
-
-                <Controller
-                  name="onlyRoomWeekdaysPrice"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Room Weekdays Price is required",
-                    pattern: {
-                      value: /^\d+$/,
-                      message: "Only numeric values are allowed.",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="onlyRoomWeekdaysPrice"
-                      type="text"
-                      placeholder="Enter Room Weekdays Price "
-                      invalid={!!errors.onlyRoomWeekdaysPrice}
-                      {...field}
-                    />
-                  )}
-                />
-
-                <FormFeedback>
-                  {errors.onlyRoomWeekdaysPrice?.message}
-                </FormFeedback>
-              </Col>{" "}
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">Only Room Weekend Price</Label>
-
-                <Controller
-                  name="onlyRoomWeekendPrice"
-                  control={control}
-                  // defaultValue=""
-                  rules={{ required: "Room Weekend Price is required" }}
-                  render={({ field }) => (
-                    <Input
-                      id="onlyRoomWeekendPrice"
-                      type="text"
-                      placeholder="Enter Room Weekend Price Value "
-                      invalid={!!errors.onlyRoomWeekendPrice}
-                      {...field}
-                    />
-                  )}
-                />
-
-                <FormFeedback>
-                  {errors.onlyRoomWeekendPrice?.message}
-                </FormFeedback>
-              </Col>{" "}
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">2 People Breakfast Price</Label>
-
-                <Controller
-                  name="twoPeopleBreakfastPrice"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: "2 People Breakfast Price is required" }}
-                  render={({ field }) => (
-                    <Input
-                      id="twoPeopleBreakfastPrice"
-                      type="text"
-                      placeholder="Enter 2 People Breakfast Price "
-                      invalid={!!errors.twoPeopleBreakfastPrice}
-                      {...field}
-                    />
-                  )}
-                />
-
-                <FormFeedback>
-                  {errors.twoPeopleBreakfastPrice?.message}
-                </FormFeedback>
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">2 People All Meal Price</Label>
-
-                <Controller
-                  name="twoPeopleAllMealPrice"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: "2 People All Meal Price is required" }}
-                  render={({ field }) => (
-                    <Input
-                      id="twoPeopleAllMealPrice"
-                      type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.twoPeopleAllMealPrice}
-                      {...field}
-                    />
-                  )}
-                />
-                <FormFeedback>
-                  {errors.twoPeopleAllMealPrice?.message}
-                </FormFeedback>
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">
-                  Additional Person Room Only Week Days
-                </Label>
-
-                <Controller
-                  name="additionalPersonRoomOnlyWeekdays"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required:
-                      "Additional Person Room Only Week Days  is required",
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="additionalPersonRoomOnlyWeekdays"
-                      type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.additionalPersonRoomOnlyWeekdays}
-                      {...field}
-                    />
-                  )}
-                />
-                <FormFeedback>
-                  {errors.additionalPersonRoomOnlyWeekdays?.message}
-                </FormFeedback>
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">
-                  Additional Person Room Only Weekend
-                </Label>
-
-                <Controller
-                  name="additionalPersonRoomOnlyWeekend"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Additional Person Room Only Weekend is required",
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="additionalPersonRoomOnlyWeekend"
-                      type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.additionalPersonRoomOnlyWeekend}
-                      {...field}
-                    />
-                  )}
-                />
-
-                <FormFeedback>
-                  {errors.additionalPersonRoomOnlyWeekend?.message}
-                </FormFeedback>
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">Additional Person Breakfast </Label>
-
-                <Controller
-                  name="additionalPersonBreakfast"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: "Additional Person Breakfast is required",
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      id="additionalPersonBreakfast"
-                      type="text"
-                      placeholder="Enter Tax Value "
-                      invalid={!!errors.additionalPersonBreakfast}
-                      {...field}
-                    />
-                  )}
-                />
-
-                <FormFeedback>
-                  {errors.additionalPersonBreakfast?.message}
-                </FormFeedback>
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label for="typeName">Additional Person All Meal </Label>
-
-                <Controller
-                  name="additionalPersonAllMeal"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: "Additional Person All Meal is required" }}
-                  render={({ field }) => (
-                    <Input
-                      id="additionalPersonAllMeal"
-                      type="text"
-                      placeholder="Enter Additional Person All Meal "
-                      invalid={!!errors.additionalPersonAllMeal}
-                      {...field}
-                    />
-                  )}
-                />
-
-                <FormFeedback>
-                  {errors.additionalPersonAllMeal?.message}
-                </FormFeedback>
-              </Col>
+              {[
+                {
+                  name: "onlyRoomWeekdaysPrice",
+                  label: "Only Room Weekdays Price",
+                },
+                {
+                  name: "onlyRoomWeekendPrice",
+                  label: "Only Room Weekend Price",
+                },
+                {
+                  name: "twoPeopleBreakfastPrice",
+                  label: "2 People Breakfast Price",
+                },
+                {
+                  name: "twoPeopleAllMealPrice",
+                  label: "2 People All Meal Price",
+                },
+                {
+                  name: "additionalPersonRoomOnlyWeekdays",
+                  label: "Additional Person Room Only Week Days",
+                },
+                {
+                  name: "additionalPersonRoomOnlyWeekend",
+                  label: "Additional Person Room Only Weekend",
+                },
+                {
+                  name: "additionalPersonBreakfast",
+                  label: "Additional Person Breakfast",
+                },
+                {
+                  name: "additionalPersonAllMeal",
+                  label: "Additional Person All Meal",
+                },
+              ].map(({ name, label }) => (
+                <Col sm="6" className="mb-1" key={name}>
+                  <Label>{label}</Label>
+                  <Controller
+                    name={name}
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: `${label} is required`,
+                      pattern:
+                        name === "onlyRoomWeekendPrice"
+                          ? undefined
+                          : {
+                              value: /^\d+$/,
+                              message: "Only numeric values are allowed.",
+                            },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        id={name}
+                        type="text"
+                        placeholder={`Enter ${label}`}
+                        invalid={!!errors[name]}
+                        {...field}
+                      />
+                    )}
+                  />
+                  <FormFeedback>{errors[name]?.message}</FormFeedback>
+                </Col>
+              ))}
             </FormGroup>
-
             <CardTitle className="mt-3 mb-2" tag="h4">
               Special Days
             </CardTitle>
-
             <Card className="card-company-table">
               <Table responsive>
                 <thead>
@@ -560,18 +385,16 @@ numberOfRooms:WatchroomUnits.length,
                             return (
                               <Flatpickr
                                 {...rest}
-                                id="start-date-time-picker"
                                 className={`form-control ${
                                   errors?.specialDays?.[index]?.date
                                     ? "is-invalid"
                                     : ""
                                 }`}
-                                onChange={(date) => {
-                                  const formatted = date?.[0]
-                                    ?.toISOString()
-                                    .split("T")[0];
-                                  field.onChange(formatted);
-                                }}
+                                onChange={(date) =>
+                                  field.onChange(
+                                    date?.[0]?.toISOString().split("T")[0]
+                                  )
+                                }
                                 options={{ dateFormat: "Y-m-d" }}
                               />
                             );
@@ -581,9 +404,8 @@ numberOfRooms:WatchroomUnits.length,
                           <FormFeedback>
                             {errors.specialDays[index].date.message}
                           </FormFeedback>
-                        )}{" "}
+                        )}
                       </td>
-
                       <td>
                         <Controller
                           name={`specialDays.${index}.price`}
@@ -598,7 +420,7 @@ numberOfRooms:WatchroomUnits.length,
                           render={({ field }) => (
                             <Input
                               type="text"
-                              placeholder="Enter Price "
+                              placeholder="Enter Price"
                               {...field}
                             />
                           )}
@@ -609,7 +431,6 @@ numberOfRooms:WatchroomUnits.length,
                           </span>
                         )}
                       </td>
-
                       <td>
                         <Controller
                           name={`specialDays.${index}.description`}
@@ -617,7 +438,7 @@ numberOfRooms:WatchroomUnits.length,
                           rules={{
                             required: "Description is required",
                             pattern: {
-                              value: /^[A-Za-z]+$/,
+                              value: /^[A-Za-z\s]+$/,
                               message:
                                 "Only alphabetic characters (A–Z) are allowed",
                             },
@@ -658,13 +479,14 @@ numberOfRooms:WatchroomUnits.length,
                 </Button>
               </div>
             </Card>
-
             <Button type="submit" disabled={loading} color="primary">
               {loading ? (
                 <>
                   <span>Loading.. </span>
-                  <Spinner size="sm" />{" "}
+                  <Spinner size="sm" />
                 </>
+              ) : uid ? (
+                "Update"
               ) : (
                 "Submit"
               )}

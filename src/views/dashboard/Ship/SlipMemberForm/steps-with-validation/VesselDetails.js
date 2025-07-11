@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment,useRef } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
@@ -30,7 +30,6 @@ const AccountDetails = ({
   setSlipIID,
   fetchLoader,
 }) => {
-  
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
 
@@ -63,7 +62,6 @@ const AccountDetails = ({
           dimensions: item.dimensions,
         }));
 
-
       setSlipNames(NotAssigned);
 
       // setSlipNames(() =>
@@ -74,7 +72,7 @@ const AccountDetails = ({
       //   }))
       // );
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   }
 
@@ -106,14 +104,11 @@ const AccountDetails = ({
     finaleData.vesselName = data.vesselName;
     finaleData.uid = data.uid ? data.uid : "";
 
-
     try {
-
       // {{ }}
       if (slipId) {
         setLoading(true);
-       const updateRes= await useJwt.updateVessel(finaleData.uid, finaleData);
-     
+        const updateRes = await useJwt.updateVessel(finaleData.uid, finaleData);
 
         if (updateRes.status === 200) {
           toast.current.show({
@@ -126,21 +121,21 @@ const AccountDetails = ({
             stepper.next();
           }, 2000);
         }
-      } else{
+      } else {
         setLoading(true);
-       const createRes= await useJwt.postsVessel(finaleData);
-    
-      if (createRes.status === 201) {
-        toast.current.show({
-          severity: "success",
-          summary: "Cretaed Successfully",
-          detail: "Vessel Details Created Successfully.",
-          life: 2000,
-        });
-        setTimeout(() => {
-          stepper.next();
-        }, 2000); 
-      }
+        const createRes = await useJwt.postsVessel(finaleData);
+
+        if (createRes.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Cretaed Successfully",
+            detail: "Vessel Details Created Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            stepper.next();
+          }, 2000);
+        }
       }
     } catch (error) {
       console.error("Error submitting vessel details:", error);
@@ -161,7 +156,6 @@ const AccountDetails = ({
   const renderField = (fields) => {
     if (!fields) return null;
 
-
     return Object.keys(fields).map((dimKey) => (
       <Col key={dimKey} md="6" className="mb-1">
         <Label className="form-label" htmlFor={dimKey}>
@@ -180,7 +174,7 @@ const AccountDetails = ({
               value: /^\d*\.?\d+$/, // ✅ Only allows numbers and floats (e.g., 123, 45.67)
               message: "Only numbers and decimals are allowed",
             },
-         
+
             validate: {
               maxValue: (value) => {
                 const numberValue = parseFloat(value);
@@ -213,7 +207,7 @@ const AccountDetails = ({
                 onChange={(e) => {
                   let newValue = e.target.value.replace(/[^0-9.]/g, ""); // ✅ Remove non-numeric characters
                   newValue = newValue.replace(/(\..*)\./g, "$1"); // ✅ Prevent multiple dots
-                  onChange(newValue); 
+                  onChange(newValue);
                 }}
               />
               {fieldState?.error && (
@@ -248,20 +242,21 @@ const AccountDetails = ({
 
   return (
     <Fragment>
-            <Toast ref={toast} />
-      
+      <Toast ref={toast} />
+
       <div className="content-header">
         <h5 className="mb-0">
-       <ArrowLeft
-                       style={{
-                         cursor: "pointer",
-                         marginRight: "10px",
-                         transition: "color 0.1s",
-                       }}
-                       onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                       onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                       onClick={() => window.history.back()}
-                     />{" "}   {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}
+          <ArrowLeft
+            style={{
+              cursor: "pointer",
+              marginRight: "10px",
+              transition: "color 0.1s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+            onClick={() => window.history.back()}
+          />{" "}
+          {slipId ? "Update Vessel Details" : "Vessel Details"}{" "}
         </h5>
         <small className="text-muted">Enter Your Vessel Details.</small>
       </div>

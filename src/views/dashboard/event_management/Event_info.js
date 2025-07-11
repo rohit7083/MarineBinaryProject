@@ -16,6 +16,8 @@ import {
   CardBody,
   FormFeedback,
   Spinner,
+  CardTitle,
+  Table,
 } from "reactstrap";
 import Sidebar from "@components/sidebar";
 import ViewClient from "./client_Information/ViewClient";
@@ -31,19 +33,22 @@ import ClientDetaiils from "./client_Information";
 import { useWatch } from "react-hook-form";
 import moment from "moment"; // or use native Date methods if preferred
 import { UncontrolledAlert } from "reactstrap";
+import RoomManageModal from "./RoomManageModal";
 
 const EventForm = ({ stepper, setAllEventData, listData }) => {
   const [EventType, setEventsType] = useState([]);
   const [venueType, setVenueType] = useState([]);
   const [vendor, setVendorType] = useState([]);
+  const [additionOFroom, setAdditionOFroom] = useState();
   const toast = useRef(null);
   const [open, setOpen] = useState(false);
   const [errMsz, seterrMsz] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [showModal, setShowModal] = useState(true);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
   const [selectMem, setSelectedMember] = useState({});
+  const [eventRooms, setEventRooms] = useState([]);
   const [memberAppendData, setMemberAppendData] = useState({});
   const {
     control,
@@ -51,6 +56,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     setValue,
     watch,
     reset,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -71,7 +77,8 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   const isRecurring = watch("isRecurringEvent");
   const StaffAmount = watch("extraNoOfStaffAmount");
   // const FinalPrice = Number(venueType?.totalPrice)+Number(StaffAmount);
-  // console.log("FinalPrice", venueType);
+  console.log("eventrooms data", eventRooms);
+  const baseAmountRef = useRef(0);
 
   useEffect(() => {
     if (listData?.uid && listData?.Rowdata) {
@@ -103,7 +110,6 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   const FetchEventsType = async () => {
     try {
       const res = await useJwt.getAllEventType();
-      // console.log(res?.data?.content?.result);
 
       const eventTypeNames = res?.data?.content?.result?.map((x) => ({
         label: x.eventTypeName,
@@ -120,7 +126,6 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     try {
       const { data } = await useJwt.getAllVenue();
       const { content } = data;
-      // console.log("content2", content);
 
       const venueTypeNames = content?.result?.map((x) => ({
         label: x.venueName,
@@ -142,7 +147,6 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     try {
       const { data } = await useJwt.getAllVendor();
       const { content } = data;
-      // console.log("getAllVendor", content);
       const vendorTypeNames = content?.result?.map((x) => ({
         label: `${x.vendorName} ( ${x.vendorType?.typeName} )`,
         value: x.uid,
@@ -170,12 +174,15 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     { label: "Annually", value: "Annually" },
   ];
 
+  useEffect(() => {
+    if (eventRooms?.roomSearchUid) {
+      baseAmountRef.current = eventRooms?.bookedRoom?.reduce((total, x) => {
+        return total + (Number(x?.fields?.baseAmount) || 0);
+      }, 0);
+    }
+  }, [eventRooms?.roomSearchUid]);
+
   const onSubmit = async (data) => {
-    // {
-    //   {
-    //      ;
-    //   }
-    // }
     seterrMsz("");
 
     let venuePayload;
@@ -216,17 +223,6 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       ...data,
       eventType,
 
-      // eventStartDate: startDateTime
-      //   ? moment(startDateTime).format("YYYY-MM-DD")
-      //   : null,
-      // eventEndDate: endDateTime
-      //   ? moment(endDateTime).format("YYYY-MM-DD")
-      //   : null,
-      // eventStartTime: startDateTime
-      //   ? moment(startDateTime).format("HH:mm")
-      //   : null,
-      // eventEndTime: endDateTime ? moment(endDateTime).format("HH:mm") : null,
-
       eventStartDate: data.startDateTime
         ? moment(data.startDateTime).format("YYYY-MM-DD")
         : null,
@@ -245,10 +241,27 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       member: memberPayload,
       isRecurringEvent: data?.isRecurringEvent ? true : false,
       isExtraStaff: data?.isExtraStaff ? true : false,
+
       amount: basePrice,
-      isRoomRequired:false,
+      isRoomRequired: isRoomRequired,
+   ...(isRoomRequired ===true &&{
+     numberOfGuests: eventRooms?.bookedRoom["0"]?.numberOfGuests,
+      roomBookings: [
+        {
+          roomSearch: {
+            uid: eventRooms?.roomSearchUid,
+          },
+          checkInDate: eventRooms?.bookedRoom[0]?.checkInDate,
+          checkOutDate: eventRooms?.bookedRoom[0]?.checkOutDate,
+          numberOfGuests: eventRooms?.bookedRoom[0]?.numberOfGuests,
+          finalAmount: baseAmountRef.current,
+          subtotal: baseAmountRef.current,
+          numberOfDays: eventRooms?.bookedRoom[0]?.totalNoOfDays,
+        },
+      ],
+      })
     };
-    // {{ }}
+
     const allData = {
       ...data,
       ...payload,
@@ -262,21 +275,16 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       eventTypes: seletctType?.label,
     };
 
-    console.log("data", allData);
-
     try {
       setLoading(true);
 
       const res = await useJwt.createEvent(payload);
-      console.log("res", res);
       setAllEventData({
         ...allData,
         eventId: res?.data?.id,
         memberId: selectMem?.id,
         eventUid: res?.data?.uid,
       });
-
-      console.log(allData);
 
       toast.current.show({
         severity: "success",
@@ -308,7 +316,6 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   const seletctType = watch("eventType");
   const isExtraStaffRequired = watch("isExtraStaff");
   const isVenue = watch("venue");
-  console.log("isVenue", isVenue);
 
   const [picker, setPicker] = useState(new Date());
 
@@ -322,48 +329,60 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     updated.splice(index, 1);
     setValue("vendors", updated); // react-hook-form
   };
+const roomPrice = Number(baseAmountRef.current) || 0;
 
   const extraNoOfStaffAmount = watch("extraNoOfStaffAmount") || 0;
-
   const staffPrice = Number(watch("staffPrice")) || 0;
   const price = Number(watch("price")) || 0;
   const basePrice = isVenue?.totalPrice || staffPrice + price;
 
   const venue = watch("venue");
-  console.log("venue", venue);
 
   useEffect(() => {
     if (!isExtraStaffRequired && venue?.label !== "Other") {
-      setValue("totalAmount", basePrice);
+      setValue("totalAmount", basePrice + roomPrice);
     }
   }, [isExtraStaffRequired, venue]);
 
   useEffect(() => {
     if (!isExtraStaffRequired && venue?.label === "Other") {
-      const total = staffPrice + price;
+      const total = staffPrice + price + roomPrice;
       setValue("totalAmount", total);
     }
   }, [isExtraStaffRequired, venue, staffPrice, price]);
 
   useEffect(() => {
     if (isExtraStaffRequired && venue?.label !== "Other") {
-      const FinalPrice = Number(basePrice) + Number(extraNoOfStaffAmount);
+      const FinalPrice = Number(basePrice) + Number(extraNoOfStaffAmount) +roomPrice;
       setValue("totalAmount", FinalPrice);
     }
   }, [isExtraStaffRequired, venue, basePrice, extraNoOfStaffAmount]);
 
   useEffect(() => {
     if (isExtraStaffRequired && venue?.label === "Other") {
-      const Total = staffPrice + price + Number(extraNoOfStaffAmount);
+      const Total = staffPrice + price +roomPrice+ Number(extraNoOfStaffAmount);
       setValue("totalAmount", Total);
     }
   }, [isExtraStaffRequired, venue, staffPrice, extraNoOfStaffAmount, price]);
 
+  //if staff price and venue price exist
   useEffect(() => {
     if (staffPrice && price) {
       setValue("totalPrice", Number(staffPrice) + Number(price));
     }
   }, [staffPrice, price, setValue]);
+
+  useEffect(() => {
+    if (eventRooms?.roomSearchUid  ) {
+      const currentFinal = watch("totalAmount");
+      console.log("currentFinal", currentFinal);
+
+      setValue("totalAmount", currentFinal + baseAmountRef.current);
+      console.log(currentFinal + baseAmountRef.current);
+    }
+  }, [setValue, eventRooms?.roomSearchUid]);
+
+  const isRoomRequired = watch("isRoomRequired");
   return (
     <>
       <h4 className="mb-2">Event Information</h4>
@@ -650,11 +669,53 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             <Controller
               name="isRoomRequired"
               control={control}
-              render={({ field }) => <Input {...field} type="checkbox" />}
+              render={({ field }) => {
+                return (
+                  <Input
+                    {...field}
+                    type="checkbox"
+                    disabled={eventRooms?.bookedRoom?.length > 0}
+                  />
+                );
+              }}
             />{" "}
             Is Room Required
           </Label>
         </Col>
+
+        {watch("isRoomRequired") && eventRooms?.roomSearchUid && (
+          <Col check className="mb-2">
+            <Card>
+              <CardTitle tag="h5" className="p-2 border-bottom mb-0">
+                Your Booked Room
+              </CardTitle>
+              <CardBody className="p-1">
+                <Table bordered responsive hover>
+                  <thead className="table-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Room No</th>
+                      <th>Room Type</th>
+                      <th>Service Package</th>
+                      <th>Final Payment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {eventRooms?.bookedRoom?.map((x, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{x.roomNumber}</td>
+                        <td>{x?.roomTypeName}</td>
+                        <td>{x?.fields?.seviceType}</td>
+                        <td>${x?.fields?.amount}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+          </Col>
+        )}
 
         {/* Event Description */}
         <Col className="mb-2">
@@ -1164,6 +1225,15 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
           </Button>
         </div>
       </Form>
+
+      {watch("isRoomRequired") && (
+        <RoomManageModal
+          isRoomRequired={isRoomRequired}
+          setShowModal={setShowModal}
+          showModal={showModal}
+          setEventRooms={setEventRooms}
+        />
+      )}
     </>
   );
 };

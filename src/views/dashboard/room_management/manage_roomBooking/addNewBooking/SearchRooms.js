@@ -25,7 +25,14 @@ const defaultFields = {
   taxvalue: 0,
 };
 
-const SearchRooms = ({ allRooms, searchField }) => {
+const SearchRooms = ({
+  isRoomRequired,
+  setEventRooms,
+  allRooms,
+  searchField,
+  setShowModal,
+  showModal,
+}) => {
   const {
     control,
     reset,
@@ -70,7 +77,8 @@ const SearchRooms = ({ allRooms, searchField }) => {
 
   const handleRoom = (data, index, flagRef) => {
     const { fields, value, totalNoOfDays } = data;
-    const { isBooked, amount, noOfExtraPeople,amtWithouttax, isExtraPeople } = fields;
+    const { isBooked, amount, noOfExtraPeople, amtWithouttax, isExtraPeople } =
+      fields;
 
     if (isBooked && !amount) {
       setError(`roomUnit.${index}.fields.seviceType`, {
@@ -88,7 +96,6 @@ const SearchRooms = ({ allRooms, searchField }) => {
         amtWithouttax,
       };
   };
-
   const onSubmit = async (data) => {
     const { roomUnit } = data;
 
@@ -109,38 +116,55 @@ const SearchRooms = ({ allRooms, searchField }) => {
       ...(x?.fields?.isExtraPeople && {
         noOfExtraPeople: x?.fields?.noOfExtraPeople,
       }),
-      // noOfExtraPeople: x?.fields?.noOfExtraPeople,
 
-      // uid: x?.fields?.uid,
+      serviceType: x?.fields?.seviceType,
+      roomOnlyPricePerNight: x?.grandTotalPrice,
+      roomBreakfastPricePerNight: x?.roomAndBreakFast,
+      roomMealPricePerNight: x?.roomAndAllMeal,
+      maxRoomCapacity:x?.peopleCapacity,
+      defaultPeopleCapacity:2,
       uid: x?.value,
     }));
     const totalAmount = Booked?.reduce((sum, item) => sum + item.amount, 0);
     console.log("roomUnit", totalAmount);
-
+// {{debugger}}
     const payload = {
       checkInDate: bookedRoom["0"]?.checkInDate,
       checkOutDate: bookedRoom["0"]?.checkOutDate,
       numberOfDays: bookedRoom["0"]?.totalNoOfDays,
       numberOfGuests: bookedRoom["0"]?.numberOfGuests,
-      roomUnit: Booked,
+      roomSearchUnit: Booked,
       totalAmount: totalAmount,
+     
     };
 
+
+// {{debugger}}
     try {
       const res = await useJwt.submitBookedRooms(payload);
       console.log("submitBookedRooms", res);
-      navigate("/search-rooms/previewBooking", {
-        state: {
-          preBookingData: bookedRoom,
-          alldata: payload,
-          searchId: res?.data?.searchId,
-          searchUid: res?.data?.roomSearchUid,
-        },
-      });
+      if (isRoomRequired) {
+        // setEventRooms({bookedRoom , roomSearchUid:res?.data?.roomSearchUid});
+        setEventRooms({
+  bookedRoom,
+  roomSearchUid: res?.data?.roomSearchUid
+});
 
+
+        setShowModal(!showModal);
+      } else {
+        navigate("/search-rooms/previewBooking", {
+          state: {
+            preBookingData: bookedRoom,
+            alldata: payload,
+            searchId: res?.data?.searchId,
+            searchUid: res?.data?.roomSearchUid,
+          },
+        });
+      }
       reset();
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
 
@@ -148,6 +172,8 @@ const SearchRooms = ({ allRooms, searchField }) => {
     count: roomsList?.length,
     results: [],
   });
+
+  console.log("roomlst", roomsList);
 
   useEffect(() => {
     if (roomsList) {
@@ -159,7 +185,7 @@ const SearchRooms = ({ allRooms, searchField }) => {
   }, [roomsList]);
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
-  // {{ }}
+
   const handleFilter = (value) => {
     if (value) {
       const filteredResults = roomsList.filter(
@@ -216,9 +242,17 @@ const SearchRooms = ({ allRooms, searchField }) => {
           <Fragment>
             <Row className="align-items-center mb-3 mt-1">
               <Col className="d-flex align-items-center">
+                {/* {isRoomRequired ? (
+                  <>
+                    <CardTitle className="fs-4 fw-bold mb-0">
+                      Available Rooms ({roomsList.length})
+                    </CardTitle>
+                  </>
+                ) : ( */}
                 <CardTitle className="fs-2 fw-bold mb-0">
                   Available Rooms ({roomsList.length})
                 </CardTitle>
+                {/* )} */}
               </Col>
               <Col className="d-flex justify-content-end">
                 <Input
@@ -240,7 +274,20 @@ const SearchRooms = ({ allRooms, searchField }) => {
 
               return (
                 <Col sm="12" md="6" lg="4" key={index}>
-                  <div ref={isLast ? lastCardRef : null}>
+                  <div
+                    ref={isLast ? lastCardRef : null}
+                    style={
+                      isRoomRequired
+                        ? {
+                            border: "1px solid black",
+                            borderRadius: "10px",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                            backgroundColor: "#fff",
+                            borderBottom: "2em", // note: this is probably a mistake (see below)
+                          }
+                        : {}
+                    }
+                  >
                     <RoomCard
                       roomsList={roomsList}
                       fieldsDetail={fields}
@@ -251,6 +298,7 @@ const SearchRooms = ({ allRooms, searchField }) => {
                       getValues={getValues}
                       errors={errors}
                       setBookRooms={setBookRooms}
+                      isDisabled={false}
                     />
                   </div>
                 </Col>

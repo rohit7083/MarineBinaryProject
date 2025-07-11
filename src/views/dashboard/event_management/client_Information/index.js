@@ -68,7 +68,7 @@ const ClientDetaiils = ({
       color: "flat-success",
     },
   ]);
-  console.log(childData);
+   
 
   const OptionComponent = ({ data, ...props }) => {
     if (data.type === "button") {

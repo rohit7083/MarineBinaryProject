@@ -21,6 +21,7 @@ import {
   InputGroup,
   InputGroupText,
   UncontrolledAlert,
+  Spinner,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller, set } from "react-hook-form";
@@ -36,9 +37,10 @@ function Payment({ stepper }) {
     { value: "Other", label: "Other" },
   ];
   const navigate = useNavigate();
-  const [mode, setMode] = useState(""); // "flat" or "percentage"
+  const [mode, setMode] = useState("");
   const [value, setValuedis] = useState("");
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
   const myData = location?.state?.resAlldata;
   const myallData = location?.state?.resAlldata?.alldata;
@@ -375,6 +377,8 @@ function Payment({ stepper }) {
   };
   const onSubmit = async (data) => {
     setErrorMsz("");
+    setLoading(true);
+
     const otpArray = data.otp || [];
     const pin = otpArray?.join("");
 
@@ -429,7 +433,6 @@ function Payment({ stepper }) {
       console.log("Choose differant payment Method ");
     }
 
-    console.log("formdata", formData);
     try {
       const res = await useJwt.bookingPayment(formData);
       const { qr_code_base64 } = res?.data;
@@ -437,17 +440,17 @@ function Payment({ stepper }) {
       if (qr_code_base64) {
         setShowQrModal(true);
       }
-      stepper.next();
 
-      navigate("/manage_roomBooking");
+      navigate("/bookingListing");
     } catch (error) {
-
       console.error(error);
 
-      
-        const errMsz = (error?.response?.data?.content || "An error occurred while processing your request.");
-        setErrorMsz(errMsz);
-      
+      const errMsz =
+        error?.response?.data?.content ||
+        "An error occurred while processing your request.";
+      setErrorMsz(errMsz);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -1662,23 +1665,24 @@ function Payment({ stepper }) {
                       type="submit"
                       color="primary"
                       className="btn-next"
+                      disabled={loading}
                       onClick={() => clearErrors()}
                     >
                       <span className="align-middle d-sm-inline-block d-none">
-                        {/* {loading ? (
-                <>
-                  Loading.. <Spinner size="sm" />{" "}
-                </>
-              ) : ( */}
-                        <>Submit</>
-                        {/* )} */}
+                        {loading ? (
+                          <>
+                            Loading.. <Spinner size="sm" />{" "}
+                          </>
+                        ) : (
+                          <>Submit</>
+                        )}
                       </span>
-                      {/* {loading ? null : (
-              <ArrowRight
-                size={14}
-                className="align-middle ms-sm-25 ms-0"
-              ></ArrowRight>
-            )} */}
+                      {loading ? null : (
+                        <ArrowRight
+                          size={14}
+                          className="align-middle ms-sm-25 ms-0"
+                        ></ArrowRight>
+                      )}
                     </Button>
                   </div>
                 </div>

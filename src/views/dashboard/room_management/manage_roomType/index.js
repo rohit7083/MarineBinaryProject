@@ -13,7 +13,7 @@ import {
   Button,
   Badge,
 } from "reactstrap";
-import { Link ,Navigate,useNavigate} from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import { debounce } from "lodash";
@@ -28,7 +28,7 @@ const index = () => {
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
-    const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -47,16 +47,14 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
-    const handleEdit = (row) => {
-   
-    navigate('/pos/vendor_typeList/addVendorType', { state: { row } });
-
+  const handleEdit = (row) => {
+    navigate("/add_room_types", { state: { row } });
   };
 
   useEffect(() => {
@@ -80,9 +78,7 @@ const index = () => {
       const filteredResults = tableData.results.filter(
         (row) =>
           row.roomTypeName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.taxName
-            ?.toLowerCase()
-            .includes(value.toLowerCase()) ||
+          row.taxName?.toLowerCase().includes(value.toLowerCase()) ||
           row.peopleCapacity?.toString().includes(value)
       );
 
@@ -124,14 +120,13 @@ const index = () => {
       selector: (row) => row.taxName,
     },
 
-       {
+    {
       name: "People Capacity",
       sortable: true,
       // minWidth: "150px",
       selector: (row) => row.peopleCapacity,
     },
 
-   
     {
       name: "Actions",
       minWidth: "150px",
@@ -157,7 +152,7 @@ const index = () => {
             if (result.value) {
               try {
                 // Call delete API
-                const response = await useJwt.DeleteVendorType(uid);
+                const response = await useJwt.DeleteRoomType(uid);
                 if (response?.status === 204) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(
@@ -208,10 +203,7 @@ const index = () => {
             <span
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-                            onClick={()=>handleEdit(row)}
-
-                
-            
+              onClick={() => handleEdit(row)}
             >
               <Edit2 className="font-medium-3 text-body" />
             </span>
@@ -269,8 +261,7 @@ const index = () => {
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <h3 className="">Room Type List
-</h3>
+            <h3 className="">Room Type List</h3>
 
             <div className="mx-2">
               <Row

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import { Calendar, ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
 import {
   Table as ReactstrapTable,
   Input,
@@ -13,7 +13,7 @@ import {
   Button,
   Badge,
 } from "reactstrap";
-import { Link ,Navigate,useNavigate} from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import { debounce } from "lodash";
@@ -28,7 +28,7 @@ const index = () => {
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
-    const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -41,26 +41,24 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-      const { data } = await useJwt.gewtAllVendorType();
+      const { data } = await useJwt.bookingList();
       const { content } = data;
       console.log("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
-    const handleEdit = (row) => {
-   
-    navigate('/pos/vendor_typeList/addVendorType', { state: { row } });
-
+  const handleEdit = (row) => {
+    navigate("/booking_listing/view", { state: { row } });
   };
 
   useEffect(() => {
-    // {{ }}
+    
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 
@@ -73,17 +71,16 @@ const index = () => {
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
-    // {{ }}
+    
     setSearchTerm(value);
 
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.parkingName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.perDayDueChargesType
-            ?.toLowerCase()
-            .includes(value.toLowerCase()) ||
-          row.parkingAmount?.toString().includes(value)
+          row.member?.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+          row.paymentStatus?.toLowerCase().includes(value.toLowerCase()) ||
+          row.roomNumber?.toString().includes(value) ||
+          row.finalAmount?.toString().includes(value)
       );
 
       setTableData((prev) => ({
@@ -103,6 +100,12 @@ const index = () => {
     setRole(value);
   };
 
+  const paymentStatusColor = {
+    success: "light-success",
+    error: "light-danger",
+    pending: "light-warning",
+  };
+
   const columns = [
     {
       name: "Id",
@@ -112,47 +115,64 @@ const index = () => {
     },
 
     {
-      name: "Roome Booking Type",
+      name: "Guest Name",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.typeName,
+      selector: (row) => row.member?.firstName + " " + row.member?.lastName,
     },
     {
-      name: "Room Booking ID",
+      name: "Room No",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
-    },
-     {
-      name: "User Full Name",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.description,
-    },
-     {
-      name: "User Email",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => {
+           return row?.roomUnits?.map((x) => x.roomNumber).join(", ");
+
+      },
     },
 
-     {
-      name: "User Contact",
+    {
+      name: "F.Amount",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => row.finalAmount,
     },
-  {
+
+    {
+      name: "R.Amount",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.remainingAmount,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      // minWidth: "150px",
+      // selector: (row) => row.paymentStatus,
+      selector: (row) => {
+        return (
+          <Badge
+            color={
+              paymentStatusColor[row?.paymentStatus?.toLowerCase()] ||
+              "secondary"
+            }
+            pill
+          >
+            {row?.paymentStatus}
+          </Badge>
+        );
+      },
+    },
+    {
       name: "check In date",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => row.checkInDate,
     },
-     {
+    {
       name: "check out date",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => row.checkOutDate,
     },
 
     {
@@ -218,25 +238,17 @@ const index = () => {
         };
         return (
           <>
-            {/* <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              // onClick={() => handleDelete(row.uid)}
-            > */}
-            {/* <Badge color="danger" style={{ cursor: "pointer" }}>
-              Sell
-            </Badge> */}
-            {/* </span> */}
+            {/* <span color="danger" style={{ cursor: "pointer", color: "red" }}>
+              <Calendar className="font-medium-3 text-body" />
+            </span> */}
+
 
             <span
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-                            onClick={()=>handleEdit(row)}
-
-                
-            
+              onClick={() => handleEdit(row)}
             >
-              <Edit2 className="font-medium-3 text-body" />
+              <Eye className="font-medium-3 text-body" />
             </span>
 
             <span
@@ -292,8 +304,7 @@ const index = () => {
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <h3 className="">Room Booking List
-</h3>
+            <h3 className="">Room Booking List</h3>
 
             <div className="mx-2">
               <Row

@@ -41,20 +41,20 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-      const { data } = await useJwt.getAllVsendorType();
+      const { data } = await useJwt.GetAllRooms();
       const { content } = data;
       console.log("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
   const handleEdit = (row) => {
-    navigate("/pos/vendor_typeList/addVendorType", { state: { row } });
+    navigate("/room_details/add_room_details", { state: { row } });
   };
 
   useEffect(() => {
@@ -77,11 +77,13 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.parkingName?.toLowerCase().includes(value.toLowerCase()) ||
+          row.roomType?.roomTypeName
+            ?.toLowerCase()
+            .includes(value.toLowerCase()) ||
           row.perDayDueChargesType
             ?.toLowerCase()
             .includes(value.toLowerCase()) ||
-          row.parkingAmount?.toString().includes(value)
+          row.numberOfRooms?.toString().includes(value)
       );
 
       setTableData((prev) => ({
@@ -113,20 +115,13 @@ const index = () => {
       name: "Room Type",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.typeName,
+      selector: (row) => row?.roomType?.roomTypeName,
     },
     {
-      name: "Tax Name",
+      name: "Number of Rooms",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.description,
-    },
-
-    {
-      name: "Tax Value",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.description,
+      selector: (row) => row.numberOfRooms,
     },
 
     {
@@ -154,7 +149,7 @@ const index = () => {
             if (result.value) {
               try {
                 // Call delete API
-                const response = await useJwt.DeleteVendorType(uid);
+                const response = await useJwt.DeleteRooms(uid);
                 if (response?.status === 204) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(

@@ -42,18 +42,13 @@ function AddVTypes() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (uid) {
-      reset({
-        typeName: rowData.typeName || "",
-        description: rowData.description || "",
-      });
+    if (uid && rowData) {
+      reset(rowData);
     }
-  }, []);
+  }, [uid, rowData]);
 
   const onSubmit = async (data) => {
     seterrMsz("");
-
-    
 
     const payload = {
       taxType: "Percentage",
@@ -63,7 +58,7 @@ function AddVTypes() {
     try {
       setLoading(true);
       if (uid) {
-        const res = await useJwt.updateVendor(uid, data);
+        const res = await useJwt.UpdateRoomType(uid, data);
         console.log("Updated:", res);
         if (res.status === 200) {
           toast.current.show({
@@ -124,7 +119,7 @@ function AddVTypes() {
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
                 onClick={() => window.history.back()}
               />{" "}
-              {uid ? "Update" : "Create "}
+              {uid ? "Update " : "Create "}
               Room Types
             </CardText>
           </CardTitle>
@@ -281,8 +276,10 @@ function AddVTypes() {
               {loading ? (
                 <>
                   <span>Loading.. </span>
-                  <Spinner size="sm" />{" "}
+                  <Spinner size="sm" />
                 </>
+              ) : uid ? (
+                "Update"
               ) : (
                 "Submit"
               )}

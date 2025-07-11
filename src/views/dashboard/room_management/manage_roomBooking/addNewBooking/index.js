@@ -1,5 +1,3 @@
-// Importing necessary libraries and components for the AddVTypes component.
-// React and hooks for state and lifecycle management.
 import React, { Fragment, useRef, useEffect, useState } from "react";
 // React Hook Form for form state management and validation.
 import { useForm, Controller } from "react-hook-form";
@@ -36,7 +34,7 @@ import SearchRoom from "../addNewBooking/SearchRooms";
 // Feather icon for back navigation.
 import { ArrowLeft } from "react-feather";
 
-function AddVTypes() {
+function AddVTypes({isRoomRequired,showModal ,setShowModal,setEventRooms}) {
   const {
     control,
     handleSubmit,
@@ -56,6 +54,7 @@ function AddVTypes() {
   const [allRooms, setAllrooms] = useState([]);
   const checkInDate = watch("checkInDate");
   const checkOutDate = watch("checkOutDate");
+
 
   useEffect(() => {
     if (uid && rowData) {
@@ -82,67 +81,44 @@ function AddVTypes() {
   }, [checkInDate, checkOutDate, setValue]);
 
   const onSubmit = async (data) => {
-    console.log("data",data);
-    
+    console.log("data", data);
+
     try {
       setLoading(true);
-      if (uid) {
-        const res = await useJwt.updateVendor(uid, data);
-        setSearcedValue(data);
-        if (res.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Updated Successfully",
-            detail: "Vendor Type updated successfully.",
-            life: 2000,
-          });
-          setTimeout(() => navigate("/addNew_room_booking"), 2000);
-        }
-      } else {
-        const res = await useJwt.SearchRoom(data);
-        const AllroomUnits = res?.data?.flatMap(
-          (x) =>
-            x?.roomUnits?.map(({ roomNumber, uid, available }) => ({
-              label: roomNumber,
-              value: uid,
-              available: available,
-              additionalPersonAllMeal: x?.additionalPersonAllMeal,
-              additionalPersonBreakfast: x?.additionalPersonBreakfast,
-              additionalPersonRoomOnlyWeekdays:
-                x?.additionalPersonRoomOnlyWeekdays,
-              additionalPersonRoomOnlyWeekend:
-                x?.additionalPersonRoomOnlyWeekend,
-              onlyRoomWeekdaysPrice: x?.onlyRoomWeekdaysPrice,
-              onlyRoomWeekendPrice: x?.onlyRoomWeekendPrice,
-              twoPeopleAllMealPrice: x?.twoPeopleAllMealPrice,
-              twoPeopleBreakfastPrice: x?.twoPeopleBreakfastPrice,
-              grandTotalPrice: x?.grandTotalPrice,
-              totalNoOfDays: x?.totalNoOfDays,
-              roomAndBreakFast: x?.roomAndBreakFast,
-              roomAndAllMeal: x?.roomAndAllMeal,
-              peopleCapacity: x?.roomType?.peopleCapacity,
-              roomTypeName: x?.roomType?.roomTypeName,
-              taxValue: x?.roomType?.taxValue,
-              grandTotalTaxAmount: x?.grandTotalTaxAmount,
-              roomAndBreakFastTaxAmount: x?.roomAndBreakFastTaxAmount,
-              roomAndAllMealTaxAmount: x?.roomAndAllMealTaxAmount,
-              weekdayCount: x?.weekdayCount,
-              weekendCount: x?.weekendCount,
-              specialDays: x?.specialDays?.price,
-              ...data,
-            })) || []
-        );
-        setAllrooms(AllroomUnits);
-        if (res.status === 201) {
-          toast.current.show({
-            severity: "success",
-            summary: "Created Successfully",
-            detail: "Vendor Type created successfully.",
-            life: 2000,
-          });
-          setTimeout(() => navigate("/addNew_room_booking"), 2000);
-        }
-      }
+
+      const res = await useJwt.SearchRoom(data);
+      const AllroomUnits = res?.data?.flatMap(
+        (x) =>
+          x?.roomUnits?.map(({ roomNumber, uid, available }) => ({
+            roomNumber,
+            value: uid,
+            available: available,
+            additionalPersonAllMeal: x?.additionalPersonAllMeal,
+            additionalPersonBreakfast: x?.additionalPersonBreakfast,
+            additionalPersonRoomOnlyWeekdays:
+              x?.additionalPersonRoomOnlyWeekdays,
+            additionalPersonRoomOnlyWeekend: x?.additionalPersonRoomOnlyWeekend,
+            onlyRoomWeekdaysPrice: x?.onlyRoomWeekdaysPrice,
+            onlyRoomWeekendPrice: x?.onlyRoomWeekendPrice,
+            twoPeopleAllMealPrice: x?.twoPeopleAllMealPrice,
+            twoPeopleBreakfastPrice: x?.twoPeopleBreakfastPrice,
+            grandTotalPrice: x?.grandTotalPrice,
+            totalNoOfDays: x?.totalNoOfDays,
+            roomAndBreakFast: x?.roomAndBreakFast,
+            roomAndAllMeal: x?.roomAndAllMeal,
+            peopleCapacity: x?.roomType?.peopleCapacity,
+            roomTypeName: x?.roomType?.roomTypeName,
+            taxValue: x?.roomType?.taxValue,
+            grandTotalTaxAmount: x?.grandTotalTaxAmount,
+            roomAndBreakFastTaxAmount: x?.roomAndBreakFastTaxAmount,
+            roomAndAllMealTaxAmount: x?.roomAndAllMealTaxAmount,
+            weekdayCount: x?.weekdayCount,
+            weekendCount: x?.weekendCount,
+            specialDays: x?.specialDays?.price,
+            ...data,
+          })) || []
+      );
+      setAllrooms(AllroomUnits);
     } catch (error) {
       toast.current.show({
         severity: "error",
@@ -187,12 +163,14 @@ function AddVTypes() {
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
                 onClick={() => window.history.back()}
               />{" "}
-              Booking Room Details
+              Check Available Rooms
             </CardText>
           </CardTitle>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <div style={{}}>
+
             <FormGroup row>
-              <Col sm="6" className="mb-1">
+              <Col sm="4" className="mb-1">
                 <Label htmlFor="checkInDate">Check In Date</Label>
                 <Controller
                   name="checkInDate"
@@ -232,7 +210,7 @@ function AddVTypes() {
                   )}
                 />
               </Col>
-              <Col sm="6" className="mb-1">
+              <Col sm="4" className="mb-1">
                 <Label htmlFor="checkOutDate">Check Out Date</Label>
                 <Controller
                   name="checkOutDate"
@@ -272,7 +250,7 @@ function AddVTypes() {
                   )}
                 />
               </Col>
-              <Col sm="12">
+              <Col sm="4">
                 <Label htmlFor="numberOfGuests">Number of Guests</Label>
                 <Controller
                   name="numberOfGuests"
@@ -295,7 +273,7 @@ function AddVTypes() {
                 )}
               </Col>
             </FormGroup>
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-end">
               <Button type="submit" disabled={loading} color="primary">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -319,10 +297,16 @@ function AddVTypes() {
                 )}
               </Button>
             </div>
+            </div>
           </form>
         </CardBody>
       </Card>
-      <SearchRoom allRooms={allRooms} searchField={searchedValue} />
+{/* <hr style={{color:'#6E6B7B'}}></hr> */}
+{/* <hr></hr> */}
+
+      <SearchRoom showModal={showModal} setShowModal={setShowModal} setEventRooms={setEventRooms} isRoomRequired={isRoomRequired} allRooms={allRooms} searchField={searchedValue} />
+
+    
     </Fragment>
   );
 }

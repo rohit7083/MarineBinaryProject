@@ -99,7 +99,7 @@ const Checkout = () => {
   // ** Hook
   const location = useLocation();
   const state = location.state;
-  const deta= state?.alldata;
+  const deta = state?.alldata;
   // ** Function to toggle Offcanvas
   const toggleForm = () => setIsOpenForm(!isOpenForm);
 
@@ -154,7 +154,6 @@ const Checkout = () => {
 
   const isDiscount = watch("discount");
 
-  // {{debugger}}
 
   const onSubmit = async (data) => {
     setErr("");
@@ -198,6 +197,7 @@ const Checkout = () => {
         discountedFinalAmount: discountAmt?.discountValue || 0,
       }),
       finalAmount: finalPayment,
+      numberOfDays:deta?.numberOfDays,
     };
 
     try {
@@ -239,26 +239,32 @@ const Checkout = () => {
     }
   };
   // return <ChecloutCode />;
-// {{debugger}}
-useEffect(() => {
-  const generateOtpIfNeeded = async () => {
-    if (watch("discount") == true) {
-      try {
-        const payload = { type: 3, roomId: state?.searchId };
-        const response = await useJwt.GenerateOtp(payload);
-        if (response?.status === 200) {
-          setAccessTokenOtp(response?.data?.content);
-          setShowModal(true);
-
+ 
+  useEffect(() => {
+    const generateOtpIfNeeded = async () => {
+      if (watch("discount") == true) {
+        try {
+          const payload = { type: 3, roomId: state?.searchId };
+          const response = await useJwt.GenerateOtp(payload);
+          if (response?.status === 200) {
+            setAccessTokenOtp(response?.data?.content);
+            setShowModal(true);
+          }
+        } catch (error) {
+          console.error("Error generating OTP:", error);
         }
-      } catch (error) {
-        console.error("Error generating OTP:", error);
       }
-    }
-  };
+    };
 
-  generateOtpIfNeeded();
-}, [watch("discount")]);
+    generateOtpIfNeeded();
+  }, [watch("discount")]);
+
+  useEffect(() => {
+   
+    if (showModal === false && watch("discount") === true && verify === false) {
+      setValue("discount", false);
+    }
+  }, [showModal, verify]);
 
   return (
     <>
@@ -351,8 +357,8 @@ useEffect(() => {
                       Discount
                     </CardTitle>
 
-                    <Col  className="mb-1">
-                      <Label >
+                    <Col className="mb-1">
+                      <Label>
                         <Controller
                           name="discount"
                           control={control}
@@ -361,6 +367,7 @@ useEffect(() => {
                               {...field}
                               type="checkbox"
                               disabled={verify}
+                              checked={field.value}
                             />
                           )}
                         />{" "}
@@ -368,7 +375,7 @@ useEffect(() => {
                       </Label>
                     </Col>
                     {watch("discount") === true && (
-                       <>
+                      <>
                         <OtpGenerate
                           accessTokenotp={accessTokenotp}
                           setAccessTokenOtp={setAccessTokenOtp}
@@ -385,7 +392,7 @@ useEffect(() => {
                           setDiscountAmt={setDiscountAmt}
                         />
                       </>
-                    )} 
+                    )}
 
                     <hr />
                     <CardTitle tag="h4">Price Details</CardTitle>
@@ -475,8 +482,6 @@ useEffect(() => {
           <CreateUserForm onClose={handleClose} />
         </OffcanvasBody>
       </Offcanvas>
-
-    
     </>
   );
 };

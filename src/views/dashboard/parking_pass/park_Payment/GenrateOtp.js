@@ -69,7 +69,7 @@ const GenrateOtp = ({
     }
   };
 
-  {{debugger}}
+  // {{debugger}}
   const handleVerifyOTP = async (data) => {
     seterrMsz("");
 

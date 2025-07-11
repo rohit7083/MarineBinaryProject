@@ -132,22 +132,29 @@ export default {
   updateVendor: "/vendorType/",
   getAllEvents: "/events",
   createEvent: "/events/",
-DeleteEvent:"/events/",
+  DeleteEvent: "/events/",
+
+  Parentvendor: "/vendorType/",
 
   //payment
-  GenerateOtp:"/sPayment/generate/discount",
-  verifyOtp:"/sPayment/discount/",
-  payment:"/event/payment",
+  GenerateOtp: "/sPayment/generate/discount",
+  verifyOtp: "/sPayment/discount/",
+  payment: "/event/payment",
 
-  
   //Room management
 
-  CreateRoomType:"/roomType/",
-  CreateRoom:"/room/",
-  getAllRoomTypes:"/roomType",
-  SearchRoom:"/room/search",
-PreviewSubmit:"/booking/",
-  submitBookedRooms:"/roomSearch/",
-
-  bookingPayment:"/booking/payment",
+  CreateRoomType: "/roomType/",
+  CreateRoom: "/room/",
+  getAllRoomTypes: "/roomType",
+  SearchRoom: "/room/search",
+  PreviewSubmit: "/booking/",
+  submitBookedRooms: "/roomSearch/",
+  bookingList: "/booking",
+  bookingPayment: "/booking/payment",
+  GetAllRooms: "/room",
+  UpdateRooms:"/room/",
+  DeleteRooms:"/room/",
+  //room Type Update and delete
+  DeleteRoomType: "roomType/",
+  UpdateRoomType: "roomType/",
 };

@@ -591,6 +591,34 @@ export default class JwtService {
     return axios.post(this.jwtConfig.bookingPayment, ...args);
   }
 
+  bookingList() {
+    return axios.get(this.jwtConfig.bookingList);
+  }
+
+ Parentvendor() {
+    return axios.get(this.jwtConfig.Parentvendor);
+  }
+  
+   UpdateRoomType(uid, ...args) {
+    return axios.put(`${this.jwtConfig.UpdateRoomType}${uid}`, ...args);
+  }
+
+    DeleteRoomType(uid) {
+    return axios.delete(`${this.jwtConfig.DeleteRoomType}${uid}`);
+  }
+
+  GetAllRooms() {
+    return axios.get(this.jwtConfig.GetAllRooms);
+  }
+
+
+   UpdateRooms(uid, ...args) {
+    return axios.put(`${this.jwtConfig.UpdateRooms}${uid}`, ...args);
+  }
+
+    DeleteRooms(uid) {
+    return axios.delete(`${this.jwtConfig.DeleteRooms}${uid}`);
+  }
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

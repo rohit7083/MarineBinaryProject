@@ -108,6 +108,12 @@ const SellPass = lazy(() =>
   )
 );
 
+
+const ViewRoomBooking = lazy(() =>
+  import(
+    "../../views/dashboard/room_management/list_of_roomBooking/view_bookingrooms/View"
+  )
+);
 const Event_Info=lazy(()=>import("../../views/dashboard/event_management/Event_info"))
 const venueLocation=lazy(()=>import("../../views/dashboard/event_management/VenueLocation"))
 
@@ -476,5 +482,9 @@ export default [
     path: "/search-rooms/previewBooking/roomPayment",
   },
 
+    {
+    element: <ViewRoomBooking/>,
+    path: "booking_listing/view",
+  },
 
 ];

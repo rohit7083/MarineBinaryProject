@@ -35,6 +35,7 @@ const RoomCard = (props) => {
     setValue,
     getValues,
     errors,
+    isDisabled
   } = props;
 
   const {
@@ -86,7 +87,6 @@ const RoomCard = (props) => {
       basePrice = calculateTotal(roomAndAllMeal, taxValue);
     }
 
-    // ✅ If taxValue is 0 or undefined, fallback to base price without tax
     if (!taxValue || taxValue === 0) {
       basePrice = Math.round(
         serviceSelected === "room-breakfast"
@@ -162,7 +162,7 @@ const RoomCard = (props) => {
       (room) => room?.fields?.isBooked === true
     );
     setBookRooms(bookedRooms);
-    console.log("Booked Rooms:", bookedRooms);
+  
   }, [
     fieldsDetail?.fields?.isBooked,
     watch(`roomUnit.${index}.fields.seviceType`),
@@ -174,8 +174,8 @@ const RoomCard = (props) => {
     <Card className={`shadow ${isBooked ? "border border-success" : ""}`}>
       <div className="d-flex mt-1 mx-1 justify-content-between align-items-center">
         <Badge color="primary" className="me-auto">
-          Room
-          {fieldsDetail?.label}
+          Room {" "}
+          {fieldsDetail?.roomNumber}
         </Badge>
 
         {fieldsDetail?.fields?.isBooked ? (
@@ -218,7 +218,7 @@ const RoomCard = (props) => {
               name={`roomUnit.${index}.fields.seviceType`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="radio" {...field} value="room-only" />
+                  <Input type="radio" {...field} value="room-only" disabled={isDisabled}/>
                 </Fragment>
               )}
             />
@@ -242,7 +242,7 @@ const RoomCard = (props) => {
               name={`roomUnit.${index}.fields.seviceType`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="radio" {...field} value="room-breakfast" />
+                  <Input type="radio" {...field} value="room-breakfast" disabled={isDisabled}/>
                 </Fragment>
               )}
             />
@@ -266,7 +266,7 @@ const RoomCard = (props) => {
               name={`roomUnit.${index}.fields.seviceType`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="radio" {...field} value="room-meals" />
+                  <Input type="radio" {...field} value="room-meals" disabled={isDisabled}/>
                 </Fragment>
               )}
             />
@@ -288,7 +288,7 @@ const RoomCard = (props) => {
               name={`roomUnit.${index}.fields.isExtraPeople`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="checkbox" {...field} className="me-1" />
+                  <Input type="checkbox" {...field} className="me-1" disabled={isDisabled} />
                 </Fragment>
               )}
             />
@@ -310,6 +310,7 @@ const RoomCard = (props) => {
                       upHandler={<Plus />}
                       onChange={(value) => field.onChange(value)}
                       downHandler={<Minus />}
+                      disabled={isDisabled}
                     />
                   </Fragment>
                 )}
@@ -369,6 +370,7 @@ const RoomCard = (props) => {
             color={isBooked ? "success" : "primary"}
             size="sm"
             type="button"
+            disabled={isDisabled}
             onClick={() =>
               setValue(
                 `roomUnit.${index}.fields.isBooked`,

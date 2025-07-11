@@ -27,7 +27,6 @@ const CreateEvent = () => {
 
   const location=useLocation();
 const listData=location.state || "";
-console.log("listData",listData);
 
   useEffect(() => {
     // Optional: Fetch existing data to prefill
