@@ -117,17 +117,17 @@ const SearchRooms = ({
         noOfExtraPeople: x?.fields?.noOfExtraPeople,
       }),
 
-      serviceType: x?.fields?.seviceType,
+      serviceType: x?.fields?.serviceType,
       roomOnlyPricePerNight: x?.grandTotalPrice,
       roomBreakfastPricePerNight: x?.roomAndBreakFast,
       roomMealPricePerNight: x?.roomAndAllMeal,
-      maxRoomCapacity:x?.peopleCapacity,
-      defaultPeopleCapacity:2,
+      maxRoomCapacity: x?.peopleCapacity,
+      defaultPeopleCapacity: 2,
       uid: x?.value,
     }));
     const totalAmount = Booked?.reduce((sum, item) => sum + item.amount, 0);
     console.log("roomUnit", totalAmount);
-// {{debugger}}
+    // {{debugger}}
     const payload = {
       checkInDate: bookedRoom["0"]?.checkInDate,
       checkOutDate: bookedRoom["0"]?.checkOutDate,
@@ -135,21 +135,18 @@ const SearchRooms = ({
       numberOfGuests: bookedRoom["0"]?.numberOfGuests,
       roomSearchUnit: Booked,
       totalAmount: totalAmount,
-     
     };
 
-
-// {{debugger}}
+    // {{debugger}}
     try {
       const res = await useJwt.submitBookedRooms(payload);
       console.log("submitBookedRooms", res);
       if (isRoomRequired) {
         // setEventRooms({bookedRoom , roomSearchUid:res?.data?.roomSearchUid});
         setEventRooms({
-  bookedRoom,
-  roomSearchUid: res?.data?.roomSearchUid
-});
-
+          bookedRoom,
+          roomSearchUid: res?.data?.roomSearchUid,
+        });
 
         setShowModal(!showModal);
       } else {
@@ -173,7 +170,7 @@ const SearchRooms = ({
     results: [],
   });
 
-  console.log("roomlst", roomsList);
+  // console.log("roomlst", roomsList);
 
   useEffect(() => {
     if (roomsList) {
@@ -185,6 +182,7 @@ const SearchRooms = ({
   }, [roomsList]);
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
+  // console.log(roomsList);
 
   const handleFilter = (value) => {
     if (value) {
@@ -194,7 +192,7 @@ const SearchRooms = ({
           room?.fields?.seviceType
             ?.toLowerCase()
             .includes(value.toLowerCase()) ||
-          room.label?.toString().includes(value)
+          room.roomNumber?.toString().includes(value)
       );
 
       setTableData({
@@ -210,30 +208,32 @@ const SearchRooms = ({
   };
 
   const [visibleCount, setVisibleCount] = useState(6);
+
   const observer = useRef();
 
-  const lastCardRef = useCallback(
-    (node) => {
-      if (isSubmitting) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        setIsLoadingMore(true);
+  // automatically data load when page scroll donw
+  // const lastCardRef = useCallback(
+  //   (node) => {
+  //     if (isSubmitting) return;
+  //     if (observer.current) observer.current.disconnect();
+  //     observer.current = new IntersectionObserver((entries) => {
+  //       setIsLoadingMore(true);
 
-        setTimeout(() => {
-          if (
-            entries[0].isIntersecting &&
-            visibleCount < tableData.results.length
-          ) {
-            setVisibleCount((prev) => prev + 6);
-            setIsLoadingMore(false);
-          }
-        }, 3000);
-      });
+  //       setTimeout(() => {
+  //         if (
+  //           entries[0].isIntersecting &&
+  //           visibleCount < tableData.results.length
+  //         ) {
+  //           setVisibleCount((prev) => prev + 6);
+  //           setIsLoadingMore(false);
+  //         }
+  //       }, 3000);
+  //     });
 
-      if (node) observer.current.observe(node);
-    },
-    [visibleCount, tableData.results.length, isSubmitting]
-  );
+  //     if (node) observer.current.observe(node);
+  //   },
+  //   [visibleCount, tableData.results.length, isSubmitting]
+  // );
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -275,7 +275,7 @@ const SearchRooms = ({
               return (
                 <Col sm="12" md="6" lg="4" key={index}>
                   <div
-                    ref={isLast ? lastCardRef : null}
+                    // ref={isLast ? lastCardRef : null}
                     style={
                       isRoomRequired
                         ? {
@@ -305,14 +305,34 @@ const SearchRooms = ({
               );
             })}
 
-            {isLoadingMore && (
+            {/* {isLoadingMore && (
               <Col sm="12" className="d-flex justify-content-center my-2">
                 <Spinner
                   style={{ width: "5rem", height: "5rem" }}
                   color="primary"
                 />
               </Col>
+            )} */}
+
+            {visibleCount < tableData.results.length && (
+              <Col sm="12" className="d-flex justify-content-center my-3">
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    setIsLoadingMore(true);
+                    setTimeout(() => {
+                      setVisibleCount((prev) => prev + 6);
+                      setIsLoadingMore(false);
+                    }, 2000); // simulate loading
+                  }}
+                  disabled={isLoadingMore}
+                >
+                  {isLoadingMore ? "Loading..." : "View More"}
+                </Button>
+              </Col>
             )}
+
+            {/* <Button color={"warning"} onClick={()=>lastCardRef()}>View More</Button> */}
 
             <Col sm="12" className={"d-flex justify-content-start"}>
               <Button color={"primary"} disabled={isSubmitting}>

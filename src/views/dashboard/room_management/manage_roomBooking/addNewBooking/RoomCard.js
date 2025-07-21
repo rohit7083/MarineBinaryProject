@@ -35,7 +35,7 @@ const RoomCard = (props) => {
     setValue,
     getValues,
     errors,
-    isDisabled
+    isDisabled,
   } = props;
 
   const {
@@ -47,10 +47,8 @@ const RoomCard = (props) => {
   } = fieldsDetail;
 
   const isBooked = watch(`roomUnit.${index}.fields.isBooked`);
-  // console.log("roomsList", roomsList);
 
-  // const calculateTotal = (serviceAmout, tax) =>
-  //   serviceAmout + serviceAmout / tax;
+  console.log(fieldsDetail);
 
   const calculateTotal = (amount, tax) => {
     if (!tax || tax === 0) return amount;
@@ -58,25 +56,8 @@ const RoomCard = (props) => {
     return Math.round(total * 100) / 100; // Rounds to 2 decimal places
   };
 
-  // useEffect(() => {
-  //   const serviceSelected = watch(`roomUnit.${index}.fields.seviceType`);
-  //   let basePrice = 0;
-
-  //   if (serviceSelected === "room-breakfast") {
-  //     basePrice = calculateTotal(roomAndBreakFast, taxValue);
-  //   } else if (serviceSelected === "room-only") {
-  //     basePrice = calculateTotal(grandTotalPrice, taxValue);
-  //   } else if (serviceSelected === "room-meals") {
-  //     basePrice = calculateTotal(roomAndAllMeal, taxValue);
-  //   }
-
-  //   setValue(`roomUnit.${index}.fields.baseAmount`, basePrice);
-  //   setValue(`roomUnit.${index}.fields.amount`, basePrice);
-  // }, [watch(`roomUnit.${index}.fields.seviceType`)]);
-
-  //this is only for Extra people
   useEffect(() => {
-    const serviceSelected = watch(`roomUnit.${index}.fields.seviceType`);
+    const serviceSelected = watch(`roomUnit.${index}.fields.serviceType`);
     let basePrice = 0;
 
     if (serviceSelected === "room-breakfast") {
@@ -102,7 +83,7 @@ const RoomCard = (props) => {
 
     setValue(`roomUnit.${index}.fields.baseAmount`, roundedPrice);
     setValue(`roomUnit.${index}.fields.amount`, roundedPrice);
-  }, [watch(`roomUnit.${index}.fields.seviceType`), taxValue]);
+  }, [watch(`roomUnit.${index}.fields.serviceType`), taxValue]);
 
   const noOfPeople = watch(`roomUnit.${index}.fields.noOfExtraPeople`);
 
@@ -120,14 +101,12 @@ const RoomCard = (props) => {
 
     const baseAmount = getValues(`roomUnit.${index}.fields.baseAmount`) || 0;
     if (
-      fieldsDetail?.fields?.seviceType === "room-only" &&
+      fieldsDetail?.fields?.serviceType === "room-only" &&
       fieldsDetail?.fields?.isExtraPeople
     ) {
       totalExtraAmt = noOfPeople * (weekPrice + weekendPrice);
-
-      console.log(totalExtraAmt);
     } else if (
-      fieldsDetail?.fields?.seviceType === "room-breakfast" &&
+      fieldsDetail?.fields?.serviceType === "room-breakfast" &&
       fieldsDetail?.fields?.isExtraPeople
     ) {
       totalExtraAmt =
@@ -137,7 +116,7 @@ const RoomCard = (props) => {
           fieldsDetail?.additionalPersonBreakfast *
             fieldsDetail?.totalNoOfDays);
     } else if (
-      fieldsDetail?.fields?.seviceType === "room-meals" &&
+      fieldsDetail?.fields?.serviceType === "room-meals" &&
       fieldsDetail?.fields?.isExtraPeople
     ) {
       totalExtraAmt =
@@ -154,7 +133,7 @@ const RoomCard = (props) => {
   }, [
     fieldsDetail?.fields?.isExtraPeople,
     watch(`roomUnit.${index}.fields.noOfExtraPeople`),
-    watch(`roomUnit.${index}.fields.seviceType`),
+    watch(`roomUnit.${index}.fields.serviceType`),
   ]);
 
   useEffect(() => {
@@ -162,20 +141,54 @@ const RoomCard = (props) => {
       (room) => room?.fields?.isBooked === true
     );
     setBookRooms(bookedRooms);
-  
   }, [
     fieldsDetail?.fields?.isBooked,
-    watch(`roomUnit.${index}.fields.seviceType`),
+    watch(`roomUnit.${index}.fields.serviceType`),
     watch(`roomUnit.${index}.fields.isBooked`),
     noOfPeople,
   ]);
+  // console.log(watch(`roomUnit.${index}.fields.serviceType`))
+  // console.clear()
+console.log(fieldsDetail)
+
+  function handleShowPrice(type) {
+    if (isDisabled) {
+      switch (type) {
+        case "room-only":
+          return fieldsDetail.roomOnlyPricePerNight
+        case "room-breakfast":
+          return fieldsDetail.roomBreakfastPricePerNight;
+        case "room-meals":
+          return fieldsDetail.roomMealPricePerNight
+        default:
+        return 0;
+      }
+    } else {
+      switch (type) {
+        case "room-only":
+          return parseInt(
+            fieldsDetail?.grandTotalPrice / fieldsDetail?.totalNoOfDays
+          );
+        case "room-breakfast":
+          return parseInt(
+            fieldsDetail?.roomAndBreakFast / fieldsDetail?.totalNoOfDays
+          );
+        case "room-meals":
+          return parseInt(
+            fieldsDetail?.roomAndAllMeal / fieldsDetail?.totalNoOfDays
+          );
+
+        default:
+        return 0;
+      }
+    }
+  }
 
   return (
     <Card className={`shadow ${isBooked ? "border border-success" : ""}`}>
       <div className="d-flex mt-1 mx-1 justify-content-between align-items-center">
         <Badge color="primary" className="me-auto">
-          Room {" "}
-          {fieldsDetail?.roomNumber}
+          Room {isDisabled ? <>{fieldsDetail?.roomUnit?.roomNumber}</>:<>{fieldsDetail?.roomNumber}</>}
         </Badge>
 
         {fieldsDetail?.fields?.isBooked ? (
@@ -194,18 +207,18 @@ const RoomCard = (props) => {
         <div className="d-flex align-items-center mb-1">
           <Home size={16} className="me-2 text-secondary" />
           <span>
-            Room Type
-            <strong> {fieldsDetail?.roomTypeName}</strong>
+            Room Type {" "}
+            <strong>{isDisabled ? <> {fieldsDetail?.roomUnit?.roomType?.roomTypeName} </>: <>{fieldsDetail?.roomTypeName}</>}</strong>
           </span>
         </div>
         <div className="d-flex align-items-center mb-2">
           <Users size={16} className="me-2 text-secondary" />
-          <span>Up to {fieldsDetail?.peopleCapacity} people</span>
+          <span>Up to {isDisabled ? <>{fieldsDetail?.maxRoomCapacity}</> :<>{fieldsDetail?.peopleCapacity}</>} people</span>
         </div>
         <h6 className="text-muted">Select Service Package:</h6>
-        {errors?.roomUnit?.[index]?.fields?.seviceType && (
+        {errors?.roomUnit?.[index]?.fields?.serviceType && (
           <span className="text-danger">
-            {errors.roomUnit[index].fields.seviceType.message}
+            {errors.roomUnit[index].fields.serviceType.message}
           </span>
         )}
         <FormGroup
@@ -215,10 +228,19 @@ const RoomCard = (props) => {
           <Label check className="d-flex align-items-center">
             <Controller
               control={control}
-              name={`roomUnit.${index}.fields.seviceType`}
+              name={`roomUnit.${index}.fields.serviceType`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="radio" {...field} value="room-only" disabled={isDisabled}/>
+                  <Input
+                    type="radio"
+                    {...field}
+                    value="room-only"
+                    disabled={isDisabled}
+                    checked={
+                      watch(`roomUnit.${index}.fields.serviceType`) ==
+                      "room-only"
+                    }
+                  />
                 </Fragment>
               )}
             />
@@ -226,9 +248,7 @@ const RoomCard = (props) => {
           </Label>
           <span className="text-primary fw-semibold fs-6">
             $
-            {parseInt(
-              fieldsDetail?.grandTotalPrice / fieldsDetail?.totalNoOfDays
-            )}
+            {handleShowPrice('room-only')}
             /night
           </span>
         </FormGroup>
@@ -239,10 +259,19 @@ const RoomCard = (props) => {
           <Label check className="d-flex align-items-center">
             <Controller
               control={control}
-              name={`roomUnit.${index}.fields.seviceType`}
+              name={`roomUnit.${index}.fields.serviceType`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="radio" {...field} value="room-breakfast" disabled={isDisabled}/>
+                  <Input
+                    type="radio"
+                    {...field}
+                    value="room-breakfast"
+                    checked={
+                      watch(`roomUnit.${index}.fields.serviceType`) ==
+                      "room-breakfast"
+                    }
+                    disabled={isDisabled}
+                  />
                 </Fragment>
               )}
             />
@@ -250,9 +279,7 @@ const RoomCard = (props) => {
           </Label>
           <span className="text-primary fw-semibold fs-6">
             $
-            {parseInt(
-              fieldsDetail?.roomAndBreakFast / fieldsDetail?.totalNoOfDays
-            )}
+            {handleShowPrice('room-breakfast')}
             /night
           </span>
         </FormGroup>
@@ -263,10 +290,19 @@ const RoomCard = (props) => {
           <Label check className="d-flex align-items-center">
             <Controller
               control={control}
-              name={`roomUnit.${index}.fields.seviceType`}
+              name={`roomUnit.${index}.fields.serviceType`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="radio" {...field} value="room-meals" disabled={isDisabled}/>
+                  <Input
+                    type="radio"
+                    {...field}
+                    value="room-meals"
+                    checked={
+                      watch(`roomUnit.${index}.fields.serviceType`) ==
+                      "room-meals"
+                    }
+                    disabled={isDisabled}
+                  />
                 </Fragment>
               )}
             />
@@ -274,9 +310,7 @@ const RoomCard = (props) => {
           </Label>
           <span className="text-primary fw-semibold fs-6">
             $
-            {parseInt(
-              fieldsDetail?.roomAndAllMeal / fieldsDetail?.totalNoOfDays
-            )}
+            {handleShowPrice("room-meals")}
             /night
           </span>
         </FormGroup>
@@ -288,7 +322,13 @@ const RoomCard = (props) => {
               name={`roomUnit.${index}.fields.isExtraPeople`}
               render={({ field }) => (
                 <Fragment>
-                  <Input type="checkbox" {...field} className="me-1" disabled={isDisabled} />
+                  <Input
+                    type="checkbox"
+                    {...field}
+                    checked={watch(`roomUnit.${index}.fields.isExtraPeople`)}
+                    className="me-1"
+                    disabled={isDisabled}
+                  />
                 </Fragment>
               )}
             />
@@ -329,12 +369,12 @@ const RoomCard = (props) => {
           </div>
         </div>
 
-        {fieldsDetail?.fields?.seviceType ? (
+        {fieldsDetail?.fields?.serviceType ? (
           <>
             <div className="text-muted small">
               {/* ${fieldsDetail.totalNoOfDays || 0}/night •{" "} */}
-              {fieldsDetail?.fields?.seviceType} <br />
-              {fieldsDetail?.fields?.seviceType && (
+              {fieldsDetail?.fields?.serviceType} <br />
+              {fieldsDetail?.fields?.serviceType && !isDisabled && (
                 <>
                   {" "}
                   {`2 People • ${
@@ -343,9 +383,9 @@ const RoomCard = (props) => {
                       : `${fieldsDetail?.totalNoOfDays} nights `
                   } • $
                        ${(
-                    fieldsDetail?.fields?.baseAmount /
-                    (1 + fieldsDetail?.taxValue / 100)
-                  ).toFixed(2)} + $${(
+                         fieldsDetail?.fields?.baseAmount /
+                         (1 + fieldsDetail?.taxValue / 100)
+                       ).toFixed(2)} + $${(
                     fieldsDetail?.fields?.baseAmount -
                     fieldsDetail?.fields?.baseAmount /
                       (1 + fieldsDetail?.taxValue / 100)
@@ -354,13 +394,13 @@ const RoomCard = (props) => {
                 </>
               )}
               <br />
-              {fieldsDetail?.fields?.isExtraPeople === true &&
+              {fieldsDetail?.fields?.isExtraPeople === true && !isDisabled ?
                 `${
                   fieldsDetail?.fields?.noOfExtraPeople || 0
                 }${" "}Extra People • $${
                   fieldsDetail?.fields?.amount -
                   fieldsDetail?.fields?.baseAmount
-                }`}
+                }`:null}
             </div>
           </>
         ) : null}

@@ -274,8 +274,8 @@ const [ermsz,setErrmsz]=useState("");
               ))()
             ) : (
               <>
-                <DownloadCloud size={64} />
-                <h5>Drop Files here or click to upload</h5>
+                <DownloadCloud size={38} />
+                {/* <h5>Drop Files here or click to upload</h5> */}
                 <p className="text-secondary">
                   Drop files here or click{" "}
                   <a href="/" onClick={(e) => e.preventDefault()}>
@@ -309,9 +309,9 @@ const [ermsz,setErrmsz]=useState("");
               </React.Fragment>
             )}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardBody>
-            <Row>
+        {/* <Card>
+          <CardBody> */}
+            <Row className=''>
               {[
                 "IdentityDocument",
                 "Contract",
@@ -319,8 +319,8 @@ const [ermsz,setErrmsz]=useState("");
                 "Insurance",
               ].map((fieldName) => renderDropzone(fieldName, fieldName))}
             </Row>
-          </CardBody>
-        </Card>
+          {/* </CardBody>
+        </Card> */}
         <div className="d-flex justify-content-between">
           <Button
             type="button"

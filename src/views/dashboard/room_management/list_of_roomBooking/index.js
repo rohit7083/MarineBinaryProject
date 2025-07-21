@@ -2,7 +2,17 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
-import { Calendar, ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import {
+  Calendar,
+  ChevronDown,
+  DollarSign,
+  Edit,
+  Edit2,
+  Eye,
+  MoreVertical,
+  Plus,
+  Trash,
+} from "react-feather";
 import {
   Table as ReactstrapTable,
   Input,
@@ -12,6 +22,10 @@ import {
   CardBody,
   Button,
   Badge,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -58,7 +72,6 @@ const index = () => {
   };
 
   useEffect(() => {
-    
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 
@@ -71,7 +84,6 @@ const index = () => {
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
-    
     setSearchTerm(value);
 
     if (value) {
@@ -100,6 +112,10 @@ const index = () => {
     setRole(value);
   };
 
+  const handlePayment = (row) => {
+    navigate("/search-rooms/previewBooking/roomPayment", { state: { row } });
+  };
+
   const paymentStatusColor = {
     success: "light-success",
     error: "light-danger",
@@ -125,8 +141,9 @@ const index = () => {
       sortable: true,
       // minWidth: "150px",
       selector: (row) => {
-           return row?.roomUnits?.map((x) => x.roomNumber).join(", ");
-
+        return row?.roomSearch?.roomSearchUnit
+          ?.map((x) => x?.roomUnit?.roomNumber)
+          .join(", ");
       },
     },
 
@@ -175,10 +192,13 @@ const index = () => {
       selector: (row) => row.checkOutDate,
     },
 
+    
     {
+      
       name: "Actions",
       minWidth: "150px",
       cell: (row) => {
+        
         const [data, setData] = useState([]);
 
         const MySwal = withReactContent(Swal);
@@ -238,30 +258,49 @@ const index = () => {
         };
         return (
           <>
-            {/* <span color="danger" style={{ cursor: "pointer", color: "red" }}>
-              <Calendar className="font-medium-3 text-body" />
-            </span> */}
+         
+              <UncontrolledDropdown>
+                <DropdownToggle
+                  className="icon-btn hide-arrow"
+                  color="transparent"
+                  size="sm"
+                  caret
+                >
+                  <MoreVertical size={15} />
+                </DropdownToggle>
+                <DropdownMenu>
+                  {row?.paymentStatus === "success" && (
+                    <DropdownItem onClick={() => handleEdit(row)}>
+                      <Calendar className="me-50" size={15} />
+                      <span className="align-middle">Extend</span>
+                    </DropdownItem>
+                  )}
+                  {row?.paymentStatus === "Pending" && (
+                    <DropdownItem onClick={() => handlePayment(row)}>
+                      <DollarSign className="me-50" size={15} />{" "}
+                      <span className="align-middle">Payment</span>
+                    </DropdownItem>
+                  )}
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Eye className="me-50" size={15} />{" "}
+                    <span className="align-middle">View</span>
+                  </DropdownItem>
+
+                  {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
+                    <Trash className="me-50" size={15} />{" "}
+                    <span className="align-middle">Delete</span>
+                  </DropdownItem> */}
+                </DropdownMenu>
 
 
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => handleEdit(row)}
-            >
-              <Eye className="font-medium-3 text-body" />
-            </span>
-
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+              </UncontrolledDropdown>
           </>
         );
       },
     },
+
+ 
+
   ];
 
   const CustomPagination = () => {

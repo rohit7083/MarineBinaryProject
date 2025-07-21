@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import Select from "react-select";
 import { useState } from "react";
@@ -23,6 +23,10 @@ import {
   UncontrolledAlert,
   Spinner,
 } from "reactstrap";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller, set } from "react-hook-form";
 import { selectThemeColors } from "@utils";
@@ -47,6 +51,17 @@ function Payment({ stepper }) {
   const roomBookingUid = location?.state?.roomUid;
   const { finalAmount } = location?.state;
 
+  //this is for extend date payment
+  const ExtendDateData = location?.state?.extendResDate;
+  const { payableAmount } = location?.state?.extendResDate || {};
+
+  // for pending payments
+  const pendingPayment = location?.state.row || {};
+  const { checkInDate, checkOutDate, remainingAmount, paymentStatus } =
+    pendingPayment;
+
+  console.log("ExtendDateData", pendingPayment);
+  const today = new Date().toISOString().split("T")[0];
   const AccountType = [
     { value: "8", label: "Personal Checking Account" },
     { value: "9", label: "Personal Saving Account" },
@@ -76,10 +91,22 @@ function Payment({ stepper }) {
       advancePayment: false,
       discount: false,
 
-      finalAmount: finalAmount || 0,
+      finalAmount: !ExtendDateData ? finalAmount || 0 : payableAmount || 0,
     },
   });
+  const toast = useRef(null);
 
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      marginTop: "5rem", // adds space when menuPlacement is "bottom"
+    }),
+    menuList: (provided) => ({
+      ...provided,
+      padding: 0,
+    }),
+  };
+  // {{debugger}}
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
@@ -103,6 +130,12 @@ function Payment({ stepper }) {
       label: currentYear + i,
     };
   });
+
+  useEffect(() => {
+    if (pendingPayment && paymentStatus === "Pending") {
+      setValue("finalAmount", remainingAmount);
+    }
+  }, [pendingPayment, remainingAmount]);
 
   const handleYearChange = (selectedYear) => {
     const selectedYearValue = selectedYear ? selectedYear.value : currentYear;
@@ -386,7 +419,19 @@ function Payment({ stepper }) {
 
     const encrypted = encryptAES(pin);
 
-    formData.append("roomBooking.uid", roomBookingUid);
+    let bookingUid;
+    if (payableAmount) {
+      bookingUid = ExtendDateData?.bookingUid;
+    } else if (pendingPayment && remainingAmount) {
+      bookingUid = pendingPayment?.uid;
+    } else {
+      bookingUid = roomBookingUid;
+    }
+    formData.append(
+      "roomBooking.uid",
+      // payableAmount ? ExtendDateData?.bookingUid : roomBookingUid
+      bookingUid
+    );
     formData.append("roomBooking.isAdvancesPaymnet", data?.advancePayment);
     if (data?.advancePayment) {
       formData.append("roomBooking.remainingAmount", data?.remainingPayment);
@@ -435,13 +480,53 @@ function Payment({ stepper }) {
 
     try {
       const res = await useJwt.bookingPayment(formData);
+
       const { qr_code_base64 } = res?.data;
       setQr(qr_code_base64);
       if (qr_code_base64) {
         setShowQrModal(true);
       }
 
-      navigate("/bookingListing");
+      if (res?.data?.status == "success") {
+        const payload = {
+          bookingUid: ExtendDateData?.bookingUid,
+          noOfDays: ExtendDateData?.extendedDays,
+          noOfGuest: ExtendDateData?.totalExtraPeopleAmount,
+          newCheckOutDate: ExtendDateData?.newCheckOutDate,
+          payableAmount: ExtendDateData?.payableAmount,
+        };
+
+        if (payableAmount > 0) {
+          if (res?.status) {
+            try {
+              const res = await useJwt.ExtendDataUpdate(payload);
+              console.log("ExtendDataUpdate", res);
+            } catch (error) {
+              console.log("ExtendDataUpdate", error);
+            }
+          }
+        }
+
+        if (res?.data?.status === "success") {
+          toast.current.show({
+            severity: "success",
+            summary: "Successfully",
+            detail: "Payment Completed Successfully.",
+            life: 2000,
+          });
+
+          setTimeout(() => {
+            navigate("/bookingListing");
+          }, 1999);
+        }
+      } else {
+        toast.current.show({
+          severity: "error",
+          summary: "Failed",
+          detail: "Payment Failed. Please try again.",
+          life: 2000,
+        });
+      }
     } catch (error) {
       console.error(error);
 
@@ -456,6 +541,8 @@ function Payment({ stepper }) {
 
   return (
     <>
+      <Toast ref={toast} />
+
       <Form onSubmit={handleSubmit(onSubmit)}>
         <CardTitle className="mb-1" tag="h4">
           <ArrowLeft
@@ -511,110 +598,124 @@ function Payment({ stepper }) {
                 </Col>
 
                 <Row>
-                  <Col check className="mb-2">
-                    <Label check>
-                      <Controller
-                        name="advancePayment"
-                        control={control}
-                        render={({ field }) => (
-                          <Input {...field} type="checkbox" />
-                        )}
-                      />{" "}
-                      Advance Payment
-                    </Label>
-                  </Col>
-
-                  {advancePayment && (
+                  {pendingPayment && today < checkInDate && (
                     <>
-                      <Col md="12" className="mb-1">
-                        <Label for="">Advance Payment</Label>
-                        <Controller
-                          name="advance"
-                          control={control}
-                          rules={{
-                            required: "Advance payment is required",
-                            min: {
-                              value: 0,
-                              message: "Value cannot be negative",
-                            },
-                          }}
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              defaultValue="1"
-                              id="advance"
-                              placeholder="Enter advance amount"
-                              invalid={!!errors.advance}
-                              onWheel={(e) => e.target.blur()}
-                              {...field}
-                            />
+                      {!payableAmount && (
+                        <>
+                          <Col check className="mb-2">
+                            <Label check>
+                              <Controller
+                                name="advancePayment"
+                                control={control}
+                                render={({ field }) => (
+                                  <Input {...field} type="checkbox" />
+                                )}
+                              />{" "}
+                              Advance Payment
+                            </Label>
+                          </Col>
+
+                          {advancePayment && (
+                            <>
+                              <Col md="12" className="mb-1">
+                                <Label for="">Advance Payment</Label>
+                                <Controller
+                                  name="advance"
+                                  control={control}
+                                  rules={{
+                                    required: "Advance payment is required",
+                                    min: {
+                                      value: 0,
+                                      message: "Value cannot be negative",
+                                    },
+                                  }}
+                                  render={({ field }) => (
+                                    <Input
+                                      type="number"
+                                      defaultValue="1"
+                                      id="advance"
+                                      placeholder="Enter advance amount"
+                                      invalid={!!errors.advance}
+                                      onWheel={(e) => e.target.blur()}
+                                      {...field}
+                                    />
+                                  )}
+                                />
+                                {errors.advance && (
+                                  <FormFeedback>
+                                    {errors.advance.message}
+                                  </FormFeedback>
+                                )}
+                              </Col>
+                              <Col md="12" className="mb-1">
+                                <Label for="advancePayment">
+                                  Remaining Payment
+                                </Label>
+                                <Controller
+                                  name="remainingPayment"
+                                  control={control}
+                                  defaultValue="0"
+                                  rules={{
+                                    required: "Remaining payment is required",
+                                    min: {
+                                      value: 0,
+                                      message: "Amount cannot be negative",
+                                    },
+                                  }}
+                                  render={({ field }) => (
+                                    <Input
+                                      type="number"
+                                      id="remainingPayment"
+                                      placeholder="Enter Remaining amount"
+                                      disabled={true}
+                                      invalid={!!errors.advancePayment}
+                                      {...field}
+                                    />
+                                  )}
+                                />
+                                {errors.remainingPayment && (
+                                  <FormFeedback>
+                                    {errors.remainingPayment.message}
+                                  </FormFeedback>
+                                )}
+                              </Col>
+                            </>
                           )}
-                        />
-                        {errors.advance && (
-                          <FormFeedback>{errors.advance.message}</FormFeedback>
-                        )}
-                      </Col>
+                        </>
+                      )}
                       <Col md="12" className="mb-1">
-                        <Label for="advancePayment">Remaining Payment</Label>
+                        <Label for="finalInvoice">
+                          Currently Amount Payable
+                        </Label>
                         <Controller
-                          name="remainingPayment"
+                          name="PfinalAmount"
                           control={control}
-                          defaultValue="0"
                           rules={{
-                            required: "Remaining payment is required",
-                            min: {
-                              value: 0,
-                              message: "Amount cannot be negative",
-                            },
+                            required: "Final amount is required",
+                            // min: {
+                            //   value: 0,
+                            //   message: "Amount cannot be negative",
+                            // },
                           }}
                           render={({ field }) => (
                             <Input
                               type="number"
-                              id="remainingPayment"
-                              placeholder="Enter Remaining amount"
+                              id="PfinalAmount"
                               disabled={true}
-                              invalid={!!errors.advancePayment}
+                              placeholder="Enter total  amount"
+                              invalid={!!errors.PfinalAmount}
                               {...field}
                             />
                           )}
                         />
-                        {errors.remainingPayment && (
+                        {errors.PfinalAmount && (
                           <FormFeedback>
-                            {errors.remainingPayment.message}
+                            {errors.PfinalAmount.message}
                           </FormFeedback>
                         )}
                       </Col>
                     </>
                   )}
-
-                  <Col md="12" className="mb-1">
-                    <Label for="finalInvoice">Currently Amount Payable</Label>
-                    <Controller
-                      name="PfinalAmount"
-                      control={control}
-                      rules={{
-                        required: "Final amount is required",
-                        // min: {
-                        //   value: 0,
-                        //   message: "Amount cannot be negative",
-                        // },
-                      }}
-                      render={({ field }) => (
-                        <Input
-                          type="number"
-                          id="PfinalAmount"
-                          disabled={true}
-                          placeholder="Enter total  amount"
-                          invalid={!!errors.PfinalAmount}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.PfinalAmount && (
-                      <FormFeedback>{errors.PfinalAmount.message}</FormFeedback>
-                    )}
-                  </Col>
-
                   <Col md="12" className="mb-1">
                     <Label className="form-label" for="hf-picker">
                       Payment Mode <span style={{ color: "red" }}>*</span>
@@ -640,7 +741,8 @@ function Payment({ stepper }) {
                             field.onChange(selectedOption); // Update React Hook Form with the value
                             handlepaymentMode(selectedOption); // Run your custom function with the full option
                           }}
-                          menuPlacement="top"
+                          menuPlacement={!payableAmount ? "top" : "auto"}
+                          styles={customStyles}
                           // isDisabled={statusThree}
                         />
                       )}
@@ -1737,33 +1839,40 @@ function Payment({ stepper }) {
                         </>
                       )}
                     </li> */}
-                    <li
-                      className="price-detail"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      <div className="details-title">Advance Amount</div>
-                      <div className="detail-amt">
-                        <strong>$ {handleAdvance ? handleAdvance : "0"}</strong>
-                      </div>
-                    </li>
 
-                    <li
-                      className="price-detail"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      <div className="details-title">Remaining Amount</div>
-                      <div className="detail-amt">
-                        <strong>$ {handleRemaining || "0"} </strong>
-                      </div>
-                    </li>
+                    {!payableAmount && (
+                      <>
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div className="details-title">Advance Amount</div>
+                          <div className="detail-amt">
+                            <strong>
+                              $ {handleAdvance ? handleAdvance : "0"}
+                            </strong>
+                          </div>
+                        </li>
+
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div className="details-title">Remaining Amount</div>
+                          <div className="detail-amt">
+                            <strong>${handleRemaining ?? 0}</strong>
+                          </div>
+                        </li>
+                      </>
+                    )}
                   </ul>
                   <hr />
                   <ul

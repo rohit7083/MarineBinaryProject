@@ -619,6 +619,14 @@ export default class JwtService {
     DeleteRooms(uid) {
     return axios.delete(`${this.jwtConfig.DeleteRooms}${uid}`);
   }
+
+   ExtendDate(uid,...args) {
+    return axios.post(`${this.jwtConfig.ExtendDate}${uid}`, ...args);
+  }
+  ExtendDataUpdate(...args) {
+    return axios.post(`${this.jwtConfig.ExtendDataUpdate}`, ...args);
+  }
+  
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

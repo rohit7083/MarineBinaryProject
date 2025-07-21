@@ -68,7 +68,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       eventName: "",
       eventStartDate: "",
       eventStartTime: "",
-      eventTheme: "",
+      
       eventTypeName: "",
     },
     shouldFocusError: false,
@@ -244,22 +244,22 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
 
       amount: basePrice,
       isRoomRequired: isRoomRequired,
-   ...(isRoomRequired ===true &&{
-     numberOfGuests: eventRooms?.bookedRoom["0"]?.numberOfGuests,
-      roomBookings: [
-        {
-          roomSearch: {
-            uid: eventRooms?.roomSearchUid,
+      ...(isRoomRequired === true && {
+        numberOfGuests: eventRooms?.bookedRoom["0"]?.numberOfGuests,
+        roomBookings: [
+          {
+            roomSearch: {
+              uid: eventRooms?.roomSearchUid,
+            },
+            checkInDate: eventRooms?.bookedRoom[0]?.checkInDate,
+            checkOutDate: eventRooms?.bookedRoom[0]?.checkOutDate,
+            numberOfGuests: eventRooms?.bookedRoom[0]?.numberOfGuests,
+            finalAmount: baseAmountRef.current,
+            subtotal: baseAmountRef.current,
+            numberOfDays: eventRooms?.bookedRoom[0]?.totalNoOfDays,
           },
-          checkInDate: eventRooms?.bookedRoom[0]?.checkInDate,
-          checkOutDate: eventRooms?.bookedRoom[0]?.checkOutDate,
-          numberOfGuests: eventRooms?.bookedRoom[0]?.numberOfGuests,
-          finalAmount: baseAmountRef.current,
-          subtotal: baseAmountRef.current,
-          numberOfDays: eventRooms?.bookedRoom[0]?.totalNoOfDays,
-        },
-      ],
-      })
+        ],
+      }),
     };
 
     const allData = {
@@ -329,7 +329,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     updated.splice(index, 1);
     setValue("vendors", updated); // react-hook-form
   };
-const roomPrice = Number(baseAmountRef.current) || 0;
+  const roomPrice = Number(baseAmountRef.current) || 0;
 
   const extraNoOfStaffAmount = watch("extraNoOfStaffAmount") || 0;
   const staffPrice = Number(watch("staffPrice")) || 0;
@@ -353,14 +353,16 @@ const roomPrice = Number(baseAmountRef.current) || 0;
 
   useEffect(() => {
     if (isExtraStaffRequired && venue?.label !== "Other") {
-      const FinalPrice = Number(basePrice) + Number(extraNoOfStaffAmount) +roomPrice;
+      const FinalPrice =
+        Number(basePrice) + Number(extraNoOfStaffAmount) + roomPrice;
       setValue("totalAmount", FinalPrice);
     }
   }, [isExtraStaffRequired, venue, basePrice, extraNoOfStaffAmount]);
 
   useEffect(() => {
     if (isExtraStaffRequired && venue?.label === "Other") {
-      const Total = staffPrice + price +roomPrice+ Number(extraNoOfStaffAmount);
+      const Total =
+        staffPrice + price + roomPrice + Number(extraNoOfStaffAmount);
       setValue("totalAmount", Total);
     }
   }, [isExtraStaffRequired, venue, staffPrice, extraNoOfStaffAmount, price]);
@@ -373,7 +375,7 @@ const roomPrice = Number(baseAmountRef.current) || 0;
   }, [staffPrice, price, setValue]);
 
   useEffect(() => {
-    if (eventRooms?.roomSearchUid  ) {
+    if (eventRooms?.roomSearchUid) {
       const currentFinal = watch("totalAmount");
       console.log("currentFinal", currentFinal);
 
@@ -406,7 +408,14 @@ const roomPrice = Number(baseAmountRef.current) || 0;
             <Controller
               name="eventName"
               control={control}
-              rules={{ required: "Event Name is required" }}
+              rules={{ required: "Event Name is required" ,
+                pattern:{
+                          // "eventName": "Event name only contain alphabetic characters and space."
+
+                    value: /^[a-zA-Z\s]+$/,
+                    message: "Event name only contain alphabetic characters and space.",
+                }
+              }}
               render={({ field }) => (
                 <>
                   <Input
@@ -471,7 +480,7 @@ const roomPrice = Number(baseAmountRef.current) || 0;
         )}
 
         {/* Event Theme */}
-        <Col className="mb-1">
+        {/* <Col className="mb-1">
           <Label for="eventTheme">Event Theme (Optional)</Label>
           <Controller
             name="eventTheme"
@@ -484,7 +493,7 @@ const roomPrice = Number(baseAmountRef.current) || 0;
               />
             )}
           />
-        </Col>
+        </Col> */}
 
         <Row form>
           <Col md={6} className="mb-2">
@@ -706,7 +715,7 @@ const roomPrice = Number(baseAmountRef.current) || 0;
                         <td>{index + 1}</td>
                         <td>{x.roomNumber}</td>
                         <td>{x?.roomTypeName}</td>
-                        <td>{x?.fields?.seviceType}</td>
+                        <td>{x?.fields?.serviceType}</td>
                         <td>${x?.fields?.amount}</td>
                       </tr>
                     ))}
@@ -1179,6 +1188,7 @@ const roomPrice = Number(baseAmountRef.current) || 0;
         )}
 
         <ClientDetaiils
+          
           setOpen={setOpen}
           setSelectedMember={setSelectedMember}
           setMemberAppendData={setMemberAppendData}

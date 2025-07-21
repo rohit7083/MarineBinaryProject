@@ -79,7 +79,7 @@ const PaymentHistory = () => {
       <h4 className="mb-2">Payment History</h4>
       <Row>
         <Col md="12">
-          <Card>
+          <Card className='border-2'>
             <CardBody>
               <CardTitle tag="h5">{user.name}</CardTitle>
               <p>Email: {user.email}</p>
@@ -113,8 +113,8 @@ const PaymentHistory = () => {
 
                 <Col md="3">
                   <div
-                    className="d-flex align-items-center rounded shadow-sm p-1"
-                    style={{ backgroundColor: "#0965c0", color: "white" }}
+                    className="d-flex align-items-center rounded-4 shadow-sm p-1"
+                    style={{ backgroundColor: "#AED6F1", color: "black"  }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -140,15 +140,15 @@ const PaymentHistory = () => {
                         Total Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                        $ {user.totalAmount || 0}
+                     <strong>   $ {user.totalAmount || 0}</strong>
                       </p>
                     </div>
                   </div>
                 </Col>
                 <Col md="3">
                   <div
-                    className="d-flex align-items-center rounded shadow-sm p-1"
-                    style={{ backgroundColor: "#f9655b", color: "white" }}
+                    className="d-flex align-items-center rounded-4 shadow-sm p-1"
+                    style={{ backgroundColor: "#f7bab9", color: "black" }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,9 @@ const PaymentHistory = () => {
                         Discount Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
+                       <strong>
                         $ {user.discountAmount || 0}
+                        </strong> 
                       </p>
                     </div>
                   </div>
@@ -183,8 +185,8 @@ const PaymentHistory = () => {
 
                 <Col md="3">
                   <div
-                    className="d-flex align-items-center rounded shadow-sm p-1"
-                    style={{ backgroundColor: "#595cff", color: "white" }}
+                    className="d-flex align-items-center rounded-4 shadow-sm p-1"
+                    style={{ backgroundColor: "#7dcea0", color: "black" }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -209,10 +211,10 @@ const PaymentHistory = () => {
                         className="text-uppercase  d-block"
                         style={{ fontSize: "10px", marginBottom: "0.2rem" }}
                       >
-                        Advance Payment
+                        Paid Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                        $ {user.advancePaid || 0}
+                       <strong>   $ {user.advancePaid || 0} </strong> 
                       </p>
                     </div>
                   </div>
@@ -220,8 +222,8 @@ const PaymentHistory = () => {
 
                 <Col md="3">
                   <div
-                    className="d-flex align-items-center rounded shadow-sm p-1"
-                    style={{ backgroundColor: "#bc1b68", color: "white" }}
+                    className="d-flex align-items-center rounded-4 shadow-sm p-1"
+                    style={{ backgroundColor: "#f3dd77", color: "black" }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +248,7 @@ const PaymentHistory = () => {
                         className="mb-0 fw-bold fs-4"
                         style={{ marginBottom: "0.1rem" }}
                       >
-                        $ {user.remainingAmount || 0}
+                       <strong> $ {Number(user.remainingAmount || 0).toFixed(2)} </strong>
                       </p>
                     </div>
                   </div>

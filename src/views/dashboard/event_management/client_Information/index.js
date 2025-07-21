@@ -57,6 +57,7 @@ const ClientDetaiils = ({
   memberAppendData,
   setSelectedMember,
   setMemberAppendData,
+  
 }) => {
   const [childData, setGuestChildData] = useState(null);
 
@@ -110,7 +111,22 @@ const ClientDetaiils = ({
     watch,
     reset,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues:{
+      firstName: "shekhar ",
+      lastName: "patil",
+      emailId: "sp@mail.com",
+      phoneNumber: "6985475214",
+      countryCode: { value: "+1", label: "United States (+1)", code: "US" },
+      address: "nashik",
+      city: "nsk",
+      state: "mh",
+      country: "india",
+      postalCode: "422025",
+      // selectedMember: null,
+      // memberType: "guest", // default to guest
+    }
+  });
 
   const deleteForm = (e) => {
     e.preventDefault();
@@ -177,7 +193,7 @@ const ClientDetaiils = ({
   const qty = watch("quantity");
 // {{ }}
 
-  const onSubmit = (data) => {
+  const handleDone = (data) => {
     const isGuest = watch("memberType") === "guest";
     const sourceData = isGuest ? childData : existingMemberData;
 
@@ -255,9 +271,9 @@ const ClientDetaiils = ({
               <Controller
                 control={control}
                 name="selectedMember"
-                // rules={{
-                //   required:"Member Is required"
-                // }}
+                rules={{
+                  required:"Member Is required"
+                }}
                 render={({ field }) => {
                   return (
                     <Fragment>
@@ -306,7 +322,8 @@ const ClientDetaiils = ({
         contentClassName="p-0"
         toggleSidebar={toggleSidebar}
       >
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        {/* <Form onSubmit={handleSubmit(onSubmit)}> */}
+        <Form>
           <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="firstName">
@@ -616,7 +633,7 @@ const ClientDetaiils = ({
             <Button color="secondary" onClick={() => setOpen(false)} outline>
               Cancel
             </Button>
-            <Button className="mx-1" color="primary" type="submit">
+            <Button className="mx-1" color="primary"  onClick={handleDone} type="submit">
               Add
             </Button>
           </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -20,51 +20,34 @@ import ExtendDate from "../../manage_roomBooking/extendDate/ExtendDate";
 const View = () => {
   const location = useLocation();
   const viewData = location?.state?.row;
-  console.log(viewData);
+  console.log("viewdata", viewData);
 
-  // const roomObjects = viewData?.roomUnits?.map((unit) => {
-  //   const searchUnit = viewData?.roomSearch?.roomSearchUnit?.find(
-  //     (typ) => typ?.roomNumber === unit?.roomNumber
-  //   );
+  /*
+  const [roomTypeData, setRoomTypeData] = useState([]);
 
-  //   return {
-  //     id: searchUnit?.id,
-  //     roomNumber: unit?.roomNumber,
-  //     peopleCapacity: unit?.roomType?.peopleCapacity,
-  //     numberOfGuests: searchUnit?.numberOfGuests,
-  //     onlyRoomWeekdaysPrice: searchUnit?.onlyRoomWeekdaysPrice,
-  //     onlyRoomWeekendPrice: searchUnit?.onlyRoomWeekendPrice,
-  //     roomAndBreakFast: searchUnit?.roomAndBreakFast,
-  //     roomAndBreakFastTaxAmount: searchUnit?.roomAndBreakFastTaxAmount,
-  //     roomAndAllMeal: searchUnit?.roomAndAllMeal,
-  //     roomAndAllMealTaxAmount: searchUnit?.roomAndAllMealTaxAmount,
-  //     grandTotalPrice: searchUnit?.grandTotalPrice,
-  //     grandTotalTaxAmount: searchUnit?.grandTotalTaxAmount,
-  //   };
-  // });
+  const extractData = () => {
+    const servicePkg = viewData?.roomSearch?.roomSearchUnit?.map(
+      (x, index) => ({
+        serviceType: x?.serviceType,
+      })
+    );
+    setRoomTypeData(servicePkg);
+  };
 
-  // console.log(roomObjects);
-
-  // const roomTypeNames = viewData?.roomUnits?.map((unit) => {
-
-  //  searchUnits: viewData?.roomSearch?.roomSearchUnit?.map((typ)=>({
-  // serviceType:typ?.serviceType,
-  // roomOnlyPricePerNight:typ?.roomOnlyPricePerNight,
-  //   }))
-
-  //   return{
-  //      roomTypeName: unit?.roomType?.roomTypeName,
-  //   peopleCapacity: unit?.roomType?.peopleCapacity,
-  //   }
-  // }));
-
-  // const modiData={
-  //   roomTypeNames,
-  //   id:"5",
-
-  // }
-
-  // console.log("Room Type Names:", roomTypeNames);
+  // const extractRoomUnit = () => {
+  //   const roomTypeData = viewData?.roomUnits?.map((x, index) => ({
+  //     roomTypeName: x?.roomType?.roomTypeName,
+  //     peopleCapacity: x?.roomType?.peopleCapacity,
+  //   }));
+  //   setRoomTypeData((prev) => [...prev, ...roomTypeData]);
+  // };
+    useEffect(() => {
+    if (viewData) {
+      extractData();
+      extractRoomUnit();
+    }
+  }, [viewData]);
+  */
 
   const { control, watch, reset } = useForm({
     defaultValues: {
@@ -74,11 +57,38 @@ const View = () => {
 
   const { fields: roomUnits } = useFieldArray({
     control,
-    name: "roomUnits",
+    name: "roomUnit",
   });
 
   useEffect(() => {
-    if (viewData) reset(viewData);
+    if (viewData) {
+      const { roomSearch } = viewData;
+      const { roomSearchUnit } = roomSearch;
+
+      reset({
+        roomUnit: roomSearchUnit.map((unit) => {
+          const {
+            serviceType,
+            noOfExtraPeople,
+            amount,
+            isExtraPeople,
+            amtWithouttax,
+            taxvalue,
+          } = unit;
+          return {
+            ...unit,
+            taxValue: unit.roomUnit.roomType.taxValue,
+            fields: {
+              isBooked: true,
+              serviceType,
+              amount,
+              isExtraPeople,
+              noOfExtraPeople,
+            },
+          };
+        }),
+      });
+    }
   }, [viewData, reset]);
 
   const getPaymentIcon = (paymentMode) => {
@@ -126,7 +136,9 @@ const View = () => {
         />{" "}
         Payment History
       </CardTitle>{" "}
-      {/* <ExtendDate/> */}
+      {viewData?.paymentStatus === "success" && (
+        <ExtendDate viewData={viewData} />
+      )}
       <Row>
         <Col md="12">
           <Card>
@@ -193,7 +205,7 @@ const View = () => {
                         Total Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                       <strong> $ {viewData?.finalAmount || 0}</strong>
+                        <strong> $ {viewData?.finalAmount || 0}</strong>
                       </p>
                     </div>
                   </div>
@@ -228,7 +240,7 @@ const View = () => {
                         Discount Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                       <strong>$ {viewData?.discountAmount || 0}</strong> 
+                        <strong>$ {viewData?.discountAmount || 0}</strong>
                       </p>
                     </div>
                   </div>
@@ -262,10 +274,10 @@ const View = () => {
                         className="text-uppercase  d-block"
                         style={{ fontSize: "10px", marginBottom: "0.2rem" }}
                       >
-                        Advance Payment
+                        Paid Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                      <strong>   $ {viewData?.advancePaymentAmout || 0}</strong> 
+                        <strong> $ {viewData?.advancePaymentAmout || 0}</strong>
                       </p>
                     </div>
                   </div>
@@ -302,7 +314,7 @@ const View = () => {
                         className="mb-0 fw-bold fs-4"
                         style={{ marginBottom: "0.1rem" }}
                       >
-                      <strong>   $ {viewData?.remainingAmount || 0}</strong> 
+                        <strong> $ {Number(viewData?.remainingAmount || 0).toFixed(2)}</strong>
                       </p>
                     </div>
                   </div>

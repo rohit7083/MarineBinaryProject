@@ -24,14 +24,14 @@ import {
 import useJwt from "@src/auth/jwt/useJwt";
 
 const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
-const Document = ({ Parentdocuments,stepper, slipIID ,sId}) => {
+const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
   const [documents, setDocuments] = useState([]);
   const myId = useParams();
   const [loading, setLoading] = useState(false);
   const [isDataFetch, setIsDataFetch] = useState(false);
   const navigate = useNavigate();
-const [checkDocuments,setCheckDocuments]=useState(false);
-const [ermsz,setErrmsz]=useState("");
+  const [checkDocuments, setCheckDocuments] = useState(false);
+  const [ermsz, setErrmsz] = useState("");
   const {
     handleSubmit,
     setValue,
@@ -60,15 +60,7 @@ const [ermsz,setErrmsz]=useState("");
     },
   });
 
-// useEffect(() => {
-//     if (Parentdocuments === null) {
-//       setCheckDocuments(true);
-//     }
-//   }, [Parentdocuments,checkDocuments]);
-  
-
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const response = await useJwt.getSingleDocuments(slipIID || sId?.id);
@@ -92,10 +84,9 @@ const [ermsz,setErrmsz]=useState("");
       }
     };
     if (slipIID || sId?.id) fetchData();
-  }, [slipIID ,sId?.id, reset]);
+  }, [slipIID, sId?.id, reset]);
 
   const onSubmit = async (data) => {
-    
     setErrmsz("");
     const updatedDataList = Object.keys(data).reduce((obj, key) => {
       if (data[key].currentFile == null) {
@@ -116,7 +107,7 @@ const [ermsz,setErrmsz]=useState("");
     }, {});
 
     try {
-      //  
+      //
       if (myId) {
         navigate("/event_index"); // Redirect after alert
       }
@@ -160,17 +151,17 @@ const [ermsz,setErrmsz]=useState("");
         });
       }
     } catch (error) {
-       console.error(error);
-      const errMsz=error.response.data?.content;
+      console.error(error);
+      const errMsz = error.response.data?.content;
       console.log(errMsz);
-      
+
       if (errMsz) {
         setErrmsz(errMsz);
       }
       Swal.fire({
         icon: "error",
         title: "Document Error!",
-        text:errMsz,
+        text: errMsz,
       });
     }
   };
@@ -274,8 +265,8 @@ const [ermsz,setErrmsz]=useState("");
               ))()
             ) : (
               <>
-                <DownloadCloud size={64} />
-                <h5>Drop Files here or click to upload</h5>
+                <DownloadCloud size={38} />
+                {/* <h5>Drop Files here or click to upload</h5> */}
                 <p className="text-secondary">
                   Drop files here or click{" "}
                   <a href="/" onClick={(e) => e.preventDefault()}>
@@ -297,21 +288,21 @@ const [ermsz,setErrmsz]=useState("");
   return (
     <Fragment>
       {ermsz && (
-              <React.Fragment>
-                <UncontrolledAlert color="danger">
-                  <div className="alert-body">
-                    <span className="text-danger fw-bold">
-                      <strong>Error : </strong>
-                      {ermsz}      
-                      </span>
-                  </div>
-                </UncontrolledAlert>
-              </React.Fragment>
-            )}
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">
+                <strong>Error : </strong>
+                {ermsz}
+              </span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Card>
-          <CardBody>
-            <Row>
+         {/* <Card>
+          <CardBody> */} 
+            <Row className=''>
               {[
                 "IdentityDocument",
                 "Contract",
@@ -319,8 +310,8 @@ const [ermsz,setErrmsz]=useState("");
                 "Insurance",
               ].map((fieldName) => renderDropzone(fieldName, fieldName))}
             </Row>
-          </CardBody>
-        </Card>
+           {/* </CardBody>
+        </Card>  */}
         <div className="d-flex justify-content-between">
           <Button
             type="button"
@@ -337,13 +328,11 @@ const [ermsz,setErrmsz]=useState("");
             </span>
           </Button>
           <Button
-            disabled={loading || checkDocuments
-            }
+            disabled={loading || checkDocuments}
             type="submit"
             color="success"
             className="btn-next"
           >
-
             <span className="align-middle d-sm-inline-block d-none">
               Submit
             </span>

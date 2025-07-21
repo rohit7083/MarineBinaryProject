@@ -67,8 +67,7 @@ function Payment({ stepper, allEventData }) {
       finalAmount: allEventData?.totalAmount || 0,
     },
   });
-  // {{ }}
-
+ 
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },

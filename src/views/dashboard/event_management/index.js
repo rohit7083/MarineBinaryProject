@@ -194,7 +194,7 @@ const index = () => {
           row.perDayDueChargesType
             ?.toLowerCase()
             .includes(value.toLowerCase()) ||
-          row.parkingAmount?.toString().includes(value)
+          row.totalAmount?.toString().includes(value)
       );
 
       setTableData((prev) => ({
@@ -218,23 +218,18 @@ const index = () => {
     {
       name: "Id",
       sortable: true,
-      minWidth: "100px",
+      // minWidth: "100px",
       selector: (row, index) => index + 1,
     },
 
     {
       name: "Event Name",
       sortable: true,
-      // minWidth: "150px",
+      minWidth: "150px",
       selector: (row) => row.eventName,
     },
 
-    {
-      name: "Description",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.eventDescription,
-    },
+    
 
     {
       name: "Start Date & Time",
@@ -247,6 +242,19 @@ const index = () => {
       sortable: true,
       minWidth: "250px",
       selector: (row) => `${row.eventEndDate} - ${row.eventEndTime}`,
+    },
+
+    {
+      name: "Total Amt",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.totalAmount,
+    },
+ {
+      name: "Remaining Amt",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.remainingAmount,
     },
 
     {

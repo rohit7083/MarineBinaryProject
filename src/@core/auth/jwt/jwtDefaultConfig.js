@@ -157,4 +157,9 @@ export default {
   //room Type Update and delete
   DeleteRoomType: "roomType/",
   UpdateRoomType: "roomType/",
+
+
+  ExtendDate:"/booking/extend-guest/",
+
+  ExtendDataUpdate:"/booking/extend",
 };
