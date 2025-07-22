@@ -7,7 +7,7 @@ import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
 
 export default () => {
   return defineConfig({
-    // base: '/crm/marine-resort/',
+    base: '/crm/marine-resort/',
     plugins: [react()],
 
     define: {

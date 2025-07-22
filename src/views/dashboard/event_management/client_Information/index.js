@@ -57,7 +57,6 @@ const ClientDetaiils = ({
   memberAppendData,
   setSelectedMember,
   setMemberAppendData,
-  
 }) => {
   const [childData, setGuestChildData] = useState(null);
 
@@ -69,7 +68,6 @@ const ClientDetaiils = ({
       color: "flat-success",
     },
   ]);
-   
 
   const OptionComponent = ({ data, ...props }) => {
     if (data.type === "button") {
@@ -112,7 +110,7 @@ const ClientDetaiils = ({
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues:{
+    defaultValues: {
       firstName: "shekhar ",
       lastName: "patil",
       emailId: "sp@mail.com",
@@ -125,7 +123,7 @@ const ClientDetaiils = ({
       postalCode: "422025",
       // selectedMember: null,
       // memberType: "guest", // default to guest
-    }
+    },
   });
 
   const deleteForm = (e) => {
@@ -170,7 +168,7 @@ const ClientDetaiils = ({
   const fetchExistingMem = async () => {
     try {
       const { data } = await useJwt.GetMember();
-      
+
       const memberName = data?.content?.result?.map((x) => ({
         label: `${x.firstName} ${x.lastName}`,
 
@@ -180,7 +178,7 @@ const ClientDetaiils = ({
 
       setMemberNames(memberName);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
   // {{ }}
@@ -191,32 +189,13 @@ const ClientDetaiils = ({
   const existingMemberData = watch("selectedMember");
 
   const qty = watch("quantity");
-// {{ }}
+  // {{ }}
 
-  const handleDone = (data) => {
+  const onSubmitTwo = (data) => {
     const isGuest = watch("memberType") === "guest";
     const sourceData = isGuest ? childData : existingMemberData;
 
-    // const payload = {
-    //   member: {
-    //     // uid: sourceData?.uid,
-    //     firstName: sourceData?.firstName,
-    //     lastName: sourceData?.lastName,
-    //     emailId: sourceData?.emailId,
-    //     phoneNumber: sourceData?.phoneNumber,
-    //     countryCode: sourceData?.countryCode,
-    //     address: sourceData?.address,
-    //     city: sourceData?.city,
-    //     state: sourceData?.state,
-    //     country: sourceData?.country,
-    //     postalCode: sourceData?.postalCode,
-    //   },
-
-    //   quantity: p?.quantity || qty,
-    //   calculatedAmount: p.calculatedAmount,
-
-    //   totalAmount: totalPrice,
-    // };
+  
     const payload = {
       firstName: data?.firstName,
       lastName: data?.lastName,
@@ -267,43 +246,40 @@ const ClientDetaiils = ({
           <Label for="totalPrice">Select Member</Label>
 
           <div className="invoice-customer">
-            <Fragment>
-              <Controller
-                control={control}
-                name="selectedMember"
-                rules={{
-                  required:"Member Is required"
-                }}
-                render={({ field }) => {
-                  return (
-                    <Fragment>
-                      <div>
-                        <Select
-                          {...field}
-                          className={`react-select ${
-                            errors.selectedMember ? "is-invalid" : ""
-                          }`}
-                          classNamePrefix="select"
-                          id="label"
-                          options={[...options, ...memberNames]}
-                          theme={selectThemeColors}
-                          components={{ Option: OptionComponent }}
-                          onChange={(val) => {
-                            field.onChange(val); // update react-hook-form
-                            handleInvoiceToChange(val); // your custom function
-                          }}
-                        />
-                        {errors.selectedMember && (
-                          <div className="invalid-feedback d-block">
-                            {errors.selectedMember.message}
-                          </div>
-                        )}
+            <Controller
+              control={control}
+              name="selectedMember"
+              rules={{
+                required: "Member Is required",
+              }}
+              render={({ field }) => {
+                return (
+                  <div>
+                    <Select
+                      {...field}
+                      className={`react-select ${
+                        errors.selectedMember ? "is-invalid" : ""
+                      }`}
+                      classNamePrefix="select"
+                      id="label"
+                      options={[...options, ...memberNames]}
+                      theme={selectThemeColors}
+                      components={{ Option: OptionComponent }}
+                      onChange={(val) => {
+                        field.onChange(val); // update react-hook-form
+                        handleInvoiceToChange(val); // your custom function
+                      }}
+                      menuPlacement="top"
+                    />
+                    {errors.selectedMember && (
+                      <div className="invalid-feedback d-block">
+                        {errors.selectedMember.message}
                       </div>
-                    </Fragment>
-                  );
-                }}
-              />
-            </Fragment>
+                    )}
+                  </div>
+                );
+              }}
+            />
           </div>
         </Col>
       </Row>
@@ -322,8 +298,8 @@ const ClientDetaiils = ({
         contentClassName="p-0"
         toggleSidebar={toggleSidebar}
       >
-        {/* <Form onSubmit={handleSubmit(onSubmit)}> */}
-        <Form>
+<Form onSubmit={handleSubmit(onSubmitTwo)}>
+          {/* <Form> */}
           <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="firstName">
@@ -633,7 +609,12 @@ const ClientDetaiils = ({
             <Button color="secondary" onClick={() => setOpen(false)} outline>
               Cancel
             </Button>
-            <Button className="mx-1" color="primary"  onClick={handleDone} type="submit">
+            <Button
+              className="mx-1"
+              color="primary"
+              // onClick={handleDone}
+              type="submit"
+            >
               Add
             </Button>
           </div>

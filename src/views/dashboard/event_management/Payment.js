@@ -318,11 +318,7 @@ function Payment({ stepper, allEventData }) {
   useEffect(() => {
     if (verify) {
       if (mode === "Flat") {
-        // {
-        //   {
-        //      ;
-        //   }
-        // }
+      
         const discountAmt = watch("discount_amt");
         setDiscountAmt(discountAmt);
       }
