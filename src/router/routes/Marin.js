@@ -166,6 +166,10 @@ const CheckInDetails
 =lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/CheckInDetails"))
 
 
+const UpdateEvent
+=lazy(()=>import("../../views/dashboard/event_management/event_update/UpdateEvent"))
+
+
 
 export default [
   {
@@ -485,6 +489,13 @@ export default [
     {
     element: <ViewRoomBooking/>,
     path: "booking_listing/view",
+  },
+
+
+
+   {
+    element: <UpdateEvent/>,
+    path: "event/update",
   },
 
 ];

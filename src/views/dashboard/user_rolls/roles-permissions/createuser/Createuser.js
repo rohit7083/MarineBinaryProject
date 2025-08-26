@@ -1,42 +1,29 @@
-import { Fragment, useEffect, useState, useRef } from "react";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
+import InputPasswordToggle from "@components/input-password-toggle";
+import useJwt from "@src/auth/jwt/useJwt";
+import { selectThemeColors } from "@utils";
+import CryptoJS from "crypto-js";
 import "primeicons/primeicons.css";
-import { Spinner, UncontrolledAlert } from "reactstrap";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
+import { Mail, Plus, User } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import "react-phone-input-2/lib/bootstrap.css";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 import {
-  Row,
-  Col,
-  Button,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Form,
-  Input,
+  Button, CardTitle, Col, Form, FormFeedback, Input,
   InputGroup,
   InputGroupText,
-  Label,
-  CardTitle,
-  ListGroupItem,
-  FormFeedback,
-  FormGroup,
+  Label, ListGroupItem, Modal,
+  ModalBody,
+  ModalHeader, Row, Spinner, UncontrolledAlert
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { User, Mail, Smartphone, Lock, Watch, Plus } from "react-feather";
-import { Controller, set, useForm } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/bootstrap.css";
-import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
-import { selectThemeColors } from "@utils";
-import CryptoJS from "crypto-js";
-import InputPasswordToggle from "@components/input-password-toggle";
-import ReactCountryFlag from "react-country-flag";
 import { countries } from "../../../slip-management/CountryCode";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
 const RoleCards = () => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
@@ -281,19 +268,20 @@ const RoleCards = () => {
   // }, [password]);
 
   const countryOptions = countries.map((country) => ({
-    value: country.dial_code,
-    label: (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <ReactCountryFlag
-          countryCode={country.code}
-          svg
-          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-        />
-        {country.name} ({country.dial_code})
-      </div>
-    ),
-    code: country.code,
-  }));
+  value: `${country.code}-${country.dial_code}`, // unique value
+  label: (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <ReactCountryFlag
+        countryCode={country.code}
+        svg
+        style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+      />
+      {country.name} ({country.dial_code})
+    </div>
+  ),
+  code: country.code,
+  dial_code: country.dial_code, // keep dial code separately for later use
+}));
 
   return (
     <Fragment>
@@ -314,7 +302,7 @@ const RoleCards = () => {
         onClosed={handleModalClosed}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
-                // style={{ width: "400px" }}
+                style={{ width: "500px" }}
 
       >
         <Toast ref={toast} />

@@ -1,41 +1,31 @@
+import useJwt from "@src/auth/jwt/useJwt";
+import { selectThemeColors } from "@utils";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
+import { ArrowLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import "react-phone-input-2/lib/bootstrap.css";
+import { Link, useLocation } from "react-router-dom";
+import Select from "react-select";
 import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
   Col,
-  Button,
+  Input,
   Label,
   Row,
-  InputGroup,
-  Input,
   Spinner,
+  UncontrolledAlert
 } from "reactstrap";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/bootstrap.css";
 import { countries } from "../../slip-management/CountryCode";
-import ReactCountryFlag from "react-country-flag";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-import { Tooltip } from "reactstrap";
-import { Link, useLocation } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
-import { UncontrolledAlert } from "reactstrap";
-import React from "react";
-import { useEffect, useState, useRef } from "react";
-import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
-import addTax from "../../../../assets/icons/calendar-event-tax.svg";
-import { data } from "jquery";
-import useJwt from "@src/auth/jwt/useJwt";
 import NavItems from "../product_management/NavItems";
-import { ArrowLeft } from "react-feather";
 
 const MultipleColumnForm = () => {
   const {
@@ -45,11 +35,11 @@ const MultipleColumnForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      // vendorName: "aa",
-      // companyName: "bb",
-      // address: "cc",
-      // phoneNumber: "912345678901",
-      // emailId: "aa@gmail.com",
+      vendorName: "aa",
+      companyName: "bb",
+      address: "cc",
+      phoneNumber: "912345678901",
+      emailId: "aa@gmail.com",
     },
   });
 
@@ -81,12 +71,19 @@ const MultipleColumnForm = () => {
   const onSubmit = async (data) => {
     seterrMsz("");
 
+
+    const SelectedVendor=data?.vendorType?.map((x)=>{
+      return {
+        uid: x.value,
+      };
+    })
+
+    
     const payload = {
       ...data,
       countryCode: data.countryCode?.value || "",
-      vendorType: {
-        uid: data.vendorType?.value || "",
-      },
+        vendorType: SelectedVendor
+
     };
     console.log("data", data);
 
@@ -400,8 +397,13 @@ const MultipleColumnForm = () => {
                 <Select
                   {...field}
                   options={vType}
+                 theme={selectThemeColors}
+                  
                   isClearable
-                  className="react-select"
+                  isMulti
+                  className={`react-select ${
+                    errors.vendors ? "is-invalid" : ""
+                  }`}
                   classNamePrefix="select"
                 />
               )}

@@ -1,37 +1,32 @@
-import React, { useEffect, useRef } from "react";
-import { ArrowLeft, ArrowRight } from "react-feather";
-import Select from "react-select";
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
+import React, { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "react-feather";
+import { useLocation } from "react-router-dom";
+import Select from "react-select";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import {
-  Label,
-  Row,
-  Col,
   Button,
-  Form,
-  Input,
-  FormFeedback,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
+  Col,
+  Form,
+  FormFeedback,
   FormGroup,
-  InputGroup,
-  InputGroupText,
-  UncontrolledAlert,
+  Input,
+  Label,
+  Row,
   Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-import { useNavigate } from "react-router-dom";
-import { useForm, Controller, set } from "react-hook-form";
-import { selectThemeColors } from "@utils";
-import { all } from "axios";
-import useJwt from "@src/auth/jwt/useJwt";
 // import Qr_Payment from "./Qr_Payment";
 
 function Payment({ stepper }) {
@@ -45,12 +40,15 @@ function Payment({ stepper }) {
   const [value, setValuedis] = useState("");
   const location = useLocation();
   const [loading, setLoading] = useState(false);
-
+  console.log("location rrom oayment", location.state);
+  const uidOfEvent = location?.state?.uidOfEvent;
   const myData = location?.state?.resAlldata;
+  console.log(myData);
+
   const myallData = location?.state?.resAlldata?.alldata;
+  const bookedDataForExtra = location?.state?.resAlldata?.preBookingData;
   const roomBookingUid = location?.state?.roomUid;
   const { finalAmount } = location?.state;
-
   //this is for extend date payment
   const ExtendDateData = location?.state?.extendResDate;
   const { payableAmount } = location?.state?.extendResDate || {};
@@ -419,7 +417,68 @@ function Payment({ stepper }) {
 
     const encrypted = encryptAES(pin);
 
+    // let bookingUid;
+    // if (payableAmount) {
+    //   bookingUid = ExtendDateData?.bookingUid;
+    // } else if (pendingPayment && remainingAmount) {
+    //   bookingUid = pendingPayment?.uid;
+    // } else {
+    //   bookingUid = roomBookingUid;
+    // }
+    // formData.append(
+    //   "roomBooking.uid",
+    //   // payableAmount ? ExtendDateData?.bookingUid : roomBookingUid
+    //   bookingUid
+    // );
+    // formData.append("roomBooking.isAdvancesPaymnet", data?.advancePayment);
+    // if (data?.advancePayment) {
+    //   formData.append("roomBooking.remainingAmount", data?.remainingPayment);
+    //   formData.append("roomBooking.advancePaymentAmout", data?.advance);
+    // }
+
+    // formData.append("payment.finalPayment", data?.PfinalAmount);
+    // formData.append("payment.paymentMode", data?.paymentMode?.value);
+
+    // if (watch("paymentMode")?.label === "Credit Card") {
+    //   formData.append("payment.cardNumber", data.cardNumber);
+    //   formData.append("payment.cardType", data.cardType);
+    //   formData.append("payment.cardExpiryYear", data.cardExpiryYear);
+    //   formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
+    //   formData.append("payment.cardCvv", data.cardCvv);
+
+    //   formData.append("payment.nameOnCard", data.nameOnCard);
+    // } else if (watch("paymentMode")?.label === "Card Swipe") {
+    //   formData.append(
+    //     "payment.cardSwipeTransactionId",
+    //     data?.cardSwipeTransactionId
+    //   );
+    // } else if (watch("paymentMode")?.label === "Cash") {
+    //   formData.append("roomBooking.pin", encrypted);
+    // } else if (watch("paymentMode")?.label === "Cheque21") {
+    //   if (!file) {
+    //     alert("Please select a file first.");
+    //     return;
+    //   }
+
+    //   formData.append("payment.bankName", data.bankName);
+    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
+    //   formData.append("payment.routingNumber", data.routingNumber);
+    //   formData.append("payment.accountNumber", data.accountNumber);
+    //   formData.append("payment.chequeNumber", data.chequeNumber);
+    //   formData.append("payment.chequeImage", file);
+    // } else if (watch("paymentMode")?.label === "ChequeACH") {
+    //   formData.append("payment.bankName", data.bankName);
+    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
+    //   formData.append("payment.routingNumber", data.routingNumber);
+    //   formData.append("payment.accountNumber", data.accountNumber);
+    //   formData.append("payment.accountType", data.accountType?.value);
+    // } else {
+    //   console.log("Choose differant payment Method ");
+    // }
+
     let bookingUid;
+
+    // Determine bookingUid based on payment conditions
     if (payableAmount) {
       bookingUid = ExtendDateData?.bookingUid;
     } else if (pendingPayment && remainingAmount) {
@@ -427,59 +486,110 @@ function Payment({ stepper }) {
     } else {
       bookingUid = roomBookingUid;
     }
-    formData.append(
-      "roomBooking.uid",
-      // payableAmount ? ExtendDateData?.bookingUid : roomBookingUid
-      bookingUid
-    );
-    formData.append("roomBooking.isAdvancesPaymnet", data?.advancePayment);
+
+    //     if (location?.state?.extraRoomMode) {
+    // bookedDataForExtra?.forEach((x, index) => {
+    //     formData.append(`roomBookings[${index}].roomSearch.uid`, index === 0 ? myData?.searchUid : x?.roomSearch?.uid);
+    //     formData.append(`roomBookings[${index}].subtotal`, finalAmount);
+    //     formData.append(`roomBookings[${index}].finalAmount`, finalAmount);
+    //     formData.append(`roomBookings[${index}].checkInDate`, x?.checkInDate);
+    //     formData.append(`roomBookings[${index}].checkOutDate`, x?.checkOutDate);
+    //     formData.append(`roomBookings[${index}].numberOfDays`, x?.numberOfDays);
+    //     formData.append(`roomBookings[${index}].numberOfGuests`, x?.numberOfGuests);
+    //     formData.append(`roomBookings[${index}].specialRequirement`, "none");
+    //   });
+    // }
+
+    // console.log("extra data ",extraData);
+    if (location?.state?.extraRoomMode) {
+      formData.append(`roomBookings[${0}].roomSearch.uid`, myData?.searchUid);
+
+      formData.append(`roomBookings[${0}].subtotal`, finalAmount);
+      formData.append(`roomBookings[${0}].finalAmount`, finalAmount);
+      formData.append(
+        `roomBookings[${0}].numberOfDays`,
+        bookedDataForExtra[0]?.totalNoOfDays
+      );
+
+      // bookedDataForExtra.forEach((x) => {
+      formData.append(
+        `roomBookings[${0}].checkInDate`,
+        bookedDataForExtra[0]?.checkInDate
+      );
+      formData.append(
+        `roomBookings[${0}].checkOutDate`,
+        bookedDataForExtra[0]?.checkOutDate
+      );
+      formData.append(
+        `roomBookings[${0}].numberOfGuests`,
+        bookedDataForExtra[0]?.numberOfGuests
+      );
+
+      formData.append(`roomBookings[${0}].specialRequirement`, "none");
+      // });
+    }
+
+    // Basic booking details
+    if (!location?.state?.extraRoomMode) {
+      formData.append("roomBooking.uid", bookingUid);
+      formData.append("roomBooking.isAdvancesPaymnet", data?.advancePayment);
+    }
     if (data?.advancePayment) {
       formData.append("roomBooking.remainingAmount", data?.remainingPayment);
       formData.append("roomBooking.advancePaymentAmout", data?.advance);
     }
 
+    // Payment common details
     formData.append("payment.finalPayment", data?.PfinalAmount);
     formData.append("payment.paymentMode", data?.paymentMode?.value);
 
-    if (watch("paymentMode")?.label === "Credit Card") {
+    // Payment mode-specific details
+    const paymentModeLabel = watch("paymentMode")?.label;
+
+    if (paymentModeLabel === "Credit Card") {
       formData.append("payment.cardNumber", data.cardNumber);
       formData.append("payment.cardType", data.cardType);
       formData.append("payment.cardExpiryYear", data.cardExpiryYear);
       formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
       formData.append("payment.cardCvv", data.cardCvv);
-
       formData.append("payment.nameOnCard", data.nameOnCard);
-    } else if (watch("paymentMode")?.label === "Card Swipe") {
+    } else if (paymentModeLabel === "Card Swipe") {
       formData.append(
         "payment.cardSwipeTransactionId",
         data?.cardSwipeTransactionId
       );
-    } else if (watch("paymentMode")?.label === "Cash") {
+    } else if (paymentModeLabel === "Cash") {
       formData.append("roomBooking.pin", encrypted);
-    } else if (watch("paymentMode")?.label === "Cheque21") {
+    } else if (paymentModeLabel === "Cheque21") {
       if (!file) {
         alert("Please select a file first.");
         return;
       }
-
       formData.append("payment.bankName", data.bankName);
       formData.append("payment.nameOnAccount", data.nameOnAccount);
       formData.append("payment.routingNumber", data.routingNumber);
       formData.append("payment.accountNumber", data.accountNumber);
       formData.append("payment.chequeNumber", data.chequeNumber);
       formData.append("payment.chequeImage", file);
-    } else if (watch("paymentMode")?.label === "ChequeACH") {
+    } else if (paymentModeLabel === "ChequeACH") {
       formData.append("payment.bankName", data.bankName);
       formData.append("payment.nameOnAccount", data.nameOnAccount);
       formData.append("payment.routingNumber", data.routingNumber);
       formData.append("payment.accountNumber", data.accountNumber);
       formData.append("payment.accountType", data.accountType?.value);
     } else {
-      console.log("Choose differant payment Method ");
+      console.log("Choose a different payment method.");
     }
 
     try {
-      const res = await useJwt.bookingPayment(formData);
+      let res;
+
+      if (location?.state?.extraRoomMode) {
+        res = await useJwt.addExtraRoom(uidOfEvent, formData);
+      } else {
+        res = await useJwt.bookingPayment(formData);
+      }
+      console.log(formData);
 
       const { qr_code_base64 } = res?.data;
       setQr(qr_code_base64);
@@ -598,7 +708,8 @@ function Payment({ stepper }) {
                 </Col>
 
                 <Row>
-                  {pendingPayment && today < checkInDate && (
+                  {/* {pendingPayment && today < checkInDate && ( */}
+                  {!location?.state?.extraRoomMode && (
                     <>
                       {!payableAmount && (
                         <>
@@ -716,6 +827,7 @@ function Payment({ stepper }) {
                       </Col>
                     </>
                   )}
+                  {/* )} */}
                   <Col md="12" className="mb-1">
                     <Label className="form-label" for="hf-picker">
                       Payment Mode <span style={{ color: "red" }}>*</span>

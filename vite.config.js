@@ -1,13 +1,13 @@
+import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
+import react from '@vitejs/plugin-react'
 import fs from 'fs'
 import * as path from 'path'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
-import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
+import { defineConfig } from 'vite'
 
 export default () => {
   return defineConfig({
-    base: '/crm/marine-resort/',
+    // base: '/crm/marine-resort/',
     plugins: [react()],
 
     define: {
@@ -54,7 +54,7 @@ export default () => {
         { find: '@assets', replacement: path.resolve(__dirname, 'src/@core/assets') },
         { find: '@layouts', replacement: path.resolve(__dirname, 'src/@core/layouts') },
         { find: 'assert', replacement: 'rollup-plugin-node-polyfills/polyfills/assert' },
-        { find: 'buffer', replacement: 'rollup-plugin-node-polyfills/polyfills/buffer-es6' },
+        // { find: 'buffer', replacement: 'rollup-plugin-node-polyfills/polyfills/buffer-es6' },
         { find: 'process', replacement: 'rollup-plugin-node-polyfills/polyfills/process-es6' },
         { find: '@components', replacement: path.resolve(__dirname, 'src/@core/components') }
       ]
@@ -72,7 +72,7 @@ export default () => {
         },
         plugins: [
           NodeGlobalsPolyfillPlugin({
-            buffer: true,
+            buffer: false,
             process: true
           }),
           {

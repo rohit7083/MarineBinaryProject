@@ -1,32 +1,42 @@
-import React, { useEffect } from "react";
+import useJwt from "@src/auth/jwt/useJwt";
+import Lottie from "lottie-react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { useState } from "react";
-import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import {
-  Label,
-  Row,
-  Col,
   Button,
-  Form,
-  Input,
-  FormFeedback,
   Card,
-  CardHeader,
-  CardTitle,
   CardBody,
+  CardHeader,
+  CardText,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
   FormGroup,
-  InputGroup,
-  InputGroupText,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
   UncontrolledAlert,
 } from "reactstrap";
-import { useForm, Controller, set } from "react-hook-form";
-import { selectThemeColors } from "@utils";
-import { all } from "axios";
-import useJwt from "@src/auth/jwt/useJwt";
+import SingleCheck from "../../../assets/images/SingleCheck.json";
+import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
+function Payment({ stepper, allEventData, updateData, paymentData }) {
+  console.log("paymentData", paymentData);
+  console.log("updateData", updateData);
 
-function Payment({ stepper, allEventData }) {
+  const { remainingAmount, totalAmount } = paymentData?.Rowdata || {};
+
+ 
+
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
     { value: "MoneyGrams", label: "MoneyGrams" },
@@ -34,7 +44,7 @@ function Payment({ stepper, allEventData }) {
   ];
   const [mode, setMode] = useState(""); // "flat" or "percentage"
   const [value, setValuedis] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const AccountType = [
     { value: "8", label: "Personal Checking Account" },
     { value: "9", label: "Personal Saving Account" },
@@ -50,6 +60,22 @@ function Payment({ stepper, allEventData }) {
     { value: "7", label: "Payment Link" },
     { value: "8", label: "QR Code" },
   ];
+
+  const AmtDiffernce =
+    updateData?.data?.totalAmount - updateData?.listData?.Rowdata?.totalAmount;
+  console.log("AmtDiffernce", AmtDiffernce);
+
+  let finalAmtRemain;
+
+  const remainingAmt = updateData?.listData?.Rowdata?.remainingAmount || 0;
+  const uid = updateData?.listData?.uid;
+  // {{debugger}}
+  if (remainingAmt >= 0 && uid) {
+    finalAmtRemain = Number(remainingAmt) + Number(AmtDiffernce);
+  } else {
+    finalAmtRemain = allEventData?.totalAmount || 0;
+  }
+
   const {
     control,
     handleSubmit,
@@ -63,11 +89,10 @@ function Payment({ stepper, allEventData }) {
     defaultValues: {
       advancePayment: false,
       discount: false,
-
-      finalAmount: allEventData?.totalAmount || 0,
+      finalAmount: finalAmtRemain,
     },
   });
- 
+
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
@@ -111,10 +136,22 @@ function Payment({ stepper, allEventData }) {
   }, []);
 
   useEffect(() => {
-    if (allEventData?.totalAmount) {
-      setValue("finalAmount", allEventData?.totalAmount);
+    if (
+      updateData?.listData?.Rowdata?.remainingAmount >= 0 &&
+      updateData?.listData?.uid &&
+      paymentData?.step !== 2
+    ) {
+      setValue("finalAmount", AmtDiffernce);
+      console.log(finalAmtRemain);
+    } else if (paymentData?.step === 2) {
+      setValue("finalAmount", paymentData?.Rowdata?.remainingAmount);
+    } else {
+      if (allEventData?.totalAmount) {
+        setValue("finalAmount", allEventData?.totalAmount);
+      }
     }
-  }, [allEventData]);
+  }, [allEventData, updateData, setValue, AmtDiffernce]);
+
   const [showQrModal, setShowQrModal] = useState(false);
   const [qr, setQr] = useState(null);
   const [paymentMode, setpaymentMode] = useState(null);
@@ -125,6 +162,8 @@ function Payment({ stepper, allEventData }) {
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [errorMessage, setErrorMsz] = useState("");
   const [cardType, setCardType] = useState("");
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
 
   const handlepaymentMode = (selectedOption) => {
     const selectedType = selectedOption?.label; // Extract the value
@@ -265,7 +304,7 @@ function Payment({ stepper, allEventData }) {
       watch("advancePayment")
     ) {
       if (watch("discount_amt") && watch("advance")) {
-        //  
+        //
         const percentageAmount = (handleFinal * watch("discount_amt")) / 100;
         const afterDiscount = handleFinal - percentageAmount - watch("advance");
 
@@ -318,7 +357,6 @@ function Payment({ stepper, allEventData }) {
   useEffect(() => {
     if (verify) {
       if (mode === "Flat") {
-      
         const discountAmt = watch("discount_amt");
         setDiscountAmt(discountAmt);
       }
@@ -340,93 +378,339 @@ function Payment({ stepper, allEventData }) {
     }
     return null;
   };
+  const formatDate = (date, fmt) => (date ? moment(date).format(fmt) : null);
+
   const onSubmit = async (data) => {
     setErrorMsz("");
 
     const pin = Number(data?.otp?.join(""));
 
-    const formData = new FormData();
+    // const formData = new FormData();
 
-    formData.append("event.uid", allEventData?.eventUid);
-    formData.append("event.isAdvancesPaymnet", data?.advancePayment);
-    if (data?.advancePayment) {
-      formData.append("event.remainingAmount", data?.remainingPayment);
-      formData.append("event.advancePaymentAmout", data?.advance);
-    }
-    formData.append("event.isDiscountApply", data?.discount);
-    if (data?.discount) {
-      formData.append("event.discountAmount", disAmt);
-      formData.append("event.discountType", mode);
-      if (mode === "Percentage") {
-        formData.append("event.discountedFinalAmount", discountPercentage);
-      } else {
-        formData.append("event.discountedFinalAmount", discountAmt);
+    // formData.append("event.uid", allEventData?.eventUid);
+    // formData.append("event.isAdvancesPaymnet", data?.advancePayment);
+    // if (data?.advancePayment) {
+    //   formData.append("event.remainingAmount", data?.remainingPayment);
+    //   formData.append("event.advancePaymentAmout", data?.advance);
+    // }
+    // formData.append("event.isDiscountApply", data?.discount);
+    // if (data?.discount) {
+    //   formData.append("event.discountAmount", disAmt);
+    //   formData.append("event.discountType", mode);
+    //   if (mode === "Percentage") {
+    //     formData.append("event.discountedFinalAmount", discountPercentage);
+    //   } else {
+    //     formData.append("event.discountedFinalAmount", discountAmt);
+    //   }
+    // }
+
+    // formData.append("payment.finalPayment", data?.PfinalAmount);
+    // formData.append("payment.paymentMode", data?.paymentMode?.value);
+
+    // if (watch("paymentMode")?.label === "Credit Card") {
+    //   formData.append("payment.cardNumber", data.cardNumber);
+    //   formData.append("payment.cardType", data.cardType);
+    //   formData.append("payment.cardExpiryYear", data.cardExpiryYear);
+    //   formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
+    //   formData.append("payment.cardCvv", data.cardCvv);
+
+    //   formData.append("payment.nameOnCard", data.nameOnCard);
+    // } else if (watch("paymentMode")?.label === "Card Swipe") {
+    //   formData.append(
+    //     "payment.cardSwipeTransactionId",
+    //     data?.cardSwipeTransactionId
+    //   );
+    // } else if (watch("paymentMode")?.label === "Cash") {
+    //   formData.append("event.pin", pin);
+    // } else if (watch("paymentMode")?.label === "Cheque21") {
+    //   if (!file) {
+    //     alert("Please select a file first.");
+    //     return;
+    //   }
+    //   formData.append("payment.bankName", data.bankName);
+    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
+    //   formData.append("payment.routingNumber", data.routingNumber);
+    //   formData.append("payment.accountNumber", data.accountNumber);
+    //   formData.append("payment.chequeNumber", data.chequeNumber);
+    //   formData.append("payment.chequeImage", file);
+    // } else if (watch("paymentMode")?.label === "ChequeACH") {
+    //   formData.append("payment.bankName", data.bankName);
+    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
+    //   formData.append("payment.routingNumber", data.routingNumber);
+    //   formData.append("payment.accountNumber", data.accountNumber);
+    //   formData.append("payment.accountType", data.accountType?.value);
+    // } else {
+    //   console.log("Choose differant payment Method ");
+    // }
+
+    // console.log("formdata", formData);
+
+    let formData = new FormData();
+
+    if (!updateData?.listData?.uid || paymentData?.step === 2) {
+      if (allEventData?.eventUid || paymentData?.uid) {
+        formData.append("event.uid", allEventData.eventUid || paymentData?.uid);
+      }
+
+      if (data?.advancePayment !== undefined) {
+        formData.append("event.isAdvancesPaymnet", data.advancePayment);
+      }
+
+      if (data?.advancePayment && data?.remainingPayment !== undefined) {
+        formData.append("event.remainingAmount", data.remainingPayment);
+      }
+
+      if (data?.advance !== undefined) {
+        formData.append("event.advancePaymentAmout", data.advance);
+      }
+
+      if (data?.discount !== undefined) {
+        formData.append("event.isDiscountApply", data.discount);
+
+        if (data.discount) {
+          if (disAmt !== undefined) {
+            formData.append("event.discountAmount", disAmt);
+          }
+
+          if (mode) {
+            formData.append("event.discountType", mode);
+            formData.append(
+              "event.discountedFinalAmount",
+              mode === "Percentage" ? discountPercentage : discountAmt
+            );
+          }
+        }
       }
     }
 
-    formData.append("payment.finalPayment", data?.PfinalAmount);
-    formData.append("payment.paymentMode", data?.paymentMode?.value);
-
-    if (watch("paymentMode")?.label === "Credit Card") {
-      formData.append("payment.cardNumber", data.cardNumber);
-      formData.append("payment.cardType", data.cardType);
-      formData.append("payment.cardExpiryYear", data.cardExpiryYear);
-      formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
-      formData.append("payment.cardCvv", data.cardCvv);
-
-      formData.append("payment.nameOnCard", data.nameOnCard);
-    } else if (watch("paymentMode")?.label === "Card Swipe") {
+    if (updateData?.listData?.uid && paymentData?.step !== 2) {
+      formData.append("event.uid", updateData?.listData?.uid);
+      formData.append("event.eventName", updateData?.data?.eventName);
       formData.append(
-        "payment.cardSwipeTransactionId",
-        data?.cardSwipeTransactionId
+        "event.eventDescription",
+        updateData?.data?.eventDescription
       );
-    } else if (watch("paymentMode")?.label === "Cash") {
-      formData.append("event.pin", pin);
-    } else if (watch("paymentMode")?.label === "Cheque21") {
-      if (!file) {
-        alert("Please select a file first.");
-        return;
-      }
-      formData.append("payment.bankName", data.bankName);
-      formData.append("payment.nameOnAccount", data.nameOnAccount);
-      formData.append("payment.routingNumber", data.routingNumber);
-      formData.append("payment.accountNumber", data.accountNumber);
-      formData.append("payment.chequeNumber", data.chequeNumber);
-      formData.append("payment.chequeImage", file);
-    } else if (watch("paymentMode")?.label === "ChequeACH") {
-      formData.append("payment.bankName", data.bankName);
-      formData.append("payment.nameOnAccount", data.nameOnAccount);
-      formData.append("payment.routingNumber", data.routingNumber);
-      formData.append("payment.accountNumber", data.accountNumber);
-      formData.append("payment.accountType", data.accountType?.value);
-    } else {
-      console.log("Choose differant payment Method ");
+      formData.append(
+        "event.eventStartDate",
+        formatDate(updateData?.data?.startDateTime, "YYYY-MM-DD")
+      );
+      formData.append(
+        "event.eventEndDate",
+        formatDate(updateData?.data?.startDateTime, "YYYY-MM-DD")
+      );
+      formData.append(
+        "event.eventStartTime",
+        formatDate(updateData?.data.startDateTime, "HH:mm")
+      );
+      formData.append(
+        "event.eventEndTime",
+        formatDate(updateData?.data.endDateTime, "HH:mm")
+      );
+      formData.append("event.amount", updateData?.data?.amount);
+      formData.append("event.isExtraStaff", updateData?.data?.isExtraStaff);
+      formData.append("event.extraNoOfStaff", updateData?.data?.extraNoOfStaff);
+      formData.append(
+        "event.extraNoOfStaffAmount",
+        updateData?.data?.extraNoOfStaffAmount
+      );
+      formData.append("event.totalAmount", updateData?.data?.totalAmount);
+      formData.append(
+        "event.isRecurringEvent",
+        updateData?.data?.isRecurringEvent
+      );
+      formData.append("event.venue.uid", updateData?.data?.venue?.value);
+      formData.append(
+        "event.eventType.uid",
+        updateData?.data?.eventType?.value
+      );
+      formData.append(
+        "event.member.uid",
+        updateData?.data?.selectedMember?.value
+      );
+      formData.append("payment.finalPayment", AmtDiffernce);
     }
 
-    console.log("formdata", formData);
+    if (data?.PfinalAmount !== undefined) {
+      formData.append("payment.finalPayment", data.PfinalAmount);
+    }
 
-    try {
-      const res = await useJwt.payment(formData);
-      const { qr_code_base64 } = res?.data;
-      setQr(qr_code_base64);
-      if (qr_code_base64) {
-        setShowQrModal(true);
+    if (data?.paymentMode?.value) {
+      formData.append("payment.paymentMode", data.paymentMode.value);
+
+      switch (data.paymentMode.label) {
+        case "Credit Card":
+          if (data.cardNumber)
+            formData.append("payment.cardNumber", data.cardNumber);
+          if (data.cardType) formData.append("payment.cardType", data.cardType);
+          if (data.cardExpiryYear)
+            formData.append("payment.cardExpiryYear", data.cardExpiryYear);
+          if (data.cardExpiryMonth)
+            formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
+          if (data.cardCvv) formData.append("payment.cardCvv", data.cardCvv);
+          if (data.nameOnCard)
+            formData.append("payment.nameOnCard", data.nameOnCard);
+          break;
+
+        case "Card Swipe":
+          if (data.cardSwipeTransactionId) {
+            formData.append(
+              "payment.cardSwipeTransactionId",
+              data.cardSwipeTransactionId
+            );
+          }
+          break;
+
+        case "Cash":
+          if (data?.otp) {
+            const pin = Number(data.otp.join(""));
+            formData.append("event.pin", pin);
+          }
+          break;
+
+        case "Cheque21":
+          if (!file) {
+            alert("Please select a file first.");
+            return;
+          }
+          if (data.bankName) formData.append("payment.bankName", data.bankName);
+          if (data.nameOnAccount)
+            formData.append("payment.nameOnAccount", data.nameOnAccount);
+          if (data.routingNumber)
+            formData.append("payment.routingNumber", data.routingNumber);
+          if (data.accountNumber)
+            formData.append("payment.accountNumber", data.accountNumber);
+          if (data.chequeNumber)
+            formData.append("payment.chequeNumber", data.chequeNumber);
+          formData.append("payment.chequeImage", file);
+          break;
+
+        case "ChequeACH":
+          if (data.bankName) formData.append("payment.bankName", data.bankName);
+          if (data.nameOnAccount)
+            formData.append("payment.nameOnAccount", data.nameOnAccount);
+          if (data.routingNumber)
+            formData.append("payment.routingNumber", data.routingNumber);
+          if (data.accountNumber)
+            formData.append("payment.accountNumber", data.accountNumber);
+          if (data.accountType?.value)
+            formData.append("payment.accountType", data.accountType.value);
+          break;
+
+        default:
+          console.log("Choose a valid payment method");
       }
-      stepper.next();
-    } catch (error) {
-       console.error(error);
+    }
 
-      if (error.res) {
-        console.error("Error verifying OTP:", error);
+    if (AmtDiffernce > 0 && updateData?.listData?.uid) {
+      try {
+        setLoading(true);
+        const updateRes = await useJwt.UpdateEventAndPayment(formData);
+        if (updateRes) {
+          setModal(true);
+          setTimeout(() => {
+            setModal(false);
+            stepper.next();
+          }, 4000);
+        }
+        console.log(updateData);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (!updateData?.listData?.uid || updateData?.listData?.step === 2) {
+      try {
+        setLoading(true);
+        const res = await useJwt.payment(formData);
+        const { qr_code_base64 } = res?.data;
+        setQr(qr_code_base64);
+        if (qr_code_base64) {
+          setShowQrModal(true);
+        }
+        setModal(true);
+        setTimeout(() => {
+          setModal(false);
+          stepper.next();
+        }, 4000);
+      } catch (error) {
+        console.error(error);
 
-        const errorMessage = error?.res?.data?.content;
-        setErrorMsz(errorMessage);
+        if (error.res) {
+          console.error("Error verifying OTP:", error);
+
+          const errorMessage = error?.res?.data?.content;
+          setErrorMsz(errorMessage);
+        }
+      } finally {
+        setLoading(false);
       }
     }
   };
 
+  const handleOk = () => {
+    toggle();
+    stepper.next();
+  };
+
   return (
+    
     <>
+      <Modal isOpen={modal} toggle={toggle} centered size="sm">
+        <ModalHeader
+          toggle={toggle}
+          style={{
+            borderBottom: "none",
+            justifyContent: "center",
+            fontWeight: "600",
+            fontSize: "1.25rem",
+          }}
+        >
+          🎉 Payment Successful
+        </ModalHeader>
+
+        <ModalBody style={{ textAlign: "center", paddingTop: 0 }}>
+          <div
+            style={{
+              position: "relative",
+              width: 150,
+              height: 150,
+              margin: "0 auto",
+            }}
+          >
+            <Lottie
+              animationData={SingleCheck} // you can swap this with a 'success' or 'confetti' animation JSON
+              loop={true}
+              style={{
+                position: "absolute",
+
+                width: 150,
+                height: 150,
+              }}
+            />
+          </div>
+
+          <CardTitle tag="h5" style={{ marginTop: "10px", fontWeight: "800" }}>
+            Your payment has been successfully processed.
+          </CardTitle>
+          <CardText
+            style={{ color: "#555", fontSize: "0.81rem", marginTop: "5px" }}
+          >
+            {/* A receipt has been sent to your email. Thank you for your purchase! */}
+          </CardText>
+        </ModalBody>
+
+        <ModalFooter style={{ borderTop: "none", justifyContent: "center" }}>
+          <Button
+            color="success"
+            onClick={handleOk}
+            style={{ borderRadius: "8px", padding: "8px 20px" }}
+          >
+            OK
+          </Button>
+        </ModalFooter>
+      </Modal>
+
       <Form onSubmit={handleSubmit(onSubmit)}>
         <h4 className="mb-2">Payment Information</h4>
         <Row>
@@ -446,11 +730,20 @@ function Payment({ stepper, allEventData }) {
           </Col>
           <Col md="8" className="mb-1">
             <Col md="12" className="mb-1">
-              <Label for="finalInvoice">Final Amount</Label>
+              <Label for="finalInvoice">
+                {remainingAmount > 0
+                  ? "Final Amount (Remaining)"
+                  : "Final Amount"}
+              </Label>
               <Controller
                 name="finalAmount"
                 control={control}
-                rules={{ required: "Final  amount is required", min: 0 }}
+                rules={{
+                  required: "Final  amount is required",
+                  ...(!updateData?.listData?.uid && {
+                    min: 0,
+                  }),
+                }}
                 render={({ field }) => (
                   <Input
                     type="number"
@@ -466,133 +759,158 @@ function Payment({ stepper, allEventData }) {
                 <FormFeedback>{errors.finalAmount.message}</FormFeedback>
               )}
             </Col>
-
-            <Col check className="mb-2">
-              <Label check>
-                <Controller
-                  name="discount"
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} type="checkbox" disabled={verify} />
-                  )}
-                />{" "}
-                Discount
-              </Label>
-            </Col>
-            {isDiscount && (
+            {!updateData?.listData?.uid && (
               <>
-                <GenerateDiscountOtp
-                  setShowModal={setShowModal}
-                  showModal={showModal}
-                  mode={mode}
-                  setMode={setMode}
-                  setValueInParent={setValue}
-                  keyName="discount_amt"
-                  
-                  allEventData={allEventData}
-                  setVerify={setVerify}
-                  verify={verify}
-                />
+                <Col check className="mb-2">
+                  <Label check>
+                    <Controller
+                      name="discount"
+                      control={control}
+                      render={({ field }) => (
+                        <Input {...field} type="checkbox" disabled={verify} />
+                      )}
+                    />{" "}
+                    Discount
+                  </Label>
+                </Col>
+                {isDiscount && (
+                  <>
+                    <GenerateDiscountOtp
+                      setShowModal={setShowModal}
+                      showModal={showModal}
+                      mode={mode}
+                      setMode={setMode}
+                      setValueInParent={setValue}
+                      keyName="discount_amt"
+                      allEventData={allEventData}
+                      setVerify={setVerify}
+                      verify={verify}
+                    />
+                  </>
+                )}
               </>
             )}
-
             <Row>
-              <Col check className="mb-2">
-                <Label check>
-                  <Controller
-                    name="advancePayment"
-                    control={control}
-                    render={({ field }) => <Input {...field} type="checkbox" />}
-                  />{" "}
-                  Advance Payment
-                </Label>
-              </Col>
-
-              {advancePayment && (
+              {!updateData?.listData?.uid || paymentData?.step == 2 ? (
                 <>
-                  <Col md="12" className="mb-1">
-                    <Label for="">Advance Payment</Label>
-                    <Controller
-                      name="advance"
-                      control={control}
-                      rules={{
-                        required: "Advance payment is required",
-                        min: 0,
-                      }}
-                      render={({ field }) => (
-                        <Input
-                          type="number"
-                          defaultValue="1"
-                          id="advance"
-                          placeholder="Enter advance amount"
-                          invalid={!!errors.advance}
-                          {...field}
-                        />
-                      )}
-                    />
-                    {errors.advancePayment && (
-                      <FormFeedback>
-                        {errors.advancePayment.message}
-                      </FormFeedback>
-                    )}
+                  <Col check className="mb-2">
+                    <Label check>
+                      <Controller
+                        name="advancePayment"
+                        control={control}
+                        render={({ field }) => (
+                          <Input {...field} type="checkbox" />
+                        )}
+                      />{" "}
+                      Advance Payment
+                    </Label>
                   </Col>
+
+                  {advancePayment && (
+                    <>
+                      <Col md="12" className="mb-1">
+                        <Label for="">Advance Payment</Label>
+                        <Controller
+                          name="advance"
+                          control={control}
+                          rules={{
+                            required: "Advance payment is required",
+                            ...(AmtDiffernce > 0
+                              ? {
+                                  min: {
+                                    value: AmtDiffernce,
+                                    message: (
+                                      <>
+                                        Advance payment must be at least{" "}
+                                        <span style={{ fontWeight: "bold" }}>
+                                          ${AmtDiffernce}
+                                        </span>
+                                      </>
+                                    ),
+                                  },
+                                }
+                              : {
+                                  min: {
+                                    value: 0,
+                                    message:
+                                      "Advance payment cannot be less than 0",
+                                  },
+                                }),
+                          }}
+                          render={({ field }) => (
+                            <Input
+                              type="number"
+                              defaultValue="1"
+                              id="advance"
+                              placeholder="Enter advance amount"
+                              invalid={!!errors.advance}
+                              {...field}
+                            />
+                          )}
+                        />
+                        {errors.advance && (
+                          <FormFeedback>{errors.advance.message}</FormFeedback>
+                        )}
+                      </Col>
+                      <Col md="12" className="mb-1">
+                        <Label for="advancePayment">Remaining Payment</Label>
+                        <Controller
+                          name="remainingPayment"
+                          control={control}
+                          defaultValue="0"
+                          rules={{
+                            required: "Remaining payment is required",
+                            min: 0,
+                          }}
+                          render={({ field }) => (
+                            <Input
+                              type="number"
+                              id="remainingPayment"
+                              placeholder="Enter Remaining amount"
+                              disabled={true}
+                              invalid={!!errors.advancePayment}
+                              {...field}
+                            />
+                          )}
+                        />
+                        {errors.advancePayment && (
+                          <FormFeedback>
+                            {errors.advancePayment.message}
+                          </FormFeedback>
+                        )}
+                      </Col>
+                    </>
+                  )}
+
                   <Col md="12" className="mb-1">
-                    <Label for="advancePayment">Remaining Payment</Label>
+                    <Label for="finalInvoice">Currently Amount Payable</Label>
                     <Controller
-                      name="remainingPayment"
+                      name="PfinalAmount"
                       control={control}
-                      defaultValue="0"
                       rules={{
-                        required: "Remaining payment is required",
-                        min: 0,
+                        required: "Final amount is required",
+                        min: {
+                          value: 0,
+                          message: "Amount cannot be negative",
+                        },
                       }}
                       render={({ field }) => (
                         <Input
                           type="number"
-                          id="remainingPayment"
-                          placeholder="Enter Remaining amount"
+                          id="PfinalAmount"
                           disabled={true}
-                          invalid={!!errors.advancePayment}
+                          placeholder="Your Currently Amount Payable Here"
+                          invalid={!!errors.PfinalAmount}
                           {...field}
                         />
                       )}
                     />
-                    {errors.advancePayment && (
-                      <FormFeedback>
-                        {errors.advancePayment.message}
-                      </FormFeedback>
+                    {errors.finaPfinalAmountlAmount && (
+                      <FormFeedback>{errors.PfinalAmount.message}</FormFeedback>
                     )}
                   </Col>
                 </>
-              )}
-
-              <Col md="12" className="mb-1">
-                <Label for="finalInvoice">Currently Amount Payable</Label>
-                <Controller
-                  name="PfinalAmount"
-                  control={control}
-                  rules={{
-                    required: "Final amount is required",
-                    min: {
-                      value: 0,
-                      message: "Amount cannot be negative",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      id="PfinalAmount"
-                      disabled={true}
-                      placeholder="Enter total  amount"
-                      invalid={!!errors.PfinalAmount}
-                      {...field}
-                    />
-                  )}
-                />
-                {errors.finaPfinalAmountlAmount && (
-                  <FormFeedback>{errors.PfinalAmount.message}</FormFeedback>
-                )}
-              </Col>
+              ) : null}
 
               <Col md="12" className="mb-1">
                 <Label className="form-label" for="hf-picker">
@@ -1618,23 +1936,24 @@ function Payment({ stepper, allEventData }) {
                   type="submit"
                   color="primary"
                   className="btn-next"
+                  disabled={loading}
                   onClick={() => clearErrors()}
                 >
                   <span className="align-middle d-sm-inline-block d-none">
-                    {/* {loading ? (
-                <>
-                  Loading.. <Spinner size="sm" />{" "}
-                </>
-              ) : ( */}
-                    <>Submit</>
-                    {/* )} */}
+                    {loading ? (
+                      <>
+                        Loading.. <Spinner size="sm" />{" "}
+                      </>
+                    ) : (
+                      <>Submit</>
+                    )}
                   </span>
-                  {/* {loading ? null : (
-              <ArrowRight
-                size={14}
-                className="align-middle ms-sm-25 ms-0"
-              ></ArrowRight>
-            )} */}
+                  {loading ? null : (
+                    <ArrowRight
+                      size={14}
+                      className="align-middle ms-sm-25 ms-0"
+                    ></ArrowRight>
+                  )}
                 </Button>
               </div>
             </div>
@@ -1687,33 +2006,40 @@ function Payment({ stepper, allEventData }) {
                         </>
                       )}
                     </li>
-                    <li
-                      className="price-detail"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      <div className="details-title">Advance Amount</div>
-                      <div className="detail-amt">
-                        <strong>$ {handleAdvance ? handleAdvance : "0"}</strong>
-                      </div>
-                    </li>
 
-                    <li
-                      className="price-detail"
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      <div className="details-title">Remaining Amount</div>
-                      <div className="detail-amt">
-                        <strong>$ {handleRemaining || "0"} </strong>
-                      </div>
-                    </li>
+                    {!AmtDiffernce > 0 && (
+                      <>
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div className="details-title">Advance Amount</div>
+                          <div className="detail-amt">
+                            <strong>
+                              $ {handleAdvance ? handleAdvance : "0"}
+                            </strong>
+                          </div>
+                        </li>
+
+                        <li
+                          className="price-detail"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div className="details-title">Remaining Amount</div>
+                          <div className="detail-amt">
+                            <strong>$ {handleRemaining || "0"} </strong>
+                          </div>
+                        </li>
+                      </>
+                    )}
                   </ul>
                   <hr />
                   <ul

@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 
 // ** Thirdparty Component
 import InputNumber from "rc-input-number";
 
 // ** Icon
-import { Home, Users, Plus, Minus, Book, BookOpen } from "react-feather";
+import { Home, Minus, Plus, Users } from "react-feather";
 
 // ** Form Controller
 import { Controller } from "react-hook-form";
@@ -15,10 +15,9 @@ import {
   Button,
   Card,
   CardBody,
-  Form,
   FormGroup,
   Input,
-  Label,
+  Label
 } from "reactstrap";
 
 // ** Styles
@@ -48,7 +47,7 @@ const RoomCard = (props) => {
 
   const isBooked = watch(`roomUnit.${index}.fields.isBooked`);
 
-  console.log(fieldsDetail);
+  // console.log(fieldsDetail);
 
   const calculateTotal = (amount, tax) => {
     if (!tax || tax === 0) return amount;
@@ -149,7 +148,7 @@ const RoomCard = (props) => {
   ]);
   // console.log(watch(`roomUnit.${index}.fields.serviceType`))
   // console.clear()
-console.log(fieldsDetail)
+// console.log(fieldsDetail)
 
   function handleShowPrice(type) {
     if (isDisabled) {

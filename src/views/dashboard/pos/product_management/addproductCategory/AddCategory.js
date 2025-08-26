@@ -1,42 +1,39 @@
-import React from "react";
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { ArrowLeft, Trash2 } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import { Navigate, useLocation } from "react-router-dom";
+
+import Select from "react-select";
 import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
   Col,
-  Input,
   Form,
-  Button,
+  FormFeedback,
+  Input,
   Label,
   Row,
-  CardText,
+  Spinner,
   Table,
-  Spinner,UncontrolledAlert,
+  UncontrolledAlert,
 } from "reactstrap";
-import { ArrowLeft, Plus, Trash2 } from "react-feather";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Tooltip } from "reactstrap";
-import { Link, Navigate, useLocation } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
-import { useEffect, useState } from "react";
 // import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
-import addProductIcon from "../../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../../assets/icons/workflow-setting.svg";
-import addTax from "../../../../../assets/icons/calendar-event-tax.svg";
-import ProductAdd_Table from "../ProductAdd_Table";
 
-import { useFieldArray } from "react-hook-form";
 import useJwt from "@src/auth/jwt/useJwt";
+import { useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import NavItems from "../NavItems";
 
 const MultipleColumnForm = () => {
+  // ** State
+  const [parentCategory, setParentCategory] = useState([]);
+
   const navigate = useNavigate();
   const {
     control,
@@ -45,13 +42,11 @@ const MultipleColumnForm = () => {
     watch,
     reset,
     register,
-    
     formState: { errors },
   } = useForm({
     mode: "onChange",
   });
-  // const [data, setData] = useState([{ id: 1 }]);
-const [err,setErr]=useState("");
+  const [err, setErr] = useState("");
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -67,42 +62,22 @@ const [err,setErr]=useState("");
     }));
   };
 
-  // Function to add a new field
   const addField = (e) => {
     e.preventDefault(); // Prevents page refresh
     // setData([...data, { id: Date.now() }]); // Unique id for key
   };
 
-  // Function to remove a row
   const removeField = (id) => {
     // setData(data.filter((item) => item.id !== id));
   };
+
   const MySwal = withReactContent(Swal);
   const [loadinng, setLoading] = useState(false);
-
   const location = useLocation();
   const fetchData = location.state || "";
-  const [parentData, setParentData] = useState([]);
-
-  // console.log("fetchData", fetchData);
-  // console.log("parentdata", parentData);
-
-  // const options = parentData?.map((item) => ({
-  //   label: item.parentCateName,
-  //   value: item.parentUid,
-  // }));
-
-  //using above syntax i got error like .map is not function so i have used below way
-
-  const options = Array.isArray(parentData)
-    ? parentData.map((item) => ({
-        label: item.parentCateName,
-        value: item.parentUid,
-      }))
-    : [];
+  const toast = useRef(null);
 
   useEffect(() => {
-    setParentData(fetchData?.parentCategoryData);
     if (fetchData?.uid) {
       reset({
         ...fetchData?.row,
@@ -120,12 +95,14 @@ const [err,setErr]=useState("");
   });
 
   const onSubmit = async (data) => {
-    setErr('');
+    setErr("");
     const formData = new FormData();
 
     formData.append("name", data.name);
     formData.append("description", data.description);
-    formData.append("parentUid.uid", data.parentUid.value || null);
+    if (data?.parentUid?.value) {
+      formData.append("parentUid.uid", data.parentUid.value);
+    }
     const variations = watch("attributeKeys");
 
     variations.forEach((variations, index) => {
@@ -146,22 +123,31 @@ const [err,setErr]=useState("");
 
         const res = await useJwt.addProductCategory(formData);
         console.log(res);
-        return MySwal.fire({
-          title: "Successfully Created",
-          text: " Your Product Category Created Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          navigate("/dashboard/pos/product_management/addproductCategory");
-        });
-        
+
+        if (res?.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Successfully",
+            detail: "Category Created Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            navigate("/dashboard/pos/product_management/addproductCategory");
+          }, 1999);
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Failed",
+            detail: "Category Created Failed.",
+            life: 2000,
+          });
+        }
       } catch (error) {
-         console.error(error);
+        console.error(error);
         if (error.response) {
-          const errMsz=error?.response?.data?.content || "Please check all fields and try again ";
+          const errMsz =
+            error?.response?.data?.content ||
+            "Please check all fields and try again ";
           setErr(errMsz);
         }
       } finally {
@@ -173,21 +159,23 @@ const [err,setErr]=useState("");
 
         const res = await useJwt.editProductCategory(fetchData?.uid, formData);
         console.log(res);
-        return MySwal.fire({
-          title: "Successfully updated",
-          text: " Your Product Category Update Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          Navigate("/dashboard/pos/product_management/addproductCategory");
-        });
+        if (res?.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Successfully",
+            detail: "Category updated Successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            Navigate("/dashboard/pos/product_management/addproductCategory");
+          }, 1999);
+        }
       } catch (error) {
-         console.error(error);
+        console.error(error);
         if (error.response) {
-          const errMsz=error?.response?.data?.content || "Please check all fields and try again ";
+          const errMsz =
+            error?.response?.data?.content ||
+            "Please check all fields and try again ";
           setErr(errMsz);
         }
       } finally {
@@ -196,49 +184,67 @@ const [err,setErr]=useState("");
     }
   };
 
+  // ** Category child count handler
+  function handleCategory(list) {
+    const hash = new Map(
+      list.map(({ uid, parentUid }) => [uid, parentUid?.uid || null])
+    );
+
+    const sortOut = (hash, list) =>
+      list
+        .filter(({ parentUid }) => {
+          const p = parentUid?.uid;
+          return !(p && hash.has(p) && hash.has(hash.get(p)));
+        })
+        .map(({ name, uid }) => ({ label: name, value: uid }));
+
+    return sortOut(hash, list);
+  }
+
+  useEffect(() => {
+    if (fetchData && fetchData?.parentCategoryData) {
+      const list = handleCategory(fetchData.parentCategoryData);
+      setParentCategory(list);
+    }
+  }, []);
+
   return (
     <Card>
+      <Toast ref={toast} />
+
       <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-       
-        <CardTitle tag="h4"> <ArrowLeft
-                                           style={{
-                                             cursor: "pointer",
-                                           marginRight:"10px",
-                                             transition: "color 0.1s",
-                                           }}
-                                           onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                                           onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                                           onClick={() => window.history.back()}
-                                         />  Add New Category</CardTitle>
+        <CardTitle tag="h4">
+          {" "}
+          <ArrowLeft
+            style={{
+              cursor: "pointer",
+              marginRight: "10px",
+              transition: "color 0.1s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+            onClick={() => window.history.back()}
+          />{" "}
+          Add New Category
+        </CardTitle>
 
-         <div className="d-flex mt-md-0 mt-1">
-            <div className="d-flex  mt-2 justify-content-start gap-2">
-            <NavItems />
-              <div>
-                <Link to="/pos/VendorManage">
-                  <div className="d-flex">
-                    <Button color="primary" outline size="sm">
-                      Import Product
-                    </Button>
-                  </div>
-                </Link>
-              </div>
-
-            </div>
-          </div>
+        <div className="d-flex   justify-content-start gap-2">
+          <NavItems />
+        </div>
       </CardHeader>
       <CardBody className="mt-2">
-      {err && (
-        <React.Fragment>
-          <UncontrolledAlert color="danger">
-            <div className="alert-body">
-
-              <span className="text-danger fw-bold">
-                <strong>Error :</strong>{err}</span>
-            </div>
-          </UncontrolledAlert>
-        </React.Fragment>
-      )}
+        {err && (
+          <React.Fragment>
+            <UncontrolledAlert color="danger">
+              <div className="alert-body">
+                <span className="text-danger fw-bold">
+                  <strong>Error :</strong>
+                  {err}
+                </span>
+              </div>
+            </UncontrolledAlert>
+          </React.Fragment>
+        )}
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row>
@@ -250,16 +256,21 @@ const [err,setErr]=useState("");
               <Controller
                 name="parentUid"
                 control={control}
-                render={({ field }) => <Select {...field} options={options} />}
+                render={({ field }) => (
+                  <Select {...field} options={parentCategory} />
+                )}
               />
               {errors.parentUid && (
-                <span className="text-danger">{errors.parentUid.message}</span>
+                <FormFeedback>{errors.parentUid.message}</FormFeedback>
               )}
             </Col>
 
             <Col md="6" sm="12" className="mb-1">
               <Label className="form-label" for="productName">
-                Category Name
+                Category Name{" "}
+                <span className="" style={{ color: "red" }}>
+                  *
+                </span>
               </Label>
               <Controller
                 name="name"
@@ -281,7 +292,9 @@ const [err,setErr]=useState("");
                 )}
               />
               {errors.name && (
-                <span className="text-danger">{errors.name.message}</span>
+                <div className="invalid-feedback d-block">
+                  {errors.name.message}
+                </div>
               )}
             </Col>
           </Row>
@@ -295,7 +308,7 @@ const [err,setErr]=useState("");
                 name="description"
                 control={control}
                 rules={{
-                  required: "description is required",
+                  // required: "description is required",
                   pattern: {
                     value: /^[A-Za-z ]+$/,
                     message: "Only alphabetic characters (A–Z) are allowed",
@@ -308,6 +321,7 @@ const [err,setErr]=useState("");
                     rows="3"
                     placeholder="Description"
                     {...field}
+                    onChange={(e) => field.onChange(e.target.value.trimStart())}
                   />
                 )}
               />
@@ -315,7 +329,7 @@ const [err,setErr]=useState("");
                 <span className="text-danger">
                   {errors.description.message}
                 </span>
-              )}
+              )}{" "}
             </Col>
           </Row>
 

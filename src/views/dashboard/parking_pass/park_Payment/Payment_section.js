@@ -37,6 +37,8 @@ import {
   CheckSquare,
   Watch,
 } from "react-feather";
+import CryptoJS from "crypto-js";
+
 import { data } from "jquery";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -79,7 +81,7 @@ const Payment_section = ({ FinalAmountRes }) => {
       console.log("res", res);
       setMemberDetails(res?.data);
     } catch (error) {
-       console.error("error", error);
+      console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -194,14 +196,49 @@ const Payment_section = ({ FinalAmountRes }) => {
 
   console.log("selectedOption ", selectedOption);
 
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey);
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16);
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+    return CryptoJS.enc.Base64.stringify(combined);
+  }
+
   const onSubmit = async (data) => {
+    console.log(data);
+    const pinArray = data.pin || [];
+    const isValid =
+      pinArray.length === 4 &&
+      pinArray.every((d) => d !== "" && d !== undefined);
+    if (!isValid) {
+      console.error("Invalid pin input");
+      return;
+    }
     setErr("");
 
     const { cvc, ...rest } = data;
+    const encrypted = encryptAES(pinArray.join(""));
 
     let payload = {
       allocation: {
         uid: FinalAmountRes?.allocationUid,
+  ...(selectedOption === "Cash" && { pin: encrypted }),
       },
 
       finalPayment: FinalAmountRes?.totalAmount,
@@ -247,7 +284,7 @@ const Payment_section = ({ FinalAmountRes }) => {
         navigate("/parking_pass");
       }, 2000);
     } catch (error) {
-       console.error(error);
+      console.error(error);
       if (error.response) {
         console.log("Error data", error.response.data);
         console.log("Error status", error.response.status);
@@ -257,7 +294,6 @@ const Payment_section = ({ FinalAmountRes }) => {
     } finally {
       setLoadPayment(false);
     }
-    
   };
 
   const detectCardType = (number) => {
@@ -358,545 +394,621 @@ const Payment_section = ({ FinalAmountRes }) => {
   };
 
   return (
-    <>      <Toast ref={toast} />
-    <Row className="d-flex justify-content-center mt-3">
-
-      <Col xs="12">
-        <Row>
-          <Col xl="12" xs="12">
-            <Card className="card-payment">
-              <CardHeader>
-                <CardTitle tag="h4">Payment Method</CardTitle>
-                <CardTitle className="text-success" tag="h4">
-                  <span style={{ color: "rgb(94, 88, 115)" }}> Amount : </span>{" "}
-                  $ {FinalAmountRes?.totalAmount}
-                </CardTitle>
-              </CardHeader>
-
-              <Form className="form" onSubmit={handleSubmit(onSubmit)}>
-                <CardBody>
-                  <Col xs={12}>
-                    <Row className="custom-options-checkable">
-                      <Col md={4} className="mb-md-0 mb-2">
-                        <Controller
-                          name="paymentMethod"
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="radio"
-                              id="card"
-                              {...field}
-                              value="card"
-                              checked={field.value === "card"}
-                              className="custom-option-item-check"
-                            />
-                          )}
-                        />
-                        <label
-                          className="custom-option-item px-2 py-1"
-                          htmlFor="card"
-                        >
-                          <CreditCard className="font-medium-10 me-50 mb-1" />
-                          <span className="d-flex align-items-center mb-50">
-                            <span className="custom-option-item-title h4 fw-bolder mb-0">
-                              Credit/Debit Card
-                            </span>
-                          </span>
-                        </label>
-                      </Col>
-
-                      {/* Cheque ACH Option */}
-                      <Col md={4} className="mb-md-0 mb-2">
-                        <Controller
-                          name="paymentMethod"
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="radio"
-                              id="Cash"
-                              {...field}
-                              value="Cash"
-                              checked={field.value === "Cash"}
-                              className="custom-option-item-check"
-                            />
-                          )}
-                        />
-                        <label
-                          className="custom-option-item px-2 py-1"
-                          htmlFor="Cash"
-                        >
-                          <CheckSquare className="font-medium-10 me-50 mb-1" />
-                          <span className="d-flex align-items-center mb-50">
-                            <span className="custom-option-item-title h4 fw-bolder mb-0">
-                              Cash
-                            </span>
-                          </span>
-                        </label>
-                      </Col>
-
-                      <Col md={4} className="mb-md-0 mb-2">
-                        <Controller
-                          name="paymentMethod"
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="radio"
-                              id="cardSwipe"
-                              {...field}
-                              value="cardSwipe"
-                              checked={field.value === "cardSwipe"}
-                              className="custom-option-item-check"
-                            />
-                          )}
-                        />
-                        <label
-                          className="custom-option-item px-2 py-1"
-                          htmlFor="cardSwipe"
-                        >
-                          <CheckSquare className="font-medium-10 me-50 mb-1" />
-                          <span className="d-flex align-items-center mb-50">
-                            <span className="custom-option-item-title h4 fw-bolder mb-0">
-                              card Swipe
-                            </span>
-                          </span>
-                        </label>
-                      </Col>
-                    </Row>
-                  </Col>
-                </CardBody>
-                <Container>
-                  <Col sm="12" className="mb-2  mt-2">
-                    {err && (
-                      <React.Fragment>
-                        <UncontrolledAlert color="danger">
-                          <div className="alert-body">
-                            <span className="text-danger fw-bold">
-                              <strong>Error :</strong> {err}
-                            </span>
-                          </div>
-                        </UncontrolledAlert>
-                      </React.Fragment>
-                    )}
-                  </Col>
-                </Container>
+    <>
+      {" "}
+      <Toast ref={toast} />
+      <Row className="d-flex justify-content-center mt-3">
+        <Col xs="12">
+          <Row>
+            <Col xl="12" xs="12">
+              <Card className="card-payment">
                 <CardHeader>
-                  <CardTitle tag="h4">Payment Information</CardTitle>
+                  <CardTitle tag="h4">Payment Method</CardTitle>
+                  <CardTitle className="text-success" tag="h4">
+                    <span style={{ color: "rgb(94, 88, 115)" }}>
+                      {" "}
+                      Amount :{" "}
+                    </span>{" "}
+                    $ {FinalAmountRes?.totalAmount}
+                  </CardTitle>
                 </CardHeader>
-                <CardBody>
-                  <Row>
-                    {selectedOption === "Cash" && (
-                      <>
-                        <Container>
-                          <Row className="justify-content-center align-items-center">
-                            <Col md={6}>
-                              <img src={cashpayment} width={300} height={240} />
-                            </Col>
-                            <Col md={6}>
-                              <CardTitle>Total Amount To Pay </CardTitle>
 
-                              {/* <GenrateOtp /> */}
-                              <Row>
-                                <Col md="12" className="mb-1">
-                                  <Label className="form-label" for="Cash">
-                                    Total Amount
-                                    <span style={{ color: "red" }}>*</span>
-                                  </Label>
-                                  <Controller
-                                    id="Cash"
-                                    name="Cash"
-                                    rules={{
-                                      required: "Cash is required",
-                                      // validate: validateCardSwipeTransactionId,
-                                    }}
-                                    control={control}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="text"
-                                        placeholder="Total Cash"
-                                        defaultValues={
-                                          FinalAmountRes?.totalAmount
-                                        }
-                                        invalid={!!errors.Cash}
-                                        {...field}
-                                        disabled={true}
-                                        // onChange={(e) => {
-                                        //   const numericValue =
-                                        //     e.target.value.replace(/\D/g, "");
-                                        //   field.onChange(numericValue);
-                                        // }}
-                                      />
-                                    )}
-                                  />
-                                  {errors.Cash && (
-                                    <FormFeedback>
-                                      {errors.Cash.message}
-                                    </FormFeedback>
-                                  )}
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                        </Container>
-                      </>
-                    )}
-                    {selectedOption === "card" && (
-                      <>
-                        <Container>
-                          <Row className="justify-content-center align-items-center">
-                            {/* Credit Card Preview on Left */}
-                            <Col md={6} className="text-center">
-                              <Col
-                                md={6}
-                                className="text-center position-relative"
-                              >
-                                <Cards
-                                  number={maskCardNumberForCard(
-                                    cardDetails.cardNumber
-                                  )} // ⚠️ only partially masked
-                                  name={cardDetails.nameOnCard}
-                                  expiry={cardDetails.expiry}
-                                  cvc={maskCVC(cardDetails.cvc)} // Shows ***
-                                  focused={cardDetails.focus}
+                <Form className="form" onSubmit={handleSubmit(onSubmit)}>
+                  <CardBody>
+                    <Col xs={12}>
+                      <Row className="custom-options-checkable">
+                        <Col md={4} className="mb-md-0 mb-2">
+                          <Controller
+                            name="paymentMethod"
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                type="radio"
+                                id="card"
+                                {...field}
+                                value="card"
+                                checked={field.value === "card"}
+                                className="custom-option-item-check"
+                              />
+                            )}
+                          />
+                          <label
+                            className="custom-option-item px-2 py-1"
+                            htmlFor="card"
+                          >
+                            <CreditCard className="font-medium-10 me-50 mb-1" />
+                            <span className="d-flex align-items-center mb-50">
+                              <span className="custom-option-item-title h4 fw-bolder mb-0">
+                                Credit/Debit Card
+                              </span>
+                            </span>
+                          </label>
+                        </Col>
+
+                        {/* Cheque ACH Option */}
+                        <Col md={4} className="mb-md-0 mb-2">
+                          <Controller
+                            name="paymentMethod"
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                type="radio"
+                                id="Cash"
+                                {...field}
+                                value="Cash"
+                                checked={field.value === "Cash"}
+                                className="custom-option-item-check"
+                              />
+                            )}
+                          />
+                          <label
+                            className="custom-option-item px-2 py-1"
+                            htmlFor="Cash"
+                          >
+                            <CheckSquare className="font-medium-10 me-50 mb-1" />
+                            <span className="d-flex align-items-center mb-50">
+                              <span className="custom-option-item-title h4 fw-bolder mb-0">
+                                Cash
+                              </span>
+                            </span>
+                          </label>
+                        </Col>
+
+                        <Col md={4} className="mb-md-0 mb-2">
+                          <Controller
+                            name="paymentMethod"
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                type="radio"
+                                id="cardSwipe"
+                                {...field}
+                                value="cardSwipe"
+                                checked={field.value === "cardSwipe"}
+                                className="custom-option-item-check"
+                              />
+                            )}
+                          />
+                          <label
+                            className="custom-option-item px-2 py-1"
+                            htmlFor="cardSwipe"
+                          >
+                            <CheckSquare className="font-medium-10 me-50 mb-1" />
+                            <span className="d-flex align-items-center mb-50">
+                              <span className="custom-option-item-title h4 fw-bolder mb-0">
+                                card Swipe
+                              </span>
+                            </span>
+                          </label>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </CardBody>
+                  <Container>
+                    <Col sm="12" className="mb-2  mt-2">
+                      {err && (
+                        <React.Fragment>
+                          <UncontrolledAlert color="danger">
+                            <div className="alert-body">
+                              <span className="text-danger fw-bold">
+                                <strong>Error :</strong> {err}
+                              </span>
+                            </div>
+                          </UncontrolledAlert>
+                        </React.Fragment>
+                      )}
+                    </Col>
+                  </Container>
+                  <CardHeader>
+                    <CardTitle tag="h4">Payment Information</CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <Row>
+                      {selectedOption === "Cash" && (
+                        <>
+                          <Container>
+                            <Row className="justify-content-center align-items-center">
+                              <Col md={6}>
+                                <img
+                                  src={cashpayment}
+                                  width={300}
+                                  height={240}
                                 />
                               </Col>
-                            </Col>
+                              <Col md={6}>
+                                <CardTitle>Total Amount To Pay </CardTitle>
 
-                            {/* Form on Right */}
-                            <Col md={6}>
-                              <Row>
-                                <Col sm="6" className="mb-2">
-                                  <Label for="number">Card Number</Label>
-
-                                  <Controller
-                                    name="cardNumber"
-                                    control={control}
-                                    rules={{
-                                      required: "CardNumber  is required",
-                                      pattern: {
-                                        value: /^[0-9]+$/,
-                                        message: "Only number allowed",
-                                      },
-                                      maxLength: {
-                                        value: 16,
-                                        message: "Maximum 16 digits allowed",
-                                      },
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="tel"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e); // update RHF
-                                          const value = e.target.value;
-
-                                          setCardDetails((prev) => ({
-                                            ...prev,
-                                            cardNumber: value,
-                                          }));
-
-                                          const cardType =
-                                            detectCardType(value); // 🧠 auto-detect type
-                                          setValue("cardType", cardType); // update RHF field
-                                          setCardDetails((prev) => ({
-                                            ...prev,
-                                            cardType: cardType,
-                                          }));
-                                        }}
-                                        onFocus={handleInputFocus}
-                                        placeholder="Card Number"
-                                      />
+                                <Row>
+                                  <Col md="12" className="mb-1">
+                                    <Label className="form-label" for="Cash">
+                                      Total Amount
+                                      <span style={{ color: "red" }}>*</span>
+                                    </Label>
+                                    <Controller
+                                      id="Cash"
+                                      name="Cash"
+                                      rules={{
+                                        required: "Cash is required",
+                                        // validate: validateCardSwipeTransactionId,
+                                      }}
+                                      control={control}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="text"
+                                          placeholder="Total Cash"
+                                          defaultValues={
+                                            FinalAmountRes?.totalAmount
+                                          }
+                                          invalid={!!errors.Cash}
+                                          {...field}
+                                          disabled={true}
+                                          // onChange={(e) => {
+                                          //   const numericValue =
+                                          //     e.target.value.replace(/\D/g, "");
+                                          //   field.onChange(numericValue);
+                                          // }}
+                                        />
+                                      )}
+                                    />
+                                    {errors.Cash && (
+                                      <FormFeedback>
+                                        {errors.Cash.message}
+                                      </FormFeedback>
                                     )}
+                                  </Col>
+
+                                  <Col md="12" className="mb-1">
+                                    <Label sm="3" for="pin">
+                                      Enter Pin{" "}
+                                      <span style={{ color: "red" }}>*</span>
+                                    </Label>
+                                    <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                                      {[...Array(4)].map((_, index) => (
+                                        <Controller
+                                          key={index}
+                                          name={`pin[${index}]`}
+                                          control={control}
+                                          rules={{
+                                            required:
+                                              "All pin digits are required",
+                                            pattern: {
+                                              value: /^[0-9]$/,
+                                              message:
+                                                "Each pin digit must be a number",
+                                            },
+                                          }}
+                                          render={({ field }) => (
+                                            <Input
+                                              {...field}
+                                              maxLength={1}
+                                              id={`pin-input-${index}`}
+                                              className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
+                                                errors.pin?.[index]
+                                                  ? "is-invalid"
+                                                  : ""
+                                              }`}
+                                              autoFocus={index === 0}
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (
+                                                  !/^[0-9]$/.test(value) &&
+                                                  value !== ""
+                                                )
+                                                  return;
+
+                                                field.onChange(e);
+
+                                                if (value && index < 5) {
+                                                  const nextInput =
+                                                    document.getElementById(
+                                                      `pin-input-${index + 1}`
+                                                    );
+                                                  nextInput?.focus();
+                                                }
+                                              }}
+                                              onKeyDown={(e) => {
+                                                if (
+                                                  e.key === "Backspace" &&
+                                                  !field.value &&
+                                                  index > 0
+                                                ) {
+                                                  const prevInput =
+                                                    document.getElementById(
+                                                      `pin-input-${index - 1}`
+                                                    );
+                                                  prevInput?.focus();
+                                                }
+                                              }}
+                                            />
+                                          )}
+                                        />
+                                      ))}
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </Col>
+                            </Row>
+                          </Container>
+                        </>
+                      )}
+                      {selectedOption === "card" && (
+                        <>
+                          <Container>
+                            <Row className="justify-content-center align-items-center">
+                              {/* Credit Card Preview on Left */}
+                              <Col md={6} className="text-center">
+                                <Col
+                                  md={6}
+                                  className="text-center position-relative"
+                                >
+                                  <Cards
+                                    number={maskCardNumberForCard(
+                                      cardDetails.cardNumber
+                                    )} // ⚠️ only partially masked
+                                    name={cardDetails.nameOnCard}
+                                    expiry={cardDetails.expiry}
+                                    cvc={maskCVC(cardDetails.cvc)} // Shows ***
+                                    focused={cardDetails.focus}
                                   />
-                                  {errors.cardNumber && (
-                                    <p className="text-danger">
-                                      {errors.cardNumber.message}
-                                    </p>
-                                  )}
                                 </Col>
+                              </Col>
 
-                                <Col sm="6" className="mb-2">
-                                  <Label for="name">Name On Card</Label>
+                              {/* Form on Right */}
+                              <Col md={6}>
+                                <Row>
+                                  <Col sm="6" className="mb-2">
+                                    <Label for="number">Card Number</Label>
 
-                                  <Controller
-                                    name="nameOnCard"
-                                    control={control}
-                                    rules={{
-                                      required: "Cardholder name is required",
-                                      pattern: {
-                                        value: /^[A-Za-z\s]+$/, // only letters and spaces allowed
-                                        message:
-                                          "Only alphabetic characters are allowed",
-                                      },
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="text"
-                                        placeholder="Cardholder Name"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e); // for RHF
-                                          handleInputChange(e); // for card image
-                                        }}
-                                        onFocus={handleInputFocus}
-                                      />
+                                    <Controller
+                                      name="cardNumber"
+                                      control={control}
+                                      rules={{
+                                        required: "CardNumber  is required",
+                                        pattern: {
+                                          value: /^[0-9]+$/,
+                                          message: "Only number allowed",
+                                        },
+                                        maxLength: {
+                                          value: 16,
+                                          message: "Maximum 16 digits allowed",
+                                        },
+                                      }}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="tel"
+                                          {...field}
+                                          onChange={(e) => {
+                                            field.onChange(e); // update RHF
+                                            const value = e.target.value;
+
+                                            setCardDetails((prev) => ({
+                                              ...prev,
+                                              cardNumber: value,
+                                            }));
+
+                                            const cardType =
+                                              detectCardType(value); // 🧠 auto-detect type
+                                            setValue("cardType", cardType); // update RHF field
+                                            setCardDetails((prev) => ({
+                                              ...prev,
+                                              cardType: cardType,
+                                            }));
+                                          }}
+                                          onFocus={handleInputFocus}
+                                          placeholder="Card Number"
+                                        />
+                                      )}
+                                    />
+                                    {errors.cardNumber && (
+                                      <p className="text-danger">
+                                        {errors.cardNumber.message}
+                                      </p>
                                     )}
-                                  />
+                                  </Col>
 
-                                  {errors.nameOnCard && (
-                                    <p className="text-danger">
-                                      {errors.nameOnCard.message}
-                                    </p>
-                                  )}
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col sm="6" className="mb-2">
-                                  <Label for="cardType">Card Type</Label>
-                                  <Controller
-                                    name="cardType"
-                                    control={control}
-                                    rules={{
-                                      required: "Card Type is required",
-                                      pattern: {
-                                        value: /^[A-Za-z ]+$/,
-                                        message:
-                                          "Only alphabetic characters are allowed",
-                                      },
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        {...field}
-                                        id="cardType"
-                                        disabled={true}
-                                        // readOnly={true}
-                                        onChange={(e) => {
-                                          field.onChange(e); // keep react-hook-form state updated
-                                          handleInputChange(e); // your custom logic
-                                        }}
-                                        onFocus={handleInputFocus}
-                                        invalid={!!errors.cardType}
-                                      />
+                                  <Col sm="6" className="mb-2">
+                                    <Label for="name">Name On Card</Label>
+
+                                    <Controller
+                                      name="nameOnCard"
+                                      control={control}
+                                      rules={{
+                                        required: "Cardholder name is required",
+                                        pattern: {
+                                          value: /^[A-Za-z\s]+$/, // only letters and spaces allowed
+                                          message:
+                                            "Only alphabetic characters are allowed",
+                                        },
+                                      }}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="text"
+                                          placeholder="Cardholder Name"
+                                          {...field}
+                                          onChange={(e) => {
+                                            field.onChange(e); // for RHF
+                                            handleInputChange(e); // for card image
+                                          }}
+                                          onFocus={handleInputFocus}
+                                        />
+                                      )}
+                                    />
+
+                                    {errors.nameOnCard && (
+                                      <p className="text-danger">
+                                        {errors.nameOnCard.message}
+                                      </p>
                                     )}
-                                  />
-                                </Col>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col sm="6" className="mb-2">
+                                    <Label for="cardType">Card Type</Label>
+                                    <Controller
+                                      name="cardType"
+                                      control={control}
+                                      rules={{
+                                        required: "Card Type is required",
+                                        pattern: {
+                                          value: /^[A-Za-z ]+$/,
+                                          message:
+                                            "Only alphabetic characters are allowed",
+                                        },
+                                      }}
+                                      render={({ field }) => (
+                                        <Input
+                                          {...field}
+                                          id="cardType"
+                                          disabled={true}
+                                          // readOnly={true}
+                                          onChange={(e) => {
+                                            field.onChange(e); // keep react-hook-form state updated
+                                            handleInputChange(e); // your custom logic
+                                          }}
+                                          onFocus={handleInputFocus}
+                                          invalid={!!errors.cardType}
+                                        />
+                                      )}
+                                    />
+                                  </Col>
 
-                                <Col sm="6" className="mb-2">
-                                  <Label for="cardCvv">CVV</Label>
-                                  <Controller
-                                    name="cvc"
-                                    control={control}
-                                    rules={{
-                                      required: "CVV is required",
-                                      pattern: {
-                                        value: /^[0-9]+$/,
-                                        message: "Only Numbers allowed",
-                                      },
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="password"
-                                        placeholder="Enter CVV"
-                                        maxLength="3"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e); // React Hook Form state
-                                          handleInputChange(e); // Update card preview only
-                                        }}
-                                        onFocus={handleInputFocus}
-                                      />
+                                  <Col sm="6" className="mb-2">
+                                    <Label for="cardCvv">CVV</Label>
+                                    <Controller
+                                      name="cvc"
+                                      control={control}
+                                      rules={{
+                                        required: "CVV is required",
+                                        pattern: {
+                                          value: /^[0-9]+$/,
+                                          message: "Only Numbers allowed",
+                                        },
+                                      }}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="password"
+                                          placeholder="Enter CVV"
+                                          maxLength="3"
+                                          {...field}
+                                          onChange={(e) => {
+                                            field.onChange(e); // React Hook Form state
+                                            handleInputChange(e); // Update card preview only
+                                          }}
+                                          onFocus={handleInputFocus}
+                                        />
+                                      )}
+                                    />
+
+                                    {errors.cvc && (
+                                      <p className="text-danger">
+                                        {errors.cvc.message}
+                                      </p>
                                     )}
-                                  />
+                                  </Col>
+                                </Row>
 
-                                  {errors.cvc && (
-                                    <p className="text-danger">
-                                      {errors.cvc.message}
-                                    </p>
-                                  )}
-                                </Col>
-                              </Row>
-
-                              <Row>
-                                <Col sm="6" className="mb-2">
-                                  <Label for="cardExpiryYear">
-                                    Expiry Year
-                                  </Label>
-                                  <Controller
-                                    name="cardExpiryYear"
-                                    control={control}
-                                    rules={{
-                                      required: "Expiry year is required",
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="select"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e);
-                                          handleInputChange(e);
-                                        }}
-                                        onFocus={handleInputFocus}
-                                      >
-                                        <option value="">Select Year</option>
-                                        {years.map((year) => (
-                                          <option
-                                            key={year.value}
-                                            value={year.value}
-                                          >
-                                            {year.label}
-                                          </option>
-                                        ))}
-                                      </Input>
-                                    )}
-                                  />
-                                  {errors.cardExpiryYear && (
-                                    <p className="text-danger">
-                                      {errors.cardExpiryYear.message}
-                                    </p>
-                                  )}
-                                </Col>
-
-                                <Col sm="6" className="mb-2">
-                                  <Label for="cardExpiryMonth">
-                                    Expiry Month
-                                  </Label>
-                                  <Controller
-                                    name="cardExpiryMonth"
-                                    control={control}
-                                    rules={{
-                                      required: "Expiry month is required",
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="select"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e);
-                                          handleInputChange(e);
-                                        }}
-                                        onFocus={handleInputFocus}
-                                      >
-                                        <option value="">Select Month</option>
-                                        {getFilteredMonths(selectedYear).map(
-                                          (month) => (
+                                <Row>
+                                  <Col sm="6" className="mb-2">
+                                    <Label for="cardExpiryYear">
+                                      Expiry Year
+                                    </Label>
+                                    <Controller
+                                      name="cardExpiryYear"
+                                      control={control}
+                                      rules={{
+                                        required: "Expiry year is required",
+                                      }}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="select"
+                                          {...field}
+                                          onChange={(e) => {
+                                            field.onChange(e);
+                                            handleInputChange(e);
+                                          }}
+                                          onFocus={handleInputFocus}
+                                        >
+                                          <option value="">Select Year</option>
+                                          {years.map((year) => (
                                             <option
-                                              key={month.value}
-                                              value={month.value}
+                                              key={year.value}
+                                              value={year.value}
                                             >
-                                              {month.label}
+                                              {year.label}
                                             </option>
-                                          )
-                                        )}
-                                      </Input>
+                                          ))}
+                                        </Input>
+                                      )}
+                                    />
+                                    {errors.cardExpiryYear && (
+                                      <p className="text-danger">
+                                        {errors.cardExpiryYear.message}
+                                      </p>
                                     )}
-                                  />
-                                  {errors.cardExpiryMonth && (
-                                    <p className="text-danger">
-                                      {errors.cardExpiryMonth.message}
-                                    </p>
-                                  )}
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                        </Container>
-                      </>
-                    )}
+                                  </Col>
 
-                    {selectedOption === "cardSwipe" && (
-                      <>
-                        <Container>
-                          <Row className="justify-content-center align-items-center">
-                            <Col md={6}>
-                              <img src={cardSwipe} width={300} height={240} />
-                            </Col>
-                            <Col md={6}>
-                              <CardTitle>
-                                Please Swipe Your Card to Continue{" "}
-                              </CardTitle>
-                              <Row>
-                                <Col md="12" className="mb-1">
-                                  <Label
-                                    className="form-label"
-                                    for="cardSwipeTransactionId"
-                                  >
-                                    Card Swipe Transaction ID
-                                    <span style={{ color: "red" }}>*</span>
-                                  </Label>
-                                  <Controller
-                                    id="cardSwipeTransactionId"
-                                    name="cardSwipeTransactionId"
-                                    rules={{
-                                      required:
-                                        "Card Swipe Transaction ID is required",
-                                      validate: validateCardSwipeTransactionId,
-                                    }}
-                                    control={control}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="text"
-                                        placeholder="Enter Transaction ID"
-                                        invalid={
-                                          !!errors.cardSwipeTransactionId
-                                        }
-                                        {...field}
-                                        // disabled={statusThree}
-                                        onChange={(e) => {
-                                          const numericValue =
-                                            e.target.value.replace(/\D/g, "");
-                                          field.onChange(numericValue);
-                                        }}
-                                      />
+                                  <Col sm="6" className="mb-2">
+                                    <Label for="cardExpiryMonth">
+                                      Expiry Month
+                                    </Label>
+                                    <Controller
+                                      name="cardExpiryMonth"
+                                      control={control}
+                                      rules={{
+                                        required: "Expiry month is required",
+                                      }}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="select"
+                                          {...field}
+                                          onChange={(e) => {
+                                            field.onChange(e);
+                                            handleInputChange(e);
+                                          }}
+                                          onFocus={handleInputFocus}
+                                        >
+                                          <option value="">Select Month</option>
+                                          {getFilteredMonths(selectedYear).map(
+                                            (month) => (
+                                              <option
+                                                key={month.value}
+                                                value={month.value}
+                                              >
+                                                {month.label}
+                                              </option>
+                                            )
+                                          )}
+                                        </Input>
+                                      )}
+                                    />
+                                    {errors.cardExpiryMonth && (
+                                      <p className="text-danger">
+                                        {errors.cardExpiryMonth.message}
+                                      </p>
                                     )}
-                                  />
-                                  {errors.cardSwipeTransactionId && (
-                                    <FormFeedback>
-                                      {errors.cardSwipeTransactionId.message}
-                                    </FormFeedback>
-                                  )}
-                                </Col>
-                              </Row>
-                            </Col>
-                          </Row>
-                        </Container>
-                      </>
-                    )}
+                                  </Col>
+                                </Row>
+                              </Col>
+                            </Row>
+                          </Container>
+                        </>
+                      )}
 
-                    <Row>
-                      <Col className="d-flex justify-content-end mt-3">
-                        <Button
-                          color="secondary"
-                          className="me-2"
-                          size="sm"
-                          onClick={() => reset()}
-                        >
-                          Reset
-                        </Button>
-                        <Button
-                          color="primary"
-                          size="sm"
-                          disabled={loadPayment}
-                          type="submit"
-                        >
-                          {loadPayment ? (
-                            <>
-                              Loading... <Spinner size="sm" />
-                            </>
-                          ) : (
-                            " Make Payment"
-                          )}
-                        </Button>
-                      </Col>
+                      {selectedOption === "cardSwipe" && (
+                        <>
+                          <Container>
+                            <Row className="justify-content-center align-items-center">
+                              <Col md={6}>
+                                <img src={cardSwipe} width={300} height={240} />
+                              </Col>
+                              <Col md={6}>
+                                <CardTitle>
+                                  Please Swipe Your Card to Continue{" "}
+                                </CardTitle>
+                                <Row>
+                                  <Col md="12" className="mb-1">
+                                    <Label
+                                      className="form-label"
+                                      for="cardSwipeTransactionId"
+                                    >
+                                      Card Swipe Transaction ID
+                                      <span style={{ color: "red" }}>*</span>
+                                    </Label>
+                                    <Controller
+                                      id="cardSwipeTransactionId"
+                                      name="cardSwipeTransactionId"
+                                      rules={{
+                                        required:
+                                          "Card Swipe Transaction ID is required",
+                                        validate:
+                                          validateCardSwipeTransactionId,
+                                      }}
+                                      control={control}
+                                      render={({ field }) => (
+                                        <Input
+                                          type="text"
+                                          placeholder="Enter Transaction ID"
+                                          invalid={
+                                            !!errors.cardSwipeTransactionId
+                                          }
+                                          {...field}
+                                          // disabled={statusThree}
+                                          onChange={(e) => {
+                                            const numericValue =
+                                              e.target.value.replace(/\D/g, "");
+                                            field.onChange(numericValue);
+                                          }}
+                                        />
+                                      )}
+                                    />
+                                    {errors.cardSwipeTransactionId && (
+                                      <FormFeedback>
+                                        {errors.cardSwipeTransactionId.message}
+                                      </FormFeedback>
+                                    )}
+                                  </Col>
+                                </Row>
+                              </Col>
+                            </Row>
+                          </Container>
+                        </>
+                      )}
+
+                      <Row>
+                        <Col className="d-flex justify-content-end mt-3">
+                          <Button
+                            color="secondary"
+                            className="me-2"
+                            size="sm"
+                            onClick={() => reset()}
+                          >
+                            Reset
+                          </Button>
+                          <Button
+                            color="primary"
+                            size="sm"
+                            disabled={loadPayment}
+                            type="submit"
+                          >
+                            {loadPayment ? (
+                              <>
+                                Loading... <Spinner size="sm" />
+                              </>
+                            ) : (
+                              " Make Payment"
+                            )}
+                          </Button>
+                        </Col>
+                      </Row>
                     </Row>
-                  </Row>
-                </CardBody>
-              </Form>
-            </Card>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
+                  </CardBody>
+                </Form>
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </>
-
   );
 };
 

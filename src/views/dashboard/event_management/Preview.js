@@ -79,9 +79,9 @@ const EventPreview = ({stepper, allEventData}) => {
  
   return (
     <div className="">
-      <h3>Event Confirmation</h3>
+      <h3>Event Confirmation </h3>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="mt-2">
+        <Card className="mt-2  border bg-light">
           <CardBody>
             <Row className="mb-2">
               <Col md="6"><strong>Event Name:</strong> {allEventData?.eventName}</Col>
@@ -116,7 +116,7 @@ const EventPreview = ({stepper, allEventData}) => {
 
       <h3>Member Details</h3>
 
-         <Card className="mt-2">
+         <Card className="mt-2 border bg-light">
           <CardBody>
             <Row className="mb-2">
               <Col md="6"><strong>First Name:</strong> {allEventData?.firstName}</Col>
@@ -157,13 +157,13 @@ const EventPreview = ({stepper, allEventData}) => {
           <p>No vendors selected</p>
         )}
 
-        <div className="d-flex justify-content-between mt-4">
+        <div className="d-flex justify-content-end mt-4">
           {/* <Button color="secondary"  type="button"               onClick={() => stepper.previous()}
 >
             Edit Details
           </Button> */}
-          <Button color="success" type="submit" onClick={() => stepper.next()}>
-            Confirm & Proceed to Payment
+          <Button color="primary" type="submit" onClick={() => stepper.next()}>
+            Next
           </Button>
         </div>
       </form>

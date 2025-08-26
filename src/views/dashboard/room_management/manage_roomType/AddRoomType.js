@@ -1,28 +1,19 @@
-import React, { Fragment, useRef } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
+import useJwt from "@src/auth/jwt/useJwt";
 import "primeicons/primeicons.css";
-import { UncontrolledAlert } from "reactstrap";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { ArrowLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Card,
+  Button, Card,
   CardBody,
   CardText,
   CardTitle,
-  Col,
-  Label,
-  Input,
-  Button,
-  FormGroup,
-  Spinner,
-  FormFeedback,
+  Col, FormFeedback, FormGroup, Input, Label, Spinner, UncontrolledAlert
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
-import { ArrowLeft } from "react-feather";
 
 function AddVTypes() {
   const {
@@ -146,10 +137,11 @@ function AddVTypes() {
                   defaultValue=""
                   rules={{
                     required: "Event Type is required",
-                    pattern: {
-                      value: /^[A-Za-z0-9]+$/,
-                      message: "Only letters and numbers are allowed",
-                    },
+pattern: {
+  value: /^[A-Za-z\s]+$/,
+  message: "Only letters and spaces are allowed",
+}
+
                   }}
                   render={({ field }) => (
                     <Input

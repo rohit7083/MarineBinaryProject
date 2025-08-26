@@ -131,8 +131,9 @@ function ShipDetails() {
           water: userData.water,
           // addOn: userData.addOn ,
           addOn: userData.addOn?.trim() === "" ? null : userData.addOn,
-
-          amps: parseFloat(userData.amps),
+          ...(userData.electric === true && {
+            amps: parseFloat(userData.amps),
+          }),
           marketAnnualPrice: parseFloat(userData.marketAnnualPrice) || 0,
           marketMonthlyPrice: parseFloat(userData.marketMonthlyPrice) || 0,
           slipCategoryUid: selectedCategory?.value,
@@ -537,16 +538,17 @@ function ShipDetails() {
 
         <CardHeader>
           <CardTitle tag="h4">
-        <ArrowLeft
-                        style={{
-                          cursor: "pointer",
-                          marginRight: "10px",
-                          transition: "color 0.1s",
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                        onClick={() => window.history.back()}
-                      />{" "}    {uid ? "Edit Slip Details" : "Add Slip Details"}
+            <ArrowLeft
+              style={{
+                cursor: "pointer",
+                marginRight: "10px",
+                transition: "color 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+              onClick={() => window.history.back()}
+            />{" "}
+            {uid ? "Edit Slip Details" : "Add Slip Details"}
           </CardTitle>
         </CardHeader>
 

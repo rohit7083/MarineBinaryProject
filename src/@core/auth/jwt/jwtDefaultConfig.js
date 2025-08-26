@@ -1,9 +1,6 @@
-import { Venus } from "lucide-react";
-import { Delete } from "react-feather";
-
 // ** Auth Endpoints
 export default {
-  // loginEndpoint: "/jwt/login",  // temp
+  //  loginEndpoint: '/jwt/login', //temp
   loginEndpoint: "/login",
 
   registerEndpoint: "/jwt/register",
@@ -133,6 +130,7 @@ export default {
   getAllEvents: "/events",
   createEvent: "/events/",
   DeleteEvent: "/events/",
+  UpdateEventAndPayment: "/event/complete-payment",
 
   Parentvendor: "/vendorType/",
 
@@ -152,14 +150,20 @@ export default {
   bookingList: "/booking",
   bookingPayment: "/booking/payment",
   GetAllRooms: "/room",
-  UpdateRooms:"/room/",
-  DeleteRooms:"/room/",
+  UpdateRooms: "/room/",
+  DeleteRooms: "/room/",
   //room Type Update and delete
   DeleteRoomType: "roomType/",
   UpdateRoomType: "roomType/",
 
+  ExtendDate: "/booking/extend-guest/",
 
-  ExtendDate:"/booking/extend-guest/",
+  ExtendDataUpdate: "/booking/extend",
 
-  ExtendDataUpdate:"/booking/extend",
+  //cancle event
+  cancleEvent: "/events/cancel/",
+  // cancle rooms
+cancleRooms:'/events/cancelrooms/',
+  //add eextra room
+  addExtraRoom: "/events/addrooms/",
 };

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState ,useRef} from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import Swal from "sweetalert2";
 import InputPasswordToggle from "@components/input-password-toggle";
 import { useNavigate } from "react-router-dom";
@@ -38,11 +38,8 @@ import { selectThemeColors } from "@utils";
 import withReactContent from "sweetalert2-react-content";
 import { use } from "react";
 const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
-  
-
-
-  const [passwordCreated,setPasswordCreated]=useState(false);
-    const [DefaultPasswardUsed,setDefaultPasswardUsed]=useState(false);
+  const [passwordCreated, setPasswordCreated] = useState(false);
+  const [DefaultPasswardUsed, setDefaultPasswardUsed] = useState(false);
 
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
@@ -74,10 +71,10 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const lastName = watch("lastName");
   const emailId = watch("emailId");
   const mobileNum = watch("mobileNumber");
-    const [encryptedPasss, setEncrypt] = useState(null);
-  
-    const watchPassword = watch("password");
- const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+  const [encryptedPasss, setEncrypt] = useState(null);
+
+  const watchPassword = watch("password");
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
   function generateKey(secretKey) {
     return CryptoJS.SHA256(secretKey);
@@ -105,17 +102,15 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   useEffect(() => {
     if (watchPassword) {
       const encrypted = encryptAES(watchPassword);
-      
-      
+
       setEncrypt(encrypted);
     }
   }, [watchPassword]);
 
-
-useEffect(()=>{
-setPasswordCreated(row?.isPasswordCreated)
-setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
-},[row])
+  useEffect(() => {
+    setPasswordCreated(row?.isPasswordCreated);
+    setDefaultPasswardUsed(row?.isDefaultPasswardUsed);
+  }, [row]);
 
   const validatePassword = (pwd) => {
     if (!pwd) return;
@@ -138,7 +133,7 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
             )
           : true,
     };
-     
+
     setRequirements(isValid);
     setIsPasswordValid(Object.values(isValid).every(Boolean)); // Set true only if all conditions pass
   };
@@ -150,15 +145,20 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
     validatePassword(newPwd);
   };
   const onSubmit = async (data) => {
+    const pinArray = data.pin || [];
+
+    const encrptedPin = encryptAES(pinArray.join(""));
+
     const transformedData = {
       firstName: data.firstName,
       lastName: data.lastName,
       emailId: data.emailId,
       mobileNumber: data.mobileNumber,
       password: encryptedPasss,
+      pin:encrptedPin ,
       countryCode: data.countryCode.value,
       userRoles: {
-        uid: data.userRoles, // `data.userRoles` contains the selected role UID
+        uid: data.userRoles, 
       },
     };
     console.log("Transformed Data:", transformedData);
@@ -177,9 +177,9 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
         //   },
         //   buttonsStyling: false,
         // }).then(() => {
-          // navigate("/dashboard/user_rolls/roles-permissions/createuser");
-          // setShow(false);
-          // reset();
+        // navigate("/dashboard/user_rolls/roles-permissions/createuser");
+        // setShow(false);
+        // reset();
         // });
         toast.current.show({
           severity: "success",
@@ -190,8 +190,8 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
         setTimeout(() => {
           navigate("/dashboard/user_rolls/roles-permissions/createuser");
           setShow(false);
-          reset();        }, 2000);
-
+          reset();
+        }, 2000);
       } else {
         setLoading(true);
         const res2 = await useJwt.createUser(transformedData);
@@ -214,7 +214,7 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
       }
     } catch (error) {
       console.error("Error occurred:", error);
-         if (error.response) {
+      if (error.response) {
         const { status, content } = error.response.data;
         const errorMessage = content;
         setMessage(errorMessage);
@@ -238,7 +238,7 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
 
         setallRoleName(roles);
       } catch (error) {
-         console.error(error);
+        console.error(error);
       } finally {
       }
     })();
@@ -317,10 +317,10 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
         onClosed={handleModalClosed}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
+        style={{ maxWidth: "600px" }}
       >
-         
-              <Toast ref={toast} />
-        
+        <Toast ref={toast} />
+
         <ModalHeader className="bg-transparent" toggle={() => setShow(!show)} />
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-2">
@@ -330,16 +330,17 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
 
           <Form onSubmit={handleSubmit(onSubmit)}>
             {Errmessage && (
-                      <React.Fragment>
-                        <UncontrolledAlert color="danger">
-                          <div className="alert-body">
-                            <span className="text-danger fw-bold">
-                              <strong>❌ Error : </strong>
-                              {Errmessage}</span>
-                          </div>
-                        </UncontrolledAlert>
-                      </React.Fragment>
-                    )}
+              <React.Fragment>
+                <UncontrolledAlert color="danger">
+                  <div className="alert-body">
+                    <span className="text-danger fw-bold">
+                      <strong>❌ Error : </strong>
+                      {Errmessage}
+                    </span>
+                  </div>
+                </UncontrolledAlert>
+              </React.Fragment>
+            )}
             <Row className="mb-2">
               <Label sm="3" for="roleName">
                 Role Name
@@ -389,7 +390,13 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
                     defaultValue=""
                     rules={{ required: "First Name is required" }}
                     render={({ field }) => (
-                      <Input type="text" placeholder="First Name" {...field} />
+                      <Input type="text" placeholder="First Name" {...field}  onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }} />
                     )}
                   />
                 </InputGroup>
@@ -418,7 +425,13 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
                     defaultValue=""
                     rules={{ required: "Last Name is required" }}
                     render={({ field }) => (
-                      <Input type="text" placeholder="Last Name" {...field} />
+                      <Input type="text" placeholder="Last Name" {...field}  onChange={(e) => {
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
+                            ""
+                          );
+                          field.onChange(onlyAlphabets);
+                        }} />
                     )}
                   />
                 </InputGroup>
@@ -523,115 +536,182 @@ setDefaultPasswardUsed(row?.isDefaultPasswardUsed)
                 {/* </FormGroup> */}
               </Col>
             </Row>
-{(!passwordCreated && ! DefaultPasswardUsed || !passwordCreated && DefaultPasswardUsed) &&
-
-(<>
 
             <Row className="mb-2">
-              <Label sm="3" for="password">
-                Password
+              <Label sm="3" for="pin">
+                Generate Pin
               </Label>
-              <Col sm="9">
-                <Controller
-                  id="password"
-                  name="password"
-                  control={control}
-                  rules={{
-                    validate: validatePassword,
-                    minLength: {
-                      value: 12,
-                      message: "password must be at least 12 character long",
-                    },
-                    pattern: {
-                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{12,}$/,
-                      message:
-                        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and no special characters",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <div>
-                      <InputPasswordToggle
-                        className="input-group-merge"
-                        invalid={errors.password}
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          handleChange(e);
-                        }}
-                        value={password}
-                      />
-                      {errors.password && (
-                        <FormFeedback
-                          style={{ color: "red", display: "block" }}
-                        >
-                          {errors.password.message}
-                        </FormFeedback>
+              <Col sm="6">
+                <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                  {[...Array(4)].map((_, index) => (
+                    <Controller
+                      key={index}
+                      name={`pin[${index}]`}
+                      control={control}
+                      // rules={{
+                      //   required: "All pin digits are required",
+                      //   pattern: {
+                      //     value: /^[0-9]$/,
+                      //     message: "Each pin digit must be a number",
+                      //   },
+                      // }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          maxLength={1}
+                          id={`pin-input-${index}`}
+                          className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
+                            errors.pin?.[index] ? "is-invalid" : ""
+                          }`}
+                          autoFocus={index === 0}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (!/^[0-9]$/.test(value) && value !== "") return;
+
+                            field.onChange(e);
+
+                            if (value && index < 5) {
+                              const nextInput = document.getElementById(
+                                `pin-input-${index + 1}`
+                              );
+                              nextInput?.focus();
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              e.key === "Backspace" &&
+                              !field.value &&
+                              index > 0
+                            ) {
+                              const prevInput = document.getElementById(
+                                `pin-input-${index - 1}`
+                              );
+                              prevInput?.focus();
+                            }
+                          }}
+                        />
                       )}
-                    </div>
-                  )}
-                />
-                {errors.password && (
-                  <FormFeedback>{errors.password.message}</FormFeedback>
-                )}
+                    />
+                  ))}
+                </div>
               </Col>
             </Row>
 
-            <Row>
-              {" "}
-              <Label sm="3" for="password"></Label>
-              <Col sm="9">
-                <CardTitle tag="h5" className="mb-1">
-                  Password Requirement
-                </CardTitle>
+            {((!passwordCreated && !DefaultPasswardUsed) ||
+              (!passwordCreated && DefaultPasswardUsed)) && (
+              <>
+                <Row className="mb-2">
+                  <Label sm="3" for="password">
+                    Password
+                  </Label>
+                  <Col sm="9">
+                    <Controller
+                      id="password"
+                      name="password"
+                      control={control}
+                      rules={{
+                        validate: validatePassword,
+                        minLength: {
+                          value: 12,
+                          message:
+                            "password must be at least 12 character long",
+                        },
+                        pattern: {
+                          value:
+                            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{12,}$/,
+                          message:
+                            "Password must contain at least one uppercase letter, one lowercase letter, one digit, and no special characters",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <div>
+                          <InputPasswordToggle
+                            className="input-group-merge"
+                            invalid={errors.password}
+                            {...field}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              handleChange(e);
+                            }}
+                            value={password}
+                          />
+                          {errors.password && (
+                            <FormFeedback
+                              style={{ color: "red", display: "block" }}
+                            >
+                              {errors.password.message}
+                            </FormFeedback>
+                          )}
+                        </div>
+                      )}
+                    />
+                    {errors.password && (
+                      <FormFeedback>{errors.password.message}</FormFeedback>
+                    )}
+                  </Col>
+                </Row>
 
-                <ListGroupItem
-                  className={
-                    requirements.length ? "text-success" : "text-danger"
-                  }
-                >
-                  {requirements.length ? "✅" : "❌"} At least 12 characters
-                </ListGroupItem>
+                <Row>
+                  {" "}
+                  <Label sm="3" for="password"></Label>
+                  <Col sm="9">
+                    <CardTitle tag="h5" className="mb-1">
+                      Password Requirement
+                    </CardTitle>
 
-                <ListGroupItem
-                  className={
-                    requirements.uppercase ? "text-success" : "text-danger"
-                  }
-                >
-                  {requirements.uppercase ? "✅" : "❌"} At least one uppercase
-                </ListGroupItem>
-                <ListGroupItem
-                  className={
-                    requirements.lowercase ? "text-success" : "text-danger"
-                  }
-                >
-                  {requirements.lowercase ? "✅" : "❌"} At least one lowercase
-                </ListGroupItem>
-                <ListGroupItem
-                  className={
-                    requirements.number ? "text-success" : "text-danger"
-                  }
-                >
-                  {requirements.number ? "✅" : "❌"} At least one number
-                </ListGroupItem>
-                <ListGroupItem
-                  className={
-                    requirements.sensitive ? "text-success" : "text-danger"
-                  }
-                >
-                  {requirements.sensitive ? "✅" : "❌"}
-                  No firstName / lastName / Email And Mobile Number allowed
-                </ListGroupItem>
-                <ListGroupItem
-                  className={
-                    requirements.specialChar ? "text-success" : "text-danger"
-                  }
-                >
-                  {requirements.specialChar ? "✅" : "❌"} No special characters
-                  allowed
-                </ListGroupItem>
-              </Col>
-            </Row>
-</>)}
+                    <ListGroupItem
+                      className={
+                        requirements.length ? "text-success" : "text-danger"
+                      }
+                    >
+                      {requirements.length ? "✅" : "❌"} At least 12 characters
+                    </ListGroupItem>
+
+                    <ListGroupItem
+                      className={
+                        requirements.uppercase ? "text-success" : "text-danger"
+                      }
+                    >
+                      {requirements.uppercase ? "✅" : "❌"} At least one
+                      uppercase
+                    </ListGroupItem>
+                    <ListGroupItem
+                      className={
+                        requirements.lowercase ? "text-success" : "text-danger"
+                      }
+                    >
+                      {requirements.lowercase ? "✅" : "❌"} At least one
+                      lowercase
+                    </ListGroupItem>
+                    <ListGroupItem
+                      className={
+                        requirements.number ? "text-success" : "text-danger"
+                      }
+                    >
+                      {requirements.number ? "✅" : "❌"} At least one number
+                    </ListGroupItem>
+                    <ListGroupItem
+                      className={
+                        requirements.sensitive ? "text-success" : "text-danger"
+                      }
+                    >
+                      {requirements.sensitive ? "✅" : "❌"}
+                      No firstName / lastName / Email And Mobile Number allowed
+                    </ListGroupItem>
+                    <ListGroupItem
+                      className={
+                        requirements.specialChar
+                          ? "text-success"
+                          : "text-danger"
+                      }
+                    >
+                      {requirements.specialChar ? "✅" : "❌"} No special
+                      characters allowed
+                    </ListGroupItem>
+                  </Col>
+                </Row>
+              </>
+            )}
 
             <Row className="mt-2">
               <Col className="d-flex" md={{ size: 9, offset: 3 }}>

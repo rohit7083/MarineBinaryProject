@@ -1,47 +1,63 @@
-import React, { useEffect, useState, useRef } from "react";
 import { selectThemeColors } from "@utils";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import successAnimation from "../../../assets/images/celebrate.json";
+import successAnimations from "../../../assets/images/Congratulations.json";
+
+import Lottie from "lottie-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Plus } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import Select, { components } from "react-select";
 import {
-  Form,
-  FormGroup,
-  Label,
-  Input,
   Button,
-  Row,
-  Col,
   Card,
   CardBody,
-  FormFeedback,
-  Spinner,
+  CardText,
   CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
   Table,
 } from "reactstrap";
-import Sidebar from "@components/sidebar";
 import ViewClient from "./client_Information/ViewClient";
-import { useForm, Controller, set } from "react-hook-form";
-import Select from "react-select";
-import { X, Plus, Hash } from "react-feather";
 
 import useJwt from "@src/auth/jwt/useJwt";
-import CreateVenue from "./createVenue/CreateVenue";
-import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/airbnb.css"; // or 'material_blue.css', 'dark.css', etc.
-import ClientDetaiils from "./client_Information";
-import { useWatch } from "react-hook-form";
 import moment from "moment"; // or use native Date methods if preferred
+import Flatpickr from "react-flatpickr";
+import { useWatch } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { UncontrolledAlert } from "reactstrap";
+import ClientDetaiils from "./client_Information";
 import RoomManageModal from "./RoomManageModal";
 
-const EventForm = ({ stepper, setAllEventData, listData }) => {
+const EventForm = ({
+  stepper,
+  setAllEventData,
+  listData,
+  setUpdateData,
+  updateData,
+}) => {
+  const [modal, setModal] = useState(false);
+
+  const toggle = () => setModal(!modal);
   const [EventType, setEventsType] = useState([]);
   const [venueType, setVenueType] = useState([]);
   const [vendor, setVendorType] = useState([]);
   const [additionOFroom, setAdditionOFroom] = useState();
   const toast = useRef(null);
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [errMsz, seterrMsz] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(true);
@@ -68,25 +84,93 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       eventName: "",
       eventStartDate: "",
       eventStartTime: "",
-      
       eventTypeName: "",
     },
     shouldFocusError: false,
   });
 
+  const navigate = useNavigate();
+
   const isRecurring = watch("isRecurringEvent");
   const StaffAmount = watch("extraNoOfStaffAmount");
-  // const FinalPrice = Number(venueType?.totalPrice)+Number(StaffAmount);
-  console.log("eventrooms data", eventRooms);
+
   const baseAmountRef = useRef(0);
 
+  const [memberNames, setMemberNames] = useState([]);
+  const selectedMember = watch("selectedMember");
+  const [open, setOpen] = useState(false);
+  const [memberDataLoading, setMemberDataLoading] = useState(false);
+  const hasSelectedMember =
+    selectedMember && Object.keys(selectedMember).length > 0;
+  const hasMemberAppendData =
+    memberAppendData && Object.keys(memberAppendData).length > 0;
+
+  const OptionComponent = ({ data, ...props }) =>
+    data.type === "button" ? (
+      <Button
+        className="text-start rounded-0 px-50"
+        color={data.color}
+        block
+        onClick={() => setOpen(true)}
+      >
+        <Plus className="font-medium-1 me-50" />
+        <span className="align-middle">{data.label}</span>
+      </Button>
+    ) : (
+      <components.Option {...props}>{data.label}</components.Option>
+    );
+
+  const [options, setOptions] = useState([
+    {
+      value: "add-new",
+      label: "Add New Customer",
+      type: "button",
+      color: "flat-success",
+    },
+  ]);
+  const fetchExistingMem = async () => {
+    setMemberDataLoading(true);
+    try {
+      const { data } = await useJwt.GetMember();
+      const members = data?.content?.result?.map((x) => ({
+        label: `${x.firstName} ${x.lastName}`,
+        value: x.uid,
+        ...x,
+      }));
+      setMemberNames(members);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setMemberDataLoading(false);
+    }
+  };
+
+
+
+
   useEffect(() => {
-    if (listData?.uid && listData?.Rowdata) {
+    fetchExistingMem();
+  }, []);
+
+  useEffect(() => {
+    if (selectedMember) setSelectedMember(selectedMember);
+  }, [selectedMember]);
+
+  useEffect(() => {
+    console.log("listData", listData);
+    // {{debugger}}
+    if (listData?.Rowdata) {
       const {
         eventEndDate,
         eventEndTime,
         eventStartTime,
         eventStartDate,
+        isExtraStaff,
+        eventType,
+        venue,
+        vendors,
+        member,
+        totalAmount,
         ...rest
       } = listData.Rowdata;
 
@@ -99,13 +183,40 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
         startDateTime = new Date(`${eventStartDate}T${eventStartTime}`);
       }
 
+      let updatedAmount;
+      if (listData?.uid) {
+        updatedAmount = totalAmount;
+      }
+      setUpdateData((prev) => ({
+        ...prev,
+        listData,
+      }));
+
       reset({
         ...rest,
         endDateTime,
         startDateTime,
+        isExtraStaff: isExtraStaff,
+
+        eventType: { label: eventType?.eventTypeName, value: eventType?.uid },
+        venue: {
+          label: venue?.venueName,
+          value: venue?.uid,
+          totalPrice: venue?.totalPrice,
+        },
+
+        vendors: vendors?.map((v) => ({
+          label: `${v.vendorName} ( ${v.vendorType?.typeName} )`,
+        })),
+        selectedMember: {
+          label: `${member?.firstName} ${member?.lastName}`,
+          value: member?.uid,
+        },
+
+        totalAmount: updatedAmount,
       });
     }
-  }, [listData]);
+  }, [listData?.Rowdata]);
 
   const FetchEventsType = async () => {
     try {
@@ -126,16 +237,12 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     try {
       const { data } = await useJwt.getAllVenue();
       const { content } = data;
-
+      // {{debugger}}
       const venueTypeNames = content?.result?.map((x) => ({
         label: x.venueName,
         value: x.uid,
         totalPrice: x.totalPrice,
       }));
-
-      // const uniqueVenueType = Array.from(
-      //   new Map(venueTypeNames.map(x=>[x.label,x])).values()
-      // );
 
       setVenueType(venueTypeNames);
     } catch (error) {
@@ -148,7 +255,9 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       const { data } = await useJwt.getAllVendor();
       const { content } = data;
       const vendorTypeNames = content?.result?.map((x) => ({
-        label: `${x.vendorName} ( ${x.vendorType?.typeName} )`,
+        label: `${x.vendorName} ( ${x.vendorType
+          ?.map((t) => t.typeName)
+          .join(", ")} )`,
         value: x.uid,
         vName: x.vendorName,
         vEmail: x.emailId,
@@ -183,80 +292,66 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   }, [eventRooms?.roomSearchUid]);
 
   const onSubmit = async (data) => {
+    console.log("update Data", data);
+
     seterrMsz("");
 
-    let venuePayload;
+    const isOtherVenue = data.venue?.value === "other";
+    const isOtherEventType = data.eventType?.value === "other";
 
-    if (data.venue?.value !== "other") {
-      venuePayload = { uid: data.venue.value };
-    } else {
-      venuePayload = {
-        uid: null,
-        venueName: data.venueName,
-        capacity: data.capacity,
-        price: data.price,
-        venueType: data.venueType,
-        noOfStaff: data.noOfStaff,
-        staffPrice: data.staffPrice,
-        totalPrice: data.totalPrice,
-      };
-    }
+    const venuePayload = isOtherVenue
+      ? {
+          uid: null,
+          venueName: data.venueName,
+          capacity: data.capacity,
+          price: data.price,
+          venueType: data.venueType,
+          noOfStaff: data.noOfStaff,
+          staffPrice: data.staffPrice,
+          totalPrice: data.totalPrice,
+          country: data.country,
+          state: data.state,
+          city: data.city,
+          postCode: data.postCode,
+          address: data.address,
+        }
+      : { uid: data.venue.value };
 
-    let memberPayload;
-    if (selectMem?.uid) {
-      memberPayload = { uid: selectMem?.uid };
-    } else {
-      memberPayload = { ...memberAppendData };
-    }
+    const memberPayload = selectMem?.uid
+      ? { uid: selectMem.uid }
+      : { ...memberAppendData };
 
-    const eventType =
-      data.eventType?.value !== "other"
-        ? {
-            uid: data.eventType?.value,
-          }
-        : {
-            uid: null,
-            eventTypeName: data.eventTypeName,
-          };
+    const eventType = isOtherEventType
+      ? { uid: null, eventTypeName: data.eventTypeName }
+      : { uid: data.eventType.value };
+
+    const formatDate = (date, fmt) => (date ? moment(date).format(fmt) : null);
 
     const payload = {
       ...data,
       eventType,
-
-      eventStartDate: data.startDateTime
-        ? moment(data.startDateTime).format("YYYY-MM-DD")
-        : null,
-      eventEndDate: data.endDateTime
-        ? moment(data.endDateTime).format("YYYY-MM-DD")
-        : null,
-      eventStartTime: data.startDateTime
-        ? moment(data.startDateTime).format("HH:mm")
-        : null,
-      eventEndTime: data.endDateTime
-        ? moment(data.endDateTime).format("HH:mm")
-        : null,
-
+      eventStartDate: formatDate(data.startDateTime, "YYYY-MM-DD"),
+      eventEndDate: formatDate(data.endDateTime, "YYYY-MM-DD"),
+      eventStartTime: formatDate(data.startDateTime, "HH:mm"),
+      eventEndTime: formatDate(data.endDateTime, "HH:mm"),
       vendors: data.vendors?.map((v) => ({ uid: v.value })),
       venue: venuePayload,
       member: memberPayload,
-      isRecurringEvent: data?.isRecurringEvent ? true : false,
-      isExtraStaff: data?.isExtraStaff ? true : false,
-
+      isRecurringEvent: !!data.isRecurringEvent,
+      isExtraStaff: !!data.isExtraStaff,
+      isRoomRequired: !!data.isRoomRequired,
       amount: basePrice,
-      isRoomRequired: isRoomRequired,
-      ...(isRoomRequired === true && {
-        numberOfGuests: eventRooms?.bookedRoom["0"]?.numberOfGuests,
+      ...(isRoomRequired && {
+        numberOfGuests: eventRooms?.bookedRoom?.[0]?.numberOfGuests,
         roomBookings: [
           {
-            roomSearch: {
-              uid: eventRooms?.roomSearchUid,
-            },
-            checkInDate: eventRooms?.bookedRoom[0]?.checkInDate,
-            checkOutDate: eventRooms?.bookedRoom[0]?.checkOutDate,
-            numberOfGuests: eventRooms?.bookedRoom[0]?.numberOfGuests,
+            roomSearch: { uid: eventRooms?.roomSearchUid },
+            checkInDate: eventRooms?.bookedRoom?.[0]?.checkInDate,
+            checkOutDate: eventRooms?.bookedRoom?.[0]?.checkOutDate,
+            numberOfGuests: eventRooms?.bookedRoom?.[0]?.numberOfGuests,
             finalAmount: baseAmountRef.current,
             subtotal: baseAmountRef.current,
-            numberOfDays: eventRooms?.bookedRoom[0]?.totalNoOfDays,
+            numberOfDays: eventRooms?.bookedRoom?.[0]?.totalNoOfDays,
           },
         ],
       }),
@@ -268,54 +363,134 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
       ...memberPayload,
       ...memberAppendData,
       ...selectMem,
-      vendorN: {
-        selectedVendors,
-      },
+      vendorN: { selectedVendors },
       ...isVenue,
       eventTypes: seletctType?.label,
     };
 
-    try {
-      setLoading(true);
+    const AmtDiffernce =
+      data?.totalAmount - updateData?.listData?.Rowdata?.totalAmount;
+    console.log("event doffer", AmtDiffernce);
+    console.log(data);
 
-      const res = await useJwt.createEvent(payload);
-      setAllEventData({
-        ...allData,
-        eventId: res?.data?.id,
-        memberId: selectMem?.id,
-        eventUid: res?.data?.uid,
+    const eventUpdatePayload = {
+      "event.uid": listData?.uid,
+      "event.eventName": data?.eventName,
+      "event.eventDescription": data?.eventDescription,
+      "event.eventStartDate": formatDate(data.startDateTime, "YYYY-MM-DD"),
+      "event.eventEndDate": formatDate(data.endDateTime, "YYYY-MM-DD"),
+      "event.eventStartTime": formatDate(data.startDateTime, "HH:mm"),
+      "event.eventEndTime": formatDate(data.endDateTime, "HH:mm"),
+      "event.amount": data?.amount,
+      "event.isExtraStaff": data?.isExtraStaff,
+      "event.extraNoOfStaff": data?.extraNoOfStaff,
+      "event.extraNoOfStaffAmount": data?.extraNoOfStaffAmount,
+      "event.totalAmount": data?.totalAmount,
+      "event.isRecurringEvent": data?.isRecurringEvent,
+      "event.venue.uid": data?.venue?.value,
+      "event.eventType.uid": data?.eventType?.value,
+      "event.member.uid": data?.selectedMember?.value,
+      "payment.finalPayment": AmtDiffernce,
+    };
+
+    const formData = new FormData();
+    if (displayVendors) {
+      displayVendors.forEach((v, index) => {
+        formData.append(`event.vendors[${index}].uid`, v.uid || v.value);
       });
+    }
 
-      toast.current.show({
-        severity: "success",
-        summary: "Event Created Successfully",
-        detail: "Event Details Created Successfully.",
-        life: 2000,
-      });
+    //     (Array.isArray(displayVendors) ? displayVendors : []).map((v, index) => {
+    //   formData.append(`event.vendors[${index}].uid`, v.uid || v.value);
+    // });
 
-      setTimeout(() => {
-        stepper.next();
-      }, 1500);
-
-      // navigate("/preview", { state: data });
-    } catch (error) {
-      console.error(error);
-      if (error.response && error.response.data) {
-        const { status, content } = error.response.data;
-
-        seterrMsz((prev) => {
-          const newMsz = content || "Something went wrong!";
-          return prev !== newMsz ? newMsz : prev + " ";
-        });
+    Object.entries(eventUpdatePayload).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
       }
-    } finally {
-      setLoading(false);
+    });
+
+    if (AmtDiffernce === 0 || AmtDiffernce < 0) {
+      setLoading(true);
+      try {
+        const res = await useJwt.UpdateEventAndPayment(formData);
+        console.log(res);
+        if (res?.data?.refundAmount > 0) {
+          setModal(true);
+          setTimeout(() => {
+            setModal(false);
+            navigate('/event_index');
+          }, 5000);
+        } else {
+          toast.current.show({
+            severity: "success",
+            summary: "Event Updated Successfully",
+            detail: "Event Details Updated Successfully.",
+            life: 2000,
+          });
+
+          setTimeout(() => navigate("/event_index"), 1500);
+        }
+      } catch (error) {
+        console.log(error);
+        seterrMsz(error.response?.data?.content || "Something went wrong!");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (listData?.uid && AmtDiffernce > 0) {
+      stepper.next();
+      setUpdateData((prev) => ({
+        ...prev,
+        data,
+      }));
+    } else {
+      if (!listData?.uid) {
+        try {
+          setLoading(true);
+          const res = await useJwt.createEvent(payload);
+
+          setAllEventData({
+            ...allData,
+            eventId: res?.data?.id,
+            memberId: selectMem?.id,
+            eventUid: res?.data?.uid,
+          });
+
+          toast.current.show({
+            severity: "success",
+            summary: "Event Created Successfully",
+            detail: "Event Details Created Successfully.",
+            life: 2000,
+          });
+
+          setTimeout(() => stepper.next(), 1500);
+        } catch (error) {
+          console.error(error);
+          const msg = error.response?.data?.content || "Something went wrong!";
+          seterrMsz((prev) => (prev !== msg ? msg : prev + " "));
+        } finally {
+          setLoading(false);
+        }
+      }
     }
   };
 
   const seletctType = watch("eventType");
   const isExtraStaffRequired = watch("isExtraStaff");
   const isVenue = watch("venue");
+
+  useEffect(() => {
+    if (isExtraStaffRequired === false) {
+      setValue("extraNoOfStaffAmount", null);
+      setValue("extraNoOfStaff", null);
+    }
+
+    if (isRecurring === false) {
+      setValue("recurrencePattern", null);
+    }
+  }, [isExtraStaffRequired, isRecurring]);
 
   const [picker, setPicker] = useState(new Date());
 
@@ -329,14 +504,28 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
     updated.splice(index, 1);
     setValue("vendors", updated); // react-hook-form
   };
-  const roomPrice = Number(baseAmountRef.current) || 0;
+
+  let roomPrice;
+  if (listData?.uid) {
+    const roomPriceData = listData?.Rowdata?.roomBookings?.map(
+      (x) => x?.finalAmount
+    );
+    roomPrice = Number(roomPriceData);
+  } else {
+    roomPrice = Number(baseAmountRef.current) || 0;
+  }
 
   const extraNoOfStaffAmount = watch("extraNoOfStaffAmount") || 0;
   const staffPrice = Number(watch("staffPrice")) || 0;
   const price = Number(watch("price")) || 0;
-  const basePrice = isVenue?.totalPrice || staffPrice + price;
-
   const venue = watch("venue");
+
+  let basePrice;
+  if (listData?.uid) {
+    basePrice = venue?.totalPrice;
+  } else {
+    basePrice = isVenue?.totalPrice || staffPrice + price;
+  }
 
   useEffect(() => {
     if (!isExtraStaffRequired && venue?.label !== "Other") {
@@ -385,8 +574,104 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
   }, [setValue, eventRooms?.roomSearchUid]);
 
   const isRoomRequired = watch("isRoomRequired");
+
+  const displayVendors =
+    selectedVendors?.length > 0 ? selectedVendors : listData?.Rowdata?.vendors;
+
+  const roomData = listData?.Rowdata?.roomBookings?.flatMap(
+    (x) =>
+      x?.roomSearch?.roomSearchUnit?.map((room) => ({
+        roomNumber: room?.roomUnit?.roomNumber,
+        roomTypeName: room?.roomUnit?.roomType?.roomTypeName,
+        fields: {
+          serviceType: room?.serviceType,
+          amount: room?.amount,
+        },
+      })) || []
+  );
+
+  const displayRooms =
+    watch("isRoomRequired") && eventRooms?.roomSearchUid
+      ? eventRooms?.bookedRoom
+      : roomData;
+
+  const handleOk = () => {
+    // toggle();
+    navigate("/event_index");
+  };
+
+ 
   return (
     <>
+      <Modal isOpen={modal} toggle={toggle} centered size="sm">
+        <ModalHeader
+          toggle={toggle}
+          style={{
+            borderBottom: "none",
+            justifyContent: "center",
+            fontWeight: "600",
+            fontSize: "1.25rem",
+          }}
+        >
+          🎉 Refund Initiated
+        </ModalHeader>
+
+        <ModalBody style={{ textAlign: "center", paddingTop: 0 }}>
+          <div
+            style={{
+              position: "relative",
+              width: 200,
+              height: 200,
+              margin: "0 auto",
+            }}
+          >
+            <Lottie
+              animationData={successAnimation}
+              loop={true}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: 200,
+                height: 200,
+              }}
+            />
+            <Lottie
+              animationData={successAnimations}
+              loop={true}
+              style={{
+                position: "absolute",
+                top: "-25px",
+                left: "-25px",
+                width: 250,
+                height: 250,
+              }}
+            />
+          </div>
+
+          <CardTitle tag="h5" style={{ marginTop: "10px", fontWeight: "800" }}>
+            Your refund has been successfully initiated.
+          </CardTitle>
+          <CardText
+            style={{ color: "#555", fontSize: "0.81rem", marginTop: "5px" }}
+          >
+            It will be credited to your account within{" "}
+            <strong>1-2 working days</strong>.
+          </CardText>
+        </ModalBody>
+
+        <ModalFooter style={{ borderTop: "none", justifyContent: "center" }}>
+          <Button
+            color="success"
+            // onClick={toggle}
+            onClick={handleOk}
+            style={{ borderRadius: "8px", padding: "8px 20px" }}
+          >
+            OK
+          </Button>
+        </ModalFooter>
+      </Modal>
+
       <h4 className="mb-2">Event Information</h4>
       <Toast ref={toast} />
       {errMsz && (
@@ -408,13 +693,13 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             <Controller
               name="eventName"
               control={control}
-              rules={{ required: "Event Name is required" ,
-                pattern:{
-                          // "eventName": "Event name only contain alphabetic characters and space."
-
-                    value: /^[a-zA-Z\s]+$/,
-                    message: "Event name only contain alphabetic characters and space.",
-                }
+              rules={{
+                required: "Event Name is required",
+                pattern: {
+                  value: /^[a-zA-Z\s]+$/,
+                  message:
+                    "Event name only contain alphabetic characters and space.",
+                },
               }}
               render={({ field }) => (
                 <>
@@ -443,7 +728,12 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
                 <div>
                   <Select
                     {...field}
-                    options={[...EventType, { label: "Other", value: "other" }]}
+                    options={[
+                      ...EventType,
+                      ...(listData?.uid
+                        ? []
+                        : [{ label: "Other", value: "other" }]),
+                    ]}
                     isClearable
                     className={`react-select ${
                       errors.eventType ? "is-invalid" : ""
@@ -557,7 +847,13 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             <Controller
               name="isRecurringEvent"
               control={control}
-              render={({ field }) => <Input {...field} type="checkbox" />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  checked={field.value || false}
+                  type="checkbox"
+                />
+              )}
             />{" "}
             Recurring Event
           </Label>
@@ -604,7 +900,14 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             <Controller
               name="isExtraStaff"
               control={control}
-              render={({ field }) => <Input {...field} type="checkbox" />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="checkbox"
+                  checked={field.value || false}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                />
+              )}
             />{" "}
             Is Extra Staff Required
           </Label>
@@ -683,7 +986,11 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
                   <Input
                     {...field}
                     type="checkbox"
-                    disabled={eventRooms?.bookedRoom?.length > 0}
+                    checked={field.value || false}
+                    disabled={
+                      eventRooms?.bookedRoom?.length > 0 || !!listData?.uid
+                    }
+                    onchange={(e) => field.onChange(e.target.checked)}
                   />
                 );
               }}
@@ -692,7 +999,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
           </Label>
         </Col>
 
-        {watch("isRoomRequired") && eventRooms?.roomSearchUid && (
+        {displayRooms?.length > 0 && (
           <Col check className="mb-2">
             <Card>
               <CardTitle tag="h5" className="p-2 border-bottom mb-0">
@@ -710,7 +1017,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {eventRooms?.bookedRoom?.map((x, index) => (
+                    {displayRooms?.map((x, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>{x.roomNumber}</td>
@@ -752,7 +1059,12 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
               <div>
                 <Select
                   {...field}
-                  options={[...venueType, { label: "Other", value: "other" }]}
+                  options={[
+                    ...venueType,
+                    ...(listData?.uid
+                      ? []
+                      : [{ label: "Other", value: "other" }]),
+                  ]}
                   isClearable
                   className={`react-select ${errors.venue ? "is-invalid" : ""}`}
                   classNamePrefix="select"
@@ -1117,7 +1429,7 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
           <Controller
             name="vendors"
             control={control}
-            rules={{ required: "Vendors  Is Required" }}
+            // rules={{ required: "Vendors  Is Required" }}
             render={({ field }) => (
               <div>
                 <Select
@@ -1144,11 +1456,11 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
           />
         </Col>
 
-        {selectedVendors && selectedVendors.length > 0 && (
+        {displayVendors?.length > 0 && (
           <Card className="mt-3">
             <CardBody className="py-2">
               <h6 className="mb-2">Selected Vendors</h6>
-              {selectedVendors?.map((xvendor, idx) => (
+              {displayVendors?.map((xvendor, idx) => (
                 <div
                   key={idx}
                   className="d-flex align-items-center justify-content-between px-2 py-1 mb-1 rounded border bg-light small"
@@ -1163,18 +1475,24 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
                       <strong>#{idx + 1}</strong>
                     </span>
                     <span>
-                      <strong>Name:</strong> {xvendor?.vName}
+                      <strong>Name: </strong>
+                      {xvendor?.vName} {xvendor?.vendorName}
                     </span>
                     <span>
-                      <strong>Email:</strong> {xvendor?.vEmail}
+                      <strong>Email:</strong> {xvendor?.vEmail}{" "}
+                      {xvendor?.emailId}
                     </span>
                     <span>
-                      <strong>Phone:</strong> {xvendor?.vPhone}
+                      <strong>Phone:</strong> {xvendor?.vPhone}{" "}
+                      {xvendor?.countryCode}
+                      {xvendor?.phoneNumber}
                     </span>
-                    <span>
-                      <strong>Type:</strong> {xvendor?.vtype}
-                    </span>
+                    {/* <span>
+                      <strong>Type:</strong> {xvendor?.vtype}{" "}
+                      {xvendor?.vendorType }
+                    </span> */}
                   </div>
+
                   <button
                     className="btn btn-outline-danger btn-sm"
                     onClick={() => handleRemoveVendor(idx)}
@@ -1186,42 +1504,115 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
             </CardBody>
           </Card>
         )}
-
+        {/* 
         <ClientDetaiils
           
           setOpen={setOpen}
           setSelectedMember={setSelectedMember}
           setMemberAppendData={setMemberAppendData}
           memberAppendData={memberAppendData}
-        />
+        /> */}
 
-        <Col sm="12" className="mb-1">
+        <Row className="invoice-spacing mb-2">
+          <Col xl="12">
+            <Label for="totalPrice">Select Member</Label>
+            <Controller
+              control={control}
+              name="selectedMember"
+              rules={{ required: "Member is required" }}
+              render={({ field }) => (
+                <div>
+                  <Select
+                    {...field}
+                    className={`react-select ${
+                      errors.selectedMember ? "is-invalid" : ""
+                    }`}
+                    classNamePrefix="select"
+                    id="label"
+                    options={[...options, ...memberNames]}
+                    theme={selectThemeColors}
+                    components={{ Option: OptionComponent }}
+                    onChange={(val) => field.onChange(val)}
+                    menuPlacement="top"
+                    isDisabled={!!listData?.uid}
+                  />
+                  {errors.selectedMember && (
+                    <div className="invalid-feedback d-block">
+                      {errors.selectedMember.message}
+                    </div>
+                  )}
+                </div>
+              )}
+            />
+          </Col>
+        </Row>
+
+        {(hasSelectedMember || hasMemberAppendData) && (
+          <ViewClient
+            memberData={listData?.Rowdata?.member}
+            updateUid={listData?.uid}
+            selectedMember={watch("selectedMember")}
+          />
+        )}
+        <Row>
+          {" "}
+          <Col sm="6" className="mb-1">
+            <Label for="totalPrice">Currently Payable Amount</Label>
+            <Controller
+              name="totalAmount"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "total Price is required",
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: " Total price must be a number",
+                },
+              }}
+              render={({ field }) => (
+                <Input
+                  id="totalAmount"
+                  type="number"
+                  placeholder="Enter Total price"
+                  invalid={!!errors.totalAmount}
+                  {...field}
+                />
+              )}
+            />
+            {errors.totalAmount && (
+              <FormFeedback>{errors.totalAmount.message}</FormFeedback>
+            )}
+          </Col>
+          {/* <Col sm="6" className="mb-1">
           <Label for="totalPrice">Total Cost</Label>
           <Controller
-            name="totalAmount"
+            name="totalcost"
             control={control}
             defaultValue=""
-            rules={{
-              required: "total Price is required",
-              pattern: {
-                value: /^[0-9]+$/,
-                message: " Total price must be a number",
-              },
-            }}
+            // rules={{
+            //   required: "total Price is required",
+            //   pattern: {
+            //     value: /^[0-9]+$/,
+            //     message: " Total price must be a number",
+            //   },
+            // }}
             render={({ field }) => (
               <Input
-                id="totalAmount"
+                id="totalcost"
                 type="number"
                 placeholder="Enter Total price"
-                invalid={!!errors.totalAmount}
+                invalid={!!errors.totalcost}
+                disabled={true}
                 {...field}
               />
             )}
           />
-          {errors.totalAmount && (
-            <FormFeedback>{errors.totalAmount.message}</FormFeedback>
+          {errors.totalcost && (
+            <FormFeedback>{errors.totalcost.message}</FormFeedback>
           )}
-        </Col>
+        </Col> */}
+        </Row>
+
         <div className="d-flex justify-content-end">
           <Button disabled={loading} color="primary" type="submit">
             {loading ? (
@@ -1230,20 +1621,32 @@ const EventForm = ({ stepper, setAllEventData, listData }) => {
                 <Spinner size="sm" />{" "}
               </>
             ) : (
-              "Submit"
+              "Next"
             )}
           </Button>
         </div>
       </Form>
 
-      {watch("isRoomRequired") && (
-        <RoomManageModal
-          isRoomRequired={isRoomRequired}
-          setShowModal={setShowModal}
-          showModal={showModal}
-          setEventRooms={setEventRooms}
-        />
+      {!listData?.uid && (
+        <>
+          {watch("isRoomRequired") && (
+            <RoomManageModal
+              isRoomRequired={isRoomRequired}
+              setShowModal={setShowModal}
+              showModal={showModal}
+              setEventRooms={setEventRooms}
+            />
+          )}
+        </>
       )}
+      <ClientDetaiils
+        setOpen={setOpen}
+        open={open}
+        setSelectedMember={setSelectedMember}
+        setMemberAppendData={setMemberAppendData}
+        memberAppendData={memberAppendData}
+        setValueParent={setValue}
+      />
     </>
   );
 };

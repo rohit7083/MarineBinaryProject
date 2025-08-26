@@ -1,8 +1,9 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000";
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -166,7 +167,7 @@ export default class JwtService {
   // temp
 
   // login(...args) {
-  //   return axios.post(this.jwtConfig.loginEndpoint, ...args);
+  //   return axios.post(this.jwtConfig.loginEndpoint, ...args)
   // }
 
   getVendor() {
@@ -595,15 +596,15 @@ export default class JwtService {
     return axios.get(this.jwtConfig.bookingList);
   }
 
- Parentvendor() {
+  Parentvendor() {
     return axios.get(this.jwtConfig.Parentvendor);
   }
-  
-   UpdateRoomType(uid, ...args) {
+
+  UpdateRoomType(uid, ...args) {
     return axios.put(`${this.jwtConfig.UpdateRoomType}${uid}`, ...args);
   }
 
-    DeleteRoomType(uid) {
+  DeleteRoomType(uid) {
     return axios.delete(`${this.jwtConfig.DeleteRoomType}${uid}`);
   }
 
@@ -611,22 +612,35 @@ export default class JwtService {
     return axios.get(this.jwtConfig.GetAllRooms);
   }
 
-
-   UpdateRooms(uid, ...args) {
+  UpdateRooms(uid, ...args) {
     return axios.put(`${this.jwtConfig.UpdateRooms}${uid}`, ...args);
   }
 
-    DeleteRooms(uid) {
+  DeleteRooms(uid) {
     return axios.delete(`${this.jwtConfig.DeleteRooms}${uid}`);
   }
 
-   ExtendDate(uid,...args) {
+  ExtendDate(uid, ...args) {
     return axios.post(`${this.jwtConfig.ExtendDate}${uid}`, ...args);
   }
   ExtendDataUpdate(...args) {
     return axios.post(`${this.jwtConfig.ExtendDataUpdate}`, ...args);
   }
-  
+
+  UpdateEventAndPayment(...args) {
+    return axios.post(`${this.jwtConfig.UpdateEventAndPayment}`, ...args);
+  }
+
+  cancleEvent(uid) {
+    return axios.post(`${this.jwtConfig.cancleEvent}${uid}`);
+  }
+  addExtraRoom(uid, ...args) {
+    return axios.post(`${this.jwtConfig.addExtraRoom}${uid}`, ...args);
+  }
+
+  cancleRooms(uid, ...args) {
+    return axios.post(`${this.jwtConfig.cancleRooms}${uid}`, ...args);
+  }
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

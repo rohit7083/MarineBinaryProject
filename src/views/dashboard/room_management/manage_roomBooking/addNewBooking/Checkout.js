@@ -1,6 +1,5 @@
-import React, { useEffect, useState, Fragment, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 // ** Custom Components
-import ChecloutCode from "./ChecloutCode";
 import { CheckoutInfo, ClientInfo } from "./CheckoutInfo";
 import CreateUserForm from "./CreateUserForm";
 
@@ -8,35 +7,31 @@ import CreateUserForm from "./CreateUserForm";
 import { useLocation } from "react-router-dom";
 
 // ** Reactstrap Imports
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Form,
-  Offcanvas,
-  OffcanvasBody,
-  Row,
-  Col,
-  OffcanvasHeader,
   Card,
   CardBody,
-  Modal,
-  ModalHeader,
-  ModalBody,
   CardTitle,
-  CardHeader,
-  Label,
+  Col,
+  Form,
   Input,
+  Label,
+  Offcanvas,
+  OffcanvasBody,
+  OffcanvasHeader,
+  Row,
 } from "reactstrap";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-import { useNavigate } from "react-router-dom";
 // **React Form Hook
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // ** Third Party Components
+import { Plus } from "react-feather";
 import Select, { components } from "react-select";
-import { X, Plus, Hash } from "react-feather";
 
 // ** Utils
 import { selectThemeColors } from "@utils";
@@ -44,7 +39,6 @@ import { selectThemeColors } from "@utils";
 // ** Jwtclasss
 import useJwt from "@src/auth/jwt/useJwt";
 // import DiscountDetails from "./DiscountDetails";
-import VerifyOtp from "./VerifyOtp";
 import OtpGenerate from "./OtpGenerate";
 
 // ** Select Custom Components
@@ -99,6 +93,8 @@ const Checkout = () => {
   // ** Hook
   const location = useLocation();
   const state = location.state;
+  console.log("location firstr ",location);
+  
   const deta = state?.alldata;
   // ** Function to toggle Offcanvas
   const toggleForm = () => setIsOpenForm(!isOpenForm);
@@ -154,7 +150,6 @@ const Checkout = () => {
 
   const isDiscount = watch("discount");
 
-
   const onSubmit = async (data) => {
     setErr("");
 
@@ -197,7 +192,7 @@ const Checkout = () => {
         discountedFinalAmount: discountAmt?.discountValue || 0,
       }),
       finalAmount: finalPayment,
-      numberOfDays:deta?.numberOfDays,
+      numberOfDays: deta?.numberOfDays,
     };
 
     try {
@@ -216,6 +211,8 @@ const Checkout = () => {
           resAlldata: state,
           roomUid: res?.data?.bookingId,
           finalAmount: finalPayment,
+         extraRoomMode: state?.extraRoomMode,
+         uidOfEvent:state?.uidOfEvent,
         },
       });
     } catch (error) {
@@ -239,7 +236,7 @@ const Checkout = () => {
     }
   };
   // return <ChecloutCode />;
- 
+
   useEffect(() => {
     const generateOtpIfNeeded = async () => {
       if (watch("discount") == true) {
@@ -260,7 +257,6 @@ const Checkout = () => {
   }, [watch("discount")]);
 
   useEffect(() => {
-   
     if (showModal === false && watch("discount") === true && verify === false) {
       setValue("discount", false);
     }
@@ -278,7 +274,7 @@ const Checkout = () => {
           <Col xl="8" xs="12">
             <Card>
               <CardBody>
-                <CardTitle>Guest Details</CardTitle>
+                <CardTitle>Guest Details </CardTitle>
                 <Row>
                   <Col sm="12" className="mb-2">
                     <Controller
@@ -331,6 +327,8 @@ const Checkout = () => {
                     className="amount-payable checkout-options"
                     style={{ maxWidth: "400px", margin: "auto" }}
                   >
+                    {!state?.extraRoomMode && (<>
+
                     <CardTitle tag="h4">
                       {" "}
                       <svg
@@ -356,7 +354,6 @@ const Checkout = () => {
                       </svg>{" "}
                       Discount
                     </CardTitle>
-
                     <Col className="mb-1">
                       <Label>
                         <Controller
@@ -395,6 +392,7 @@ const Checkout = () => {
                     )}
 
                     <hr />
+                     </>)}
                     <CardTitle tag="h4">Price Details</CardTitle>
                     <div
                       className="amount-payable checkout-options"
@@ -469,6 +467,8 @@ const Checkout = () => {
               </CardBody>
             </Card>
           </Col>
+
+         
         </Row>
         <Button type="submit" color="primary" className="btn-next">
           Next

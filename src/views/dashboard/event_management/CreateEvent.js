@@ -1,22 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
-import Event_Info from "./Event_info";
-import Client_info from "./Client_info";
-import VenueLocation from "./VenueLocation";
-import Payment from "./Payment";
+import { useEffect, useRef, useState } from "react";
 import Document from "./Document";
-import Preview from "./Preview";
+import Event_Info from "./Event_info";
+import Payment from "./Payment";
 // Custom Components
 import Wizard from "@components/wizard";
-
-// Icons
-import { User, MapPin, Settings, Users, Clipboard } from "react-feather";
+import { Settings, User, Users } from "react-feather";
 import { useLocation } from "react-router-dom";
-import PaymentHistory from "./PaymentHistory";
 
 const CreateEvent = () => {
   const ref = useRef(null);
   const [stepper, setStepper] = useState(null);
   const [allEventData, setAllEventData] = useState([]);
+  const [updateData, setUpdateData] = useState({});
 
   const [formData, setFormData] = useState({
     EventInfo: {},
@@ -25,12 +20,17 @@ const CreateEvent = () => {
     vendors: {},
   });
 
-  const location=useLocation();
-const listData=location.state || "";
+  const location = useLocation();
+  const listData = location.state || "";
+  const paymenStepsCheck = location?.state?.step;
+  const paymentData = location?.state;
+  // let paymentExist = !!updateData?.listData?.Rowdata?.payments.length;
 
   useEffect(() => {
-    // Optional: Fetch existing data to prefill
-  }, []);
+    if (paymenStepsCheck === 2 && stepper) {
+      stepper.to(2);
+    }
+  }, [paymenStepsCheck, stepper]);
 
   const steps = [
     {
@@ -40,7 +40,9 @@ const listData=location.state || "";
       icon: <User size={18} />,
       content: (
         <Event_Info
+          setUpdateData={setUpdateData}
           stepper={stepper}
+          updateData={updateData}
           formData={{ ...formData.EventInfo }}
           setFormData={setFormData}
           setAllEventData={setAllEventData}
@@ -48,36 +50,39 @@ const listData=location.state || "";
         />
       ),
     },
-     {
-      id: "review",
-      title: "Preview",
-      subtitle: "Preview details",
-      icon: <Clipboard size={18} />,
-      content: (
-        <Preview
-          stepper={stepper}
-          formData={formData}
-          // fetchLoader={fetchLoader}
-          allEventData={allEventData}
-        />
-      ),
-    },
+    //  {
+    //   id: "review",
+    //   title: "Preview",
+    //   subtitle: "Preview details",
+    //   icon: <Clipboard size={18} />,
+    //   content: (
+    //     <Preview
+    //       stepper={stepper}
+    //       formData={formData}
+    //       // fetchLoader={fetchLoader}
+    //       allEventData={allEventData}
+    //     />
+    //   ),
+    // },
+    //  ...(paymentExist > 0
+    //     ?
+    //         [{
+    //           id: "PaymentHistory",
+    //           title: "Payment History",
+    //           subtitle: "Your Last Payment History",
+    //           icon: <Clipboard size={18} />,
+    //           content: (
+    //             <PaymentHistory
+    //               stepper={stepper}
+    //               setFormData={setFormData}
+    //               // fetchLoader={fetchLoader}
+    //               updateData={updateData}
+    //               allEventData={allEventData}
+    //             />
+    //           ),
+    //         }]
 
-     {
-      id: "PaymentHistory",
-      title: "Payment History",
-      subtitle: "Your Last Payment History",
-      icon: <Clipboard size={18} />,
-      content: (
-        <PaymentHistory
-          stepper={stepper}
-          formData={formData}
-          // fetchLoader={fetchLoader}
-          allEventData={allEventData}
-        />
-      ),
-    },
-   
+    //     : []),
     {
       id: "Payment",
       title: "Payment",
@@ -85,12 +90,12 @@ const listData=location.state || "";
       icon: <Settings size={18} />,
       content: (
         <Payment
+          updateData={updateData}
           stepper={stepper}
-          formData={{ ...formData.logistics }}
+          paymentData={paymentData}
           setFormData={setFormData}
           // fetchLoader={fetchLoader}
-                    allEventData={allEventData}
-
+          allEventData={allEventData}
         />
       ),
     },
@@ -108,7 +113,6 @@ const listData=location.state || "";
         />
       ),
     },
-   
   ];
 
   return (
@@ -117,7 +121,7 @@ const listData=location.state || "";
         type="modern-horizontal"
         ref={ref}
         steps={steps}
-        options={{ linear: false }}
+        options={{ linear: true }}
         instance={(el) => setStepper(el)}
       />
     </div>

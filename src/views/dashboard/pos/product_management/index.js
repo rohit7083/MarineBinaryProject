@@ -1,50 +1,28 @@
 // ** React Imports
-import { Fragment, useState, forwardRef } from "react";
-import { Link } from "react-router-dom";
+import { forwardRef, Fragment, useState } from "react";
 // ** Table Data & Columns
-import { Tooltip } from "reactstrap";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "react-feather"; // Using Feather Icons
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useNavigate } from "react-router-dom";
 
-import { data, columns } from "./Data";
-import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
-import vendor from "../../../../assets/icons/vendor.png";
-import addTax from "../../../../assets/icons/calendar-event-tax.svg";
+import { columns, data } from "./Data";
 // ** Add New Modal Component
 
 // ** Third Party Components
-import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import {
-  ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-  Plus,
+  ChevronDown
 } from "react-feather";
+import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
   Card,
+  CardHeader,
+  CardTitle,
+  Col,
   Input,
   Label,
-  Button,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
+  Row
 } from "reactstrap";
 import NavItems from "./NavItems";
 
@@ -215,15 +193,7 @@ const DataTableWithButtons = () => {
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex  mt-2 justify-content-start gap-2">
              <NavItems/>
-              <div>
-                <Link to="/pos/VendorManage">
-                  <div className="d-flex">
-                    <Button color="primary" outline size="sm">
-                      Add Vendor
-                    </Button>
-                  </div>
-                </Link>
-              </div>
+           
             </div>
           </div>
         </CardHeader>

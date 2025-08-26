@@ -1,112 +1,42 @@
 // ** React Imports
-import { Fragment, useState, forwardRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
 // ** Table Data & Columns
-import { Tooltip } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
 
-import { data, serverSideColumns } from "./Data";
-import addProductIcon from "../../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../../assets/icons/workflow-setting.svg";
-import addTax from "../../../../../assets/icons/calendar-event-tax.svg";
+import { serverSideColumns } from "./Data";
 // ** Add New Modal Component
 import AddTax from "./AddTax";
 
 // ** Third Party Components
-import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-  Plus,
-  Edit2,
-  Trash,
-  ArrowLeft,
-} from "react-feather";
+import { ArrowLeft, ChevronDown, Edit2, Plus, Trash } from "react-feather";
+import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
+  Button,
   Card,
+  CardHeader,
+  CardTitle,
+  Col,
   Input,
   Label,
-  Button,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
+  Row,
+  Spinner,
 } from "reactstrap";
 import NavItems from "../NavItems";
 
 // ** Bootstrap Checkbox Component
-const BootstrapCheckbox = forwardRef((props, ref) => (
-  <div className="form-check">
-    <Input type="checkbox" ref={ref} {...props} />
-  </div>
-));
+// const BootstrapCheckbox = forwardRef((props, ref) => (
+//   <div className="form-check">
+//     <Input type="checkbox" ref={ref} {...props} />
+//   </div>
+// ));
 
 const MySwal = withReactContent(Swal);
-
-const handleDelete = async (uid) => {
-  return MySwal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-    customClass: {
-      confirmButton: "btn btn-primary",
-      cancelButton: "btn btn-danger ms-1",
-    },
-    buttonsStyling: false,
-  }).then(async function (result) {
-    if (result.value) {
-      try {
-        // Call delete API
-        const response = await useJwt.deleteTax(uid);
-        if (response.status === 204) {
-          setData((prevData) => {
-            const newData = prevData.filter((item) => item.uid !== uid);
-            return newData;
-          });
-          MySwal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "Your Record has been deleted.",
-            customClass: {
-              confirmButton: "btn btn-success",
-            },
-          });
-        }
-      } catch (error) {
-        console.error("Error deleting item:", error);
-      }
-    } else if (result.dismiss === MySwal.DismissReason.cancel) {
-      MySwal.fire({
-        title: "Cancelled",
-        text: "Your imaginary file is safe :)",
-        icon: "error",
-        customClass: {
-          confirmButton: "btn btn-success",
-        },
-      });
-    }
-  });
-};
 
 const DataTableWithButtons = () => {
   // const [modal, setModal] = useState(false);
@@ -114,6 +44,7 @@ const DataTableWithButtons = () => {
   const [show, setShow] = useState(false);
   const [data, setData] = useState([]);
   const [uid, setUid] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -134,56 +65,47 @@ const DataTableWithButtons = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [row, setRow] = useState(null);
 
-  const handleFilter = (e) => {
-    const value = e.target.value;
-    let updatedData = [];
-    setSearchValue(value);
+const handleFilter = (e) => {
+  const value = e.target.value.toLowerCase();
+  setSearchValue(value);
 
-    const status = {
-      1: { title: "Current", color: "light-primary" },
-      2: { title: "Professional", color: "light-success" },
-      3: { title: "Rejected", color: "light-danger" },
-      4: { title: "Resigned", color: "light-warning" },
-      5: { title: "Applied", color: "light-info" },
-    };
-
-    if (value.length) {
-      updatedData = data.filter((item) => {
-        const startsWith =
-          item.full_name.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.post.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.email.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.age.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.salary.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.start_date.toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.status].title
-            .toLowerCase()
-            .startsWith(value.toLowerCase());
-
-        const includes =
-          item.full_name.toLowerCase().includes(value.toLowerCase()) ||
-          item.post.toLowerCase().includes(value.toLowerCase()) ||
-          item.email.toLowerCase().includes(value.toLowerCase()) ||
-          item.age.toLowerCase().includes(value.toLowerCase()) ||
-          item.salary.toLowerCase().includes(value.toLowerCase()) ||
-          item.start_date.toLowerCase().includes(value.toLowerCase()) ||
-          status[item.status].title.toLowerCase().includes(value.toLowerCase());
-
-        if (startsWith) {
-          return startsWith;
-        } else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredData(updatedData);
-      setSearchValue(value);
-    }
-  };
+  if (value.length) {
+    const updatedData = data.filter((item) => {
+      // Adjust based on your API response structure
+      return (
+        item?.name?.toLowerCase().includes(value) || 
+        String(item?.uid)?.toLowerCase().includes(value) ||
+        String(item?.rate)?.toLowerCase().includes(value)
+      );
+    });
+    setFilteredData(updatedData);
+  } else {
+    setFilteredData(data);
+  }
+};
 
   // ** Function to handle Pagination
   const handlePagination = (page) => {
     setCurrentPage(page.selected);
   };
+
+  const tableData = async () => {
+    try {
+      // debugger
+      setLoading(true);
+      const res = await useJwt.getAlltax();
+      setData(res?.data?.content?.result);
+      console.log(res);
+    } catch (error) {
+      console.log("error in Vendar data ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    tableData();
+  }, []);
 
   // ** Custom Pagination
   const CustomPagination = () => (
@@ -213,10 +135,59 @@ const DataTableWithButtons = () => {
     />
   );
 
+  const handleDelete = async (uid) => {
+    return MySwal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-danger ms-1",
+      },
+      buttonsStyling: false,
+    }).then(async (result) => {
+      if (result.value) {
+        try {
+          const response = await useJwt.deleteTax(uid);
+          if (response?.status === 204) {
+            await tableData();
+            MySwal.fire({
+              icon: "success",
+              title: "Deleted!",
+              text: "Your Record has been deleted.",
+              customClass: {
+                confirmButton: "btn btn-success",
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting item:", error);
+        }
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        MySwal.fire({
+          title: "Cancelled",
+          text: "Your imaginary file is safe :)",
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-success",
+          },
+        });
+      }
+    });
+  };
+
+  /**
+   *
+   * @param {
+   *
+   */
+
   const handleEdit = (row) => {
     setShow(true);
     setUid(row?.uid);
-    console.log("row", row);
+
     setRow(row);
   };
   const column = [
@@ -224,7 +195,7 @@ const DataTableWithButtons = () => {
     {
       name: "Actions",
       sortable: true,
-      minWidth: "150px",
+      // minWidth: "150px",
       cell: (row) => {
         return (
           <div className="d-flex">
@@ -232,33 +203,19 @@ const DataTableWithButtons = () => {
               <Edit2 className="font-medium-3 text-body" />
             </span>
 
-            <Link style={{ margin: "0.5rem" }}>
-              {" "}
-              <span
-                color="danger"
-                style={{ cursor: "pointer", color: "red" }}
-                onClick={() => handleDelete(row.uid)}
-              >
-                <Trash className="font-medium-3 text-body" />
-              </span>
-            </Link>
+            <span
+              color="danger"
+              style={{ cursor: "pointer", color: "red" }}
+              onClick={() => handleDelete(row.uid)}
+            >
+              <Trash className="font-medium-3 text-body" />
+            </span>
           </div>
         );
       },
     },
   ];
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await useJwt.getAlltax();
-        setData(res?.data?.content?.result);
-        console.log(res);
-      } catch (error) {
-        console.log("error in Vendar data ", error);
-      }
-    })();
-  }, [isDataUpdated]);
   return (
     <Fragment>
       <Card>
@@ -267,9 +224,8 @@ const DataTableWithButtons = () => {
             {" "}
             <ArrowLeft
               style={{
-
                 cursor: "pointer",
-                // marginRight:"10px",
+
                 transition: "color 0.1s",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
@@ -282,15 +238,6 @@ const DataTableWithButtons = () => {
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex  mt-2 justify-content-start gap-2">
               <NavItems />
-              <div>
-                <Link to="/pos/VendorManage">
-                  <div className="d-flex">
-                    <Button color="primary" outline size="sm">
-                      Import Product
-                    </Button>
-                  </div>
-                </Link>
-              </div>
             </div>
           </div>
         </CardHeader>
@@ -302,6 +249,7 @@ const DataTableWithButtons = () => {
               className="me-2"
               color="primary"
               onClick={() => setShow(true)}
+              size="sm"
             >
               <Plus size={15} />
               <span className="align-middle ms-50">Add Taxes</span>
@@ -327,29 +275,39 @@ const DataTableWithButtons = () => {
             />
           </Col>
         </Row>
-
-        <div className="mt-2 react-dataTable react-dataTable-selectable-rows">
-          <DataTable
-            noHeader
-            pagination
-            selectableRows
-            columns={column}
-            paginationPerPage={8}
-            className="react-dataTable"
-            sortIcon={<ChevronDown size={10} />}
-            paginationComponent={CustomPagination}
-            paginationDefaultPage={currentPage + 1}
-            selectableRowsComponent={BootstrapCheckbox}
-            // data={searchValue.length ? filteredData : data}
-            data={data}
-          />
-        </div>
+        {loading ? (
+          <>
+            <div className="text-center">
+              <Spinner
+                className="me-25 spinner-border"
+                color="primary"
+                style={{ width: "4rem", height: "4rem" }}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="mt-2 react-dataTable react-dataTable-selectable-rows">
+            <DataTable
+              noHeader
+              pagination
+              columns={column}
+              paginationPerPage={8}
+              className="react-dataTable"
+              sortIcon={<ChevronDown size={10} />}
+              paginationComponent={CustomPagination}
+              paginationDefaultPage={currentPage + 1}
+              // selectableRowsComponent={BootstrapCheckbox}
+data={searchValue.length ? filteredData : data}
+              // data={data}
+            />
+          </div>
+        )}
       </Card>
       <AddTax
         show={show}
         setShow={setShow}
         uid={uid}
-        setIsDataUpdated={setIsDataUpdated}
+        resetTable={tableData}
         row={row}
       />
     </Fragment>

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState, Fragment, forwardRef } from 'react'
+import { Fragment, forwardRef, useEffect, useState } from 'react'
 
 // ** Third Party Components
 import Stepper from 'bs-stepper'
@@ -52,7 +52,7 @@ const Wizard = forwardRef((props, ref) => {
           {index !== 0 && index !== steps.length ? <div className='line'>{separator}</div> : null}
           <div
             className={classnames('step', {
-              crossed: activeIndex > index,
+              // crossed: activeIndex > index,
               active: index === activeIndex
             })}
             data-target={`#${step.id}`}

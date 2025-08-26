@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { ArrowLeft } from "react-feather";
 
 // ** Reactstrap Imports
@@ -211,3 +211,4 @@ const ClientInfo = ({selectedMember , clientInfo ,setClientInfo}) => {
 };
 
 export { CheckoutInfo, ClientInfo };
+

@@ -1,0 +1,392 @@
+import React, { useEffect, useState, Fragment, useRef } from "react";
+import useJwt from "@src/auth/jwt/useJwt";
+import { Send } from "react-feather";
+import { Spinner, UncontrolledAlert } from "reactstrap";
+import { BeatLoader } from "react-spinners";
+import Countdown from "react-countdown";
+
+import WatchNew from "../../../../../../src/assets/images/updatedWatchnew.jpg";
+import {
+  Row,
+  Col,
+  Modal,
+  Label,
+  Input,
+  Button,
+  ModalBody,
+  ModalHeader,
+  InputGroup,
+  FormFeedback,
+} from "reactstrap";
+import { useForm, Controller } from "react-hook-form";
+
+import { Alert } from "reactstrap";
+import { ThumbsUp } from "react-feather";
+
+const GenrateOtp = ({
+  setotpVerify,
+  memberId,
+  slipIID,
+  fetchDiscountFields,
+}) => {
+  // ** States
+  const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+  const [resendCount, setResendcount] = useState(false);
+  const [resendcallCount, setResendcallCount] = useState(false);
+  // const alreadyUpdatedRef = useRef(false);
+  const [attempt, setAttempt] = useState(0);
+
+  const [show, setShow] = useState(false);
+  const [time, setTime] = useState(100);
+  const [errMsz, seterrMsz] = useState("");
+  const [loader, setLoader] = useState(false);
+  const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
+  const [verify, setVerify] = useState(false);
+  const [otpLoader, setOtpLoader] = useState(false);
+  // const [key, setKey] = useState(1);
+  const [resendVisible, setResendVisible] = useState(false);
+  const [callVisible, setCallVisible] = useState(false);
+  const [key, setKey] = useState(1); // To reset Countdown
+  const alreadyUpdatedRef = useRef(false);
+
+  const {
+    control,
+    handleSubmit,
+    setError,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  const handleOTP = async () => {
+    try {
+      setCountdownEndTime(0);
+      // setAttempt(0 );
+
+      const payload = {
+        type: 1,
+        slipId: slipIID,
+        memberId: memberId,
+      };
+      setOtpLoader(true);
+      const response = await useJwt.GenerateOtp(payload); // Adjust this method to send the payload
+      const token = response.data.content;
+      if (response?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+      }
+      setAccessTokenOtp(token);
+      setShow(true);
+      setTime(100);
+    } catch (error) {
+      console.error("Error generating OTP:handleResendOTP ", error);
+      console.log("Failed to generate OTP. Please try again.");
+    } finally {
+      setOtpLoader(false);
+    }
+  };
+
+  const handleVerifyOTP = async (data) => {
+    seterrMsz("");
+
+    try {
+      if (!accessTokenotp) {
+        console.log("Access token is missing. Please regenerate OTP.");
+        return;
+      }
+
+      const payload = {
+        Userotp: data.Userotp.join(""), // Join the array to form a string
+      };
+      setLoader(true);
+      const response = await useJwt.verifyOTP(accessTokenotp, payload);
+      setVerify(true);
+      console.log(response);
+      setShow(false);
+      setotpVerify(true);
+      console.log("OTP Verified Successfully!");
+      // setButtonEnabled(true);
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      console.log("Failed to verify OTP. Please try again.");
+
+      if (error.response && error.response.data) {
+        const { content } = error.response.data;
+
+        seterrMsz((prev) => {
+          const newMsz =
+            content || "Un expected Error Occurred . Try Again Later ";
+          return prev !== newMsz ? newMsz : prev + " ";
+        });
+      }
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    let timer;
+    if (show) {
+      timer = setInterval(() => {
+        setTime((prevTime) => {
+          if (prevTime <= 0) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [show]);
+
+  const handleResendOTP = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await useJwt.resend_Otp(token);
+      // setKey((k) => k + 1);
+      // alreadyUpdatedRef.current = false;
+      if (res?.status == 200) {
+        // setCountdownEndTime(Date.now() + 40000);
+        // setResendcount(true);
+      }
+      console.log("resentOTP", res.status);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  console.log("render")
+  return (
+    <Fragment>
+      {verify || fetchDiscountFields ? (
+        <React.Fragment>
+          <Alert color="success">
+            <div className="alert-body " style={{ marginTop: "-10px" }}>
+              <span className="ms-1">
+                {" "}
+                Error : OTP Verified Successfully !{" "}
+              </span>
+              <ThumbsUp size={15} />
+            </div>
+          </Alert>
+        </React.Fragment>
+      ) : (
+        <Button color="primary" className="" size="sm" onClick={handleOTP}>
+          {otpLoader ? (
+            <BeatLoader size={10} color="#ffffff" />
+          ) : (
+            <>
+              {" "}
+              <Send className="me-1" size={20} />
+              Generate otp
+            </>
+          )}
+        </Button>
+      )}
+
+      {/* OTP Modal */}
+      <Modal
+        isOpen={show}
+        toggle={() => setShow(!show)}
+        className="modal-dialog-centered"
+      >
+        <ModalHeader
+          className="bg-transparent"
+          toggle={() => setShow(!show)}
+        ></ModalHeader>
+        <ModalBody className="px-sm-5 mx-50 pb-5">
+          <h1 className="text-center mb-1">Verify OTP</h1>
+
+          {errMsz && (
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">{errMsz}</span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
+
+          <Row
+            tag="form"
+            className="gy-1 gx-2 mt-75"
+            onSubmit={handleSubmit(handleVerifyOTP)}
+          >
+            <div className="mb-2">
+              <h6>Type your 6-digit security code</h6>
+              <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                {[...Array(6)].map((_, index) => (
+                  <Controller
+                    key={index}
+                    name={`Userotp[${index}]`}
+                    control={control}
+                    rules={{
+                      required: "All OTP digits are required",
+                      pattern: {
+                        value: /^[0-9]$/,
+                        message: "Each OTP digit must be a number",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        maxLength="1"
+                        className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
+                          errors.Userotp?.[index] ? "is-invalid" : ""
+                        }`}
+                        autoFocus={index === 0}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          console.log("Value", value);
+
+                          // Update the value in the form
+                          field.onChange(e);
+
+                          // If value is entered, focus on the next input
+                          if (value && index < 5) {
+                            const nextInput = document.getElementById(
+                              `Userotp-input-${index + 1}`
+                            );
+                            if (nextInput) {
+                              nextInput.focus();
+                            }
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          // If Backspace is pressed and the field is empty, focus on the previous input
+                          if (
+                            e.key === "Backspace" &&
+                            !field.value &&
+                            index > 0
+                          ) {
+                            const prevInput = document.getElementById(
+                              `Userotp-input-${index - 1}`
+                            );
+                            if (prevInput) {
+                              prevInput.focus();
+                            }
+                          }
+                        }}
+                        id={`Userotp-input-${index}`} // Adding an ID to each input for easier targeting
+                      />
+                    )}
+                  />
+                ))}
+              </div>
+
+              {errors.Userotp && (
+                <small className="text-danger">{errors.Userotp.message}</small>
+              )}
+            </div>
+
+            <>
+              <div className="d-flex flex-column align-items-center position-relative">
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  <img
+                    src={WatchNew}
+                    alt="Phone Call"
+                    style={{
+                      width: "120px",
+                      height: "100px",
+                      display: "block",
+                    }}
+                  />
+
+                  <Countdown
+                    key={key}
+                    date={Date.now() + 40000}
+                    renderer={({ minutes, seconds, completed }) => {
+                      console.log(minutes,seconds, completed);
+                      if (completed) {
+                        if (!alreadyUpdatedRef.current) {
+                          alreadyUpdatedRef.current = true;
+                          setAttempt((x) => x + 1);
+                        }
+                        return (
+                          <span
+                            className="position-absolute top-50 start-50 translate-middle"
+                            style={{
+                              marginTop: "-4px",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "White",
+                            }}
+                          >
+                            00:00
+                          </span>
+                        );
+                      } else {
+                        alreadyUpdatedRef.current = false;
+                        return (
+                          <span
+                            className="position-absolute top-50 start-50 translate-middle"
+                            style={{
+                              marginTop: "-4px",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              color: "White",
+                            }}
+                          >
+                            {String(minutes).padStart(2, "0")}:
+                            {String(seconds).padStart(2, "0")}
+                          </span>
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+
+            <p className="text-center mt-2">
+              {/* {!resendCount && ( */}
+              <>
+                <span>Didn’t get the code?</span>{" "}
+                <a
+                  href="#"
+                  onClick={handleResendOTP}
+                  className="text-blue-600 hover:underline"
+                >
+                  Resend
+                </a>
+              </>
+              {/* )} */}
+            </p>
+
+            {/*   <p className="text-center mt-2">
+              {!resendcallCount && (
+                <>
+                  <span>Didn’t get the code?</span>{" "}
+                  <a href="#" onClick={handleResendCall}>
+                    Call us
+                  </a>
+                </>
+              )}
+            </p> */}
+
+            <Col xs={12}>
+              <Button
+                type="submit"
+                disabled={loader}
+                color="primary"
+                className=""
+                block
+              >
+                {loader ? (
+                  <>
+                    {" "}
+                    Loading... <Spinner color="white" size="sm" />{" "}
+                  </>
+                ) : (
+                  "Verify OTP"
+                )}
+              </Button>
+            </Col>
+          </Row>
+        </ModalBody>
+      </Modal>
+    </Fragment>
+  );
+};
+
+export default GenrateOtp;

@@ -158,7 +158,7 @@ const ClientDetails = ({
   const fetchExistingMem = async () => {
     try {
       const { data } = await useJwt.GetMember();
-      
+
       const memberName = data?.content?.result?.map((x) => ({
         label: `${x.firstName} ${x.lastName}`,
 
@@ -168,7 +168,7 @@ const ClientDetails = ({
 
       setMemberNames(memberName);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
 
@@ -177,8 +177,6 @@ const ClientDetails = ({
   }, [selectedValue]);
 
   const onSubmit = (data) => {
-  
-
     const payload = {
       firstName: data?.firstName,
       lastName: data?.lastName,
@@ -220,9 +218,6 @@ const ClientDetails = ({
   const hasMemberAppendData =
     memberAppendData && Object.keys(memberAppendData).length > 0;
 
-
-    
-    
   return (
     <Fragment>
       <Toast ref={toast} />
@@ -282,13 +277,16 @@ const ClientDetails = ({
       <Sidebar
         size="lg"
         open={open}
-        title="Create New Member
-"
+        title="Create New Member"
         headerClassName="mb-1"
         contentClassName="p-0"
         toggleSidebar={toggleSidebar}
       >
-<form onSubmit={handleSubmit(onSubmit, (errors) => console.log("Errors", errors))}>
+        <form
+          onSubmit={handleSubmit(onSubmit, (errors) =>
+            console.log("Errors", errors)
+          )}
+        >
           <Row>
             <Col md="6" className="mb-1">
               <Label className="form-label" for="firstName">

@@ -1,47 +1,28 @@
-import { Fragment } from "react";
-import { useState, useEffect, useRef } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useForm, Controller } from "react-hook-form";
-import { ArrowLeft, ArrowRight } from "react-feather";
-import Flatpickr from "react-flatpickr";
-import { Spinner } from "reactstrap";
+import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { selectThemeColors } from "@utils";
-import Select from "react-select";
-import useJwt from "@src/auth/jwt/useJwt";
-import QRCode from "react-qr-code";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-import QrCodePayment from "./QrCodePayment";
-import {
-  Label,
-  Row,
-  Col,
-  Button,
-  Form,
-  Input,
-  FormFeedback,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  FormGroup,
-  InputGroup,
-  InputGroupText,
-} from "reactstrap";
-import PersonalInfo from "./MemberDetails";
-import GenrateOtp from "./GenrateOtp";
-import Cash_otp from "./Cash_otp";
+import CryptoJS from "crypto-js";
 import { format } from "date-fns";
-import React from "react";
-import { UncontrolledAlert } from "reactstrap";
-import { Send } from "react-feather";
 import { DollarSign, Percent } from "lucide-react";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "react-feather";
+import Flatpickr from "react-flatpickr";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
+import {
+  Button, Card, CardBody, CardHeader,
+  CardTitle, Col, Form, FormFeedback, FormGroup, Input, InputGroup,
+  InputGroupText, Label,
+  Row, Spinner, UncontrolledAlert
+} from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import GenrateOtp from "./GenrateOtp";
+import QrCodePayment from "./QrCodePayment";
 
 import { useParams } from "react-router-dom";
 const Address = ({
@@ -276,10 +257,9 @@ const Address = ({
         id,
       });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
-  // console.log(slipDetail);
 
   const getReadOnlyStyle = () => {
     return {
@@ -296,7 +276,6 @@ const Address = ({
   const handleDiscount = (event) => {
     console.clear();
     const isToggled = event.target.checked;
-    console.log("is toggled", isToggled);
 
     setDiscountToggle(isToggled);
 
@@ -333,7 +312,6 @@ const Address = ({
 
   const handlePercentageChange = (e) => {
     const percentage = parseFloat(e.target.value);
-    console.log(percentage);
     if (!isNaN(percentage)) {
       const discountValue = (percentage / 100) * rentalPriceState;
       setValue("calDisAmount", discountValue);
@@ -349,7 +327,6 @@ const Address = ({
     const finalPaymentcal = rentalPriceState - amount;
     setValue("finalPayment", finalPaymentcal);
     setFinalPayment(finalPaymentcal);
-    console.log(finalPaymentcal);
   };
 
   const handleInputChange = (e, field) => {
@@ -411,25 +388,10 @@ const Address = ({
       discountType: discountType,
     };
 
-    console.log(handleTypeDiscount.discountType);
     setdiscountTypedStatus(handleTypeDiscount?.discountType);
-    console.log(discountTypedStatus);
   };
-  //   const statusThree = () => {
-
-  //     if (isAssign) {
-  //       return true;
-  //     }else{
-  //     return false;
-  //     }
-  //   };
-
-  // useEffect(()=>{
-  //   statusThree();
-  // },[isAssign])
 
   useEffect(() => {
-    // {{ }}
     if (member || memberID) {
       setMember(false); // member is now filled
     } else {
@@ -437,9 +399,6 @@ const Address = ({
     }
   }, [mId, memberID]);
 
-
-
-  
   useEffect(() => {
     if (Object.keys(formData)?.length) {
       const data = { ...formData }["0"];
@@ -468,10 +427,45 @@ const Address = ({
   const accType = watch("accountType");
   const acctypeValue = accType?.value;
 
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey);
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16);
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+    return CryptoJS.enc.Base64.stringify(combined);
+  }
+
   const onSubmit = async (data) => {
+    const pinArray = data.pin || [];
+    // const isValid =
+    //   pinArray.length === 4 &&
+    //   pinArray.every((d) => d !== "" && d !== undefined);
+    // if (!isValid) {
+    //   console.error("Invalid pin input");
+    //   return;
+    // }
+
+    const encrypted = encryptAES(pinArray.join(""));
+
     setErrMsz("");
+    {{debugger}}
     data.paymentMode = data.paymentMode?.value;
-    console.log("Payment data:", data);
     const formData = new FormData();
     formData.append("SlipId", slipIID || sId);
     formData.append("contractDate", data.contractDate);
@@ -481,7 +475,8 @@ const Address = ({
     formData.append("renewalDate", data.renewalDate);
     formData.append("nextPaymentDate", data.nextPaymentDate);
     formData.append("paymentMode", data.paymentMode);
-    formData.append("otpVerify", otpVerify);
+    formData.append("OtpVerify", otpVerify);
+
     formData.append("memberId", memberID || mId);
 
     if (otpVerify) {
@@ -517,7 +512,12 @@ const Address = ({
       formData.append("accountNumber", data.accountNumber);
       formData.append("chequeNumber", data.chequeNumber);
       formData.append("chequeImage", file);
-    } else if (paymentMode === "ChequeACH") {
+    }else if (paymentMode === "Cash") {
+       formData.append("pin", encrypted);
+
+   
+    }
+     else if (paymentMode === "ChequeACH") {
       formData.append("bankName", data.bankName);
       formData.append("nameOnAccount", data.nameOnAccount);
       formData.append("routingNumber", data.routingNumber);
@@ -537,9 +537,6 @@ const Address = ({
     } else {
       console.log("Choose differant payment Method ");
     }
-    console.log(data.otherCompanyName);
-    console.log(companyName?.label);
-    console.log(data.companyName?.value);
 
     if (isAssigned?.isAssigned) {
       stepper.next();
@@ -559,11 +556,6 @@ const Address = ({
             setShowQrModal(true);
           }
 
-          // {
-          //   {
-          //      ;
-          //   }
-          // }
           if (response?.status === 200) {
             if (paymentMode !== "Payment Link") {
               toast.current.show({
@@ -610,8 +602,6 @@ const Address = ({
       }
     }
   };
-
-  
 
   if (fetchLoader)
     return (
@@ -1026,7 +1016,7 @@ const Address = ({
                     }}
                     value={field.value}
                     onChange={() => {}} // Disable manual changes
-                    readOnly={true}
+                    disabled={true}
                   />
                 )}
               />
@@ -1114,7 +1104,7 @@ const Address = ({
 
           {paymentMode === "Cash" && (
             <>
-              <Cash_otp
+              {/* <Cash_otp
                 showModal={showModal}
                 setErrMsz={setErrMsz}
                 setShowModal={setShowModal}
@@ -1122,9 +1112,67 @@ const Address = ({
                 slipIID={slipIID || sId}
                 memberId={memberID || mId}
                 cashOtpVerify={formData[0]?.cashOtpVerify}
-              />
+              /> */}
+              <Row className="mb-2">
+                <Col sm="4">
+                  <Label className="form-label" for="hf-picker">
+                    Enter Pin <span style={{ color: "red" }}>*</span>
+                  </Label>
+                  <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                    {[...Array(4)].map((_, index) => (
+                      <Controller
+                        key={index}
+                        name={`pin[${index}]`}
+                        control={control}
+                        rules={{
+                          required: "All pin digits are required",
+                          pattern: {
+                            value: /^[0-9]$/,
+                            message: "Each pin digit must be a number",
+                          },
+                        }}
+                        render={({ field }) => (
+                          <Input
+                            {...field}
+                            maxLength={1}
+                            id={`pin-input-${index}`}
+                            className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
+                              errors.pin?.[index] ? "is-invalid" : ""
+                            }`}
+                            autoFocus={index === 0}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (!/^[0-9]$/.test(value) && value !== "")
+                                return;
 
-              {/* )} */}
+                              field.onChange(e);
+
+                              if (value && index < 5) {
+                                const nextInput = document.getElementById(
+                                  `pin-input-${index + 1}`
+                                );
+                                nextInput?.focus();
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (
+                                e.key === "Backspace" &&
+                                !field.value &&
+                                index > 0
+                              ) {
+                                const prevInput = document.getElementById(
+                                  `pin-input-${index - 1}`
+                                );
+                                prevInput?.focus();
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    ))}
+                  </div>
+                </Col>
+              </Row>
             </>
           )}
 

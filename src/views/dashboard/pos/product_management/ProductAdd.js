@@ -1,32 +1,24 @@
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
   Col,
-  Input,
   Form,
-  Button,
+  FormFeedback,
+  Input,
   Label,
   Row,
-  Tooltip,
-  FormFeedback,
 } from "reactstrap";
-import { useForm, Controller, get } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
-import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
-import addTax from "../../../../assets/icons/calendar-event-tax.svg";
-import ProductAdd_Table from "./ProductAdd_Table";
-import Add_Specification from "./Add_Specification";
 import useJwt from "@src/auth/jwt/useJwt";
-import NavItems from "./NavItems";
 import { ArrowLeft } from "react-feather";
+import Add_Specification from "./Add_Specification";
+import NavItems from "./NavItems";
+import ProductAdd_Table from "./ProductAdd_Table";
 const MultipleColumnForm = () => {
   const {
     control,
@@ -46,7 +38,12 @@ const MultipleColumnForm = () => {
       variations: [],
     },
   });
-  const [getvendorss, setVendors] = useState([]);
+  const [fetchData, setFetchData] = useState({
+    categories: [],
+    taxes: [],
+    vendorsList: [],
+  });
+
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
     importProduct: false,
@@ -63,8 +60,37 @@ const MultipleColumnForm = () => {
     }));
   };
 
-  const fetchVendors = async () => {
+  const onSubmit = async (data) => {
     try {
+      const res = await useJwt.addProduct(data);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+    console.log("Form Submitted:", data);
+  };
+
+  const fetchCategories = async () => {
+    try {
+      //get product categories
+      const { data } = await useJwt.getProductCategory();
+      const { content } = data;
+
+      const options = content.result.map((category) => ({
+        label: category.name,
+        value: category.uid,
+      }));
+
+      //get taxes
+      const taxResponse = await useJwt.getAlltax();
+      const taxOptions = taxResponse?.data?.content?.result.map((tax) => ({
+        label: `${tax.taxName} - ${tax.taxValue} ${
+          tax.taxType === "Flat" ? "$" : "%"
+        }`,
+        value: tax.uid,
+        taxValue: tax?.taxValue,
+      }));
+
       const getVendors = await useJwt.getVendor();
       console.log(getVendors);
       const vendorList = getVendors?.data?.content?.result || [];
@@ -73,60 +99,41 @@ const MultipleColumnForm = () => {
         value: x.uid,
       }));
 
-      setVendors(vendorDetails);
-
-      console.log(vendorDetails);
-
-      const allNameOfVendor = vendorDetails.forEach((item) => {
-        console.log(item.vendorName);
-      });
-
-      console.log(allNameOfVendor);
+      setFetchData((prev) => ({
+        ...prev,
+        categories: options,
+        taxes: taxOptions,
+        vendorsList: vendorDetails,
+      }));
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
   useEffect(() => {
-    fetchVendors();
+    fetchCategories();
   }, []);
-
-  const onSubmit = async (data) => {
-    try {
-      const res = await useJwt.addProduct(data);
-      console.log(res);
-    } catch (error) {
-       console.error(error);
-    }
-    console.log("Form Submitted:", data);
-  };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4"> <ArrowLeft
-                                                     style={{
-                                                       cursor: "pointer",
-                                                     // marginRight:"10px",
-                                                       transition: "color 0.1s",
-                                                     }}
-                                                     onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                                                     onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                                                     onClick={() => window.history.back()}
-                                                   />   Add New Products</CardTitle>
+          <CardTitle tag="h4">
+            {" "}
+            <ArrowLeft
+              style={{
+                cursor: "pointer",
+                // marginRight:"10px",
+                transition: "color 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+              onClick={() => window.history.back()}
+            />{" "}
+            Add New Products
+          </CardTitle>
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex  mt-2 justify-content-start gap-2">
-            <NavItems/>
-              <div>
-                <Link to="/pos/VendorManage">
-                  <div className="d-flex">
-                    <Button color="primary" outline size="sm">
-                  Import Product
-                    </Button>
-                  </div>
-                </Link>
-              </div>
-
+              <NavItems />
             </div>
           </div>
         </CardHeader>
@@ -176,8 +183,11 @@ const MultipleColumnForm = () => {
                 render={({ field }) => (
                   <Input type="select" {...field} id="category">
                     <option value="">Select Category</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="clothing">Clothing</option>
+                    {fetchData?.categories?.map((cat, index) => (
+                      <option key={index} value={cat?.value}>
+                        {cat?.label}
+                      </option>
+                    ))}
                   </Input>
                 )}
               />
@@ -191,8 +201,11 @@ const MultipleColumnForm = () => {
                 render={({ field }) => (
                   <Input type="select" {...field} id="vendor">
                     <option value="">Select Vendor</option>
-                    <option value="vendor1">Vendor 1</option>
-                    <option value="vendor2">Vendor 2</option>
+                    {fetchData?.vendorsList?.map((v, index) => (
+                      <option key={index} value={v?.value}>
+                        {v?.label}
+                      </option>
+                    ))}
                   </Input>
                 )}
               />
@@ -207,9 +220,9 @@ const MultipleColumnForm = () => {
                 control={control}
                 render={({ field }) => (
                   <Input type="select" {...field} id="taxChargesType">
-                    <option value="">Select Tax Charges</option>
-                    <option value="5">5%</option>
-                    <option value="18">18%</option>
+                    {/* <option value="">Select Tax Charges</option> */}
+                    <option value="5">Exclusive</option>
+                    {/* <option value="18">18%</option> */}
                   </Input>
                 )}
               />
@@ -223,8 +236,11 @@ const MultipleColumnForm = () => {
                 render={({ field }) => (
                   <Input type="select" {...field} id="taxes">
                     <option value="">Select Taxes</option>
-                    <option value="gst">GST</option>
-                    <option value="vat">VAT</option>
+                    {fetchData?.taxes?.map((tax, index) => (
+                      <option key={index} value={tax?.value}>
+                        {tax?.label}
+                      </option>
+                    ))}
                   </Input>
                 )}
               />

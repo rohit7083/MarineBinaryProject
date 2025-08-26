@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { ArrowLeft } from "react-feather";
+import { useFieldArray, useForm } from "react-hook-form";
+import { FaCreditCard, FaMoneyBillAlt, FaQrcode } from "react-icons/fa";
+import { MdOutlineSwipe } from "react-icons/md";
+import { useLocation } from "react-router-dom";
 import {
+  Badge,
   Card,
   CardBody,
   CardTitle,
-  Table,
-  Badge,
-  Row,
   Col,
-  Button,
+  Row,
+  Table
 } from "reactstrap";
-import { FaCreditCard, FaMoneyBillAlt, FaQrcode } from "react-icons/fa";
-import { ArrowLeft } from "react-feather";
-import { useLocation } from "react-router-dom";
-import { useFieldArray, useForm } from "react-hook-form";
 import RoomCard from "../../manage_roomBooking/addNewBooking/RoomCard";
-import { MdOutlineSwipe } from "react-icons/md";
 import ExtendDate from "../../manage_roomBooking/extendDate/ExtendDate";
 
 const View = () => {
@@ -403,11 +402,11 @@ const View = () => {
           </Card>
         </Col>
       </Row>
-      <div className=" mt-2 d-flex justify-content-start">
+      {/* <div className=" mt-2 d-flex justify-content-start">
         <Button color="primary" size="sm" type="submit">
           Next
         </Button>
-      </div>
+      </div> */}
     </>
   );
 };

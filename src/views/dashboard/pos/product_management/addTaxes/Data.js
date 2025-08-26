@@ -1,29 +1,20 @@
 // ** Custom Components
-import Avatar from "@components/avatar";
 // ** Third Party Components
-import { Link } from "react-router-dom";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
 import {
-  MoreVertical,
+  Archive,
   Edit,
   FileText,
-  Archive,
-  Trash,
-  Eye,
-  Edit2,
+  MoreVertical,
+  Trash
 } from "react-feather";
-import useJwt from "@src/auth/jwt/useJwt";
-import AddTax from "./AddTax";
 // ** Reactstrap Imports
 import {
   Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
   DropdownItem,
-  Button,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown
 } from "reactstrap";
 
 // ** Vars
@@ -249,7 +240,7 @@ export const multiLingColumns = [
   {
     name: "Position",
     sortable: true,
-    minWidth: "250px",
+    // minWidth: "250px",
     selector: (row) => row.post,
   },
   {
@@ -321,25 +312,25 @@ export const serverSideColumns =[
   {
     sortable: true,
     name: "Id",
-    minWidth: "225px",
+    // minWidth: "225px",
     selector: (row ,index) =>index + 1,
   },
   {
     sortable: true,
     name: "Tax Name",
-    minWidth: "225px",
+    // minWidth: "225px",
     selector: (row) => row.taxName,
   },
   {
     sortable: true,
     name: "Tax Type",
-    minWidth: "250px",
+    // minWidth: "250px",
     selector: (row) => row.taxType,
   },
   {
     sortable: true,
     name: "Tax Value",
-    minWidth: "250px",
+    // minWidth: "250px",
     selector: (row) => row.taxValue,
   },
 

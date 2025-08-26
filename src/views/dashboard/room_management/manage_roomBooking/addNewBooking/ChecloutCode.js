@@ -1,44 +1,27 @@
-import { useForm, Controller, set } from "react-hook-form";
-import Cards from "react-credit-cards-2";
-import "react-credit-cards-2/dist/es/styles-compiled.css";
 import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
+import "react-credit-cards-2/dist/es/styles-compiled.css";
+import { Controller, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import CryptoJS from "crypto-js";
-import GenerateDiscountOtp from "../../../event_management/GenerateDiscountOtp";
+import withReactContent from "sweetalert2-react-content";
 
+import { useEffect, useState } from "react";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
   Button,
-  Row,
-  Col,
-  Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
-  FormFeedback,
-  Spinner,
-  UncontrolledAlert,
+  Card,
+  CardBody,
+  CardHeader,
   CardText,
+  CardTitle,
+  Col,
+  Input,
+  Label,
+  Row
 } from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
 
-import { data } from "jquery";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
-import ClientDetaiils from "../../../event_management/client_Information";
-import { useLocation } from "react-router-dom";
-import OtpGenerate from "./OtpGenerate";
-import ClientDetails from "./ClientDetails";
 import { ArrowLeft } from "react-feather";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import ClientDetails from "./ClientDetails";
+import OtpGenerate from "./OtpGenerate";
 
 const Checkout = () => {
   const {
@@ -256,7 +239,7 @@ const Checkout = () => {
             <Col xl="8" xs="12">
               <Card>
                 <CardHeader>
-                  <CardTitle tag="h4">Guest Details</CardTitle>
+                  <CardTitle tag="h4">Guest Details 11</CardTitle>
                 </CardHeader>
 
                 <CardBody>

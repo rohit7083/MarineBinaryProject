@@ -172,6 +172,11 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
                     id="parkingName"
                     placeholder="Enter Pass  name"
                     invalid={!!errors.parkingName}
+                    onChange={(e)=>{
+                      const avoidSpecialChars=e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                            field.onChange(avoidSpecialChars);
+
+                    }}
                   />
                 )}
               />
@@ -203,6 +208,10 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
                     id="parkingAmount"
                     placeholder="Enter Pass Amount"
                     invalid={!!errors.parkingAmount}
+                    onChange={(e)=>{
+                      const avoidSpecialChars=e.target.value.replace(/[^0-9]/g, '');
+                      field.onChange(avoidSpecialChars);
+                    }}
                   />
                 )}
               />
@@ -287,6 +296,10 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
                     id="perDayDueChargesAmount"
                     placeholder="Enter Pass Amount"
                     invalid={!!errors.perDayDueChargesAmount}
+                     onChange={(e)=>{
+                      const avoidSpecialChars=e.target.value.replace(/[^0-9]/g, '');
+                      field.onChange(avoidSpecialChars);
+                    }}
                   />
                 )}
               />

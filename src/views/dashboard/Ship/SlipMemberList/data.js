@@ -100,54 +100,54 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 
       const MySwal = withReactContent(Swal);
 
-      const handleDelete = async (uid) => {
-        return MySwal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Yes, delete it!",
-          customClass: {
-            confirmButton: "btn btn-primary",
-            cancelButton: "btn btn-danger ms-1",
-          },
-          buttonsStyling: false,
-        }).then(async function (result) {
-          if (result.value) {
-            try {
-              // Call delete API
-              const response = await useJwt.deleteslip(uid);
-              if (response.status === 204) {
-                setData((prevData) => {
-                  const newData = prevData.filter((item) => item.uid !== uid);
-                  return newData;
-                });
-                // Show success message
-                MySwal.fire({
-                  icon: "success",
-                  title: "Deleted!",
-                  text: "Your file has been deleted.",
-                  customClass: {
-                    confirmButton: "btn btn-success",
-                  },
-                });
-              }
-            } catch (error) {
-              console.error("Error deleting item:", error);
-            }
-          } else if (result.dismiss === MySwal.DismissReason.cancel) {
-            // Show cancellation message
-            MySwal.fire({
-              title: "Cancelled",
-              text: "Your imaginary file is safe :)",
-              icon: "error",
-              customClass: {
-                confirmButton: "btn btn-success",
-              },
-            });
-          }
-        });
-      };
+      // const handleDelete = async (uid) => {
+      //   return MySwal.fire({
+      //     title: "Are you sure?",
+      //     text: "You won't be able to revert this!",
+      //     icon: "warning",
+      //     showCancelButton: true,
+      //     confirmButtonText: "Yes, delete it!",
+      //     customClass: {
+      //       confirmButton: "btn btn-primary",
+      //       cancelButton: "btn btn-danger ms-1",
+      //     },
+      //     buttonsStyling: false,
+      //   }).then(async function (result) {
+      //     if (result.value) {
+      //       try {
+      //         // Call delete API
+      //         const response = await useJwt.deleteslip(uid);
+      //         if (response.status === 204) {
+      //           setData((prevData) => {
+      //             const newData = prevData.filter((item) => item.uid !== uid);
+      //             return newData;
+      //           });
+      //           // Show success message
+      //           MySwal.fire({
+      //             icon: "success",
+      //             title: "Deleted!",
+      //             text: "Your file has been deleted.",
+      //             customClass: {
+      //               confirmButton: "btn btn-success",
+      //             },
+      //           });
+      //         }
+      //       } catch (error) {
+      //         console.error("Error deleting item:", error);
+      //       }
+      //     } else if (result.dismiss === MySwal.DismissReason.cancel) {
+      //       // Show cancellation message
+      //       MySwal.fire({
+      //         title: "Cancelled",
+      //         text: "Your imaginary file is safe :)",
+      //         icon: "error",
+      //         customClass: {
+      //           confirmButton: "btn btn-success",
+      //         },
+      //       });
+      //     }
+      //   });
+      // };
 
       return (
         <div className="d-flex">
@@ -169,7 +169,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
             </span>
           </Link>
 
-          <Link style={{ margin: "0.5rem" }}>
+          {/* <Link style={{ margin: "0.5rem" }}>
             {" "}
             <span
               color="danger"
@@ -178,7 +178,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
             >
               <Trash className="font-medium-3 text-body" />
             </span>
-          </Link>
+          </Link> */}
         </div>
       );
     },

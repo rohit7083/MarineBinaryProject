@@ -1,19 +1,13 @@
 // ** React Imports
-import React, {
-  Fragment,
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-} from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
-import { useFieldArray, useForm } from "react-hook-form";
 import { debounce } from "lodash";
+import { useFieldArray, useForm } from "react-hook-form";
 
-import { Button, CardTitle, Col, Form, Input, Row, Spinner } from "reactstrap";
-import RoomCard from "./RoomCard";
 import useJwt from "@src/auth/jwt/useJwt";
 import { useNavigate } from "react-router-dom";
+import { Button, CardTitle, Col, Form, Input, Row, Spinner } from "reactstrap";
+import RoomCard from "./RoomCard";
 const defaultFields = {
   uid: "",
   noOfExtraPeople: 0,
@@ -24,7 +18,6 @@ const defaultFields = {
   amtWithouttax: 0,
   taxvalue: 0,
 };
-
 const SearchRooms = ({
   isRoomRequired,
   setEventRooms,
@@ -32,6 +25,8 @@ const SearchRooms = ({
   searchField,
   setShowModal,
   showModal,
+  extraRoomMode,
+  uidOfEvent,
 }) => {
   const {
     control,
@@ -127,7 +122,6 @@ const SearchRooms = ({
     }));
     const totalAmount = Booked?.reduce((sum, item) => sum + item.amount, 0);
     console.log("roomUnit", totalAmount);
-    // {{debugger}}
     const payload = {
       checkInDate: bookedRoom["0"]?.checkInDate,
       checkOutDate: bookedRoom["0"]?.checkOutDate,
@@ -137,7 +131,6 @@ const SearchRooms = ({
       totalAmount: totalAmount,
     };
 
-    // {{debugger}}
     try {
       const res = await useJwt.submitBookedRooms(payload);
       console.log("submitBookedRooms", res);
@@ -156,6 +149,8 @@ const SearchRooms = ({
             alldata: payload,
             searchId: res?.data?.searchId,
             searchUid: res?.data?.roomSearchUid,
+            extraRoomMode,
+            uidOfEvent,
           },
         });
       }
@@ -210,30 +205,6 @@ const SearchRooms = ({
   const [visibleCount, setVisibleCount] = useState(6);
 
   const observer = useRef();
-
-  // automatically data load when page scroll donw
-  // const lastCardRef = useCallback(
-  //   (node) => {
-  //     if (isSubmitting) return;
-  //     if (observer.current) observer.current.disconnect();
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       setIsLoadingMore(true);
-
-  //       setTimeout(() => {
-  //         if (
-  //           entries[0].isIntersecting &&
-  //           visibleCount < tableData.results.length
-  //         ) {
-  //           setVisibleCount((prev) => prev + 6);
-  //           setIsLoadingMore(false);
-  //         }
-  //       }, 3000);
-  //     });
-
-  //     if (node) observer.current.observe(node);
-  //   },
-  //   [visibleCount, tableData.results.length, isSubmitting]
-  // );
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>

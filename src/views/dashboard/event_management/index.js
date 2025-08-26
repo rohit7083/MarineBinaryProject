@@ -1,143 +1,38 @@
-// import React, { useState, useRef, useEffect } from "react";
-// import Event_Info from "./Event_info";
-// // import VenueLocation from "./steps-with-validation/VenueLocation";
-// // import LogisticsServices from "./steps-with-validation/LogisticsServices";
-// // import VendorsCoordination from "./steps-with-validation/VendorsCoordination";
-// // import FinalReview from "./steps-with-validation/FinalReview";
-
-// // Custom Components
-// import Wizard from "@components/wizard";
-
-// // Icons
-// import { User, MapPin, Settings, Users, Clipboard } from "react-feather";
-
-// const index = () => {
-//   const ref = useRef(null);
-//   const [stepper, setStepper] = useState(null);
-//   const [fetchLoader, setFetchLoader] = useState(false);
-
-//   const [formData, setFormData] = useState({
-//         EventInfo: {},
-//     clientInfo: {},
-//     venueLocation: {},
-//     logistics: {},
-//     vendors: {},
-//   });
-
-//   useEffect(() => {
-//     // Optional: Fetch existing data to prefill
-//   }, []);
-
-//   const steps = [
-//     {
-//       id: "Event-info",
-//       title: "Event Information",
-//       subtitle: "Enter Event details",
-//       icon: <User size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.EventInfo }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "venue-location",
-//       title: "Venue & Location",
-//       subtitle: "Choose venue & setup",
-//       icon: <MapPin size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.venueLocation }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "logistics",
-//       title: "Logistics & Services",
-//       subtitle: "Plan services",
-//       icon: <Settings size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.logistics }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "vendors",
-//       title: "Vendors & Coordination",
-//       subtitle: "Manage vendors",
-//       icon: <Users size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.vendors }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "review",
-//       title: "Review",
-//       subtitle: "Final review & submit",
-//       icon: <Clipboard size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={formData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div className="modern-horizontal-wizard">
-//       <Wizard
-//         type="modern-horizontal"
-//         ref={ref}
-//         steps={steps}
-//         options={{ linear: false }}
-//         instance={(el) => setStepper(el)}
-//       />
-//     </div>
-//   );
-// };
-
-// export default index;
-
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
+import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
 import {
-  Table as ReactstrapTable,
-  Input,
-  Row,
-  Col,
+  Calendar,
+  ChevronDown,
+  DollarSign,
+  Edit,
+  MoreVertical,
+  Plus,
+  PlusCircle,
+  Trash,
+  Trash2,
+} from "react-feather";
+import ReactPaginate from "react-paginate";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Badge,
+  Button,
   Card,
   CardBody,
-  Button,
-  Badge,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
-import Add_parkDetails from "../parking_pass/Add_parkDetails";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
 import withReactContent from "sweetalert2-react-content";
-import useJwt from "@src/auth/jwt/useJwt";
+import CancleRooms from "./cancleRooms/CancleRooms";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -147,6 +42,8 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
 
+  const navigate = useNavigate();
+
   const [tableData, setTableData] = useState({
     count: 0,
     results: [],
@@ -155,6 +52,7 @@ const index = () => {
   const [loading, setLoading] = useState(true);
   const MySwal = withReactContent(Swal);
   const [mode, setMode] = useState("create");
+
   async function fetchTableData() {
     try {
       setLoading(true);
@@ -164,14 +62,13 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    // {{ }}
     fetchTableData();
   }, [currentPage, rowsPerPage]);
 
@@ -214,6 +111,58 @@ const index = () => {
     setRole(value);
   };
 
+  const handleEdit = (row) => {
+    navigate("/CreateEvent", {
+      state: {
+        Rowdata: row,
+        uid: row.uid,
+      },
+    });
+  };
+
+  const handlePayment = (row) => {
+    navigate("/CreateEvent", {
+      state: {
+        Rowdata: row,
+        uid: row.uid,
+        step: 2,
+      },
+    });
+  };
+
+  const handlePaymentHistory = (row) => {
+    navigate("/PaymentHistory", {
+      state: {
+        Rowdata: row,
+      },
+    });
+  };
+
+  const handleAddExtraRoom = (row) => {
+    navigate("/addNew_room_booking", {
+      state: {
+        Rowdata: row,
+        mode: "addExtraRoom",
+        uidOfEvent: row.uid,
+      },
+    });
+  };
+
+  const handleRoomCancle = (row) => {
+    // navigate("/addNew_room_booking", {
+    //   state: {
+    //     Rowdata: row,
+    //     uidOfEvent: row.uid,
+    //   },
+    // });
+    setDatarow(row);
+    setShow(true);
+  };
+const paymentStatusColor = {
+    success: "light-success",
+    error: "light-danger",
+    pending: "light-warning",
+  };
   const columns = [
     {
       name: "Id",
@@ -228,8 +177,6 @@ const index = () => {
       minWidth: "150px",
       selector: (row) => row.eventName,
     },
-
-    
 
     {
       name: "Start Date & Time",
@@ -250,7 +197,18 @@ const index = () => {
       // minWidth: "150px",
       selector: (row) => row.totalAmount,
     },
- {
+    {
+      name: "Payment Status",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => {
+        return(
+          <Badge color={paymentStatusColor[row?.paymentStatus.toLowerCase()] || "light-primary"}pill>
+       { row.paymentStatus}
+          </Badge>
+      );},
+    },
+    {
       name: "Remaining Amt",
       sortable: true,
       // minWidth: "150px",
@@ -265,14 +223,14 @@ const index = () => {
 
         const MySwal = withReactContent(Swal);
 
-        const handleDelete = async (uid) => {
+        const handleCancle = async (uid) => {
           // Show confirmation modal
           return MySwal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
+            confirmButtonText: "Yes,Cancel Event",
             customClass: {
               confirmButton: "btn btn-primary",
               cancelButton: "btn btn-danger ms-1",
@@ -282,8 +240,8 @@ const index = () => {
             if (result.value) {
               try {
                 // Call delete API
-                const response = await useJwt.DeleteEvent(uid);
-                if (response?.status === 204) {
+                const response = await useJwt.cancleEvent(uid);
+                if (response?.status === 200) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(
                       (item) => item.uid !== uid
@@ -297,7 +255,7 @@ const index = () => {
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: "Your file has been deleted.",
+                    text: "Your Event has been Cancle.",
                     customClass: {
                       confirmButton: "btn btn-success",
                     },
@@ -309,7 +267,7 @@ const index = () => {
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({
                 title: "Cancelled",
-                text: "Your imaginary file is safe :)",
+                text: "Your Event is safe :)",
                 icon: "error",
                 customClass: {
                   confirmButton: "btn btn-success",
@@ -320,35 +278,63 @@ const index = () => {
         };
         return (
           <>
-            {/* <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              // onClick={() => handleDelete(row.uid)}
-            > */}
-            {/* <Badge color="danger" style={{ cursor: "pointer" }}>
-              Sell
-            </Badge> */}
-            {/* </span> */}
-            <Link
-              style={{ margin: "0.5rem" }}
-              to={`/CreateEvent`}
-              state={{ Rowdata: row, uid: row.uid }}
-            >
-              <span
-                color="danger"
-                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-               
+            <UncontrolledDropdown>
+              <DropdownToggle
+                className="icon-btn hide-arrow"
+                color="transparent"
+                size="sm"
+                caret
+                // strategy="fixed"
               >
-                <Edit2 className="font-medium-3 text-body" />
-              </span>
-            </Link>
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+                <MoreVertical size={15} />
+              </DropdownToggle>
+
+              <DropdownMenu style={{ position: "absolute", zIndex: 1050 }}>
+                {/* {row?.paymentStatus === "success" && ( */}
+                <DropdownItem onClick={() => handleEdit(row)}>
+                  <Edit className="me-50" size={15} />
+                  <span className="align-middle">Edit</span>
+                </DropdownItem>
+                {/* )} */}
+
+                {row?.remainingAmount > 0 && (
+                  <DropdownItem
+                    onClick={() =>
+                      handlePayment({ ...row, setting: "payment" })
+                    }
+                  >
+                    <DollarSign className="me-50" size={15} />{" "}
+                    <span className="align-middle">Payment</span>
+                  </DropdownItem>
+                )}
+                {/* {row?.paymentStatus === "Pending" && ( */}
+                <DropdownItem onClick={() => handlePaymentHistory(row)}>
+                  <Calendar className="me-50" size={15} />{" "}
+                  <span className="align-middle">Payment History</span>
+                </DropdownItem>
+                {/* )} */}
+
+                <DropdownItem onClick={() => handleAddExtraRoom(row)}>
+                  <PlusCircle className="me-50" size={15} />{" "}
+                  <span className="align-middle">Add Extra Room</span>
+                </DropdownItem>
+
+                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
+                  <Eye className="me-50" size={15} />{" "}
+                  <span className="align-middle">View</span>
+                </DropdownItem> */}
+                <DropdownItem onClick={() => handleCancle(row.uid)}>
+                  <Trash2 className="me-50" size={15} />{" "}
+                  <span className="align-middle">Cancle Event</span>
+                </DropdownItem>
+                {row?.roomBookings?.length > 0 && (
+                  <DropdownItem onClick={() => handleRoomCancle(row)}>
+                    <Trash className="me-50" size={15} />{" "}
+                    <span className="align-middle">Cancle Room</span>
+                  </DropdownItem>
+                )}
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </>
         );
       },
@@ -383,7 +369,6 @@ const index = () => {
     );
   };
 
-  // ** Table data to render
   const dataToRender = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
@@ -484,6 +469,8 @@ const index = () => {
               />
             </div>
           )}
+
+          <CancleRooms datarow={datarow} setShow={setShow} show={show} />
         </CardBody>
       </Card>
     </>

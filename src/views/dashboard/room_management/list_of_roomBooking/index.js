@@ -1,39 +1,33 @@
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
 import {
   Calendar,
   ChevronDown,
   DollarSign,
-  Edit,
-  Edit2,
   Eye,
-  MoreVertical,
-  Plus,
-  Trash,
+  MoreVertical
 } from "react-feather";
+import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
 import {
-  Table as ReactstrapTable,
-  Input,
-  Row,
-  Col,
+  Badge,
   Card,
   CardBody,
-  Button,
-  Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
+  Col,
   DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown
 } from "reactstrap";
-import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
 import withReactContent from "sweetalert2-react-content";
-import useJwt from "@src/auth/jwt/useJwt";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -192,13 +186,10 @@ const index = () => {
       selector: (row) => row.checkOutDate,
     },
 
-    
     {
-      
       name: "Actions",
       minWidth: "150px",
       cell: (row) => {
-        
         const [data, setData] = useState([]);
 
         const MySwal = withReactContent(Swal);
@@ -258,49 +249,43 @@ const index = () => {
         };
         return (
           <>
-         
-              <UncontrolledDropdown>
-                <DropdownToggle
-                  className="icon-btn hide-arrow"
-                  color="transparent"
-                  size="sm"
-                  caret
-                >
-                  <MoreVertical size={15} />
-                </DropdownToggle>
-                <DropdownMenu>
-                  {row?.paymentStatus === "success" && (
-                    <DropdownItem onClick={() => handleEdit(row)}>
-                      <Calendar className="me-50" size={15} />
-                      <span className="align-middle">Extend</span>
-                    </DropdownItem>
-                  )}
-                  {row?.paymentStatus === "Pending" && (
-                    <DropdownItem onClick={() => handlePayment(row)}>
-                      <DollarSign className="me-50" size={15} />{" "}
-                      <span className="align-middle">Payment</span>
-                    </DropdownItem>
-                  )}
+            <UncontrolledDropdown>
+              <DropdownToggle
+                className="icon-btn hide-arrow"
+                color="transparent"
+                size="sm"
+                caret
+              >
+                <MoreVertical size={15} />
+              </DropdownToggle>
+              <DropdownMenu>
+                {row?.paymentStatus === "success" && (
                   <DropdownItem onClick={() => handleEdit(row)}>
-                    <Eye className="me-50" size={15} />{" "}
-                    <span className="align-middle">View</span>
+                    <Calendar className="me-50" size={15} />
+                    <span className="align-middle">Extend</span>
                   </DropdownItem>
+                )}
+                {row?.paymentStatus === "Pending" && (
+                  <DropdownItem onClick={() => handlePayment(row)}>
+                    <DollarSign className="me-50" size={15} />{" "}
+                    <span className="align-middle">Payment</span>
+                  </DropdownItem>
+                )}
+                <DropdownItem onClick={() => handleEdit(row)}>
+                  <Eye className="me-50" size={15} />{" "}
+                  <span className="align-middle">View</span>
+                </DropdownItem>
 
-                  {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
+                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
                     <Trash className="me-50" size={15} />{" "}
                     <span className="align-middle">Delete</span>
                   </DropdownItem> */}
-                </DropdownMenu>
-
-
-              </UncontrolledDropdown>
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </>
         );
       },
     },
-
- 
-
   ];
 
   const CustomPagination = () => {

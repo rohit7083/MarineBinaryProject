@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
 
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
+import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
+import ReactPaginate from "react-paginate";
+import { Link } from "react-router-dom";
 import {
-  Table as ReactstrapTable,
-  Input,
-  Row,
-  Col,
+  Button,
   Card,
   CardBody,
-  Button,
-  Badge,
+  Col,
+  Input,
+  Row,
+  Spinner
 } from "reactstrap";
-import Add_parkDetails from "../parking_pass/Add_parkDetails";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
 import withReactContent from "sweetalert2-react-content";
-import useJwt from "@src/auth/jwt/useJwt";
+import Add_parkDetails from "../parking_pass/Add_parkDetails";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -47,7 +45,7 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -295,7 +293,7 @@ const index = () => {
 
                 <Col xs="auto">
                   <Link to={"/parking_pass/add_pass"}>
-                    <Button 
+                    <Button
                       color="primary"
                       size="sm"
                       className="text-nowrap mb-1"
@@ -382,7 +380,6 @@ const index = () => {
           row={datarow}
           resetTableData={fetchTableData}
           mode={mode}
-          
         />
       </Card>
     </>

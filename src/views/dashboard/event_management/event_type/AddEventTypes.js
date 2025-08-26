@@ -1,25 +1,24 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
+import useJwt from "@src/auth/jwt/useJwt";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { ArrowLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
+  Button,
   Card,
   CardBody,
   CardText,
   CardTitle,
   Col,
-  Label,
-  Input,
-  Button,
   FormGroup,
+  Input,
+  Label,
   Spinner,
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
-import { Navigate, useLocation } from "react-router-dom";
-import { ArrowLeft } from "react-feather";
 function AddEventTypes() {
   const navigate = useNavigate();
   const toast = useRef(null);
@@ -45,8 +44,6 @@ function AddEventTypes() {
   }, []);
 
   const onSubmit = async (data) => {
-    
-
     try {
       setLoading(true);
       let res;
@@ -92,19 +89,19 @@ function AddEventTypes() {
         <CardBody>
           <CardTitle>
             <CardText>
-           <ArrowLeft
+              <ArrowLeft
                 style={{
                   cursor: "pointer",
-                marginRight:"10px",
+                  marginRight: "10px",
                   transition: "color 0.1s",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
                 onClick={() => window.history.back()}
-              />    
-              {!uid ? "Create ":
-              "update "}
-              Event Types</CardText>
+              />
+              {!uid ? "Create " : "update "}
+              Event Types
+            </CardText>
           </CardTitle>
           <Toast ref={toast} />
 
@@ -149,6 +146,13 @@ function AddEventTypes() {
                       placeholder="Enter event type description"
                       invalid={!!errors.eventTypeDescription}
                       {...field}
+                      onChange={(e) => {
+                        const cleanValue = e.target.value
+                          .replace(/[^a-zA-Z0-9 ]/g, "")
+                          .replace(/\s+/g, " "); 
+                         
+                        field.onChange(cleanValue);
+                      }}
                     />
                   )}
                 />

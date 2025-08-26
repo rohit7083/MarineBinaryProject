@@ -1,53 +1,26 @@
-// import React from 'react'
-
-// function CheckInDetails() {
-//   return (
-//     <>
-
-//     </>
-//   )
-// }
-
-// export default CheckInDetails
-
-import { useForm, Controller, set, useFieldArray } from "react-hook-form";
-import Cards from "react-credit-cards-2";
-import "react-credit-cards-2/dist/es/styles-compiled.css";
 import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
+import "react-credit-cards-2/dist/es/styles-compiled.css";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import CryptoJS from "crypto-js";
+import withReactContent from "sweetalert2-react-content";
 
+import { useEffect, useState } from "react";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
-  Button,
-  Row,
-  Col,
-  Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
-  FormFeedback,
-  Spinner,
-  UncontrolledAlert,
-  CardText,
   Badge,
-  Table,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardText,
+  CardTitle,
+  Col,
+  Input,
+  Row,
+  Table
 } from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
 
-import { data } from "jquery";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
 import { Trash2 } from "react-feather";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Checkout = () => {
   const {

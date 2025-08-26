@@ -5,7 +5,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 import {
   Card,
@@ -40,6 +40,7 @@ import { data } from "jquery";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
+import ErrorFile from "../../../../pages/authentication/slip/ErrorFile";
 
 const CardPayment = () => {
   const {
@@ -56,13 +57,12 @@ const CardPayment = () => {
     },
   });
 
-
-    
-
   const MySwal = withReactContent(Swal);
 
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
+  // const [loadWhileRender,setLoadWhileRender]=useState(false);
+  const [isValidLink, setIsValidLink] = useState(false);
   const { token } = useParams();
   const navigate = useNavigate();
   const [loadPayment, setLoadPayment] = useState(false);
@@ -72,12 +72,17 @@ const CardPayment = () => {
       setLoading(true);
       const res = await useJwt.getMemberDetails(token);
       console.log("res", res);
-      // const eventId=res?.data?.eventId;
+      console.log("res?.data", res?.data?.status);
 
+      if (res?.data?.status === false) {
+        setIsValidLink(true);
+      } else {
+        setIsValidLink(false);
+      }
 
       setMemberDetails(res?.data);
     } catch (error) {
-       console.error("error", error);
+      console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -110,24 +115,24 @@ const CardPayment = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
+
     setValue(name, value); // React Hook Form update
-  
+
     if (name === "cardExpiryYear") {
       setSelectedYear(value); // update year selection state
     }
-  
+
     if (name === "cardExpiryMonth" || name === "cardExpiryYear") {
       const updatedMonth =
         name === "cardExpiryMonth" ? value : watch("cardExpiryMonth");
       const updatedYear =
         name === "cardExpiryYear" ? value : watch("cardExpiryYear");
-  
+
       const formattedExpiry =
         updatedMonth && updatedYear
           ? `${updatedMonth}/${updatedYear.slice(-2)}`
           : "";
-  
+
       setCardDetails((prev) => ({
         ...prev,
         expiry: formattedExpiry,
@@ -139,7 +144,6 @@ const CardPayment = () => {
       }));
     }
   };
-  
 
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -170,13 +174,12 @@ const CardPayment = () => {
       { value: "11", label: "November" },
       { value: "12", label: "December" },
     ];
-  
+
     if (selectedYear === String(currentYear)) {
       return allMonths.slice(currentMonth); // Exclude past months for current year
     }
     return allMonths;
   };
-  
 
   const selectedOption = watch("paymentMethod");
 
@@ -186,24 +189,22 @@ const CardPayment = () => {
     setErr("");
     const { cvc, ...rest } = data;
 
-let payload={};
-   if (memberDetail?.slipId) {
-        
-    payload={  
-      finalPayment: Number(memberDetail?.amount),
-      slipId: memberDetail?.slipId,
-      memberId: memberDetail?.memberId,
-      paymentMode: selectedOption === "ach" ? 5 : 1,
-      }}
-      else{
-        payload={
-      finalPayment: Number(memberDetail?.amount),
-      eventId: memberDetail?.eventId,
-      memberId: memberDetail?.memberId,
-      paymentMode: selectedOption === "ach" ? 5 : 1,
-        }
-      }
-   
+    let payload = {};
+    if (memberDetail?.slipId) {
+      payload = {
+        finalPayment: Number(memberDetail?.amount),
+        slipId: memberDetail?.slipId,
+        memberId: memberDetail?.memberId,
+        paymentMode: selectedOption === "ach" ? 5 : 1,
+      };
+    } else {
+      payload = {
+        finalPayment: Number(memberDetail?.amount),
+        eventId: memberDetail?.eventId,
+        memberId: memberDetail?.memberId,
+        paymentMode: selectedOption === "ach" ? 5 : 1,
+      };
+    }
 
     if (selectedOption === "card") {
       payload.cardExpiryYear = Number(data.cardExpiryYear);
@@ -240,17 +241,15 @@ let payload={};
         });
       }
     } catch (error) {
-       console.error(error);
+      console.error(error);
       if (error.response) {
-        console.log("Error data", error.response.data);
-        console.log("Error status", error.response.status);
-        console.log("Error headers", error.response.headers);
+        console.log("Error data", error.response);
+
         setErr(error.response.data.content);
       }
     } finally {
       setLoadPayment(false);
     }
-    
   };
 
   const detectCardType = (number) => {
@@ -324,8 +323,7 @@ let payload={};
     });
   }, [watchInputes.join("|")]);
 
-
-    const maskCardNumberForCard = (number = "") => {
+  const maskCardNumberForCard = (number = "") => {
     const clean = number.replace(/\D/g, "");
     const len = clean.length;
 
@@ -339,16 +337,18 @@ let payload={};
     return first4 + maskedMiddle + last2;
   };
 
-   const maskCVC = (cvc = "") => {
+  const maskCVC = (cvc = "") => {
     return cvc ? "*".repeat(cvc.length) : "";
   };
+
+  if (!isValidLink) return <ErrorFile />;
 
   return (
     <Row className="d-flex justify-content-center mt-3">
       <Col xs="10">
         <Card>
           <CardHeader>
-            <CardTitle tag="h4">Member Details</CardTitle>
+            <CardTitle tag="h4">Member Details </CardTitle>
           </CardHeader>
           <CardBody>
             {loading ? (
@@ -679,15 +679,15 @@ let payload={};
                                 cvc={cardDetails.cvc}
                                 focused={cardDetails.focus}
                               /> */}
-                               <Cards
-                                  number={maskCardNumberForCard(
-                                    cardDetails.cardNumber
-                                  )} // ⚠️ only partially masked
-                                  name={cardDetails.nameOnCard}
-                                  expiry={cardDetails.expiry}
-                                  cvc={maskCVC(cardDetails.cvc)} // Shows ***
-                                  focused={cardDetails.focus}
-                                />
+                              <Cards
+                                number={maskCardNumberForCard(
+                                  cardDetails.cardNumber
+                                )} // ⚠️ only partially masked
+                                name={cardDetails.nameOnCard}
+                                expiry={cardDetails.expiry}
+                                cvc={maskCVC(cardDetails.cvc)} // Shows ***
+                                focused={cardDetails.focus}
+                              />
                             </Col>
 
                             {/* Form on Right */}
@@ -942,14 +942,16 @@ let payload={};
                                         onFocus={handleInputFocus}
                                       >
                                         <option value="">Select Month</option>
-                                        {getFilteredMonths(selectedYear).map((month) => (
-                                          <option
-                                            key={month.value}
-                                            value={month.value}
-                                          >
-                                            {month.label}
-                                          </option>
-                                        ))}
+                                        {getFilteredMonths(selectedYear).map(
+                                          (month) => (
+                                            <option
+                                              key={month.value}
+                                              value={month.value}
+                                            >
+                                              {month.label}
+                                            </option>
+                                          )
+                                        )}
                                       </Input>
                                     )}
                                   />

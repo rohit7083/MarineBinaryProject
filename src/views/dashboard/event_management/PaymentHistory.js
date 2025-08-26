@@ -1,39 +1,33 @@
-// import React from 'react'
-
-// function PaymentHistory() {
-//   return (
-// <>
-//       <h4 className="mb-2">Payment History</h4>
-
-// </>  )
-// }
-
-// export default PaymentHistory
-
-import React from "react";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Table,
-  Badge,
-  Row,
-  Col,
-  Button,
-} from "reactstrap";
+import { ArrowLeft } from "react-feather";
 import { FaCreditCard, FaMoneyBillAlt, FaQrcode } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
+import { Badge, Card, CardBody, CardTitle, Col, Row, Table } from "reactstrap";
 
-const PaymentHistory = () => {
+const PaymentHistory = ({ stepper, updateData }) => {
   const user = {
-    name: "John Doe",
-    email: "john@example.com",
-    memberId: "M123456",
     discountAmount: 500,
     advancePaid: 2000,
     remainingAmount: 1000,
     totalAmount: 3500,
   };
 
+  // {{debugger}}
+  const location = useLocation();
+
+  const paymentHistoryData = location?.state?.Rowdata;
+  console.log("paymenthostory data ", paymentHistoryData);
+  const {
+    lastName,
+    firstName,
+    phoneNumber,
+    countryCode,
+    emailId,
+    address,
+    city,
+    country,
+    postalCode,
+    state,
+  } = paymentHistoryData?.member;
   const transactions = [
     {
       id: 1,
@@ -68,7 +62,7 @@ const PaymentHistory = () => {
 
   const getStatusBadge = (status) => {
     return (
-      <Badge color={status === "Success" ? "success" : "danger"}>
+      <Badge color={status === "success" ? "success" : "danger"}>
         {status}
       </Badge>
     );
@@ -76,45 +70,42 @@ const PaymentHistory = () => {
 
   return (
     <>
-      <h4 className="mb-2">Payment History</h4>
+      <CardTitle className="mb-1" tag="h4">
+        <ArrowLeft
+          style={{
+            cursor: "pointer",
+            transition: "color 0.1s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+          onClick={() => window.history.back()}
+        />{" "}
+        Payment History
+      </CardTitle>
       <Row>
         <Col md="12">
-          <Card className='border-2'>
+          <Card className="border-2">
             <CardBody>
-              <CardTitle tag="h5">{user.name}</CardTitle>
-              <p>Email: {user.email}</p>
-              <p>Member ID: {user.memberId}</p>
-
+              <CardTitle tag="h5">{firstName + " " + lastName}</CardTitle>
+              <p>Email: {emailId}</p>
+              <p>Phone No: {countryCode + phoneNumber}</p>
+              <p>
+                Address :{" "}
+                {address +
+                  "," +
+                  city +
+                  "," +
+                  state +
+                  "," +
+                  country +
+                  "," +
+                  postalCode}
+              </p>
               <Row className="mt-3">
-                {/* <Col md="3">
-          <div className="p-2 bg-light rounded shadow-sm text-center">
-            <strong>Total Amount</strong>
-            <p className="mb-0 fw-bold">${user.totalAmount || 0}</p>
-          </div>
-        </Col> */}
-
-                {/* <Col md="3">
-  <div className="d-flex align-items-center rounded shadow-sm p-2 text-white">
-    <img
-      src="https://img.icons8.com/bubbles/100/discount.png"
-      alt="discount"
-      width="60"
-      height="60"
-      className="me-2"
-    />
-    <div>
-      <strong className="text-uppercase small d-block">
-        Total Amount
-      </strong>
-      <p className="mb-0 fw-bold fs-6">₹{user.totalAmount || 0}</p>
-    </div>
-  </div>
-</Col> */}
-
                 <Col md="3">
                   <div
                     className="d-flex align-items-center rounded-4 shadow-sm p-1"
-                    style={{ backgroundColor: "#AED6F1", color: "black"  }}
+                    style={{ backgroundColor: "#AED6F1", color: "black" }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -140,7 +131,10 @@ const PaymentHistory = () => {
                         Total Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                     <strong>   $ {user.totalAmount || 0}</strong>
+                        <strong>
+                          {" "}
+                          $ {paymentHistoryData?.totalAmount || 0}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -175,9 +169,9 @@ const PaymentHistory = () => {
                         Discount Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                       <strong>
-                        $ {user.discountAmount || 0}
-                        </strong> 
+                        <strong>
+                          $ {paymentHistoryData?.discountAmount || 0}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -214,7 +208,10 @@ const PaymentHistory = () => {
                         Paid Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                       <strong>   $ {user.advancePaid || 0} </strong> 
+                        <strong>
+                          {" "}
+                          $ {paymentHistoryData?.advancePaid || 0}{" "}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -248,87 +245,54 @@ const PaymentHistory = () => {
                         className="mb-0 fw-bold fs-4"
                         style={{ marginBottom: "0.1rem" }}
                       >
-                       <strong> $ {Number(user.remainingAmount || 0).toFixed(2)} </strong>
+                        <strong>
+                          {" "}
+                          ${" "}
+                          {Number(
+                            paymentHistoryData?.remainingAmount || 0
+                          ).toFixed(2)}{" "}
+                        </strong>
                       </p>
                     </div>
                   </div>
                 </Col>
 
-                {/* <Col md="3">
-                  <div
-                    className="d-flex flex-column align-items-center rounded shadow-sm p-1 justify-content-center"
-                    style={{ backgroundColor: "#bc1b68", color: "white" }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="3em"
-                      height="3em"
-                      style={{ marginBottom: '0.1rem' }}
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M5 17v2V5zm.616 3q-.672 0-1.144-.472T4 18.385V5.615q0-.67.472-1.143Q4.944 4 5.616 4h12.769q.67 0 1.143.472q.472.472.472 1.144v2.942h-1V5.616q0-.27-.173-.443T18.385 5H5.615q-.269 0-.442.173T5 5.616v12.769q0 .269.173.442t.443.173h12.769q.269 0 .442-.173t.173-.442v-2.943h1v2.943q0 .67-.472 1.143q-.472.472-1.143.472zm8-4q-.672 0-1.144-.472T12 14.385v-4.77q0-.67.472-1.143Q12.944 8 13.616 8h5.769q.67 0 1.143.472q.472.472.472 1.144v4.769q0 .67-.472 1.143q-.472.472-1.143.472zm5.769-1q.269 0 .442-.173t.173-.442v-4.77q0-.269-.173-.442T19.385 9h-5.77q-.269 0-.442.173T13 9.616v4.769q0 .269.173.442t.443.173zM16 13.5q.625 0 1.063-.437T17.5 12t-.437-1.062T16 10.5t-1.062.438T14.5 12t.438 1.063T16 13.5"
-                      ></path>
-                    </svg>
-
-                    <strong
-                      className="text-uppercase small d-block "
-                      style={{ fontSize: "",marginBottom: '0.2rem' }}
-                    >
-                      Total Amount
-                    </strong>
-                    <p className="mb-0 fw-bold fs-4"style={{ marginBottom: '0.1rem' }}>
-                      $ {user.discountAmount || 0}
-                    </p>
-                  </div>
-                </Col> */}
-
-                {/* <Col md="3">
-          <div className="p-2 bg-light rounded shadow-sm text-center">
-            <strong>Discount Amount</strong>
-            <p className="mb-0 text-success">${user.discountAmount || 0}</p>
-          </div>
-        </Col> */}
               </Row>
             </CardBody>
           </Card>
         </Col>
       </Row>
-
-      <h5 className="mt-4">Recent Transactions</h5>
-      <Table responsive bordered hover>
-        <thead className="thead-light">
-          <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Amount ($)</th>
-            <th>Mode</th>
-            <th>Status</th>
-            <th>Transaction ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.slice(0, 5).map((txn, index) => (
-            <tr key={txn.id}>
-              <td>{index + 1}</td>
-              <td>{new Date(txn.date).toLocaleDateString()}</td>
-              <td>{txn.amount}</td>
-              <td>
-                {getPaymentIcon(txn.mode)} {txn.mode}
-              </td>
-              <td>{getStatusBadge(txn.status)}</td>
-              <td>{txn.transactionId}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      <div className=" mt-2 d-flex justify-content-end">
-        <Button color="primary" size="sm" type="submit">
-          Next
-        </Button>
-      </div>
+      <Card>
+        <CardBody>
+          <h5 className="mt-1">Recent Transactions</h5>
+          <Table responsive bordered hover>
+            <thead className="thead-light">
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Amount ($)</th>
+                <th>Mode</th>
+                <th>Status</th>
+                <th>Transaction ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paymentHistoryData?.payments.slice(0, 5).map((txn, index) => (
+                <tr key={txn.id}>
+                  <td>{index + 1}</td>
+                  <td>{new Date(txn.paymentDate).toLocaleDateString()}</td>
+                  <td>{txn.finalPayment}</td>
+                  <td>
+                    {getPaymentIcon(txn.mode)} {txn.paymentMode || "N/A"}
+                  </td>
+                  <td>{getStatusBadge(txn.paymentStatus)}</td>
+                  <td>{txn.transactionId}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardBody>
+      </Card>
     </>
   );
 };

@@ -1,76 +1,264 @@
-import React, { useEffect, useState, Fragment } from "react";
-import useJwt from "@src/auth/jwt/useJwt";
-import { Send } from "react-feather";
-import { Spinner, UncontrolledAlert } from "reactstrap";
-import {BeatLoader} from 'react-spinners';
-import Countdown from "react-countdown";
-import WatchNew from '../../../../../../src/assets/images/updatedWatchnew.jpg'
+import React, { Fragment, useEffect, useRef, useState } from "react";
+
+// ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Modal,
+  Button,
+  Form,
   Label,
   Input,
-  Button,
+  Modal,
   ModalBody,
-  ModalHeader,
-  InputGroup,
-  FormFeedback,
+  Row,
+  Col,
+  UncontrolledAlert,
+  Spinner,
+  Alert,
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
 
-import { Alert } from "reactstrap";
-import { ThumbsUp } from "react-feather";
-const GenrateOtp = ({
-  setotpVerify,
-  memberId,
-  slipIID,
-  fetchDiscountFields,
-}) => {
+// ** Third Party Imports
+import Countdown from "react-countdown";
+import styled from "styled-components";
+import { BeatLoader } from "react-spinners";
+
+
+// ** React Hook Form Imports
+import { Controller, set, useForm } from "react-hook-form";
+
+// ** Custom Image Imports
+import watchSrc from "@src/assets/images/updatedWatchnew.jpg";
+
+// ** Styles
+import "@styles/react/pages/page-authentication.scss";
+
+// ** JWT Service
+import useJwt from "@src/auth/jwt/useJwt";
+import { Send, ThumbsUp } from "react-feather";
+
+// Styled Components
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+`;
+
+const ImageWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const StyledImage = styled.img`
+  width: 120px;
+  height: 100px;
+  display: block;
+`;
+
+const TimerText = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: -4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+`;
+
+const GenrateOtp = (props) => {
+  // **Destructure props for better readability
+  const { otpVerify, setotpVerify, slipIID, memberId, fetchDiscountFields } =
+    props;
+
   // ** States
-    const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
-  
-  const [show, setShow] = useState(false);
-  const [time, setTime] = useState(100);
+  const [timerKey, setTimerKey] = useState(0);
+  const [targetTime, setTargetTime] = useState(null);
+  const [attempt, setAttempt] = useState(0);
+  const [tokenForCall, setTokenForCall] = useState(null);
   const [errMsz, seterrMsz] = useState("");
+  const [accessTokenotp, setAccessTokenOtp] = useState("");
   const [loader, setLoader] = useState(false);
-  const [accessTokenotp, setAccessTokenOtp] = useState(""); // Store the token here
   const [verify, setVerify] = useState(false);
+  const [show, setShow] = useState(false);
   const [otpLoader, setOtpLoader] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    setError,watch,setValue,
-    formState: { errors },
-  } = useForm();
-   
-  const handleOTP = async () => {
-    try {
-      const payload = {
-        type:1,
-        slipId: slipIID,
-        memberId: memberId,
-      };
-      setOtpLoader(true);
-      const response = await useJwt.GenerateOtp(payload); // Adjust this method to send the payload
-      const token = response.data.content;
-      if (response?.status == 200) {
-        setCountdownEndTime(Date.now() + 40000);
+  // ** Refs
+  const alreadyUpdatedRef = useRef(false);
 
-      }
-      setAccessTokenOtp(token);
-      setShow(true);
-      setTime(100);
-    } catch (error) {
-      console.error("Error generating OTP:", error);
-      console.log("Failed to generate OTP. Please try again.");
-    } finally {
-      setOtpLoader(false);
+  // ** React Hook Form
+  const { control, handleSubmit , watch, formState: { errors },
+ } = useForm({
+    defaultValues: {
+      otpInput: Array(6).fill(""),
+    },
+  });
+
+  // ** Render Timer
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      return <TimerText>00:00</TimerText>;
+    } else {
+      alreadyUpdatedRef.current = false;
+      return (
+        <TimerText>
+          {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+        </TimerText>
+      );
+    }
+  };
+  // ** Render label
+  const renderLabel = (attempt) => {
+    switch (attempt) {
+      case 1:
+        return (
+          <span>
+            Didn’t get the code ?{" "}
+            <span className="text-primary"> resend otp</span>
+          </span>
+        );
+      case 2:
+        return (
+          <span>
+            Didn’t get the code ?{" "}
+            <span className="text-primary"> Call Us </span>
+          </span>
+        );
+      default:
+        return null;
     }
   };
 
-  const handleVerifyOTP = async (data) => {
+  // ** Render OTP Input Fields
+  // const renderOtpInput = (count) => {
+  //   const inputs = Array.from({ length: count }).fill(0);
+  //   return inputs.map((_, index) => (
+  //     <Controller
+  //       key={index}
+  //       name={`otpInput${index}`}
+  //       control={control}
+  //       render={({ field }) => (
+  //         <Input
+  //           {...field}
+  //           maxLength="1"
+  //           className="auth-input height-50 text-center numeral-mask mx-25 mb-1"
+  //           autoFocus={index === 0}
+  //         />
+  //       )}
+  //     />
+  //   ));
+  // };
+
+   
+ const renderOtpInput = (count) => {
+  return Array.from({ length: count }).map((_, index) => (
+    
+    <Controller
+      key={index}
+      name={`otpInput.${index}`}
+      control={control}
+      render={({ field }) => (
+        <Input
+          {...field}
+          maxLength="1"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          className="auth-input height-50 text-center numeral-mask mx-25 mb-1"
+          autoFocus={index === 0}
+          onChange={(e) => {
+            const value = e.target.value;
+            // Only allow digits
+            if (/^\d$/.test(value)) {
+              field.onChange(value);
+              const nextInput = document.querySelector(
+                `input[name="otpInput.${index + 1}"]`
+              );
+              if (nextInput) nextInput.focus();
+            } else {
+              // Clear invalid input
+              field.onChange("");
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Backspace" && !field.value) {
+              const prevInput = document.querySelector(
+                `input[name="otpInput.${index - 1}"]`
+              );
+              if (prevInput) {
+                prevInput.focus();
+                // Clear previous input manually
+                setTimeout(() => {
+                  const event = new Event("input", { bubbles: true });
+                  prevInput.value = "";
+                  prevInput.dispatchEvent(event);
+                }, 0);
+              }
+            }
+          }}
+          
+        />
+        
+      )}
+    />
+    
+  ));
+  
+   
+};
+
+
+  // ** Handle Complete
+  const handleComplete = () => {
+    if (!alreadyUpdatedRef.current) {
+      alreadyUpdatedRef.current = true;
+      setAttempt(attempt + 1);
+    }
+  };
+
+  // ** Reset Timer
+  const resetTimer = () => {
+    alreadyUpdatedRef.current = false;
+    const newTime = Date.now() + 40000;
+    setTargetTime(newTime);
+    setTimerKey((prev) => prev + 1);
+  };
+  // ** Call and Text Handlers
+  const onCall = async (token) => {
+    await useJwt.resend_Otp(token);
+  };
+  const onText = async () => {
+    const payload = {
+      type: 1,
+      slipId: slipIID,
+      memberId: memberId,
+    };
+    const { data } = await useJwt.GenerateOtp(payload);
+    return data.content;
+  };
+
+  // ** handle Resend OTP
+  const handleResendCall = async () => {
+    try {
+      if (attempt === 1) {
+        const token = await onText();
+        setTokenForCall(token);
+        resetTimer();
+      } else if (attempt === 2) {
+        await onCall(tokenForCall);
+        resetTimer();
+      } else {
+        alert("You have reached the maximum number of attempts.");
+      }
+    } catch (error) {
+      console.log("Error in Resend OTP:", error);
+    }
+  };
+
+  // ** Effect to reset timer
+  useEffect(() => {
+    setTargetTime(Date.now() + 40000);
+  }, [timerKey]);
+
+  // ** Action to handle OTP verification
+  const handleVerifyOtp = async (data) => {
     seterrMsz("");
 
     try {
@@ -79,8 +267,9 @@ const GenrateOtp = ({
         return;
       }
 
-       
-      const payload = { otp: parseInt(data.Userotp) };
+      const payload = {
+        otp: data.otpInput.join(""),
+      };
       setLoader(true);
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
       setVerify(true);
@@ -88,9 +277,7 @@ const GenrateOtp = ({
       setShow(false);
       setotpVerify(true);
       console.log("OTP Verified Successfully!");
-      // setButtonEnabled(true);
     } catch (error) {
-       
       console.error("Error verifying OTP:", error);
       console.log("Failed to verify OTP. Please try again.");
 
@@ -108,181 +295,122 @@ const GenrateOtp = ({
     }
   };
 
-  useEffect(() => {
-    let timer;
-    if (show) {
-      timer = setInterval(() => {
-        setTime((prevTime) => {
-          if (prevTime <= 0) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
+  const handleOTP = async () => {
+    try {
+      const payload = {
+        type: 1,
+        slipId: slipIID,
+        memberId: memberId,
+      };
+      setOtpLoader(true);
+      const response = await useJwt.GenerateOtp(payload);
+      const token = response.data.content;
+
+      setAccessTokenOtp(token);
+      setShow(true);
+    } catch (error) {
+      console.error("Error generating OTP:handleResendOTP ", error);
+      console.log("Failed to generate OTP. Please try again.");
+    } finally {
+      setOtpLoader(false);
     }
-    return () => clearInterval(timer);
-  }, [show]);
-
-const watchUserotp = watch("Userotp");
-
-useEffect(()=>{
-
-  const inputRestricted = watchUserotp?.replace(/[^0-9]/g, "");
-
-  if (watchUserotp !== inputRestricted) {
-    setValue("Userotp", inputRestricted, { shouldValidate: true }); // Update the value in the form
-    
-  }
-
-
-
-},[watchUserotp,setValue])
+  };
 
   return (
     <Fragment>
-      {verify || fetchDiscountFields ? (
+      <div>
+        {verify || fetchDiscountFields ? (
         <React.Fragment>
           <Alert color="success">
             <div className="alert-body " style={{ marginTop: "-10px" }}>
-              <span className="ms-1">OTP Verified Successfully ! </span>
+              <span className="ms-1">
+                {" "}
+                 OTP Verified Successfully !{" "}
+              </span>
               <ThumbsUp size={15} />
             </div>
           </Alert>
         </React.Fragment>
       ) : (
-        <Button color="primary" onClick={handleOTP}>
+        <Button color="primary" className="" size="sm"  onClick={handleOTP}>
           {otpLoader ? (
-           <BeatLoader size={10} color="#ffffff" />
-
+            <BeatLoader size={10} color="#ffffff" />
           ) : (
             <>
               {" "}
-              <Send className="me-1" size={20} />
+              <Send className="me-1" size={15} />
               Generate otp
             </>
           )}
         </Button>
       )}
 
-      {/* OTP Modal */}
+      </div>
       <Modal
         isOpen={show}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered"
       >
-        <ModalHeader
-          className="bg-transparent"
-          toggle={() => setShow(!show)}
-        ></ModalHeader>
-        <ModalBody className="px-sm-5 mx-50 pb-5">
-          <h1 className="text-center mb-1">Verify OTP</h1>
-
-          {errMsz && (
-            <React.Fragment>
-              <UncontrolledAlert color="danger">
-                <div className="alert-body">
-                  <span className="text-danger fw-bold">{errMsz}</span>
-                </div>
-              </UncontrolledAlert>
-            </React.Fragment>
-          )}
-
-          <Row
-            tag="form"
-            className="gy-1 gx-2 mt-75"
-            onSubmit={handleSubmit(handleVerifyOTP)}
-          >
-            <Col xs={12}>
-              <Label className="form-label" for="Userotp">
-                Enter OTP
+        <ModalBody className={"p-2"}>
+          <Form onSubmit={handleSubmit(handleVerifyOtp)}>
+            <Row>
+              <Label style={{ fontSize: "2em" }} className=" text-center mb-1">
+                Verify Otp
               </Label>
-              <InputGroup>
-                <Controller
-                  name="Userotp"
-                  id="Userotp"
-                  control={control}
-                  rules={{
-                    required: "OTP is required",
-                    maxLength: {
-                      value: 6,
-                      message: "OTP must be 6 digits",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      maxLength={6}
-                      placeholder="Enter OTP"
-                      invalid={errors.Userotp && true}
-                      {...field}
-                    />
-                  )}
-                />
-                <FormFeedback>{errors.Userotp?.message}</FormFeedback>
-              </InputGroup>
-            </Col>
+              {errMsz && (
+                <React.Fragment>
+                  <UncontrolledAlert color="danger">
+                    <div className="alert-body">
+                      <strong>Error : </strong>{" "}
+                      <span className="text-danger fw-bold">{errMsz}</span>
+                    </div>
+                  </UncontrolledAlert>
+                </React.Fragment>
+              )}
+              <Col sm="12 mb-2">
+                <Label>Enter Otp</Label>
+                <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                  {renderOtpInput(6)}
+                </div>
+              </Col>
+            </Row>
 
-            <Col xs={12} className="text-center mt-2">
-              {/* <p>
-                Time Remaining: {`${Math.floor(time / 60)}`.padStart(2, "0")}:
-                {`${time % 60}`.padStart(2, "0")}
-              </p>
-              <p>
-                Didn’t get the OTP?{" "}
-                <a href="/" onClick={(e) => e.preventDefault()}>
-                  Resend
-                </a>{" "}
-                or{" "}
-                <a href="/" onClick={(e) => e.preventDefault()}>
-                  Call us
-                </a>
-              </p> */}
-
-
-               <div className="d-flex flex-column align-items-center position-relative">
-                                  <div
-                                    style={{ position: "relative", display: "inline-block" }}
-                                  >
-                                    <img
-                                      src={WatchNew}
-                                      alt="Phone Call"
-                                      style={{
-                                        width: "120px",
-                                        height: "100px",
-                                        display: "block",
-                                      }}
-                                    />
-              
-                                    <Countdown
-                                      key={countdownEndTime} // resets the countdown on update
-                                      date={countdownEndTime}
-                                      // onComplete={() => setResendLoading(false)} // re-enable the button
-                                      renderer={({ minutes, seconds }) => (
-                                        <span
-                                          className="position-absolute top-50 start-50 translate-middle"
-                                          style={{
-                                            marginTop: "-4px",
-                                            fontSize: "14px",
-                                            fontWeight: "bold",
-                                            color: "White",
-                                          }}
-                                        >
-                                          {String(minutes).padStart(2, "0")}:
-                                          {String(seconds).padStart(2, "0")}
-                                        </span>
-                                      )}
-                                    />
-                                  </div>
-                                </div>
-            </Col>
-
-            <Col xs={12}>
-              <Button type="submit" color="success" block>
-                {loader ? <Spinner color="white" size={12} /> : "Verify OTP"}
+            <Container>
+              <ImageWrapper>
+                <StyledImage src={watchSrc} alt="Phone Call" />
+                {targetTime && (
+                  <Countdown
+                    key={timerKey}
+                    date={targetTime}
+                    onComplete={handleComplete}
+                    renderer={renderer}
+                  />
+                )}
+              </ImageWrapper>
+            </Container>
+            <Col sm="12 mt-2">
+              <Button type="submit" disabled={loader} color="primary" block>
+                {loader ? (
+                  <>
+                    {" "}
+                    Loading... <Spinner color="white" size="sm" />{" "}
+                  </>
+                ) : (
+                  "Verify OTP"
+                )}{" "}
               </Button>
             </Col>
-          </Row>
+          </Form>
+          <p className="text-center mt-2">
+            <a
+              onClick={(e) => {
+                e.preventDefault();
+                handleResendCall();
+              }}
+            >
+              {renderLabel(attempt)}
+            </a>{" "}
+          </p>
         </ModalBody>
       </Modal>
     </Fragment>

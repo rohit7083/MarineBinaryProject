@@ -1,23 +1,23 @@
-import React, { Fragment, useEffect, useState } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
-import { Spinner, UncontrolledAlert } from "reactstrap";
+import React, { Fragment, useEffect, useState } from "react";
+import { FormFeedback, Spinner, UncontrolledAlert } from "reactstrap";
 
 // Reactstrap
 import {
-  Row,
-  Col,
-  Modal,
-  Label,
-  Input,
   Button,
+  Col,
+  Input,
+  Label,
+  Modal,
   ModalBody,
   ModalHeader,
+  Row,
 } from "reactstrap";
 
 // React Hook Form
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
-const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
+const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
   const {
     reset,
     control,
@@ -27,9 +27,9 @@ const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      taxName: "dsadsa255",
-      taxType: "Flat",
-      taxValue: "20",
+      // taxName: "dsadsa255",
+      // taxType: "Flat",
+      // taxValue: "20",
     },
   });
 
@@ -48,7 +48,7 @@ const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
       try {
         setLoading(true);
         const res = await useJwt.productTax(payload);
-        setIsDataUpdated((prev) => !prev);
+        await resetTable();
         setShow(false);
         reset();
       } catch (error) {
@@ -145,7 +145,7 @@ const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
                 rules={{
                   required: "Tax name is required",
                   pattern: {
-                    value: /^[A-Za-z ]+$/,
+                    value: /^[A-Za-z][A-Za-z\s\-&'()]{1,49}$/,
                     message: "Only alphabetic characters (A–Z) are allowed",
                   },
                 }}
@@ -159,44 +159,57 @@ const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
                 )}
               />
               {errors.taxName && (
-                <span className="text-danger">{errors.taxName.message}</span>
+                <FormFeedback>{errors.taxName.message}</FormFeedback>
               )}
             </Col>
 
             <Col md={12}>
-              <Label className="form-label">Tax Type</Label>
+              <Label className="form-label mb-1">Tax Type</Label>{" "}
+              {/* removed bottom margin */}
               <Controller
                 name="taxType"
                 control={control}
+                rules={{
+                  required: "Tax Type is required",
+                }}
                 render={({ field }) => (
-                  <div className="demo-inline-spacing">
-                    <div className="form-check">
+                  <div className="d-flex align-items-center gap-2">
+                    {" "}
+                    {/* inline radios */}
+                    <div className="form-check m-0">
                       <Input
                         type="radio"
                         id="flat"
                         value="Flat"
                         checked={field.value === "Flat"}
-                        onChange={field.onChange}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        invalid={!!errors.taxType}
                       />
-                      <Label className="form-check-label" for="flat">
+                      <Label className="form-check-label" htmlFor="flat">
                         Flat
                       </Label>
                     </div>
-                    <div className="form-check">
+                    <div className="form-check m-0">
                       <Input
                         type="radio"
                         id="percentage"
                         value="Percentage"
                         checked={field.value === "Percentage"}
-                        onChange={field.onChange}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        invalid={!!errors.taxType}
                       />
-                      <Label className="form-check-label" for="percentage">
+                      <Label className="form-check-label" htmlFor="percentage">
                         Percentage
                       </Label>
                     </div>
                   </div>
                 )}
               />
+              {errors.taxType && (
+                <div className="invalid-feedback d-block">
+                  {errors.taxType.message}
+                </div>
+              )}
             </Col>
 
             {/* Tax Value */}
@@ -210,7 +223,7 @@ const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
                 rules={{
                   required: "Tax value is required",
                   pattern: {
-                    value: /^[0-9]+$/,
+value: /^\d+(\.\d+)?$/,
 
                     message: "Only numbers are allowed",
                   },
@@ -235,7 +248,7 @@ const AddCardExample = ({ show, setShow, uid, row, setIsDataUpdated }) => {
                 )}
               />
               {errors.taxValue && (
-                <span className="text-danger">{errors.taxValue.message}</span>
+                <FormFeedback>{errors.taxValue.message}</FormFeedback>
               )}
             </Col>
 
