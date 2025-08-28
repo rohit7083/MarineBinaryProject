@@ -53,7 +53,7 @@ function ProductDropdown() {
         </DropdownItem>
         <DropdownItem
           tag={Link}
-          to="/dashboard/pos/product_management/manageStocks"
+          to="/pos/VendorManage"
         >
           <UserPlus size={16} className="me-2" />
           Add vendor

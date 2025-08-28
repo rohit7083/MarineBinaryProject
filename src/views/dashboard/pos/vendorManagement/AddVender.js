@@ -9,7 +9,7 @@ import ReactCountryFlag from "react-country-flag";
 import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import "react-phone-input-2/lib/bootstrap.css";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Select from "react-select";
 import {
   Button,
@@ -197,15 +197,7 @@ const MultipleColumnForm = () => {
         <div className="d-flex mt-md-0 mt-1">
           <div className="d-flex  mt-2 justify-content-start gap-2">
             <NavItems />
-            <div>
-              <Link to="/pos/VendorManage">
-                <div className="d-flex">
-                  <Button color="primary" outline size="sm">
-                    Import Product
-                  </Button>
-                </div>
-              </Link>
-            </div>
+          
           </div>
         </div>
       </CardHeader>

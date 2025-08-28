@@ -1,48 +1,28 @@
-// ** React Imports
-import { Fragment, useState, forwardRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-// ** Table Data & Columns
-import { Tooltip } from "reactstrap";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "react-feather"; // Using Feather Icons
+import { forwardRef, Fragment, useEffect, useState } from "react";
+import { ArrowLeft } from "react-feather";
+import { Link, useNavigate } from "react-router-dom";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import NavItems from "../product_management/NavItems";
 
-import { data, serverSideColumns } from "./Data";
-import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
-import addTax from "../../../../assets/icons/calendar-event-tax.svg";
+import { serverSideColumns } from "./Data";
 
-import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import {
-  ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-  Plus,
+  ChevronDown
 } from "react-feather";
+import ReactPaginate from "react-paginate";
 
 import {
-  Row,
-  Col,
+  Button,
   Card,
+  CardHeader,
+  CardTitle,
+  Col,
   Input,
   Label,
-  Button,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
+  Row
 } from "reactstrap";
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -74,10 +54,6 @@ const DataTableWithButtons = () => {
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
-  // ** Function to handle Modal toggle
-  // const handleModal = () => setModal(!modal);
-
-  // ** Function to handle filter
   const handleFilter = (e) => {
     const value = e.target.value;
     let updatedData = [];
@@ -124,12 +100,10 @@ const DataTableWithButtons = () => {
     }
   };
 
-  // ** Function to handle Pagination
   const handlePagination = (page) => {
     setCurrentPage(page.selected);
   };
 
-  // ** Custom Pagination
   const CustomPagination = () => (
     <ReactPaginate
       previousLabel=""
@@ -193,128 +167,26 @@ const DataTableWithButtons = () => {
               <div>
                 <Link to="/pos/VendorManage/addVendor">
                   <Button size="sm" color="primary">
-                    {/* <img src={addProductIcon} id="ANP" alt="Shopping Bag" width="25" />
-            <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.ANP}
-              target="ANP"
-              toggle={() => toggleTooltip("ANP")}
-            > */}
                     Add Vendor
-                    {/* </Tooltip> */}
                   </Button>
                 </Link>
               </div>
               <div>
                 <Link to="/pos/vendor_typeList">
                   <Button size="sm" color="warning">
-                    {/* <img
-              id="importProduct"
-              width="25"
-              height="25"
-              src={importIcon}
-              alt="importProduct"
-              
-            /> */}
                     Vendor Types
                   </Button>
                 </Link>
-                {/* <Tooltip
-              placement="top"
-              isOpen={tooltipOpen.importProduct}
-              target="importProduct"
-              toggle={() => toggleTooltip("importProduct")}
-            > */}
-
-            
-                {/* </Tooltip> */}
               </div>
+              <div>
+                    <NavItems />
 
-              {/* <div>
-            <Link to="/dashboard/pos/product_management/addproductCategory">
-              <img
-                width="25"
-                height="25"
-                id="addProductCate"
-    src={AddCategoryIcon}
-                alt="sorting-answers"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProductCate}
-                target="addProductCate"
-                toggle={() => toggleTooltip("addProductCate")}
-              >
-                Add Product Category
-              </Tooltip>
-            </Link>
-          </div> */}
-              {/* <div>
-            <Link to="/dashboard/pos/product_management/addTaxes">
-              <img
-                width="25"
-                height="25"
-                id="addProducttaxes"
-                src={addTax}
-                alt="addProducttaxes"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addProducttaxes}
-                target="addProducttaxes"
-                toggle={() => toggleTooltip("addProducttaxes")}
-              >
-                Add Product Taxes
-              </Tooltip>
-            </Link>
-          </div> */}
-              {/* <div>
-            <Link to="/dashboard/pos/product_management/AddStocks">
-              <img
-                width="25"
-                height="25"
-                id="addStock"
-                src={addStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.addStock}
-                target="addStock"
-                toggle={() => toggleTooltip("addStock")}
-              >
-                Add Stock
-              </Tooltip>
-            </Link>
-          </div> */}
-              {/* 
-          <div>
-            <Link to="/dashboard/pos/product_management/manageStocks">
-              <img
-                width="25"
-                height="25"
-                id="stockManage"
-                src={ManageStocks}
-                alt="list-is-empty"
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.stockManage}
-                target="stockManage"
-                toggle={() => toggleTooltip("stockManage")}
-              >
-                Stock Manage
-              </Tooltip>
-            </Link>
-          </div> */}
+              </div>
             </div>
           </div>
         </CardHeader>
         <Row className="justify-content-between mx-0">
-          {/* Left Side - Button */}
           <Col md="6" sm="12" className="d-flex align-items-center mt-1"></Col>
-
-          {/* Right Side - Search Bar */}
           <Col
             md="6"
             sm="12"
@@ -334,7 +206,6 @@ const DataTableWithButtons = () => {
           </Col>
         </Row>
         {console.log(data)}
-
         <div className="react-dataTable react-dataTable-selectable-rows">
           <DataTable
             noHeader

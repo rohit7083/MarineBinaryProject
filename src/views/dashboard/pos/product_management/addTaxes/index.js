@@ -65,24 +65,24 @@ const DataTableWithButtons = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [row, setRow] = useState(null);
 
-const handleFilter = (e) => {
-  const value = e.target.value.toLowerCase();
-  setSearchValue(value);
+  const handleFilter = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchValue(value);
 
-  if (value.length) {
-    const updatedData = data.filter((item) => {
-      // Adjust based on your API response structure
-      return (
-        item?.name?.toLowerCase().includes(value) || 
-        String(item?.uid)?.toLowerCase().includes(value) ||
-        String(item?.rate)?.toLowerCase().includes(value)
-      );
-    });
-    setFilteredData(updatedData);
-  } else {
-    setFilteredData(data);
-  }
-};
+    if (value.length) {
+      const updatedData = data.filter((item) => {
+        // Adjust based on your API response structure
+        return (
+          item?.name?.toLowerCase().includes(value) ||
+          String(item?.uid)?.toLowerCase().includes(value) ||
+          String(item?.rate)?.toLowerCase().includes(value)
+        );
+      });
+      setFilteredData(updatedData);
+    } else {
+      setFilteredData(data);
+    }
+  };
 
   // ** Function to handle Pagination
   const handlePagination = (page) => {
@@ -219,46 +219,43 @@ const handleFilter = (e) => {
   return (
     <Fragment>
       <Card>
-        <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">
-            {" "}
+        <CardHeader className="d-flex justify-content-between align-items-center border-bottom flex-wrap">
+          {/* Left side */}
+          <CardTitle tag="h4" className="d-flex align-items-center gap-2 mb-0">
             <ArrowLeft
               style={{
                 cursor: "pointer",
-
                 transition: "color 0.1s",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
               onClick={() => window.history.back()}
-            />{" "}
+            />
             Add Product Taxes
           </CardTitle>
 
-          <div className="d-flex mt-md-0 mt-1">
-            <div className="d-flex  mt-2 justify-content-start gap-2">
-              <NavItems />
-            </div>
+          {/* Right side */}
+          <div className="d-flex align-items-center gap-2 mt-2 mt-md-0">
+            <Button
+              color="primary"
+              size="sm"
+              onClick={() => setShow(true)}
+              className="d-flex align-items-center gap-1"
+            >
+              <Plus size={15} />
+              <span>Add Taxes</span>
+            </Button>
+
+            <NavItems />
           </div>
         </CardHeader>
 
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
-          <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-            <Button
-              className="me-2"
-              color="primary"
-              onClick={() => setShow(true)}
-              size="sm"
-            >
-              <Plus size={15} />
-              <span className="align-middle ms-50">Add Taxes</span>
-            </Button>
-          </Col>
 
           {/* Right Side - Search Bar */}
           <Col
-            md="6"
+            md="12"
             sm="12"
             className="d-flex align-items-center justify-content-end mt-1"
           >
@@ -297,7 +294,7 @@ const handleFilter = (e) => {
               paginationComponent={CustomPagination}
               paginationDefaultPage={currentPage + 1}
               // selectableRowsComponent={BootstrapCheckbox}
-data={searchValue.length ? filteredData : data}
+              data={searchValue.length ? filteredData : data}
               // data={data}
             />
           </div>

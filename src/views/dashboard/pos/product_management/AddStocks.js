@@ -1,33 +1,22 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Col,
-  Button,
-  Label,
-  Row,
-  InputGroup ,
-} from "reactstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  InputGroup,
+  Label,
+  Row,
+} from "reactstrap";
 
-import { Tooltip } from "reactstrap";
-import { Link } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
-import { useState } from "react";
-import addProductIcon from "../../../../assets/icons/shopping-bag-add.svg";
-import importIcon from "../../../../assets/icons/file-import.svg";
-import AddCategoryIcon from "../../../../assets/icons/category-alt.svg";
-import addStocks from "../../../../assets/icons/supplier-alt.svg";
-import ManageStocks from "../../../../assets/icons/workflow-setting.svg";
-import addTax from "../../../../assets/icons/calendar-event-tax.svg";
-import ProductAdd_Table from "./ProductAdd_Table";
-import { data } from "jquery";
 import useJwt from "@src/auth/jwt/useJwt";
-import NavItems from "./NavItems";
+import { useState } from "react";
 import { ArrowLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import NavItems from "./NavItems";
 
 const MultipleColumnForm = () => {
   const {
@@ -41,7 +30,7 @@ const MultipleColumnForm = () => {
       companyName: "bb",
       address: "cc",
       phoneNumber: "912345678901",
-      emailId: "aa@gmail.com",  
+      emailId: "aa@gmail.com",
     },
   });
   const [phoneNumber, setMobileNumber] = useState("");
@@ -67,26 +56,20 @@ const MultipleColumnForm = () => {
     }));
   };
 
-
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
 
-try {
-  
-  const payload = {
-    ...data,
-    countryCode: `+${code}`,
-    phoneNumber: number,
-  };
+    try {
+      const payload = {
+        ...data,
+        countryCode: `+${code}`,
+        phoneNumber: number,
+      };
 
-  const res=await useJwt.addVender(payload);
-
-  
-} catch (error) {
-  console.log("Error submitting form", error);
-  
-}
-
+      const res = await useJwt.addVender(payload);
+    } catch (error) {
+      console.log("Error submitting form", error);
+    }
   };
 
   const productOptions = [
@@ -97,31 +80,25 @@ try {
   return (
     <Card>
       <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
-        <CardTitle tag="h4">  <ArrowLeft
-                                   style={{
-                                     cursor: "pointer",
-                                   marginRight:"10px",
-                                     transition: "color 0.1s",
-                                   }}
-                                   onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                                   onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                                   onClick={() => window.history.back()}
-                                 />Add Product Stocks</CardTitle>
+        <CardTitle tag="h4">
+          {" "}
+          <ArrowLeft
+            style={{
+              cursor: "pointer",
+              marginRight: "10px",
+              transition: "color 0.1s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+            onClick={() => window.history.back()}
+          />
+          Add Product Stocks
+        </CardTitle>
         <div className="d-flex mt-md-0 mt-1">
-            <div className="d-flex  mt-2 justify-content-start gap-2">
-            <NavItems/>
-              <div>
-                <Link to="/pos/VendorManage">
-                  <div className="d-flex">
-                    <Button color="primary" outline size="sm">
-                  Import Product
-                    </Button>
-                  </div>
-                </Link>
-              </div>
-
-            </div>
+          <div className="d-flex  mt-2 justify-content-start gap-2">
+            <NavItems />
           </div>
+        </div>
       </CardHeader>
 
       <CardBody className="mt-2">
@@ -171,7 +148,7 @@ try {
           </Row>
 
           <Row>
-          <Col md="6" className="mb-1">
+            <Col md="6" className="mb-1">
               <Label for="vendorName">Address</Label>
               <Controller
                 name="address"
@@ -186,15 +163,13 @@ try {
                 )}
               />
               {errors.address && (
-                <small className="text-danger">
-                  {errors.address.message}
-                </small>
+                <small className="text-danger">{errors.address.message}</small>
               )}
             </Col>
             <Col md="6" className="mb-1">
               <Label for="mobile">Mobile Number</Label>
-           
-                <InputGroup className="input-group-merge">
+
+              <InputGroup className="input-group-merge">
                 <Controller
                   name="phoneNumber"
                   control={control}
@@ -233,11 +208,9 @@ try {
                   )}
                 />
               </InputGroup>
-            
             </Col>
           </Row>
-       
-       
+
           <Row>
             <Col md="6" className="mb-1">
               <Label for="email">Email Address</Label>

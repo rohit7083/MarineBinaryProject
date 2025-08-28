@@ -1,48 +1,28 @@
 // ** React Imports
-import { Fragment, useState, forwardRef } from "react";
-import { Link } from "react-router-dom";
+import { forwardRef, Fragment, useState } from "react";
 // ** Table Data & Columns
-import { Tooltip } from "reactstrap";
-import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "react-feather"; // Using Feather Icons
+import { useNavigate } from "react-router-dom";
 
-import { data, columns } from "./Data";
-import addProductIcon from '../../../../assets/icons/shopping-bag-add.svg'
-import importIcon from '../../../../assets/icons/file-import.svg'
-import AddCategoryIcon from '../../../../assets/icons/category-alt.svg'
-import addStocks from '../../../../assets/icons/supplier-alt.svg'
-import ManageStocks from '../../../../assets/icons/workflow-setting.svg'
-import addTax from '../../../../assets/icons/calendar-event-tax.svg'
+import { columns, data } from "./Data";
 // ** Add New Modal Component
 
 // ** Third Party Components
-import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import {
-  ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-  Plus,
+  ChevronDown
 } from "react-feather";
+import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
   Card,
+  CardHeader,
+  CardTitle,
+  Col,
   Input,
   Label,
-  Button,
-  CardTitle,
-  CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledButtonDropdown,
+  Row
 } from "reactstrap";
 import NavItems from "./NavItems";
 
@@ -56,7 +36,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 const DataTableWithButtons = () => {
   // ** States
   // const [modal, setModal] = useState(false);
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
@@ -210,43 +190,31 @@ const DataTableWithButtons = () => {
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">
-      {/* <Button color="primary" outline onClick={() => navigate(-1)} className="d-flex align-items-center">
+            {/* <Button color="primary" outline onClick={() => navigate(-1)} className="d-flex align-items-center">
       <ArrowLeft size={10} className="me-1" /> Previous
     </Button> */}
-    
-       <ArrowLeft
-                                style={{
-                                  cursor: "pointer",
-                                marginRight:"10px",
-                                  transition: "color 0.1s",
-                                }}
-                                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                                onClick={() => window.history.back()}
-                              />    
-    Manage Stocks
-    </CardTitle>
+            <ArrowLeft
+              style={{
+                cursor: "pointer",
+                marginRight: "10px",
+                transition: "color 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+              onClick={() => window.history.back()}
+            />
+            Manage Stocks
+          </CardTitle>
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex  mt-2 justify-content-start gap-2">
-            <NavItems/>
-              <div>
-                <Link to="/pos/VendorManage">
-                  <div className="d-flex">
-                    <Button color="primary" outline size="sm">
-                  Import Product
-                    </Button>
-                  </div>
-                </Link>
-              </div>
-
+              <NavItems />
+             
             </div>
           </div>
         </CardHeader>
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
-          <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-
-          </Col>
+          <Col md="6" sm="12" className="d-flex align-items-center mt-1"></Col>
 
           {/* Right Side - Search Bar */}
           <Col
