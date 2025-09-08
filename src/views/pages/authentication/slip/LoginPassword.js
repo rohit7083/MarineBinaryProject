@@ -1,57 +1,43 @@
 // ============================ Original Code ======================================
 
-import { useContext, Fragment, useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ChevronLeft } from "react-feather";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 // ** Custom Hooks
 import { useSkin } from "@hooks/useSkin";
 import useJwt from "@src/auth/jwt/useJwt";
-import { Spinner } from "reactstrap";
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { ListGroupItem, Spinner } from "reactstrap";
 // ** Third Party Components
-import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { Facebook, Twitter, Mail, GitHub, X } from "react-feather";
-import { handleLogin } from "@store/authentication";
 import CryptoJS from "crypto-js";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 // ** Context
-import { AbilityContext } from "@src/utility/context/Can";
-import Avatar from "@components/avatar";
 import InputPasswordToggle from "@components/input-password-toggle";
+import { AbilityContext } from "@src/utility/context/Can";
 import React from "react";
 // ** Utils
-import { getHomeRouteForLoggedInUser } from "@utils";
 // ** Reactstrap Imports
+import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
+import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import {
-  Row,
-  Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  Input,
-  Label,
-  Alert,
   Button,
   CardText,
   CardTitle,
+  Col,
   FormFeedback,
+  Label,
+  Row,
+  UncontrolledAlert
 } from "reactstrap";
-import { UncontrolledAlert } from "reactstrap";
-import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
-import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import "@styles/react/pages/page-authentication.scss";
-import ReCAPTCHA from "react-google-recaptcha";
-import axios from "axios";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import ReCAPTCHA from "react-google-recaptcha";
 import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 
 const defaultValues = {
@@ -439,7 +425,7 @@ const Login = () => {
                       render={({ field }) => (
                         <div>
                           <ReCAPTCHA
-                            sitekey="6LfxZqoqAAAAAHn7n2rN_PJtVu18uUebEmzCs8vr" 
+                            sitekey="6LeFXsIrAAAAAPeQmqwnRCmQspnIkpA_2N_mCuTC" 
                             onChange={(value) => {
                               setValue("captcha", value, {
                                 shouldValidate: true,

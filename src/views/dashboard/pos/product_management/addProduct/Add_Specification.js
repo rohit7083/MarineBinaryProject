@@ -35,6 +35,7 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useRef(null);
+  const [err, setErr] = useState("");
 
   const onSubmit = async (data) => {
     setProductData({
@@ -145,10 +146,12 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
       }
     } catch (error) {
       console.error(error);
-      // setErr(
-      //   error?.response?.data?.message ||
-      //     "An error occurred while submitting the form."
-      // );
+      if (error.response) {
+        const errMsz =
+          error?.response?.data?.content ||
+          "Please check all fields and try again ";
+        setErr(errMsz);
+      }
     } finally {
       setLoading(false);
     }
@@ -180,6 +183,18 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
 
         {/* Table */}
         <Card className="border-0 shadow-sm rounded-4">
+          {err && (
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error :</strong>
+                    {err}
+                  </span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
           <Table responsive bordered hover className="align-middle mb-0">
             <thead className="bg-light text-secondary fw-semibold">
               <tr>

@@ -123,6 +123,12 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
       });
     } catch (error) {
       console.error("Error fetching data:", error);
+      if (error.response) {
+        const errMsz =
+          error?.response?.data?.content ||
+          "Server Problem to load Data ";
+        setErr(errMsz);
+      }
     }
   };
 
@@ -181,6 +187,12 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
           }
         } catch (error) {
           console.log(error);
+          if (error.response) {
+            const errMsz =
+              error?.response?.data?.content ||
+              "Please check all fields and try again ";
+            setErr(errMsz);
+          }
         } finally {
           setLoading(false);
         }

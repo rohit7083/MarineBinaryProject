@@ -40,6 +40,7 @@ const ProductAdd_Table = ({
     name: "variations",
   });
   const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
 
   const uidForUpdateData = UpdateData?.uid;
   const toast = useRef(null);
@@ -116,6 +117,12 @@ const ProductAdd_Table = ({
         }
       } catch (error) {
         console.log(error);
+           if (error.response) {
+            const errMsz =
+              error?.response?.data?.content ||
+              "Please check all fields and try again ";
+            setErr(errMsz);
+          }
       } finally {
         setLoading(false);
       }
@@ -138,6 +145,18 @@ const ProductAdd_Table = ({
         </CardHeader>
         <hr />
         <Card className=" bg-light  border-0 shadow-sm rounded-4">
+           {err && (
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">
+                <strong>Error :</strong>
+                {err}
+              </span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
           <AnimatePresence>
             {fields.map((field, index) => (
               <motion.div
