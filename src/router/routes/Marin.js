@@ -1,8 +1,8 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
-import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 import ParkingPassListing from "../../views/dashboard/parking_pass/index";
 import AddVTypes from "../../views/dashboard/pos/vendorManagement/vendorTypes/AddVTypes";
+import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
@@ -25,7 +25,7 @@ const AddProdCategory = lazy(() =>
   )
 );
 const AddProduct = lazy(() =>
-  import("../../views/dashboard/pos/product_management/ProductAdd")
+  import("../../views/dashboard/pos/product_management/addProduct/ProductAdd")
 );
 const InvoiceAdd = lazy(() =>
   import("../../views/dashboard/invoice_management/invoice/add")
@@ -168,6 +168,9 @@ const CheckInDetails
 
 const UpdateEvent
 =lazy(()=>import("../../views/dashboard/event_management/event_update/UpdateEvent"))
+
+const AddProductIndex
+=lazy(()=>import("../../views/dashboard/pos/product_management/addProduct"))
 
 
 
@@ -497,5 +500,12 @@ export default [
     element: <UpdateEvent/>,
     path: "event/update",
   },
+
+  
+   {
+    element: <AddProductIndex/>,
+    path: "/dashboard/pos/product_management/addProduct_index",
+  },
+  
 
 ];

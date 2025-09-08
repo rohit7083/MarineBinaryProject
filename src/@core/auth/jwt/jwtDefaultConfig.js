@@ -163,7 +163,14 @@ export default {
   //cancle event
   cancleEvent: "/events/cancel/",
   // cancle rooms
-cancleRooms:'/events/cancelrooms/',
+  cancleRooms: "/events/cancelrooms/",
   //add eextra room
   addExtraRoom: "/events/addrooms/",
+
+  getAllProduct: "/product",
+  deleteProduct: "/product/",
+  updateProduct:'/product/products/',
+  updateProductVariation:"/product/variations/",
+  updateProductSpecification:"/product/specifications/",
+  
 };

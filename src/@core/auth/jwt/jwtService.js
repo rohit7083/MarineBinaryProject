@@ -641,6 +641,28 @@ export default class JwtService {
   cancleRooms(uid, ...args) {
     return axios.post(`${this.jwtConfig.cancleRooms}${uid}`, ...args);
   }
+
+  getAllProduct() {
+    return axios.get(`${this.jwtConfig.getAllProduct}`);
+  }
+
+  deleteProduct(uid) {
+    return axios.delete(`${this.jwtConfig.deleteProduct}${uid}`);
+  }
+
+  updateProduct(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateProduct}${uid}`, ...args);
+  }
+  updateProductVariation(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateProductVariation}${uid}`, ...args);
+  }
+  updateProductSpecification(uid, ...args) {
+    return axios.put(
+      `${this.jwtConfig.updateProductSpecification}${uid}`,
+      ...args
+    );
+  }
+
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

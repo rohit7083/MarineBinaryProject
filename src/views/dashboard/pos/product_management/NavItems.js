@@ -30,7 +30,7 @@ function ProductDropdown() {
       <DropdownMenu>
         <DropdownItem
           tag={Link}
-          to="/dashboard/pos/product_management/addProduct"
+          to="/dashboard/pos/product_management/addProduct_index"
         >
           <PlusCircle size={16} className="me-2" />
           Add Product
