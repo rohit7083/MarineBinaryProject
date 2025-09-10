@@ -1,5 +1,9 @@
-import PhoneInput from "react-phone-input-2";
+import useJwt from "@src/auth/jwt/useJwt";
+import React, { useState } from "react";
+import { ArrowLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 import "react-phone-input-2/lib/bootstrap.css";
+import { useLocation } from "react-router-dom";
 import {
   Button,
   Card,
@@ -7,15 +11,16 @@ import {
   CardHeader,
   CardTitle,
   Col,
-  InputGroup,
+  Input,
   Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
   Row,
+  Spinner,
+  Table,
+  UncontrolledAlert,
 } from "reactstrap";
-
-import useJwt from "@src/auth/jwt/useJwt";
-import { useState } from "react";
-import { ArrowLeft } from "react-feather";
-import { Controller, useForm } from "react-hook-form";
 import NavItems from "./NavItems";
 
 const MultipleColumnForm = () => {
@@ -23,241 +28,230 @@ const MultipleColumnForm = () => {
     control,
     handleSubmit,
     reset,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      vendorName: "aa",
-      companyName: "bb",
-      address: "cc",
-      phoneNumber: "912345678901",
-      emailId: "aa@gmail.com",
-    },
-  });
-  const [phoneNumber, setMobileNumber] = useState("");
-  const extractCountryCodeAndNumber = (value) => {
-    if (!value) return { code: "", number: "" }; // Handle undefined case
-    const code = value.slice(0, value.length - 10);
-    const number = value.slice(-10);
-    return { code, number };
-  };
-  const [tooltipOpen, setTooltipOpen] = useState({
-    ANP: false,
-    importProduct: false,
-    addProductCate: false,
-    addProducttaxes: false,
-    addStock: false,
-    stockManage: false,
+    defaultValues: {},
   });
 
-  const toggleTooltip = (tooltip) => {
-    setTooltipOpen((prevState) => ({
-      ...prevState,
-      [tooltip]: !prevState[tooltip],
-    }));
-  };
+  const location = useLocation();
+  const { state } = location;
+  console.log(state);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [loadingIndex, setLoadingIndex] = useState(null);
+  const [err, setErr] = useState("");
+  const [successMessages, setSuccessMessages] = useState({});
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const onSubmit = async (data) => {
-    const { code, number } = extractCountryCodeAndNumber(data.phoneNumber);
+  const toggleSidebar = () => setOpen(!open);
+  const handleAddStock = async (index) => {
+    if (isProcessing) return;
+    const variationData = getValues(`variations.${index}`);
+    const stockQty = variationData?.stockQty;
 
+    if (!stockQty) {
+      console.error(`Variation ${index + 1} stock is required`);
+      setErr(`Variation ${index + 1} stock Quantity  is required`);
+      return;
+    }
+    setIsProcessing(true);
+    setLoadingIndex(index);
+    const variationId = state.row.variations[index].uid;
     try {
       const payload = {
-        ...data,
-        countryCode: `+${code}`,
-        phoneNumber: number,
+        stockQty,
       };
+      const res = await useJwt.addStocks(variationId, payload);
+      // setErr("");
+      setSuccessMessages((prev) => ({
+        ...prev,
+        [index]: `Stock for Variation ${index + 1} added successfully!`,
+      }));
 
-      const res = await useJwt.addVender(payload);
-    } catch (error) {
-      console.log("Error submitting form", error);
+      setTimeout(() => {
+        setSuccessMessages((prev) => {
+          const updated = { ...prev };
+          delete updated[index];
+          return updated;
+        });
+      }, 5000);
+      console.log("Stock added successfully:", res);
+      setValue(`variations.${index}.stockQty`, "");
+    } catch (err) {
+      console.error("Error adding stock:", err);
+      setErr(
+        err?.response?.data?.message ||
+          err?.response?.content?.message ||
+          "Write Appropriate Number"
+      );
+    } finally {
+      setLoadingIndex(null);
+      setIsProcessing(false);
     }
   };
 
-  const productOptions = [
-    { value: "prod1", label: "Product 1" },
-    { value: "prod2", label: "Product 2" },
-  ];
-
   return (
-    <Card>
-      <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
-        <CardTitle tag="h4">
-          {" "}
-          <ArrowLeft
-            style={{
-              cursor: "pointer",
-              marginRight: "10px",
-              transition: "color 0.1s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-            onClick={() => window.history.back()}
-          />
-          Add Product Stocks
-        </CardTitle>
-        <div className="d-flex mt-md-0 mt-1">
-          <div className="d-flex  mt-2 justify-content-start gap-2">
-            <NavItems />
+    <>
+      <Card>
+        <CardHeader className="d-flex justify-content-between align-items-center border-bottom">
+          <CardTitle tag="h4">
+            {" "}
+            <ArrowLeft
+              style={{
+                cursor: "pointer",
+                marginRight: "10px",
+                transition: "color 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+              onClick={() => window.history.back()}
+            />
+            Add Product Stocks
+          </CardTitle>
+          <div className="d-flex mt-md-0 mt-1">
+            <div className="d-flex  mt-2 justify-content-start gap-2">
+              <NavItems />
+            </div>
           </div>
-        </div>
-      </CardHeader>
+        </CardHeader>
 
-      <CardBody className="mt-2">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Row>
-            <Col md="6" className="mb-1">
-              <Label for="vendorName">Vendor Name</Label>
-              <Controller
-                name="vendorName"
-                control={control}
-                rules={{ required: "Vendor name is required" }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Vendor Name"
-                  />
-                )}
-              />
-              {errors.vendorName && (
-                <small className="text-danger">
-                  {errors.vendorName.message}
-                </small>
-              )}
-            </Col>
+        <CardBody className="mt-2">
+          <Table borderless size="sm">
+            <tbody>
+              <tr>
+                <td className="text-muted">
+                  <strong>Product :</strong>
+                </td>
+                <td className="fw-bold">{state?.row?.name || "N/A"}</td>
+              </tr>
+              <tr>
+                <td className="text-muted">
+                  <strong>Category :</strong>
+                </td>
+                <td className="fw-bold">
+                  {state?.row?.categoryUid?.name || "N/A"}
+                </td>
+              </tr>
+              <tr>
+                <td className="text-muted">
+                  <strong>Variations :</strong>
+                </td>
+                <td className="fw-bold">
+                  {state?.row?.variations?.length || 0}
+                </td>
+              </tr>
+            </tbody>
+          </Table>
 
-            <Col md="6" className="mb-1">
-              <Label for="vendorName">Company Name</Label>
-              <Controller
-                name="companyName"
-                control={control}
-                rules={{ required: "Vendor name is required" }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Vendor Name"
-                  />
-                )}
-              />
-              {errors.vendorName && (
-                <small className="text-danger">
-                  {errors.vendorName.message}
-                </small>
-              )}
-            </Col>
-          </Row>
+          <hr />
+          {err && (
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error :</strong>
+                    {err}
+                  </span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
+          {state?.row?.variations?.map((x, index) => (
+            <Row key={index} className="mb-3">
+              <Col md="8">
+                <Label>
+                  <strong>
+                    {x?.attributes?.[index]?.attributeName
+                      ? `(variations - ${[index + 1]})  ${
+                          x?.attributes?.[index]?.attributeName
+                        }`
+                      : `Variation ${index + 1}`}{" "}
+                  </strong>{" "}
+                  Stock Quantity{" "}
+                  <span
+                    onClick={() => setActiveIndex(index)}
+                    style={{ color: "blue", cursor: "pointer" }}
+                  >
+                    (View)
+                  </span>
+                </Label>
 
-          <Row>
-            <Col md="6" className="mb-1">
-              <Label for="vendorName">Address</Label>
-              <Controller
-                name="address"
-                control={control}
-                rules={{ required: "address is required" }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="address "
-                  />
-                )}
-              />
-              {errors.address && (
-                <small className="text-danger">{errors.address.message}</small>
-              )}
-            </Col>
-            <Col md="6" className="mb-1">
-              <Label for="mobile">Mobile Number</Label>
-
-              <InputGroup className="input-group-merge">
+                <Modal
+                  isOpen={activeIndex !== null}
+                  toggle={() => setActiveIndex(null)}
+                >
+                  <ModalHeader toggle={() => setActiveIndex(null)} tag="div">
+                    <h5 className="modal-title">
+                      <span className="align-middle">
+                        Variation -{" "}
+                        {activeIndex !== null ? activeIndex + 1 : ""}
+                      </span>
+                    </h5>
+                  </ModalHeader>
+                  <ModalBody>
+                    {activeIndex !== null && (
+                      <div>
+                        {state?.row?.variations?.[activeIndex]?.attributes?.map(
+                          (att, i) => (
+                            <div key={i} className="mb-1">
+                              {/* <CardTitle>Sku - {att?.sku}</CardTitle> */}
+                              <strong>{att?.attributeName}:</strong>{" "}
+                              {att?.value}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </ModalBody>
+                </Modal>
                 <Controller
-                  name="phoneNumber"
+                  name={`variations.${index}.stockQty`} // unique name per variation
                   control={control}
-                  defaultValue={phoneNumber}
                   rules={{
-                    required: "Mobile number is required",
-                    validate: (value) =>
-                      value && value.length >= 10
-                        ? true
-                        : "Invalid mobile number",
+                    min: {
+                      value: 0,
+                      message: "Stock cannot be negative!",
+                    },
                   }}
-                  render={({ field: { onChange, value } }) => (
-                    <PhoneInput
-                      // country={"us"}
-                      value={value || phoneNumber}
-                      onChange={(phone) => {
-                        onChange(phone);
-                        setMobileNumber(phone);
-                      }}
-                      inputProps={{
-                        name: "phoneNumber",
-                        required: true,
-                        className: "form-control",
-                      }}
-                      containerStyle={{
-                        width: "100%",
-                      }}
-                      inputStyle={{
-                        height: "38px",
-                        border: "1px solid #ced4da",
-                        borderRadius: "0 .375rem .375rem 0",
-                        paddingLeft: "63px",
-                        width: "100%",
-                      }}
-                    />
+                  render={({ field }) => (
+                    <Input type="number" min="0" {...field} />
                   )}
                 />
-              </InputGroup>
-            </Col>
-          </Row>
 
-          <Row>
-            <Col md="6" className="mb-1">
-              <Label for="email">Email Address</Label>
-              <Controller
-                name="emailId"
-                control={control}
-                rules={{
-                  required: "Email is required",
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Enter a valid email address",
-                  },
-                }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Enter Email"
-                    type="email"
-                  />
+                {errors?.variations?.[index]?.stockQty && (
+                  <small className="text-danger">
+                    {errors.variations[index].stockQty.message}
+                  </small>
                 )}
-              />
-              {errors.email && (
-                <small className="text-danger">{errors.email.message}</small>
-              )}
-            </Col>
-          </Row>
-
-          {/* <CardTitle tag="h4" className="mt-3 mb-2">
-            Variations
-          </CardTitle> */}
-
-          <Button color="primary" type="submit">
-            Submit
-          </Button>
-          <Button
-            outline
-            color="secondary"
-            type="button"
-            className="ms-2"
-            onClick={() => reset()}
-          >
-            Reset
-          </Button>
-        </form>
-      </CardBody>
-    </Card>
+                {successMessages[index] && (
+                  <small className="text-success">
+                    {successMessages[index]}
+                  </small>
+                )}
+              </Col>
+              <Col className="mt-2">
+                <Button
+                  size=""
+                  color="primary"
+                  onClick={() => handleAddStock(index)}
+                  type="button"
+                  disabled={loadingIndex === index || isProcessing}
+                >
+                  {loadingIndex === index ? (
+                    <>
+                      Loading... <Spinner size="sm" />
+                    </>
+                  ) : (
+                    "Add Stock"
+                  )}{" "}
+                </Button>
+              </Col>
+            </Row>
+          ))}
+        </CardBody>
+      </Card>
+    </>
   );
 };
 

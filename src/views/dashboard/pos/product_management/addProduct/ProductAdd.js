@@ -106,6 +106,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
           }`,
           value: tax.uid,
           taxValue: tax?.taxValue,
+          taxType:tax?.taxType,
         })) || [];
 
       // vendors
@@ -136,14 +137,19 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
     fetchAllData();
   }, []);
   const watchCategory = watch("category");
+  const watchTaxes=watch('taxes');
   let findCategoryData;
+  let selectedTaxData;
   const onSubmit = async (data) => {
     if (Object.keys(data).length !== 0) {
       setErr("");
+     
       findCategoryData = fetchData.categories?.find(
         (cat) => cat?.value === watchCategory
       );
 
+      selectedTaxData=fetchData.taxes?.find((tax)=>tax?.value === watchTaxes);
+      
       if (UpdateData) {
         const payload = {
           name: data?.name,
@@ -166,6 +172,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             setProductData({
               ...data,
               findCategoryData,
+              selectedTaxData,
               taxChargesType: "Exclusive",
             });
             toast.current.show({
@@ -200,6 +207,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
         setProductData({
           ...data,
           findCategoryData,
+          selectedTaxData,
           taxChargesType: "Exclusive",
         });
 

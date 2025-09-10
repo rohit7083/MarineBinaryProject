@@ -61,6 +61,7 @@ const index = () => {
   }
 
   const handleEdit = (row) => {
+    {debugger}
     navigate("/pos/product_management/add-category", {
       state: { row: row, uid: row.uid, parentCategoryData: parentData },
     });

@@ -1,12 +1,9 @@
 import { useState } from "react";
 import {
   FolderPlus,
-  Layers,
-  Package,
   Percent,
   PlusCircle,
-  Upload,
-  UserPlus,
+  UserPlus
 } from "react-feather";
 import { Link } from "react-router-dom";
 import {
@@ -59,27 +56,27 @@ function ProductDropdown() {
           Add vendor
         </DropdownItem>
 
-        <DropdownItem
+        {/* <DropdownItem
           tag={Link}
           to="/dashboard/pos/product_management/AddStocks"
         >
           <Package size={16} className="me-2" />
           Add Stock
-        </DropdownItem>
-        <DropdownItem
+        </DropdownItem> */}
+        {/* <DropdownItem
           tag={Link}
           to="/dashboard/pos/product_management/manageStocks"
         >
           <Layers size={16} className="me-2" />
           Manage Stocks
-        </DropdownItem>
-        <DropdownItem
+        </DropdownItem> */}
+        {/* <DropdownItem
           tag={Link}
           to="/dashboard/pos/product_management/manageStocks"
         >
           <Upload size={16} className="me-2" />
           Import Product
-        </DropdownItem>
+        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );

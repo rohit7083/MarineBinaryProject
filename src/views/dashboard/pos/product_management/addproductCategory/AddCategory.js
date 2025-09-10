@@ -202,10 +202,11 @@ const MultipleColumnForm = () => {
   }
 
   useEffect(() => {
-    if (fetchData && fetchData?.parentCategoryData) {
+    // {{debugger}}
+    // if (fetchData && fetchData?.parentCategoryData) {
       const list = handleCategory(fetchData.parentCategoryData);
       setParentCategory(list);
-    }
+    // }
   }, []);
 
   return (

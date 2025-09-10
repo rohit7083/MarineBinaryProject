@@ -172,5 +172,6 @@ export default {
   updateProduct:'/product/products/',
   updateProductVariation:"/product/variations/",
   updateProductSpecification:"/product/specifications/",
+  addStocks:'/productVariation/addStock/',
   
 };

@@ -663,6 +663,11 @@ export default class JwtService {
     );
   }
 
+  addStocks(uid, ...args) {
+    return axios.post(`${this.jwtConfig.addStocks}${uid}`, ...args);
+  }
+
+  
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

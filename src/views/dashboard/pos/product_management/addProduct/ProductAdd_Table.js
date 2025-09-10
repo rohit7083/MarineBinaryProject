@@ -33,8 +33,10 @@ const ProductAdd_Table = ({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({});
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "variations",
@@ -63,25 +65,28 @@ const ProductAdd_Table = ({
   let payload;
   const onSubmit = async (data) => {
     console.log("data from variation", data);
-
     payload = data.variations.map((vData) => {
       vData.attributes = productData?.findCategoryData?.attributeKeys.map(
         (key) => {
           return { attributeName: key, value: vData[key] };
         }
       );
-
       return {
         uid: vData.uid,
-        mrp: Number(vData.mrp), // convert to number
+        mrp: Number(vData.mrp),
         stockQty: Number(vData.stockQty),
-        quantity: Number(vData.quantity ?? vData.qty ?? 0), // fallback if needed
+        quantity: Number(vData.quantity ?? vData.qty ?? 0),
         unit: vData.unit,
         calAmount: Number(vData.calAmount),
         finalAmount: Number(vData.finalAmount),
         attributes: vData?.attributes,
       };
+
     });
+
+
+
+
 
     console.log(payload);
     if (UpdateData) {
@@ -117,12 +122,12 @@ const ProductAdd_Table = ({
         }
       } catch (error) {
         console.log(error);
-           if (error.response) {
-            const errMsz =
-              error?.response?.data?.content ||
-              "Please check all fields and try again ";
-            setErr(errMsz);
-          }
+        if (error.response) {
+          const errMsz =
+            error?.response?.data?.content ||
+            "Please check all fields and try again ";
+          setErr(errMsz);
+        }
       } finally {
         setLoading(false);
       }
@@ -135,6 +140,44 @@ const ProductAdd_Table = ({
       stepper.next(1);
     }
   };
+  const taxSign = productData?.selectedTaxData?.taxType;
+  const taxAmount = Number(productData?.selectedTaxData?.taxValue || 0); // ensure number
+  const watchMrp = watch(`variations`);
+
+  const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
+  useEffect(() => {
+    if (mrpValues.length > 0) {
+      mrpValues.forEach((item, index) => {
+        let calculated = item;
+
+        if (taxSign === "Flat") {
+          calculated = item + taxAmount;
+          setValue(`variations[${index}].calcAmount`, taxAmount);
+
+          setValue(`variations[${index}].finalAmount`, calculated);
+        } else if (taxSign === "Percentage") {
+          calculated = item + (item * taxAmount) / 100;
+          setValue(`variations[${index}].finalAmount`, calculated);
+          setValue(`variations[${index}].calcAmount`, (item * taxAmount) / 100);
+        }
+      });
+    }
+  }, [watchMrp, , taxSign, taxAmount, setValue]);
+
+  useEffect(() => {
+    if (!UpdateData && fields.length === 0) {
+      append({
+        mrp: "",
+        stockQty: "",
+        qty: "",
+        images: [],
+        unit: "",
+        calcAmount: "",
+        finalAmount: "",
+      });
+    }
+  }, [UpdateData, fields, append]);
+
   return (
     <>
       <Toast ref={toast} />
@@ -145,18 +188,18 @@ const ProductAdd_Table = ({
         </CardHeader>
         <hr />
         <Card className=" bg-light  border-0 shadow-sm rounded-4">
-           {err && (
-        <React.Fragment>
-          <UncontrolledAlert color="danger">
-            <div className="alert-body">
-              <span className="text-danger fw-bold">
-                <strong>Error :</strong>
-                {err}
-              </span>
-            </div>
-          </UncontrolledAlert>
-        </React.Fragment>
-      )}
+          {err && (
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error :</strong>
+                    {err}
+                  </span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
           <AnimatePresence>
             {fields.map((field, index) => (
               <motion.div
@@ -210,7 +253,6 @@ const ProductAdd_Table = ({
                             </label>
                           </div>
 
-                          {/* Preview thumbnails BELOW the field */}
                           {value?.length > 0 && (
                             <div className="d-flex flex-wrap gap-2 mt-3">
                               {value.map((file, i) => (
@@ -369,12 +411,12 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">Calculate Amount</Label>
+                    <Label className="form-label">Calculated Amount</Label>
                     <Controller
                       name={`variations[${index}].calcAmount`}
                       control={control}
                       rules={{
-                        required: "Calculate Amount is required",
+                        required: "Calculated Amount is required",
                         pattern: {
                           value: /^[0-9]+(\.[0-9]{1,2})?$/, // numbers with optional decimals
                           message: "Enter a valid amount",
@@ -383,8 +425,9 @@ const ProductAdd_Table = ({
                       render={({ field }) => (
                         <Input
                           type="text"
-                          placeholder="Enter Calculate Amount"
+                          placeholder="Tax Amount"
                           {...field}
+                          disabled={true}
                           invalid={!!errors?.variations?.[index]?.calcAmount}
                         />
                       )}
@@ -413,6 +456,7 @@ const ProductAdd_Table = ({
                           type="text"
                           placeholder="Enter Final Amount"
                           {...field}
+                          disabled={true}
                           invalid={!!errors?.variations?.[index]?.finalAmount}
                         />
                       )}

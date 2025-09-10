@@ -25,7 +25,7 @@ console.log("product Data from index",productData);
     {
       id: "account-details",
       title: "Product Details",
-      subtitle: "Enter Your Account Details.",
+      subtitle: "Enter Your Product Details.",
       content: (
         <>
           <ProductAdd
@@ -40,7 +40,7 @@ console.log("product Data from index",productData);
     {
       id: "personal-info",
       title: "Variation Details",
-      subtitle: "Add Personal Info",
+      subtitle: "Add Variation Info",
       content: (
         <ProductAdd_Table
         UpdateData={UpdateData}
@@ -54,7 +54,7 @@ console.log("product Data from index",productData);
     {
       id: "step-address",
       title: "Specification Details",
-      subtitle: "Add Address",
+      subtitle: "Add Specification",
       content: (
         <Add_Specification
         UpdateData={UpdateData}

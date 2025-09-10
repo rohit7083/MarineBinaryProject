@@ -68,6 +68,7 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
         variation.finalAmount || ""
       );
 
+      {{debugger}}
       variation?.attributes?.map((x, i) => {
         formData.append(
           `variations[${index}].attributes[${i}].attributeName`,
@@ -78,7 +79,13 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
           x.value || ""
         );
       });
+   
+
+    variation?.images?.map((img,i)=>{
+      formData.append(`variations[${index}].variationImages[${i}].image`,
+          img || "")
     });
+     });
 
     data?.specifications?.forEach((specification, index) => {
       formData.append(

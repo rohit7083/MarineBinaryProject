@@ -203,8 +203,8 @@ const paymentStatusColor = {
       // minWidth: "150px",
       selector: (row) => {
         return(
-          <Badge color={paymentStatusColor[row?.paymentStatus.toLowerCase()] || "light-primary"}pill>
-       { row.paymentStatus}
+          <Badge color={paymentStatusColor[row?.paymentStatus?.toLowerCase()] || "light-primary"}pill>
+       { row.paymentStatus  }
           </Badge>
       );},
     },
