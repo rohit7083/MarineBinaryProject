@@ -1,6 +1,8 @@
 // ** React Imports
 import { lazy } from 'react'
-import Create_Pin from '../../views/pages/authentication/slip/Create_Pin'
+
+
+const Create_Pin =lazy(()=>import('../../views/pages/authentication/slip/Create_Pin'))
 
 const Create_New_Pass= lazy(()=> import('../../views/pages/authentication/slip/Create_New_Pass'))
 const loginEmail = lazy(() => import('../../views/pages/authentication/slip/LoginEmail'))
