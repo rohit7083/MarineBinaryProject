@@ -1,8 +1,7 @@
-import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-
 import useJwt from "@src/auth/jwt/useJwt";
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -30,9 +29,9 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "Sample Product",
-      productType: "ReadyToSell",
-      description: "This is a dummy product  used for testing",
+      // name: "Sample Product",
+      // productType: "ReadyToSell",
+      // description: "This is a dummy product  used for testing",
     },
   });
   const [loading, setLoading] = useState(false);
@@ -106,7 +105,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
           }`,
           value: tax.uid,
           taxValue: tax?.taxValue,
-          taxType:tax?.taxType,
+          taxType: tax?.taxType,
         })) || [];
 
       // vendors
@@ -126,8 +125,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
       console.error("Error fetching data:", error);
       if (error.response) {
         const errMsz =
-          error?.response?.data?.content ||
-          "Server Problem to load Data ";
+          error?.response?.data?.content || "Server Problem to load Data ";
         setErr(errMsz);
       }
     }
@@ -137,19 +135,21 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
     fetchAllData();
   }, []);
   const watchCategory = watch("category");
-  const watchTaxes=watch('taxes');
+  const watchTaxes = watch("taxes");
   let findCategoryData;
   let selectedTaxData;
   const onSubmit = async (data) => {
     if (Object.keys(data).length !== 0) {
       setErr("");
-     
+
       findCategoryData = fetchData.categories?.find(
         (cat) => cat?.value === watchCategory
       );
 
-      selectedTaxData=fetchData.taxes?.find((tax)=>tax?.value === watchTaxes);
-      
+      selectedTaxData = fetchData.taxes?.find(
+        (tax) => tax?.value === watchTaxes
+      );
+
       if (UpdateData) {
         const payload = {
           name: data?.name,
@@ -178,7 +178,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             toast.current.show({
               severity: "success",
               summary: "Successfully",
-              detail: "Product Add Successfully.",
+              detail: "Product Updated Successfully.",
               life: 2000,
             });
             setTimeout(() => {
@@ -188,7 +188,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             toast.current.show({
               severity: "error",
               summary: "Failed",
-              detail: "Product Add Failed.",
+              detail: "Product Updated Failed.",
               life: 2000,
             });
           }

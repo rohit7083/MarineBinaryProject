@@ -76,6 +76,11 @@ const MultipleColumnForm = () => {
   const location = useLocation();
   const fetchData = location.state || "";
   const toast = useRef(null);
+  {
+    {
+      debugger;
+    }
+  }
 
   useEffect(() => {
     if (fetchData?.uid) {
@@ -202,10 +207,9 @@ const MultipleColumnForm = () => {
   }
 
   useEffect(() => {
-    // {{debugger}}
     // if (fetchData && fetchData?.parentCategoryData) {
-      const list = handleCategory(fetchData.parentCategoryData);
-      setParentCategory(list);
+    const list = handleCategory(fetchData.parentCategoryData);
+    setParentCategory(list);
     // }
   }, []);
 

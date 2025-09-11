@@ -13,11 +13,10 @@ const AddProductIndex = () => {
   const ref = useRef(null);
   const [productData, setProductData] = useState({});
 
-  useEffect(()=>{
-console.log("product Data from index",productData);
-
-  },[productData])
-   const location = useLocation();
+  useEffect(() => {
+    console.log("product Data from index", productData);
+  }, [productData]);
+  const location = useLocation();
   const UpdateData = location?.state?.row;
   // ** State
   const [stepper, setStepper] = useState(null);
@@ -29,7 +28,7 @@ console.log("product Data from index",productData);
       content: (
         <>
           <ProductAdd
-          UpdateData={UpdateData}
+            UpdateData={UpdateData}
             setProductData={setProductData}
             stepper={stepper}
             type="wizard-vertical"
@@ -43,7 +42,7 @@ console.log("product Data from index",productData);
       subtitle: "Add Variation Info",
       content: (
         <ProductAdd_Table
-        UpdateData={UpdateData}
+          UpdateData={UpdateData}
           productData={productData}
           setProductData={setProductData}
           stepper={stepper}
@@ -57,7 +56,7 @@ console.log("product Data from index",productData);
       subtitle: "Add Specification",
       content: (
         <Add_Specification
-        UpdateData={UpdateData}
+          UpdateData={UpdateData}
           productData={productData}
           setProductData={setProductData}
           stepper={stepper}

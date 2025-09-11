@@ -1,10 +1,9 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { Plus, Trash2, X } from "react-feather";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-
 import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { ArrowLeft, Plus, Trash2, X } from "react-feather";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
   Button,
@@ -36,7 +35,10 @@ const ProductAdd_Table = ({
     setValue,
     formState: { errors },
   } = useForm({});
-
+  const watchMrp = useWatch({
+    control,
+    name: "variations",
+  });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "variations",
@@ -51,17 +53,30 @@ const ProductAdd_Table = ({
     if (UpdateData) {
       reset({
         ...UpdateData,
-
         variations:
           UpdateData.variations?.map((v) => ({
             ...v,
-            calcAmount: v.calAmount ?? "",
+            calcAmount: v.calcAmount ?? "", // check spelling
             qty: v.quantity ?? "",
+            images:
+              v.variationImages?.map((img) => {
+                // {{debugger}}
+                if (typeof img === "string") {
+                  return { url: img, isServer: true };
+                }
+                if (img?.imageUrl) {
+                  return { url: img.imageUrl, isServer: true, id: img.id };
+                }
+                if (img?.url) {
+                  return { url: img.url, isServer: true };
+                }
+                return { url: String(img ?? ""), isServer: true };
+              }) || [],
           })) || [],
       });
     }
   }, [UpdateData, reset]);
-  console.log("productData in variations ", productData);
+
   let payload;
   const onSubmit = async (data) => {
     console.log("data from variation", data);
@@ -81,12 +96,7 @@ const ProductAdd_Table = ({
         finalAmount: Number(vData.finalAmount),
         attributes: vData?.attributes,
       };
-
     });
-
-
-
-
 
     console.log(payload);
     if (UpdateData) {
@@ -106,7 +116,7 @@ const ProductAdd_Table = ({
           toast.current.show({
             severity: "success",
             summary: "Successfully",
-            detail: "Product Variations Add Successfully.",
+            detail: "Product Variations Updated Successfully.",
             life: 2000,
           });
           setTimeout(() => {
@@ -116,7 +126,7 @@ const ProductAdd_Table = ({
           toast.current.show({
             severity: "error",
             summary: "Failed",
-            detail: "Product Variations Add Failed.",
+            detail: "Product Variations Updated Failed.",
             life: 2000,
           });
         }
@@ -142,9 +152,10 @@ const ProductAdd_Table = ({
   };
   const taxSign = productData?.selectedTaxData?.taxType;
   const taxAmount = Number(productData?.selectedTaxData?.taxValue || 0); // ensure number
-  const watchMrp = watch(`variations`);
+  // const watchMrp = watch(`variations`);
 
   const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
+
   useEffect(() => {
     if (mrpValues.length > 0) {
       mrpValues.forEach((item, index) => {
@@ -184,7 +195,11 @@ const ProductAdd_Table = ({
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start">
-          <CardTitle tag="h4">Product Variations</CardTitle>
+          <CardTitle tag="h4">
+            {UpdateData
+              ? "Update Product Variations"
+              : " Add Product Variations"}
+          </CardTitle>
         </CardHeader>
         <hr />
         <Card className=" bg-light  border-0 shadow-sm rounded-4">
@@ -233,6 +248,7 @@ const ProductAdd_Table = ({
                                 const newFiles = files.map((file) =>
                                   Object.assign(file, {
                                     preview: URL.createObjectURL(file),
+                                    isServer: false,
                                   })
                                 );
                                 onChange([...(value || []), ...newFiles]);
@@ -269,7 +285,7 @@ const ProductAdd_Table = ({
                                 >
                                   <img
                                     src={
-                                      file.preview || URL.createObjectURL(file)
+                                      file.isServer ? file.url : file.preview
                                     }
                                     alt="preview"
                                     style={{
@@ -306,8 +322,8 @@ const ProductAdd_Table = ({
                       rules={{
                         required: "MRP is required",
                         pattern: {
-                          value: /^[0-9]+(\.[0-9]{1,2})?$/, // numbers with optional decimals
-                          message: "Enter a valid price (e.g., 100 or 100.50)",
+                          value: /^[0-9]+(\.[0-9]{1,2})?$/,
+                          message: "Enter a valid price ",
                         },
                       }}
                       render={({ field }) => (
@@ -447,7 +463,7 @@ const ProductAdd_Table = ({
                       rules={{
                         required: "Final Amount is required",
                         pattern: {
-                          value: /^[0-9]+(\.[0-9]{1,2})?$/, // numbers with optional decimals
+                          value: /^[0-9]+(\.[0-9]{1,2})?$/,
                           message: "Enter a valid final amount",
                         },
                       }}
@@ -523,27 +539,42 @@ const ProductAdd_Table = ({
             </Button>
           </div>{" "}
         </Card>
-        <div className="mt-2">
-          <Button color="primary" disabled={loading} type="submit">
-            {loading ? (
-              <>
-                {" "}
-                Loading.. <Spinner size="sm" />{" "}
-              </>
-            ) : (
-              <>Next</>
-            )}
-          </Button>
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          {/* Left side: Previous */}
           <Button
-            outline
-            color="secondary"
             type="button"
-            className="ms-2"
-            onClick={() => reset()}
+            color="primary"
+            className="btn-prev"
+            onClick={() => stepper.previous()}
           >
-            Reset
+            <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
+            <span className="align-middle d-sm-inline-block d-none">
+              Previous
+            </span>
           </Button>
-        </div>{" "}
+
+          {/* Right side: Next + Reset */}
+          <div>
+            <Button color="primary" disabled={loading} type="submit">
+              {loading ? (
+                <>
+                  Loading.. <Spinner size="sm" />
+                </>
+              ) : (
+                <>Next</>
+              )}
+            </Button>
+            <Button
+              outline
+              color="secondary"
+              type="button"
+              className="ms-2"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
+          </div>
+        </div>
       </Form>
     </>
   );

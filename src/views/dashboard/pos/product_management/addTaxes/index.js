@@ -12,7 +12,14 @@ import AddTax from "./AddTax";
 
 // ** Third Party Components
 import DataTable from "react-data-table-component";
-import { ArrowLeft, ChevronDown, Edit2, Plus, Trash } from "react-feather";
+import {
+  ArrowLeft,
+  ChevronDown,
+  Edit,
+  MoreVertical,
+  Plus,
+  Trash,
+} from "react-feather";
 import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
@@ -22,19 +29,16 @@ import {
   CardHeader,
   CardTitle,
   Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
   Input,
   Label,
   Row,
   Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
 import NavItems from "../NavItems";
-
-// ** Bootstrap Checkbox Component
-// const BootstrapCheckbox = forwardRef((props, ref) => (
-//   <div className="form-check">
-//     <Input type="checkbox" ref={ref} {...props} />
-//   </div>
-// ));
 
 const MySwal = withReactContent(Swal);
 
@@ -73,9 +77,9 @@ const DataTableWithButtons = () => {
       const updatedData = data.filter((item) => {
         // Adjust based on your API response structure
         return (
-          item?.name?.toLowerCase().includes(value) ||
-          String(item?.uid)?.toLowerCase().includes(value) ||
-          String(item?.rate)?.toLowerCase().includes(value)
+          item?.taxName?.toLowerCase().includes(value) ||
+          String(item?.taxType)?.toLowerCase().includes(value) ||
+          String(item?.taxValue)?.toLowerCase().includes(value)
         );
       });
       setFilteredData(updatedData);
@@ -198,19 +202,39 @@ const DataTableWithButtons = () => {
       // minWidth: "150px",
       cell: (row) => {
         return (
-          <div className="d-flex">
-            <span style={{ margin: "0.5rem" }} onClick={() => handleEdit(row)}>
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
+          // <div className="d-flex">
+          //   <span style={{ margin: "0.5rem" }} onClick={() => handleEdit(row)}>
+          //     <Edit2 className="font-medium-3 text-body" />
+          //   </span>
 
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
+          //   <span
+          //     color="danger"
+          //     style={{ cursor: "pointer", color: "red" }}
+          //     onClick={() => handleDelete(row.uid)}
+          //   >
+          //     <Trash className="font-medium-3 text-body" />
+          //   </span>
+          // </div>
+          <UncontrolledDropdown>
+            <DropdownToggle
+              className="icon-btn hide-arrow"
+              color="transparent"
+              size="sm"
+              caret
             >
-              <Trash className="font-medium-3 text-body" />
-            </span>
-          </div>
+              <MoreVertical size={15} />
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={() => handleEdit(row)}>
+                <Edit className="me-50" size={15} />
+                <span className="align-middle">Edit</span>
+              </DropdownItem>
+              <DropdownItem onClick={() => handleDelete(row.uid)}>
+                <Trash className="me-50" size={15} />
+                <span className="align-middle">Delete</span>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         );
       },
     },

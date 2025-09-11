@@ -464,7 +464,6 @@ const Address = ({
     const encrypted = encryptAES(pinArray.join(""));
 
     setErrMsz("");
-    {{debugger}}
     data.paymentMode = data.paymentMode?.value;
     const formData = new FormData();
     formData.append("SlipId", slipIID || sId);
