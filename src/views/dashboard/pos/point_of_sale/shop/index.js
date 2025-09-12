@@ -1,13 +1,13 @@
-import React from 'react'
+import Header from './Header'
 import ProductCards from './ProductCards'
 import ProductsSearchbar from './ProductsSearchbar'
-import Header from './Header'
 function index() {
   return (
     <div>
+      {/* search bar and add new customer */}
       <Header/>
-      <ProductsSearchbar/>
-      <ProductCards/>
+     <ProductsSearchbar/>
+     <ProductCards/> 
     </div>
   )
 }

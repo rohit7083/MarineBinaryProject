@@ -1,19 +1,18 @@
-import React, { Fragment } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
+  Button,
   Card,
   CardBody,
-  CardImg,
-  CardTitle,
   CardText,
-  Button,
-  Row,
+  CardTitle,
   Col,
-  Form,
-  FormGroup,
-  Label,
   Input,
-  Modal ,ModalHeader ,ModalBody,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
 } from "reactstrap";
 function ProductHeader() {
   const [show, setShow] = React.useState(false);
@@ -49,20 +48,14 @@ function ProductHeader() {
     <>
       <Card className="round">
         <CardBody>
-          <h4 className="mb-1">Customer Details</h4>
-
+       <CardTitle>
+        Customer Details
+       </CardTitle>
           <Row>
             <Col md="12">
               <CardText>
                 Customer Name:<strong> Rohit Sonawane</strong>
               </CardText>
-            </Col>
-
-            <Col md="12" className="d-flex gap-2 mt-2">
-              <Button color="primary" onClick={() => setShow(true)}>
-                Add Customer
-              </Button>
-              <Button color="primary">Walk-In Customer</Button>
             </Col>
           </Row>
 
@@ -174,9 +167,13 @@ function ProductHeader() {
                   <Label className="form-label" for="addressLine1">
                     Address
                   </Label>
-                  <Input type="textarea" id="addressLine1" placeholder="12, Business Park" />
+                  <Input
+                    type="textarea"
+                    id="addressLine1"
+                    placeholder="12, Business Park"
+                  />
                 </Col>
-{/* 
+                {/* 
                 <Col xs={12} md={6}>
                   <Label className="form-label" for="firstName">
                     City Name

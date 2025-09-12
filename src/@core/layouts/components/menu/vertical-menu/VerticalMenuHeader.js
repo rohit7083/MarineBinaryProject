@@ -3,13 +3,13 @@ import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 
 // ** Icons Imports
-import { Disc, X, Circle } from 'react-feather'
+import { Circle, Disc, X } from 'react-feather'
 
 // ** Config
 import themeConfig from '@configs/themeConfig'
 
 // ** Utils
-import { getUserData, getHomeRouteForLoggedInUser } from '@utils'
+import { getHomeRouteForLoggedInUser, getUserData } from '@utils'
 
 const VerticalMenuHeader = props => {
   // ** Props

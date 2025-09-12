@@ -4,8 +4,8 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 
 // ** Redux Imports
-import { store } from './redux/store'
 import { Provider } from 'react-redux'
+import { store } from './redux/store'
 
 // ** Intl, CASL & ThemeColors Context
 import ability from './configs/acl/ability'
@@ -32,8 +32,8 @@ import './@fake-db'
 
 // ** PrismJS
 import 'prismjs'
-import 'prismjs/themes/prism-tomorrow.css'
 import 'prismjs/components/prism-jsx.min'
+import 'prismjs/themes/prism-tomorrow.css'
 
 // ** React Perfect Scrollbar
 import 'react-perfect-scrollbar/dist/css/styles.css'
@@ -56,8 +56,8 @@ const container = document.getElementById('root')
 const root = createRoot(container)
 
 root.render(
-  <BrowserRouter basename='/crm/marine-resort'>
-          {/* <BrowserRouter>  */}
+  // <BrowserRouter basename='/crm/marine-resort'>
+           <BrowserRouter>
     <Provider store={store}>
       <Suspense fallback={<Spinner />}>
         <AbilityContext.Provider value={ability}>

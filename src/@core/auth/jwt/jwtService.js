@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
 
 import Swal from "sweetalert2";
@@ -667,6 +667,15 @@ export default class JwtService {
     return axios.post(`${this.jwtConfig.addStocks}${uid}`, ...args);
   }
 
+
+    getAllProduct() {
+    return axios.get(`${this.jwtConfig.getAllProduct}`);
+  }
+
+  getImage(uid){
+        return axios.get(`${this.jwtConfig.getImage}${uid}`);
+
+  }
   
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

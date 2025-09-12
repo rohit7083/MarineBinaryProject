@@ -5,14 +5,7 @@ import NavItems from "./NavItems";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
-import {
-  ChevronDown,
-  Edit,
-  Eye,
-  MoreVertical,
-  Package,
-  Trash,
-} from "react-feather";
+import { ChevronDown, Edit, MoreVertical, Package, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
@@ -67,7 +60,7 @@ const index = () => {
     navigate("/dashboard/pos/product_management/addProduct_index", {
       state: { row },
     });
-    console.log(row);
+    console.log("row",row);
   };
 
   useEffect(() => {
@@ -88,10 +81,8 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.member?.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.paymentStatus?.toLowerCase().includes(value.toLowerCase()) ||
-          row.roomNumber?.toString().includes(value) ||
-          row.finalAmount?.toString().includes(value)
+          row.name.toLowerCase().includes(value.toLowerCase()) ||
+          row.productType?.toLowerCase().includes(value.toLowerCase())
       );
 
       setTableData((prev) => ({
@@ -122,7 +113,7 @@ const index = () => {
   };
 
   const handleStocks = (row) => {
-    navigate('/dashboard/pos/product_management/AddStocks',{state:{row}});
+    navigate("/dashboard/pos/product_management/AddStocks", { state: { row } });
     console.log(row);
   };
   const columns = [
@@ -230,11 +221,11 @@ const index = () => {
                   <Edit className="me-50" size={15} />
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
-
+                {/* 
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Eye className="me-50" size={15} />{" "}
                   <span className="align-middle">View</span>
-                </DropdownItem>
+                </DropdownItem> */}
 
                 <DropdownItem onClick={() => handleStocks(row)}>
                   <Package className="me-50" size={15} />{" "}

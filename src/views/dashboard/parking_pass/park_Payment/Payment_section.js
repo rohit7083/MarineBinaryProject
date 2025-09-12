@@ -1,53 +1,37 @@
-import { useForm, Controller, set } from "react-hook-form";
+import useJwt from "@src/auth/jwt/useJwt";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
-import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
+import { Controller, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import cashpayment from "../../../../../src/assets/images/cashPayment.png";
+import withReactContent from "sweetalert2-react-content";
 import cardSwipe from "../../../../../src/assets/images/cardSwipe.png";
+import cashpayment from "../../../../../src/assets/images/cashPayment.png";
 
+import CryptoJS from "crypto-js";
+import React, { useEffect, useRef, useState } from "react";
+import { CheckSquare, CreditCard } from "react-feather";
 import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
-  Button,
-  Row,
   Col,
   Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
+  Form,
   FormFeedback,
+  Input,
+  Label,
+  Row,
   Spinner,
   UncontrolledAlert,
 } from "reactstrap";
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import {
-  Home,
-  Check,
-  X,
-  Briefcase,
-  CreditCard,
-  CheckSquare,
-  Watch,
-} from "react-feather";
-import CryptoJS from "crypto-js";
 
-import { data } from "jquery";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import { BarLoader, BeatLoader } from "react-spinners";
-import GenrateOtp from "./GenrateOtp";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { useNavigate, useParams } from "react-router-dom";
 const Payment_section = ({ FinalAmountRes }) => {
   const {
     control,
@@ -78,7 +62,7 @@ const Payment_section = ({ FinalAmountRes }) => {
     try {
       setLoading(true);
       // const res = await useJwt.getMemberDetails(token);
-      console.log("res", res);
+      
       setMemberDetails(res?.data);
     } catch (error) {
       console.error("error", error);
@@ -194,7 +178,6 @@ const Payment_section = ({ FinalAmountRes }) => {
 
   const selectedOption = watch("paymentMethod");
 
-  console.log("selectedOption ", selectedOption);
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -221,24 +204,31 @@ const Payment_section = ({ FinalAmountRes }) => {
   }
 
   const onSubmit = async (data) => {
-    console.log(data);
-    const pinArray = data.pin || [];
-    const isValid =
-      pinArray.length === 4 &&
-      pinArray.every((d) => d !== "" && d !== undefined);
-    if (!isValid) {
-      console.error("Invalid pin input");
-      return;
-    }
     setErr("");
+    {
+      {
+        debugger;
+      }
+    }
+    let pinArray;
+    if (selectedOption === "Cash") {
+      pinArray = data.pin || [];
+      const isValid =
+        pinArray.length === 4 &&
+        pinArray.every((d) => d !== "" && d !== undefined);
+      if (!isValid) {
+        console.error("Invalid pin input");
+        return;
+      }
+    }
 
     const { cvc, ...rest } = data;
-    const encrypted = encryptAES(pinArray.join(""));
+    const encrypted = encryptAES(pinArray?.join(""));
 
     let payload = {
       allocation: {
         uid: FinalAmountRes?.allocationUid,
-  ...(selectedOption === "Cash" && { pin: encrypted }),
+        ...(selectedOption === "Cash" && { pin: encrypted }),
       },
 
       finalPayment: FinalAmountRes?.totalAmount,
@@ -272,7 +262,6 @@ const Payment_section = ({ FinalAmountRes }) => {
     try {
       setLoadPayment(true);
       const res = await useJwt.ParkingPayment({ allocation, payment: payload });
-      console.log(res);
       toast.current.show({
         severity: "success",
         summary: "Payment Successful",
@@ -286,9 +275,7 @@ const Payment_section = ({ FinalAmountRes }) => {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        console.log("Error data", error.response.data);
-        console.log("Error status", error.response.status);
-        console.log("Error headers", error.response.headers);
+       
         setErr(error.response.data.content);
       }
     } finally {
@@ -372,7 +359,7 @@ const Payment_section = ({ FinalAmountRes }) => {
 
   useEffect(() => {
     console.clear();
-    console.log(watch("Cash"));
+   
   }, [watch("Cash")]);
 
   const maskCardNumberForCard = (number = "") => {

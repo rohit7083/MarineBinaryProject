@@ -9,9 +9,7 @@ import NavItems from "../product_management/NavItems";
 import { serverSideColumns } from "./Data";
 
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown
-} from "react-feather";
+import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
 
 import {
@@ -22,7 +20,7 @@ import {
   Col,
   Input,
   Label,
-  Row
+  Row,
 } from "reactstrap";
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -167,20 +165,20 @@ const DataTableWithButtons = () => {
               <div>
                 <Link to="/pos/VendorManage/addVendor">
                   <Button size="sm" color="primary">
+                    {/* <PlusCircle size={13}/> */}
                     Add Vendor
                   </Button>
                 </Link>
               </div>
               <div>
                 <Link to="/pos/vendor_typeList">
-                  <Button size="sm" color="warning">
+                  <Button size="sm" color="primary">
                     Vendor Types
                   </Button>
                 </Link>
               </div>
               <div>
-                    <NavItems />
-
+                <NavItems />
               </div>
             </div>
           </div>
@@ -210,7 +208,7 @@ const DataTableWithButtons = () => {
           <DataTable
             noHeader
             pagination
-            selectableRows
+            // selectableRows
             columns={serverSideColumns}
             paginationPerPage={7}
             className="react-dataTable"

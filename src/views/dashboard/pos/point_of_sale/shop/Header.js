@@ -1,33 +1,20 @@
-import React, { Fragment } from "react";
-import { useForm, Controller } from "react-hook-form";
-import Select from 'react-select'
-import { selectThemeColors } from '@utils'
+import { selectThemeColors } from "@utils";
+import { Fragment } from "react";
+import { useForm } from "react-hook-form";
+import Select from "react-select";
 
-import {
-  Card,
-  CardBody,
-  CardImg,
-  CardTitle,
-  CardText,
-  Button,
-  Row,
-  Col,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-} from "reactstrap";
+import { ArrowLeft } from "react-feather";
+import { Button, Card, CardBody, CardTitle, Col, Label, Row } from "reactstrap";
 import ProductHeader from "./ProductsHeader";
 
 function Header() {
-
   const colourOptions = [
-    { value: 'ocean', label: 'Ocean' },
-    { value: 'blue', label: 'Blue' },
-    { value: 'purple', label: 'Purple' },
-    { value: 'red', label: 'Red' },
-    { value: 'orange', label: 'Orange' }
-  ]
+    { value: "ocean", label: "Ocean" },
+    { value: "blue", label: "Blue" },
+    { value: "purple", label: "Purple" },
+    { value: "red", label: "Red" },
+    { value: "orange", label: "Orange" },
+  ];
 
   const {
     control,
@@ -40,112 +27,112 @@ function Header() {
   } = useForm({});
   return (
     <Fragment>
-      {/* <Col md="12">
-        {" "}
-        <Col md="8">
-          <Card className="round" style={{ padding: "20px" }}>
+      <Row>
+        <Col md="12">
+          <Card className="round">
             <CardBody>
-              <Row>
+              <CardTitle tag="h4">
+                {" "}
+                <ArrowLeft
+                  style={{
+                    cursor: "pointer",
+                    marginRight: "10px",
+                    transition: "color 0.1s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#9289F3")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "#6E6B7B")
+                  }
+                  onClick={() => window.history.back()}
+                />
+                Point Of Sale
+              </CardTitle>
+              <hr />
+
+              <Row className="align-items-start">
+                {/* Left side: Title + Search Fields */}
                 <Col md="8">
-                  <h4 className="mb-1">Search Customer</h4>
-                  <FormGroup>
-                    <Col></Col>
-                    <Col>
-                      <Label for="email">Subtotal</Label>
-                      <Input
-                        type="text"
-                        id=""
-                        placeholder="Enter your Subtotal"
+                  <CardTitle tag="h4" className="mb-2">
+                    Search Existing Customer
+                  </CardTitle>
+
+                  <Row>
+                    <Col className="mb-1" md="4" sm="12">
+                      <Label className="form-label">By Slip No</Label>
+                      <Select
+                        theme={selectThemeColors}
+                        className="react-select"
+                        classNamePrefix="select"
+                        defaultValue={colourOptions[0]}
+                        options={colourOptions}
+                        isClearable={false}
                       />
                     </Col>
-                  </FormGroup>
-                </Col>
-              </Row>
-            </CardBody>
-          </Card>
-        </Col>
-        
-        <Col md="4">
-          <Card className="round" style={{ padding: "20px" }}>
-            <CardBody>
-              <Row>
-                <Col md="4">
-                  <h4 className="mb-1">Search Customer</h4>
-                  <FormGroup>
-                    <Col></Col>
-                    <Col>
-                      <Label for="email">Subtotal</Label>
+
+                    <Col className="mb-1" md="4" sm="12">
+                      <Label className="form-label">By Contact No</Label>
+                      <Select
+                        theme={selectThemeColors}
+                        className="react-select"
+                        classNamePrefix="select"
+                        defaultValue={colourOptions[0]}
+                        options={colourOptions}
+                        isClearable={false}
+                      />
                     </Col>
-                  </FormGroup>
+
+                    <Col className="mb-1" md="4" sm="12">
+                      <Label className="form-label">By Customer Name</Label>
+                      <Select
+                        theme={selectThemeColors}
+                        className="react-select"
+                        classNamePrefix="select"
+                        defaultValue={colourOptions[0]}
+                        options={colourOptions}
+                        isClearable={false}
+                      />
+                    </Col>
+                  </Row>
                 </Col>
-                <Col sm='4' >
 
+                {/* Right side: Buttons */}
+                <Col
+                  md="4"
+                  className="text-center"
+                  style={{ borderLeft: "1px solid gray" }}
+                >
+                  <CardTitle tag="h4" className="">
+                    Add New Customer
+                  </CardTitle>
 
+                  <Button
+                    color="primary"
+                    size="sm"
+                    style={{ width: "150px" }}
+                    className=" "
+                  >
+                    Add Customer
+                  </Button>
+                  <Button
+                    color="primary"
+                    size="sm"
+                    style={{ width: "150px" }}
+                    className=" mt-1"
+                  >
+                    Walk-In Customer
+                  </Button>
                 </Col>
               </Row>
             </CardBody>
           </Card>
         </Col>
-      </Col> */}
 
-
-
-
-<Row>
-  {/* Left Section - 8 columns */}
-  <Col md="8">
-    <Card className="round" >
-      <CardBody>
-        <h4 className="mb-1">Search Customer</h4>
-        <Row>
-        <Col className='mb-1' md='4' sm='8'>
-            <Label className='form-label'>By Slip No
-            </Label>
-            <Select
-              theme={selectThemeColors}
-              className='react-select'
-              classNamePrefix='select'
-              defaultValue={colourOptions[0]}
-              options={colourOptions}
-              isClearable={false}
-            />
-          </Col>
-          <Col className='mb-1' md='4' sm='8'>
-            <Label className='form-label'>By Contact No
-            </Label>
-            <Select
-              theme={selectThemeColors}
-              className='react-select'
-              classNamePrefix='select'
-              defaultValue={colourOptions[0]}
-              options={colourOptions}
-              isClearable={false}
-            />
-          </Col>
-          <Col className='mb-1' md='4' sm='8'>
-            <Label className='form-label'>By Customer Name
-            </Label>
-            <Select
-              theme={selectThemeColors}
-              className='react-select'
-              classNamePrefix='select'
-              defaultValue={colourOptions[0]}
-              options={colourOptions}
-              isClearable={false}
-            />
-          </Col>
-          </Row>
-      </CardBody>
-    </Card>
-  </Col>
-
-  {/* Right Section - 4 columns */}
-  <Col md="4">
-      <ProductHeader/>
-
-  </Col>
-</Row>
-
+        <Col md="12">
+          <ProductHeader />
+        </Col>
+      </Row>
     </Fragment>
   );
 }

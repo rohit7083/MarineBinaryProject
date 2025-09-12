@@ -1,20 +1,18 @@
 // ** Icons Imports
-import { Search } from "react-feather";
-import Select, { components } from "react-select"; // eslint-disable-line
 import { selectThemeColors } from "@utils";
+import { Search } from "react-feather";
+import Select from "react-select"; // eslint-disable-line
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  InputGroup,
-  Input,
-  Label,
-  InputGroupText,
   Card,
   CardBody,
-  CardText,
-  Button,
+  Col,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Label,
+  Row,
 } from "reactstrap";
 
 const ProductsSearchbar = (props) => {
@@ -61,56 +59,53 @@ const ProductsSearchbar = (props) => {
     </div>
   );
   return (
-    <div id="ecommerce-searchbar" className="ecommerce-searchbar">
-      <Row className="mt-1 mb-2">
-        <Col sm="4">
-          <Label className="form-label">Search Products</Label>
-
-          <InputGroup className="input-group-merge">
-            <Input className="search-product" placeholder="Search Product" />
-            <InputGroupText>
-              <Search className="text-muted" size={14} />
-            </InputGroupText>
-          </InputGroup>
-        </Col>
-
-        <Col className="mb-1" sm="4">
-          <Label className="form-label">Category</Label>
-          <Select
-            isClearable={false}
-            theme={selectThemeColors}
-            // defaultValue={[colorOptions[2], colorOptions[3]]}
-            isMulti
-            name="colors"
-            options={colorOptions}
-            className="react-select"
-            classNamePrefix="select"
-          />
-        </Col>
-        <Col sm="4" className="d-flex gap-2">
-          <Col md="6">
-            <Label className="form-label">Invoice No
-            </Label>
+    <Card>
+      <CardBody>
+        <Row className="mt-1 mb-2">
+          <Col sm="4">
+            <Label className="form-label">Search Products</Label>
 
             <InputGroup className="input-group-merge">
-              <Input className="search-product"  placeholder="LT3763" />
-              
+              <Input className="search-product" placeholder="Search Product" />
+              <InputGroupText>
+                <Search className="text-muted" size={14} />
+              </InputGroupText>
             </InputGroup>
           </Col>
 
-          <Col md="6">
-            <Label className="form-label">Invoice Date
-            </Label>
-
-            <InputGroup className="input-group-merge">
-            <Input className="search-product"  placeholder="March 21 Dec" />
-
-             
-            </InputGroup>
+          <Col className="mb-1" sm="4">
+            <Label className="form-label">Category</Label>
+            <Select
+              isClearable={false}
+              theme={selectThemeColors}
+              // defaultValue={[colorOptions[2], colorOptions[3]]}
+              isMulti
+              name="colors"
+              options={colorOptions}
+              className="react-select"
+              classNamePrefix="select"
+            />
           </Col>
-        </Col>
-      </Row>
-    </div>
+          <Col sm="4" className="d-flex gap-2">
+            <Col md="6">
+              <Label className="form-label">Invoice No</Label>
+
+              <InputGroup className="input-group-merge">
+                <Input className="search-product" placeholder="LT3763" />
+              </InputGroup>
+            </Col>
+
+            <Col md="6">
+              <Label className="form-label">Invoice Date</Label>
+
+              <InputGroup className="input-group-merge">
+                <Input className="search-product" placeholder="March 21 Dec" />
+              </InputGroup>
+            </Col>
+          </Col>
+        </Row>
+      </CardBody>
+    </Card>
   );
 };
 

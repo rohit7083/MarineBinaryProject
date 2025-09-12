@@ -1,14 +1,10 @@
 // ** Icons Import
 import { HomeIcon } from "lucide-react";
 import {
-  Home,
-  Circle,
-  Plus,
-  FileText,
-  Users,
-  Square,
-  MessageSquare,
   Calendar,
+  Circle,
+  FileText,
+  Square
 } from "react-feather";
 
 export default [
@@ -171,12 +167,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/product_management",
       },
-      // {
-      //   id: "Point Of Sale ",
-      //   title: "Point Of Sale ",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/dashboard/pos/point_of_sale/shop",
-      // },
+      {
+        id: "Point Of Sale ",
+        title: "Point Of Sale ",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/pos/point_of_sale/shop",
+      },
       // {
       //   id: "Cusstomer manage",
       //   title: "Customer Manage",

@@ -1,21 +1,14 @@
 // ** Images
-import React, { Fragment } from "react";
+import { Fragment } from "react";
+import { Minus, Plus } from "react-feather";
 import {
+  Button,
   Card,
   CardBody,
-  CardImg,
-  CardTitle,
   CardText,
-  Button,
-  Row,
   Col,
-  Form,
-  FormGroup,
-  Label,
-  Input,
+  Row
 } from "reactstrap";
-import img1 from "@src/assets/images/slider/03.jpg";
-import { Minus, Plus, PlusCircle } from "react-feather";
 
 
 const OrderDetails = () => {
@@ -28,17 +21,17 @@ const OrderDetails = () => {
 
               {[1, 2, 3].map((_, index) => (
                 <Row className="mt-1 ">
-                  <Col xs="4">
-                    <CardImg
-                      src={img1}
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </Col>
+                  {/* <Col xs="4"> */}
+                      {/* <CardImg
+                        src={img1}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      /> */}
+                  {/* </Col> */}
 
                   <Col xs="8">
                     <CardText

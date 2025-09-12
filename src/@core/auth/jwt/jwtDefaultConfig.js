@@ -174,4 +174,6 @@ export default {
   updateProductSpecification:"/product/specifications/",
   addStocks:'/productVariation/addStock/',
   
+
+  getImage:'/productVariationImage/sImages/file/',
 };

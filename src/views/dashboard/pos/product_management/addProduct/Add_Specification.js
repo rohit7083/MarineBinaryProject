@@ -1,11 +1,10 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Plus, Trash2 } from "react-feather";
-import { useNavigate } from "react-router-dom";
-
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -18,7 +17,7 @@ import {
   Table,
 } from "reactstrap";
 
-const Add_Specification = ({ productData, setProductData, UpdateData }) => {
+const Add_Specification = ({stepper , productData, setProductData, UpdateData }) => {
   const {
     control,
     handleSubmit,
@@ -68,7 +67,6 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
         variation.finalAmount || ""
       );
 
-      {{debugger}}
       variation?.attributes?.map((x, i) => {
         formData.append(
           `variations[${index}].attributes[${i}].attributeName`,
@@ -79,26 +77,26 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
           x.value || ""
         );
       });
-   
 
-    variation?.images?.map((img,i)=>{
-      formData.append(`variations[${index}].variationImages[${i}].image`,
-          img || "")
+      variation?.images?.map((img, i) => {
+        formData.append(
+          `variations[${index}].variationImages[${i}].image`,
+          img || ""
+        );
+      });
     });
-     });
-
-    data?.specifications?.forEach((specification, index) => {
-      formData.append(
-        `specifications[${index}].specKey`,
-        specification.name || ""
-      );
-      formData.append(
-        `specifications[${index}].specValue`,
-        specification.value || ""
-      );
-    });
-
-    // const payloadForUpdateSpec=;
+    if (data?.specifications) {
+      data?.specifications?.forEach((specification, index) => {
+        formData.append(
+          `specifications[${index}].specKey`,
+          specification.name || ""
+        );
+        formData.append(
+          `specifications[${index}].specValue`,
+          specification.value || ""
+        );
+      });
+    }
     console.log(data);
 
     try {
@@ -116,17 +114,17 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
           toast.current.show({
             severity: "success",
             summary: "Successfully",
-            detail: "Product Updated Successfully.",
+            detail: "Product Specifications Updated Successfully.",
             life: 2000,
           });
           setTimeout(() => {
-            // navigate("/dashboard/pos/product_management");
+            navigate("/dashboard/pos/product_management");
           }, 1999);
         } else {
           toast.current.show({
             severity: "error",
             summary: "Failed",
-            detail: "Product Add Failed.",
+            detail: "Product Specifications Updated  Failed.",
             life: 2000,
           });
         }
@@ -311,26 +309,39 @@ const Add_Specification = ({ productData, setProductData, UpdateData }) => {
             </Button>
           </div>
         </Card>
-        <div className="mt-2">
-          <Button color="primary" disabled={loading} type="submit">
-            {loading ? (
-              <>
-                {" "}
-                Loading.. <Spinner size="sm" />{" "}
-              </>
-            ) : (
-              <>Next</>
-            )}
-          </Button>
-          <Button
-            outline
-            color="secondary"
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          {/* <Button
             type="button"
-            className="ms-2"
-            onClick={() => reset()}
+            color="primary"
+            className="btn-prev"
+            onClick={() => stepper.previous()}
           >
-            Reset
-          </Button>
+            <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
+            <span className="align-middle d-sm-inline-block d-none">
+              Previous
+            </span>
+          </Button> */}
+          <div>
+            <Button color="primary" disabled={loading} type="submit">
+              {loading ? (
+                <>
+                  {" "}
+                  Loading.. <Spinner size="sm" />{" "}
+                </>
+              ) : (
+                <>Next</>
+              )}
+            </Button>
+            <Button
+              outline
+              color="secondary"
+              type="button"
+              className="ms-2"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
+          </div>
         </div>
       </Form>
       {/* Custom Styling */}

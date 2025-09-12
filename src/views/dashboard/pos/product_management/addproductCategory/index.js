@@ -3,28 +3,10 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import {
-  ArrowLeft,
-  ChevronDown,
-  Edit,
-  MoreVertical,
-  Plus
-} from "react-feather";
+import { ArrowLeft, ChevronDown, Edit, Plus } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import NavItems from "../NavItems";
@@ -52,7 +34,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.getProductCategory();
       const { content } = data;
-      setTableData({ count: content.result, results: content.result });
+      setTableData({ count: content.result.length, results: content.result });
     } catch (error) {
       console.error(error);
     } finally {
@@ -61,7 +43,6 @@ const index = () => {
   }
 
   const handleEdit = (row) => {
-    {debugger}
     navigate("/pos/product_management/add-category", {
       state: { row: row, uid: row.uid, parentCategoryData: parentData },
     });
@@ -85,10 +66,9 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.member?.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.paymentStatus?.toLowerCase().includes(value.toLowerCase()) ||
-          row.roomNumber?.toString().includes(value) ||
-          row.finalAmount?.toString().includes(value)
+          row.parentUid?.name.toLowerCase().includes(value.toLowerCase()) ||
+          row.name?.toLowerCase().includes(value.toLowerCase()) ||
+          row.id?.toString().includes(value)
       );
 
       setTableData((prev) => ({
@@ -221,7 +201,7 @@ const index = () => {
         };
         return (
           <>
-            <UncontrolledDropdown>
+            {/* <UncontrolledDropdown>
               <DropdownToggle
                 className="icon-btn hide-arrow"
                 color="transparent"
@@ -236,12 +216,12 @@ const index = () => {
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
 
-                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
-                  <Trash className="me-50" size={15} />{" "}
-                  <span className="align-middle">Delete</span>
-                </DropdownItem> */}
               </DropdownMenu>
-            </UncontrolledDropdown>
+            </UncontrolledDropdown> */}
+
+            <span style={{ cursor: "pointer" }} onClick={() => handleEdit(row)}>
+              <Edit className="me-50" size={15} />
+            </span>
           </>
         );
       },
