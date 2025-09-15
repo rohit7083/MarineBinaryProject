@@ -645,35 +645,32 @@
 
 
 
-import { Fragment, useState, useEffect, useRef } from "react";
-import ViewClient from "./ViewClient";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
 import Sidebar from "@components/sidebar";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css";
+import { Toast } from "primereact/toast";
+import { Fragment, useRef, useState } from "react";
 import { countries } from "../../../dashboard/slip-management/CountryCode";
-import useJwt from "@src/auth/jwt/useJwt";
 
-import Select, { components } from "react-select";
-import { Check, Plus, X } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
+import { Check, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
 
-import { selectThemeColors } from "@utils";
 import {
-  Row,
+  Button,
   Col,
   Form,
+  FormFeedback,
   Input,
   Label,
-  Button,
-  FormFeedback,
+  Row,
 } from "reactstrap";
 
+import "@styles/base/pages/app-invoice.scss";
+import "@styles/react/libs/react-select/_react-select.scss";
 import ReactCountryFlag from "react-country-flag";
 import "react-slidedown/lib/slidedown.css";
-import "@styles/react/libs/react-select/_react-select.scss";
-import "@styles/base/pages/app-invoice.scss";
 
 const CustomLabel = ({ htmlFor }) => (
   <Label className="form-check-label" htmlFor={htmlFor}>
@@ -695,16 +692,7 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
     formState: { errors },
   } = useForm({
     defaultValues: {
-      firstName: "shekhar",
-      lastName: "patil",
-      emailId: "sp@mail.com",
-      phoneNumber: "6985475214",
-      countryCode: { value: "+1", label: "United States (+1)", code: "US" },
-      address: "nashik",
-      city: "nsk",
-      state: "mh",
-      country: "india",
-      postalCode: "422025",
+      
     },
   });
 
