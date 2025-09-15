@@ -2,11 +2,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState } from "react";
-<<<<<<< HEAD
 import { Plus, Trash2, X } from "react-feather";
-=======
-import { ArrowLeft, Plus, Trash2, X } from "react-feather";
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
@@ -73,7 +69,6 @@ const ProductAdd_Table = ({
             qty: v.quantity ?? "",
             images:
               v.variationImages?.map((img) => {
-<<<<<<< HEAD
                 fetchImage(img?.uid);
                 if (typeof img === "string") {
                   return { preview: img, isServer: true };
@@ -85,7 +80,6 @@ const ProductAdd_Table = ({
                   return { preview: img.url, isServer: true };
                 }
                 return { preview: String(img ?? ""), isServer: true };
-=======
                 // {{debugger}}
                 if (typeof img === "string") {
                   return { url: img, isServer: true };
@@ -97,7 +91,6 @@ const ProductAdd_Table = ({
                   return { url: img.url, isServer: true };
                 }
                 return { url: String(img ?? ""), isServer: true };
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
               }) || [],
           })) || [],
       });
@@ -179,16 +172,12 @@ const ProductAdd_Table = ({
   };
   const taxSign = productData?.selectedTaxData?.taxType;
   const taxAmount = Number(productData?.selectedTaxData?.taxValue || 0); // ensure number
-<<<<<<< HEAD
 
   const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
   // {{debugger}}
-=======
-  // const watchMrp = watch(`variations`);
 
-  const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
+  // const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
 
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
   useEffect(() => {
     if (!mrpValues.length) return;
 
@@ -340,13 +329,10 @@ const ProductAdd_Table = ({
                                   }}
                                 >
                                   <img
-<<<<<<< HEAD
-                                    src={file.preview}
-=======
+                                    // src={file.preview}
                                     src={
                                       file.isServer ? file.url : file.preview
                                     }
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
                                     alt="preview"
                                     style={{
                                       width: "100%",
@@ -601,11 +587,9 @@ const ProductAdd_Table = ({
         </Card>
         <div className="d-flex justify-content-between align-items-center mt-3">
           {/* Left side: Previous */}
-<<<<<<< HEAD
           {/* <Button
 =======
           <Button
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
             type="button"
             color="primary"
             className="btn-prev"
@@ -615,11 +599,10 @@ const ProductAdd_Table = ({
             <span className="align-middle d-sm-inline-block d-none">
               Previous
             </span>
-<<<<<<< HEAD
+
           </Button> */}
-=======
-          </Button>
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
+
+          {/* </Button> */}
 
           {/* Right side: Next + Reset */}
           <div>
