@@ -54,7 +54,7 @@ function ProductHeader() {
           <Row>
             <Col md="12">
               <CardText>
-                Customer Name:<strong> Rohit Sonawane</strong>
+                Customer Name:<strong> Rohit</strong>
               </CardText>
             </Col>
           </Row>
