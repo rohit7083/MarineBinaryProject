@@ -16,6 +16,7 @@ import {
 import OrderDetails from "./OrderDetails";
 
 const ProductPage = () => {
+  
   const colourOptions = [
     { value: "ocean", label: "1 Kg" },
     { value: "blue", label: "500 Gm" },
