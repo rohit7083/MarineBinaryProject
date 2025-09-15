@@ -9,10 +9,8 @@ import {
   Col,
   Row
 } from "reactstrap";
-
-
 const OrderDetails = () => {
-
+  
   return (
     <Fragment>
           <Card className="round" style={{ padding: "20px" }}>

@@ -11,7 +11,7 @@ import {
   CardText,
   CardTitle,
   Col,
-  Row
+  Row,
 } from "reactstrap";
 import OrderDetails from "./OrderDetails";
 
@@ -29,7 +29,7 @@ const ProductPage = () => {
         {/* Left Side - Product Cards */}
         <Col md="8">
           <Row>
-            {[1, 2, 3,4,5,6].map((_, index) => (
+            {[1, 2, 3, 4, 5, 6].map((_, index) => (
               <Col md="4" xs="12" key={index} className="mb-3">
                 <Card
                   style={{ width: "100%", height: "auto", fontSize: "14px" }}
@@ -82,10 +82,8 @@ const ProductPage = () => {
 
         {/* Right Side - Form */}
         <Col md="4">
-       
-<OrderDetails/>
-{/* <PayementDetails/> */}
-          
+          <OrderDetails />
+          {/* <PayementDetails/> */}
         </Col>
       </Row>
     </Fragment>
