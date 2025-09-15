@@ -2,7 +2,11 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState } from "react";
+<<<<<<< HEAD
 import { Plus, Trash2 } from "react-feather";
+=======
+import { ArrowLeft, Plus, Trash2 } from "react-feather";
+>>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
@@ -310,7 +314,11 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
           </div>
         </Card>
         <div className="d-flex justify-content-between align-items-center mt-3">
+<<<<<<< HEAD
           {/* <Button
+=======
+          <Button
+>>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
             type="button"
             color="primary"
             className="btn-prev"
@@ -320,7 +328,11 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
             <span className="align-middle d-sm-inline-block d-none">
               Previous
             </span>
+<<<<<<< HEAD
           </Button> */}
+=======
+          </Button>
+>>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
           <div>
             <Button color="primary" disabled={loading} type="submit">
               {loading ? (
