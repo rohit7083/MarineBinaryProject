@@ -1,12 +1,8 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toast } from "primereact/toast";
-import React, { useEffect, useRef, useState } from "react";
-<<<<<<< HEAD
-import { Plus, Trash2 } from "react-feather";
-=======
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Plus, Trash2 } from "react-feather";
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,32 +15,35 @@ import {
   Input,
   Spinner,
   Table,
+  UncontrolledAlert,
 } from "reactstrap";
 
-const Add_Specification = ({stepper , productData, setProductData, UpdateData }) => {
+const Add_Specification = ({ stepper, productData, setProductData, UpdateData }) => {
   const {
     control,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: { specifications: [{ name: "", value: "" }] },
   });
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "specifications",
   });
+
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const toast = useRef(null);
   const [err, setErr] = useState("");
+  const toast = useRef(null);
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     setProductData({
       ...data,
       ...productData,
     });
+
     const formData = new FormData();
     formData.append("name", productData?.name);
     formData.append("description", productData?.description);
@@ -56,64 +55,39 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
 
     productData?.variations?.forEach((variation, index) => {
       formData.append(`variations[${index}].mrp`, variation.mrp || "");
-      formData.append(
-        `variations[${index}].stockQty`,
-        variation.stockQty || ""
-      );
+      formData.append(`variations[${index}].stockQty`, variation.stockQty || "");
       formData.append(`variations[${index}].quantity`, variation.qty || "");
       formData.append(`variations[${index}].unit`, variation.unit || "");
-      formData.append(
-        `variations[${index}].calAmount`,
-        variation.calcAmount || ""
-      );
-      formData.append(
-        `variations[${index}].finalAmount`,
-        variation.finalAmount || ""
-      );
+      formData.append(`variations[${index}].calAmount`, variation.calcAmount || "");
+      formData.append(`variations[${index}].finalAmount`, variation.finalAmount || "");
 
-      variation?.attributes?.map((x, i) => {
-        formData.append(
-          `variations[${index}].attributes[${i}].attributeName`,
-          x.attributeName || ""
-        );
-        formData.append(
-          `variations[${index}].attributes[${i}]  .value`,
-          x.value || ""
-        );
+      variation?.attributes?.forEach((x, i) => {
+        formData.append(`variations[${index}].attributes[${i}].attributeName`, x.attributeName || "");
+        formData.append(`variations[${index}].attributes[${i}].value`, x.value || "");
       });
 
-      variation?.images?.map((img, i) => {
-        formData.append(
-          `variations[${index}].variationImages[${i}].image`,
-          img || ""
-        );
+      variation?.images?.forEach((img, i) => {
+        formData.append(`variations[${index}].variationImages[${i}].image`, img || "");
       });
     });
+
     if (data?.specifications) {
-      data?.specifications?.forEach((specification, index) => {
-        formData.append(
-          `specifications[${index}].specKey`,
-          specification.name || ""
-        );
-        formData.append(
-          `specifications[${index}].specValue`,
-          specification.value || ""
-        );
+      data.specifications.forEach((specification, index) => {
+        formData.append(`specifications[${index}].specKey`, specification.name || "");
+        formData.append(`specifications[${index}].specValue`, specification.value || "");
       });
     }
-    console.log(data);
 
     try {
-      const specs = data?.specifications?.map((x, index) => ({
+      const specs = data?.specifications?.map((x) => ({
         specKey: x?.name,
         specValue: x?.value,
       }));
 
       setLoading(true);
+
       if (UpdateData) {
         const res = await useJwt.updateProductSpecification(data?.uid, specs);
-        console.log(res);
-
         if (res?.status === 200) {
           toast.current.show({
             severity: "success",
@@ -121,14 +95,12 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
             detail: "Product Specifications Updated Successfully.",
             life: 2000,
           });
-          setTimeout(() => {
-            navigate("/dashboard/pos/product_management");
-          }, 1999);
+          setTimeout(() => navigate("/dashboard/pos/product_management"), 1999);
         } else {
           toast.current.show({
             severity: "error",
             summary: "Failed",
-            detail: "Product Specifications Updated  Failed.",
+            detail: "Product Specifications Update Failed.",
             life: 2000,
           });
         }
@@ -138,12 +110,10 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
           toast.current.show({
             severity: "success",
             summary: "Successfully",
-            detail: "Product Specification Add Successfully.",
+            detail: "Product Specification Added Successfully.",
             life: 2000,
           });
-          setTimeout(() => {
-            navigate("/dashboard/pos/product_management");
-          }, 1999);
+          setTimeout(() => navigate("/dashboard/pos/product_management"), 1999);
         } else {
           toast.current.show({
             severity: "error",
@@ -156,10 +126,7 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
     } catch (error) {
       console.error(error);
       if (error.response) {
-        const errMsz =
-          error?.response?.data?.content ||
-          "Please check all fields and try again ";
-        setErr(errMsz);
+        setErr(error?.response?.data?.content || "Please check all fields and try again");
       }
     } finally {
       setLoading(false);
@@ -170,7 +137,6 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
     if (UpdateData) {
       reset({
         ...UpdateData,
-
         specifications: UpdateData.specifications?.map((s) => ({
           name: s.specKey,
           value: s.specValue,
@@ -190,20 +156,17 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
           </CardTitle>
         </CardHeader>
 
-        {/* Table */}
         <Card className="border-0 shadow-sm rounded-4">
           {err && (
-            <React.Fragment>
-              <UncontrolledAlert color="danger">
-                <div className="alert-body">
-                  <span className="text-danger fw-bold">
-                    <strong>Error :</strong>
-                    {err}
-                  </span>
-                </div>
-              </UncontrolledAlert>
-            </React.Fragment>
+            <UncontrolledAlert color="danger">
+              <div className="alert-body">
+                <span className="text-danger fw-bold">
+                  <strong>Error :</strong> {err}
+                </span>
+              </div>
+            </UncontrolledAlert>
           )}
+
           <Table responsive bordered hover className="align-middle mb-0">
             <thead className="bg-light text-secondary fw-semibold">
               <tr>
@@ -215,7 +178,7 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
               </tr>
             </thead>
             <tbody>
-              <AnimatePresence component="tbody">
+              <AnimatePresence>
                 {fields.map((item, index) => (
                   <motion.tr
                     key={item.id}
@@ -242,8 +205,6 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
                             placeholder="e.g. Material"
                             invalid={!!errors?.specifications?.[index]?.name}
                             {...field}
-                            // bsSize="sm"
-                            // className="rounded-2"
                           />
                         )}
                       />
@@ -254,7 +215,6 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
                       )}
                     </td>
 
-                    {/* Specification Value */}
                     <td>
                       <Controller
                         control={control}
@@ -272,7 +232,6 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
                             placeholder="e.g. Cotton"
                             invalid={!!errors?.specifications?.[index]?.value}
                             {...field}
-                            // bsSize="sm"
                             className="rounded-2"
                           />
                         )}
@@ -284,7 +243,6 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
                       )}
                     </td>
 
-                    {/* Remove Button */}
                     <td className="text-center">
                       <Button
                         color="danger"
@@ -302,7 +260,6 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
             </tbody>
           </Table>
 
-          {/* Add Row Button */}
           <div className="d-flex justify-content-center p-3">
             <Button
               color="primary"
@@ -313,32 +270,23 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
             </Button>
           </div>
         </Card>
+
         <div className="d-flex justify-content-between align-items-center mt-3">
-<<<<<<< HEAD
-          {/* <Button
-=======
           <Button
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
             type="button"
             color="primary"
             className="btn-prev"
             onClick={() => stepper.previous()}
           >
             <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
-            <span className="align-middle d-sm-inline-block d-none">
-              Previous
-            </span>
-<<<<<<< HEAD
-          </Button> */}
-=======
+            <span className="align-middle d-sm-inline-block d-none">Previous</span>
           </Button>
->>>>>>> b40eb7d6465de552b87e1269a4f61506fe5dfd5b
+
           <div>
             <Button color="primary" disabled={loading} type="submit">
               {loading ? (
                 <>
-                  {" "}
-                  Loading.. <Spinner size="sm" />{" "}
+                  Loading.. <Spinner size="sm" />
                 </>
               ) : (
                 <>Next</>
@@ -356,7 +304,7 @@ const Add_Specification = ({stepper , productData, setProductData, UpdateData })
           </div>
         </div>
       </Form>
-      {/* Custom Styling */}
+
       <style jsx>{`
         .editable-row:hover {
           background: #f9fbff !important;
