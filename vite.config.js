@@ -7,7 +7,7 @@ import { defineConfig } from 'vite'
 
 export default () => {
   return defineConfig({
-    // base: '/crm/marine-resort/',
+    base: '/crm/marine-resort/',
     plugins: [react()],
 
     define: {
