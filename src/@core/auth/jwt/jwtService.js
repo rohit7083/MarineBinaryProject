@@ -667,7 +667,6 @@
 //     return axios.post(`${this.jwtConfig.addStocks}${uid}`, ...args);
 //   }
 
-
 //     getAllProduct() {
 //     return axios.get(`${this.jwtConfig.getAllProduct}`);
 //   }
@@ -676,7 +675,7 @@
 //         return axios.get(`${this.jwtConfig.getImage}${uid}`);
 
 //   }
-  
+
 //   // refreshToken() {
 //   //   return axios.post(this.jwtConfig.refreshEndpoint, {
 //   //     refreshToken: this.getRefreshToken(),
@@ -696,17 +695,13 @@
 //   }
 // }
 
-
-
-
-
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
-// gandu rohit 
+// gandu rohit
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -1369,17 +1364,15 @@ export default class JwtService {
     return axios.post(`${this.jwtConfig.addStocks}${uid}`, ...args);
   }
 
-
-    getAllProduct() {
+  getAllProduct() {
     return axios.get(`${this.jwtConfig.getAllProduct}`);
   }
 
-  getImage(uid){
-        return axios.get(`${this.jwtConfig.getImage}${uid}`);
-
+  getImage(uid) {
+    return axios.get(`${this.jwtConfig.getImage}${uid}`);
   }
 
-   // create customer 
+  // create customer
   CreateNewCustomer(...args) {
     return axios.post(this.jwtConfig.addNewCustomerEndPoint, ...args);
   }
@@ -1388,7 +1381,9 @@ export default class JwtService {
     return axios.get(this.jwtConfig.getAllCustomer);
   }
 
-  
+  getWalkinCustomer() {
+    return axios.get(this.jwtConfig.getWalkinCustomer);
+  }
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),
@@ -1406,6 +1401,7 @@ export default class JwtService {
       throw error;
     }
   }
+<<<<<<< HEAD
 
 
   // Rent Roll Services 
@@ -1418,4 +1414,6 @@ export default class JwtService {
 
 
  
+=======
+>>>>>>> 5e656377d1e0f7f13dc04d576cb96ab9661f296e
 }

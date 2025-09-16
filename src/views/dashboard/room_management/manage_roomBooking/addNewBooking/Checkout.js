@@ -93,8 +93,8 @@ const Checkout = () => {
   // ** Hook
   const location = useLocation();
   const state = location.state;
-  console.log("location firstr ",location);
-  
+  console.log("location firstr ", location);
+
   const deta = state?.alldata;
   // ** Function to toggle Offcanvas
   const toggleForm = () => setIsOpenForm(!isOpenForm);
@@ -211,8 +211,8 @@ const Checkout = () => {
           resAlldata: state,
           roomUid: res?.data?.bookingId,
           finalAmount: finalPayment,
-         extraRoomMode: state?.extraRoomMode,
-         uidOfEvent:state?.uidOfEvent,
+          extraRoomMode: state?.extraRoomMode,
+          uidOfEvent: state?.uidOfEvent,
         },
       });
     } catch (error) {
@@ -327,72 +327,73 @@ const Checkout = () => {
                     className="amount-payable checkout-options"
                     style={{ maxWidth: "400px", margin: "auto" }}
                   >
-                    {!state?.extraRoomMode && (<>
-
-                    <CardTitle tag="h4">
-                      {" "}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="1em"
-                        height="1em"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z"
-                        ></path>
-                        <path
-                          fill="currentColor"
-                          d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z"
-                        ></path>
-                        <circle
-                          cx="7.25"
-                          cy="4.25"
-                          r="1.25"
-                          fill="currentColor"
-                        ></circle>
-                      </svg>{" "}
-                      Discount
-                    </CardTitle>
-                    <Col className="mb-1">
-                      <Label>
-                        <Controller
-                          name="discount"
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              {...field}
-                              type="checkbox"
-                              disabled={verify}
-                              checked={field.value}
-                            />
-                          )}
-                        />{" "}
-                        Apply discount?
-                      </Label>
-                    </Col>
-                    {watch("discount") === true && (
+                    {!state?.extraRoomMode && (
                       <>
-                        <OtpGenerate
-                          accessTokenotp={accessTokenotp}
-                          setAccessTokenOtp={setAccessTokenOtp}
-                          setShowModal={setShowModal}
-                          showModal={showModal}
-                          mode={mode}
-                          setMode={setMode}
-                          setValueInParent={setValue}
-                          alldata={deta}
-                          searchId={state?.searchId}
-                          setVerify={setVerify}
-                          verify={verify}
-                          discountAmt={discountAmt}
-                          setDiscountAmt={setDiscountAmt}
-                        />
+                        <CardTitle tag="h4">
+                          {" "}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            height="1em"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M12.79 21L3 11.21v2c0 .53.21 1.04.59 1.41l7.79 7.79c.78.78 2.05.78 2.83 0l6.21-6.21c.78-.78.78-2.05 0-2.83z"
+                            ></path>
+                            <path
+                              fill="currentColor"
+                              d="M11.38 17.41c.39.39.9.59 1.41.59s1.02-.2 1.41-.59l6.21-6.21c.78-.78.78-2.05 0-2.83L12.62.58C12.25.21 11.74 0 11.21 0H5C3.9 0 3 .9 3 2v6.21c0 .53.21 1.04.59 1.41zM5 2h6.21L19 9.79L12.79 16L5 8.21z"
+                            ></path>
+                            <circle
+                              cx="7.25"
+                              cy="4.25"
+                              r="1.25"
+                              fill="currentColor"
+                            ></circle>
+                          </svg>{" "}
+                          Discount
+                        </CardTitle>
+                        <Col className="mb-1">
+                          <Label>
+                            <Controller
+                              name="discount"
+                              control={control}
+                              render={({ field }) => (
+                                <Input
+                                  {...field}
+                                  type="checkbox"
+                                  disabled={verify}
+                                  checked={field.value}
+                                />
+                              )}
+                            />{" "}
+                            Apply discount?
+                          </Label>
+                        </Col>
+                        {watch("discount") === true && (
+                          <>
+                            <OtpGenerate
+                              accessTokenotp={accessTokenotp}
+                              setAccessTokenOtp={setAccessTokenOtp}
+                              setShowModal={setShowModal}
+                              showModal={showModal}
+                              mode={mode}
+                              setMode={setMode}
+                              setValueInParent={setValue}
+                              alldata={deta}
+                              searchId={state?.searchId}
+                              setVerify={setVerify}
+                              verify={verify}
+                              discountAmt={discountAmt}
+                              setDiscountAmt={setDiscountAmt}
+                            />
+                          </>
+                        )}
+
+                        <hr />
                       </>
                     )}
-
-                    <hr />
-                     </>)}
                     <CardTitle tag="h4">Price Details</CardTitle>
                     <div
                       className="amount-payable checkout-options"
@@ -467,8 +468,6 @@ const Checkout = () => {
               </CardBody>
             </Card>
           </Col>
-
-         
         </Row>
         <Button type="submit" color="primary" className="btn-next">
           Next
