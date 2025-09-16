@@ -139,9 +139,6 @@
 
 // export default Header;
 
-
-
-
 import useJwt from "@src/auth/jwt/useJwt";
 import { selectThemeColors } from "@utils";
 import React, { Fragment, useEffect, useState } from "react";
@@ -162,7 +159,7 @@ import {
   ModalHeader,
   Row,
   Spinner,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 import ProductHeader from "./ProductsHeader";
 
@@ -178,8 +175,8 @@ function Header() {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [filteredPhoneOptions, setFilteredPhoneOptions] = useState([]);
   const [customers, setCustomers] = useState([]);
-  const [selectedName, setSelectedName] = useState('');
-  const [selectedNumber, setSelectedNumber] = useState('');
+  const [selectedName, setSelectedName] = useState("");
+  const [selectedNumber, setSelectedNumber] = useState("");
   const [customerOptions, setCustomerOptions] = useState([]);
   const [phoneOptions, setPhoneOptions] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
@@ -222,16 +219,16 @@ function Header() {
   const prepareCustomerOptions = (customersData) => {
     if (!customersData || customersData.length === 0) return;
 
-    const nameOptions = customersData.map(customer => ({
+    const nameOptions = customersData.map((customer) => ({
       value: customer.uid,
       label: `${customer.firstName} ${customer.lastName}`.trim(),
-      customerData: customer
+      customerData: customer,
     }));
 
-    const phoneOptions = customersData.map(customer => ({
+    const phoneOptions = customersData.map((customer) => ({
       value: customer.uid,
       label: customer.phoneNumber,
-      customerData: customer
+      customerData: customer,
     }));
 
     setCustomerOptions(nameOptions);
@@ -241,15 +238,15 @@ function Header() {
   const fetchCustomers = async () => {
     try {
       const res = await useJwt.getAllCustomers();
-      console.log('fetching data from the user table ', res);
-      
+      console.log("fetching data from the user table ", res);
+
       if (res.data && res.data.content && res.data.content.result) {
         const customersData = res.data.content.result;
         setCustomers(customersData);
         prepareCustomerOptions(customersData);
       }
     } catch (err) {
-      console.error('Error fetching customers:', err);
+      console.error("Error fetching customers:", err);
     }
   };
 
@@ -257,7 +254,7 @@ function Header() {
     setHeaderError("");
 
     let formattedPhoneNumber = data.phoneNumber;
-    if (formattedPhoneNumber && !formattedPhoneNumber.startsWith('+91')) {
+    if (formattedPhoneNumber && !formattedPhoneNumber.startsWith("+91")) {
       formattedPhoneNumber = `+91-${formattedPhoneNumber}`;
     }
 
@@ -265,7 +262,7 @@ function Header() {
       firstName: data.firstName,
       lastName: data.lastName,
       phoneNumber: formattedPhoneNumber,
-      emailId: data.emailId || "", 
+      emailId: data.emailId || "",
       address: data.address || "",
       city: data.city,
       state: data.state,
@@ -279,8 +276,8 @@ function Header() {
     try {
       setLoading(true);
       const res = await useJwt.CreateNewCustomer(payload);
-      console.log('✅ Customer added successfully:', res);
-      
+      console.log("✅ Customer added successfully:", res);
+
       setShowModal(false);
       modalReset({
         firstName: "",
@@ -293,11 +290,11 @@ function Header() {
         country: "India",
         pinCode: "",
       });
-      
+
       fetchCustomers();
     } catch (error) {
       console.error("❌ API Error:", error);
-      
+
       if (error.response) {
         const errorKeys = error?.response?.data?.content;
         console.error("❌ Error Content:", errorKeys);
@@ -338,9 +335,9 @@ function Header() {
     if (selectedOption) {
       const number = selectedOption.label;
       setSelectedNumber(number);
-      console.log('Selected Mobile Number:', number);
+      console.log("Selected Mobile Number:", number);
     } else {
-      setSelectedNumber('');
+      setSelectedNumber("");
     }
   };
 
@@ -350,17 +347,20 @@ function Header() {
       setSelectedName(fullName);
 
       const filteredPhones = customers
-        .filter(customer => `${customer.firstName} ${customer.lastName}`.trim() === fullName)
-        .map(customer => ({
+        .filter(
+          (customer) =>
+            `${customer.firstName} ${customer.lastName}`.trim() === fullName
+        )
+        .map((customer) => ({
           value: customer.uid,
           label: customer.phoneNumber,
           customerData: customer,
         }));
 
       setFilteredPhoneOptions(filteredPhones);
-      console.log('Filtered phone options:', filteredPhones);
+      console.log("Filtered phone options:", filteredPhones);
     } else {
-      setSelectedName('');
+      setSelectedName("");
       setFilteredPhoneOptions([]);
     }
   };
@@ -369,7 +369,7 @@ function Header() {
     let filtered = customers;
 
     if (selectedNumber) {
-      filtered = customers.filter(c => c.phoneNumber === selectedNumber);
+      filtered = customers.filter((c) => c.phoneNumber === selectedNumber);
 
       if (filtered.length === 1) {
         const nameOption = {
@@ -379,7 +379,7 @@ function Header() {
         };
         setCustomerOptions([nameOption]);
       } else if (filtered.length > 1) {
-        const nameOptions = filtered.map(c => ({
+        const nameOptions = filtered.map((c) => ({
           value: c.uid,
           label: `${c.firstName} ${c.lastName}`.trim(),
           customerData: c,
@@ -390,10 +390,10 @@ function Header() {
 
     if (selectedName) {
       filtered = customers.filter(
-        c => `${c.firstName} ${c.lastName}`.trim() === selectedName
+        (c) => `${c.firstName} ${c.lastName}`.trim() === selectedName
       );
 
-      const phoneOpts = filtered.map(c => ({
+      const phoneOpts = filtered.map((c) => ({
         value: c.uid,
         label: c.phoneNumber,
         customerData: c,
@@ -403,13 +403,13 @@ function Header() {
     }
 
     if (!selectedName && !selectedNumber) {
-      const names = customers.map(c => ({
+      const names = customers.map((c) => ({
         value: c.uid,
         label: `${c.firstName} ${c.lastName}`.trim(),
         customerData: c,
       }));
 
-      const phones = customers.map(c => ({
+      const phones = customers.map((c) => ({
         value: c.uid,
         label: c.phoneNumber,
         customerData: c,
@@ -428,6 +428,10 @@ function Header() {
     }
   }, [selectedName, selectedNumber, customers]);
 
+
+  const handleWalkin=()=>{
+    
+  }
 
   return (
     <Fragment>
@@ -475,34 +479,41 @@ function Header() {
                       />
                     </Col> */}
 
-  <Col className="mb-1" md="6" sm="12">
-    <Label className="form-label">By Contact No</Label>
-    <Select
-      theme={selectThemeColors}
-      className="react-select"
-      classNamePrefix="select"
-      options={phoneOptions}
-      isClearable={true}
-      placeholder="Select phone number..."
-      onChange={handleNumberChange}
-      value={phoneOptions.find(opt => opt.label === selectedNumber) || null}
-    />
-  </Col>
+                    <Col className="mb-1" md="6" sm="12">
+                      <Label className="form-label">By Contact No</Label>
+                      <Select
+                        theme={selectThemeColors}
+                        className="react-select"
+                        classNamePrefix="select"
+                        options={phoneOptions}
+                        isClearable={true}
+                        placeholder="Select phone number..."
+                        onChange={handleNumberChange}
+                        value={
+                          phoneOptions.find(
+                            (opt) => opt.label === selectedNumber
+                          ) || null
+                        }
+                      />
+                    </Col>
 
-  <Col className="mb-1" md="6" sm="12">
-    <Label className="form-label">By Customer Names</Label>
-    <Select
-      theme={selectThemeColors}
-      className="react-select"
-      classNamePrefix="select"
-      options={customerOptions}
-      isClearable={true}
-      placeholder="Select customer name..."
-      onChange={handleNameChange}
-      value={customerOptions.find(opt => opt.label === selectedName) || null}
-    />
-  </Col>
-
+                    <Col className="mb-1" md="6" sm="12">
+                      <Label className="form-label">By Customer Names</Label>
+                      <Select
+                        theme={selectThemeColors}
+                        className="react-select"
+                        classNamePrefix="select"
+                        options={customerOptions}
+                        isClearable={true}
+                        placeholder="Select customer name..."
+                        onChange={handleNameChange}
+                        value={
+                          customerOptions.find(
+                            (opt) => opt.label === selectedName
+                          ) || null
+                        }
+                      />
+                    </Col>
                   </Row>
                 </Col>
 
@@ -521,18 +532,20 @@ function Header() {
                       size="sm"
                       style={{ width: "150px" }}
                       className=""
-                      onClick={toggleModal}
+                      onClick={(e) => {
+                        handleWalkin();
+                      }}
                     >
                       Add Customer
                     </Button>
-                    {/* <Button
+                    <Button
                       color="primary"
                       size="sm"
                       style={{ width: "150px" }}
                       className="mt-1"
                     >
                       Walk-In Customer
-                    </Button> */}
+                    </Button>
                   </div>
                 </Col>
               </Row>
@@ -541,19 +554,20 @@ function Header() {
         </Col>
 
         <Col md="12">
-         <ProductHeader selectedCustomer={selectedCustomer} />
+          <ProductHeader selectedCustomer={selectedCustomer} />
         </Col>
       </Row>
 
-      {/* Customer Modal */}
       <Modal
         isOpen={showModal}
         toggle={toggleModal}
         className="modal-dialog-centered"
         onClosed={() => modalReset()}
       >
-        <ModalHeader className="bg-transparent" toggle={toggleModal}>
-        </ModalHeader>
+        <ModalHeader
+          className="bg-transparent"
+          toggle={toggleModal}
+        ></ModalHeader>
 
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <h1 className="text-center mb-1">Add New Customer</h1>
@@ -595,7 +609,10 @@ function Header() {
                       placeholder="Enter first name"
                       invalid={!!modalErrors.firstName}
                       onChange={(e) => {
-                        const avoidSpecialChars = e.target.value.replace(/[^a-zA-Z ]/g, '');
+                        const avoidSpecialChars = e.target.value.replace(
+                          /[^a-zA-Z ]/g,
+                          ""
+                        );
                         field.onChange(avoidSpecialChars);
                       }}
                     />
@@ -630,7 +647,10 @@ function Header() {
                       placeholder="Enter last name"
                       invalid={!!modalErrors.lastName}
                       onChange={(e) => {
-                        const avoidSpecialChars = e.target.value.replace(/[^a-zA-Z ]/g, '');
+                        const avoidSpecialChars = e.target.value.replace(
+                          /[^a-zA-Z ]/g,
+                          ""
+                        );
                         field.onChange(avoidSpecialChars);
                       }}
                     />
@@ -666,7 +686,10 @@ function Header() {
                       invalid={!!modalErrors.phoneNumber}
                       maxLength={10}
                       onChange={(e) => {
-                        const avoidSpecialChars = e.target.value.replace(/[^0-9]/g, '');
+                        const avoidSpecialChars = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
                         field.onChange(avoidSpecialChars);
                       }}
                     />
@@ -758,7 +781,10 @@ function Header() {
                       placeholder="Enter city"
                       invalid={!!modalErrors.city}
                       onChange={(e) => {
-                        const avoidSpecialChars = e.target.value.replace(/[^a-zA-Z ]/g, '');
+                        const avoidSpecialChars = e.target.value.replace(
+                          /[^a-zA-Z ]/g,
+                          ""
+                        );
                         field.onChange(avoidSpecialChars);
                       }}
                     />
@@ -793,7 +819,10 @@ function Header() {
                       placeholder="Enter state"
                       invalid={!!modalErrors.state}
                       onChange={(e) => {
-                        const avoidSpecialChars = e.target.value.replace(/[^a-zA-Z ]/g, '');
+                        const avoidSpecialChars = e.target.value.replace(
+                          /[^a-zA-Z ]/g,
+                          ""
+                        );
                         field.onChange(avoidSpecialChars);
                       }}
                     />
@@ -856,7 +885,10 @@ function Header() {
                       invalid={!!modalErrors.pinCode}
                       maxLength={6}
                       onChange={(e) => {
-                        const avoidSpecialChars = e.target.value.replace(/[^0-9]/g, '');
+                        const avoidSpecialChars = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
                         field.onChange(avoidSpecialChars);
                       }}
                     />

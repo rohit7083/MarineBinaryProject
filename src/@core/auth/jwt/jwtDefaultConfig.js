@@ -173,43 +173,35 @@
 //   updateProductVariation:"/product/variations/",
 //   updateProductSpecification:"/product/specifications/",
 //   addStocks:'/productVariation/addStock/',
-  
 
 //   getImage:'/productVariationImage/sImages/file/',
 
-
-
-  
 // };
-
-
-
-
 
 // ** Auth Endpoints
 export default {
   //  loginEndpoint: '/jwt/login', //temp
   loginEndpoint: "/login",
- 
+
   registerEndpoint: "/jwt/register",
   refreshEndpoint: "/auth/refresh_token",
   logoutEndpoint: "/jwt/logout",
- 
+
   tokenType: "Bearer",
   // ** Admin Endpoint
   slipCategory: "/slipCategory/",
   slipCategoryGet: "/slipCategory",
- 
+
   slip: "/slip/",
   slipGet: "/slip",
   sVessel: "/sVessel/",
   sVesselGet: "/sVessel",
   retriveVessel: "/sVessel/",
   sMember: "/sMember/",
- 
+
   retriveMember: "/sMember/",
   UpdateMember: "/sMember/",
- 
+
   createPayment: "/sPayment/",
   // user  login
   checktoken: "/auth/user/check_token/",
@@ -227,69 +219,69 @@ export default {
   mobileOtp: "/auth/verify_accountForAuth/",
   status: "/googleAuthenticatorQR/status",
   sendOtp: "/auth/user/send_otp/",
- 
+
   // verify otp for cash payment
   otpForCash: "/sPayment/otpForCash",
   verifyCash: "/sPayment/verifyCash/",
   // verify Email and Login api
   verifyEmail: "/auth/verifyEmail",
   loginPassword: "/auth/login/",
- 
+
   //roles and permissions
   userpermissionPost: "/userpermission/",
   userpermission: "/userpermission",
- 
+
   permission: "/permission",
- 
+
   deleteRole: "/userpermission/",
   updateRole: "/userpermission/",
- 
+
   createUser: "/sub_user/",
   getallSubuser: "/sub_user",
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
- 
+
   getMemberDetails: "/auth/sPayment/decrypt-token?token=",
- 
+
   slipAssignmentGet: "/slipAssignmentGet",
   GenerateOtp: "/sPayment/generate",
   // verifyOTP: "/sPayment/verify/",
- 
+
   verifyOTP: "/sPayment/discount/",
- 
+
   slipDocument: "/sDocuments/",
   getSingleDocuments: "/sDocuments/slip/",
   updateDoc: "/sDocuments/",
   // Value of this property will be used as key to store JWT token in storage
   storageTokenKeyName: "accessToken",
   storageRefreshTokenKeyName: "refreshToken",
- 
+
   totalPayment: "/auth/sPayment/",
   //POS : Vender Management
- 
+
   addVender: "/vendor/",
   editvender: "/vendor/",
   deleteVender: "/vendor/",
   getAllVendor: "/vendor",
- 
+
   //pos: Tax
   productTax: "/productTax/",
   updateTax: "/productTax/",
   deleteTax: "/productTax/",
   getAlltax: "/productTax",
- 
+
   //add Category
   addProductCategory: "/productCategory/",
   getProductCategory: "/productCategory",
   editProductCategory: "/productCategory/",
   deleteProductCategory: `/productCategory/`,
- 
+
   //pos add producct
   addProduct: "/product/",
- 
+
   //get all vendor
   getVendor: "/vendor",
- 
+
   //parking pass add
   addPass: "/parkingPass/",
   editpass: "/parkingPass/",
@@ -297,10 +289,10 @@ export default {
   Delete: "/parkingPass/",
   GetMember: "/sMember",
   ParkingPayment: "/parkingPaymnet/payment",
- 
+
   guest: "/sMember/guest",
   memberpark: "/parkingPaymnet/allocation",
- 
+
   //Event and vendor management
   DeleteEtype: "/eventType/",
   EventType: "/eventType/",
@@ -319,16 +311,16 @@ export default {
   createEvent: "/events/",
   DeleteEvent: "/events/",
   UpdateEventAndPayment: "/event/complete-payment",
- 
+
   Parentvendor: "/vendorType/",
- 
+
   //payment
   GenerateOtp: "/sPayment/generate/discount",
   verifyOtp: "/sPayment/discount/",
   payment: "/event/payment",
- 
+
   //Room management
- 
+
   CreateRoomType: "/roomType/",
   CreateRoom: "/room/",
   getAllRoomTypes: "/roomType",
@@ -343,11 +335,11 @@ export default {
   //room Type Update and delete
   DeleteRoomType: "roomType/",
   UpdateRoomType: "roomType/",
- 
+
   ExtendDate: "/booking/extend-guest/",
- 
+
   ExtendDataUpdate: "/booking/extend",
- 
+
   //cancle event
   cancleEvent: "/events/cancel/",
   // cancle rooms
@@ -356,16 +348,14 @@ export default {
   addExtraRoom: "/events/addrooms/",
   getAllProduct: "/product",
   deleteProduct: "/product/",
-  updateProduct:'/product/products/',
-  updateProductVariation:"/product/variations/",
-  updateProductSpecification:"/product/specifications/",
-  addStocks:'/productVariation/addStock/',
-  getImage:'/productVariationImage/sImages/file/',
- 
+  updateProduct: "/product/products/",
+  updateProductVariation: "/product/variations/",
+  updateProductSpecification: "/product/specifications/",
+  addStocks: "/productVariation/addStock/",
+  getImage: "/productVariationImage/sImages/file/",
+
   //Customer
-  addNewCustomerEndPoint : '/customer/',
-  getAllCustomer : '/customer'
- 
+  addNewCustomerEndPoint: "/customer/",
+  getAllCustomer: "/customer",
+  getWalkinCustomer:'/customer/walkInCus',
 };
- 
- 
