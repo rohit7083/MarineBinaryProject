@@ -1,5 +1,5 @@
 // ** Icons Import
-import { HomeIcon } from "lucide-react";
+import { HomeIcon ,BookCopy ,  } from "lucide-react";
 import {
   Calendar,
   Circle,
@@ -307,6 +307,30 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/bookingListing",
       },
+    ],
+  },
+   {
+    id: "Rent Roll",
+    title: "Rent Roll",
+    icon: <BookCopy size={12} />,
+    navLink: "/rent_roll",
+    badge: "light-warning",
+
+    children: [
+      {
+        id: "View Slip",
+        title: "View  Rent Roll",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/rentroll/view_slip",
+      },
+      {
+        id: "Inverse Slip",
+        title: "Inverse Rent Roll",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/rentroll/inverse_slip",
+      },
+       
+      
     ],
   },
 ];

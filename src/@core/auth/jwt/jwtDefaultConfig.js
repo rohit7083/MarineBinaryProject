@@ -364,7 +364,11 @@ export default {
  
   //Customer
   addNewCustomerEndPoint : '/customer/',
-  getAllCustomer : '/customer'
+  getAllCustomer : '/customer',
+
+  //Rent Roll
+  viewRentRollEndpoint: '/slipRentRoll/rent-roll',
+   InversionRentRollEndpoint: '/slipRentRoll/inverse-rent-roll',
  
 };
  

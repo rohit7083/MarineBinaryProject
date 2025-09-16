@@ -3,7 +3,8 @@ import { Navigate } from "react-router-dom";
 import ParkingPassListing from "../../views/dashboard/parking_pass/index";
 import AddVTypes from "../../views/dashboard/pos/vendorManagement/vendorTypes/AddVTypes";
 import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
-
+import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index"
+import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index"
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
 );
@@ -506,6 +507,16 @@ export default [
     element: <AddProductIndex/>,
     path: "/dashboard/pos/product_management/addProduct_index",
   },
+
+  {
+    element: <ViewSlip />,
+    path: "/dashboard/rentroll/view_slip",
+  },
+  {
+    element: <InverSlip/>,
+    path: "/dashboard/rentroll/inverse_slip",
+  },
+
   
 
 ];

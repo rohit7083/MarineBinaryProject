@@ -1408,5 +1408,14 @@ export default class JwtService {
   }
 
 
+  // Rent Roll Services 
+  getViewRentRoll() {
+    return axios.get(this.jwtConfig.viewRentRollEndpoint);
+  }
+  getInversionRentRoll() {
+    return axios.get(this.jwtConfig.InversionRentRollEndpoint);
+  }
+
+
  
 }
