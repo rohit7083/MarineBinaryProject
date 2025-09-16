@@ -1401,7 +1401,6 @@ export default class JwtService {
       throw error;
     }
   }
-<<<<<<< HEAD
 
 
   // Rent Roll Services 
@@ -1414,6 +1413,4 @@ export default class JwtService {
 
 
  
-=======
->>>>>>> 5e656377d1e0f7f13dc04d576cb96ab9661f296e
 }
