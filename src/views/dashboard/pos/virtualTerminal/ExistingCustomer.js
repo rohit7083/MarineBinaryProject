@@ -1,29 +1,26 @@
-import { useForm, Controller } from 'react-hook-form'
 import { Toast } from "primereact/toast";
+import { Controller, useForm } from 'react-hook-form';
 
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardBody, 
-  Row, 
-  Col, 
-  Input, 
-  Form, 
-  Button, 
-  Label,
+import { selectThemeColors } from '@utils';
+import Cleave from 'cleave.js/react';
+import { useEffect, useRef, useState } from 'react';
+import Select from 'react-select';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
   InputGroup,
-  InputGroupText,
-  FormFeedback
-} from 'reactstrap'
-import Select from 'react-select'
-import Cleave from 'cleave.js/react'
-import { selectThemeColors } from '@utils'
-import { useEffect, useState  , useRef} from 'react'
-import CardDetail from "./CardDetail"
+  Label,
+  Row
+} from 'reactstrap';
 
 // ** Auth
-import useJwt from '@src/auth/jwt/useJwt'
+import useJwt from '@src/auth/jwt/useJwt';
 
 // ** Card Images (you'll need to import these or define the path)
 const cardsObj = {
@@ -526,11 +523,11 @@ setSelectedCustomer(null)
                         />
                       )}
                     />
-                    {cardType !== '' && cardType !== 'unknown' && (
+                    {/* {cardType !== '' && cardType !== 'unknown' && (
                       <InputGroupText className='cursor-pointer p-25'>
                         <img height='24' alt='card-type' src={cardsObj[cardType]} />
                       </InputGroupText>
-                    )}
+                    )} */}
                   </InputGroup>
                   {errors.newCardNumber && (
                     <FormFeedback className='d-block'>Please enter a valid card number</FormFeedback>
@@ -570,6 +567,13 @@ setSelectedCustomer(null)
                   <Controller
                     name='newCvv'
                     control={control}
+                    rules={{
+    required: "This field is required",
+    max: {
+      value: 2,
+      message: "Maximum value is 3"
+    }
+  }}
                     render={({ field }) => (
                       <Cleave
                         {...field}

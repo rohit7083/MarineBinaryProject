@@ -1,30 +1,28 @@
-import { useState ,useRef } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { selectThemeColors } from '@utils';
+import Cleave from 'cleave.js/react';
 import { Toast } from "primereact/toast";
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardBody, 
-  Row, 
-  Col, 
-  Input, 
-  Form, 
-  Button, 
-  Label,
+import { useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import Select from 'react-select';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
   InputGroup,
-  InputGroupText,
-  FormFeedback
-} from 'reactstrap'
-import Select from 'react-select'
-import Cleave from 'cleave.js/react'
-import { selectThemeColors } from '@utils'
+  Label,
+  Row
+} from 'reactstrap';
 
 // ** Auth
-import useJwt from "@src/auth/jwt/useJwt"
+import useJwt from "@src/auth/jwt/useJwt";
 
-import ExistingCustomer from "./ExistingCustomer"
-import WalkinCustomer from "./WalkinCustomer"
+import ExistingCustomer from "./ExistingCustomer";
+import WalkinCustomer from "./WalkinCustomer";
 
 // ** Card Images (you'll need to import these or define the path)
 const cardsObj = {
@@ -179,9 +177,7 @@ const MultipleColumnForm = () => {
   const sendToAPI = async (apiData) => {
     console.table(apiData);
     try {
-      {{
-        debugger
-      }}
+     
       setIsLoading(true)
       
      const response = await useJwt.NewCustomerInTerminal(apiData);
@@ -224,7 +220,7 @@ const MultipleColumnForm = () => {
       resetForm()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } finally {
-      {{debugger}}
+      
       setIsLoading(false)
     }
   }
@@ -904,9 +900,12 @@ const MultipleColumnForm = () => {
     name='cvv'
     control={control}
     rules={{
-      required: 'CVV is required',
-      pattern: { value: /^\d{3,4}$/, message: 'CVV must be 3 or 4 digits' }
-    }}
+    required: "This field is required",
+    max: {
+      value: 3,
+      message: "Maximum value is 3"
+    }
+  }}
     render={({ field }) => (
       <Cleave
         {...field}

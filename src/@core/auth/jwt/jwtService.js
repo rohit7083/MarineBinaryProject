@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
 // gandu rohit
 import Swal from "sweetalert2";
@@ -714,12 +714,11 @@ export default class JwtService {
   deleteCustomer(uid) {
     return axios.delete(`${this.jwtConfig.deleteCustomer}${uid}`);
   }
-getImages(uid) {
-  return axios.get(`${this.jwtConfig.getImages}${uid}`, {
-    responseType: "blob", // 👈 this tells Axios to treat response as binary
-  });
-}
-
+  getImages(uid) {
+    return axios.get(`${this.jwtConfig.getImages}${uid}`, {
+      responseType: "blob", // 👈 this tells Axios to treat response as binary
+    });
+  }
 
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
@@ -739,8 +738,7 @@ getImages(uid) {
     }
   }
 
-
-  // Rent Roll Services 
+  // Rent Roll Services
   getViewRentRoll() {
     return axios.get(this.jwtConfig.viewRentRollEndpoint);
   }
@@ -748,12 +746,11 @@ getImages(uid) {
     return axios.get(this.jwtConfig.InversionRentRollEndpoint);
   }
 
-  //Virtual Terminal 
+  //Virtual Terminal
   NewCustomerInTerminal(...args) {
     return axios.post(this.jwtConfig.virtualTerminalEndPoint, ...args);
   }
-getWalkinCustomers() {
+  getWalkinCustomers() {
     return axios.get(this.jwtConfig.getWalkinCustomerEndPoint);
   }
- 
 }

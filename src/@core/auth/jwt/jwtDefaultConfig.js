@@ -191,6 +191,12 @@ export default {
   getAllCustomer:'/customer',
 
   //get images of products
-  getImages:'/productVariationImage/sImages/file/'
-
+  getImages:'/productVariationImage/sImages/file/',
+ //rent Roll
+  viewRentRollEndpoint : '/slipRentRoll/rent-roll',
+ InversionRentRollEndpoint :'slipRentRoll/inverse-rent-roll',
+ 
+ //virtual Terminal
+  virtualTerminalEndPoint : '/virtualTerminal',
+  getWalkinCustomerEndPoint: '/customer/walkInCus',
 };

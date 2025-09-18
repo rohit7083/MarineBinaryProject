@@ -1,5 +1,5 @@
 // ** Icons Import
-import { HomeIcon ,BookCopy ,  } from "lucide-react";
+import { BookCopy, HomeIcon, } from "lucide-react";
 import {
   Calendar,
   Circle,
@@ -171,7 +171,7 @@ export default [
         id: "Point Of Sale ",
         title: "Point Of Sale ",
         icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/point_of_sale/",
+        navLink: "/dashboard/pos/point_of_sale/shop",
       },
       {
         id: "Virtual Terminal",

@@ -195,7 +195,6 @@ const ProductPage = ({
 
   // Inside your component
   const handleMakePayment = () => {
-  
     const selectedProducts = Object.values(cart);
     if (selectedProducts.length === 0) {
       toast.current.show({
@@ -210,8 +209,6 @@ const ProductPage = ({
     navigate("/dashboard/pos/point_of_sale/shop/PayementDetails", {
       state: { selectedProducts, selectedCust, uids, productIma },
     });
-
-
   };
 
   const handleAddToCart = async () => {
@@ -274,9 +271,9 @@ const ProductPage = ({
     }
   };
 
- useEffect(() => {
-  console.log("selectedCust:",selectedCust);
-}, [selectedCust]);
+  useEffect(() => {
+    console.log("selectedCust:", selectedCust);
+  }, [selectedCust]);
 
   return (
     <Fragment>
@@ -323,18 +320,17 @@ const ProductPage = ({
         </Col>
       </Row>
 
-     <div className="d-flex justify-content-end">
-  <Button
-    color="primary"
-    size="sm"
-    type="submit"
-    onClick={() => handleMakePayment()}
-    disabled={!selectedCust}
-  >
-    Make Payment
-  </Button>
-</div>
-
+      <div className="d-flex justify-content-end">
+        <Button
+          color="primary"
+          size="sm"
+          type="submit"
+          onClick={() => handleMakePayment()}
+          disabled={!selectedCust}
+        >
+          Make Payment
+        </Button>
+      </div>
 
       <Modal
         isOpen={modalOpen}
