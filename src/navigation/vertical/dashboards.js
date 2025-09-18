@@ -171,7 +171,13 @@ export default [
         id: "Point Of Sale ",
         title: "Point Of Sale ",
         icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/point_of_sale/shop",
+        navLink: "/dashboard/pos/point_of_sale/",
+      },
+      {
+        id: "Virtual Terminal",
+        title: "Virtual Terminal",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/pos/virtualTerminal",
       },
       // {
       //   id: "Cusstomer manage",

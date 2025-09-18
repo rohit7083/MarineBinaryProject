@@ -40,7 +40,7 @@ const DynamicTable = () => {
     )
   }
 
-  // ** Static Total Paid Column
+  // ** Static Total Paid Column (Only Success Payments)
   const totalPaidColumn = {
     sortable: true,
     name: 'Total Paid',
@@ -50,6 +50,20 @@ const DynamicTable = () => {
     cell: row => (
       <div className={row.isMonthTotalRow ? 'text-center fw-bold border-top' : 'text-center'}>
         {row.totalPaid ? `$${row.totalPaid.toLocaleString()}` : '$0'}
+      </div>
+    )
+  }
+
+  // ** Static Expected Amount Column (Success + Pending Payments)
+  const expectedAmountColumn = {
+    sortable: true,
+    name: 'Expected Amount',
+    minWidth: '150px',
+    center: true,
+    selector: row => row.expectedAmount || 0,
+    cell: row => (
+      <div className={row.isMonthTotalRow ? 'text-center fw-bold border-top' : 'text-center'}>
+        {row.expectedAmount ? `$${row.expectedAmount.toLocaleString()}` : '$0'}
       </div>
     )
   }
@@ -66,6 +80,33 @@ const DynamicTable = () => {
         {row.pendingAmount ? `$${row.pendingAmount.toLocaleString()}` : '$0'}
       </div>
     )
+  }
+
+  // ** Helper function to calculate amounts for a slip
+  const calculateSlipAmounts = (slip) => {
+    let totalPaid = 0 // Only success payments
+    let expectedAmount = 0 // Success + Pending payments
+    let pendingAmount = 0 // Only pending payments
+
+    if (slip.payments && Array.isArray(slip.payments)) {
+      slip.payments.forEach(payment => {
+        const amount = payment.amountPaid || 0
+        
+        if (payment.paymentStatus === 'success') {
+          totalPaid += amount
+          expectedAmount += amount
+        } else if (payment.paymentStatus === 'pending') {
+          pendingAmount += amount
+          expectedAmount += amount
+        }
+      })
+    }
+
+    return {
+      totalPaid,
+      expectedAmount,
+      pendingAmount
+    }
   }
 
   // ** Helper function to sort months chronologically (for proper sorting)
@@ -94,6 +135,7 @@ const DynamicTable = () => {
   const calculateCurrentPageTotals = (currentPageData) => {
     const monthTotals = {}
     let totalPaidSum = 0
+    let expectedAmountSum = 0
     let totalPendingSum = 0
 
     // Initialize month totals
@@ -105,6 +147,7 @@ const DynamicTable = () => {
     currentPageData.forEach(slip => {
       if (!slip.isMonthTotalRow) {
         totalPaidSum += slip.totalPaid || 0
+        expectedAmountSum += slip.expectedAmount || 0
         totalPendingSum += slip.pendingAmount || 0
 
         // Calculate month-wise totals
@@ -122,6 +165,7 @@ const DynamicTable = () => {
     return {
       monthTotals,
       totalPaidSum,
+      expectedAmountSum,
       totalPendingSum
     }
   }
@@ -134,6 +178,7 @@ const DynamicTable = () => {
       slipName: 'Month Total',
       isMonthTotalRow: true,
       totalPaid: totals.totalPaidSum,
+      expectedAmount: totals.expectedAmountSum,
       pendingAmount: totals.totalPendingSum
     }
 
@@ -149,6 +194,7 @@ const DynamicTable = () => {
   const calculateOverallTotals = (data) => {
     const monthTotals = {}
     let totalPaidSum = 0
+    let expectedAmountSum = 0
     let totalPendingSum = 0
 
     // Initialize month totals
@@ -160,6 +206,7 @@ const DynamicTable = () => {
     data.forEach(slip => {
       if (!slip.isMonthTotalRow) {
         totalPaidSum += slip.totalPaid || 0
+        expectedAmountSum += slip.expectedAmount || 0
         totalPendingSum += slip.pendingAmount || 0
 
         // Calculate month-wise totals
@@ -177,6 +224,7 @@ const DynamicTable = () => {
     return {
       monthTotals,
       totalPaidSum,
+      expectedAmountSum,
       totalPendingSum
     }
   }
@@ -196,6 +244,7 @@ const DynamicTable = () => {
             item.slipName,
             item.full_name,
             item.totalPaid?.toString(),
+            item.expectedAmount?.toString(),
             item.pendingAmount?.toString(),
             ...(item.payments || []).map(p => p.paymentMonth)
           ]
@@ -220,6 +269,7 @@ const DynamicTable = () => {
 
         // Add static columns
         row['Total Paid'] = slip.totalPaid || 0
+        row['Expected Amount'] = slip.expectedAmount || 0
         row['Pending Amount'] = slip.pendingAmount || 0
 
         return row
@@ -237,6 +287,7 @@ const DynamicTable = () => {
       })
 
       totalRow['Total Paid'] = overallTotals.totalPaidSum
+      totalRow['Expected Amount'] = overallTotals.expectedAmountSum
       totalRow['Pending Amount'] = overallTotals.totalPendingSum
 
       // Add total row to excel data
@@ -251,6 +302,7 @@ const DynamicTable = () => {
         { wch: 25 }, // Slip No./ Month
         ...paymentMonths.map(() => ({ wch: 15 })), // Dynamic month columns
         { wch: 15 }, // Total Paid
+        { wch: 15 }, // Expected Amount
         { wch: 15 }  // Pending Amount
       ]
       ws['!cols'] = colWidths
@@ -315,6 +367,17 @@ const DynamicTable = () => {
         
         console.log('Payment Months (Latest First):', months)
 
+        // Process slips to calculate amounts
+        const processedSlips = slips.map(slip => {
+          const amounts = calculateSlipAmounts(slip)
+          return {
+            ...slip,
+            totalPaid: amounts.totalPaid,
+            expectedAmount: amounts.expectedAmount,
+            pendingAmount: amounts.pendingAmount
+          }
+        })
+
         // Generate dynamic columns based on payment months
         const dynamicColumns = months.map(month => ({
           name: month,
@@ -360,15 +423,15 @@ const DynamicTable = () => {
         }))
 
         // Combine static column with dynamic columns and additional static columns
-        const finalColumns = [staticColumn, ...dynamicColumns, totalPaidColumn, pendingAmountColumn]
+        const finalColumns = [staticColumn, ...dynamicColumns, totalPaidColumn, expectedAmountColumn, pendingAmountColumn]
         
         setColumns(finalColumns)
-        setAllData(slips) // Store only actual slip data without month total row
-        setTotal(slips.length)
+        setAllData(processedSlips) // Store processed slip data
+        setTotal(processedSlips.length)
         
       } else {
         // If no data, show all columns but empty
-        const finalColumns = [staticColumn, totalPaidColumn, pendingAmountColumn]
+        const finalColumns = [staticColumn, totalPaidColumn, expectedAmountColumn, pendingAmountColumn]
         setColumns(finalColumns)
         setAllData([])
         setTotal(0)
@@ -377,7 +440,7 @@ const DynamicTable = () => {
     } catch (error) {
       console.error('Error fetching data:', error)
       // Set static columns even on error
-      const finalColumns = [staticColumn, totalPaidColumn, pendingAmountColumn]
+      const finalColumns = [staticColumn, totalPaidColumn, expectedAmountColumn, pendingAmountColumn]
       setColumns(finalColumns)
       setAllData([])
       setTotal(0)
@@ -400,6 +463,7 @@ const DynamicTable = () => {
           item.slipName,
           item.full_name,
           item.totalPaid?.toString(),
+          item.expectedAmount?.toString(),
           item.pendingAmount?.toString(),
           ...(item.payments || []).map(p => p.paymentMonth)
         ]

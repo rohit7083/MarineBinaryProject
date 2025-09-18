@@ -360,5 +360,11 @@ export default {
 
   //rent Roll 
   viewRentRollEndpoint : '/slipRentRoll/rent-roll',
- InversionRentRollEndpoint :'slipRentRoll/inverse-rent-roll'
+ InversionRentRollEndpoint :'slipRentRoll/inverse-rent-roll',
+
+ //virtual Terminal
+  virtualTerminalEndPoint : '/virtualTerminal',
+  getWalkinCustomerEndPoint: '/customer/walkInCus',
+
+ 
 };

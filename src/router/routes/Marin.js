@@ -5,6 +5,7 @@ import AddVTypes from "../../views/dashboard/pos/vendorManagement/vendorTypes/Ad
 import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index"
 import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index"
+import VirtualTerminal from "../../views/dashboard/pos/virtualTerminal/index"
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
 );
@@ -283,6 +284,10 @@ export default [
   {
     element: <PointOfSale />,
     path: "/dashboard/pos/point_of_sale/shop",
+  },
+  {
+    element: <VirtualTerminal />,
+    path: "/dashboard/pos/virtualTerminal",
   },
   {
     element: <QrPaymentStepTwo />,

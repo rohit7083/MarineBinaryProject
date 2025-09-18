@@ -1411,6 +1411,12 @@ export default class JwtService {
     return axios.get(this.jwtConfig.InversionRentRollEndpoint);
   }
 
-
+  //Virtual Terminal 
+  NewCustomerInTerminal(...args) {
+    return axios.post(this.jwtConfig.virtualTerminalEndPoint, ...args);
+  }
+getWalkinCustomers() {
+    return axios.get(this.jwtConfig.getWalkinCustomerEndPoint);
+  }
  
 }
