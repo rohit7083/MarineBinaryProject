@@ -63,15 +63,15 @@ function Header({selectedCustomer, setSelectedCustomer}) {
     formState: { errors: modalErrors },
   } = useForm({
     defaultValues: {
-      firstName: "Faizan",
-      lastName: "Shaikh",
-      phoneNumber: "8446334145",
-      emailId: "kndvi@gmail.com",
-      address: "nashik",
-      city: "Nashik",
-      state: "Maharashtra",
-      country: "India",
-      pinCode: "422003",
+      // firstName: "Faizan",
+      // lastName: "Shaikh",
+      // phoneNumber: "8446334145",
+      // emailId: "kndvi@gmail.com",
+      // address: "nashik",
+      // city: "Nashik",
+      // state: "Maharashtra",
+      // country: "India",
+      // pinCode: "422003",
     },
   });
 
