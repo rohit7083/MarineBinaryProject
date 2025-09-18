@@ -78,13 +78,13 @@ function Header({selectedCustomer, setSelectedCustomer}) {
   const prepareCustomerOptions = (customersData) => {
     if (!customersData || customersData.length === 0) return;
 
-    const nameOptions = customersData.map((customer) => ({
+    const nameOptions = customersData?.map((customer) => ({
       value: customer?.uid  || "",
       label: `${customer.firstName} ${customer.lastName}`.trim(),
       customerData: customer,
     }));
 
-    const phoneOptions = customersData.map((customer) => ({
+    const phoneOptions = customersData?.map((customer) => ({
       value: customer?.uid  || "",
       label: customer.phoneNumber,
       customerData: customer,
@@ -99,8 +99,8 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       const res = await useJwt.getAllCustomers();
       console.log("fetching data from the user table ", res);
 
-      if (res.data && res.data.content && res.data.content.result) {
-        const customersData = res.data.content.result;
+      if (res?.data && res?.data?.content && res?.data?.content?.result) {
+        const customersData = res?.data?.content?.result;
         setCustomers(customersData);
         prepareCustomerOptions(customersData);
       }
@@ -208,11 +208,11 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       const filteredPhones = customers
         .filter(
           (customer) =>
-            `${customer.firstName} ${customer.lastName}`.trim() === fullName
+            `${customer?.firstName} ${customer?.lastName}`.trim() === fullName
         )
         .map((customer) => ({
           value: customer?.uid  || "",
-          label: customer.phoneNumber,
+          label: customer?.phoneNumber,
           customerData: customer,
         }));
 
@@ -233,14 +233,14 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       if (filtered.length === 1) {
         const nameOption = {
           value: filtered[0]?.uid  || "",
-          label: `${filtered[0].firstName} ${filtered[0].lastName}`.trim(),
+          label: `${filtered[0]?.firstName} ${filtered[0]?.lastName}`.trim(),
           customerData: filtered[0],
         };
         setCustomerOptions([nameOption]);
       } else if (filtered.length > 1) {
-        const nameOptions = filtered.map((c) => ({
+        const nameOptions = filtered?.map((c) => ({
           value: c?.uid  || "",
-          label: `${c.firstName} ${c.lastName}`.trim(),
+          label: `${c?.firstName} ${c?.lastName}`.trim(),
           customerData: c,
         }));
         setCustomerOptions(nameOptions);
@@ -249,7 +249,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
 
     if (selectedName) {
       filtered = customers.filter(
-        (c) => `${c.firstName} ${c.lastName}`.trim() === selectedName
+        (c) => `${c?.firstName} ${c?.lastName}`.trim() === selectedName
       );
 
       const phoneOpts = filtered.map((c) => ({
@@ -262,13 +262,13 @@ function Header({selectedCustomer, setSelectedCustomer}) {
     }
 
     if (!selectedName && !selectedNumber) {
-      const names = customers.map((c) => ({
+      const names = customers?.map((c) => ({
         value: c?.uid  || "",
         label: `${c.firstName} ${c.lastName}`.trim(),
         customerData: c,
       }));
 
-      const phones = customers.map((c) => ({
+      const phones = customers?.map((c) => ({
         value: c?.uid || "",
         label: c.phoneNumber,
         customerData: c,
@@ -429,7 +429,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
         </Col>
 
         <Col md="12">
-          <ProductHeader selectedCustomer={selectedCustomer} />
+          <ProductHeader selectedCustomer={selectedCustomer || {}} />
         </Col>
       </Row>
 

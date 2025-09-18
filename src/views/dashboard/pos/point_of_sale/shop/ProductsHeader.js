@@ -60,7 +60,7 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
                 Customer Name:{" "}
                 <strong>
                   {selectedCustomer
-                    ? `${selectedCustomer.firstName} ${selectedCustomer.lastName}`
+                    ? `${selectedCustomer?.firstName} ${selectedCustomer?.lastName}`
                     : "N/A"}
                 </strong>
               </CardText>
@@ -72,7 +72,7 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
               <CardText>
                 Email:{" "}
                 <strong>
-                  {selectedCustomer ? selectedCustomer.emailId : "N/A"}
+                  {selectedCustomer ? selectedCustomer?.emailId : "N/A"}
                 </strong>
               </CardText>
             </Col>
@@ -83,7 +83,7 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
               <CardText>
                 Phone Number:{" "}
                 <strong>
-                  {selectedCustomer ? selectedCustomer.phoneNumber : "N/A"}
+                  {selectedCustomer ? selectedCustomer?.phoneNumber : "N/A"}
                 </strong>
               </CardText>
             </Col>

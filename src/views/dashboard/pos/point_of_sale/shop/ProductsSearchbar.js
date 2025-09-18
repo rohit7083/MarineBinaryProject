@@ -67,24 +67,45 @@ const ProductsSearchbar = (selectedCustomer) => {
     fetchTableData(1);
   }, []);
 
-  const filteredResults = tableData.results.filter((product) => {
-    const matchSearch = product.name
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
+  // const filteredResults = tableData.results.filter((product) => {
+  //   const matchSearch = product?.name
+  //     ?.toLowerCase()
+  //     .includes(searchTerm.toLowerCase());
 
+  //   const matchCategory =
+  //     selectedCategories.length === 0 || // show all if nothing selected
+  //     selectedCategories.some((sel) => {
+  //       if (!product?.categoryUid) return false;
+  //       if (typeof product?.categoryUid === "object") {
+  //         return product?.categoryUid?.id === sel.value;
+  //       }
+  //       return product?.categoryUid === sel.value;
+  //     });
+
+  //   return matchSearch && matchCategory;
+  // });
+
+
+  const filteredResults = tableData.results
+  .filter(Boolean) // remove null/undefined
+  .map(product => ({
+    ...product,
+    uid: product?.uid || "unknown",
+    categoryUid: product?.categoryUid || null,
+  }))
+  .filter(product => {
+    const matchSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchCategory =
-      selectedCategories.length === 0 || // show all if nothing selected
-      selectedCategories.some((sel) => {
+      selectedCategories.length === 0 ||
+      selectedCategories.some(sel => {
         if (!product.categoryUid) return false;
-        if (typeof product.categoryUid === "object") {
-          return product.categoryUid.id === sel.value;
-        }
+        if (typeof product.categoryUid === "object") return product.categoryUid.id === sel.value;
         return product.categoryUid === sel.value;
       });
-
     return matchSearch && matchCategory;
   });
 
+  
   const today = new Date().toISOString().split("T")[0];
 
   return (
@@ -149,7 +170,7 @@ const ProductsSearchbar = (selectedCustomer) => {
           page={page}
           tableData={{ ...tableData, results: filteredResults }}
           setTableData={setTableData}
-          selectedCustomer={selectedCustomer}
+          selectedCustomer={selectedCustomer || {}}
         />
       </CardBody>
     </Card>
