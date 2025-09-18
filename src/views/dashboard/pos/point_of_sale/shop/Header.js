@@ -1,143 +1,3 @@
-// import { selectThemeColors } from "@utils";
-// import { Fragment } from "react";
-// import { useForm } from "react-hook-form";
-// import Select from "react-select";
-
-// import { ArrowLeft } from "react-feather";
-// import { Button, Card, CardBody, CardTitle, Col, Label, Row } from "reactstrap";
-// import ProductHeader from "./ProductsHeader";
-
-// function Header() {
-//   const colourOptions = [
-//     { value: "ocean", label: "Ocean" },
-//     { value: "blue", label: "Blue" },
-//     { value: "purple", label: "Purple" },
-//     { value: "red", label: "Red" },
-//     { value: "orange", label: "Orange" },
-//   ];
-
-//   const {
-//     control,
-//     handleSubmit,
-//     setValue,
-//     watch,
-//     reset,
-//     register,
-//     formState: { errors },
-//   } = useForm({});
-//   return (
-//     <Fragment>
-//       <Row>
-//         <Col md="12">
-//           <Card className="round">
-//             <CardBody>
-//               <CardTitle tag="h4">
-//                 {" "}
-//                 <ArrowLeft
-//                   style={{
-//                     cursor: "pointer",
-//                     marginRight: "10px",
-//                     transition: "color 0.1s",
-//                   }}
-//                   onMouseEnter={(e) =>
-//                     (e.currentTarget.style.color = "#9289F3")
-//                   }
-//                   onMouseLeave={(e) =>
-//                     (e.currentTarget.style.color = "#6E6B7B")
-//                   }
-//                   onClick={() => window.history.back()}
-//                 />
-//                 Point Of Sale
-//               </CardTitle>
-//               <hr />
-
-//               <Row className="align-items-start">
-//                 {/* Left side: Title + Search Fields */}
-//                 <Col md="8">
-//                   <CardTitle tag="h4" className="mb-2">
-//                     Search Existing Customer
-//                   </CardTitle>
-
-//                   <Row>
-//                     <Col className="mb-1" md="4" sm="12">
-//                       <Label className="form-label">By Slip No</Label>
-//                       <Select
-//                         theme={selectThemeColors}
-//                         className="react-select"
-//                         classNamePrefix="select"
-//                         defaultValue={colourOptions[0]}
-//                         options={colourOptions}
-//                         isClearable={false}
-//                       />
-//                     </Col>
-
-//                     <Col className="mb-1" md="4" sm="12">
-//                       <Label className="form-label">By Contact No</Label>
-//                       <Select
-//                         theme={selectThemeColors}
-//                         className="react-select"
-//                         classNamePrefix="select"
-//                         defaultValue={colourOptions[0]}
-//                         options={colourOptions}
-//                         isClearable={false}
-//                       />
-//                     </Col>
-
-//                     <Col className="mb-1" md="4" sm="12">
-//                       <Label className="form-label">By Customer Name</Label>
-//                       <Select
-//                         theme={selectThemeColors}
-//                         className="react-select"
-//                         classNamePrefix="select"
-//                         defaultValue={colourOptions[0]}
-//                         options={colourOptions}
-//                         isClearable={false}
-//                       />
-//                     </Col>
-//                   </Row>
-//                 </Col>
-
-//                 {/* Right side: Buttons */}
-//                 <Col
-//                   md="4"
-//                   className="text-center"
-//                   style={{ borderLeft: "1px solid gray" }}
-//                 >
-//                   <CardTitle tag="h4" className="">
-//                     Add New Customer
-//                   </CardTitle>
-
-//                   <Button
-//                     color="primary"
-//                     size="sm"
-//                     style={{ width: "150px" }}
-//                     className=" "
-//                   >
-//                     Add Customer
-//                   </Button>
-//                   <Button
-//                     color="primary"
-//                     size="sm"
-//                     style={{ width: "150px" }}
-//                     className=" mt-1"
-//                   >
-//                     Walk-In Customer
-//                   </Button>
-//                 </Col>
-//               </Row>
-//             </CardBody>
-//           </Card>
-//         </Col>
-
-//         <Col md="12">
-//           <ProductHeader />
-//         </Col>
-//       </Row>
-//     </Fragment>
-//   );
-// }
-
-// export default Header;
 
 import useJwt from "@src/auth/jwt/useJwt";
 import { selectThemeColors } from "@utils";
@@ -163,7 +23,7 @@ import {
 } from "reactstrap";
 import ProductHeader from "./ProductsHeader";
 
-function Header() {
+function Header({selectedCustomer, setSelectedCustomer}) {
   const colourOptions = [
     { value: "ocean", label: "Ocean" },
     { value: "blue", label: "Blue" },
@@ -172,7 +32,6 @@ function Header() {
     { value: "orange", label: "Orange" },
   ];
 
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [filteredPhoneOptions, setFilteredPhoneOptions] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [selectedName, setSelectedName] = useState("");
@@ -194,7 +53,7 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [headerError, setHeaderError] = useState(null);
-
+  const [walkiLoading, setWalkinLoading] = useState(false);
   const {
     reset: modalReset,
     control: modalControl,
@@ -428,10 +287,21 @@ function Header() {
     }
   }, [selectedName, selectedNumber, customers]);
 
+  const handleWalkin = async () => {
+    try {
+      setWalkinLoading(true);
+      const res = await useJwt.getWalkinCustomer();
+      console.log(res);
 
-  const handleWalkin=()=>{
-    
-  }
+      const walkinData = res?.data;
+      setSelectedCustomer(walkinData);
+      setCustomers;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setWalkinLoading(false);
+    }
+  };
 
   return (
     <Fragment>
@@ -465,7 +335,7 @@ function Header() {
                   <CardTitle tag="h4" className="mb-2">
                     Search Existing Customer
                   </CardTitle>
-{/* hdey */}
+                  {/* hdey */}
                   <Row>
                     {/* <Col className="mb-1" md="4" sm="12">
                       <Label className="form-label">By Slip No</Label>
@@ -510,14 +380,13 @@ function Header() {
                         value={
                           customerOptions.find(
                             (opt) => opt.label === selectedName
-                          ) || null
+                          ) || null  
                         }
                       />
                     </Col>
                   </Row>
                 </Col>
 
-                {/* Right side: Buttons */}
                 <Col
                   md="4"
                   className="text-center"
@@ -532,9 +401,7 @@ function Header() {
                       size="sm"
                       style={{ width: "150px" }}
                       className=""
-                      onClick={(e) => {
-                        handleWalkin();
-                      }}
+                      onClick={toggleModal}
                     >
                       Add Customer
                     </Button>
@@ -543,8 +410,16 @@ function Header() {
                       size="sm"
                       style={{ width: "150px" }}
                       className="mt-1"
+                      onClick={(e) => handleWalkin()}
+                      disabled={walkiLoading}
                     >
-                      Walk-In Customer
+                      {walkiLoading ? (
+                        <>
+                          Loading... <Spinner size="sm" />
+                        </>
+                      ) : (
+                        " Walk-In Customer"
+                      )}
                     </Button>
                   </div>
                 </Col>

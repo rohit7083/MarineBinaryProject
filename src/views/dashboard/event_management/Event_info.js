@@ -1576,6 +1576,7 @@ const EventForm = ({
                   placeholder="Enter Total price"
                   invalid={!!errors.totalAmount}
                   {...field}
+                   disabled={!!listData?.uid} 
                 />
               )}
             />

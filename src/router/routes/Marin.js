@@ -118,7 +118,7 @@ const ViewRoomBooking = lazy(() =>
 );
 const Event_Info=lazy(()=>import("../../views/dashboard/event_management/Event_info"))
 const venueLocation=lazy(()=>import("../../views/dashboard/event_management/VenueLocation"))
-
+const ProductPayment=lazy(()=>import("../../views/dashboard/pos/point_of_sale/shop/PayementDetails"))
 const Client_info=lazy(()=>import("../../views/dashboard/event_management/Client_info"))
 const Event_Type=lazy(()=>import("../../views/dashboard/event_management/event_type"))
 const Cretae_Event_Type=lazy(()=>import("../../views/dashboard/event_management/event_type/AddEventTypes"))
@@ -524,4 +524,9 @@ export default [
 
   
 
+   {
+    element: <ProductPayment/>,
+    path: "/dashboard/pos/point_of_sale/shop/PayementDetails",
+  },
+  
 ];

@@ -35,8 +35,6 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
 
   const { remainingAmount, totalAmount } = paymentData?.Rowdata || {};
 
- 
-
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
     { value: "MoneyGrams", label: "MoneyGrams" },
@@ -654,7 +652,6 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   };
 
   return (
-    
     <>
       <Modal isOpen={modal} toggle={toggle} centered size="sm">
         <ModalHeader

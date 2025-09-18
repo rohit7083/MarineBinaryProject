@@ -76,11 +76,7 @@ const MultipleColumnForm = () => {
   const location = useLocation();
   const fetchData = location.state || "";
   const toast = useRef(null);
-  {
-    {
-      debugger;
-    }
-  }
+
 
   useEffect(() => {
     if (fetchData?.uid) {

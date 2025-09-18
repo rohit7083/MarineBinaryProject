@@ -417,65 +417,7 @@ function Payment({ stepper }) {
 
     const encrypted = encryptAES(pin);
 
-    // let bookingUid;
-    // if (payableAmount) {
-    //   bookingUid = ExtendDateData?.bookingUid;
-    // } else if (pendingPayment && remainingAmount) {
-    //   bookingUid = pendingPayment?.uid;
-    // } else {
-    //   bookingUid = roomBookingUid;
-    // }
-    // formData.append(
-    //   "roomBooking.uid",
-    //   // payableAmount ? ExtendDateData?.bookingUid : roomBookingUid
-    //   bookingUid
-    // );
-    // formData.append("roomBooking.isAdvancesPaymnet", data?.advancePayment);
-    // if (data?.advancePayment) {
-    //   formData.append("roomBooking.remainingAmount", data?.remainingPayment);
-    //   formData.append("roomBooking.advancePaymentAmout", data?.advance);
-    // }
-
-    // formData.append("payment.finalPayment", data?.PfinalAmount);
-    // formData.append("payment.paymentMode", data?.paymentMode?.value);
-
-    // if (watch("paymentMode")?.label === "Credit Card") {
-    //   formData.append("payment.cardNumber", data.cardNumber);
-    //   formData.append("payment.cardType", data.cardType);
-    //   formData.append("payment.cardExpiryYear", data.cardExpiryYear);
-    //   formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
-    //   formData.append("payment.cardCvv", data.cardCvv);
-
-    //   formData.append("payment.nameOnCard", data.nameOnCard);
-    // } else if (watch("paymentMode")?.label === "Card Swipe") {
-    //   formData.append(
-    //     "payment.cardSwipeTransactionId",
-    //     data?.cardSwipeTransactionId
-    //   );
-    // } else if (watch("paymentMode")?.label === "Cash") {
-    //   formData.append("roomBooking.pin", encrypted);
-    // } else if (watch("paymentMode")?.label === "Cheque21") {
-    //   if (!file) {
-    //     alert("Please select a file first.");
-    //     return;
-    //   }
-
-    //   formData.append("payment.bankName", data.bankName);
-    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
-    //   formData.append("payment.routingNumber", data.routingNumber);
-    //   formData.append("payment.accountNumber", data.accountNumber);
-    //   formData.append("payment.chequeNumber", data.chequeNumber);
-    //   formData.append("payment.chequeImage", file);
-    // } else if (watch("paymentMode")?.label === "ChequeACH") {
-    //   formData.append("payment.bankName", data.bankName);
-    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
-    //   formData.append("payment.routingNumber", data.routingNumber);
-    //   formData.append("payment.accountNumber", data.accountNumber);
-    //   formData.append("payment.accountType", data.accountType?.value);
-    // } else {
-    //   console.log("Choose differant payment Method ");
-    // }
-
+    
     let bookingUid;
 
     // Determine bookingUid based on payment conditions
@@ -486,19 +428,6 @@ function Payment({ stepper }) {
     } else {
       bookingUid = roomBookingUid;
     }
-
-    //     if (location?.state?.extraRoomMode) {
-    // bookedDataForExtra?.forEach((x, index) => {
-    //     formData.append(`roomBookings[${index}].roomSearch.uid`, index === 0 ? myData?.searchUid : x?.roomSearch?.uid);
-    //     formData.append(`roomBookings[${index}].subtotal`, finalAmount);
-    //     formData.append(`roomBookings[${index}].finalAmount`, finalAmount);
-    //     formData.append(`roomBookings[${index}].checkInDate`, x?.checkInDate);
-    //     formData.append(`roomBookings[${index}].checkOutDate`, x?.checkOutDate);
-    //     formData.append(`roomBookings[${index}].numberOfDays`, x?.numberOfDays);
-    //     formData.append(`roomBookings[${index}].numberOfGuests`, x?.numberOfGuests);
-    //     formData.append(`roomBookings[${index}].specialRequirement`, "none");
-    //   });
-    // }
 
     // console.log("extra data ",extraData);
     if (location?.state?.extraRoomMode) {

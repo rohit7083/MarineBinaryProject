@@ -179,12 +179,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/virtualTerminal",
       },
-      // {
-      //   id: "Cusstomer manage",
-      //   title: "Customer Manage",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/dashboard/pos/customer_management",
-      // },
+      {
+        id: "Cusstomer manage",
+        title: "Customer Manage",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/pos/customer_management",
+      },
       // {
       //   id: "Virtual Terminal",
       //   title: "Virtual Terminal ",

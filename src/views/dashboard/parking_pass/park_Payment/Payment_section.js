@@ -205,11 +205,7 @@ const Payment_section = ({ FinalAmountRes }) => {
 
   const onSubmit = async (data) => {
     setErr("");
-    {
-      {
-        debugger;
-      }
-    }
+   
     let pinArray;
     if (selectedOption === "Cash") {
       pinArray = data.pin || [];

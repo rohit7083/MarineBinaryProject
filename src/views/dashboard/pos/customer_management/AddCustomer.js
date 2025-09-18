@@ -1,353 +1,422 @@
-// // ** React Imports
-// import { Fragment, useState } from 'react'
-
-// // ** Reactstrap Imports
-// import {
-//   Row,
-//   Col,
-//   Card,
-//   Modal,
-//   Label,
-//   Input,
-//   Button,
-//   CardBody,
-//   CardText,
-//   CardTitle,
-//   ModalBody,
-//   InputGroup,
-//   ModalHeader,
-//   FormFeedback,
-//   InputGroupText,
-//   Form,
-  
-// } from 'reactstrap'
-// import Select from 'react-select'
-// // ** Third Party Components
-// import classnames from 'classnames'
-// import Cleave from 'cleave.js/react'
-// import { Check, X, CreditCard } from 'react-feather'
-// import { useForm, Controller } from 'react-hook-form'
-
-
-
-
-
-// const AddCardExample = ({show,setShow}) => {
-//   // ** States
-//   const [cardType, setCardType] = useState('')
-
-//   // ** Hooks
-//   const {
-//     reset,
-//     control,
-//     setError,
-//     clearErrors,
-//     handleSubmit,
-//     formState: { errors }
-//   } = useForm({  })
-
-//   const onSubmit = data => {
-//   }
-
-//   return (
-//     <Fragment>
-     
-//       <Modal
-//         isOpen={show}
-//         toggle={() => setShow(!show)}
-//         className='modal-dialog-centered'
-//         onClosed={() => setCardType('')}
-//       >
-//         <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
-//         <ModalBody className='px-sm-5 mx-50 pb-5'>
-//           <h1 className='text-center mb-1'>Add Product Category</h1>
-
-
-//           {/* <Row tag='form' className='gy-1 gx-2 mt-75' onSubmit={handleSubmit(onSubmit)}> */}
-            
-//           <Form>
-//           <Row>
-//             <Col md='6' sm='12' className='mb-1'>
-//               <Label className='form-label' for='nameMulti'>
-//                 First Name
-//               </Label>
-//               <Input type='text' name='name' id='nameMulti' placeholder='First Name' />
-//             </Col>
-//             <Col md='6' sm='12' className='mb-1'>
-//               <Label className='form-label' for='lastNameMulti'>
-//                 Last Name
-//               </Label>
-//               <Input type='text' name='lastname' id='lastNameMulti' placeholder='Last Name' />
-//             </Col>
-//             <Col md='6' sm='12' className='mb-1'>
-//               <Label className='form-label' for='cityMulti'>
-//                 City
-//               </Label>
-//               <Input type='text' name='city' id='cityMulti' placeholder='City' />
-//             </Col>
-//             <Col md='6' sm='12' className='mb-1'>
-//               <Label className='form-label' for='CountryMulti'>
-//                 Country
-//               </Label>
-//               <Input type='text' name='country' id='CountryMulti' placeholder='Country' />
-//             </Col>
-//             <Col md='6' sm='12' className='mb-1'>
-//               <Label className='form-label' for='CompanyMulti'>
-//                 Company
-//               </Label>
-//               <Input type='text' name='company' id='CompanyMulti' placeholder='Company' />
-//             </Col>
-//             <Col md='6' sm='12' className='mb-1'>
-//               <Label className='form-label' for='EmailMulti'>
-//                 Email
-//               </Label>
-//               <Input type='email' name='Email' id='EmailMulti' placeholder='Email' />
-//             </Col>
-//             <Col sm='12'>
-//               <div className='d-flex'>
-//                 <Button className='me-1' color='primary' type='submit' onClick={e => e.preventDefault()}>
-//                   Submit
-//                 </Button>
-//                 <Button outline color='secondary'   onClick={() => {
-//                   setShow(!show)
-//                   reset()
-//                 }} type='reset'>
-//                   Reset
-//                 </Button>
-//               </div>
-//             </Col>
-//           </Row>
-//         </Form>
-
-          
-
-
-           
-//           {/* </Row> */}
-//         </ModalBody>
-//       </Modal>
-//     </Fragment>
-//   )
-// }
-
-// export default AddCardExample
-
-
-
-
-
-// ** React Imports
-import { Fragment, useState } from 'react'
-
-// ** Reactstrap Imports
+import useJwt from "@src/auth/jwt/useJwt";
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  Row,
-  Col,
-  Card,
-  Label,
-  Input,
-  Modal,
   Button,
-  CardBody,
-  CardText,
-  CardTitle,
+  Col,
+  Input,
+  Label,
+  Modal,
   ModalBody,
   ModalHeader,
-  FormFeedback
-} from 'reactstrap'
-
-// ** Third Party Components
-import Select from 'react-select'
-import { useForm, Controller } from 'react-hook-form'
-import { Home, Check, X, Briefcase } from 'react-feather'
-
-// ** Utils
-import { selectThemeColors } from '@utils'
-
-// ** Styles
-import '@styles/react/libs/react-select/_react-select.scss'
+  Row,
+  Spinner,
+  UncontrolledAlert,
+} from "reactstrap";
 
 const defaultValues = {
-  lastName: '',
-  firstName: ''
-}
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  emailId: "",
+  address: "",
+  city: "",
+  state: "",
+  country: "",
+  pinCode: "",
+};
 
-const countryOptions = [
-  { value: 'uk', label: 'UK' },
-  { value: 'usa', label: 'USA' },
-  { value: 'france', label: 'France' },
-  { value: 'russia', label: 'Russia' },
-  { value: 'canada', label: 'Canada' }
-]
+const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(""); // store API error
+  const toast = useRef(null);
 
-const AddNewAddress = ({show,setShow}) => {
-  // ** States
-//   const [show, setShow] = useState(false)
-
-  // ** Hooks
   const {
-    reset,
     control,
-    setError,
-    clearErrors,
     handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues })
+    reset,
+    formState: { errors },
+  } = useForm({ defaultValues });
 
-  const onSubmit = data => {
-    if (Object.values(data).every(field => field.length > 0)) {
-      setShow(false)
-      reset()
-    } else {
-      setError('firstName', {
-        type: 'manual'
-      })
-      setError('lastName', {
-        type: 'manual'
-      })
+  useEffect(() => {
+    if (row) {
+      reset(row);
     }
-  }
+  }, [row, reset]);
 
-  const onDiscard = () => {
-    clearErrors()
-    setShow(false)
-    reset()
-  }
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      setErr(""); // clear previous error
+
+      if (row?.uid) {
+        const response = await useJwt.updateCustomer(row?.uid, data);
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Customer Updated successfully",
+          life: 2000,
+        });
+
+        reset();
+        setShow(false);  if (onSuccess) onSuccess();
+      } else {
+        const response = await useJwt.addCustomer(data);
+        console.log("✅ Customer Added:", response.data);
+
+        // show success toast
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Customer added successfully",
+          life: 2000,
+        });
+
+        reset();
+        setShow(false);  if (onSuccess) onSuccess();
+      }
+    } catch (error) {
+      console.error("❌ Error adding customer:", error);
+
+      // set error for modal alert
+      setErr(error?.response?.data?.message || "Something went wrong!");
+
+      // show error toast
+      toast.current.show({
+        severity: "error",
+        summary: "Failed",
+        detail: "Customer add failed.",
+        life: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleModal = () => {
+    setShow(false);
+    reset();
+    setErr("");
+  };
 
   return (
     <Fragment>
-   
+      {/* Toast container */}
+      <Toast ref={toast} />
+
       <Modal
-        isOpen={show}
-        onClosed={onDiscard}
-        toggle={() => setShow(!show)}
-        className='modal-dialog-centered modal-lg'
+        isOpen={showModal}
+        toggle={toggleModal}
+        className="modal-dialog-centered"
       >
-        <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
-        <ModalBody className='pb-5 px-sm-4 mx-50'>
-          <h1 className='address-title text-center mb-1'>Add New Customer</h1>
-          <p className='address-subtitle text-center mb-2 pb-75'>Add address for billing address</p>
-          <Row tag='form' className='gy-1 gx-2' onSubmit={handleSubmit(onSubmit)}>
-         
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='firstName'>
-                First Name
-              </Label>
-              <Controller
-                name='firstName'
-                control={control}
-                render={({ field }) => (
-                  <Input id='firstName' placeholder='John' invalid={errors.firstName && true} {...field} />
-                )}
-              />
-              {errors.firstName && <FormFeedback>Please enter a valid First Name</FormFeedback>}
-            </Col>
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='lastName'>
-                Last Name
-              </Label>
-              <Controller
-                name='lastName'
-                control={control}
-                render={({ field }) => (
-                  <Input id='lastName' placeholder='Doe' invalid={errors.lastName && true} {...field} />
-                )}
-              />
-              {errors.lastName && <FormFeedback>Please enter a valid Last Name</FormFeedback>}
-            </Col>
-         
-         
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='firstName'>
-              Phone Number
-              </Label>
-              <Controller
-                name='firstName'
-                control={control}
-                render={({ field }) => (
-                  <Input id='firstName' placeholder='John' invalid={errors.firstName && true} {...field} />
-                )}
-              />
-              {errors.firstName && <FormFeedback>Please enter a valid First Name</FormFeedback>}
-            </Col>
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='lastName'>
-              Email              </Label>
-              <Controller
-                name='lastName'
-                control={control}
-                render={({ field }) => (
-                  <Input id='lastName' placeholder='Doe' invalid={errors.lastName && true} {...field} />
-                )}
-              />
-              {errors.lastName && <FormFeedback>Please enter a valid Last Name</FormFeedback>}
-            </Col>
-         
-            <Col xs={12}>
-              <Label className='form-label' for='addressLine1'>
-                Address 
-              </Label>
-              <Input id='addressLine1' placeholder='12, Business Park' />
-            </Col>
-           
+        <ModalHeader className="bg-transparent" toggle={toggleModal}>
+          {row ? "Update" : " Add"} New Customer
+        </ModalHeader>
 
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='firstName'>
-              City Name
-              </Label>
-              <Controller
-                name='firstName'
-                control={control}
-                render={({ field }) => (
-                  <Input id='firstName' placeholder='John' invalid={errors.firstName && true} {...field} />
+        <ModalBody className="px-sm-5 mx-50 pb-5">
+          {/* Error Alert */}
+          {err && (
+            <UncontrolledAlert color="danger">
+              <div className="alert-body">
+                <span className="text-danger fw-bold">
+                  <strong>Error :</strong> {err}
+                </span>
+              </div>
+            </UncontrolledAlert>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Row className="gy-1 gx-2 mt-75">
+              {/* First Name */}
+              <Col md={6}>
+                <Label className="form-label" htmlFor="firstName">
+                  First Name *
+                </Label>
+                <Controller
+                  name="firstName"
+                  control={control}
+                  rules={{
+                    required: "First name is required",
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message: "Only alphabetic characters allowed",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="firstName"
+                      placeholder="Enter first name"
+                      invalid={!!errors.firstName}
+                    />
+                  )}
+                />
+                {errors.firstName && (
+                  <span className="text-danger">
+                    {errors.firstName.message}
+                  </span>
                 )}
-              />
-              {errors.firstName && <FormFeedback>Please enter a valid First Name</FormFeedback>}
-            </Col>
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='lastName'>
-              State Name
-              </Label>
-              <Controller
-                name='lastName'
-                control={control}
-                render={({ field }) => (
-                  <Input id='lastName' placeholder='Doe' invalid={errors.lastName && true} {...field} />
+              </Col>
+
+              {/* Last Name */}
+              <Col md={6}>
+                <Label className="form-label" htmlFor="lastName">
+                  Last Name *
+                </Label>
+                <Controller
+                  name="lastName"
+                  control={control}
+                  rules={{
+                    required: "Last name is required",
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message: "Only alphabetic characters allowed",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="lastName"
+                      placeholder="Enter last name"
+                      invalid={!!errors.lastName}
+                    />
+                  )}
+                />
+                {errors.lastName && (
+                  <span className="text-danger">{errors.lastName.message}</span>
                 )}
-              />
-              {errors.lastName && <FormFeedback>Please enter a valid Last Name</FormFeedback>}
-            </Col>
+              </Col>
 
-          
+              {/* Phone Number */}
+              <Col md={12}>
+                <Label className="form-label" htmlFor="phoneNumber">
+                  Phone Number *
+                </Label>
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  rules={{
+                    required: "Phone number is required",
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: "Must be 10 digits",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="phoneNumber"
+                      placeholder="Enter phone number"
+                      invalid={!!errors.phoneNumber}
+                      maxLength={10}
+                    />
+                  )}
+                />
+                {errors.phoneNumber && (
+                  <span className="text-danger">
+                    {errors.phoneNumber.message}
+                  </span>
+                )}
+              </Col>
 
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='state-province'>
-              Country Name
-              </Label>
-              <Input id='state-province' placeholder='California' />
-            </Col>
-            <Col xs={12} md={6}>
-              <Label className='form-label' for='zip-code'>
-                Pin Code
-              </Label>
-              <Input id='zip-code' placeholder='99950' />
-            </Col>
+              {/* Email */}
+              <Col md={12}>
+                <Label className="form-label" htmlFor="emailId">
+                  Email
+                </Label>
+                <Controller
+                  name="emailId"
+                  control={control}
+                  rules={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Enter a valid email",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="emailId"
+                      type="email"
+                      placeholder="Enter email"
+                      invalid={!!errors.emailId}
+                    />
+                  )}
+                />
+                {errors.emailId && (
+                  <span className="text-danger">{errors.emailId.message}</span>
+                )}
+              </Col>
 
+              {/* Address */}
+              <Col md={12}>
+                <Label className="form-label" htmlFor="address">
+                  Address
+                </Label>
+                <Controller
+                  name="address"
+                  rules={{
+                    required: "Phone number is required",
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="address"
+                      type="textarea"
+                      rows="3"
+                      placeholder="Enter address"
+                    />
+                  )}
+                />
+              </Col>
 
-           
-            <Col className='text-center' xs={12}>
-              <Button type='submit' className='me-1 mt-2' color='primary'>
-                Submit
-              </Button>
-              <Button type='reset' className='mt-2' color='secondary' outline onClick={onDiscard}>
-                Discard
-              </Button>
-            </Col>
-          </Row>
+              {/* City */}
+              <Col md={6}>
+                <Label className="form-label" htmlFor="city">
+                  City *
+                </Label>
+                <Controller
+                  name="city"
+                  control={control}
+                  rules={{
+                    required: "City is required",
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message: "Only alphabetic characters allowed",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="city"
+                      placeholder="Enter city"
+                      invalid={!!errors.city}
+                    />
+                  )}
+                />
+                {errors.city && (
+                  <span className="text-danger">{errors.city.message}</span>
+                )}
+              </Col>
+
+              {/* State */}
+              <Col md={6}>
+                <Label className="form-label" htmlFor="state">
+                  State *
+                </Label>
+                <Controller
+                  name="state"
+                  control={control}
+                  rules={{
+                    required: "State is required",
+                    pattern: {
+                      value: /^[A-Za-z ]+$/,
+                      message: "Only alphabetic characters allowed",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="state"
+                      placeholder="Enter state"
+                      invalid={!!errors.state}
+                    />
+                  )}
+                />
+                {errors.state && (
+                  <span className="text-danger">{errors.state.message}</span>
+                )}
+              </Col>
+
+              {/* Country */}
+              <Col md={6}>
+                <Label className="form-label" htmlFor="country">
+                  Country *
+                </Label>
+                <Controller
+                  name="country"
+                  control={control}
+                  rules={{ required: "Country is required" }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="country"
+                      placeholder="Enter country"
+                      invalid={!!errors.country}
+                    />
+                  )}
+                />
+                {errors.country && (
+                  <span className="text-danger">{errors.country.message}</span>
+                )}
+              </Col>
+
+              {/* PIN Code */}
+              <Col md={6}>
+                <Label className="form-label" htmlFor="pinCode">
+                  PIN Code *
+                </Label>
+                <Controller
+                  name="pinCode"
+                  control={control}
+                  rules={{
+                    required: "PIN code is required",
+                    pattern: {
+                      value: /^[0-9]{6}$/,
+                      message: "Must be 6 digits",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      id="pinCode"
+                      placeholder="Enter PIN code"
+                      invalid={!!errors.pinCode}
+                      maxLength={6}
+                    />
+                  )}
+                />
+                {errors.pinCode && (
+                  <span className="text-danger">{errors.pinCode.message}</span>
+                )}
+              </Col>
+
+              {/* Buttons */}
+              <Col className="text-center mt-1" xs={12}>
+                <Button
+                  type="button"
+                  color="secondary"
+                  outline
+                  size="sm"
+                  onClick={toggleModal}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="mx-1"
+                  color="primary"
+                  size="sm"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span>Loading...</span> <Spinner size="sm" />
+                    </>
+                  ) : (
+                    <> {row ? "Update Customer" : "Add Customer"}</>
+                  )}
+                </Button>
+              </Col>
+            </Row>
+          </form>
         </ModalBody>
       </Modal>
     </Fragment>
-  )
-}
+  );
+};
 
-export default AddNewAddress
+export default AddNewAddress;

@@ -1,35 +1,31 @@
-import React, { Fragment, useRef } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Toast } from "primereact/toast";
-import Select from "react-select";
-import { useFieldArray } from "react-hook-form";
-import { ArrowLeft, Plus, Trash2 } from "react-feather";
-import Flatpickr from "react-flatpickr";
+import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { ArrowLeft, Trash2 } from "react-feather";
+import Flatpickr from "react-flatpickr";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
 import {
+  Button,
   Card,
   CardBody,
   CardText,
   CardTitle,
   Col,
-  Label,
-  Input,
-  Button,
+  FormFeedback,
   FormGroup,
+  Input,
+  Label,
+  Row,
   Spinner,
   Table,
-  Row,
-  UncontrolledAlert,
-  FormFeedback,
-  CardHeader,
+  UncontrolledAlert
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
 function AddVTypes() {
   const {
     control,
@@ -69,11 +65,7 @@ function AddVTypes() {
   }, []);
   useEffect(() => {
     if (uid && rowData) {
-      // {
-      //   {
-      //     debugger;
-      //   }
-      // }
+    
       const selectedRoomType = roomtyp?.find(
         (option) => option.value === rowData?.roomType?.uid
       );
