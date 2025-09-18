@@ -250,7 +250,7 @@ const sendToAPI = async (apiData) => {
       // Use the error message from the exception
       errorMessage = error.message;
     }
-    
+    //hey
     // Ensure final errorMessage is a string
     errorMessage = String(errorMessage);
     
