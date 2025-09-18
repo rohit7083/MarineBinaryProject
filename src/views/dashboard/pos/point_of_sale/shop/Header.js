@@ -79,13 +79,13 @@ function Header({selectedCustomer, setSelectedCustomer}) {
     if (!customersData || customersData.length === 0) return;
 
     const nameOptions = customersData.map((customer) => ({
-      value: customer.uid,
+      value: customer?.uid  || "",
       label: `${customer.firstName} ${customer.lastName}`.trim(),
       customerData: customer,
     }));
 
     const phoneOptions = customersData.map((customer) => ({
-      value: customer.uid,
+      value: customer?.uid  || "",
       label: customer.phoneNumber,
       customerData: customer,
     }));
@@ -211,7 +211,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
             `${customer.firstName} ${customer.lastName}`.trim() === fullName
         )
         .map((customer) => ({
-          value: customer.uid,
+          value: customer?.uid  || "",
           label: customer.phoneNumber,
           customerData: customer,
         }));
@@ -232,14 +232,14 @@ function Header({selectedCustomer, setSelectedCustomer}) {
 
       if (filtered.length === 1) {
         const nameOption = {
-          value: filtered[0].uid,
+          value: filtered[0]?.uid  || "",
           label: `${filtered[0].firstName} ${filtered[0].lastName}`.trim(),
           customerData: filtered[0],
         };
         setCustomerOptions([nameOption]);
       } else if (filtered.length > 1) {
         const nameOptions = filtered.map((c) => ({
-          value: c.uid,
+          value: c?.uid  || "",
           label: `${c.firstName} ${c.lastName}`.trim(),
           customerData: c,
         }));
@@ -253,7 +253,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       );
 
       const phoneOpts = filtered.map((c) => ({
-        value: c.uid,
+        value: c?.uid  || "",
         label: c.phoneNumber,
         customerData: c,
       }));
@@ -263,13 +263,13 @@ function Header({selectedCustomer, setSelectedCustomer}) {
 
     if (!selectedName && !selectedNumber) {
       const names = customers.map((c) => ({
-        value: c.uid,
+        value: c?.uid  || "",
         label: `${c.firstName} ${c.lastName}`.trim(),
         customerData: c,
       }));
 
       const phones = customers.map((c) => ({
-        value: c.uid,
+        value: c?.uid || "",
         label: c.phoneNumber,
         customerData: c,
       }));
