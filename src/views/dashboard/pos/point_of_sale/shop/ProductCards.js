@@ -39,14 +39,15 @@ const ProductCard = (props) => {
   const [imageLoader, setImageLoader] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
 
-  const variationImageUid = product.variations[0].variationImages[0].uid;
+  const variationImageUid =
+    product?.variations?.[0]?.variationImages?.[0]?.uid || null;
 
   useEffect(() => {
     setImageLoader(true);
     (async () => {
       try {
         const url = await fetchImage(variationImageUid);
-        setImageUrl([url]);
+        setImageUrl(url);
       } catch (error) {
         setImageUrl([noImage]);
       } finally {
@@ -55,7 +56,6 @@ const ProductCard = (props) => {
     })();
   }, []);
 
-  useEffect;
   return (
     <Card
       style={{
@@ -94,7 +94,7 @@ const ProductCard = (props) => {
                           </Col> */}
         </Row>
         <CardText style={{ fontSize: "13px", marginBottom: "5px" }}>
-          {product.description !== "undefined" || undefined
+          {product?.description && product.description !== "undefined"
             ? product.description
             : "No description available"}
         </CardText>
@@ -151,7 +151,8 @@ const ProductPage = ({
   const [variationQty, setVariationQty] = useState({});
   const navigate = useNavigate();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const selectedCust = selectedCustomer?.selectedCustomer;
+  // {{debugger}}
+  const selectedCust = selectedCustomer?.firstName;
   const [imgLoading, setIsLoadingImage] = useState(false);
   const [uids, setUids] = useState([]);
   const toast = useRef(null);
@@ -250,7 +251,7 @@ const ProductPage = ({
               quantity,
               name: selectedProduct.name,
               image: variation.image || selectedProduct.image,
-              unitPrice: variation.finalAmount || variation.price || 0, // store unit price
+              unitPrice: Number(variation.finalAmount || variation.price || 0),
               totalPrice:
                 quantity * (variation.finalAmount || variation.price || 0), // store total price
             };
@@ -377,7 +378,7 @@ const ProductPage = ({
                         transition: "all 0.3s ease", // smooth transition when changing images
                       }}
                       onError={(e) => {
-                        e.target.src = "img1"; // fallback if image fails to load
+                        e.target.src = noImage;
                       }}
                     />
                   </>
@@ -444,7 +445,7 @@ const ProductPage = ({
               <h5>
                 {selectedProduct?.variations?.length > 0
                   ? (() => {
-                      const prices = selectedProduct.variations.map(
+                      const prices = selectedProduct?.variations?.map(
                         (v) => v.finalAmount || v.price || 0
                       );
                       const minPrice = Math.min(...prices);
@@ -474,7 +475,7 @@ const ProductPage = ({
               {selectedProduct?.variations?.length > 0 && (
                 <>
                   <h6 className="mt-2">Choose Variations</h6>
-                  {selectedProduct.variations.map((variation) => {
+                  {selectedProduct?.variations?.map((variation) => {
                     const attrs = variation.attributes
                       .map((a) => `${a.attributeName}: ${a.value}`)
                       .join(" / ");
@@ -511,7 +512,8 @@ const ProductPage = ({
                             onClick={() =>
                               setVariationQty((prev) => ({
                                 ...prev,
-                                [variation.uid]: (prev[variation?.uid] || 0) + 1,
+                                [variation.uid]:
+                                  (prev[variation?.uid] || 0) + 1,
                               }))
                             }
                           >

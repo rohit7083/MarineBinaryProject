@@ -26,10 +26,11 @@ import DiscountModal from "./DiscountModal";
 
 export default function Payment() {
   const location = useLocation();
-  //  {{debugger}}
-  const customerUid = location?.state?.selectedCust?.uid;
-  const uids = location?.state?.uids || [];
-  const productIma = location?.state?.productIma;
+  const state = location.state || {};
+  const customerUid = state.selectedCust?.uid || null;
+  const uids = state.uids || [];
+  const productIma = state.productIma || "";
+
   const navigate = useNavigate();
   const toast = useRef(null);
   const [cart, setCart] = useState(location.state?.selectedProducts || []);
@@ -363,8 +364,6 @@ export default function Payment() {
   useEffect(() => {
     setAvailableMonths(months);
   }, []);
-
-
 
   return (
     <>

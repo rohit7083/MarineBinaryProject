@@ -1,4 +1,3 @@
-
 import useJwt from "@src/auth/jwt/useJwt";
 import { selectThemeColors } from "@utils";
 import React, { Fragment, useEffect, useState } from "react";
@@ -23,7 +22,7 @@ import {
 } from "reactstrap";
 import ProductHeader from "./ProductsHeader";
 
-function Header({selectedCustomer, setSelectedCustomer}) {
+function Header({ selectedCustomer, setSelectedCustomer }) {
   const colourOptions = [
     { value: "ocean", label: "Ocean" },
     { value: "blue", label: "Blue" },
@@ -79,13 +78,13 @@ function Header({selectedCustomer, setSelectedCustomer}) {
     if (!customersData || customersData.length === 0) return;
 
     const nameOptions = customersData?.map((customer) => ({
-      value: customer?.uid  || "",
+      value: customer?.uid || "",
       label: `${customer.firstName} ${customer.lastName}`.trim(),
       customerData: customer,
     }));
 
     const phoneOptions = customersData?.map((customer) => ({
-      value: customer?.uid  || "",
+      value: customer?.uid || "",
       label: customer.phoneNumber,
       customerData: customer,
     }));
@@ -100,7 +99,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       console.log("fetching data from the user table ", res);
 
       if (res?.data && res?.data?.content && res?.data?.content?.result) {
-        const customersData = res?.data?.content?.result;
+        const customersData = res?.data?.content?.result || [];
         setCustomers(customersData);
         prepareCustomerOptions(customersData);
       }
@@ -159,12 +158,13 @@ function Header({selectedCustomer, setSelectedCustomer}) {
         console.error("❌ Error Content:", errorKeys);
         setHeaderError(errorKeys);
 
-        if (errorKeys && typeof errorKeys === "object") {
+        if (
+          errorKeys &&
+          typeof errorKeys === "object" &&
+          !Array.isArray(errorKeys)
+        ) {
           Object.entries(errorKeys).forEach(([fieldName, message]) => {
-            modalSetError(fieldName, {
-              type: "manual",
-              message: message,
-            });
+            modalSetError(fieldName, { type: "manual", message });
           });
         }
       }
@@ -211,7 +211,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
             `${customer?.firstName} ${customer?.lastName}`.trim() === fullName
         )
         .map((customer) => ({
-          value: customer?.uid  || "",
+          value: customer?.uid || "",
           label: customer?.phoneNumber,
           customerData: customer,
         }));
@@ -232,14 +232,14 @@ function Header({selectedCustomer, setSelectedCustomer}) {
 
       if (filtered.length === 1) {
         const nameOption = {
-          value: filtered[0]?.uid  || "",
+          value: filtered[0]?.uid || "",
           label: `${filtered[0]?.firstName} ${filtered[0]?.lastName}`.trim(),
           customerData: filtered[0],
         };
         setCustomerOptions([nameOption]);
       } else if (filtered.length > 1) {
         const nameOptions = filtered?.map((c) => ({
-          value: c?.uid  || "",
+          value: c?.uid || "",
           label: `${c?.firstName} ${c?.lastName}`.trim(),
           customerData: c,
         }));
@@ -253,7 +253,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       );
 
       const phoneOpts = filtered.map((c) => ({
-        value: c?.uid  || "",
+        value: c?.uid || "",
         label: c.phoneNumber,
         customerData: c,
       }));
@@ -263,7 +263,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
 
     if (!selectedName && !selectedNumber) {
       const names = customers?.map((c) => ({
-        value: c?.uid  || "",
+        value: c?.uid || "",
         label: `${c.firstName} ${c.lastName}`.trim(),
         customerData: c,
       }));
@@ -293,9 +293,11 @@ function Header({selectedCustomer, setSelectedCustomer}) {
       const res = await useJwt.getWalkinCustomer();
       console.log(res);
 
-      const walkinData = res?.data;
-      setSelectedCustomer(walkinData);
-      setCustomers;
+      const walkinData = res?.data || null;
+      if (walkinData) {
+        setSelectedCustomer(walkinData);
+      }
+      setCustomers([]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -356,6 +358,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
                         className="react-select"
                         classNamePrefix="select"
                         options={phoneOptions}
+                        noOptionsMessage={() => "No customers found"}
                         isClearable={true}
                         placeholder="Select phone number..."
                         onChange={handleNumberChange}
@@ -373,6 +376,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
                         theme={selectThemeColors}
                         className="react-select"
                         classNamePrefix="select"
+                        noOptionsMessage={() => "No customers found"}
                         options={customerOptions}
                         isClearable={true}
                         placeholder="Select customer name..."
@@ -380,7 +384,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
                         value={
                           customerOptions.find(
                             (opt) => opt.label === selectedName
-                          ) || null  
+                          ) || null
                         }
                       />
                     </Col>
@@ -429,7 +433,7 @@ function Header({selectedCustomer, setSelectedCustomer}) {
         </Col>
 
         <Col md="12">
-          <ProductHeader selectedCustomer={selectedCustomer || {}} />
+          <ProductHeader selectedCustomer={selectedCustomer} />
         </Col>
       </Row>
 
