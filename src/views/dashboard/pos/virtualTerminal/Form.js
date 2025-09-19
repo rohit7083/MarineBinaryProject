@@ -119,6 +119,7 @@ const MultipleColumnForm = () => {
       default:
         return 'New Customer'
     }
+    //commment addedAS
   }
 
   // Enhanced reset function
@@ -788,39 +789,36 @@ const sendToAPI = async (apiData) => {
               </Col>
 
               {/* Card Type Dropdown */}
-              <Col md='6' sm='12' className='mb-1'>
-                <Label className='form-label'>
-                  Card Type <span className='text-danger'>*</span>
-                </Label>
-                <Controller
-                  name='cardType'
-                  control={control}
-                  rules={{ required: 'Card type is required' }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      theme={selectThemeColors}
-                      className={`react-select ${errors.cardType ? 'is-invalid' : ''}`}
-                      classNamePrefix='select'
-                      options={cardTypeOptions}
-                      isClearable={true}
-                      placeholder="Select Card Type"
-                      value={field.value || null} // Ensure controlled component
-                      onChange={(selectedOption) => {
-                        field.onChange(selectedOption)
-                        if (selectedOption) {
-                          setCardType(selectedOption.value)
-                        } else {
-                          setCardType('')
-                        }
-                      }}
-                    />
-                  )}
-                />
-                {errors.cardType && (
-                  <div className='invalid-feedback d-block'>Card type is required</div>
-                )}
-              </Col>
+              <Controller
+  name='cardType'
+  control={control}
+  rules={{ required: 'Card type is required' }}
+  render={({ field }) => (
+    <Select
+      {...field}
+      theme={selectThemeColors}
+      className={`react-select ${errors.cardType ? 'is-invalid' : ''}`}
+      classNamePrefix='select'
+      options={cardTypeOptions}
+      isClearable={true}
+      placeholder="Select Card Type"
+      value={field.value || null} 
+      menuPortalTarget={document.body}   // 👈 Add this
+      styles={{
+        menuPortal: base => ({ ...base, zIndex: 9999 }) // 👈 High z-index
+      }}
+      onChange={(selectedOption) => {
+        field.onChange(selectedOption)
+        if (selectedOption) {
+          setCardType(selectedOption.value)
+        } else {
+          setCardType('')
+        }
+      }}
+    />
+  )}
+/>
+
 
               {/* Card Number */}
               <Col md='6' sm='12' className='mb-1'>

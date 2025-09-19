@@ -18,16 +18,17 @@ import {
   Label,
   Row
 } from 'reactstrap';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // ** Auth
 import useJwt from '@src/auth/jwt/useJwt';
 
-// ** Card Images (you'll need to import these or define the path)
+// ** Card Images
 const cardsObj = {
   visa: '/path/to/visa.png',
   mastercard: '/path/to/mastercard.png',
   amex: '/path/to/amex.png',
-  // Add other card types as needed
 }
 
 // ** Card Type Options
@@ -52,12 +53,10 @@ const defaultValues = {
 
 const ExistingCustomer = () => {
   const [loading, setLoading] = useState(true)
-  const [customerList, setCustomerList] = useState({ phoneOptions: [], nameOptions: [] })
   const [selectedCustomer, setSelectedCustomer] = useState(null)
-  const [customers, setCustomers] = useState([])
   const [cardType, setCardType] = useState('')
   const toast = useRef(null);
-const [isProcessing, setIsProcessing] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const { control, handleSubmit, reset, setValue, formState: { errors } } = useForm({
     defaultValues
@@ -65,7 +64,7 @@ const [isProcessing, setIsProcessing] = useState(false)
 
   // Enhanced reset function
   const resetForm = () => {
-    reset(defaultValues) // Use the reset function from react-hook-form
+    reset(defaultValues)
     setCardType('')
     setSelectedCustomer(null)
     setTimeout(() => {
@@ -76,19 +75,15 @@ const [isProcessing, setIsProcessing] = useState(false)
   }
 
   const onSubmit = async (data) => {
-    console.log('Form data:', data)
-
     if (!data.product || !data.amount) {
       alert('Please fill product and amount fields');
       return;
     }
 
     try {
-      // Existing customer + New card
-      // Extract expiry year and month from MM/YY format
       const expiryParts = data.expiryDate ? data.expiryDate.split('/') : ['', ''];
       const expiryMonth = expiryParts[0] || '';
-      const expiryYear = expiryParts[1] ? `20${expiryParts[1]}` : ''; // Convert YY to YYYY
+      const expiryYear = expiryParts[1] ? `20${expiryParts[1]}` : '';
 
       const payload = {
         "virtualTerminalDto": {
@@ -110,8 +105,7 @@ const [isProcessing, setIsProcessing] = useState(false)
         }
       };
 
-      console.log('API Payload:', payload);
-setIsProcessing(true) 
+      setIsProcessing(true) 
       const response = await useJwt.NewCustomerInTerminal(payload);
 
       if (response.status == 200) {
@@ -121,11 +115,7 @@ setIsProcessing(true)
           detail: "Your payment has been processed successfully.",
           life: 2000,
         })
-        
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Reset the form and other states
         resetForm();
       } else {
         toast.current.show({
@@ -143,7 +133,7 @@ setIsProcessing(true)
         detail: "Network error. Please check your connection and try again.",
         life: 2000
       })
-    }finally{
+    } finally {
       setIsProcessing(false) 
     }
   }
@@ -169,7 +159,23 @@ setIsProcessing(true)
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Toast ref={toast} />
       <Row>
-        {selectedCustomer && (
+        {loading ? (
+          <Col sm='12' className='mb-2'>
+            <Card className='bg-secondary text-white'>
+              <CardHeader>
+                <Skeleton width={200} height={20} />
+              </CardHeader>
+              <CardBody>
+                <p><Skeleton width={150} /></p>
+                <p><Skeleton width={220} /></p>
+                <p><Skeleton width={180} /></p>
+                <p><Skeleton width={120} /></p>
+                <p><Skeleton width={100} /></p>
+                <p><Skeleton width={80} /></p>
+              </CardBody>
+            </Card>
+          </Col>
+        ) : selectedCustomer ? (
           <Col sm='12' className='mb-2'>
             <Card className='bg-secondary text-white'>
               <CardHeader>
@@ -185,7 +191,7 @@ setIsProcessing(true)
               </CardBody>
             </Card>
           </Col>
-        )}
+        ) : null}
 
         {/* Product */}
         <Col md='6' sm='12' className='mb-1'>
@@ -219,32 +225,35 @@ setIsProcessing(true)
           <div>
             <Row className='gy-1 gx-2'>
               {/* Card Type Dropdown */}
-              <Col md={6} xs={12}>
-                <Label className='form-label'>Card Type</Label>
-                <Controller
-                  name='cardType'
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      theme={selectThemeColors}
-                      className='react-select'
-                      classNamePrefix='select'
-                      options={cardTypeOptions}
-                      isClearable={true}
-                      placeholder="Select Card Type"
-                      onChange={(selectedOption) => {
-                        field.onChange(selectedOption)
-                        if (selectedOption) {
-                          setCardType(selectedOption.value)
-                        } else {
-                          setCardType('')
-                        }
-                      }}
-                    />
-                  )}
-                />
-              </Col>
+              <Controller
+                name='cardType'
+                control={control}
+                rules={{ required: 'Card type is required' }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    theme={selectThemeColors}
+                    className={`react-select ${errors.cardType ? 'is-invalid' : ''}`}
+                    classNamePrefix='select'
+                    options={cardTypeOptions}
+                    isClearable={true}
+                    placeholder="Select Card Type"
+                    value={field.value || null} 
+                    menuPortalTarget={document.body}
+                    styles={{
+                      menuPortal: base => ({ ...base, zIndex: 9999 })
+                    }}
+                    onChange={(selectedOption) => {
+                      field.onChange(selectedOption)
+                      if (selectedOption) {
+                        setCardType(selectedOption.value)
+                      } else {
+                        setCardType('')
+                      }
+                    }}
+                  />
+                )}
+              />
 
               <Col md={6} xs={12}>
                 <Label className='form-label' for='credit-card'>Card Number</Label>
@@ -262,7 +271,6 @@ setIsProcessing(true)
                           creditCard: true,
                           onCreditCardTypeChanged: type => {
                             setCardType(type)
-                            // Auto-select the card type in dropdown based on card number
                             const foundCardType = cardTypeOptions.find(option => option.value === type)
                             if (foundCardType) {
                               setValue('cardType', foundCardType)
@@ -272,11 +280,6 @@ setIsProcessing(true)
                       />
                     )}
                   />
-                  {/* {cardType !== '' && cardType !== 'unknown' && (
-                    <InputGroupText className='cursor-pointer p-25'>
-                      <img height='24' alt='card-type' src={cardsObj[cardType]} />
-                    </InputGroupText>
-                  )} */}
                 </InputGroup>
                 {errors.newCardNumber && (
                   <FormFeedback className='d-block'>Please enter a valid card number</FormFeedback>
