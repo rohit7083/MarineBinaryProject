@@ -18,7 +18,7 @@ import {
   Row,
 } from "reactstrap";
 
-const ProductsSearchbar = (selectedCustomer) => {
+const ProductsSearchbar = ({ selectedCustomer }) => {
   const [tableData, setTableData] = useState({ count: 0, results: [] });
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ const ProductsSearchbar = (selectedCustomer) => {
     try {
       setLoading(true);
       const { data } = await useJwt.getAllProduct({ page: pageNo });
-      const { content } = data;
+      const content = data?.content || { count: 0, result: [] };
 
       const allCats =
         content?.result?.flatMap((p) => {
@@ -67,25 +67,46 @@ const ProductsSearchbar = (selectedCustomer) => {
     fetchTableData(1);
   }, []);
 
-  const filteredResults = tableData.results.filter((product) => {
-    const matchSearch = product.name
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase());
+  // const filteredResults = tableData.results.filter((product) => {
+  //   const matchSearch = product?.name
+  //     ?.toLowerCase()
+  //     .includes(searchTerm.toLowerCase());
 
-    const matchCategory =
-      selectedCategories.length === 0 || // show all if nothing selected
-      selectedCategories.some((sel) => {
-        if (!product.categoryUid) return false;
-        if (typeof product.categoryUid === "object") {
-          return product.categoryUid.id === sel.value;
-        }
-        return product.categoryUid === sel.value;
-      });
+  //   const matchCategory =
+  //     selectedCategories.length === 0 || // show all if nothing selected
+  //     selectedCategories.some((sel) => {
+  //       if (!product?.categoryUid) return false;
+  //       if (typeof product?.categoryUid === "object") {
+  //         return product?.categoryUid?.id === sel.value;
+  //       }
+  //       return product?.categoryUid === sel.value;
+  //     });
 
-    return matchSearch && matchCategory;
-  });
+  //   return matchSearch && matchCategory;
+  // });
 
-  const today = new Date().toISOString().split("T")[0];
+  const filteredResults = tableData.results
+    .filter(Boolean) // remove null/undefined
+    .map((product) => ({
+      ...product,
+      uid: product?.uid || "unknown",
+      categoryUid: product?.categoryUid || null,
+    }))
+    .filter((product) => {
+      const matchSearch = product.name?.toLowerCase().includes((searchTerm ?? "").toLowerCase());
+
+      const matchCategory =
+        selectedCategories.length === 0 ||
+        selectedCategories.some((sel) => {
+          if (!product.categoryUid) return false;
+          if (typeof product.categoryUid === "object")
+            return product.categoryUid.id === sel.value;
+          return product.categoryUid === sel.value;
+        });
+      return matchSearch && matchCategory;
+    });
+
+const today = new Date().toISOString().split("T")[0];
 
   return (
     <Card>
@@ -149,7 +170,7 @@ const ProductsSearchbar = (selectedCustomer) => {
           page={page}
           tableData={{ ...tableData, results: filteredResults }}
           setTableData={setTableData}
-          selectedCustomer={selectedCustomer}
+          selectedCustomer={selectedCustomer || {}}
         />
       </CardBody>
     </Card>

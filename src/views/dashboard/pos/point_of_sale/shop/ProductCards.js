@@ -39,14 +39,15 @@ const ProductCard = (props) => {
   const [imageLoader, setImageLoader] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
 
-  const variationImageUid = product.variations[0].variationImages[0].uid;
+  const variationImageUid =
+    product?.variations?.[0]?.variationImages?.[0]?.uid || null;
 
   useEffect(() => {
     setImageLoader(true);
     (async () => {
       try {
         const url = await fetchImage(variationImageUid);
-        setImageUrl([url]);
+        setImageUrl(url);
       } catch (error) {
         setImageUrl([noImage]);
       } finally {
@@ -55,7 +56,6 @@ const ProductCard = (props) => {
     })();
   }, []);
 
-  useEffect;
   return (
     <Card
       style={{
@@ -94,7 +94,7 @@ const ProductCard = (props) => {
                           </Col> */}
         </Row>
         <CardText style={{ fontSize: "13px", marginBottom: "5px" }}>
-          {product.description !== "undefined" || undefined
+          {product?.description && product.description !== "undefined"
             ? product.description
             : "No description available"}
         </CardText>
@@ -151,7 +151,8 @@ const ProductPage = ({
   const [variationQty, setVariationQty] = useState({});
   const navigate = useNavigate();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const selectedCust = selectedCustomer?.selectedCustomer;
+  // {{debugger}}
+  const selectedCust = selectedCustomer?.firstName;
   const [imgLoading, setIsLoadingImage] = useState(false);
   const [uids, setUids] = useState([]);
   const toast = useRef(null);
@@ -164,7 +165,7 @@ const ProductPage = ({
     setModalOpen(true);
 
     const variation = product?.variations?.[0];
-    const uid = variation?.variationImages?.[0]?.uid;
+    const uid = variation?.variationImages?.[0]?.uid || "";
 
     if (!uid) {
       console.warn("No variation image UID found for this product.");
@@ -241,7 +242,7 @@ const ProductPage = ({
 
         items.forEach(({ variationUid, quantity }) => {
           const variation = selectedProduct.variations.find(
-            (v) => v.uid === variationUid
+            (v) => v?.uid === variationUid
           );
           if (variation) {
             updatedCart[variationUid] = {
@@ -250,7 +251,7 @@ const ProductPage = ({
               quantity,
               name: selectedProduct.name,
               image: variation.image || selectedProduct.image,
-              unitPrice: variation.finalAmount || variation.price || 0, // store unit price
+              unitPrice: Number(variation.finalAmount || variation.price || 0),
               totalPrice:
                 quantity * (variation.finalAmount || variation.price || 0), // store total price
             };
@@ -377,7 +378,7 @@ const ProductPage = ({
                         transition: "all 0.3s ease", // smooth transition when changing images
                       }}
                       onError={(e) => {
-                        e.target.src = "img1"; // fallback if image fails to load
+                        e.target.src = noImage;
                       }}
                     />
                   </>
@@ -444,7 +445,7 @@ const ProductPage = ({
               <h5>
                 {selectedProduct?.variations?.length > 0
                   ? (() => {
-                      const prices = selectedProduct.variations.map(
+                      const prices = selectedProduct?.variations?.map(
                         (v) => v.finalAmount || v.price || 0
                       );
                       const minPrice = Math.min(...prices);
@@ -462,8 +463,8 @@ const ProductPage = ({
               {/* Specifications */}
               {selectedProduct?.specifications?.length > 0 && (
                 <ul style={{ fontSize: "13px", paddingLeft: "18px" }}>
-                  {selectedProduct.specifications.map((spec) => (
-                    <li key={spec.uid}>
+                  {selectedProduct?.specifications.map((spec) => (
+                    <li key={spec?.uid}>
                       <strong>{spec.specKey}:</strong> {spec.specValue}
                     </li>
                   ))}
@@ -474,15 +475,15 @@ const ProductPage = ({
               {selectedProduct?.variations?.length > 0 && (
                 <>
                   <h6 className="mt-2">Choose Variations</h6>
-                  {selectedProduct.variations.map((variation) => {
+                  {selectedProduct?.variations?.map((variation) => {
                     const attrs = variation.attributes
                       .map((a) => `${a.attributeName}: ${a.value}`)
                       .join(" / ");
-                    const qty = variationQty[variation.uid] || 0;
+                    const qty = variationQty[variation?.uid] || 0;
 
                     return (
                       <div
-                        key={variation.uid}
+                        key={variation?.uid}
                         className="d-flex flex-column mb-2"
                       >
                         <strong>{attrs}</strong>
@@ -496,7 +497,7 @@ const ProductPage = ({
                                 ...prev,
                                 [variation.uid]: Math.max(
                                   0,
-                                  (prev[variation.uid] || 0) - 1
+                                  (prev[variation?.uid] || 0) - 1
                                 ),
                               }))
                             }
@@ -511,7 +512,8 @@ const ProductPage = ({
                             onClick={() =>
                               setVariationQty((prev) => ({
                                 ...prev,
-                                [variation.uid]: (prev[variation.uid] || 0) + 1,
+                                [variation.uid]:
+                                  (prev[variation?.uid] || 0) + 1,
                               }))
                             }
                           >

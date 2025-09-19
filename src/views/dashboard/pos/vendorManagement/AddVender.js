@@ -35,11 +35,11 @@ const MultipleColumnForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      vendorName: "aa",
-      companyName: "bb",
-      address: "cc",
-      phoneNumber: "912345678901",
-      emailId: "aa@gmail.com",
+      // vendorName: "aa",
+      // companyName: "bb",
+      // address: "cc",
+      // phoneNumber: "912345678901",
+      // emailId: "aa@gmail.com",
     },
   });
 

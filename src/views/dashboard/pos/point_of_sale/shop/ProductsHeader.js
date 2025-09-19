@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -18,9 +16,8 @@ import {
   Row,
 } from "reactstrap";
 
-function ProductHeader({ selectedCustomer ,walkiLoading}) {
+function ProductHeader({ selectedCustomer }) {
   const [show, setShow] = React.useState(false);
-  const [showAddCustomer, setShowAddCustomer] = React.useState(false);
 
   const {
     control,
@@ -33,10 +30,11 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
     setError,
   } = useForm({});
 
-  const onDiscard = () => {
-    setShow(false);
-    reset();
-  };
+ const onDiscard = () => {
+  setShow(false);
+  reset();
+};
+
 
   const onSubmit = (data) => {
     if (Object.values(data).every((field) => field.length > 0)) {
@@ -59,7 +57,7 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
               <CardText>
                 Customer Name:{" "}
                 <strong>
-                  {selectedCustomer
+                  {selectedCustomer?.firstName
                     ? `${selectedCustomer.firstName} ${selectedCustomer.lastName}`
                     : "N/A"}
                 </strong>
@@ -72,7 +70,7 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
               <CardText>
                 Email:{" "}
                 <strong>
-                  {selectedCustomer ? selectedCustomer.emailId : "N/A"}
+                  {selectedCustomer ? selectedCustomer?.emailId : "N/A"}
                 </strong>
               </CardText>
             </Col>
@@ -83,7 +81,7 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
               <CardText>
                 Phone Number:{" "}
                 <strong>
-                  {selectedCustomer ? selectedCustomer.phoneNumber : "N/A"}
+                  {selectedCustomer ? selectedCustomer?.phoneNumber : "N/A"}
                 </strong>
               </CardText>
             </Col>
@@ -118,17 +116,18 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
                   <Controller
                     name="firstName"
                     control={control}
+                    rules={{ required: "First name is required" }}
                     render={({ field }) => (
                       <Input
                         id="firstName"
                         placeholder="John"
-                        invalid={errors.firstName && true}
+                        invalid={!!errors.firstName}
                         {...field}
                       />
                     )}
                   />
                   {errors.firstName && (
-                    <FormFeedback>Please enter a valid First Name</FormFeedback>
+                    <FormFeedback>{errors.firstName.message}</FormFeedback>
                   )}
                 </Col>
 
@@ -201,10 +200,17 @@ function ProductHeader({ selectedCustomer ,walkiLoading}) {
                   <Label className="form-label" for="addressLine1">
                     Address
                   </Label>
-                  <Input
-                    type="textarea"
-                    id="addressLine1"
-                    placeholder="12, Business Park"
+                  <Controller
+                    name="addressLine1"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="textarea"
+                        id="addressLine1"
+                        placeholder="12, Business Park"
+                      />
+                    )}
                   />
                 </Col>
 
