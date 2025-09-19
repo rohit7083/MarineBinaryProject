@@ -121,7 +121,7 @@ const MultipleColumnForm = () => {
     }
   };
     //commment addedAS
-  }
+  
 
   // Enhanced reset function
   const resetForm = () => {
