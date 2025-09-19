@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Card, CardBody, Row, Col, Button } from "reactstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button, Card, CardBody, Col, Row } from "reactstrap";
 
 // const defaultDummyData = {
 //   eventName: "Corporate Gala",
@@ -135,7 +134,7 @@ const EventPreview = ({stepper, allEventData}) => {
               <Col md="6"><strong>Country:</strong> {allEventData?.country}</Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Postal Code</strong> {allEventData?.postalCode || "N/A"}</Col>
+              <Col md="6"><strong>Zip Code</strong> {allEventData?.postalCode || "N/A"}</Col>
              
              
             </Row>

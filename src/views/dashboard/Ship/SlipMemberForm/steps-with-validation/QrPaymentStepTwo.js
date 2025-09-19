@@ -1,45 +1,33 @@
-import { useForm, Controller, set } from "react-hook-form";
+import useJwt from "@src/auth/jwt/useJwt";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
-import useJwt from "@src/auth/jwt/useJwt";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import CryptoJS from "crypto-js";
+import withReactContent from "sweetalert2-react-content";
 
+import React, { useEffect, useState } from "react";
 import {
+  CheckSquare,
+  CreditCard
+} from "react-feather";
+import { useNavigate, useParams } from "react-router-dom";
+import { BeatLoader } from "react-spinners";
+import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
-  Button,
-  Row,
   Col,
   Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
-  FormFeedback,
+  Form,
+  Input,
+  Label,
+  Row,
   Spinner,
-  UncontrolledAlert,
+  UncontrolledAlert
 } from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
-import {
-  Home,
-  Check,
-  X,
-  Briefcase,
-  CreditCard,
-  CheckSquare,
-  Watch,
-} from "react-feather";
-import { data } from "jquery";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
 import ErrorFile from "../../../../pages/authentication/slip/ErrorFile";
 
 const CardPayment = () => {
@@ -416,7 +404,7 @@ const CardPayment = () => {
                       </Col>
 
                       <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                        Postal Code :
+                        Zip Code :
                       </Col>
                       <Col tag="dd" sm="8" className="mb-1">
                         {memberDetail?.postalCode}

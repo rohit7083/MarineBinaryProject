@@ -27,7 +27,7 @@ import DiscountModal from "./DiscountModal";
 export default function Payment() {
   const location = useLocation();
   const state = location.state || {};
-  const customerUid = state.selectedCust?.uid || null;
+  const customerUid = state.selectedCustomer?.uid || null;
   const uids = state.uids || [];
   const productIma = state.productIma || "";
 
@@ -38,6 +38,9 @@ export default function Payment() {
   const [loading, setLoading] = useState(false);
   const [discountModal, setDiscountModal] = useState(false);
   const [verifyDiscount, setVerifyDiscount] = useState(false);
+  const [variationApi, setVariationApi] = useState(false);
+  const [variationUid, setVariationUid] = useState(null);
+
   const colourOptions = [
     { value: "3", label: "Cash" },
     { value: "1", label: "Credit Card" },
@@ -163,10 +166,56 @@ export default function Payment() {
     }
   };
 
-  const removeProduct = (idx) => {
-    const updated = [...cart];
-    updated.splice(idx, 1);
-    setCart(updated);
+  //   useEffect(() => {
+  //   const fetchVariation = async () => {
+  //     if (variationApi === true) {
+  //       try {
+  //         const varRes = await useJwt.getVariationUid(uids);
+  //         const vuid=varRes?.data?.content?.items?.map((x)=>x?.uid);
+  //         setVariationUid(vuid);
+  //         console.log(varRes);
+  //       } catch (error) {
+  //         console.error("Error fetching variation:", error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchVariation();
+  // }, [variationApi, uids]);
+
+  //   const removeProduct = async (idx) => {
+  //     setVariationApi(true);
+  //     try {
+  //       {{debugger}}
+  //       const res = await useJwt.deleteProduct(uids,variationUid);
+  //       console.log(res);
+
+  //       const updated = [...cart];
+  //       updated.splice(idx, 1);
+  //       setCart(updated);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+console.log(cart)
+  const removeProduct = async (idx) => {
+   {{debugger}}
+    try {
+      // 1. Fetch variation UID directly
+      const varRes = await useJwt.getVariationUid(uids);
+      const vuid = varRes?.data?.content?.items[idx]?.uid || [];
+
+      // 2. Call delete API with fresh UID
+      const res = await useJwt.deleteProduct(uids, vuid);
+      setCart(pre=>pre.filter((_,i)=>i!=idx))
+
+      // 3. Update cart state
+      // const updated = [...cart];
+      // updated.splice(idx, 1);
+      // setCart(updated);
+    } catch (error) {
+      console.error("Error removing product:", error);
+    }
   };
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";

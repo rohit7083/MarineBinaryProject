@@ -199,4 +199,10 @@ export default {
  //virtual Terminal
   virtualTerminalEndPoint : '/virtualTerminal',
   getWalkinCustomerEndPoint: '/customer/walkInCus',
+
+  // getVariationUid
+  getVariationUid:'/pos/',
+deleteProduct:'/pos/',
+
+updatedQty:'/pos/updateQuantity/'
 };

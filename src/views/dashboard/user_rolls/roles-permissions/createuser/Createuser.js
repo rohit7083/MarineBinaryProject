@@ -14,12 +14,22 @@ import "react-phone-input-2/lib/bootstrap.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-  Button, CardTitle, Col, Form, FormFeedback, Input,
+  Button,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
   InputGroup,
   InputGroupText,
-  Label, ListGroupItem, Modal,
+  Label,
+  ListGroupItem,
+  Modal,
   ModalBody,
-  ModalHeader, Row, Spinner, UncontrolledAlert
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -27,7 +37,7 @@ import { countries } from "../../../slip-management/CountryCode";
 const RoleCards = () => {
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("Add New");
-  const[EncryptPin,setEncryptPin]=useState([]);
+  const [EncryptPin, setEncryptPin] = useState([]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
   const {
@@ -64,32 +74,29 @@ const RoleCards = () => {
     sensitive: true,
   });
 
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey);
+  }
 
-    const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16);
+  }
 
-    function generateKey(secretKey) {
-      return CryptoJS.SHA256(secretKey);
-    }
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
 
-    function generateIV() {
-      return CryptoJS.lib.WordArray.random(16);
-    }
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
 
-    function encryptAES(plainText) {
-      const key = generateKey(SECRET_KEY);
-      const iv = generateIV();
-
-      const encrypted = CryptoJS.AES.encrypt(plainText, key, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7,
-      });
-
-      const combined = iv.concat(encrypted.ciphertext);
-      return CryptoJS.enc.Base64.stringify(combined);
-    }
- 
+    const combined = iv.concat(encrypted.ciphertext);
+    return CryptoJS.enc.Base64.stringify(combined);
+  }
 
   useEffect(() => {
     if (password) {
@@ -97,23 +104,19 @@ const RoleCards = () => {
 
       setEncrypt(encrypted);
     }
-
-    
   }, [password]);
 
-
-
-
-
   const onSubmit = async (data) => {
-     const pinArray = data.pin || [];
-  const isValid = pinArray.length === 4 && pinArray.every(d => d !== "" && d !== undefined);
- if (!isValid) {
-    console.error("Invalid pin input");
-    return;
-  }
+    const pinArray = data.pin || [];
+    const isValid =
+      pinArray.length === 4 &&
+      pinArray.every((d) => d !== "" && d !== undefined);
+    if (!isValid) {
+      console.error("Invalid pin input");
+      return;
+    }
 
-  const encrypted = encryptAES(pinArray.join(""));
+    const encrypted = encryptAES(pinArray.join(""));
     setMessage("");
     const transformedData = {
       firstName: data.firstName,
@@ -212,7 +215,7 @@ const RoleCards = () => {
 
       setallRoleName(roles);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
     }
   };
@@ -268,20 +271,20 @@ const RoleCards = () => {
   // }, [password]);
 
   const countryOptions = countries.map((country) => ({
-  value: `${country.code}-${country.dial_code}`, // unique value
-  label: (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <ReactCountryFlag
-        countryCode={country.code}
-        svg
-        style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-      />
-      {country.name} ({country.dial_code})
-    </div>
-  ),
-  code: country.code,
-  dial_code: country.dial_code, // keep dial code separately for later use
-}));
+    value: `${country.code}-${country.dial_code}`, // unique value
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <ReactCountryFlag
+          countryCode={country.code}
+          svg
+          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+        />
+        {country.name} ({country.dial_code})
+      </div>
+    ),
+    code: country.code,
+    dial_code: country.dial_code, // keep dial code separately for later use
+  }));
 
   return (
     <Fragment>
@@ -302,8 +305,7 @@ const RoleCards = () => {
         onClosed={handleModalClosed}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered modal-lg"
-                style={{ width: "500px" }}
-
+        style={{ width: "500px" }}
       >
         <Toast ref={toast} />
 
@@ -318,7 +320,8 @@ const RoleCards = () => {
                   <div className="alert-body">
                     <span className="text-danger fw-bold">
                       <strong>Error : </strong>
-                      {Errmessage}</span>
+                      {Errmessage}
+                    </span>
                   </div>
                 </UncontrolledAlert>
               </React.Fragment>
@@ -542,58 +545,65 @@ const RoleCards = () => {
               </Col>
             </Row>
 
-         <Row className="mb-2">
-  <Label sm="3" for="pin">
-    Generate Pin
-  </Label>
-  <Col sm="6">
-    <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
-      {[...Array(4)].map((_, index) => (
-        <Controller
-          key={index}
-          name={`pin[${index}]`}
-          control={control}
-          rules={{
-            required: "All pin digits are required",
-            pattern: {
-              value: /^[0-9]$/,
-              message: "Each pin digit must be a number",
-            },
-          }}
-          render={({ field }) => (
-            <Input
-              {...field}
-              maxLength={1}
-              id={`pin-input-${index}`}
-              className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
-                errors.pin?.[index] ? "is-invalid" : ""
-              }`}
-              autoFocus={index === 0}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (!/^[0-9]$/.test(value) && value !== "") return;
+            <Row className="mb-2">
+              <Label sm="3" for="pin">
+                Generate Pin
+              </Label>
+              <Col sm="6">
+                <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                  {[...Array(4)].map((_, index) => (
+                    <Controller
+                      key={index}
+                      name={`pin[${index}]`}
+                      control={control}
+                      rules={{
+                        required: "All pin digits are required",
+                        pattern: {
+                          value: /^[0-9]$/,
+                          message: "Each pin digit must be a number",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          maxLength={1}
+                          id={`pin-input-${index}`}
+                          className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
+                            errors.pin?.[index] ? "is-invalid" : ""
+                          }`}
+                          autoFocus={index === 0}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (!/^[0-9]$/.test(value) && value !== "") return;
 
-                field.onChange(e);
+                            field.onChange(e);
 
-                if (value && index < 5) {
-                  const nextInput = document.getElementById(`pin-input-${index + 1}`);
-                  nextInput?.focus();
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace" && !field.value && index > 0) {
-                  const prevInput = document.getElementById(`pin-input-${index - 1}`);
-                  prevInput?.focus();
-                }
-              }}
-            />
-          )}
-        />
-      ))}
-    </div>
-  </Col>
-</Row>
-
+                            if (value && index < 5) {
+                              const nextInput = document.getElementById(
+                                `pin-input-${index + 1}`
+                              );
+                              nextInput?.focus();
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              e.key === "Backspace" &&
+                              !field.value &&
+                              index > 0
+                            ) {
+                              const prevInput = document.getElementById(
+                                `pin-input-${index - 1}`
+                              );
+                              prevInput?.focus();
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                  ))}
+                </div>
+              </Col>
+            </Row>
 
             <Row className="mb-2">
               <Label sm="3" for="password">

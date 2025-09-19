@@ -1,27 +1,25 @@
-import { Fragment, useEffect, useState,useRef } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
+import "react-phone-input-2/lib/bootstrap.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-import "react-phone-input-2/lib/bootstrap.css";
 import { countries } from "../../../slip-management/CountryCode";
-import ReactCountryFlag from "react-country-flag";
 
-import Select from "react-select";
-import { useForm, Controller } from "react-hook-form";
-import { ArrowLeft, UserPlus, Users, ArrowRight } from "react-feather";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
 import React from "react";
-import { Spinner, UncontrolledAlert, InputGroup } from "reactstrap";
+import { ArrowLeft, ArrowRight, UserPlus, Users } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
+import { Spinner, UncontrolledAlert } from "reactstrap";
+import * as yup from "yup";
 // ** Utils
-import { selectThemeColors } from "@utils";
 // ** Reactstrap Imports
-import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
+import { Button, Col, Form, FormFeedback, Input, Label, Row } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
@@ -76,10 +74,13 @@ const PersonalInfo = ({
     address: yup
       .string()
       .required("Address is required")
+      .min(5, "Address must be at least 5 characters")
+      .max(200, "Address cannot exceed 200 characters")
       .matches(
-        /^[a-zA-Z0-9\s.,]+$/,
-        "Address can contain only alphanumeric characters, spaces, dots, and commas"
+        /^[a-zA-Z0-9 ]*$/,
+        "Only letters, numbers, and spaces are allowed"
       ),
+
     city: yup
       .string()
       .required("City is required")
@@ -103,8 +104,8 @@ const PersonalInfo = ({
       ),
     postalCode: yup
       .string()
-      .required("Postal Code is required")
-      .matches(/^[0-9]{5}$/, "Postal Code must be exactly 5 digits"),
+      .required("Zip Code is required")
+      .matches(/^[0-9]{5}$/, "Zip Code must be exactly 5 digits"),
   });
 
   const {
@@ -130,21 +131,7 @@ const PersonalInfo = ({
       secondaryPhoneNumber: null,
     },
   });
-  const handleSweetAlert = (title, text, next) => {
-    return MySwal.fire({
-      title,
-      text,
-      icon: "success",
-      customClass: {
-        confirmButton: "btn btn-primary",
-      },
-      buttonsStyling: false,
-    }).then(() => {
-      // if (Object.keys(errors).length === 0) {
-      stepper.next();
-      // /}
-    });
-  };
+
   useEffect(() => {
     if (Object.keys(formData)?.length) {
       const countryCode = countries.find(
@@ -179,20 +166,10 @@ const PersonalInfo = ({
       console.log("formData", data);
     }
   }, [reset, formData]);
-  // console.clear();
-  // console.log('watch', watch('countryCode'));
-
-  // useEffect(() => {
-  //   if (Object.keys(formData)?.length) {
-  //     const data = { ...formData};
-
-  //     reset(data);
-  //   }
-  // }, [reset, formData]);
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
-   
+
     if (option?.details) {
       console.log("Selected Member Details:", option.details);
     }
@@ -206,7 +183,7 @@ const PersonalInfo = ({
       (opt) => opt.value === option.details.countryCode
     );
     setValue("countryCode", selectedCountryCodeOption || null);
-    
+
     // setValue("countryCode", option.details.countryCode || "");
 
     setValue("phoneNumber", option.details.phoneNumber || "");
@@ -251,7 +228,6 @@ const PersonalInfo = ({
             stepper.next();
           }, 2000);
         }
-
       } else {
         const res = await useJwt.postsMember(payload);
 
@@ -361,13 +337,24 @@ const PersonalInfo = ({
     const value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
     field.onChange(value);
   };
-  const addNum_Alphabetics = (e, field) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+  // const addNum_Alphabetics = (e, field) => {
+  //   const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+  //   field.onChange(value);
+  // };
+  const allowOnlyFiveNumbers = (e, field) => {
+    // Keep only numbers
+    let value = e.target.value.replace(/[^0-9]/g, "");
+
+    // Limit to 5 digits
+    if (value.length > 5) {
+      value = value.slice(0, 5);
+    }
+
     field.onChange(value);
   };
 
   const countryOptions = countries.map((country) => ({
-    value: country.dial_code,
+    value: `${country.code}-${country.dial_code}`, // unique value
     label: (
       <div style={{ display: "flex", alignItems: "center" }}>
         <ReactCountryFlag
@@ -379,10 +366,11 @@ const PersonalInfo = ({
       </div>
     ),
     code: country.code,
+    dial_code: country.dial_code, // keep dial code separately for later use
   }));
   return (
     <Fragment>
-            <Toast ref={toast} />
+      <Toast ref={toast} />
       <div className="content-header">
         <h5 className="mb-0">Member Info</h5>
         <small>Enter Your Personal Info.</small>
@@ -394,7 +382,9 @@ const PersonalInfo = ({
             <UncontrolledAlert color="danger">
               <div className="alert-body">
                 <span className="text-danger fw-bold">
-                  <strong>Error : </strong>{ErrMsz}</span>
+                  <strong>Error : </strong>
+                  {ErrMsz}
+                </span>
               </div>
             </UncontrolledAlert>
           </React.Fragment>
@@ -414,7 +404,7 @@ const PersonalInfo = ({
             Add New Member
           </Button>
           <Button
-          size="sm" 
+            size="sm"
             onClick={() => {
               setExMember(true);
               setNewMember(false);
@@ -532,21 +522,34 @@ const PersonalInfo = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="address">
-                Address
-                <span style={{ color: "red" }}>*</span>
+                Address <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
                 id="address"
                 name="address"
                 control={control}
+                rules={{
+                  required: "Address is required",
+                  minLength: {
+                    value: 5,
+                    message: "Address must be at least 5 characters",
+                  },
+                  maxLength: {
+                    value: 200,
+                    message: "Address cannot exceed 200 characters",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9 ]*$/, // ✅ updated regex
+                    message: "Only letters, numbers, and spaces are allowed",
+                  },
+                }}
                 render={({ field }) => (
                   <Input
-                    placeholder="Enter Address "
-                    invalid={errors.address && true}
                     {...field}
-                    // readOnly={visible}
+                    placeholder="Enter Address"
+                    invalid={!!errors.address} // ✅ fixed invalid prop
                     style={getReadOnlyStyle()}
-                    onChange={(e) => addNum_Alphabetics(e, field)}
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -698,7 +701,7 @@ const PersonalInfo = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="postalCode">
-                Postal Code
+                Zip Code
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
@@ -707,15 +710,12 @@ const PersonalInfo = ({
                 control={control}
                 render={({ field }) => (
                   <Input
-                    placeholder="Enter Postal Code"
+                    placeholder="Enter Zip Code"
                     invalid={errors.postalCode && true}
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
-                    onChange={(e) => {
-                      let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
-                      field.onChange(OnlyNumAllow);
-                    }}
+                    onChange={(e) => allowOnlyFiveNumbers(e, field)}
                   />
                 )}
               />

@@ -773,7 +773,7 @@ const payload = {
                 control={control}
                 render={({ field }) => (
                   <Input
-                    placeholder="Enter Postal Code"
+                    placeholder="Enter Zip Code"
                     invalid={errors.postalCode && true}
                     {...field}
                     onChange={(e) => {

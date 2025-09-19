@@ -720,6 +720,17 @@ export default class JwtService {
     });
   }
 
+  getVariationUid(vuid) {
+    return axios.get(`${this.jwtConfig.getVariationUid}${vuid}`);
+  }
+
+  deleteProduct(uid, vuid) {
+    return axios.delete(`${this.jwtConfig.deleteProduct}${uid}/items/${vuid}`);
+  }
+  // updatedQty(uid, quantity) {
+  //   return axios.put(`${this.jwtConfig.updatedQty}${uid}?quantity=${quantity}`);
+  // }
+
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),

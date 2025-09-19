@@ -22,7 +22,6 @@ const ProductsSearchbar = ({ selectedCustomer }) => {
   const [tableData, setTableData] = useState({ count: 0, results: [] });
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-
   // filters
   const [categories, setCategories] = useState([]); // extracted categories
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -67,23 +66,7 @@ const ProductsSearchbar = ({ selectedCustomer }) => {
     fetchTableData(1);
   }, []);
 
-  // const filteredResults = tableData.results.filter((product) => {
-  //   const matchSearch = product?.name
-  //     ?.toLowerCase()
-  //     .includes(searchTerm.toLowerCase());
-
-  //   const matchCategory =
-  //     selectedCategories.length === 0 || // show all if nothing selected
-  //     selectedCategories.some((sel) => {
-  //       if (!product?.categoryUid) return false;
-  //       if (typeof product?.categoryUid === "object") {
-  //         return product?.categoryUid?.id === sel.value;
-  //       }
-  //       return product?.categoryUid === sel.value;
-  //     });
-
-  //   return matchSearch && matchCategory;
-  // });
+  
 
   const filteredResults = tableData.results
     .filter(Boolean) // remove null/undefined

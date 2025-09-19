@@ -100,7 +100,7 @@ const ProductCard = (props) => {
         </CardText>
       </CardBody>
 
-      <div className="d-flex justify-content-center align-items-center mb-2">
+      <div className="d-flex justify-content-center align-items-center mb-1">
         {Object.values(cart)
           .filter((c) => c.productId === product.id)
           .reduce((sum, c) => sum + c.quantity, 0) > 0 ? (
@@ -208,7 +208,13 @@ const ProductPage = ({
     }
     // {{debugger}}
     navigate("/dashboard/pos/point_of_sale/shop/PayementDetails", {
-      state: { selectedProducts, selectedCust, uids, productIma },
+      state: {
+        selectedProducts,
+        selectedCust,
+        uids,
+        productIma,
+        selectedCustomer,
+      },
     });
   };
 

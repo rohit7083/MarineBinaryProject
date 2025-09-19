@@ -135,6 +135,28 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
       setLoading(true);
       const res = await useJwt.CreateNewCustomer(payload);
       console.log("✅ Customer added successfully:", res);
+      const newCustomer = res?.data || payload;
+
+      // update lists
+      const nameOption = {
+        value: newCustomer?.uid || "",
+        label: `${newCustomer?.firstName} ${newCustomer?.lastName}`.trim(),
+        customerData: newCustomer,
+      };
+
+      const phoneOption = {
+        value: newCustomer?.uid || "",
+        label: newCustomer?.phoneNumber,
+        customerData: newCustomer,
+      };
+      setCustomers((prev) => [...prev, newCustomer]);
+      setCustomerOptions((prev) => [...prev, nameOption]);
+      setPhoneOptions((prev) => [...prev, phoneOption]);
+
+      // set selection
+      setSelectedCustomer(newCustomer);
+      setSelectedName(nameOption.label);
+      setSelectedNumber(phoneOption.label);
 
       setShowModal(false);
       modalReset({
@@ -297,7 +319,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
       if (walkinData) {
         setSelectedCustomer(walkinData);
       }
-      setCustomers([]);
+      // setCustomers([]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -584,12 +606,13 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
               {/* Email */}
               <Col md={12}>
                 <Label className="form-label" htmlFor="emailId">
-                  Email (Optional)
+                  Email
                 </Label>
                 <Controller
                   name="emailId"
                   control={modalControl}
                   rules={{
+                    required:"Email is Required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Please enter a valid email address",
@@ -615,11 +638,15 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
               {/* Address */}
               <Col md={12}>
                 <Label className="form-label" htmlFor="address">
-                  Address (Optional)
+                  Address
                 </Label>
                 <Controller
                   name="address"
                   control={modalControl}
+                    rules={{
+                    required:"Address is Required",
+                   
+                  }}
                   render={({ field }) => (
                     <Input
                       {...field}

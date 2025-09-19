@@ -33,6 +33,9 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import CancleRooms from "./cancleRooms/CancleRooms";
+
+
+
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -289,7 +292,7 @@ const paymentStatusColor = {
                 <MoreVertical size={15} />
               </DropdownToggle>
 
-              <DropdownMenu style={{ position: "absolute", zIndex: 1050 }}>
+              <DropdownMenu strategy="fixed" style={{ zIndex: 9999 }}>
                 {/* {row?.paymentStatus === "success" && ( */}
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />
@@ -466,6 +469,7 @@ const paymentStatusColor = {
                 striped
                 paginationComponent={CustomPagination}
                 data={dataToRender()}
+                
               />
             </div>
           )}

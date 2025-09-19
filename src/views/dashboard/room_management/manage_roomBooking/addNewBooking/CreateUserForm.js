@@ -787,7 +787,7 @@ countryCode: data.countryCode.value}),
  
           <Col md="12" className="mb-1">
             <Label className="form-label" for="postalCode">
-              Postal Code
+              Zip Code
               <span style={{ color: "red" }}>*</span>
             </Label>
             <Controller
@@ -803,7 +803,7 @@ countryCode: data.countryCode.value}),
               control={control}
               render={({ field }) => (
                 <Input
-                  placeholder="Enter Postal Code"
+                  placeholder="Enter Zip Code"
                   invalid={errors.postalCode && true}
                   {...field}
                   onChange={(e) => {

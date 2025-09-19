@@ -1,21 +1,19 @@
 import { Fragment, useEffect, useState } from "react";
 import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
-import { useForm, Controller, set } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import useJwt from "@src/auth/jwt/useJwt";
 import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
+import * as yup from "yup";
 // ** Reactstrap Imports
-import { Label, Row, Col, Button, Form, Input, FormFeedback } from "reactstrap";
-import { Card, CardBody, CardTitle, CardHeader, Tooltip } from "reactstrap";
-import { countries } from "../../../slip-management/CountryCode";
 import "@styles/react/libs/react-select/_react-select.scss";
-import { Link } from "react-router-dom";
 import ReactCountryFlag from "react-country-flag";
 import Select from "react-select";
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormFeedback, Input, Label, Row, Tooltip } from "reactstrap";
+import { countries } from "../../../slip-management/CountryCode";
 
 import RenewalContract from "../memberInfo/RenewalContract";
 
@@ -91,8 +89,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       ),
     postalCode: yup
       .string()
-      .required("Postal Code is required")
-      .matches(/^[0-9]{5}$/, "Postal Code must be exactly 5 digits"),
+      .required("Zip Code is required")
+      .matches(/^[0-9]{5}$/, "Zip Code must be exactly 5 digits"),
   });
 
   const {
@@ -705,7 +703,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
 
               <Col md="6" className="mb-1">
                 <Label className="form-label" for="postalCode">
-                  Postal Code
+                  Zip Code
                 </Label>
                 <Controller
                   id="postalCode"
