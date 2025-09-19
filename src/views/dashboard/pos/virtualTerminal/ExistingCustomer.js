@@ -48,54 +48,169 @@ const ExistingCustomer = () => {
   const [showCardDetail, setShowCardDetail] = useState(false)
   const [customers, setCustomers] = useState([])
   const [cardType, setCardType] = useState('')
-      const toast = useRef(null);
-const [isProcessing, setIsProcessing] = useState(false)
-
+  const toast = useRef(null);
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const defaultValues = {
-  phoneNumber: null,
-  customerName: null,
-  product: '',
-  amount: '',
-  cardNumber: null,
-  cvv: '',
-  cardType: null,
-  newCardNumber: '',
-  cardHolderName: '',
-  expiryDate: '',
-  newCvv: ''
-}
+    phoneNumber: null,
+    customerName: null,
+    product: '',
+    amount: '',
+    cardNumber: null,
+    cvv: '',
+    cardType: null,
+    newCardNumber: '',
+    cardHolderName: '',
+    expiryDate: '',
+    newCvv: ''
+  }
 
-const { control, handleSubmit, reset, setValue, formState: { errors } } = useForm({
-  defaultValues
-})
+  const { control, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm({
+    defaultValues,
+    shouldFocusError: false  // Disable default focus error to prevent the elm.focus error
+  })
 
+  // Watch form values to get current customer data
+  const watchedPhoneNumber = watch('phoneNumber');
+  const watchedCustomerName = watch('customerName');
 
+  // Custom focus error handler
+  useEffect(() => {
+    const errorFields = Object.keys(errors);
+    if (errorFields.length > 0) {
+      const firstErrorField = errorFields[0];
+      const element = document.querySelector(`[name="${firstErrorField}"]`);
+      
+      if (element) {
+        // Try different focus methods
+        if (element.focus) {
+          element.focus();
+        } else if (element.querySelector && element.querySelector('input')) {
+          // For react-select components
+          const input = element.querySelector('input');
+          if (input && input.focus) {
+            input.focus();
+          }
+        }
+      }
+    }
+  }, [errors]);
 
   // Enhanced reset function
   const resetForm = () => {
-  reset(defaultValues)
-  setCardType('')
-  setTimeout(() => {
-    Object.keys(defaultValues).forEach(key => {
-      setValue(key, defaultValues[key], { shouldValidate: false })
-    })
-  }, 100)
-}
+    reset(defaultValues)
+    setCardType('')
+    setSelectedCustomer(null)
+    setCardOptions([])
+    setShowCardDetail(false)
+    setTimeout(() => {
+      Object.keys(defaultValues).forEach(key => {
+        setValue(key, defaultValues[key], { shouldValidate: false })
+      })
+    }, 100)
+  }
 
+  // Get current customer data from form values
+  const getCurrentCustomer = () => {
+    if (watchedPhoneNumber && watchedPhoneNumber.customerData) {
+      return watchedPhoneNumber.customerData;
+    }
+    if (watchedCustomerName && watchedCustomerName.customerData) {
+      return watchedCustomerName.customerData;
+    }
+    return selectedCustomer;
+  }
 
   const onSubmit = async data => {
     console.log('Form data:', data)
 
-    // Form validation
-    if (!selectedCustomer) {
-      alert('Please select a customer first');
+    // Get current customer data
+    const currentCustomer = getCurrentCustomer();
+    
+    // Validate that customer is selected
+    if (!currentCustomer || !currentCustomer.uid) {
+      toast.current.show({
+        severity: "error",
+        summary: "Validation Error",
+        detail: "Please select a customer first.",
+        life: 3000
+      });
       return;
     }
 
-    if (!data.product || !data.amount) {
-      alert('Please fill product and amount fields');
-      return;
+    // Additional validation for card details
+    if (!showCardDetail) {
+      // Using existing card - validate card selection and CVV
+      if (!data.cardNumber || !data.cardNumber.cardData || !data.cardNumber.cardData.uid) {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error", 
+          detail: "Please select a card.",
+          life: 3000
+        });
+        return;
+      }
+      
+      if (!data.cvv || data.cvv.trim() === '') {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error",
+          detail: "Please enter CVV for the selected card.",
+          life: 3000
+        });
+        return;
+      }
+    } else {
+      // Using new card - validate all new card fields
+      if (!data.cardType) {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error",
+          detail: "Please select card type.",
+          life: 3000
+        });
+        return;
+      }
+      
+      if (!data.newCardNumber || data.newCardNumber.trim() === '') {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error",
+          detail: "Please enter card number.",
+          life: 3000
+        });
+        return;
+      }
+      
+      if (!data.cardHolderName || data.cardHolderName.trim() === '') {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error",
+          detail: "Please enter cardholder name.",
+          life: 3000
+        });
+        return;
+      }
+      
+      if (!data.expiryDate || data.expiryDate.trim() === '') {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error",
+          detail: "Please enter expiry date.",
+          life: 3000
+        });
+        return;
+      }
+      
+      if (!data.newCvv || data.newCvv.trim() === '') {
+        toast.current.show({
+          severity: "error",
+          summary: "Validation Error",
+          detail: "Please enter CVV.",
+          life: 3000
+        });
+        return;
+      }
     }
 
     try {
@@ -111,7 +226,7 @@ const { control, handleSubmit, reset, setValue, formState: { errors } } = useFor
             "product": data.product,
             "amount": parseFloat(data.amount),
             "customer": {
-              "uid": selectedCustomer.uid
+              "uid": currentCustomer.uid
             }
           },
           "paymentDto": {
@@ -134,7 +249,7 @@ const { control, handleSubmit, reset, setValue, formState: { errors } } = useFor
             "product": data.product,
             "amount": parseFloat(data.amount),
             "customer": {
-              "uid": selectedCustomer.uid
+              "uid": currentCustomer.uid
             }
           },
           "paymentDto": {
@@ -149,18 +264,15 @@ const { control, handleSubmit, reset, setValue, formState: { errors } } = useFor
           }
         };
       } else {
-        alert('Please select a card or add new card details');
         return;
       }
 
       console.log('API Payload:', payload);
-setIsProcessing(true) 
+      setIsProcessing(true) 
       const response = await useJwt.NewCustomerInTerminal(payload);
 
       if (response.status == 200 ) {
-       
-    
-         toast.current.show({
+        toast.current.show({
           severity: "success",
           summary: "Payment Successful",
           detail: "Your payment has been processed successfully.",
@@ -173,61 +285,122 @@ setIsProcessing(true)
         window.scrollTo({ top: 0, behavior: 'smooth' })
 
       } else {
-         toast.current.show({
-      severity: "error", // <-- use 'error' instead of 'failed'
-      summary: "Payment Failed",
-      detail: "Payment failed. Please try again.",
-      life: 2000
-    })
-        
-        alert('Payment failed. Please try again.')
+        toast.current.show({
+          severity: "error", // <-- use 'error' instead of 'failed'
+          summary: "Payment Failed",
+          detail: "Payment failed. Please try again.",
+          life: 2000
+        })
       }
     } catch (error) {
       console.error('Network Error:', error)
-     
-
-    }finally{
-       setIsProcessing(false) 
-setSelectedCustomer(null)
+      
+      // Extract error message properly
+      let errorMessage = "Payment failed. Please try again.";
+      
+      if (error.response && error.response.data) {
+        // Priority: content > message > error
+        const data = error.response.data;
+        errorMessage = data.content || data.message || data.error || errorMessage;
+        
+        // Ensure errorMessage is always a string
+        if (typeof errorMessage === 'object') {
+          errorMessage = JSON.stringify(errorMessage);
+        }
+      } else if (error.message) {
+        // Use the error message from the exception
+        errorMessage = error.message;
       }
+      
+      // Ensure final errorMessage is a string
+      errorMessage = String(errorMessage);
+      
+      toast.current.show({
+        severity: "error",
+        summary: "Payment Failed",
+        detail: errorMessage,
+        life: 2000
+      })
+    } finally {
+      setIsProcessing(false) 
+      // Don't reset selectedCustomer here to maintain form state
+    }
   }
 
+  // useEffect(() => {
+  //   const fetchCustomer = async () => {
+  //     try {
+  //       setLoading(true)
+  //       const response = await useJwt.getAllCustomers()
+  //       const customersData = response.data.content.result
+  //       const filteredCustomers = customersData.filter(customer => customer.isWalkIn === false)
+      
+  //       setCustomers(filteredCustomers)
+
+
+  //       const phoneOptions = customersData.map(customer => ({
+  //         value: customer.phoneNumber,
+  //         label: customer.phoneNumber,
+  //         customerData: customer
+  //       }))
+
+  //       const nameOptions = customersData.map(customer => ({
+  //         value: `${customer.firstName} ${customer.lastName}`,
+  //         label: `${customer.firstName} ${customer.lastName}`,
+  //         customerData: customer
+  //       }))
+
+  //       setCustomerList({ phoneOptions, nameOptions })
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error)
+  //     } finally {
+  //       setLoading(false)
+  //     }
+  //   }
+
+  //   fetchCustomer()
+  // }, [])
   useEffect(() => {
-    const fetchCustomer = async () => {
-      try {
-        setLoading(true)
-        const response = await useJwt.getAllCustomers()
-        const customersData = response.data.content.result
-        setCustomers(customersData)
+  const fetchCustomer = async () => {
+    try {
+      setLoading(true)
+      const response = await useJwt.getAllCustomers()
+      const customersData = response.data.content.result
 
-        const phoneOptions = customersData.map(customer => ({
-          value: customer.phoneNumber,
-          label: customer.phoneNumber,
-          customerData: customer
-        }))
+      // ✅ filter only customers where isWalkIn = false
+      const filteredCustomers = customersData.filter(customer => customer.isWalkIn === false)
+      
+      setCustomers(filteredCustomers)
 
-        const nameOptions = customersData.map(customer => ({
-          value: `${customer.firstName} ${customer.lastName}`,
-          label: `${customer.firstName} ${customer.lastName}`,
-          customerData: customer
-        }))
+     const phoneOptions = filteredCustomers.map(customer => ({
+        value: customer.phoneNumber,
+        label: customer.phoneNumber,
+        customerData: customer
+      }))
 
-        setCustomerList({ phoneOptions, nameOptions })
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      } finally {
-        setLoading(false)
-      }
+     const nameOptions = filteredCustomers.map(customer => ({
+        value: `${customer.firstName} ${customer.lastName}`,
+        label: `${customer.firstName} ${customer.lastName}`,
+        customerData: customer
+      }))
+
+      setCustomerList({ phoneOptions, nameOptions })
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    fetchCustomer()
-  }, [])
+  fetchCustomer()
+}, [])
+
 
   const updateCardOptions = (customer) => {
     if (customer && customer.cardPayment && customer.cardPayment.length > 0) {
       const cardOpts = customer.cardPayment.map(card => ({
         value: card.cardNumber,
-        label: `${card.cardNumber} (${card.cardType || 'Unknown Type'})`,
+        label: `${card.cardNumber}`,
         cardData: card // This contains the card uid and other details
       }))
       setCardOptions(cardOpts)
@@ -264,6 +437,9 @@ setSelectedCustomer(null)
     }
   }
 
+  // Get current customer for display (either from selectedCustomer or form values)
+  const displayCustomer = getCurrentCustomer();
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Toast ref={toast} />
@@ -274,11 +450,12 @@ setSelectedCustomer(null)
           <Controller
             name="phoneNumber"
             control={control}
+            rules={{ required: 'Please select a customer by phone number or name' }}
             render={({ field }) => (
               <Select
                 {...field}
                 theme={selectThemeColors}
-                className='react-select'
+                className={`react-select ${errors.phoneNumber ? 'is-invalid' : ''}`}
                 classNamePrefix='select'
                 options={customerList.phoneOptions}
                 isLoading={loading}
@@ -290,6 +467,7 @@ setSelectedCustomer(null)
               />
             )}
           />
+          {errors.phoneNumber && <FormFeedback className='d-block'>{errors.phoneNumber.message}</FormFeedback>}
         </Col>
 
         {/* Customer Name Dropdown */}
@@ -298,11 +476,12 @@ setSelectedCustomer(null)
           <Controller
             name="customerName"
             control={control}
+            rules={{ required: 'Please select a customer by phone number or name' }}
             render={({ field }) => (
               <Select
                 {...field}
                 theme={selectThemeColors}
-                className='react-select'
+                className={`react-select ${errors.customerName ? 'is-invalid' : ''}`}
                 classNamePrefix='select'
                 options={customerList.nameOptions}
                 isLoading={loading}
@@ -314,89 +493,88 @@ setSelectedCustomer(null)
               />
             )}
           />
+          {errors.customerName && <FormFeedback className='d-block'>{errors.customerName.message}</FormFeedback>}
         </Col>
 
         {/* Customer Details Card */}
-        {selectedCustomer && (
+        {displayCustomer && (
           <Col sm='12' className='mb-2'>
             <Card className='bg-secondary text-white'>
               <CardHeader>
-                Fullname: {selectedCustomer.firstName} {selectedCustomer.lastName}
+                Fullname: {displayCustomer.firstName} {displayCustomer.lastName}
               </CardHeader>
               <CardBody>
-                <p>Phone Number: {selectedCustomer.phoneNumber}</p>
-                <p>Email Id: {selectedCustomer.emailId}</p>
-                <p>Address: {selectedCustomer.address}</p>
-                <p>City: {selectedCustomer.city}</p>
-                <p>Country: {selectedCustomer.country}</p>
-                <p>Pincode: {selectedCustomer.pinCode}</p>
+                <p>Phone Number: {displayCustomer.phoneNumber}</p>
+                <p>Email Id: {displayCustomer.emailId}</p>
+                <p>Address: {displayCustomer.address}</p>
+                <p>City: {displayCustomer.city}</p>
+                <p>Country: {displayCustomer.country}</p>
+                <p>Pincode: {displayCustomer.pinCode}</p>
               </CardBody>
             </Card>
           </Col>
         )}
 
-   
-  {/* Product */}
-  <Col md="6" sm="12" className="mb-1">
-    <Label className="form-label" for="product">
-      Product <span className="text-danger">*</span>
-    </Label>
-    <Controller
-      name="product"
-      control={control}
-      rules={{
-        required: 'Product is required',
-        minLength: { value: 2, message: 'Product name must be at least 2 characters' },
-        maxLength: { value: 150, message: 'Product name cannot exceed 150 characters' },
-        pattern: { value: /^[a-zA-Z0-9\s\-.'/&()]+$/, message: 'Product name contains invalid characters' },
-        validate: { trimmed: v => (v === v.trim() ? true : 'Remove extra spaces') }
-      }}
-      render={({ field }) => (
-        <Input
-          type="text"
-          id="product"
-          placeholder="Enter Product"
-          {...field}
-          value={field.value ? field.value.trimStart() : ''}
-          onChange={e => field.onChange(e.target.value)}
-          invalid={!!errors.product}
-        />
-      )}
-    />
-    {errors.product && <FormFeedback>{errors.product.message}</FormFeedback>}
-  </Col>
+        {/* Product */}
+        <Col md="6" sm="12" className="mb-1">
+          <Label className="form-label" for="product">
+            Product <span className="text-danger">*</span>
+          </Label>
+          <Controller
+            name="product"
+            control={control}
+            rules={{
+              required: 'Product is required',
+              minLength: { value: 2, message: 'Product name must be at least 2 characters' },
+              maxLength: { value: 150, message: 'Product name cannot exceed 150 characters' },
+              pattern: { value: /^[a-zA-Z0-9\s\-.'/&()]+$/, message: 'Product name contains invalid characters' },
+              validate: { trimmed: v => (v === v.trim() ? true : 'Remove extra spaces') }
+            }}
+            render={({ field }) => (
+              <Input
+                type="text"
+                id="product"
+                placeholder="Enter Product"
+                {...field}
+                value={field.value ? field.value.trimStart() : ''}
+                onChange={e => field.onChange(e.target.value)}
+                invalid={!!errors.product}
+              />
+            )}
+          />
+          {errors.product && <FormFeedback>{errors.product.message}</FormFeedback>}
+        </Col>
 
-  {/* Amount */}
-  <Col md="6" sm="12" className="mb-1">
-    <Label className="form-label" for="amount">
-      Amount <span className="text-danger">*</span>
-    </Label>
-    <Controller
-      name="amount"
-      control={control}
-      rules={{
-        required: 'Amount is required',
-        pattern: { value: /^(?!0\d)\d+(\.\d{1,2})?$/, message: 'Please enter a valid amount (up to 2 decimals)' },
-        min: { value: 1, message: 'Amount must be greater than 0' },
-        max: { value: 1000000, message: 'Amount cannot exceed 1,000,000' }
-      }}
-      render={({ field }) => (
-        <Input
-          type="number"
-          step="0.01"
-          min="1"
-          max="1000000"
-          id="amount"
-          placeholder="Enter Amount"
-          {...field}
-          value={field.value || ''}
-          invalid={!!errors.amount}
-        />
-      )}
-    />
-    {errors.amount && <FormFeedback>{errors.amount.message}</FormFeedback>}
-  </Col>
-
+        {/* Amount */}
+        <Col md="6" sm="12" className="mb-1">
+          <Label className="form-label" for="amount">
+            Amount <span className="text-danger">*</span>
+          </Label>
+          <Controller
+            name="amount"
+            control={control}
+            rules={{
+              required: 'Amount is required',
+              pattern: { value: /^(?!0\d)\d+(\.\d{1,2})?$/, message: 'Please enter a valid amount (up to 2 decimals)' },
+              min: { value: 1, message: 'Amount must be greater than 0' },
+              max: { value: 1000000, message: 'Amount cannot exceed 1,000,000' }
+            }}
+            render={({ field }) => (
+              <Input
+                type="number"
+                step="0.01"
+                min="1"
+                max="1000000"
+                id="amount"
+                placeholder="Enter Amount"
+                {...field}
+                value={field.value || ''}
+                invalid={!!errors.amount}
+              />
+            )}
+          />
+          {errors.amount && <FormFeedback>{errors.amount.message}</FormFeedback>}
+        </Col>
 
         {/* Card Details */}
         <Col sm='12'>
@@ -418,9 +596,9 @@ setSelectedCustomer(null)
                   classNamePrefix='select'
                   options={cardOptions}
                   isClearable={true}
-                  isDisabled={!selectedCustomer || cardOptions.length === 0}
+                  isDisabled={!displayCustomer || cardOptions.length === 0}
                   placeholder={
-                    !selectedCustomer
+                    !displayCustomer
                       ? "Please select a customer first"
                       : cardOptions.length === 0
                         ? "No cards available for this customer"
@@ -433,17 +611,25 @@ setSelectedCustomer(null)
         )}
 
         {/* CVV */}
-        {!showCardDetail && (
-          <Col md='6' sm='12' className='mb-1'>
-            <Label className='form-label' for='cvv'>CVV Number</Label>
-            <Controller
-              name="cvv"
-              control={control}
-              defaultValue=""
-              render={({ field }) => <Input type="password" id="cvv" placeholder="Enter CVV" {...field} />}
-            />
-          </Col>
-        )}
+       {cardOptions.length > 0 && !showCardDetail && (
+  <Col md='6' sm='12' className='mb-1'>
+    <Label className='form-label' for='cvv'>CVV Number</Label>
+    <Controller
+      name="cvv"
+      control={control}
+      defaultValue=""
+      render={({ field }) => (
+        <Input 
+          type="password" 
+          id="cvv" 
+          placeholder="Enter CVV" 
+          {...field} 
+        />
+      )}
+    />
+  </Col>
+)}
+
 
         {/* Add New Card Link */}
         {!showCardDetail && (
@@ -470,20 +656,26 @@ setSelectedCustomer(null)
             <div>
               <Row className='gy-1 gx-2'>
                 {/* Card Type Dropdown */}
-                <Col md={6} xs={12}>
+                <Col md={12} xs={12} className="mb-2">
                   <Label className='form-label'>Card Type</Label>
                   <Controller
                     name='cardType'
                     control={control}
+                    rules={{ required: 'Card type is required' }}
                     render={({ field }) => (
                       <Select
                         {...field}
                         theme={selectThemeColors}
-                        className='react-select'
+                        className={`react-select ${errors.cardType ? 'is-invalid' : ''}`}
                         classNamePrefix='select'
                         options={cardTypeOptions}
                         isClearable={true}
                         placeholder="Select Card Type"
+                        value={field.value || null} 
+                        menuPortalTarget={document.body}   // 👈 Add this
+                        styles={{
+                          menuPortal: base => ({ ...base, zIndex: 9999 }) // 👈 High z-index
+                        }}
                         onChange={(selectedOption) => {
                           field.onChange(selectedOption)
                           if (selectedOption) {
@@ -495,6 +687,7 @@ setSelectedCustomer(null)
                       />
                     )}
                   />
+                  {errors.cardType && <FormFeedback className='d-block'>{errors.cardType.message}</FormFeedback>}
                 </Col>
 
                 <Col md={6} xs={12}>
@@ -503,6 +696,7 @@ setSelectedCustomer(null)
                     <Controller
                       name='newCardNumber'
                       control={control}
+                      rules={{ required: 'Card number is required' }}
                       render={({ field }) => (
                         <Cleave
                           {...field}    
@@ -530,7 +724,7 @@ setSelectedCustomer(null)
                     )} */}
                   </InputGroup>
                   {errors.newCardNumber && (
-                    <FormFeedback className='d-block'>Please enter a valid card number</FormFeedback>
+                    <FormFeedback className='d-block'>{errors.newCardNumber.message}</FormFeedback>
                   )}
                 </Col>
 
@@ -539,10 +733,19 @@ setSelectedCustomer(null)
                   <Controller
                     name='cardHolderName'
                     control={control}
+                    rules={{ required: 'Cardholder name is required' }}
                     render={({ field }) => (
-                      <Input {...field} id='card-name' placeholder='John Doe' />
+                      <Input 
+                        {...field} 
+                        id='card-name' 
+                        placeholder='John Doe' 
+                        className={errors.cardHolderName ? 'is-invalid' : ''}
+                      />
                     )}
                   />
+                  {errors.cardHolderName && (
+                    <FormFeedback className='d-block'>{errors.cardHolderName.message}</FormFeedback>
+                  )}
                 </Col>
 
                 <Col xs={6} md={3}>
@@ -550,16 +753,20 @@ setSelectedCustomer(null)
                   <Controller
                     name='expiryDate'
                     control={control}
+                    rules={{ required: 'Expiry date is required' }}
                     render={({ field }) => (
                       <Cleave
                         {...field}
                         id='exp-date'
                         placeholder='MM/YY'
-                        className='form-control'
+                        className={`form-control ${errors.expiryDate ? 'is-invalid' : ''}`}
                         options={{ delimiter: '/', blocks: [2, 2] }}
                       />
                     )}
                   />
+                  {errors.expiryDate && (
+                    <FormFeedback className='d-block'>{errors.expiryDate.message}</FormFeedback>
+                  )}
                 </Col>
 
                 <Col xs={6} md={3}>
@@ -568,22 +775,33 @@ setSelectedCustomer(null)
                     name='newCvv'
                     control={control}
                     rules={{
-    required: "This field is required",
-    max: {
-      value: 2,
-      message: "Maximum value is 3"
-    }
-  }}
+                      required: "CVV is required",
+                      minLength: {
+                        value: 3,
+                        message: "CVV must be at least 3 digits"
+                      },
+                      maxLength: {
+                        value: 4,
+                        message: "CVV must be at most 4 digits"
+                      },
+                      pattern: {
+                        value: /^\d{3,4}$/,
+                        message: "CVV must contain only digits"
+                      }
+                    }}
                     render={({ field }) => (
                       <Cleave
                         {...field}
                         id='new-cvv'
                         placeholder='654'
-                        className='form-control'
-                        options={{ blocks: [3] }}
+                        className={`form-control ${errors.newCvv ? 'is-invalid' : ''}`}
+                        options={{ blocks: [4], numericOnly: true }}
                       />
                     )}
                   />
+                  {errors.newCvv && (
+                    <FormFeedback className='d-block'>{errors.newCvv.message}</FormFeedback>
+                  )}
                 </Col>
               </Row>
 
@@ -619,17 +837,20 @@ setSelectedCustomer(null)
         {/* Submit & Reset Buttons */}
         <Col sm='12'>
           <div className='d-flex'>
-            <Button className='me-1' color='primary' type='submit'>{isProcessing ? 'Processing...' : 'Submit'}</Button>
+            <Button 
+              className='me-1' 
+              color='primary' 
+              type='submit'
+              disabled={isProcessing}
+            >
+              {isProcessing ? 'Processing...' : 'Submit'}
+            </Button>
             <Button
               outline
               color='secondary'
               type='button'
               onClick={() => {
-                reset()
-                setSelectedCustomer(null)
-                setCardOptions([])
-                setShowCardDetail(false)
-                setCardType('')
+                resetForm()
               }}
             >
               Reset

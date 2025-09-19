@@ -120,6 +120,8 @@ const MultipleColumnForm = () => {
         return "New Customer";
     }
   };
+    //commment addedAS
+  }
 
   // Enhanced reset function
   const resetForm = () => {
@@ -802,6 +804,7 @@ const MultipleColumnForm = () => {
               </Col>
 
               {/* Card Type Dropdown */}
+
               <Col md="6" sm="12" className="mb-1">
                 <Label className="form-label">
                   Card Type <span className="text-danger">*</span>
@@ -839,6 +842,36 @@ const MultipleColumnForm = () => {
                   </div>
                 )}
               </Col>
+              <Controller
+  name='cardType'
+  control={control}
+  rules={{ required: 'Card type is required' }}
+  render={({ field }) => (
+    <Select
+      {...field}
+      theme={selectThemeColors}
+      className={`react-select ${errors.cardType ? 'is-invalid' : ''}`}
+      classNamePrefix='select'
+      options={cardTypeOptions}
+      isClearable={true}
+      placeholder="Select Card Type"
+      value={field.value || null} 
+      menuPortalTarget={document.body}   // 👈 Add this
+      styles={{
+        menuPortal: base => ({ ...base, zIndex: 9999 }) // 👈 High z-index
+      }}
+      onChange={(selectedOption) => {
+        field.onChange(selectedOption)
+        if (selectedOption) {
+          setCardType(selectedOption.value)
+        } else {
+          setCardType('')
+        }
+      }}
+    />
+  )}
+/>
+
 
               {/* Card Number */}
               <Col md="6" sm="12" className="mb-1">
