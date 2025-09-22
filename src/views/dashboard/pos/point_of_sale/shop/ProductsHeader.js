@@ -18,7 +18,7 @@ import {
 
 function ProductHeader({ selectedCustomer }) {
   const [show, setShow] = React.useState(false);
-  // {{debugger}}
+
   const {
     control,
     handleSubmit,
@@ -30,10 +30,10 @@ function ProductHeader({ selectedCustomer }) {
     setError,
   } = useForm({});
 
-  const onDiscard = () => {
-    setShow(false);
-    reset();
-  };
+ const onDiscard = () => {
+  setShow(false);
+  reset();
+};
 
 
   const onSubmit = (data) => {
@@ -57,7 +57,7 @@ function ProductHeader({ selectedCustomer }) {
               <CardText>
                 Customer Name:{" "}
                 <strong>
-                  {selectedCustomer
+                  {selectedCustomer?.firstName
                     ? `${selectedCustomer.firstName} ${selectedCustomer.lastName}`
                     : "N/A"}
                 </strong>

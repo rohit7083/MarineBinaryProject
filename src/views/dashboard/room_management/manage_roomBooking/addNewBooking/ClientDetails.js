@@ -1,32 +1,44 @@
-import Sidebar from "@components/sidebar";
-import useJwt from "@src/auth/jwt/useJwt";
-import "primeicons/primeicons.css";
-import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import { Toast } from "primereact/toast";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { countries } from "../../../slip-management/CountryCode";
+import { Fragment, useState, useEffect, useRef } from "react";
 import RoomViewClient from "./RoomViewClient";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+import Sidebar from "@components/sidebar";
+import Repeater from "@components/repeater";
+import { countries } from "../../../slip-management/CountryCode";
+import useJwt from "@src/auth/jwt/useJwt";
 
-import { Check, Plus, X } from "react-feather";
-import { Controller, useForm } from "react-hook-form";
+import axios from "axios";
+import Flatpickr from "react-flatpickr";
+import { SlideDown } from "react-slidedown";
+import { X, Plus, Hash } from "react-feather";
 import Select, { components } from "react-select";
+import { Check } from "react-feather";
+import { useForm, Controller, set } from "react-hook-form";
 
 import { selectThemeColors } from "@utils";
 import {
-  Button,
+  Row,
   Col,
-  FormFeedback,
+  Card,
+  Form,
   Input,
   Label,
-  Row
+  Button,
+  CardBody,
+  CardText,
+  InputGroup,
+  InputGroupText,
+  CardTitle,
+  FormFeedback,
 } from "reactstrap";
 // ** Styles
 import "react-slidedown/lib/slidedown.css";
 
-import "@styles/base/pages/app-invoice.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
+import "@styles/base/pages/app-invoice.scss";
 
 import ReactCountryFlag from "react-country-flag";
 // import ViewPass from "./ViewPass";
@@ -548,7 +560,7 @@ const ClientDetails = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="postalCode">
-                Zip Code
+                Postal Code
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
@@ -564,7 +576,7 @@ const ClientDetails = ({
                 control={control}
                 render={({ field }) => (
                   <Input
-                    placeholder="Enter Zip Code"
+                    placeholder="Enter Postal Code"
                     invalid={errors.postalCode && true}
                     {...field}
                     onChange={(e) => {

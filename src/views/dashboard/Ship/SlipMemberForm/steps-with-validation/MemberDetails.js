@@ -81,6 +81,13 @@ const PersonalInfo = ({
     //     "Only letters, numbers, and spaces are allowed"
     //   ),
 
+    address: yup
+      .string()
+      .required("Address is required")
+      .matches(
+        /^[a-zA-Z0-9\s.,]+$/,
+        "Address can contain only alphanumeric characters, spaces, dots, and commas"
+      ),
     city: yup
       .string()
       .required("City is required")
@@ -104,8 +111,8 @@ const PersonalInfo = ({
       ),
     postalCode: yup
       .string()
-      .required("Zip Code is required")
-      .matches(/^[0-9]{5}$/, "Zip Code must be exactly 5 digits"),
+      .required("Postal Code is required")
+      .matches(/^[0-9]{5}$/, "Postal Code must be exactly 5 digits"),
   });
 
   const {
@@ -131,7 +138,21 @@ const PersonalInfo = ({
       secondaryPhoneNumber: null,
     },
   });
-
+  const handleSweetAlert = (title, text, next) => {
+    return MySwal.fire({
+      title,
+      text,
+      icon: "success",
+      customClass: {
+        confirmButton: "btn btn-primary",
+      },
+      buttonsStyling: false,
+    }).then(() => {
+      // if (Object.keys(errors).length === 0) {
+      stepper.next();
+      // /}
+    });
+  };
   useEffect(() => {
     if (Object.keys(formData)?.length) {
       const countryCode = countries.find(
@@ -166,6 +187,16 @@ const PersonalInfo = ({
       console.log("formData", data);
     }
   }, [reset, formData]);
+  // console.clear();
+  // console.log('watch', watch('countryCode'));
+
+  // useEffect(() => {
+  //   if (Object.keys(formData)?.length) {
+  //     const data = { ...formData};
+
+  //     reset(data);
+  //   }
+  // }, [reset, formData]);
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);
@@ -338,24 +369,13 @@ const PersonalInfo = ({
 
     field.onChange(value);
   };
-  // const addNum_Alphabetics = (e, field) => {
-  //   const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-  //   field.onChange(value);
-  // };
-  const allowOnlyFiveNumbers = (e, field) => {
-    // Keep only numbers
-    let value = e.target.value.replace(/[^0-9]/g, "");
-
-    // Limit to 5 digits
-    if (value.length > 5) {
-      value = value.slice(0, 5);
-    }
-
+  const addNum_Alphabetics = (e, field) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
     field.onChange(value);
   };
 
   const countryOptions = countries.map((country) => ({
-    value: `${country.code}-${country.dial_code}`, // unique value
+    value: country.dial_code,
     label: (
       <div style={{ display: "flex", alignItems: "center" }}>
         <ReactCountryFlag
@@ -367,7 +387,6 @@ const PersonalInfo = ({
       </div>
     ),
     code: country.code,
-    dial_code: country.dial_code, // keep dial code separately for later use
   }));
   return (
     <Fragment>
@@ -523,7 +542,8 @@ const PersonalInfo = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="address">
-                Address <span style={{ color: "red" }}>*</span>
+                Address
+                <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
                 id="address"
@@ -547,11 +567,12 @@ const PersonalInfo = ({
                 }}
                 render={({ field }) => (
                   <Input
+                    placeholder="Enter Address "
+                    invalid={errors.address && true}
                     {...field}
-                    placeholder="Enter Address"
-                    invalid={!!errors.address} // ✅ fixed invalid prop
+                    // readOnly={visible}
                     style={getReadOnlyStyle()}
-                    onChange={(e) => avoidSpecialChar(e, field)}
+                    onChange={(e) => addNum_Alphabetics(e, field)}
                   />
                 )}
               />
@@ -703,7 +724,7 @@ const PersonalInfo = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="postalCode">
-                Zip Code
+                Postal Code
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
@@ -712,12 +733,15 @@ const PersonalInfo = ({
                 control={control}
                 render={({ field }) => (
                   <Input
-                    placeholder="Enter Zip Code"
+                    placeholder="Enter Postal Code"
                     invalid={errors.postalCode && true}
                     {...field}
                     // readOnly={visible}
                     style={getReadOnlyStyle()}
-                    onChange={(e) => allowOnlyFiveNumbers(e, field)}
+                    onChange={(e) => {
+                      let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(OnlyNumAllow);
+                    }}
                   />
                 )}
               />

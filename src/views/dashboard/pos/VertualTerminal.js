@@ -1,30 +1,34 @@
-import amexCC from "@src/assets/images/icons/payments/amex-cc.png";
-import dinersCC from "@src/assets/images/icons/payments/diners-cc.png";
-import discoverCC from "@src/assets/images/icons/payments/discover-cc.png";
-import jcbCC from "@src/assets/images/icons/payments/jcb-cc.png";
-import maestroCC from "@src/assets/images/icons/payments/maestro-cc.png";
-import mastercardCC from "@src/assets/images/icons/payments/mastercard-cc.png";
-import uatpCC from "@src/assets/images/icons/payments/uatp-cc.png";
-import visaCC from "@src/assets/images/icons/payments/visa-cc.png";
-import classnames from "classnames";
-import Cleave from "cleave.js/react";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
   Card,
-  CardBody,
   CardHeader,
   CardTitle,
+  CardBody,
   Col,
-  Container,
-  Form,
   Input,
+  Form,
+  Button,
+  Label,
+  Row,
+  CardText,
   InputGroup,
   InputGroupText,
-  Label,
-  Row
 } from "reactstrap";
+import { Check, X, CreditCard } from "react-feather";
+import Cleave from "cleave.js/react";
+import classnames from "classnames";
+import { Tooltip, Container } from "reactstrap";
+import { Link } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import Select from "react-select";
+import { useEffect, useState } from "react";
+import jcbCC from "@src/assets/images/icons/payments/jcb-cc.png";
+import amexCC from "@src/assets/images/icons/payments/amex-cc.png";
+import uatpCC from "@src/assets/images/icons/payments/uatp-cc.png";
+import visaCC from "@src/assets/images/icons/payments/visa-cc.png";
+import dinersCC from "@src/assets/images/icons/payments/diners-cc.png";
+import maestroCC from "@src/assets/images/icons/payments/maestro-cc.png";
+import discoverCC from "@src/assets/images/icons/payments/discover-cc.png";
+import mastercardCC from "@src/assets/images/icons/payments/mastercard-cc.png";
 const MultipleColumnForm = () => {
   const {
     control,
@@ -159,7 +163,7 @@ const MultipleColumnForm = () => {
           <Row>
             <Col md="6" sm="12" className="mb-1">
               <Label className="form-label" for="category">
-                Zip Code
+                Zip/Postal Code
               </Label>
               <Input type="text" id="category"></Input>
             </Col>

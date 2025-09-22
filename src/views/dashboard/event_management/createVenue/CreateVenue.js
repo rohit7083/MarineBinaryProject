@@ -1,29 +1,29 @@
-import "primeicons/primeicons.css";
-import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import { Toast } from "primereact/toast";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { Toast } from "primereact/toast";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import { useNavigate } from "react-router-dom";
 import { UncontrolledAlert } from "reactstrap";
 
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
-import useJwt from "@src/auth/jwt/useJwt";
-import { ArrowLeft } from "react-feather";
 import {
-  Button,
   Card,
   CardBody,
   CardText,
   CardTitle,
   Col,
-  FormGroup,
-  Input,
   Label,
+  Input,
+  Button,
+  FormGroup,
   Row,
   Spinner,
 } from "reactstrap";
+import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 
 function CreateVenue() {
   const location = useLocation();
@@ -396,7 +396,7 @@ function CreateVenue() {
               <Row>
                 {" "}
                 <Col sm="12" className="mb-1">
-                  <Label for="postCode">Zip Code</Label>
+                  <Label for="postCode">Postal Code</Label>
                   <Controller
                     name="postCode"
                     control={control}

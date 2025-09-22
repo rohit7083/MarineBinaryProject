@@ -1252,7 +1252,7 @@ const EventForm = ({
             <Row>
               {" "}
               <Col sm="6" className="mb-1">
-                <Label for="postCode">Zip Code</Label>
+                <Label for="postCode">Postal Code</Label>
                 <Controller
                   name="postCode"
                   control={control}

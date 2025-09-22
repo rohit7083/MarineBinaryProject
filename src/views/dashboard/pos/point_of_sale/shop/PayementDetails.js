@@ -27,7 +27,7 @@ import DiscountModal from "./DiscountModal";
 export default function Payment() {
   const location = useLocation();
   const state = location.state || {};
-  const customerUid = state.selectedCustomer?.uid || null;
+  const customerUid = state.selectedCust?.uid || null;
   const uids = state.uids || [];
   const productIma = state.productIma || "";
 
@@ -166,7 +166,6 @@ export default function Payment() {
   };
 
   const fetchVariationUids = async (uids2) => {
- 
     const allVariationUids = [];
     const uidsArray = Array.isArray(uids2) ? uids2 : [uids2]; // <-- ensure array
 
@@ -182,6 +181,12 @@ export default function Payment() {
     }
 
     return allVariationUids;
+  };
+
+  const removeProduct = (idx) => {
+    const updated = [...cart];
+    updated.splice(idx, 1);
+    setCart(updated);
   };
 
   console.log(cart);

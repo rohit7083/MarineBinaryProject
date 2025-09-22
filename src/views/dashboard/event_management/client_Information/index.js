@@ -981,7 +981,7 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
             </Col>
 
             <Col md="6" className="mb-1">
-              <Label>Zip Code<span className="text-danger">*</span></Label>
+              <Label>Postal Code<span className="text-danger">*</span></Label>
               <Controller
                 name="postalCode"
                 rules={{
@@ -995,7 +995,7 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                 render={({ field }) => (
                   <Input
                     {...field}
-                    placeholder="Enter Zip Code"
+                    placeholder="Enter Postal Code"
                     invalid={!!errors.postalCode}
                     onChange={(e) => {
                       const value = e.target.value.replace(/[^0-9]/g, "");

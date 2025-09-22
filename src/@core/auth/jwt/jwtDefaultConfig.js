@@ -200,9 +200,6 @@ export default {
   virtualTerminalEndPoint : '/virtualTerminal',
   getWalkinCustomerEndPoint: '/customer/walkInCus',
 
-  // getVariationUid
-  getVariationUid:'/pos/',
-deleteProduct:'/pos/',
-
-updatedQty:'/pos/updateQuantity/'
+  //Generate Qr 
+  getAllEventQrEndPoint : '/eventQrCode'
 };

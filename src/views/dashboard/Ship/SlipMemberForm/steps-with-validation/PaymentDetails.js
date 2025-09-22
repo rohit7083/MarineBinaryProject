@@ -14,22 +14,10 @@ import Flatpickr from "react-flatpickr";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+  Button, Card, CardBody, CardHeader,
+  CardTitle, Col, Form, FormFeedback, FormGroup, Input, InputGroup,
+  InputGroupText, Label,
+  Row, Spinner, UncontrolledAlert
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -523,9 +511,12 @@ const Address = ({
       formData.append("accountNumber", data.accountNumber);
       formData.append("chequeNumber", data.chequeNumber);
       formData.append("chequeImage", file);
-    } else if (paymentMode === "Cash") {
-      formData.append("pin", encrypted);
-    } else if (paymentMode === "ChequeACH") {
+    }else if (paymentMode === "Cash") {
+       formData.append("pin", encrypted);
+
+   
+    }
+     else if (paymentMode === "ChequeACH") {
       formData.append("bankName", data.bankName);
       formData.append("nameOnAccount", data.nameOnAccount);
       formData.append("routingNumber", data.routingNumber);
@@ -745,13 +736,12 @@ const Address = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="paidIn">
-                Biling Cycle
-                <span style={{ color: "red" }}>*</span>
+                Paid In <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
                 control={control}
                 rules={{
-                  required: "Biling Cycle is required",
+                  required: "Paid In is required",
                 }}
                 name="paidIn"
                 render={({ field }) => (
@@ -1382,12 +1372,13 @@ const Address = ({
                         placeholder="Enter Card Holder's Name"
                         invalid={!!errors.nameOnCard}
                         {...field}
+                        // isDisabled={statusThree}
                         onChange={(e) => {
-                          const onlyAlphabetsWithSpace = e.target.value.replace(
-                            /[^a-zA-Z\s]/g,
+                          const onlyAlphabets = e.target.value.replace(
+                            /[^a-zA-Z]/g,
                             ""
                           );
-                          field.onChange(onlyAlphabetsWithSpace);
+                          field.onChange(onlyAlphabets);
                         }}
                       />
                     )}
