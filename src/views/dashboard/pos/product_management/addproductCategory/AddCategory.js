@@ -77,7 +77,6 @@ const MultipleColumnForm = () => {
   const fetchData = location.state || "";
   const toast = useRef(null);
 
-
   useEffect(() => {
     if (fetchData?.uid) {
       reset({
@@ -311,8 +310,9 @@ const MultipleColumnForm = () => {
                 rules={{
                   // required: "description is required",
                   pattern: {
-                    value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters (A–Z) are allowed",
+                    value: /^[a-zA-Z0-9 ,\-]*$/,
+                    message:
+                      "Only letters, numbers, spaces, commas, and dashes are allowed",
                   },
                 }}
                 render={({ field }) => (

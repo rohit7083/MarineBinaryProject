@@ -509,7 +509,7 @@ const ExistingCustomer = () => {
                 <p>Address: {displayCustomer.address}</p>
                 <p>City: {displayCustomer.city}</p>
                 <p>Country: {displayCustomer.country}</p>
-                <p>Pincode: {displayCustomer.pinCode}</p>
+                <p>Zip Code: {displayCustomer.pinCode}</p>
               </CardBody>
             </Card>
           </Col>

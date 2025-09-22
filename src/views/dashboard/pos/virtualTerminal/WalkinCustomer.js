@@ -4,6 +4,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { selectThemeColors } from '@utils';
 import Cleave from 'cleave.js/react';
 import { useEffect, useRef, useState } from 'react';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import Select from 'react-select';
 import {
   Button,
@@ -18,8 +20,6 @@ import {
   Label,
   Row
 } from 'reactstrap';
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 // ** Auth
 import useJwt from '@src/auth/jwt/useJwt';
@@ -187,7 +187,7 @@ const ExistingCustomer = () => {
                 <p>Address: {selectedCustomer.address}</p>
                 <p>City: {selectedCustomer.city}</p>
                 <p>Country: {selectedCustomer.country}</p>
-                <p>Pincode: {selectedCustomer.pinCode}</p>
+                <p>Zip Code: {selectedCustomer.pinCode}</p>
               </CardBody>
             </Card>
           </Col>

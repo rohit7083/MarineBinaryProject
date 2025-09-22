@@ -175,6 +175,11 @@ const MultipleColumnForm = () => {
   useEffect(() => {
     fetchVendorType();
   }, []);
+    const avoidSpecialChar = (e, field) => {
+    const value = e.target.value.replace(/[^a-zA-Z0-9\s,-]/g, "");
+
+    field.onChange(value);
+  };
   return (
     <Card>
       <Toast ref={toast} />
@@ -278,11 +283,20 @@ const MultipleColumnForm = () => {
               <Controller
                 name="address"
                 control={control}
-                rules={{
+                  rules={{
                   required: "Address is required",
+                  minLength: {
+                    value: 5,
+                    message: "Address must be at least 5 characters",
+                  },
+                  maxLength: {
+                    value: 200,
+                    message: "Address cannot exceed 200 characters",
+                  },
                   pattern: {
-                    value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters (A–Z) are allowed",
+                    value: /^[a-zA-Z0-9 ,\-]*$/,
+                    message:
+                      "Only letters, numbers, spaces, commas, and dashes are allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -290,6 +304,8 @@ const MultipleColumnForm = () => {
                     {...field}
                     className="form-control"
                     placeholder="address "
+                                        onChange={(e) => avoidSpecialChar(e, field)}
+
                   />
                 )}
               />

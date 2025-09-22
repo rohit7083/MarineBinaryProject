@@ -373,7 +373,7 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                     <Input
                       {...field}
                       id="pinCode"
-                      placeholder="Enter PIN code"
+                      placeholder="Enter Zip code"
                       invalid={!!errors.pinCode}
                       maxLength={6}
                     />

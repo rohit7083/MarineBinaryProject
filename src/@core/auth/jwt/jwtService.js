@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
 // gandu rohit
 import Swal from "sweetalert2";
@@ -727,9 +727,9 @@ export default class JwtService {
   deleteProduct(uid, vuid) {
     return axios.delete(`${this.jwtConfig.deleteProduct}${uid}/items/${vuid}`);
   }
-  // updatedQty(uid, quantity) {
-  //   return axios.put(`${this.jwtConfig.updatedQty}${uid}?quantity=${quantity}`);
-  // }
+  updatedQty(uid, quantity) {
+    return axios.put(`${this.jwtConfig.updatedQty}${uid}?quantity=${quantity}`);
+  }
 
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {

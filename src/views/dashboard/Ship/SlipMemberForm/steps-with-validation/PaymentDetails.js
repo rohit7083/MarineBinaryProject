@@ -1409,6 +1409,19 @@ const Address = ({
                     control={control}
                     rules={{
                       required: "Address is required",
+                      minLength: {
+                        value: 5,
+                        message: "Address must be at least 5 characters",
+                      },
+                      maxLength: {
+                        value: 200,
+                        message: "Address cannot exceed 200 characters",
+                      },
+                      pattern: {
+                        value: /^[a-zA-Z0-9 ,\-.]*$/,
+                        message:
+                          "Only letters, numbers, spaces, commas, dashes, and periods are allowed",
+                      },
                     }}
                     render={({ field }) => (
                       <Input
@@ -1418,11 +1431,11 @@ const Address = ({
                         {...field}
                         // isDisabled={statusThree}
                         onChange={(e) => {
-                          const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
+                          const allowedChars = e.target.value.replace(
+                            /[^a-zA-Z0-9\s,.\-]/g,
                             ""
                           );
-                          field.onChange(onlyAlphabets);
+                          field.onChange(allowedChars);
                         }}
                       />
                     )}
@@ -1531,30 +1544,31 @@ const Address = ({
 
               <Row>
                 <Col md="6" className="mb-1">
-                  <Label className="form-label" for="pincode">
-                    Pincode <span style={{ color: "red" }}>*</span>
+                  <Label className="form-label" for="pinCode">
+                    Zip Code <span style={{ color: "red" }}>*</span>
                   </Label>
                   <Controller
                     name="pinCode"
+                    control={control}
                     rules={{
-                      required: "Pincode is required",
+                      required: "Zip Code is required",
                       pattern: {
-                        value: /^\d{6}$/,
-                        message: "Pincode must be exactly 6 digits",
+                        value: /^\d{5}$/, // ✅ exactly 5 digits
+                        message: "Zip Code must be exactly 5 digits",
                       },
                     }}
-                    control={control}
                     render={({ field }) => (
                       <Input
                         type="text"
-                        placeholder="Enter Pincode"
+                        placeholder="Enter Zip Code"
                         invalid={!!errors.pinCode}
                         {...field}
                         onChange={(e) => {
-                          // Allow only numbers
+                          // allow only numbers
                           const onlyNumbers = e.target.value.replace(/\D/g, "");
                           field.onChange(onlyNumbers);
                         }}
+                        maxLength={5} // optional: prevent typing more than 5 digits
                       />
                     )}
                   />

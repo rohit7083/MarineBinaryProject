@@ -38,8 +38,7 @@ export default function Payment() {
   const [loading, setLoading] = useState(false);
   const [discountModal, setDiscountModal] = useState(false);
   const [verifyDiscount, setVerifyDiscount] = useState(false);
-  const [variationApi, setVariationApi] = useState(false);
-  const [variationUid, setVariationUid] = useState(null);
+  const [singleVariationUid, setSingleVariationUid] = useState(null);
 
   const colourOptions = [
     { value: "3", label: "Cash" },
@@ -166,53 +165,37 @@ export default function Payment() {
     }
   };
 
-  //   useEffect(() => {
-  //   const fetchVariation = async () => {
-  //     if (variationApi === true) {
-  //       try {
-  //         const varRes = await useJwt.getVariationUid(uids);
-  //         const vuid=varRes?.data?.content?.items?.map((x)=>x?.uid);
-  //         setVariationUid(vuid);
-  //         console.log(varRes);
-  //       } catch (error) {
-  //         console.error("Error fetching variation:", error);
-  //       }
-  //     }
-  //   };
+ const fetchVariationUids = async (uids2) => {
+  {{debugger}}
+  const allVariationUids = [];
+  const uidsArray = Array.isArray(uids2) ? uids2 : [uids2]; // <-- ensure array
 
-  //   fetchVariation();
-  // }, [variationApi, uids]);
-
-  //   const removeProduct = async (idx) => {
-  //     setVariationApi(true);
-  //     try {
-  //       {{debugger}}
-  //       const res = await useJwt.deleteProduct(uids,variationUid);
-  //       console.log(res);
-
-  //       const updated = [...cart];
-  //       updated.splice(idx, 1);
-  //       setCart(updated);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-console.log(cart)
-  const removeProduct = async (idx) => {
-   {{debugger}}
+  for (const uid of uidsArray) {
     try {
-      // 1. Fetch variation UID directly
-      const varRes = await useJwt.getVariationUid(uids);
-      const vuid = varRes?.data?.content?.items[idx]?.uid || [];
+      const varRes = await useJwt.getVariationUid(uid);
+      const items = varRes?.data?.content?.items || [];
+      const uidsList = items.map((item) => item.uid);
+      allVariationUids.push(...uidsList);
+    } catch (err) {
+      console.error(`Error fetching variation UIDs for ${uid}:`, err);
+    }
+  }
+
+  return allVariationUids;
+};
+
+
+  console.log(cart);
+  const removeProduct = async (idx) => {
+    try {
+          const variationUids = await fetchVariationUids();
+
+      const vuid = variationUids[idx];
+      if (!vuid) throw new Error("Variation UID not found");
 
       // 2. Call delete API with fresh UID
       const res = await useJwt.deleteProduct(uids, vuid);
-      setCart(pre=>pre.filter((_,i)=>i!=idx))
-
-      // 3. Update cart state
-      // const updated = [...cart];
-      // updated.splice(idx, 1);
-      // setCart(updated);
+      setCart((pre) => pre.filter((_, i) => i != idx));
     } catch (error) {
       console.error("Error removing product:", error);
     }
@@ -253,8 +236,17 @@ console.log(cart)
       return;
     }
 
-    setLoading(true);
     try {
+      setLoading(true);
+    const variationUids = await fetchVariationUids();
+
+{{debugger}}
+      await Promise.all(
+        cart.map((p, idx) =>
+          useJwt.updatedQty(variationUids[idx], p.quantity)
+        )
+      );
+
       const pin = data.otp.join("");
       const encrypted = encryptAES(pin);
       const formData = new FormData();

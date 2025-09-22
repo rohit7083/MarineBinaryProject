@@ -71,15 +71,15 @@ const PersonalInfo = ({
     //   .string()
     //   .matches(/^[0-9]{10}$/, "Phone Number must be exactly 10 digits")
     //   .required("Phone Number is required"),
-    address: yup
-      .string()
-      .required("Address is required")
-      .min(5, "Address must be at least 5 characters")
-      .max(200, "Address cannot exceed 200 characters")
-      .matches(
-        /^[a-zA-Z0-9 ]*$/,
-        "Only letters, numbers, and spaces are allowed"
-      ),
+    // address: yup
+    //   .string()
+    //   .required("Address is required")
+    //   .min(5, "Address must be at least 5 characters")
+    //   .max(200, "Address cannot exceed 200 characters")
+    //   .matches(
+    //     /^[a-zA-Z0-9 ]*$/,
+    //     "Only letters, numbers, and spaces are allowed"
+    //   ),
 
     city: yup
       .string()
@@ -334,7 +334,8 @@ const PersonalInfo = ({
   console.log("error", errors);
 
   const avoidSpecialChar = (e, field) => {
-    const value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+    const value = e.target.value.replace(/[^a-zA-Z0-9\s,-]/g, "");
+
     field.onChange(value);
   };
   // const addNum_Alphabetics = (e, field) => {
@@ -539,8 +540,9 @@ const PersonalInfo = ({
                     message: "Address cannot exceed 200 characters",
                   },
                   pattern: {
-                    value: /^[a-zA-Z0-9 ]*$/, // ✅ updated regex
-                    message: "Only letters, numbers, and spaces are allowed",
+                    value: /^[a-zA-Z0-9 ,\-]*$/,
+                    message:
+                      "Only letters, numbers, spaces, commas, and dashes are allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -782,25 +784,42 @@ const PersonalInfo = ({
               <Controller
                 name="secondaryPhoneNumber"
                 control={control}
-                render={({ field }) => (
-                  <Input
-                    placeholder="Enter Secondary Phone Number"
-                    invalid={errors.secondaryPhoneNumber && true}
-                    {...field}
-                    style={getReadOnlyStyle()}
-                    onChange={(e) => {
-                      let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
-                      field.onChange(OnlyNumAllow == "" ? null : OnlyNumAllow);
-                      console.log(OnlyNumAllow);
-                    }}
-                  />
+                rules={{
+                  pattern: {
+                    value: /^[0-9]*$/, // only numbers
+                    message: "Only numbers are allowed",
+                  },
+                  minLength: {
+                    value: 10, // optional: enforce 10 digits if required
+                    message: "Phone number must be at least 10 digits",
+                  },
+                  maxLength: {
+                    value: 15, // optional: max length
+                    message: "Phone number cannot exceed 15 digits",
+                  },
+                }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <Input
+                      placeholder="Enter Secondary Phone Number"
+                      invalid={fieldState.error && true}
+                      {...field}
+                      style={getReadOnlyStyle()}
+                      onChange={(e) => {
+                        // allow only numbers
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers === "" ? null : onlyNumbers);
+                      }}
+                    />
+                    {fieldState.error && (
+                      <FormFeedback>{fieldState.error.message}</FormFeedback>
+                    )}
+                  </>
                 )}
               />
-              {errors.secondaryPhoneNumber && (
-                <FormFeedback>
-                  {errors.secondaryPhoneNumber.message}
-                </FormFeedback>
-              )}
             </Col>
           </Row>
 
