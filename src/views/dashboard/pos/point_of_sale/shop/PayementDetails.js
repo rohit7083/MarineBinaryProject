@@ -165,41 +165,40 @@ export default function Payment() {
     }
   };
 
- const fetchVariationUids = async (uids2) => {
-  {{debugger}}
-  const allVariationUids = [];
-  const uidsArray = Array.isArray(uids2) ? uids2 : [uids2]; // <-- ensure array
+  const fetchVariationUids = async (uids2) => {
+ 
+    const allVariationUids = [];
+    const uidsArray = Array.isArray(uids2) ? uids2 : [uids2]; // <-- ensure array
 
-  for (const uid of uidsArray) {
-    try {
-      const varRes = await useJwt.getVariationUid(uid);
-      const items = varRes?.data?.content?.items || [];
-      const uidsList = items.map((item) => item.uid);
-      allVariationUids.push(...uidsList);
-    } catch (err) {
-      console.error(`Error fetching variation UIDs for ${uid}:`, err);
+    for (const uid of uidsArray) {
+      try {
+        const varRes = await useJwt.getVariationUid(uid);
+        const items = varRes?.data?.content?.items || [];
+        const uidsList = items.map((item) => item.uid);
+        allVariationUids.push(...uidsList);
+      } catch (err) {
+        console.error(`Error fetching variation UIDs for ${uid}:`, err);
+      }
     }
-  }
 
-  return allVariationUids;
-};
-
+    return allVariationUids;
+  };
 
   console.log(cart);
-  const removeProduct = async (idx) => {
-    try {
-          const variationUids = await fetchVariationUids();
+  // const removeProduct = async (idx) => {
+  //   try {
+  //     // const variationUids = await fetchVariationUids();
 
-      const vuid = variationUids[idx];
-      if (!vuid) throw new Error("Variation UID not found");
+  //     const vuid = variationUids[idx];
+  //     if (!vuid) throw new Error("Variation UID not found");
 
-      // 2. Call delete API with fresh UID
-      const res = await useJwt.deleteProduct(uids, vuid);
-      setCart((pre) => pre.filter((_, i) => i != idx));
-    } catch (error) {
-      console.error("Error removing product:", error);
-    }
-  };
+  //     // 2. Call delete API with fresh UID
+  //     const res = await useJwt.deleteProduct(uids, vuid);
+  //     setCart((pre) => pre.filter((_, i) => i != idx));
+  //   } catch (error) {
+  //     console.error("Error removing product:", error);
+  //   }
+  // };
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -238,13 +237,15 @@ export default function Payment() {
 
     try {
       setLoading(true);
-    const variationUids = await fetchVariationUids();
+      const variationUids = await fetchVariationUids();
 
-{{debugger}}
+      {
+        {
+          debugger;
+        }
+      }
       await Promise.all(
-        cart.map((p, idx) =>
-          useJwt.updatedQty(variationUids[idx], p.quantity)
-        )
+        cart.map((p, idx) => useJwt.updatedQty(variationUids[idx], p.quantity))
       );
 
       const pin = data.otp.join("");
