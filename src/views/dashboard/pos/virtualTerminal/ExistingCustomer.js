@@ -792,6 +792,7 @@ const ExistingCustomer = () => {
                     render={({ field }) => (
                       <Cleave
                         {...field}
+                        type="password"
                         id='new-cvv'
                         placeholder='654'
                         className={`form-control ${errors.newCvv ? 'is-invalid' : ''}`}

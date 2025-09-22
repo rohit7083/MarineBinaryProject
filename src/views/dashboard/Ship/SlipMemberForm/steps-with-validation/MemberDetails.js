@@ -590,7 +590,6 @@ const PersonalInfo = ({
               <Controller
                 name="countryCode"
                 control={control}
-                // defaultValue={countryOptions[0]}
                 rules={{
                   required: "Country code is required",
                 }}

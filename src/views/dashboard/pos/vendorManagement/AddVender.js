@@ -9,7 +9,8 @@ import ReactCountryFlag from "react-country-flag";
 import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import "react-phone-input-2/lib/bootstrap.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import Select from "react-select";
 import {
   Button,
@@ -22,7 +23,7 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 import { countries } from "../../slip-management/CountryCode";
 import NavItems from "../product_management/NavItems";
@@ -42,13 +43,12 @@ const MultipleColumnForm = () => {
       // emailId: "aa@gmail.com",
     },
   });
-
+  const navigate = useNavigate();
   const location = useLocation();
   const toast = useRef(null);
   const [errMsz, seterrMsz] = useState("");
 
   const vendorData = location.state;
-  console.log("vendor ddata ", vendorData);
   const [vType, setVType] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -71,19 +71,16 @@ const MultipleColumnForm = () => {
   const onSubmit = async (data) => {
     seterrMsz("");
 
-
-    const SelectedVendor=data?.vendorType?.map((x)=>{
+    const SelectedVendor = data?.vendorType?.map((x) => {
       return {
         uid: x.value,
       };
-    })
+    });
 
-    
     const payload = {
       ...data,
       countryCode: data.countryCode?.value || "",
-        vendorType: SelectedVendor
-
+      vendorType: SelectedVendor,
     };
     console.log("data", data);
 
@@ -93,12 +90,19 @@ const MultipleColumnForm = () => {
 
         const res = await useJwt.addVender(payload);
         console.log("Response from API", res);
-        toast.current.show({
-          severity: "success",
-          summary: " Successfully",
-          detail: "Vendor Created Successfully.",
-          life: 2000,
-        });
+        if (res?.data?.code === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Successfully",
+            detail: "Vendor Created Successfully.",
+            life: 2000, // Toast will disappear after 2 seconds
+          });
+
+          // Delay navigation until toast is done
+          setTimeout(() => {
+            navigate("/pos/VendorManage");
+          }, 2000); // same as toast life
+        }
       } catch (error) {
         console.log("Error submitting form", error);
         if (error.response && error.response.data) {
@@ -138,10 +142,6 @@ const MultipleColumnForm = () => {
     }
   };
 
-  useEffect(() => {
-    reset(vendorData?.venderData);
-  }, [reset, vendorData]);
-
   const countryOptions = countries.map((country) => ({
     value: country.dial_code,
     label: (
@@ -156,6 +156,20 @@ const MultipleColumnForm = () => {
     ),
     code: country.code,
   }));
+
+  useEffect(() => {
+    if (vendorData?.venderData) {
+    
+      const selectedCountry = countryOptions.find(
+        (c) => c.value === vendorData.venderData.countryCode
+      );
+
+      reset({
+        countryCode: selectedCountry || null, // must be full option object
+        ...vendorData.venderData,
+      });
+    }
+  }, [vendorData, reset, countryOptions]);
 
   const fetchVendorType = async () => {
     try {
@@ -175,7 +189,7 @@ const MultipleColumnForm = () => {
   useEffect(() => {
     fetchVendorType();
   }, []);
-    const avoidSpecialChar = (e, field) => {
+  const avoidSpecialChar = (e, field) => {
     const value = e.target.value.replace(/[^a-zA-Z0-9\s,-]/g, "");
 
     field.onChange(value);
@@ -202,7 +216,6 @@ const MultipleColumnForm = () => {
         <div className="d-flex mt-md-0 mt-1">
           <div className="d-flex  mt-2 justify-content-start gap-2">
             <NavItems />
-          
           </div>
         </div>
       </CardHeader>
@@ -283,7 +296,7 @@ const MultipleColumnForm = () => {
               <Controller
                 name="address"
                 control={control}
-                  rules={{
+                rules={{
                   required: "Address is required",
                   minLength: {
                     value: 5,
@@ -304,8 +317,7 @@ const MultipleColumnForm = () => {
                     {...field}
                     className="form-control"
                     placeholder="address "
-                                        onChange={(e) => avoidSpecialChar(e, field)}
-
+                    onChange={(e) => avoidSpecialChar(e, field)}
                   />
                 )}
               />
@@ -345,10 +357,13 @@ const MultipleColumnForm = () => {
               <Label sm="3" for="phone">
                 Country Code
               </Label>
+
               <Controller
                 name="countryCode"
                 control={control}
-                defaultValue={countryOptions[0]}
+                rules={{
+                  required: "Country code is required",
+                }}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -405,8 +420,7 @@ const MultipleColumnForm = () => {
                 <Select
                   {...field}
                   options={vType}
-                 theme={selectThemeColors}
-                  
+                  theme={selectThemeColors}
                   isClearable
                   isMulti
                   className={`react-select ${

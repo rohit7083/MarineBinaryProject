@@ -321,6 +321,7 @@ const ExistingCustomer = () => {
                   control={control}
                   render={({ field }) => (
                     <Cleave
+                    type="password"
                       {...field}
                       id='new-cvv'
                       placeholder='654'

@@ -30,7 +30,7 @@ export default function Payment() {
   const customerUid = state.selectedCust?.uid || null;
   const uids = state.uids || [];
   const productIma = state.productIma || "";
-
+// {{debugger}}
   const navigate = useNavigate();
   const toast = useRef(null);
   const [cart, setCart] = useState(location.state?.selectedProducts || []);
@@ -103,6 +103,7 @@ export default function Payment() {
     };
 
     try {
+      // {{debugger}}
       const res = await useJwt.posProductdis(payload);
       console.log(res);
       if (res?.data?.code === 200) {
@@ -148,13 +149,63 @@ export default function Payment() {
   useEffect(() => {
     setValue("finalAmount", totalToPay);
   }, [totalToPay, setValue]);
-  // --- CART OPERATIONS ---
+ 
+
+
+// const updateQty = async (idx, newQty) => {
+//   // Clone cart to avoid direct state mutation
+//   const updatedCart = [...cart];
+
+//   // Product object for updating state
+//   const cartProduct = updatedCart[idx];
+
+//   // UID (or variation object) from your uids array
+//   const uid = uids[idx];
+
+//   // Update cart product locally
+//   cartProduct.quantity = newQty;
+//   cartProduct.totalPrice = cartProduct.unitPrice * newQty;
+//   setCart(updatedCart);
+
+//   try {
+//     // Send uid + newQty to API
+//     const response = await useJwt.getVariationUid(uid, newQty);
+//     console.log("Quantity updated successfully", response);
+//   } catch (error) {
+//     console.error("Failed to update quantity", error);
+//     // Optionally revert state if API fails
+//     cartProduct.quantity = cart[idx].quantity;
+//     cartProduct.totalPrice = cart[idx].totalPrice;
+//     setCart([...cart]);
+//   }
+// };
+
+
+// const incrementQty = (idx) => {
+//   const newQty = cart[idx].quantity + 1;
+//   updateQty(idx, newQty);
+// };
+
+// const decrementQty = (idx) => {
+//   if (cart[idx].quantity > 1) {
+//     const newQty = cart[idx].quantity - 1;
+//     updateQty(idx, newQty);
+//   }
+// };
+
+
+
   const incrementQty = (idx) => {
+    
     const updated = [...cart];
     updated[idx].quantity += 1;
     updated[idx].totalPrice = updated[idx].unitPrice * updated[idx].quantity;
     setCart(updated);
   };
+
+
+  
+
 
   const decrementQty = (idx) => {
     const updated = [...cart];
@@ -165,23 +216,19 @@ export default function Payment() {
     }
   };
 
-  const fetchVariationUids = async (uids2) => {
-    const allVariationUids = [];
-    const uidsArray = Array.isArray(uids2) ? uids2 : [uids2]; // <-- ensure array
-
-    for (const uid of uidsArray) {
-      try {
-        const varRes = await useJwt.getVariationUid(uid);
-        const items = varRes?.data?.content?.items || [];
-        const uidsList = items.map((item) => item.uid);
-        allVariationUids.push(...uidsList);
-      } catch (err) {
-        console.error(`Error fetching variation UIDs for ${uid}:`, err);
-      }
-    }
-
-    return allVariationUids;
-  };
+// useEffect(() => {
+// const fetchhvariationUid=async(uid)=>{
+//   {{debugger}}
+//   try {
+//      const varRes = await useJwt.getVariationUid(uid);
+//       const items = varRes?.data?.content?.items || [];
+//   } catch (error) {
+//     console.log(error);
+    
+//   }
+// }
+// fetchhvariationUid();
+// },[onSubmit])
 
   const removeProduct = (idx) => {
     const updated = [...cart];
@@ -189,10 +236,8 @@ export default function Payment() {
     setCart(updated);
   };
 
-  console.log(cart);
   // const removeProduct = async (idx) => {
   //   try {
-  //     // const variationUids = await fetchVariationUids();
 
   //     const vuid = variationUids[idx];
   //     if (!vuid) throw new Error("Variation UID not found");
@@ -242,16 +287,12 @@ export default function Payment() {
 
     try {
       setLoading(true);
-      const variationUids = await fetchVariationUids();
 
-      {
-        {
-          debugger;
-        }
-      }
-      await Promise.all(
-        cart.map((p, idx) => useJwt.updatedQty(variationUids[idx], p.quantity))
-      );
+  
+      // await Promise.all(
+      //   uids.map(uid => useJwt.updatedQty(uid, item.quantity))
+      // );
+    
 
       const pin = data.otp.join("");
       const encrypted = encryptAES(pin);

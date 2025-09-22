@@ -1,5 +1,3 @@
-
-
 // ** Auth Endpoints
 export default {
   //  loginEndpoint: '/jwt/login', //temp
@@ -179,27 +177,29 @@ export default {
   //Customer
   addNewCustomerEndPoint: "/customer/",
   getAllCustomer: "/customer",
-  getWalkinCustomer:'/customer/walkInCus',
-  qtypos:'/pos/order',
-  posProductdis:"/pos/assCustDis",
-  posPayment:"/pos/payment",
+  getWalkinCustomer: "/customer/walkInCus",
+  qtypos: "/pos/order",
+  posProductdis: "/pos/assCustDis",
+  posPayment: "/pos/payment",
 
   //customer management
-  addCustomer:'/customer/',
-  updateCustomer:'/customer/',
-  deleteCustomer:'/customer/',
-  getAllCustomer:'/customer',
+  addCustomer: "/customer/",
+  updateCustomer: "/customer/",
+  deleteCustomer: "/customer/",
+  getAllCustomer: "/customer",
 
   //get images of products
-  getImages:'/productVariationImage/sImages/file/',
- //rent Roll
-  viewRentRollEndpoint : '/slipRentRoll/rent-roll',
- InversionRentRollEndpoint :'slipRentRoll/inverse-rent-roll',
- 
- //virtual Terminal
-  virtualTerminalEndPoint : '/virtualTerminal',
-  getWalkinCustomerEndPoint: '/customer/walkInCus',
+  getImages: "/productVariationImage/sImages/file/",
+  //rent Roll
+  viewRentRollEndpoint: "/slipRentRoll/rent-roll",
+  InversionRentRollEndpoint: "slipRentRoll/inverse-rent-roll",
 
-  //Generate Qr 
-  getAllEventQrEndPoint : '/eventQrCode'
+  //virtual Terminal
+  virtualTerminalEndPoint: "/virtualTerminal",
+  getWalkinCustomerEndPoint: "/customer/walkInCus",
+
+  //Generate Qr
+  getAllEventQrEndPoint: "/eventQrCode",
+  getVariationUid:'/pos/',
+  updatedQty:'/pos/updateQuantity/',
 };
