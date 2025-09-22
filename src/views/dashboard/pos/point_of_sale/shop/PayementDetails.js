@@ -230,11 +230,18 @@ export default function Payment() {
 // fetchhvariationUid();
 // },[onSubmit])
 
-  const removeProduct = (idx) => {
-    const updated = [...cart];
+  // const removeProduct = (idx) => {
+  //   const updated = [...cart];
+  //   updated.splice(idx, 1);
+  //   setCart(updated);
+  // };
+const removeProduct = (idx) => {
+  setCart((prevCart) => {
+    const updated = [...prevCart];
     updated.splice(idx, 1);
-    setCart(updated);
-  };
+    return updated;
+  });
+};
 
   // const removeProduct = async (idx) => {
   //   try {
