@@ -14,10 +14,22 @@ import Flatpickr from "react-flatpickr";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Button, Card, CardBody, CardHeader,
-  CardTitle, Col, Form, FormFeedback, FormGroup, Input, InputGroup,
-  InputGroupText, Label,
-  Row, Spinner, UncontrolledAlert
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -511,12 +523,9 @@ const Address = ({
       formData.append("accountNumber", data.accountNumber);
       formData.append("chequeNumber", data.chequeNumber);
       formData.append("chequeImage", file);
-    }else if (paymentMode === "Cash") {
-       formData.append("pin", encrypted);
-
-   
-    }
-     else if (paymentMode === "ChequeACH") {
+    } else if (paymentMode === "Cash") {
+      formData.append("pin", encrypted);
+    } else if (paymentMode === "ChequeACH") {
       formData.append("bankName", data.bankName);
       formData.append("nameOnAccount", data.nameOnAccount);
       formData.append("routingNumber", data.routingNumber);
@@ -736,7 +745,7 @@ const Address = ({
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="paidIn">
-                Paid In <span style={{ color: "red" }}>*</span>
+                Billing Cycle <span style={{ color: "red" }}>*</span>
               </Label>
               <Controller
                 control={control}
@@ -1365,20 +1374,35 @@ const Address = ({
                   <Controller
                     name="nameOnCard"
                     control={control}
-                    rules={{ required: "Card Holder's Name is required" }}
+                    rules={{
+                      required: "Card Holder's Name is required",
+                      pattern: {
+                        value: /^[A-Za-z ]+$/, // allow alphabets and spaces only
+                        message:
+                          "Only alphabetic characters and spaces allowed",
+                      },
+                      minLength: {
+                        value: 2,
+                        message: "Name must be at least 2 characters",
+                      },
+                      maxLength: {
+                        value: 50,
+                        message: "Name must be at most 50 characters",
+                      },
+                    }}
                     render={({ field }) => (
                       <Input
                         type="text"
                         placeholder="Enter Card Holder's Name"
                         invalid={!!errors.nameOnCard}
                         {...field}
-                        // isDisabled={statusThree}
                         onChange={(e) => {
-                          const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
+                          // Allow only letters and spaces
+                          const onlyAlphabetsAndSpaces = e.target.value.replace(
+                            /[^a-zA-Z ]/g,
                             ""
                           );
-                          field.onChange(onlyAlphabets);
+                          field.onChange(onlyAlphabetsAndSpaces);
                         }}
                       />
                     )}
@@ -1451,10 +1475,9 @@ const Address = ({
                         placeholder="Enter City"
                         invalid={!!errors.city}
                         {...field}
-                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
+                            /[^a-zA-Z ]/g,
                             ""
                           );
                           field.onChange(onlyAlphabets);
@@ -1485,10 +1508,9 @@ const Address = ({
                         placeholder="Enter State"
                         invalid={!!errors.state}
                         {...field}
-                        // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
+                            /[^a-zA-Z ]/g,
                             ""
                           );
                           field.onChange(onlyAlphabets);
@@ -1500,37 +1522,31 @@ const Address = ({
                     <FormFeedback>{errors.state.message}</FormFeedback>
                   )}
                 </Col>
-                <Col md="6" className="mb-1">
-                  <Label className="form-label" for="country">
-                    Country <span style={{ color: "red" }}>*</span>
-                  </Label>
-                  <Controller
-                    name="country"
-                    rules={{
-                      required: "Country is required",
-                    }}
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        type="text"
-                        placeholder="Enter Country"
-                        invalid={!!errors.country}
-                        {...field}
-                        // isDisabled={statusThree}
-                        onChange={(e) => {
-                          const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
-                            ""
-                          );
-                          field.onChange(onlyAlphabets);
-                        }}
-                      />
-                    )}
-                  />
-                  {errors.country && (
-                    <FormFeedback>{errors.country.message}</FormFeedback>
-                  )}
-                </Col>
+            <Col md="6" className="mb-1">
+  <Label className="form-label" for="country">
+    Country <span style={{ color: "red" }}>*</span>
+  </Label>
+  <Controller
+    name="country"
+    rules={{
+      required: "Country is required",
+    }}
+    control={control}
+    render={({ field }) => (
+      <Input
+        type="text"
+        placeholder="Enter Country"
+        invalid={!!errors.country}
+        {...field}
+        onChange={(e) => {
+          const onlyAlphabets = e.target.value.replace(/[^a-zA-Z ]/g, "");
+          field.onChange(onlyAlphabets);
+        }}
+      />
+    )}
+  />
+  {errors.country && <FormFeedback>{errors.country.message}</FormFeedback>}
+</Col>
               </Row>
 
               <Row>
@@ -1601,13 +1617,11 @@ const Address = ({
                         invalid={!!errors.bankName}
                         {...field}
                         disabled={isAssign}
-                        onChange={(e) => {
-                          const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
-                            ""
-                          );
-                          field.onChange(onlyAlphabets);
-                        }}
+                      onChange={(e) => {
+  const onlyAlphabetsAndSpaces = e.target.value.replace(/[^a-zA-Z ]/g, "");
+  field.onChange(onlyAlphabetsAndSpaces);
+}}
+
                       />
                     )}
                   />
@@ -1639,8 +1653,7 @@ const Address = ({
                         // isDisabled={statusThree}
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
-                            ""
+                           /[^a-zA-Z ]/g, ""
                           );
                           field.onChange(onlyAlphabets);
                         }}
@@ -1879,8 +1892,7 @@ const Address = ({
 
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
-                            ""
+                          /[^a-zA-Z ]/g, ""
                           );
                           field.onChange(onlyAlphabets);
                         }}
@@ -1925,8 +1937,7 @@ const Address = ({
 
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
-                            ""
+                           /[^a-zA-Z ]/g, ""
                           );
                           field.onChange(onlyAlphabets);
                         }}

@@ -16,15 +16,15 @@ import {
 } from "reactstrap";
 
 const defaultValues = {
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  emailId: "",
-  address: "",
-  city: "",
-  state: "",
-  country: "",
-  pinCode: "",
+  firstName: "Rohit ",
+  lastName: "son  ",
+  phoneNumber: "1236547890",
+  emailId: "E@gmail.com",
+  address: "nashik",
+  city: "nashik",
+  state: "ashik",
+  country: "nashik",
+  pinCode: "25625",
 };
 
 const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
@@ -46,6 +46,8 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
   }, [row, reset]);
 
   const onSubmit = async (data) => {
+    console.log("data",data);
+    
     try {
       setLoading(true);
       setErr(""); // clear previous error
@@ -357,7 +359,7 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
               {/* PIN Code */}
               <Col md={6}>
                 <Label className="form-label" htmlFor="pinCode">
-                  PIN Code *
+                  ZIp Code *
                 </Label>
                 <Controller
                   name="pinCode"
@@ -365,8 +367,8 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                   rules={{
                     required: "PIN code is required",
                     pattern: {
-                      value: /^[0-9]{6}$/,
-                      message: "Must be 6 digits",
+                      value: /^[0-9]{5}$/,
+                      message: "Must be 5 digits",
                     },
                   }}
                   render={({ field }) => (

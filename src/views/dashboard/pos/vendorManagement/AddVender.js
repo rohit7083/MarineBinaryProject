@@ -79,7 +79,7 @@ const MultipleColumnForm = () => {
 
     const payload = {
       ...data,
-      countryCode: data.countryCode?.value || "",
+      countryCode: data.countryCode?.dial_code || "",
       vendorType: SelectedVendor,
     };
     console.log("data", data);
@@ -143,7 +143,7 @@ const MultipleColumnForm = () => {
   };
 
   const countryOptions = countries.map((country) => ({
-    value: country.dial_code,
+    value: `${country.code}-${country.dial_code}`, // unique value
     label: (
       <div style={{ display: "flex", alignItems: "center" }}>
         <ReactCountryFlag
@@ -155,21 +155,31 @@ const MultipleColumnForm = () => {
       </div>
     ),
     code: country.code,
+    dial_code: country.dial_code, // keep dial code separately for later use
   }));
 
-  useEffect(() => {
-    if (vendorData?.venderData) {
-    
-      const selectedCountry = countryOptions.find(
-        (c) => c.value === vendorData.venderData.countryCode
-      );
+ useEffect(() => {
+  if (vendorData?.venderData) {
+    // map countryCode from backend into a full option object
+    const selectedCountry = countryOptions.find(
+      (c) =>
+        c.value === vendorData.venderData.countryCode || // case: dial_code
+        c.code === vendorData.venderData.countryCode     // case: ISO code
+    );
+// {{debugger}}
+    reset({
+      ...vendorData.venderData, // prefill other plain inputs
 
-      reset({
-        countryCode: selectedCountry || null, // must be full option object
-        ...vendorData.venderData,
-      });
-    }
-  }, [vendorData, reset, countryOptions]);
+      countryCode: selectedCountry || null, // react-select expects the object
+
+      vendorType: vendorData?.venderData?.vendorType?.map((type) => ({
+        value: type.uid,
+        label: type.typeName,
+      })) || [], // react-select multi expects array of objects
+    });
+  }
+}, [vendorData, reset, countryOptions]);
+
 
   const fetchVendorType = async () => {
     try {
@@ -358,28 +368,24 @@ const MultipleColumnForm = () => {
                 Country Code
               </Label>
 
-              <Controller
-                name="countryCode"
-                control={control}
-                rules={{
-                  required: "Country code is required",
-                }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={countryOptions}
-                    onChange={(option) => field.onChange(option)}
-                    value={countryOptions.find(
-                      (option) => option.value === field.value?.value
-                    )}
-                  />
-                )}
-              />
-              {errors.countryCode && (
-                <small className="text-danger">
-                  {errors.countryCode.message}
-                </small>
-              )}
+            <Controller
+  name="countryCode"
+  control={control}
+  rules={{ required: "Country code is required" }}
+  render={({ field }) => (
+    <Select
+      {...field}
+      options={countryOptions}
+      value={field.value} // ✅ reset provides full object
+      onChange={(option) => field.onChange(option)}
+    />
+  )}
+/>
+{errors.countryCode && (
+  <small className="text-danger">{errors.countryCode.message}</small>
+)}
+
+        
             </Col>
             <Col md="6" className="mb-1">
               <Label sm="3" for="phone">
@@ -390,50 +396,65 @@ const MultipleColumnForm = () => {
                 name="phoneNumber"
                 control={control}
                 defaultValue=""
-                rules={{ required: "Phone number is required" }}
+                rules={{
+                  required: "Phone number is required",
+                  // pattern: {
+                  //   value: /^[0-9]{10}$/, // Only digits, exactly 10 numbers
+                  //   message: "Phone number must be 10 digits",
+                  // },
+                  minLength: {
+                    value: 10,
+                    message: "Phone number must be at least 10 digits",
+                  },
+                  maxLength: {
+                    value: 15,
+                    message: "Phone number cannot exceed 15 digits",
+                  },
+                }}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="tel"
                     placeholder="Enter phone number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                   />
                 )}
               />
+
               {errors.phoneNumber && (
                 <small className="text-danger">
                   {errors.phoneNumber.message}
                 </small>
               )}
-              {/* </FormGroup> */}
             </Col>
           </Row>
 
           <Col sm="12" className="mb-1">
             <Label for="typeName">Vendor Type</Label>
 
-            <Controller
-              name="vendorType"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Event Type is required" }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={vType}
-                  theme={selectThemeColors}
-                  isClearable
-                  isMulti
-                  className={`react-select ${
-                    errors.vendors ? "is-invalid" : ""
-                  }`}
-                  classNamePrefix="select"
-                />
-              )}
-            />
+         <Controller
+  name="vendorType"
+  control={control}
+  rules={{ required: "Vendor Type is required" }}
+  render={({ field }) => (
+    <Select
+      {...field}
+      options={vType}
+      theme={selectThemeColors}
+      isClearable
+      isMulti
+      value={field.value} // ✅ now value will be array of {value,label}
+      onChange={(val) => field.onChange(val)}
+      className={`react-select ${errors.vendorType ? "is-invalid" : ""}`}
+      classNamePrefix="select"
+    />
+  )}
+/>
+{errors.vendorType && (
+  <p style={{ color: "red" }}>{errors.vendorType.message}</p>
+)}
 
-            {errors.vendorType && (
-              <p style={{ color: "red" }}>{errors.vendorType.message}</p>
-            )}
           </Col>
           <Col sm="12" className="mb-2">
             <Label for="description">Vendor Type Description</Label>

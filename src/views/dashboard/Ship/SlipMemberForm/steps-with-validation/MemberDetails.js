@@ -375,19 +375,21 @@ const PersonalInfo = ({
   };
 
   const countryOptions = countries.map((country) => ({
-    value: country.dial_code,
-    label: (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <ReactCountryFlag
-          countryCode={country.code}
-          svg
-          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-        />
-        {country.name} ({country.dial_code})
-      </div>
-    ),
-    code: country.code,
-  }));
+  value: `${country.code}-${country.dial_code}`, // unique value
+  label: (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <ReactCountryFlag
+        countryCode={country.code}
+        svg
+        style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+      />
+      {country.name} ({country.dial_code})
+    </div>
+  ),
+  code: country.code,
+  dial_code: country.dial_code, // keep dial code separately for later use
+}));
+
   return (
     <Fragment>
       <Toast ref={toast} />
