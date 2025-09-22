@@ -199,4 +199,7 @@ export default {
  //virtual Terminal
   virtualTerminalEndPoint : '/virtualTerminal',
   getWalkinCustomerEndPoint: '/customer/walkInCus',
+
+  //Generate Qr 
+  getAllEventQrEndPoint : '/eventQrCode'
 };

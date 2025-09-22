@@ -126,7 +126,7 @@ const MultipleColumnForm = () => {
   const resetForm = () => {
     reset(defaultValues)
     setCardType('')
-    
+          
     // Clear any additional state if needed
     setTimeout(() => {
       Object.keys(defaultValues).forEach(key => {
@@ -932,6 +932,7 @@ const sendToAPI = async (apiData) => {
                 </Label>
                 <Controller
                   name='cvv'
+                
                   control={control}
                   rules={{
                     required: "CVV is required",
@@ -943,6 +944,7 @@ const sendToAPI = async (apiData) => {
                   render={({ field }) => (
                     <Cleave
                       {...field}
+                      type='password'
                       id='cvv'
                       placeholder='654'
                       className={`form-control ${errors.cvv ? 'is-invalid' : ''}`}

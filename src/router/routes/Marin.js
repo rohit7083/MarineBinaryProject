@@ -6,6 +6,8 @@ import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index"
 import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index"
 import VirtualTerminal from "../../views/dashboard/pos/virtualTerminal/index"
+import QrList from "../../views/dashboard/qrCode/qrList/index"
+import EventPaymentList from "../../views/dashboard/qrCode/eventPaymentList/index"
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
 );
@@ -521,12 +523,17 @@ export default [
     element: <InverSlip/>,
     path: "/dashboard/rentroll/inverse_slip",
   },
-
-  
-
    {
     element: <ProductPayment/>,
     path: "/dashboard/pos/point_of_sale/shop/PayementDetails",
+  },
+  {
+    element: <QrList/>,
+    path: "/dashboard/qr-code/qr-list",
+  },
+  {
+    element: <EventPaymentList/>,
+    path: "dashboard/qr-code/event-list",
   },
   
 ];

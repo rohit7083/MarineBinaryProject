@@ -2,7 +2,7 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import NavItems from "./NavItems";
- 
+
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
 import { ChevronDown, Edit, MoreVertical, Package, Trash } from "react-feather";
@@ -24,7 +24,7 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
- 
+
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -34,41 +34,41 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
- 
+
   const [tableData, setTableData] = useState({
     count: 0,
     results: [],
   });
- 
+
   const [loading, setLoading] = useState(true);
   const MySwal = withReactContent(Swal);
   const [mode, setMode] = useState("create");
- 
+
   // Custom styles for dropdown z-index fix
   const customStyles = {
     table: {
       style: {
-        overflow: 'visible',
+        overflow: "visible",
       },
     },
     tableWrapper: {
       style: {
-        overflow: 'visible',
+        overflow: "visible",
       },
     },
     responsiveWrapper: {
       style: {
-        overflow: 'visible',
+        overflow: "visible",
       },
     },
   };
- 
+
   async function fetchTableData() {
     try {
       setLoading(true);
       const { data } = await useJwt.getAllProduct();
       const { content } = data;
- 
+
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
       console.error(error);
@@ -76,36 +76,36 @@ const index = () => {
       setLoading(false);
     }
   }
- 
+
   const handleEdit = (row) => {
     navigate("/dashboard/pos/product_management/addProduct_index", {
       state: { row },
     });
     console.log("row", row);
   };
- 
+
   useEffect(() => {
     fetchTableData();
   }, [currentPage, rowsPerPage]);
- 
+
   const handlePerPage = (e) => {
     const newLimit = parseInt(e.target.value);
     setRowsPerPage(newLimit);
     setCurrentPage(1);
   };
- 
+
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
- 
+
   const handleFilter = (value) => {
     setSearchTerm(value);
- 
+
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
           row.name.toLowerCase().includes(value.toLowerCase()) ||
           row.productType?.toLowerCase().includes(value.toLowerCase())
       );
- 
+
       setTableData((prev) => ({
         ...prev,
         results: filteredResults,
@@ -114,30 +114,30 @@ const index = () => {
       fetchTableData((currentPage - 1) * rowsPerPage, rowsPerPage);
     }
   };
- 
+
   const handlePagination = (page) => {
     setCurrentPage(page.selected + 1);
   };
- 
+
   const handleAssignedToChange = (value) => {
     setRole(value);
   };
- 
+
   const handlePayment = (row) => {
     navigate("/search-rooms/previewBooking/roomPayment", { state: { row } });
   };
- 
+
   const paymentStatusColor = {
     success: "light-success",
     error: "light-danger",
     pending: "light-warning",
   };
- 
+
   const handleStocks = (row) => {
     navigate("/dashboard/pos/product_management/AddStocks", { state: { row } });
     console.log(row);
   };
- 
+
   const columns = [
     {
       name: "Id",
@@ -166,7 +166,7 @@ const index = () => {
       cell: (row) => {
         const [data, setData] = useState([]);
         const MySwal = withReactContent(Swal);
- 
+
         const handleDelete = async (uid) => {
           return MySwal.fire({
             title: "Are you sure?",
@@ -218,9 +218,9 @@ const index = () => {
             }
           });
         };
- 
+
         return (
-          <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ position: "relative", zIndex: 1 }}>
             <UncontrolledDropdown>
               <DropdownToggle
                 className="icon-btn hide-arrow"
@@ -233,20 +233,20 @@ const index = () => {
               <DropdownMenu
                 style={{
                   zIndex: 9999,
-                  position: 'absolute',
-                  willChange: 'transform'
+                  position: "absolute",
+                  willChange: "transform",
                 }}
               >
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
- 
+
                 <DropdownItem onClick={() => handleStocks(row)}>
                   <Package className="me-50" size={15} />
                   <span className="align-middle">Add Stocks</span>
                 </DropdownItem>
- 
+
                 <DropdownItem onClick={() => handleDelete(row.uid)}>
                   <Trash className="me-50" size={15} />
                   <span className="align-middle">Delete</span>
@@ -258,7 +258,7 @@ const index = () => {
       },
     },
   ];
- 
+
   const CustomPagination = () => {
     const count = Math.ceil(tableData.count / rowsPerPage);
     return (
@@ -286,55 +286,17 @@ const index = () => {
       />
     );
   };
- 
+
   const dataToRender = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     return tableData.results.slice(startIndex, endIndex);
   };
- 
+
   return (
     <>
-      <style jsx>{`
-        .react-dataTable .rdt_Table {
-          overflow: visible !important;
-        }
-       
-        .react-dataTable .rdt_TableWrapper {
-          overflow: visible !important;
-        }
-       
-        .react-dataTable .rdt_TableBody {
-          overflow: visible !important;
-        }
-       
-        .react-dataTable .rdt_TableRow {
-          overflow: visible !important;
-          position: relative;
-        }
-       
-        .react-dataTable .rdt_TableRow:hover {
-          z-index: 10;
-        }
-       
-        .dropdown-menu {
-          z-index: 9999 !important;
-          position: absolute !important;
-          transform: translate3d(0, 0, 0) !important;
-          box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1) !important;
-        }
-       
-        .table-responsive {
-          overflow: visible !important;
-        }
-       
-        .card-body {
-          overflow: visible !important;
-        }
-      `}</style>
-     
       <Card>
-        <CardBody style={{ overflow: 'visible' }}>
+        <CardBody style={{ overflow: "visible" }}>
           <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
             <CardTitle tag="h4">Product List</CardTitle>
             <div className="d-flex mt-md-0 mt-1">
@@ -343,12 +305,15 @@ const index = () => {
               </div>
             </div>
           </CardHeader>
- 
+
           <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
-            <Row>
-              <Col xl="6" className="d-flex align-items-center p-0">
-                <div className="d-flex align-items-center w-100">
-                  <label htmlFor="rows-per-page">Show</label>
+            <Row className="g-2">
+              {/* Rows per page */}
+              <Col xs="12" md="6" className="d-flex align-items-center">
+                <div className="d-flex flex-wrap align-items-center w-100">
+                  <label htmlFor="rows-per-page" className="me-1">
+                    Show
+                  </label>
                   <Input
                     className="mx-50"
                     type="select"
@@ -361,16 +326,20 @@ const index = () => {
                     <option value="25">25</option>
                     <option value="50">50</option>
                   </Input>
-                  <label htmlFor="rows-per-page">Entries</label>
+                  <label htmlFor="rows-per-page" className="ms-1">
+                    Entries
+                  </label>
                 </div>
               </Col>
-              <Col xl="6" className="d-flex justify-content-end p-0">
-                <div className="w-48 d-flex mx-2">
+
+              {/* Search */}
+              <Col xs="12" md="6" className="d-flex justify-content-md-end">
+                <div className="d-flex flex-grow-1 flex-md-grow-0">
                   <label className="mt-1 mx-1" htmlFor="search-invoice">
                     Search:
                   </label>
                   <Input
-                    className="dataTable-filter"
+                    className="dataTable-filter flex-grow-1"
                     name="search"
                     placeholder="Search..."
                     type="text"
@@ -382,7 +351,7 @@ const index = () => {
               </Col>
             </Row>
           </div>
-         
+
           {loading ? (
             <div className="text-center">
               <Spinner
@@ -392,7 +361,7 @@ const index = () => {
               />
             </div>
           ) : (
-            <div className="react-dataTable" style={{ overflow: 'visible' }}>
+            <div className="table-responsive">
               <DataTable
                 noHeader
                 pagination
@@ -414,8 +383,9 @@ const index = () => {
     </>
   );
 };
- 
+
 export default index;
+  
 
 
 // import "@styles/react/libs/tables/react-dataTable-component.scss";
