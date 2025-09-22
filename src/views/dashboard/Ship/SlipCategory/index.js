@@ -1,36 +1,34 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Bounce, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
+import { useLocation } from "react-router-dom";
 import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
-  Form,
-  Row,
   Col,
-  Label,
+  Form,
   Input,
-  Button,
+  Label,
+  Row,
   Spinner,
   UncontrolledAlert,
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useLocation } from "react-router-dom";
-import { ArrowLeft, Rss } from "react-feather";
 const MySwal = withReactContent(Swal);
 
 function Index() {
-
-
   let navigate = useNavigate();
 
   const toast = useRef(null);
@@ -39,7 +37,7 @@ function Index() {
   const [fetchLoader, setFetchLoader] = useState(false);
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [coverdFlag, setCoverdflag] = useState(false);
   const [selected, setSelected] = useState({
     shipTypeName: "",
     dimensions: new Set(),
@@ -109,6 +107,10 @@ function Index() {
       ...prev,
       [name]: validateField(name, sanitizedValue),
     }));
+
+    if (sanitizedValue.toLowerCase() === "covered") {
+      setCoverdflag(true);
+    }
   };
 
   // Handle checkbox selection
@@ -211,9 +213,7 @@ function Index() {
       } catch (error) {
         console.error("API Error:", error);
         setLoading(false);
-        setErrorMessage(
-          error?.response?.data?.content
-        );
+        setErrorMessage(error?.response?.data?.content);
       } finally {
         setLoading(false);
       }
@@ -249,16 +249,17 @@ function Index() {
 
       <CardHeader>
         <CardTitle tag="h4">
-        <ArrowLeft
-                        style={{
-                          cursor: "pointer",
-                          marginRight: "10px",
-                          transition: "color 0.1s",
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                        onClick={() => window.history.back()}
-                      />{" "}  {uid ? "Edit Slip Category" : "Add Slip Category"}
+          <ArrowLeft
+            style={{
+              cursor: "pointer",
+              marginRight: "10px",
+              transition: "color 0.1s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+            onClick={() => window.history.back()}
+          />{" "}
+          {uid ? "Edit Slip Category" : "Add Slip Category"}
         </CardTitle>
       </CardHeader>
       {fetchLoader ? (
@@ -275,7 +276,7 @@ function Index() {
                   <UncontrolledAlert color="danger">
                     <div className="alert-body">
                       <span className="text-danger fw-bold">
-                      <strong>Error : </strong>  {errorMessage}
+                        <strong>Error : </strong> {errorMessage}
                       </span>
                     </div>
                   </UncontrolledAlert>
@@ -309,7 +310,7 @@ function Index() {
             <Row className="mb-1">
               <Label sm="3">Dimensions</Label>
               <Col sm="9">
-                {["height", "width", "length","power"].map((dim) => (
+                {["height", "width", "length", "power"].map((dim) => (
                   <div className="form-check form-check-inline" key={dim}>
                     <Input
                       type="checkbox"
@@ -317,6 +318,7 @@ function Index() {
                       name={dim}
                       onChange={handleCheckBox}
                       checked={selected.dimensions.has(dim)}
+                      disabled={coverdFlag && dim === "height"}
                     />
                     <Label for={`cb-${dim}`}>{dim}</Label>
                   </div>
