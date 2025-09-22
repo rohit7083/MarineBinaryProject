@@ -1384,6 +1384,52 @@ export default class JwtService {
   getWalkinCustomer() {
     return axios.get(this.jwtConfig.getWalkinCustomer);
   }
+
+
+
+  qtypos(...args) {
+    return axios.post(this.jwtConfig.qtypos, ...args);
+  }
+  posProductdis(...args) {
+    return axios.post(this.jwtConfig.posProductdis, ...args);
+  }
+
+  posPayment(...args) {
+    return axios.post(this.jwtConfig.posPayment, ...args);
+  }
+
+  addCustomer(...args) {
+    return axios.post(this.jwtConfig.addCustomer, ...args);
+  }
+
+  updateCustomer(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateCustomer}${uid}`, ...args);
+  }
+
+  getAllCustomer() {
+    return axios.get(`${this.jwtConfig.getAllCustomer}`);
+  }
+
+  deleteCustomer(uid) {
+    return axios.delete(`${this.jwtConfig.deleteCustomer}${uid}`);
+  }
+  getImages(uid) {
+    return axios.get(`${this.jwtConfig.getImages}${uid}`, {
+      responseType: "blob", // 👈 this tells Axios to treat response as binary
+    });
+  }
+
+  getVariationUid(vuid) {
+    return axios.get(`${this.jwtConfig.getVariationUid}${vuid}`);
+  }
+
+  deleteProduct(uid, vuid) {
+    return axios.delete(`${this.jwtConfig.deleteProduct}${uid}/items/${vuid}`);
+  }
+  // updatedQty(uid, quantity) {
+  //   return axios.put(`${this.jwtConfig.updatedQty}${uid}?quantity=${quantity}`);
+  // }
+
   // refreshToken() {
   //   return axios.post(this.jwtConfig.refreshEndpoint, {
   //     refreshToken: this.getRefreshToken(),
@@ -1423,5 +1469,6 @@ getWalkinCustomers() {
   getAllEventQRCode(){
     return axios.get(this.jwtConfig.getAllEventQrEndPoint);
   }
+  //demo
  
 }
