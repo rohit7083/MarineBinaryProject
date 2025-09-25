@@ -205,6 +205,11 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
                             placeholder="e.g. Material"
                             invalid={!!errors?.specifications?.[index]?.name}
                             {...field}
+                            onChange={(e) => {
+  // Allow only letters and spaces
+  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  field.onChange(onlyLettersAndSpaces);
+}}
                           />
                         )}
                       />
@@ -233,6 +238,11 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
                             invalid={!!errors?.specifications?.[index]?.value}
                             {...field}
                             className="rounded-2"
+                            onChange={(e) => {
+  // Allow only letters and spaces
+  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  field.onChange(onlyLettersAndSpaces);
+}}
                           />
                         )}
                       />
@@ -289,7 +299,7 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
                   Loading.. <Spinner size="sm" />
                 </>
               ) : (
-                <>Next</>
+                <>Submit</>
               )}
             </Button>
             <Button

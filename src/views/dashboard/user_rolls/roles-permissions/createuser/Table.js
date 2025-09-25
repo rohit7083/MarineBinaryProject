@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { ChevronDown, Edit2, Eye, Trash } from "react-feather";
-import { Table as ReactstrapTable, Input, Row, Col } from "reactstrap";
-import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
-import withReactContent from "sweetalert2-react-content";
 import useJwt from "@src/auth/jwt/useJwt";
-import Createuser from "./Createuser";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { ChevronDown, Edit2, Trash } from "react-feather";
+import ReactPaginate from "react-paginate";
+import { Col, Input, Row, Spinner } from "reactstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import CreateuserModal from "./CreateUserModal";
 const CustomTable = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -171,7 +168,7 @@ const CustomTable = ({ data }) => {
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: "Your file has been deleted.",
+                    text: "Your User has been deleted.",
                     customClass: {
                       confirmButton: "btn btn-success",
                     },
@@ -183,7 +180,7 @@ const CustomTable = ({ data }) => {
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({
                 title: "Cancelled",
-                text: "Your imaginary file is safe :)",
+                text: "Your user is safe :)",
                 icon: "error",
                 customClass: {
                   confirmButton: "btn btn-success",

@@ -1,52 +1,34 @@
 //============ Create Roles ===================
 // ** React Imports
-import { Fragment, useEffect, useState,useRef } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { PacmanLoader } from "react-spinners";
-import { useNavigate } from "react-router-dom";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-import { Spinner } from "reactstrap";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Row,
-  Col,
-  Card,
-  Label,
-  Input,
-  Table,
-  Modal,
-  Button,
-  CardBody,
-  ModalBody,
-  ModalHeader,
-  FormFeedback,
-  UncontrolledTooltip,
-  Alert,
+  Alert, Button, Col, FormFeedback, Input, Label, Modal, ModalBody,
+  ModalHeader, Row, Spinner, Table, UncontrolledTooltip
 } from "reactstrap";
 
 // ** Third Party Components
-import { Copy, Info, Plus, X } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
-import PropTypes from "prop-types";
+import { Info, Plus, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 // import { BeatLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Custom Components
 
 // ** FAQ Illustrations
-import illustration from "@src/assets/images/illustration/faq-illustrations.svg";
 
 // ** Jwt Class
 import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Utils
 import {
-  structurePermissionList,
   extractUIDFromPermissionList,
   handleUpdatePermissionList,
+  structurePermissionList,
 } from "../utils";
 
 
@@ -253,7 +235,7 @@ const AddRoles = ({ props, refreshTable }) => {
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
             <h1>Add New Roles</h1>
-            <p>Set role permissions</p>
+            <p>Set role permissions</p> 
             {errors?.server && (
               <Fragment>
                 <Alert color="danger">

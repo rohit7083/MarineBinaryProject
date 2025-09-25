@@ -1,24 +1,10 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import useJwt from "@src/auth/jwt/useJwt";
-import React from "react";
-import { UncontrolledAlert } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  Row,
-  Col,
-  Card,
-  Label,
-  Input,
-  Table,
-  Modal,
-  Button,
-  ModalBody,
-  ModalHeader,
-  FormFeedback,
-  UncontrolledTooltip,
+  Button, Col, FormFeedback, Input, Label, Modal, ModalBody,
+  ModalHeader, Row, Table, UncontrolledAlert
 } from "reactstrap";
-import { Info } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // import { permissionList } from "./fakedb";
@@ -256,7 +242,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
             <Label className="form-label" for="roleName">
-              Role Name
+              Role Name 
             </Label>
             <Controller
               name="roleName"

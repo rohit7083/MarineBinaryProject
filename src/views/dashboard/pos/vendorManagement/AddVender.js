@@ -47,6 +47,7 @@ const MultipleColumnForm = () => {
   const location = useLocation();
   const toast = useRef(null);
   const [errMsz, seterrMsz] = useState("");
+  const [loadingReset, setLoadingReset] = useState(false);
 
   const vendorData = location.state;
   const [vType, setVType] = useState([]);
@@ -80,6 +81,7 @@ const MultipleColumnForm = () => {
     const payload = {
       ...data,
       countryCode: data.countryCode?.dial_code || "",
+      dialCodeCountry: data.countryCode?.code || "",
       vendorType: SelectedVendor,
     };
     console.log("data", data);
@@ -118,6 +120,7 @@ const MultipleColumnForm = () => {
       }
     } else {
       try {
+        setLoading(true);
         const updatedRes = await useJwt.editvender(vendorData?.uid, payload);
         console.log(updatedRes);
         toast.current.show({
@@ -126,6 +129,9 @@ const MultipleColumnForm = () => {
           detail: "Vendor Updated Successfully.",
           life: 2000,
         });
+        setTimeout(() => {
+          navigate("/pos/VendorManage");
+        }, 2000);
       } catch (error) {
         console.log("Error submitting form", error);
         if (error.response && error.response.data) {
@@ -142,47 +148,51 @@ const MultipleColumnForm = () => {
     }
   };
 
-  const countryOptions = countries.map((country) => ({
-    value: `${country.code}-${country.dial_code}`, // unique value
-    label: (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <ReactCountryFlag
-          countryCode={country.code}
-          svg
-          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-        />
-        {country.name} ({country.dial_code})
-      </div>
-    ),
-    code: country.code,
-    dial_code: country.dial_code, // keep dial code separately for later use
-  }));
+  const countryOptions = React.useMemo(
+    () =>
+      countries.map((country) => ({
+        value: `${country.code}-${country.dial_code}`,
+        label: (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ReactCountryFlag
+              countryCode={country.code}
+              svg
+              style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+        code: country.code,
+        dial_code: country.dial_code,
+      })),
+    [countries]
+  );
 
- useEffect(() => {
-  if (vendorData?.venderData) {
-    // map countryCode from backend into a full option object
-    const selectedCountry = countryOptions.find(
-      (c) =>
-        c.value === vendorData.venderData.countryCode || // case: dial_code
-        c.code === vendorData.venderData.countryCode     // case: ISO code
-    );
-// {{debugger}}
-    reset({
-      ...vendorData.venderData, // prefill other plain inputs
+  useEffect(() => {
+    if (vendorData?.venderData && vType.length) {
+      const backendCode = vendorData.venderData.dialCodeCountry;
 
-      countryCode: selectedCountry || null, // react-select expects the object
+      const selectedCountry =
+        countryOptions.find((c) => c.code === backendCode) || null;
 
-      vendorType: vendorData?.venderData?.vendorType?.map((type) => ({
-        value: type.uid,
-        label: type.typeName,
-      })) || [], // react-select multi expects array of objects
-    });
-  }
-}, [vendorData, reset, countryOptions]);
+      // Map vendor types to exact objects from vType
+      const selectedVendorTypes = vendorData.venderData.vendorType
+        .map((type) => vType.find((v) => v.value === type.uid))
+        .filter(Boolean);
 
+      reset({
+        ...vendorData.venderData,
+        countryCode: selectedCountry,
+        vendorType: selectedVendorTypes,
+      });
+    }
+    setLoadingReset(false);
+  }, [vendorData, reset, vType, countryOptions]);
 
   const fetchVendorType = async () => {
     try {
+      setLoadingReset(true);
+
       const res = await useJwt.getAllVendorType();
       console.log("Vendor Type Data", res);
 
@@ -194,16 +204,14 @@ const MultipleColumnForm = () => {
       setVType(vendorTypeOptions);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingReset(false);
     }
   };
   useEffect(() => {
     fetchVendorType();
   }, []);
-  const avoidSpecialChar = (e, field) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9\s,-]/g, "");
 
-    field.onChange(value);
-  };
   return (
     <Card>
       <Toast ref={toast} />
@@ -229,7 +237,6 @@ const MultipleColumnForm = () => {
           </div>
         </div>
       </CardHeader>
-
       <CardBody className="mt-2">
         {errMsz && (
           <React.Fragment>
@@ -243,268 +250,287 @@ const MultipleColumnForm = () => {
             </UncontrolledAlert>
           </React.Fragment>
         )}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Row>
-            <Col md="6" className="mb-1">
-              <Label for="vendorName">Vendor Name</Label>
-              <Controller
-                name="vendorName"
-                control={control}
-                rules={{
-                  required: "Vendor is required",
-                  pattern: {
-                    value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters (A–Z) are allowed",
-                  },
-                }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Vendor Name"
-                  />
-                )}
-              />
-              {errors.vendorName && (
-                <small className="text-danger">
-                  {errors.vendorName.message}
-                </small>
-              )}
-            </Col>
 
-            <Col md="6" className="mb-1">
-              <Label for="vendorName">Company Name</Label>
-              <Controller
-                name="companyName"
-                control={control}
-                rules={{
-                  required: "company Name is required",
-                  pattern: {
-                    value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters (A–Z) are allowed",
-                  },
-                }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Vendor Name"
-                  />
-                )}
-              />
-              {errors.companyName && (
-                <small className="text-danger">
-                  {errors.companyName.message}
-                </small>
-              )}
-            </Col>
-          </Row>
-
-          <Row>
-            <Col md="6" className="mb-1">
-              <Label for="vendorName">Address</Label>
-              <Controller
-                name="address"
-                control={control}
-                rules={{
-                  required: "Address is required",
-                  minLength: {
-                    value: 5,
-                    message: "Address must be at least 5 characters",
-                  },
-                  maxLength: {
-                    value: 200,
-                    message: "Address cannot exceed 200 characters",
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z0-9 ,\-]*$/,
-                    message:
-                      "Only letters, numbers, spaces, commas, and dashes are allowed",
-                  },
-                }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="address "
-                    onChange={(e) => avoidSpecialChar(e, field)}
-                  />
-                )}
-              />
-              {errors.address && (
-                <small className="text-danger">{errors.address.message}</small>
-              )}
-            </Col>
-            <Col md="6" className="mb-1">
-              <Label for="email">Email Address</Label>
-              <Controller
-                name="emailId"
-                control={control}
-                rules={{
-                  required: "Email is required",
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Enter a valid email address",
-                  },
-                }}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    className="form-control"
-                    placeholder="Enter Email"
-                    type="email"
-                  />
-                )}
-              />
-              {errors.emailId && (
-                <small className="text-danger">{errors.emailId.message}</small>
-              )}
-            </Col>
-          </Row>
-
-          <Row>
-            <Col md="6" className="mb-1">
-              <Label sm="3" for="phone">
-                Country Code
-              </Label>
-
-            <Controller
-  name="countryCode"
-  control={control}
-  rules={{ required: "Country code is required" }}
-  render={({ field }) => (
-    <Select
-      {...field}
-      options={countryOptions}
-      value={field.value} // ✅ reset provides full object
-      onChange={(option) => field.onChange(option)}
-    />
-  )}
-/>
-{errors.countryCode && (
-  <small className="text-danger">{errors.countryCode.message}</small>
-)}
-
-        
-            </Col>
-            <Col md="6" className="mb-1">
-              <Label sm="3" for="phone">
-                Phone Number
-              </Label>
-
-              <Controller
-                name="phoneNumber"
-                control={control}
-                defaultValue=""
-                rules={{
-                  required: "Phone number is required",
-                  // pattern: {
-                  //   value: /^[0-9]{10}$/, // Only digits, exactly 10 numbers
-                  //   message: "Phone number must be 10 digits",
-                  // },
-                  minLength: {
-                    value: 10,
-                    message: "Phone number must be at least 10 digits",
-                  },
-                  maxLength: {
-                    value: 15,
-                    message: "Phone number cannot exceed 15 digits",
-                  },
-                }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="tel"
-                    placeholder="Enter phone number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                  />
-                )}
-              />
-
-              {errors.phoneNumber && (
-                <small className="text-danger">
-                  {errors.phoneNumber.message}
-                </small>
-              )}
-            </Col>
-          </Row>
-
-          <Col sm="12" className="mb-1">
-            <Label for="typeName">Vendor Type</Label>
-
-         <Controller
-  name="vendorType"
-  control={control}
-  rules={{ required: "Vendor Type is required" }}
-  render={({ field }) => (
-    <Select
-      {...field}
-      options={vType}
-      theme={selectThemeColors}
-      isClearable
-      isMulti
-      value={field.value} // ✅ now value will be array of {value,label}
-      onChange={(val) => field.onChange(val)}
-      className={`react-select ${errors.vendorType ? "is-invalid" : ""}`}
-      classNamePrefix="select"
-    />
-  )}
-/>
-{errors.vendorType && (
-  <p style={{ color: "red" }}>{errors.vendorType.message}</p>
-)}
-
-          </Col>
-          <Col sm="12" className="mb-2">
-            <Label for="description">Vendor Type Description</Label>
-
-            <Controller
-              name="description"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Event Type Description is required" }}
-              render={({ field }) => (
-                <Input
-                  id="description"
-                  type="textarea"
-                  rows="4"
-                  placeholder="Enter Vendor type description"
-                  invalid={!!errors.description}
-                  {...field}
-                />
-              )}
+        {loadingReset ? (
+          <div className="d-flex justify-content-center align-items-center">
+            <Spinner
+              color="primary"
+              size="lg"
+              style={{ width: "4rem", height: "4rem" }}
             />
+            <span className="ms-2">Loading...</span>
+          </div>
+        ) : (
+          <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Row>
+                <Col md="6" className="mb-1">
+                  <Label for="vendorName">Vendor Name</Label>
+                  <Controller
+                    name="vendorName"
+                    control={control}
+                    rules={{
+                      required: "Vendor is required",
+                    }}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className="form-control"
+                        placeholder="Vendor Name"
+                        onChange={(e) => {
+                          // Allow only letters and spaces
+                          const onlyLettersAndSpaces = e.target.value.replace(
+                            /[^A-Za-z\s]/g,
+                            ""
+                          );
+                          field.onChange(onlyLettersAndSpaces);
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.vendorName && (
+                    <small className="text-danger">
+                      {errors.vendorName.message}
+                    </small>
+                  )}
+                </Col>
 
-            {errors.description && (
-              <p style={{ color: "red" }}>{errors.description.message}</p>
-            )}
-          </Col>
+                <Col md="6" className="mb-1">
+                  <Label for="vendorName">Company Name</Label>
+                  <Controller
+                    name="companyName"
+                    control={control}
+                    rules={{
+                      required: "company Name is required",
+                    }}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className="form-control"
+                        placeholder="Vendor Name"
+                        onChange={(e) => {
+                          // Allow only letters and spaces
+                          const onlyLettersAndSpaces = e.target.value.replace(
+                            /[^A-Za-z\s]/g,
+                            ""
+                          );
+                          field.onChange(onlyLettersAndSpaces);
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.companyName && (
+                    <small className="text-danger">
+                      {errors.companyName.message}
+                    </small>
+                  )}
+                </Col>
+              </Row>
 
-          {/* <CardTitle tag="h4" className="mt-3 mb-2">
-            Variations
-          </CardTitle> */}
+              <Row>
+                <Col md="6" className="mb-1">
+                  <Label for="vendorName">Address</Label>
+                  <Controller
+                    name="address"
+                    control={control}
+                    rules={{
+                      required: "Address is required",
+                      minLength: {
+                        value: 5,
+                        message: "Address must be at least 5 characters",
+                      },
+                      maxLength: {
+                        value: 200,
+                        message: "Address cannot exceed 200 characters",
+                      },
+                      pattern: {
+                        value: /^[a-zA-Z0-9 ,\-]*$/,
+                        message:
+                          "Only letters, numbers, spaces, commas, and dashes are allowed",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className="form-control"
+                        placeholder="address "
+                        onChange={(e) => {
+                          // Allow letters, numbers, dot, space, dash, and comma
+                          const onlyValid = e.target.value.replace(
+                            /[^A-Za-z0-9 .,-]/g,
+                            ""
+                          );
+                          field.onChange(onlyValid);
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.address && (
+                    <small className="text-danger">
+                      {errors.address.message}
+                    </small>
+                  )}
+                </Col>
+                <Col md="6" className="mb-1">
+                  <Label for="email">Email Address</Label>
+                  <Controller
+                    name="emailId"
+                    control={control}
+                    rules={{
+                      required: "Email is required",
+                    
+                    }}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        className="form-control"
+                        placeholder="Enter Email"
+                        type="email"
+                        onChange={(e) => {
+  // Allow letters, numbers, dot, and @
+  const onlyValid = e.target.value.replace(/[^A-Za-z0-9.@]/g, "");
+  field.onChange(onlyValid);
+}}
 
-          <Button color="primary" disabled={loading} className="" type="submit">
-            {loading ? (
-              <>
-                <span>Loading.. </span>
-                <Spinner size="sm" />{" "}
-              </>
-            ) : (
-              "Submit"
-            )}{" "}
-          </Button>
-          <Button
-            outline
-            color="secondary"
-            type="button"
-            className="ms-2"
-            onClick={() => reset()}
-          >
-            Reset
-          </Button>
-        </form>
+                      />
+                    )}
+                  />
+                  {errors.emailId && (
+                    <small className="text-danger">
+                      {errors.emailId.message}
+                    </small>
+                  )}
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md="6" className="mb-1">
+                  <Label sm="3" for="phone">
+                    Country Code
+                  </Label>
+
+                  <Controller
+                    name="countryCode"
+                    control={control}
+                    rules={{ required: "Country code is required" }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        options={countryOptions}
+                        value={field.value || null} // exact object from countryOptions
+                        onChange={(option) => field.onChange(option)}
+                        isClearable
+                      />
+                    )}
+                  />
+
+                  {errors.countryCode && (
+                    <small className="text-danger">
+                      {errors.countryCode.message}
+                    </small>
+                  )}
+                </Col>
+                <Col md="6" className="mb-1">
+                  <Label sm="3" for="phone">
+                    Phone Number
+                  </Label>
+
+                  <Controller
+                    name="phoneNumber"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: "Phone number is required",
+
+                      minLength: {
+                        value: 10,
+                        message: "Phone number must be at least 10 digits",
+                      },
+                      maxLength: {
+                        value: 13,
+                        message: "Phone number cannot exceed 13 digits",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="tel"
+                        placeholder="Enter phone number"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        onChange={(e) => {
+  // Allow only numeric characters
+  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+  field.onChange(onlyNumbers);
+}}
+
+                      />
+                    )}
+                  />
+
+                  {errors.phoneNumber && (
+                    <small className="text-danger">
+                      {errors.phoneNumber.message}
+                    </small>
+                  )}
+                </Col>
+              </Row>
+
+              <Col sm="12" className="mb-3">
+                <Label for="typeName">Vendor Type</Label>
+
+                <Controller
+                  name="vendorType"
+                  control={control}
+                  rules={{ required: "Vendor Type is required" }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={vType}
+                      theme={selectThemeColors}
+                      isClearable
+                      isMulti
+                      value={field.value} // ✅ now value will be array of {value,label}
+                      onChange={(val) => field.onChange(val)}
+                      className={`react-select ${
+                        errors.vendorType ? "is-invalid" : ""
+                      }`}
+                      classNamePrefix="select"
+                    />
+                  )}
+                />
+                {errors.vendorType && (
+                  <p style={{ color: "red" }}>{errors.vendorType.message}</p>
+                )}
+              </Col>
+
+              <Button
+                color="primary"
+                disabled={loading}
+                className=""
+                type="submit"
+              >
+                {loading ? (
+                  <>
+                    <span>Loading.. </span>
+                    <Spinner size="sm" />{" "}
+                  </>
+                ) : (
+                  "Submit"
+                )}{" "}
+              </Button>
+              <Button
+                outline
+                color="secondary"
+                type="button"
+                className="ms-2"
+                onClick={() => reset()}
+              >
+                Reset
+              </Button>
+            </form>
+          </>
+        )}
       </CardBody>
     </Card>
   );

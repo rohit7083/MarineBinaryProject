@@ -115,30 +115,27 @@
 
 // export default index;
 
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
 
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Table as ReactstrapTable,
-  Input,
-  Row,
-  Col,
+  Button,
   Card,
   CardBody,
-  Button,
-  Badge,
+  Col,
+  Input,
+  Row
 } from "reactstrap";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
-import withReactContent from "sweetalert2-react-content";
 import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
+import ReactPaginate from "react-paginate";
+import { Spinner } from "reactstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -302,7 +299,7 @@ const index = () => {
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: "Your file has been deleted.",
+                    text: "Your Venue has been deleted.",
                     customClass: {
                       confirmButton: "btn btn-success",
                     },
@@ -310,11 +307,19 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
+                 MySwal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: `${error?.response?.data?.content || "Failed to delete."}`,
+                    customClass: {
+                      confirmButton: "btn btn-success",
+                    },
+                  });
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({
                 title: "Cancelled",
-                text: "Your imaginary file is safe :)",
+                text: "Your Venue is safe :)",
                 icon: "error",
                 customClass: {
                   confirmButton: "btn btn-success",

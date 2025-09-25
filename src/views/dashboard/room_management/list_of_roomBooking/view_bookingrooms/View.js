@@ -1,18 +1,16 @@
 import { useEffect } from "react";
 import { ArrowLeft } from "react-feather";
 import { useFieldArray, useForm } from "react-hook-form";
-import { FaCreditCard, FaMoneyBillAlt, FaQrcode } from "react-icons/fa";
+import {
+  FaCreditCard,
+  FaLink,
+  FaMoneyBillAlt,
+  FaQrcode,
+  FaRegCheckCircle,
+} from "react-icons/fa";
 import { MdOutlineSwipe } from "react-icons/md";
 import { useLocation } from "react-router-dom";
-import {
-  Badge,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Row,
-  Table
-} from "reactstrap";
+import { Badge, Card, CardBody, CardTitle, Col, Row, Table } from "reactstrap";
 import RoomCard from "../../manage_roomBooking/addNewBooking/RoomCard";
 import ExtendDate from "../../manage_roomBooking/extendDate/ExtendDate";
 
@@ -313,7 +311,10 @@ const View = () => {
                         className="mb-0 fw-bold fs-4"
                         style={{ marginBottom: "0.1rem" }}
                       >
-                        <strong> $ {Number(viewData?.remainingAmount || 0).toFixed(2)}</strong>
+                        <strong>
+                          {" "}
+                          $ {Number(viewData?.remainingAmount || 0).toFixed(2)}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -377,18 +378,17 @@ const View = () => {
                           )?.label || "Unknown"}
                         </td>
                       </td>
-
-                      {txn?.paymentStatus.toLowerCase() === "success" && (
+                      {txn?.paymentStatus?.toLowerCase() === "success" && (
                         <td>
                           <Badge color="success">{txn.paymentStatus}</Badge>
                         </td>
                       )}
 
-                      {(txn?.paymentStatus.toLowerCase() === "failed" ||
-                        txn?.paymentStatus.toLowerCase() === "error") && (
+                      {(txn?.paymentStatus?.toLowerCase() === "failed" ||
+                        txn?.paymentStatus?.toLowerCase() === "error") && (
                         <td>
                           <Badge color="danger">
-                            {txn.paymentStatus || "error"}
+                            {txn?.paymentStatus || "error"}
                           </Badge>
                         </td>
                       )}

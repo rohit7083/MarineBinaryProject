@@ -835,6 +835,12 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                     {...field}
                     placeholder="Enter Email"
                     invalid={!!errors.emailId}
+                    onChange={(e) => {
+  // Allow letters, numbers, dot, and @
+  const onlyValid = e.target.value.replace(/[^A-Za-z0-9.@]/g, "");
+  field.onChange(onlyValid);
+}}
+
                   />
                 )}
               />
@@ -858,7 +864,13 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                     {...field}
                     placeholder="Enter Address"
                     invalid={!!errors.address}
-                    onChange={(e) => addNum_Alphabetics(e, field)}
+                    // onChange={(e) => addNum_Alphabetics(e, field)}
+                    onChange={(e) => {
+  // Allow letters, numbers, dot, space, dash, and comma
+  const onlyValid = e.target.value.replace(/[^A-Za-z0-9 .,-]/g, "");
+  field.onChange(onlyValid);
+}}
+
                   />
                 )}
               />
@@ -898,7 +910,12 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                   },
                 }}
                 render={({ field }) => (
-                  <Input {...field} type="tel" placeholder="Enter phone number" />
+                  <Input {...field} type="tel" placeholder="Enter phone number"  onChange={(e) => {
+  // Allow only numeric characters
+  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+  field.onChange(onlyNumbers);
+}}
+/>
                 )}
               />
               {errors.phoneNumber && <small className="text-danger">{errors.phoneNumber.message}</small>}
@@ -923,7 +940,13 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                     {...field}
                     placeholder="Enter City"
                     invalid={!!errors.city}
-                    onChange={(e) => avoidSpecialChar(e, field)}
+                    // onChange={(e) => avoidSpecialChar(e, field)}
+                    onChange={(e) => {
+  // Allow only letters and spaces
+  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  field.onChange(onlyLettersAndSpaces);
+}}
+
                   />
                 )}
               />
@@ -947,7 +970,13 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                     {...field}
                     placeholder="Enter State"
                     invalid={!!errors.state}
-                    onChange={(e) => avoidSpecialChar(e, field)}
+                    // onChange={(e) => avoidSpecialChar(e, field)}
+                    onChange={(e) => {
+  // Allow only letters and spaces
+  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  field.onChange(onlyLettersAndSpaces);
+}}
+
                   />
                 )}
               />
@@ -973,7 +1002,14 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                     {...field}
                     placeholder="Enter Country"
                     invalid={!!errors.country}
-                    onChange={(e) => avoidSpecialChar(e, field)}
+                    // onChange={(e) => avoidSpecialChar(e, field)}
+                    
+              onChange={(e) => {
+  // Allow only letters and spaces
+  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  field.onChange(onlyLettersAndSpaces);
+}}
+
                   />
                 )}
               />
@@ -981,13 +1017,13 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
             </Col>
 
             <Col md="6" className="mb-1">
-              <Label>Postal Code<span className="text-danger">*</span></Label>
+              <Label>Zip Code<span className="text-danger">*</span></Label>
               <Controller
                 name="postalCode"
                 rules={{
-                  required: "Postal code is required",
+                  required: "Zip code is required",
                   pattern: {
-                    value: /^[0-9]{4,10}$/,
+                    value: /^[0-9]{5}$/,
                     message: "Enter a valid postal code",
                   },
                 }}
@@ -995,12 +1031,20 @@ const ClientDetaiils = ({ memberAppendData, setSelectedMember, setMemberAppendDa
                 render={({ field }) => (
                   <Input
                     {...field}
-                    placeholder="Enter Postal Code"
+                    placeholder="Enter Zip Code"
                     invalid={!!errors.postalCode}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, "");
-                      field.onChange(value);
-                    }}
+                   onChange={(e) => {
+  // Allow only letters and spaces
+  let onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  
+  // Limit to 5 characters
+  if (onlyLettersAndSpaces.length > 5) {
+    onlyLettersAndSpaces = onlyLettersAndSpaces.slice(0, 5);
+  }
+
+  field.onChange(onlyLettersAndSpaces);
+}}
+
                   />
                 )}
               />

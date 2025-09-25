@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
 
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
+import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
+import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
+import ReactPaginate from "react-paginate";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Table as ReactstrapTable,
-  Input,
-  Row,
-  Col,
+  Button,
   Card,
   CardBody,
-  Button,
-  Badge,
+  Col,
+  Input,
+  Row,
+  Spinner
 } from "reactstrap";
-import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
 import withReactContent from "sweetalert2-react-content";
-import useJwt from "@src/auth/jwt/useJwt";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -123,6 +121,18 @@ const index = () => {
       // minWidth: "150px",
       selector: (row) => row.numberOfRooms,
     },
+      {
+      name: "Number of Rooms",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.numberOfRooms,
+    },
+      {
+      name: "Number of Rooms",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.numberOfRooms,
+    },
 
     {
       name: "Actions",
@@ -164,7 +174,7 @@ const index = () => {
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: "Your file has been deleted.",
+                    text: "Your Room has been deleted.",
                     customClass: {
                       confirmButton: "btn btn-success",
                     },
@@ -176,7 +186,7 @@ const index = () => {
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({
                 title: "Cancelled",
-                text: "Your imaginary file is safe :)",
+                text: "Your Room is safe :)",
                 icon: "error",
                 customClass: {
                   confirmButton: "btn btn-success",

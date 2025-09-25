@@ -3,26 +3,26 @@ import { Fragment } from 'react'
 
 // ** Routes Imports
 import AppRoutes from './Apps'
-import FormRoutes from './Forms'
-import PagesRoutes from './Pages'
-import TablesRoutes from './Tables'
+import AuthenticationRoutes from './Authentication'
 import ChartsRoutes from './Charts'
 import DashboardRoutes from './Dashboards'
-import UiElementRoutes from './UiElements'
 import ExtensionsRoutes from './Extensions'
-import PageLayoutsRoutes from './PageLayouts'
-import AuthenticationRoutes from './Authentication'
+import FormRoutes from './Forms'
 import Marin from './Marin'
+import PageLayoutsRoutes from './PageLayouts'
+import PagesRoutes from './Pages'
+import TablesRoutes from './Tables'
+import UiElementRoutes from './UiElements'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
-import VerticalLayout from '@src/layouts/VerticalLayout'
-import HorizontalLayout from '@src/layouts/HorizontalLayout'
 import LayoutWrapper from '@src/@core/layouts/components/layout-wrapper'
+import HorizontalLayout from '@src/layouts/HorizontalLayout'
+import VerticalLayout from '@src/layouts/VerticalLayout'
 
 // ** Route Components
-import PublicRoute from '@components/routes/PublicRoute'
 import PrivateRoute from '@components/routes/PrivateRoute'
+import PublicRoute from '@components/routes/PublicRoute'
 
 // ** Utils
 import { isObjEmpty } from '@utils'
@@ -125,4 +125,5 @@ const getRoutes = layout => {
   return AllRoutes
 }
 
-export { DefaultRoute, TemplateTitle, Routes, getRoutes }
+export { DefaultRoute, getRoutes, Routes, TemplateTitle }
+

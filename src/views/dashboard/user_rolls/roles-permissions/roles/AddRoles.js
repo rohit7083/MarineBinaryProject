@@ -1,41 +1,36 @@
 // ** React Imports
-import { Fragment, useEffect, useState ,useRef} from "react";
-import { Link } from "react-router-dom";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Card,
-  Label,
-  Input,
-  Table,
-  Modal,
+  Alert,
   Button,
-  CardBody,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
   ModalBody,
   ModalHeader,
-  FormFeedback,
+  Row,
+  Table,
   UncontrolledTooltip,
-  Alert,
 } from "reactstrap";
 
 // ** Third Party Components
-import { Copy, Info, X } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
 import PropTypes from "prop-types";
-import { Spinner } from "reactstrap";
+import { Info, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "reactstrap";
 
 // ** Custom Components
-import AvatarGroup from "@components/avatar-group";
 
 // ** FAQ Illustrations
-import illustration from "@src/assets/images/illustration/faq-illustrations.svg";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Jwt Class
@@ -43,9 +38,9 @@ import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Utils
 import {
-  structurePermissionList,
   extractUIDFromPermissionList,
   handleUpdatePermissionList,
+  structurePermissionList,
 } from "../utils";
 
 const AddRoles = (props) => {
@@ -97,7 +92,6 @@ const AddRoles = (props) => {
   };
 
   const onSubmit = async (data) => {
-    
     const updatedData = extractUIDFromPermissionList(data);
     try {
       setProcessing(true);
@@ -117,16 +111,10 @@ const AddRoles = (props) => {
           setTimeout(() => {
             navigate("/dashboard/user_rolls/roles-permissions/roles");
             reset();
-             
           }, 2000);
-            
-            
-            
-          }
-            
-          }
+        }
       }
-     catch (error) {
+    } catch (error) {
       if (error?.response) {
         const { response } = error;
         const { content, message } = response?.data;
@@ -183,8 +171,8 @@ const AddRoles = (props) => {
       toggle={() => toggle()}
       className="modal-dialog-centered modal-lg"
     >
-            <Toast ref={toast} />
-      
+      <Toast ref={toast} />
+
       <ModalHeader
         className="bg-transparent"
         toggle={() => toggle()}
@@ -248,6 +236,14 @@ const AddRoles = (props) => {
                       id="roleName"
                       placeholder="Enter role name"
                       invalid={fieldState?.error && true}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />

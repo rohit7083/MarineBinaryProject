@@ -3,7 +3,7 @@ import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
-import { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,11 +18,13 @@ import {
   Input,
   Label,
   Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 function AddEventTypes() {
   const navigate = useNavigate();
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [errMsz, seterrMsz] = useState("");
 
   const {
     control,
@@ -43,45 +45,59 @@ function AddEventTypes() {
     }
   }, []);
 
-  const onSubmit = async (data) => {
-    try {
-      setLoading(true);
-      let res;
-      if (uid) {
-        res = await useJwt.UpdateEventType(uid, data);
+const onSubmit = async (data) => {
+  seterrMsz("");
+  setLoading(true);
+
+  try {
+    if (uid) {
+      // 🔹 Update event type
+      try {
+       const  res = await useJwt.UpdateEventType(uid, data);
         console.log("Updated:", res);
+
         if (res.status === 200) {
           toast.current.show({
             severity: "success",
             summary: "Updated Successfully",
-            detail: "Event Type  updated Successfully.",
+            detail: "Event Type updated successfully.",
             life: 2000,
           });
           setTimeout(() => {
             navigate("/addEvent_type");
           }, 2000);
         }
-      } else {
-        res = await useJwt.EventType(data);
-        if (res.status === 201) {
+      } catch (error) {
+        console.error("Update Error:", error);
+        seterrMsz(error.response?.data?.content || "Failed to update Event Type!");
+      }
+    } else {
+      // 🔹 Create event type
+      try {
+
+       const createRes = await useJwt.EventType(data);
+        console.log("Created:", createRes);
+
+        if (createRes?.status === 201) {
           toast.current.show({
             severity: "success",
             summary: "Created Successfully",
-            detail: "Event Type  created Successfully.",
+            detail: "Event Type created successfully.",
             life: 2000,
           });
           setTimeout(() => {
             navigate("/addEvent_type");
           }, 2000);
         }
-        console.log("Created:", res);
+      } catch (error) {
+        console.error("Create Error:", error);
+        seterrMsz(error.response?.data?.content || "Failed to create Event Type!");
       }
-    } catch (error) {
-      console.error("API Error:", error);
-    } finally {
-      setLoading(false);
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <Fragment>
@@ -104,7 +120,18 @@ function AddEventTypes() {
             </CardText>
           </CardTitle>
           <Toast ref={toast} />
-
+          {errMsz && (
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">
+                    <strong>Error : </strong>
+                    {errMsz}
+                  </span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup row>
               <Col sm="12" className="mb-1">
@@ -122,6 +149,14 @@ function AddEventTypes() {
                       placeholder="Enter event type"
                       invalid={!!errors.eventTypeName}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z0-9\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -131,29 +166,53 @@ function AddEventTypes() {
                 )}
               </Col>
               <Col sm="12">
-                <Label for="eventTypeDescription">Event Type Description</Label>
+                <Label for="eventTypeDescription">
+                  Event Type Description (max 500 characters)
+                </Label>
 
                 <Controller
                   name="eventTypeDescription"
                   control={control}
                   defaultValue=""
-                  rules={{ required: "Event Type Description is required" }}
+                  rules={{
+                    required: "Event Type Description is required",
+                    maxLength: {
+                      value: 500,
+                      message: "Description cannot exceed 500 characters",
+                    },
+                  }}
                   render={({ field }) => (
-                    <Input
-                      id="eventTypeDescription"
-                      type="textarea"
-                      rows="4"
-                      placeholder="Enter event type description"
-                      invalid={!!errors.eventTypeDescription}
-                      {...field}
-                      onChange={(e) => {
-                        const cleanValue = e.target.value
-                          .replace(/[^a-zA-Z0-9 ]/g, "")
-                          .replace(/\s+/g, " "); 
-                         
-                        field.onChange(cleanValue);
-                      }}
-                    />
+                    <div>
+                      <Input
+                        id="eventTypeDescription"
+                        type="textarea"
+                        rows="4"
+                        placeholder="Enter event type description"
+                        invalid={!!errors.eventTypeDescription}
+                        {...field}
+                        onChange={(e) => {
+                          const cleanValue = e.target.value
+                            // allow letters, numbers, dot, comma, dash, space
+                            .replace(/[^a-zA-Z0-9.,\- ]/g, "")
+                            // collapse multiple spaces into one
+                            .replace(/\s+/g, " ")
+                            // limit length to 500
+                            .slice(0, 500);
+
+                          field.onChange(cleanValue);
+                        }}
+                      />
+                      {/* Character counter */}
+                      <p
+                        style={{
+                          color: "red",
+                          fontSize: "0.85rem",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {field.value?.length || 0}/500
+                      </p>
+                    </div>
                   )}
                 />
 

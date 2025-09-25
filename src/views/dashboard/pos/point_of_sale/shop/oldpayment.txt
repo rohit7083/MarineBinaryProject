@@ -1,0 +1,195 @@
+ // const onSubmit = async (data) => {
+  //   // {{debugger}}
+  //   if (!cart.length) {
+  //     toast.current.show({
+  //       severity: "warn",
+  //       summary: "Cart Empty",
+  //       detail: "Please add products",
+  //       life: 2000,
+  //     });
+  //     return;
+  //   }
+  //   try {
+  //     const results = await Promise.all(
+  //       changedItems?.map((uid) => useJwt.getVariationUid(uid))
+  //     );
+
+  //     const variationUids = results.flatMap(
+  //       (res) => res?.data?.content?.items?.map((item) => item?.uid) || []
+  //     );
+
+  //     console.log("Variation UIDs:", variationUids);
+  //     setVariations(variationUids);
+  //   } catch (error) {
+  //     console.error("Error fetching variations:", error);
+  //   }
+  //   try {
+  //     setLoading(true);
+  //     console.log("changedItems", changedItems);
+
+  //     // 1. For each changed item, get actual UID from variation API
+  //     const uidPromises = changedItems.map(async (item) => {
+  //       const variationRes = await useJwt.getVariationUid(item.vuid);
+  //       const actualUid = variationRes.data?.content?.items[0]?.uid; // adjust according to response
+  //       return { uid: actualUid, quantity: item.quantity };
+  //     });
+
+  //     const uidQtyPairs = await Promise.all(uidPromises);
+
+  //     // 2. Call main API for each item
+  //     await Promise.all(
+  //       uidQtyPairs.map((item) => useJwt.updatedQty(item.uid, item.quantity))
+  //     );
+
+  //     const pin = data.otp.join("");
+  //     const encrypted = encryptAES(pin);
+  //     const formData = new FormData();
+
+  //     formData.append("posOrder.uid", posUid);
+
+  //     formData.append("payment.finalPayment", watchSubtotal);
+  //     formData.append("payment.paymentMode", data.paymentMode.value);
+  //     if (paymentMode === "Cash") {
+  //       formData.append("pin", encrypted);
+  //     }
+
+  //     if (paymentMode === "Credit Card") {
+  //       [
+  //         "cardNumber",
+  //         "cardType",
+  //         "cardExpiryMonth",
+  //         "cardExpiryYear",
+  //         "cardCvv",
+  //         "nameOnCard",
+  //       ].forEach((f) => formData.append(`payment.${f}`, data[f]));
+  //     }
+
+  //     const res = await useJwt.posPayment(formData);
+  //     if (res?.data?.status === "success") {
+  //       toast.current.show({
+  //         severity: "success",
+  //         summary: "Success",
+  //         detail: "Payment Completed",
+  //         life: 2000,
+  //       });
+  //       setTimeout(() => navigate("/dashboard/pos/point_of_sale/shop"), 2000);
+  //     } else {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "Failed",
+  //         detail: "Payment Failed",
+  //         life: 2000,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error("Payment Error:", err);
+  //     toast.current.show({
+  //       severity: "error",
+  //       summary: "Error",
+  //       detail: "Payment Error",
+  //       life: 2000,
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+  
+  // const onSubmit = async (data) => {
+  //   // {{debugger}}
+  //   if (!cart.length) {
+  //     toast.current.show({
+  //       severity: "warn",
+  //       summary: "Cart Empty",
+  //       detail: "Please add products",
+  //       life: 2000,
+  //     });
+  //     return;
+  //   }
+  //   try {
+  //     const results = await Promise.all(
+  //       changedItems?.map((uid) => useJwt.getVariationUid(uid))
+  //     );
+
+  //     const variationUids = results.flatMap(
+  //       (res) => res?.data?.content?.items?.map((item) => item?.uid) || []
+  //     );
+
+  //     console.log("Variation UIDs:", variationUids);
+  //     setVariations(variationUids);
+  //   } catch (error) {
+  //     console.error("Error fetching variations:", error);
+  //   }
+  //   try {
+  //     setLoading(true);
+  //     console.log("changedItems", changedItems);
+
+  //     // 1. For each changed item, get actual UID from variation API
+  //     const uidPromises = changedItems.map(async (item) => {
+  //       const variationRes = await useJwt.getVariationUid(item.vuid);
+  //       const actualUid = variationRes.data?.content?.items[0]?.uid; // adjust according to response
+  //       return { uid: actualUid, quantity: item.quantity };
+  //     });
+
+  //     const uidQtyPairs = await Promise.all(uidPromises);
+
+  //     // 2. Call main API for each item
+  //     await Promise.all(
+  //       uidQtyPairs.map((item) => useJwt.updatedQty(item.uid, item.quantity))
+  //     );
+
+  //     const pin = data.otp.join("");
+  //     const encrypted = encryptAES(pin);
+  //     const formData = new FormData();
+
+  //     formData.append("posOrder.uid", posUid);
+
+  //     formData.append("payment.finalPayment", watchSubtotal);
+  //     formData.append("payment.paymentMode", data.paymentMode.value);
+  //     if (paymentMode === "Cash") {
+  //       formData.append("pin", encrypted);
+  //     }
+
+  //     if (paymentMode === "Credit Card") {
+  //       [
+  //         "cardNumber",
+  //         "cardType",
+  //         "cardExpiryMonth",
+  //         "cardExpiryYear",
+  //         "cardCvv",
+  //         "nameOnCard",
+  //       ].forEach((f) => formData.append(`payment.${f}`, data[f]));
+  //     }
+
+  //     const res = await useJwt.posPayment(formData);
+  //     if (res?.data?.status === "success") {
+  //       toast.current.show({
+  //         severity: "success",
+  //         summary: "Success",
+  //         detail: "Payment Completed",
+  //         life: 2000,
+  //       });
+  //       setTimeout(() => navigate("/dashboard/pos/point_of_sale/shop"), 2000);
+  //     } else {
+  //       toast.current.show({
+  //         severity: "error",
+  //         summary: "Failed",
+  //         detail: "Payment Failed",
+  //         life: 2000,
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error("Payment Error:", err);
+  //     toast.current.show({
+  //       severity: "error",
+  //       summary: "Error",
+  //       detail: "Payment Error",
+  //       life: 2000,
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // --- When discount applied successfully ---

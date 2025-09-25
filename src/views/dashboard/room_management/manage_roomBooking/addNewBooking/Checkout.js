@@ -475,7 +475,7 @@ const Checkout = () => {
       </Form>
       <Offcanvas direction="end" toggle={toggleForm} isOpen={isOpenForm}>
         <OffcanvasHeader toggle={toggleForm} isOpen={isOpenForm}>
-          Offcanvas
+          Add New Customer
         </OffcanvasHeader>
         <OffcanvasBody>
           <CreateUserForm onClose={handleClose} />

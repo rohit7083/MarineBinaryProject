@@ -21,6 +21,7 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
 } from "reactstrap";
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -51,52 +52,7 @@ const DataTableWithButtons = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
-  const handleFilter = (e) => {
-    const value = e.target.value;
-    let updatedData = [];
-    setSearchValue(value);
-
-    const status = {
-      1: { title: "Current", color: "light-primary" },
-      2: { title: "Professional", color: "light-success" },
-      3: { title: "Rejected", color: "light-danger" },
-      4: { title: "Resigned", color: "light-warning" },
-      5: { title: "Applied", color: "light-info" },
-    };
-
-    if (value.length) {
-      updatedData = data.filter((item) => {
-        const startsWith =
-          item.full_name.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.post.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.email.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.age.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.salary.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.start_date.toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.status].title
-            .toLowerCase()
-            .startsWith(value.toLowerCase());
-
-        const includes =
-          item.full_name.toLowerCase().includes(value.toLowerCase()) ||
-          item.post.toLowerCase().includes(value.toLowerCase()) ||
-          item.email.toLowerCase().includes(value.toLowerCase()) ||
-          item.age.toLowerCase().includes(value.toLowerCase()) ||
-          item.salary.toLowerCase().includes(value.toLowerCase()) ||
-          item.start_date.toLowerCase().includes(value.toLowerCase()) ||
-          status[item.status].title.toLowerCase().includes(value.toLowerCase());
-
-        if (startsWith) {
-          return startsWith;
-        } else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredData(updatedData);
-      setSearchValue(value);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   const handlePagination = (page) => {
     setCurrentPage(page.selected);
@@ -134,10 +90,14 @@ const DataTableWithButtons = () => {
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
+
         const res = await useJwt.getAllVendor();
         setData(res.data.content.result);
       } catch (error) {
         console.log("error in Vendar data ", error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -199,26 +159,35 @@ const DataTableWithButtons = () => {
               bsSize="sm"
               id="search-input"
               value={searchValue}
-              onChange={handleFilter}
+              // onChange={handleFilter}
             />
           </Col>
         </Row>
-        {console.log(data)}
-        <div className="react-dataTable react-dataTable-selectable-rows">
-          <DataTable
-            noHeader
-            pagination
-            // selectableRows
-            columns={serverSideColumns}
-            paginationPerPage={7}
-            className="react-dataTable"
-            sortIcon={<ChevronDown size={10} />}
-            paginationComponent={CustomPagination}
-            paginationDefaultPage={currentPage + 1}
-            selectableRowsComponent={BootstrapCheckbox}
-            data={data}
-          />
-        </div>
+        {loading ? (
+          <div className="text-center">
+            <Spinner
+              className="me-25 spinner-border"
+              color="primary"
+              style={{ width: "4rem", height: "4rem" }}
+            />
+          </div>
+        ) : (
+          <div className="react-dataTable react-dataTable-selectable-rows">
+            <DataTable
+              noHeader
+              pagination
+              // selectableRows
+              columns={serverSideColumns}
+              paginationPerPage={7}
+              className="react-dataTable"
+              sortIcon={<ChevronDown size={10} />}
+              paginationComponent={CustomPagination}
+              paginationDefaultPage={currentPage + 1}
+              selectableRowsComponent={BootstrapCheckbox}
+              data={data}
+            />
+          </div>
+        )}
       </Card>
     </Fragment>
   );

@@ -121,7 +121,7 @@ const CreateEvent = () => {
         type="modern-horizontal"
         ref={ref}
         steps={steps}
-        options={{ linear: true }}
+        options={{ linear: false }}
         instance={(el) => setStepper(el)}
       />
     </div>

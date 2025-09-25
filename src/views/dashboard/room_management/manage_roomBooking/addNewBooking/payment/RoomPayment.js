@@ -417,7 +417,6 @@ function Payment({ stepper }) {
 
     const encrypted = encryptAES(pin);
 
-    
     let bookingUid;
 
     // Determine bookingUid based on payment conditions
@@ -1032,7 +1031,7 @@ function Payment({ stepper }) {
                           }}
                           render={({ field }) => (
                             <Input
-                              type="text" // Change type to text
+                              type="password" // Change type to text
                               maxLength={getCvvLength(cardType)} // Dynamically set maxLength
                               placeholder="Enter CVV Number"
                               invalid={!!errors.cardCvv}
@@ -1074,11 +1073,12 @@ function Payment({ stepper }) {
                               {...field}
                               // isDisabled={statusThree}
                               onChange={(e) => {
-                                const onlyAlphabets = e.target.value.replace(
-                                  /[^a-zA-Z]/g,
-                                  ""
-                                );
-                                field.onChange(onlyAlphabets);
+                                const onlyAlphabetsAndSpaces =
+                                  e.target.value.replace(
+                                    /[^a-zA-Z\s]/g, // allow letters and spaces
+                                    ""
+                                  );
+                                field.onChange(onlyAlphabetsAndSpaces);
                               }}
                             />
                           )}
@@ -1291,11 +1291,12 @@ function Payment({ stepper }) {
                               invalid={!!errors.bankName}
                               {...field}
                               onChange={(e) => {
-                                const onlyAlphabets = e.target.value.replace(
-                                  /[^a-zA-Z]/g,
-                                  ""
-                                );
-                                field.onChange(onlyAlphabets);
+                                const onlyAlphabetsAndSpaces =
+                                  e.target.value.replace(
+                                    /[^a-zA-Z\s]/g, // allow letters and spaces
+                                    ""
+                                  );
+                                field.onChange(onlyAlphabetsAndSpaces);
                               }}
                             />
                           )}
@@ -1328,11 +1329,12 @@ function Payment({ stepper }) {
                               {...field}
                               // isDisabled={statusThree}
                               onChange={(e) => {
-                                const onlyAlphabets = e.target.value.replace(
-                                  /[^a-zA-Z]/g,
-                                  ""
-                                );
-                                field.onChange(onlyAlphabets);
+                                const onlyAlphabetsAndSpaces =
+                                  e.target.value.replace(
+                                    /[^a-zA-Z\s]/g, // allow letters and spaces
+                                    ""
+                                  );
+                                field.onChange(onlyAlphabetsAndSpaces);
                               }}
                             />
                           )}
@@ -1353,11 +1355,11 @@ function Payment({ stepper }) {
                         <Controller
                           name="routingNumber"
                           rules={{
-                            required: "Routing Number is required",
+                            required: "Routing number is required",
                             pattern: {
                               value: /^[0-9]{9}$/,
                               message:
-                                "Routing Number must be exactly 9 digits",
+                                "Routing number must be exactly 9 digits",
                             },
                           }}
                           control={control}
@@ -1367,8 +1369,19 @@ function Payment({ stepper }) {
                               placeholder="Enter Routing Number"
                               invalid={!!errors.routingNumber}
                               // isDisabled={statusThree}
-
                               {...field}
+                              onChange={(e) => {
+                                // Allow only numbers
+                                let value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
+
+                                // Allow only 9 digits max
+                                value = value.slice(0, 9);
+
+                                field.onChange(value);
+                              }}
                             />
                           )}
                         />
@@ -1388,13 +1401,13 @@ function Payment({ stepper }) {
                           rules={{
                             required: "Account Number is required",
                             minLength: {
-                              value: 10,
+                              value: 8,
                               message:
-                                "Account Number must be at least 10 digits",
+                                "Account Number must be at least 8 digits",
                             },
                             maxLength: {
-                              value: 17,
-                              message: "Account Number can't exceed 17 digits",
+                              value: 16,
+                              message: "Account Number can't exceed 16 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
@@ -1409,6 +1422,17 @@ function Payment({ stepper }) {
                               invalid={!!errors.accountNumber}
                               {...field}
                               // isDisabled={statusThree}
+                         onChange={(e) => {
+        // allow only digits
+        let value = e.target.value.replace(/[^0-9]/g, "");
+
+        // restrict to max 16 digits
+        if (value.length > 16) {
+          value = value.slice(0, 16);
+        }
+
+        field.onChange(value);
+      }}
                             />
                           )}
                         />
@@ -1434,8 +1458,8 @@ function Payment({ stepper }) {
                                 "Cheque Number must be at least 6 digits",
                             },
                             maxLength: {
-                              value: 10,
-                              message: "Cheque Number cannot exceed 10 digits",
+                              value: 12,
+                              message: "Cheque Number cannot exceed 12 digits",
                             },
                             pattern: {
                               value: /^[0-9]+$/,
@@ -1448,7 +1472,19 @@ function Payment({ stepper }) {
                               placeholder="Enter Cheque Number"
                               invalid={!!errors.chequeNumber}
                               {...field}
+                              maxLength="12"
                               // isDisabled={statusThree}
+                               onChange={(e) => {
+        // allow only digits
+        let value = e.target.value.replace(/[^0-9]/g, "");
+
+        // restrict to max 12 digits
+        if (value.length > 12) {
+          value = value.slice(0, 12);
+        }
+
+        field.onChange(value);
+      }}
                             />
                           )}
                         />
@@ -1581,11 +1617,12 @@ function Payment({ stepper }) {
                               // isDisabled={statusThree}
 
                               onChange={(e) => {
-                                const onlyAlphabets = e.target.value.replace(
-                                  /[^a-zA-Z]/g,
-                                  ""
-                                );
-                                field.onChange(onlyAlphabets);
+                                const onlyAlphabetsAndSpaces =
+                                  e.target.value.replace(
+                                    /[^a-zA-Z\s]/g, // allow letters and spaces
+                                    ""
+                                  );
+                                field.onChange(onlyAlphabetsAndSpaces);
                               }}
                             />
                           )}
@@ -1629,11 +1666,12 @@ function Payment({ stepper }) {
                               // isDisabled={statusThree}
 
                               onChange={(e) => {
-                                const onlyAlphabets = e.target.value.replace(
-                                  /[^a-zA-Z]/g,
-                                  ""
-                                );
-                                field.onChange(onlyAlphabets);
+                                const onlyAlphabetsAndSpaces =
+                                  e.target.value.replace(
+                                    /[^a-zA-Z\s]/g, // allow letters and spaces
+                                    ""
+                                  );
+                                field.onChange(onlyAlphabetsAndSpaces);
                               }}
                             />
                           )}
@@ -1654,7 +1692,12 @@ function Payment({ stepper }) {
                         <Controller
                           name="routingNumber"
                           rules={{
-                            required: "Routing Number is required",
+                            required: "Routing number is required",
+                            pattern: {
+                              value: /^[0-9]{9}$/,
+                              message:
+                                "Routing number must be exactly 9 digits",
+                            },
                           }}
                           control={control}
                           render={({ field }) => (
@@ -1663,7 +1706,18 @@ function Payment({ stepper }) {
                               placeholder="Enter Routing Number"
                               invalid={!!errors.routingNumber}
                               {...field}
-                              // isDisabled={statusThree}
+                              onChange={(e) => {
+                                // Allow only numbers
+                                let value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
+
+                                // Allow only 9 digits max
+                                value = value.slice(0, 9);
+
+                                field.onChange(value);
+                              }}
                             />
                           )}
                         />
@@ -1683,9 +1737,17 @@ function Payment({ stepper }) {
                           rules={{
                             required: "Account Number is required",
                             minLength: {
-                              value: 10,
+                              value: 8,
                               message:
-                                "Account Number must be at least 10 digits",
+                                "Account Number must be at least 8 digits",
+                            },
+                            maxLength: {
+                              value: 16,
+                              message: "Account Number can't exceed 16 digits",
+                            },
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Account Number must be numeric",
                             },
                           }}
                           control={control}
@@ -1696,6 +1758,17 @@ function Payment({ stepper }) {
                               invalid={!!errors.accountNumber}
                               {...field}
                               // isDisabled={statusThree}
+                              onChange={(e) => {
+        // allow only digits
+        let value = e.target.value.replace(/[^0-9]/g, "");
+
+        // restrict to max 16 digits
+        if (value.length > 16) {
+          value = value.slice(0, 16);
+        }
+
+        field.onChange(value);
+      }}
                             />
                           )}
                         />

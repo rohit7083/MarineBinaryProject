@@ -47,8 +47,8 @@ function AddVTypes({ isRoomRequired, showModal, setShowModal, setEventRooms }) {
   const navigate = useNavigate();
   const location = useLocation();
   const extraRoomMode = location?.state?.mode;
-  const uidOfEvent =location?.state?.uidOfEvent;
-  console.log("location", location);
+  const uidOfEvent = location?.state?.uidOfEvent;
+
   const rowData = location.state?.row;
   const uid = rowData?.uid;
   const toast = useRef(null);
@@ -163,7 +163,13 @@ function AddVTypes({ isRoomRequired, showModal, setShowModal, setEventRooms }) {
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                onClick={() => window.history.back()}
+                onClick={() => {
+                  if (isRoomRequired) {
+                    setShowModal(false); // Close the modal if room is required
+                  } else {
+                    navigate(-1); // Otherwise, navigate back
+                  }
+                }}
               />{" "}
               Check Available Rooms
             </CardText>
@@ -306,8 +312,8 @@ function AddVTypes({ isRoomRequired, showModal, setShowModal, setEventRooms }) {
       {/* <hr></hr> */}
 
       <SearchRoom
-      uidOfEvent={uidOfEvent}
-extraRoomMode={extraRoomMode}
+        uidOfEvent={uidOfEvent}
+        extraRoomMode={extraRoomMode}
         showModal={showModal}
         setShowModal={setShowModal}
         setEventRooms={setEventRooms}

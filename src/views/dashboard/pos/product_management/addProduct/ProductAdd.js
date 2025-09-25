@@ -258,6 +258,14 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
                   invalid={!!errors.name}
                   id="name"
                   placeholder="Product Name"
+                  onChange={(e) => {
+                    // Allow only letters and spaces
+                    const onlyLettersAndSpaces = e.target.value.replace(
+                      /[^A-Za-z\s]/g,
+                      ""
+                    );
+                    field.onChange(onlyLettersAndSpaces);
+                  }}
                 />
               </>
             )}
@@ -402,43 +410,74 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
 
       <Row>
         <Col md="12" sm="12" className="mb-1">
-          <Label for="description">Description (optional)</Label>
+          <Label for="description">
+            Description optional (max 500 characters)
+          </Label>
           <Controller
             name="description"
             control={control}
+            defaultValue=""
+            rules={{
+              maxLength: {
+                value: 500,
+                message: "Description cannot exceed 500 characters",
+              },
+            }}
             render={({ field }) => (
-              <Input
-                type="textarea"
-                rows="3"
-                {...field}
-                id="description"
-                placeholder="Description"
-                onChange={(e) => field.onChange(e.target.value.trimStart())}
-              />
+              <div>
+                <Input
+                  type="textarea"
+                  rows="3"
+                  id="description"
+                  placeholder="Description"
+                  {...field}
+                  onChange={(e) => {
+                    const cleanValue = e.target.value
+                      // allow letters, numbers, dot, comma, dash, space
+                      .replace(/[^a-zA-Z0-9.,\- ]/g, "")
+                      // collapse multiple spaces into one
+                      .replace(/\s+/g, " ")
+                      // enforce max length
+                      .slice(0, 500);
+
+                    field.onChange(cleanValue.trimStart());
+                  }}
+                />
+                {/* Character counter */}
+                <p
+                  style={{
+                    color: "red",
+                    fontSize: "0.85rem",
+                    marginTop: "4px",
+                  }}
+                >
+                  {field.value?.length || 0}/500
+                </p>
+              </div>
             )}
           />
         </Col>
       </Row>
 
-      <div className="mt-2">
-        <Button color="primary" disabled={loading} type="submit">
-          {loading ? (
-            <>
-              {" "}
-              Loading.. <Spinner size="sm" />{" "}
-            </>
-          ) : (
-            <>Next</>
-          )}
-        </Button>
+      <div className="mt-2 d-flex justify-content-end">
+        {" "}
         <Button
           outline
           color="secondary"
           type="button"
-          className="ms-2"
+          className="me-2"
           onClick={() => reset()}
         >
           Reset
+        </Button>
+        <Button color="primary" disabled={loading} type="submit">
+          {loading ? (
+            <>
+              Loading.. <Spinner size="sm" />
+            </>
+          ) : (
+            <>Next</>
+          )}
         </Button>
       </div>
     </Form>

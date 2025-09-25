@@ -1,28 +1,26 @@
-import React, { Fragment, useRef } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Navigate, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 import {
+  Button,
   Card,
   CardBody,
   CardText,
   CardTitle,
   Col,
-  Label,
-  Input,
-  Button,
   FormGroup,
+  Input,
+  Label,
   Spinner,
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
-import { ArrowLeft } from "react-feather";
 
 function AddVTypes() {
   const {
@@ -55,7 +53,7 @@ function AddVTypes() {
         const fetchList = await useJwt.Parentvendor();
         const list = fetchList?.data?.content?.result?.map((x) => ({
           label: x.typeName,
-          value:x.uid,
+          value: x.uid,
         }));
 
         console.log(list);
@@ -70,21 +68,21 @@ function AddVTypes() {
   }, []);
 
   const onSubmit = async (data) => {
-// {{debugger}}
+    // {{debugger}}
 
-const {ptypeName, ...reset}=data;
-    const payload={
-      parent:{
-        uid:data?.ptypeName?.value
+    const { ptypeName, ...reset } = data;
+    const payload = {
+      parent: {
+        uid: data?.ptypeName?.value,
       },
       ...reset,
-    }
-        try {
+    };
+    try {
       setLoading(true);
       if (uid) {
         const res = await useJwt.updateVendor(uid, payload);
         console.log("Updated:", res);
-     
+
         if (res.status === 200) {
           toast.current.show({
             severity: "success",
@@ -189,6 +187,14 @@ const {ptypeName, ...reset}=data;
                       placeholder="Enter Vendor type"
                       invalid={!!errors.typeName}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -199,7 +205,6 @@ const {ptypeName, ...reset}=data;
               </Col>
               <Col sm="12">
                 <Label for="description">Vendor Type Description</Label>
-
                 <Controller
                   name="description"
                   control={control}
@@ -213,6 +218,14 @@ const {ptypeName, ...reset}=data;
                       placeholder="Enter Vendor type description"
                       invalid={!!errors.description}
                       {...field}
+                      onChange={(e) => {
+                        // Allow letters, numbers, dot, space, dash, and comma
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9 .,-]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />

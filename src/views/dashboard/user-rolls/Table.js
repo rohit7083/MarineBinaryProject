@@ -1,14 +1,14 @@
 // ** React Imports
-import React, { Fragment, useState, useEffect, memo, useCallback } from "react";
 import { debounce } from "lodash";
+import { Fragment, memo, useCallback, useEffect, useState } from "react";
 
 import { Spinner } from "reactstrap";
 // ** Table Columns
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** Third Party Components
-import ReactPaginate from "react-paginate";
-import { ChevronDown, Edit2, Trash, Watch } from "react-feather";
 import DataTable from "react-data-table-component";
+import { ChevronDown, Edit2, Trash } from "react-feather";
+import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import AddRoles from "../user_rolls/roles-permissions/roles/AddRoles";
@@ -18,19 +18,16 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  Col,
   Input,
   Label,
-  Row,
-  Col,
-  Button,
+  Row
 } from "reactstrap";
-import { Link } from "react-router-dom";
 // ** Jwt Class
 import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Component
 import RoleCards from "../user_rolls/roles-permissions/roles/RoleCards";
-import Role_modal from "../user_rolls/roles-permissions/roles/Role_modal";
 const defaultRowDetails = {
   show: false,
   row: {},
@@ -75,7 +72,7 @@ const DataTableServerSide = () => {
       const { content } = data;
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -101,11 +98,7 @@ const DataTableServerSide = () => {
     }
   };
 
-  const debouncedFilter = useCallback(
-    debounce(handleFilter, 300),
-    []
-  );
-  
+  const debouncedFilter = useCallback(debounce(handleFilter, 300), []);
 
   const handlePagination = (page) => {
     setCurrentPage(page.selected + 1);
@@ -132,6 +125,7 @@ const DataTableServerSide = () => {
     }).then(async function (result) {
       if (result.value) {
         try {
+          // {{debugger}}
           // Call delete API
           const response = await useJwt.deleteRole(uid);
 
@@ -148,7 +142,7 @@ const DataTableServerSide = () => {
             MySwal.fire({
               icon: "success",
               title: "Deleted!",
-              text: "Your file has been deleted.",
+              text: "Your Role has been deleted.",
               customClass: {
                 confirmButton: "btn btn-success",
               },
@@ -156,12 +150,20 @@ const DataTableServerSide = () => {
           }
         } catch (error) {
           console.error("Error deleting item:", error);
+            MySwal.fire({
+              icon: "error",
+              title: "Can not Delete!",
+              text: `${error.response?.data?.content || "Something went wrong."}`,
+              customClass: {
+                confirmButton: "btn btn-success",
+              },
+            });
         }
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         // Show cancellation message
         MySwal.fire({
           title: "Cancelled",
-          text: "Your imaginary file is safe :)",
+          text: "Your Role is safe :)",
           icon: "error",
           customClass: {
             confirmButton: "btn btn-success",
@@ -300,10 +302,19 @@ const DataTableServerSide = () => {
           </Col>
         </Row>
         {loading ? (
-        <div style={{ minHeight: "200px", display: "flex", justifyContent: "center", alignItems: "center" }}>
-  <Spinner color="primary" style={{ width: "4rem", height: "4rem" }} />
-</div>
-
+          <div
+            style={{
+              minHeight: "200px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Spinner
+              color="primary"
+              style={{ width: "4rem", height: "4rem" }}
+            />
+          </div>
         ) : (
           <div className="react-dataTable">
             <DataTable

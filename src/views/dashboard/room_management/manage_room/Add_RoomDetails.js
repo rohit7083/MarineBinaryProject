@@ -24,7 +24,7 @@ import {
   Row,
   Spinner,
   Table,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 function AddVTypes() {
   const {
@@ -65,7 +65,6 @@ function AddVTypes() {
   }, []);
   useEffect(() => {
     if (uid && rowData) {
-    
       const selectedRoomType = roomtyp?.find(
         (option) => option.value === rowData?.roomType?.uid
       );
@@ -206,9 +205,13 @@ function AddVTypes() {
                       invalid={!!errors.numberOfRooms}
                       {...field}
                       onChange={(e) => {
-                        const val = e.target.value;
-                        if (+val > 20) return;
-                        field.onChange(e);
+                        // Remove non-numeric characters
+                        let val = e.target.value.replace(/[^0-9]/g, "");
+
+                        // Limit maximum to 20
+                        if (+val > 20) val = "20";
+
+                        field.onChange(val);
                       }}
                     />
                   )}
@@ -278,6 +281,12 @@ function AddVTypes() {
                                 placeholder="Room No."
                                 className="form-control-sm"
                                 invalid={fieldState.invalid}
+                               onChange={(e) => {
+  // Allow only numbers, dash, and space
+  const validValue = e.target.value.replace(/[^0-9A-Za-z\- ]/g, "");
+  field.onChange(validValue);
+}}
+
                               />
                             )}
                           />
@@ -344,6 +353,11 @@ function AddVTypes() {
                         placeholder={`Enter ${label}`}
                         invalid={!!errors[name]}
                         {...field}
+                        onChange={(e) => {
+                          // Remove non-numeric characters
+                          let val = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(val);
+                        }}
                       />
                     )}
                   />
@@ -414,6 +428,12 @@ function AddVTypes() {
                               type="text"
                               placeholder="Enter Price"
                               {...field}
+                              onChange={(e) => {
+                                // Remove non-numeric characters
+                                let val = e.target.value.replace(/[^0-9]/g, "");
+
+                                field.onChange(val);
+                              }}
                             />
                           )}
                         />
@@ -429,17 +449,25 @@ function AddVTypes() {
                           control={control}
                           rules={{
                             required: "Description is required",
-                            pattern: {
-                              value: /^[A-Za-z\s]+$/,
-                              message:
-                                "Only alphabetic characters (A–Z) are allowed",
-                            },
+                            // pattern: {
+                            //   value: /^[A-Za-z\s]+$/,
+                            //   message:
+                            //     "Only alphabetic characters (A–Z) are allowed",
+                            // },
                           }}
                           render={({ field }) => (
                             <Input
                               type="text"
                               placeholder="Description"
                               {...field}
+                              onChange={(e) => {
+                                // Allow letters, numbers, dot, space, dash, and comma
+                                const onlyValid = e.target.value.replace(
+                                  /[^A-Za-z0-9 .,-]/g,
+                                  ""
+                                );
+                                field.onChange(onlyValid);
+                              }}
                             />
                           )}
                         />

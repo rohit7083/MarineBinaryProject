@@ -144,10 +144,7 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
                 control={control}
                 rules={{
                   required: "Tax name is required",
-                  pattern: {
-                    value: /^[A-Za-z][A-Za-z\s\-&'()]{1,49}$/,
-                    message: "Only alphabetic characters (A–Z) are allowed",
-                  },
+                 
                 }}
                 render={({ field }) => (
                   <Input
@@ -155,6 +152,12 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
                     id="taxName"
                     placeholder="Enter tax name"
                     invalid={!!errors.taxName}
+                    onChange={(e) => {
+  // Allow only letters and spaces
+  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
+  field.onChange(onlyLettersAndSpaces);
+}}
+
                   />
                 )}
               />
@@ -244,6 +247,12 @@ value: /^\d+(\.\d+)?$/,
                     id="taxValue"
                     placeholder="Enter tax amount"
                     invalid={!!errors.taxValue}
+                    onChange={(e) => {
+  // Allow only numeric characters
+  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+  field.onChange(onlyNumbers);
+}}
+
                   />
                 )}
               />

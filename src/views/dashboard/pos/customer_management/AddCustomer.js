@@ -16,15 +16,15 @@ import {
 } from "reactstrap";
 
 const defaultValues = {
-  firstName: "Rohit ",
-  lastName: "son  ",
-  phoneNumber: "1236547890",
-  emailId: "E@gmail.com",
-  address: "nashik",
-  city: "nashik",
-  state: "ashik",
-  country: "nashik",
-  pinCode: "25625",
+  // firstName: "Rohit ",
+  // lastName: "son  ",
+  // phoneNumber: "1236547890",
+  // emailId: "E@gmail.com",
+  // address: "nashik",
+  // city: "nashik",
+  // state: "ashik",
+  // country: "nashik",
+  // pinCode: "25625",
 };
 
 const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
@@ -151,6 +151,11 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="firstName"
                       placeholder="Enter first name"
                       invalid={!!errors.firstName}
+                        onChange={(e) => {
+        // Allow only letters and spaces
+        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
+        field.onChange(onlyLettersAndSpaces);
+      }}
                     />
                   )}
                 />
@@ -182,6 +187,11 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="lastName"
                       placeholder="Enter last name"
                       invalid={!!errors.lastName}
+                        onChange={(e) => {
+        // Allow only letters and spaces
+        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
+        field.onChange(onlyLettersAndSpaces);
+      }}
                     />
                   )}
                 />
@@ -244,6 +254,12 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       type="email"
                       placeholder="Enter email"
                       invalid={!!errors.emailId}
+                      onChange={(e) => {
+  // Allow letters, numbers, dot, and @
+  const onlyValid = e.target.value.replace(/[^A-Za-z0-9.@]/g, "");
+  field.onChange(onlyValid);
+}}
+
                     />
                   )}
                 />
@@ -270,6 +286,12 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       type="textarea"
                       rows="3"
                       placeholder="Enter address"
+                      onChange={(e) => {
+  // Allow letters, numbers, dot, space, dash, and comma
+  const onlyValid = e.target.value.replace(/[^A-Za-z0-9 .,-]/g, "");
+  field.onChange(onlyValid);
+}}
+
                     />
                   )}
                 />
@@ -296,6 +318,11 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="city"
                       placeholder="Enter city"
                       invalid={!!errors.city}
+                                        onChange={(e) => {
+        // Allow only letters and spaces
+        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
+        field.onChange(onlyLettersAndSpaces);
+      }}
                     />
                   )}
                 />
@@ -325,6 +352,11 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="state"
                       placeholder="Enter state"
                       invalid={!!errors.state}
+                                        onChange={(e) => {
+        // Allow only letters and spaces
+        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
+        field.onChange(onlyLettersAndSpaces);
+      }}
                     />
                   )}
                 />
@@ -348,6 +380,11 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="country"
                       placeholder="Enter country"
                       invalid={!!errors.country}
+                                        onChange={(e) => {
+        // Allow only letters and spaces
+        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
+        field.onChange(onlyLettersAndSpaces);
+      }}
                     />
                   )}
                 />
@@ -377,7 +414,7 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="pinCode"
                       placeholder="Enter Zip code"
                       invalid={!!errors.pinCode}
-                      maxLength={6}
+                      maxLength={5}
                     />
                   )}
                 />

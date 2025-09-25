@@ -1,145 +1,16 @@
-// import React, { useState, useRef, useEffect } from "react";
-// import Event_Info from "./Event_info";
-// // import VenueLocation from "./steps-with-validation/VenueLocation";
-// // import LogisticsServices from "./steps-with-validation/LogisticsServices";
-// // import VendorsCoordination from "./steps-with-validation/VendorsCoordination";
-// // import FinalReview from "./steps-with-validation/FinalReview";
-
-// // Custom Components
-// import Wizard from "@components/wizard";
-
-// // Icons
-// import { User, MapPin, Settings, Users, Clipboard } from "react-feather";
-
-// const index = () => {
-//   const ref = useRef(null);
-//   const [stepper, setStepper] = useState(null);
-//   const [fetchLoader, setFetchLoader] = useState(false);
-
-//   const [formData, setFormData] = useState({
-//         EventInfo: {},
-//     clientInfo: {},
-//     venueLocation: {},
-//     logistics: {},
-//     vendors: {},
-//   });
-
-//   useEffect(() => {
-//     // Optional: Fetch existing data to prefill
-//   }, []);
-
-//   const steps = [
-//     {
-//       id: "Event-info",
-//       title: "Event Information",
-//       subtitle: "Enter Event details",
-//       icon: <User size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.EventInfo }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "venue-location",
-//       title: "Venue & Location",
-//       subtitle: "Choose venue & setup",
-//       icon: <MapPin size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.venueLocation }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "logistics",
-//       title: "Logistics & Services",
-//       subtitle: "Plan services",
-//       icon: <Settings size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.logistics }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "vendors",
-//       title: "Vendors & Coordination",
-//       subtitle: "Manage vendors",
-//       icon: <Users size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={{ ...formData.vendors }}
-//           setFormData={setFormData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//     {
-//       id: "review",
-//       title: "Review",
-//       subtitle: "Final review & submit",
-//       icon: <Clipboard size={18} />,
-//       content: (
-//         <Event_Info
-//           stepper={stepper}
-//           formData={formData}
-//           fetchLoader={fetchLoader}
-//         />
-//       ),
-//     },
-//   ];
-
-//   return (
-//     <div className="modern-horizontal-wizard">
-//       <Wizard
-//         type="modern-horizontal"
-//         ref={ref}
-//         steps={steps}
-//         options={{ linear: false }}
-//         instance={(el) => setStepper(el)}
-//       />
-//     </div>
-//   );
-// };
-
-// export default index;
-
-import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useNavigate } from 'react-router-dom';
-import { ChevronDown, Edit2, Eye, Plus, Trash } from "react-feather";
-import {
-  Table as ReactstrapTable,
-  Input,
-  Row,
-  Col,
-  Card,
-  CardBody,
-  Button,
-  Badge,
-} from "reactstrap";
-import { Link, Navigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import ReactPaginate from "react-paginate";
-import { debounce } from "lodash";
-import { Spinner } from "reactstrap";
-import withReactContent from "sweetalert2-react-content";
 import useJwt from "@src/auth/jwt/useJwt";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
+import ReactPaginate from "react-paginate";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const index = () => {
-
-    const navigate=useNavigate();
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -155,7 +26,7 @@ const index = () => {
   const [loading, setLoading] = useState(true);
   const MySwal = withReactContent(Swal);
   const [mode, setMode] = useState("create");
-  
+
   async function fetchTableData() {
     try {
       setLoading(true);
@@ -165,7 +36,7 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -215,16 +86,14 @@ const index = () => {
   };
 
   const handleEdit = (row) => {
-   
-    navigate('/eventTypes', { state: { row } });
-
+    navigate("/eventTypes", { state: { row } });
   };
 
   const columns = [
     {
       name: "Id",
       sortable: true,
-      // minWidth: "100px",
+      maxWidth: "100px",
       selector: (row, index) => index + 1,
     },
 
@@ -237,8 +106,11 @@ const index = () => {
     {
       name: "Description",
       sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.eventTypeDescription,
+      minWidth: "150px",
+      selector: (row) =>
+        row.eventTypeDescription?.length > 50
+          ? row.eventTypeDescription.substring(0, 50) + "..."
+          : row.eventTypeDescription,
     },
 
     {
@@ -281,7 +153,7 @@ const index = () => {
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: "Your file has been deleted.",
+                    text: "Your Event Type has been deleted.",
                     customClass: {
                       confirmButton: "btn btn-success",
                     },
@@ -289,11 +161,19 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
+                  MySwal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: `${error.response?.data?.content || "Failed to delete Event Type."}`,
+                    customClass: {
+                      confirmButton: "btn btn-success",
+                    },
+                  });
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({
                 title: "Cancelled",
-                text: "Your imaginary file is safe :)",
+                text: "Your  Event Type  is safe :)",
                 icon: "error",
                 customClass: {
                   confirmButton: "btn btn-success",
@@ -307,7 +187,7 @@ const index = () => {
             <span
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={()=>handleEdit(row)}
+              onClick={() => handleEdit(row)}
             >
               <Edit2 className="font-medium-3 text-body" />
             </span>

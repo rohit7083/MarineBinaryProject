@@ -2,17 +2,15 @@ import useJwt from "@src/auth/jwt/useJwt";
 import CryptoJS from "crypto-js";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Trash2 } from "react-feather";
+import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import Select from "react-select";
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
-  CardImg,
   CardTitle,
   Col,
   Form,
@@ -20,25 +18,39 @@ import {
   Input,
   Label,
   Row,
-  Spinner,
+
+  Spinner
 } from "reactstrap";
+import CartSummery from "../CartSummery";
 import DiscountModal from "./DiscountModal";
+
+
+
+const getVariationUids = async (uids) => {
+  try {
+ const response=await useJwt.getVariationUid(uids);
+ console.log("Variation UIDs:", response);
+    return response;
+  } catch (error) {
+    console.error("Error fetching variation UIDs:", error);
+    return [];
+  }
+}
 
 export default function Payment() {
   const location = useLocation();
-  const state = location.state || {};
-  const customerUid = state.selectedCust?.uid || null;
-  const uids = state.uids || [];
-  const productIma = state.productIma || "";
-// {{debugger}}
+  
+  const customerUid = location.state?.customeUid || null;
+  const selectedProduct = location.state?.selecltedProductList
   const navigate = useNavigate();
   const toast = useRef(null);
-  const [cart, setCart] = useState(location.state?.selectedProducts || []);
+
+  
   const [paymentMode, setPaymentMode] = useState(null);
   const [loading, setLoading] = useState(false);
   const [discountModal, setDiscountModal] = useState(false);
   const [verifyDiscount, setVerifyDiscount] = useState(false);
-  const [singleVariationUid, setSingleVariationUid] = useState(null);
+  
 
   const colourOptions = [
     { value: "3", label: "Cash" },
@@ -74,10 +86,11 @@ export default function Payment() {
       otp: ["", "", "", ""],
     },
   });
-  const watchisDiscountApply = watch("isDiscountApply");
+ 
   const [posUid, setPosUid] = useState(null);
   const [caldis, setCaldis] = useState(0);
   const [finalAmt, setFinalAmt] = useState(0);
+  
   const handleValuesChange = ({ caldis, finalAmt }) => {
     setCaldis(caldis);
     setFinalAmt(finalAmt);
@@ -105,7 +118,6 @@ export default function Payment() {
     try {
       // {{debugger}}
       const res = await useJwt.posProductdis(payload);
-      console.log(res);
       if (res?.data?.code === 200) {
         setPosUid(res?.data?.uid);
       }
@@ -118,15 +130,12 @@ export default function Payment() {
     handleNoDiscount();
   }, []);
 
-  useEffect(() => {
-    console.log("posUid", posUid);
-  }, [posUid]);
-
+ 
   const watchDiscountApply = watch("isDiscountApply");
   const watchDiscountType = watch("discountType");
   const watchDiscountValue = watch("discount");
-  // --- CALCULATIONS ---
-  const subtotal = cart.reduce((sum, p) => sum + (p.totalPrice || 0), 0);
+ 
+  const subtotal = selectedProduct.reduce((sum, p) => sum + (p.totalPrice || 0), 0);
   const discountAmount = (() => {
     if (!watchDiscountApply) return 0;
 
@@ -149,113 +158,7 @@ export default function Payment() {
   useEffect(() => {
     setValue("finalAmount", totalToPay);
   }, [totalToPay, setValue]);
- 
 
-
-// const updateQty = async (idx, newQty) => {
-//   // Clone cart to avoid direct state mutation
-//   const updatedCart = [...cart];
-
-//   // Product object for updating state
-//   const cartProduct = updatedCart[idx];
-
-//   // UID (or variation object) from your uids array
-//   const uid = uids[idx];
-
-//   // Update cart product locally
-//   cartProduct.quantity = newQty;
-//   cartProduct.totalPrice = cartProduct.unitPrice * newQty;
-//   setCart(updatedCart);
-
-//   try {
-//     // Send uid + newQty to API
-//     const response = await useJwt.getVariationUid(uid, newQty);
-//     console.log("Quantity updated successfully", response);
-//   } catch (error) {
-//     console.error("Failed to update quantity", error);
-//     // Optionally revert state if API fails
-//     cartProduct.quantity = cart[idx].quantity;
-//     cartProduct.totalPrice = cart[idx].totalPrice;
-//     setCart([...cart]);
-//   }
-// };
-
-
-// const incrementQty = (idx) => {
-//   const newQty = cart[idx].quantity + 1;
-//   updateQty(idx, newQty);
-// };
-
-// const decrementQty = (idx) => {
-//   if (cart[idx].quantity > 1) {
-//     const newQty = cart[idx].quantity - 1;
-//     updateQty(idx, newQty);
-//   }
-// };
-
-
-
-  const incrementQty = (idx) => {
-    
-    const updated = [...cart];
-    updated[idx].quantity += 1;
-    updated[idx].totalPrice = updated[idx].unitPrice * updated[idx].quantity;
-    setCart(updated);
-  };
-
-
-  
-
-
-  const decrementQty = (idx) => {
-    const updated = [...cart];
-    if (updated[idx].quantity > 1) {
-      updated[idx].quantity -= 1;
-      updated[idx].totalPrice = updated[idx].unitPrice * updated[idx].quantity;
-      setCart(updated);
-    }
-  };
-
-// useEffect(() => {
-// const fetchhvariationUid=async(uid)=>{
-//   {{debugger}}
-//   try {
-//      const varRes = await useJwt.getVariationUid(uid);
-//       const items = varRes?.data?.content?.items || [];
-//   } catch (error) {
-//     console.log(error);
-    
-//   }
-// }
-// fetchhvariationUid();
-// },[onSubmit])
-
-  // const removeProduct = (idx) => {
-  //   const updated = [...cart];
-  //   updated.splice(idx, 1);
-  //   setCart(updated);
-  // };
-const removeProduct = (idx) => {
-  setCart((prevCart) => {
-    const updated = [...prevCart];
-    updated.splice(idx, 1);
-    return updated;
-  });
-};
-
-  // const removeProduct = async (idx) => {
-  //   try {
-
-  //     const vuid = variationUids[idx];
-  //     if (!vuid) throw new Error("Variation UID not found");
-
-  //     // 2. Call delete API with fresh UID
-  //     const res = await useJwt.deleteProduct(uids, vuid);
-  //     setCart((pre) => pre.filter((_, i) => i != idx));
-  //   } catch (error) {
-  //     console.error("Error removing product:", error);
-  //   }
-  // };
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -280,81 +183,9 @@ const removeProduct = (idx) => {
     const combined = iv.concat(encrypted.ciphertext);
     return CryptoJS.enc.Base64.stringify(combined);
   }
+const onSubmit=()=>{}
 
-  const onSubmit = async (data) => {
-    if (!cart.length) {
-      toast.current.show({
-        severity: "warn",
-        summary: "Cart Empty",
-        detail: "Please add products",
-        life: 2000,
-      });
-      return;
-    }
 
-    try {
-      setLoading(true);
-
-  
-      // await Promise.all(
-      //   uids.map(uid => useJwt.updatedQty(uid, item.quantity))
-      // );
-    
-
-      const pin = data.otp.join("");
-      const encrypted = encryptAES(pin);
-      const formData = new FormData();
-
-      formData.append("posOrder.uid", posUid);
-
-      formData.append("payment.finalPayment", watchSubtotal);
-      formData.append("payment.paymentMode", data.paymentMode.value);
-      if (paymentMode === "Cash") {
-        formData.append("pin", encrypted);
-      }
-
-      if (paymentMode === "Credit Card") {
-        [
-          "cardNumber",
-          "cardType",
-          "cardExpiryMonth",
-          "cardExpiryYear",
-          "cardCvv",
-          "nameOnCard",
-        ].forEach((f) => formData.append(`payment.${f}`, data[f]));
-      }
-
-      const res = await useJwt.posPayment(formData);
-      if (res?.data?.status === "success") {
-        toast.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Payment Completed",
-          life: 2000,
-        });
-        setTimeout(() => navigate("/dashboard/pos/point_of_sale/shop"), 2000);
-      } else {
-        toast.current.show({
-          severity: "error",
-          summary: "Failed",
-          detail: "Payment Failed",
-          life: 2000,
-        });
-      }
-    } catch (err) {
-      console.error("Payment Error:", err);
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Payment Error",
-        life: 2000,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // --- When discount applied successfully ---
   const handleDiscountSuccess = (payload) => {
     toast.current.show({
       severity: "success",
@@ -460,6 +291,8 @@ const removeProduct = (idx) => {
     setAvailableMonths(months);
   }, []);
 
+
+ 
   return (
     <>
       <Toast ref={toast} />
@@ -834,150 +667,19 @@ const removeProduct = (idx) => {
               </CardBody>
             </Card>
           </Col>
+<Col xl="12" lg="12" md="12">
 
+<CartSummery data={selectedProduct}/>
+
+ 
+</Col>
           {/* Cart Summary */}
-          <Col xl="6" lg="12" md="12">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cart Summary</CardTitle>
-              </CardHeader>
-              <CardBody>
-                {cart.length === 0 ? (
-                  <p className="text-center text-muted">No products added.</p>
-                ) : (
-                  <>
-                    {cart.map((p, i) => (
-                      <Row
-                        key={i}
-                        className="align-items-center mb-2"
-                        style={{
-                          borderBottom: "1px solid #eee",
-                          paddingBottom: 8,
-                        }}
-                      >
-                        <Col xs="3">
-                          <CardImg
-                            src={productIma}
-                            alt={p.name}
-                            style={{
-                              height: 50,
-                              objectFit: "cover",
-                              borderRadius: 4,
-                            }}
-                          />
-                        </Col>
-                        <Col xs="5">
-                          <p
-                            className="mb-0"
-                            style={{ fontSize: 14, fontWeight: 500 }}
-                            title={p.name}
-                          >
-                            {p.name}
-                          </p>
-                          {p.attributes && (
-                            <p
-                              className="mb-0 text-muted"
-                              style={{ fontSize: 12 }}
-                            >
-                              {p.attributes
-                                .map((a) => `${a.attributeName}:${a.value}`)
-                                .join(", ")}
-                            </p>
-                          )}
-                          <p
-                            className="mb-0 text-muted"
-                            style={{ fontSize: 13 }}
-                          >
-                            ${p.unitPrice.toFixed(2)} x {p.quantity} = $
-                            {p.totalPrice.toFixed(2)}
-                          </p>
-                        </Col>
-                        <Col
-                          xs="4"
-                          className="d-flex justify-content-end gap-1 align-items-center"
-                        >
-                          <div
-                            className="d-flex border rounded align-items-center"
-                            style={{
-                              overflow: "hidden",
-                              height: 30,
-                              minWidth: 80,
-                            }}
-                          >
-                            <Button
-                              size="sm"
-                              color="light"
-                              onClick={() => decrementQty(i)}
-                              style={{ padding: "0 10px", fontWeight: "bold" }}
-                            >
-                              −
-                            </Button>
-                            <span
-                              style={{
-                                padding: "0 12px",
-                                minWidth: 24,
-                                textAlign: "center",
-                                fontSize: 14,
-                                fontWeight: 500,
-                              }}
-                            >
-                              {p.quantity}
-                            </span>
-                            <Button
-                              size="sm"
-                              color="light"
-                              onClick={() => incrementQty(i)}
-                              style={{ padding: "0 10px", fontWeight: "bold" }}
-                            >
-                              +
-                            </Button>
-                          </div>
-
-                          <Button
-                            size="sm"
-                            color="danger"
-                            onClick={() => removeProduct(i)}
-                          >
-                            <Trash2 size={14} />
-                          </Button>
-                        </Col>
-                      </Row>
-                    ))}
-
-                    {/* Summary Totals */}
-                    <Row className="mt-2">
-                      <Col xs="6">
-                        <strong>Subtotal:</strong>
-                      </Col>
-                      <Col xs="6" className="text-end">
-                        ${subtotal.toFixed(2)}
-                      </Col>
-                    </Row>
-                    {caldis > 0 && (
-                      <Row>
-                        <Col xs="6">
-                          <strong>Discount:</strong>
-                        </Col>
-                        <Col xs="6" className="text-end text-success">
-                          -${caldis.toFixed(2)}
-                        </Col>
-                      </Row>
-                    )}
-                    <Row>
-                      <Col xs="6">
-                        <strong>Total:</strong>
-                      </Col>
-                      <Col xs="6" className="text-end">
-                        ${caldis > 0 ? finalAmt : totalToPay.toFixed(2)}
-                      </Col>
-                    </Row>
-                  </>
-                )}
-              </CardBody>
-            </Card>
-          </Col>
+        
         </Row>
       </Form>
+
+
+      
       <DiscountModal
         showModal={discountModal}
         toggleModal={() => setDiscountModal(false)}
@@ -991,9 +693,9 @@ const removeProduct = (idx) => {
         onSubmit={handleDiscountSuccess}
         finalAmount={totalToPay}
         setValue={setValue}
-        cart={cart}
+        cart={selectedProduct}
         customerUid={customerUid}
-        uids={uids}
+        uids={[]}
         setVerifyDiscount={setVerifyDiscount}
         onValuesChange={handleValuesChange}
         setPosUid={setPosUid}

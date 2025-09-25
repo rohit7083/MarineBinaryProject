@@ -60,7 +60,7 @@ const EventForm = ({
   // const [open, setOpen] = useState(false);
   const [errMsz, seterrMsz] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [startDateTime, setStartDateTime] = useState(null);
   const [endDateTime, setEndDateTime] = useState(null);
   const [selectMem, setSelectedMember] = useState({});
@@ -144,9 +144,6 @@ const EventForm = ({
       setMemberDataLoading(false);
     }
   };
-
-
-
 
   useEffect(() => {
     fetchExistingMem();
@@ -419,7 +416,7 @@ const EventForm = ({
           setModal(true);
           setTimeout(() => {
             setModal(false);
-            navigate('/event_index');
+            navigate("/event_index");
           }, 5000);
         } else {
           toast.current.show({
@@ -589,18 +586,48 @@ const EventForm = ({
         },
       })) || []
   );
-
+{}
   const displayRooms =
     watch("isRoomRequired") && eventRooms?.roomSearchUid
       ? eventRooms?.bookedRoom
       : roomData;
 
+      // console.log("displayRooms",displayRooms);
+      
   const handleOk = () => {
     // toggle();
     navigate("/event_index");
   };
 
- 
+  const wstartDateTime = watch("startDateTime");
+  const endDate = watch("endDateTime");
+  console.log(wstartDateTime);
+
+useEffect(() => {
+  if (!eventRooms?.bookedRoom || eventRooms?.bookedRoom?.length === 0 ) {
+    setValue('isRoomRequired', false);
+  }
+}, [eventRooms?.bookedRoom, setValue ,] );4
+
+
+// const toggleRoomModal=()=>{
+//   const currentState=showModal;
+//   if(currentState){
+//     setValue('isRoomRequired',false);
+//   }
+//   setShowModal(!showModal)
+// }
+
+// useEffect(()=>{
+
+//   if(watch('isRoomRequired')){
+//     setShowModal(true)
+//   }
+  
+// },[watch('isRoomRequired')])
+
+
+
   return (
     <>
       <Modal isOpen={modal} toggle={toggle} centered size="sm">
@@ -708,6 +735,14 @@ const EventForm = ({
                     type="text"
                     placeholder="Enter event name"
                     invalid={!!errors.eventName}
+                    onChange={(e) => {
+                      // Allow only letters and spaces
+                      const onlyLettersAndSpaces = e.target.value.replace(
+                        /[^A-Za-z0-9\s]/g,
+                        ""
+                      );
+                      field.onChange(onlyLettersAndSpaces);
+                    }}
                   />
                   {errors.eventName && (
                     <FormFeedback>{errors.eventName.message}</FormFeedback>
@@ -760,7 +795,19 @@ const EventForm = ({
               control={control}
               rules={{ required: "Event Type Name is required" }}
               render={({ field }) => (
-                <Input {...field} type="text" placeholder="Enter event name" />
+                <Input
+                  {...field}
+                  type="text"
+                  placeholder="Enter event name"
+                  onChange={(e) => {
+                    // Allow only letters and spaces
+                    const onlyLettersAndSpaces = e.target.value.replace(
+                      /[^A-Za-z0-9\s]/g,
+                      ""
+                    );
+                    field.onChange(onlyLettersAndSpaces);
+                  }}
+                />
               )}
             />
             {errors.eventTypeName && (
@@ -768,22 +815,6 @@ const EventForm = ({
             )}
           </Col>
         )}
-
-        {/* Event Theme */}
-        {/* <Col className="mb-1">
-          <Label for="eventTheme">Event Theme (Optional)</Label>
-          <Controller
-            name="eventTheme"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="text"
-                placeholder="e.g., Vintage, Beachside"
-              />
-            )}
-          />
-        </Col> */}
 
         <Row form>
           <Col md={6} className="mb-2">
@@ -803,6 +834,9 @@ const EventForm = ({
                     errors.startDateTime ? "is-invalid" : ""
                   }`}
                   onChange={(date) => field.onChange(date[0])}
+                  options={{
+                    maxDate: endDate,
+                  }}
                 />
               )}
             />
@@ -830,6 +864,9 @@ const EventForm = ({
                     errors.endDateTime ? "is-invalid" : ""
                   }`}
                   onChange={(date) => field.onChange(date[0])}
+                  options={{
+                    minDate: wstartDateTime,
+                  }}
                 />
               )}
             />
@@ -931,10 +968,18 @@ const EventForm = ({
                   render={({ field }) => (
                     <Input
                       id="extraNoOfStaff"
-                      type="number"
+                      type="text"
                       placeholder="Enter Extra No of Staff"
                       invalid={!!errors.extraNoOfStaff}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -959,10 +1004,18 @@ const EventForm = ({
                   render={({ field }) => (
                     <Input
                       id="extraNoOfStaffAmount"
-                      type="number"
+                      type="text"
                       placeholder="Enter Extra staff Amount "
                       invalid={!!errors.extraNoOfStaffAmount}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -1044,9 +1097,24 @@ const EventForm = ({
                 {...field}
                 type="textarea"
                 placeholder="Add any notes or description"
+                onChange={(e) => {
+                  // Allow letters, numbers, dot, space, dash, and comma
+                  let onlyValid = e.target.value.replace(
+                    /[^A-Za-z0-9 .,-]/g,
+                    ""
+                  );
+
+                  // Limit to 500 characters
+                  if (onlyValid.length > 500) {
+                    onlyValid = onlyValid.slice(0, 500);
+                  }
+
+                  field.onChange(onlyValid);
+                }}
               />
             )}
           />
+          <small className="text-muted">(max 500 characters)</small>
         </Col>
 
         <Col className="mb-1">
@@ -1098,6 +1166,14 @@ const EventForm = ({
                       placeholder="Enter venue name"
                       invalid={!!errors.venueName}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z0-9\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -1127,6 +1203,14 @@ const EventForm = ({
                       placeholder="Enter venue capacity"
                       invalid={!!errors.capacity}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -1156,6 +1240,14 @@ const EventForm = ({
                       placeholder="Enter venue address"
                       invalid={!!errors.address}
                       {...field}
+                      onChange={(e) => {
+                        // Allow letters, numbers, dot, space, dash, and comma
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9 .,-]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />
@@ -1183,6 +1275,14 @@ const EventForm = ({
                       placeholder="Enter venue city"
                       invalid={!!errors.city}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -1213,6 +1313,14 @@ const EventForm = ({
                       placeholder="Enter venue state"
                       invalid={!!errors.state}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -1241,6 +1349,14 @@ const EventForm = ({
                       placeholder="Enter venue country"
                       invalid={!!errors.country}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -1252,13 +1368,13 @@ const EventForm = ({
             <Row>
               {" "}
               <Col sm="6" className="mb-1">
-                <Label for="postCode">Postal Code</Label>
+                <Label for="postCode">Zip Code</Label>
                 <Controller
                   name="postCode"
                   control={control}
                   defaultValue=""
                   rules={{
-                    required: "postCode is required",
+                    required: "Zip Code is required",
                     pattern: {
                       value: /^[0-9]+$/,
                       message: "postCode must be a number",
@@ -1268,9 +1384,18 @@ const EventForm = ({
                     <Input
                       id="postCode"
                       type="number"
-                      placeholder="Enter venue postCode"
+                      placeholder="Enter venue Zip Code"
                       invalid={!!errors.postCode}
                       {...field}
+                      onChange={(e) => {
+                        // Keep only digits
+                        let value = e.target.value.replace(/[^0-9]/g, "");
+
+                        // Limit to maximum 5 digits
+                        value = value.slice(0, 5);
+
+                        field.onChange(value);
+                      }}
                     />
                   )}
                 />
@@ -1323,10 +1448,18 @@ const EventForm = ({
                   render={({ field }) => (
                     <Input
                       id="price"
-                      type="number"
+                      type="text"
                       placeholder="Enter venue price"
                       invalid={!!errors.price}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -1350,10 +1483,18 @@ const EventForm = ({
                   render={({ field }) => (
                     <Input
                       id="noOfStaff"
-                      type="number"
+                      type="text"
                       placeholder="Enter No of Staff"
                       invalid={!!errors.noOfStaff}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -1380,10 +1521,18 @@ const EventForm = ({
                   render={({ field }) => (
                     <Input
                       id="staffPrice"
-                      type="number"
+                      type="text"
                       placeholder="Enter venue staff Price"
                       invalid={!!errors.price}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -1408,11 +1557,19 @@ const EventForm = ({
                   render={({ field }) => (
                     <Input
                       id="totalPrice"
-                      type="number"
+                      type="text"
                       disabled={true}
                       placeholder="Enter Total price"
                       invalid={!!errors.price}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only numeric characters
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -1576,7 +1733,7 @@ const EventForm = ({
                   placeholder="Enter Total price"
                   invalid={!!errors.totalAmount}
                   {...field}
-                   disabled={!!listData?.uid} 
+                  disabled={!!listData?.uid}
                 />
               )}
             />
@@ -1633,7 +1790,9 @@ const EventForm = ({
           {watch("isRoomRequired") && (
             <RoomManageModal
               isRoomRequired={isRoomRequired}
-              setShowModal={setShowModal}
+              // setShowModal={toggleRoomModal}
+                            setShowModal={setShowModal}
+
               showModal={showModal}
               setEventRooms={setEventRooms}
             />

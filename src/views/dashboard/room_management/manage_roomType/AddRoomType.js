@@ -8,11 +8,18 @@ import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Button, Card,
+  Button,
+  Card,
   CardBody,
   CardText,
   CardTitle,
-  Col, FormFeedback, FormGroup, Input, Label, Spinner, UncontrolledAlert
+  Col,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 function AddVTypes() {
@@ -137,11 +144,7 @@ function AddVTypes() {
                   defaultValue=""
                   rules={{
                     required: "Event Type is required",
-pattern: {
-  value: /^[A-Za-z\s]+$/,
-  message: "Only letters and spaces are allowed",
-}
-
+                   
                   }}
                   render={({ field }) => (
                     <Input
@@ -150,6 +153,13 @@ pattern: {
                       placeholder="Enter Room type"
                       invalid={!!errors.roomTypeName}
                       {...field}
+                      onChange={(e) => {
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9\s.,-]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />
@@ -164,10 +174,6 @@ pattern: {
                   defaultValue=""
                   rules={{
                     required: "Tax Name is required",
-                    pattern: {
-                      value: /^[A-Za-z0-9]+$/,
-                      message: "Only letters and numbers are allowed",
-                    },
                   }}
                   render={({ field }) => (
                     <Input
@@ -176,6 +182,13 @@ pattern: {
                       placeholder="Enter Tax Name "
                       invalid={!!errors.taxName}
                       {...field}
+                      onChange={(e) => {
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9\s.,-]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />
@@ -204,6 +217,13 @@ pattern: {
                       placeholder="Maximum occupancy (number of people): "
                       invalid={!!errors.peopleCapacity}
                       {...field}
+                      onChange={(e) => {
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        ); // remove non-numeric
+                        field.onChange(onlyNumbers);
+                      }}
                     />
                   )}
                 />
@@ -233,6 +253,20 @@ pattern: {
                       placeholder="Enter Tax Percentage (e.g. 10%)"
                       invalid={!!errors.taxValue}
                       {...field}
+                      onChange={(e) => {
+                        let value = e.target.value;
+
+                        // Remove everything except digits and dot
+                        value = value.replace(/[^0-9.]/g, "");
+
+                        // Allow only one dot
+                        const parts = value.split(".");
+                        if (parts.length > 2) {
+                          value = parts[0] + "." + parts.slice(1).join("");
+                        }
+
+                        field.onChange(value);
+                      }}
                     />
                   )}
                 />
@@ -256,6 +290,14 @@ pattern: {
                       placeholder="Enter description"
                       invalid={!!errors.description}
                       {...field}
+                      onChange={(e) => {
+                        // allow only letters, numbers, space, dash, and dot
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9 .-]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />

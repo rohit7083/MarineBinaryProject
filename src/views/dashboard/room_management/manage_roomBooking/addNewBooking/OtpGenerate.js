@@ -1,26 +1,25 @@
-import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
-import { Send } from "react-feather";
+import CryptoJS from "crypto-js";
+import { Fragment, useEffect, useState } from "react";
 import Countdown from "react-countdown";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Spinner,
-  UncontrolledAlert,
-  InputGroupText,
-  Col,
-  Modal,
-  Label,
-  Input,
+  Alert,
   Button,
-  InputGroup,
-  CardTitle,
   Card,
   CardBody,
   CardText,
-  Alert,
+  CardTitle,
+  Col,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Label,
+  Modal,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
-import CryptoJS from "crypto-js";
-import { useForm, Controller } from "react-hook-form";
 import WatchNew from "../../../../../../src/assets/images/updatedWatchnew.jpg";
 
 const OtpGenerate = ({
@@ -131,77 +130,81 @@ const OtpGenerate = ({
           </div>
         </Alert>
       )}
-      
-    
-        {verify && (
-          <>
-            <Col md="12" className="mb-2">
-              <Label for="discountType">Discount Type</Label>
-              <Controller
-                name="discountType"
-                control={formControl}
-                render={({ field }) => (
-                  <Select
-                    id="discountType"
-                    options={discountTypeOptions}
-                    value={discountTypeOptions.find(
-                      (opt) => opt.value === field.value
-                    )}
-                    onChange={(selected) => field.onChange(selected.value)}
-                  />
-                )}
-              />
-            </Col>
-            <Col md="12" className="mb-2">
-              <Label for="discountValue">Discount Value</Label>
-              <InputGroup className="mb-2">
-                <InputGroupText>
-                  {mode === "Percentage" ? "%" : "$"}
-                </InputGroupText>
-                <Controller
-                  name="discountValue"
-                  control={formControl}
-                  rules={{
-                    required: "Discount value is required",
-                    pattern: {
-                      value: /^\d+(\.\d{1,2})?$/,
-                      message: "Invalid discount value",
-                    },
-                    validate: (value) => {
-                      const numericValue = parseFloat(value);
-                      const type = watch("discountType");
-                      if (type === "Flat")
-                        return numericValue > 0 || "Discount value must be greater than 0";
-                      if (type === "Percentage")
-                        return numericValue <= 100 || "Percentage must be 100 or less";
-                      return true;
-                    },
-                  }}
-                  render={({ field }) => {
-                    const isPercentage = watch("discountType") === "Percentage";
-                    return (
-                      <Input
-                        type="number"
-                        min="0"
-                        max={isPercentage ? 100 : undefined}
-                        step="0.01"
-                        placeholder={isPercentage ? "Max 100%" : "Flat value"}
-                        value={field.value}
-                        onChange={(e) => {
-                          let newValue = e.target.value;
-                          if (isPercentage && parseFloat(newValue) > 100) newValue = "100";
-                          field.onChange(newValue);
-                        }}
-                        onWheel={(e) => e.target.blur()}
-                      />
-                    );
-                  }}
+
+      {verify && (
+        <>
+          <Col md="12" className="mb-2">
+            <Label for="discountType">Discount Type</Label>
+            <Controller
+              name="discountType"
+              control={formControl}
+              render={({ field }) => (
+                <Select
+                  id="discountType"
+                  options={discountTypeOptions}
+                  value={discountTypeOptions.find(
+                    (opt) => opt.value === field.value
+                  )}
+                  onChange={(selected) => field.onChange(selected.value)}
                 />
-              </InputGroup>
-            </Col>
-          </>
-        )}
-      
+              )}
+            />
+          </Col>
+          <Col md="12" className="mb-2">
+            <Label for="discountValue">Discount Value</Label>
+            <InputGroup className="mb-2">
+              <InputGroupText>
+                {mode === "Percentage" ? "%" : "$"}
+              </InputGroupText>
+              <Controller
+                name="discountValue"
+                control={formControl}
+                rules={{
+                  required: "Discount value is required",
+                  pattern: {
+                    value: /^\d+(\.\d{1,2})?$/,
+                    message: "Invalid discount value",
+                  },
+                  validate: (value) => {
+                    const numericValue = parseFloat(value);
+                    const type = watch("discountType");
+                    if (type === "Flat")
+                      return (
+                        numericValue > 0 ||
+                        "Discount value must be greater than 0"
+                      );
+                    if (type === "Percentage")
+                      return (
+                        numericValue <= 100 || "Percentage must be 100 or less"
+                      );
+                    return true;
+                  },
+                }}
+                render={({ field }) => {
+                  const isPercentage = watch("discountType") === "Percentage";
+                  return (
+                    <Input
+                      type="number"
+                      min="0"
+                      max={isPercentage ? 100 : undefined}
+                      step="0.01"
+                      placeholder={isPercentage ? "Max 100%" : "Flat value"}
+                      value={field.value}
+                      onChange={(e) => {
+                        let newValue = e.target.value;
+                        if (isPercentage && parseFloat(newValue) > 100)
+                          newValue = "100";
+                        field.onChange(newValue);
+                      }}
+                      onWheel={(e) => e.target.blur()}
+                    />
+                  );
+                }}
+              />
+            </InputGroup>
+          </Col>
+        </>
+      )}
 
       <Modal
         isOpen={showModal}
@@ -255,8 +258,9 @@ const OtpGenerate = ({
                           }`}
                           autoFocus={index === 0}
                           onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(e);
+                            let value = e.target.value.replace(/[^0-9]/g, ""); // ✅ only numbers allowed
+                            field.onChange(value);
+
                             if (value && index < 5) {
                               const nextInput = document.getElementById(
                                 `otp-input-${index + 1}`
@@ -283,7 +287,9 @@ const OtpGenerate = ({
                   ))}
                 </div>
                 <div className="d-flex flex-column align-items-center position-relative">
-                  <div style={{ position: "relative", display: "inline-block" }}>
+                  <div
+                    style={{ position: "relative", display: "inline-block" }}
+                  >
                     <img
                       src={WatchNew}
                       alt="Phone Call"
@@ -314,7 +320,9 @@ const OtpGenerate = ({
                   </div>
                 </div>
                 {formErrors.otp && (
-                  <small className="text-danger">{formErrors.otp.message}</small>
+                  <small className="text-danger">
+                    {formErrors.otp.message}
+                  </small>
                 )}
               </div>
               <Button
@@ -341,9 +349,6 @@ const OtpGenerate = ({
 };
 
 export default OtpGenerate;
-
-
-
 
 // import React, { useEffect, useState, Fragment } from "react";
 // import useJwt from "@src/auth/jwt/useJwt";

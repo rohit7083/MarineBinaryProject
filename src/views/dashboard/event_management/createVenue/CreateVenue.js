@@ -1,29 +1,29 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { UncontrolledAlert } from "reactstrap";
 
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 import {
+  Button,
   Card,
   CardBody,
   CardText,
   CardTitle,
   Col,
-  Label,
-  Input,
-  Button,
   FormGroup,
+  Input,
+  Label,
   Row,
   Spinner,
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
-import { ArrowLeft } from "react-feather";
 
 function CreateVenue() {
   const location = useLocation();
@@ -243,6 +243,14 @@ function CreateVenue() {
                       placeholder="Enter venue name"
                       invalid={!!errors.venueName}
                       {...field}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z0-9\s]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -268,10 +276,15 @@ function CreateVenue() {
                   render={({ field }) => (
                     <Input
                       id="capacity"
-                      type="number"
+                      type="text"
                       placeholder="Enter venue capacity"
                       invalid={!!errors.capacity}
                       {...field}
+                       onChange={(e) => {
+          // allow only digits and prevent negative
+          const value = e.target.value.replace(/[^0-9]/g, "");
+          field.onChange(value);
+        }}
                     />
                   )}
                 />
@@ -301,6 +314,14 @@ function CreateVenue() {
                         placeholder="Enter venue address"
                         invalid={!!errors.address}
                         {...field}
+                        onChange={(e) => {
+                          // Allow letters, numbers, dot, space, dash, and comma
+                          const onlyValid = e.target.value.replace(
+                            /[^A-Za-z0-9 .,-]/g,
+                            ""
+                          );
+                          field.onChange(onlyValid);
+                        }}
                       />
                     )}
                   />
@@ -328,6 +349,14 @@ function CreateVenue() {
                         placeholder="Enter venue city"
                         invalid={!!errors.city}
                         {...field}
+                        onChange={(e) => {
+                          // Allow only letters and spaces
+                          const onlyLettersAndSpaces = e.target.value.replace(
+                            /[^A-Za-z\s]/g,
+                            ""
+                          );
+                          field.onChange(onlyLettersAndSpaces);
+                        }}
                       />
                     )}
                   />
@@ -358,6 +387,14 @@ function CreateVenue() {
                         placeholder="Enter venue state"
                         invalid={!!errors.state}
                         {...field}
+                        onChange={(e) => {
+                          // Allow only letters and spaces
+                          const onlyLettersAndSpaces = e.target.value.replace(
+                            /[^A-Za-z\s]/g,
+                            ""
+                          );
+                          field.onChange(onlyLettersAndSpaces);
+                        }}
                       />
                     )}
                   />
@@ -385,6 +422,14 @@ function CreateVenue() {
                         placeholder="Enter venue country"
                         invalid={!!errors.country}
                         {...field}
+                        onChange={(e) => {
+                          // Allow only letters and spaces
+                          const onlyLettersAndSpaces = e.target.value.replace(
+                            /[^A-Za-z\s]/g,
+                            ""
+                          );
+                          field.onChange(onlyLettersAndSpaces);
+                        }}
                       />
                     )}
                   />
@@ -396,25 +441,34 @@ function CreateVenue() {
               <Row>
                 {" "}
                 <Col sm="12" className="mb-1">
-                  <Label for="postCode">Postal Code</Label>
+                  <Label for="postCode">Zip Code</Label>
                   <Controller
                     name="postCode"
                     control={control}
                     defaultValue=""
                     rules={{
-                      required: "postCode is required",
+                      required: "Zip code is required",
                       pattern: {
                         value: /^[0-9]+$/,
-                        message: "postCode must be a number",
+                        message: "Zip code must be a number",
                       },
                     }}
                     render={({ field }) => (
                       <Input
                         id="postCode"
                         type="number"
-                        placeholder="Enter venue postCode"
+                        placeholder="Enter venue Zip"
                         invalid={!!errors.postCode}
                         {...field}
+                        onChange={(e) => {
+                          // Keep only digits
+                          let value = e.target.value.replace(/[^0-9]/g, "");
+
+                          // Limit to maximum 5 digits
+                          value = value.slice(0, 5);
+
+                          field.onChange(value);
+                        }}
                       />
                     )}
                   />
@@ -467,10 +521,15 @@ function CreateVenue() {
                   render={({ field }) => (
                     <Input
                       id="price"
-                      type="number"
+                      type="text"
                       placeholder="Enter venue price"
                       invalid={!!errors.price}
                       {...field}
+                         onChange={(e) => {
+          // allow only digits and prevent negative
+          const value = e.target.value.replace(/[^0-9]/g, "");
+          field.onChange(value);
+        }}
                     />
                   )}
                 />
@@ -495,10 +554,15 @@ function CreateVenue() {
                   render={({ field }) => (
                     <Input
                       id="noOfStaff"
-                      type="number"
+                      type="text"
                       placeholder="Enter No of Staff"
                       invalid={!!errors.noOfStaff}
                       {...field}
+                          onChange={(e) => {
+          // allow only digits and prevent negative
+          const value = e.target.value.replace(/[^0-9]/g, "");
+          field.onChange(value);
+        }}
                     />
                   )}
                 />
@@ -522,10 +586,14 @@ function CreateVenue() {
                   render={({ field }) => (
                     <Input
                       id="staffPrice"
-                      type="number"
+                      type="text"
                       placeholder="Enter venue staff Price"
                       invalid={!!errors.price}
-                      {...field}
+                      {...field}    onChange={(e) => {
+          // allow only digits and prevent negative
+          const value = e.target.value.replace(/[^0-9]/g, "");
+          field.onChange(value);
+        }}
                     />
                   )}
                 />

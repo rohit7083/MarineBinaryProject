@@ -2,7 +2,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toast } from "primereact/toast";
 import React, { useEffect, useRef, useState } from "react";
-import { Plus, Trash2, X } from "react-feather";
+import { ArrowLeft, Plus, Trash2, X } from "react-feather";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
@@ -53,7 +53,7 @@ const ProductAdd_Table = ({
   const fetchImage = async (uid) => {
     try {
       const res = await useJwt.getImage(uid);
-      console.log("image get", res);
+      // console.log("image get", res);
     } catch (error) {
       console.log(error);
     }
@@ -64,43 +64,52 @@ const ProductAdd_Table = ({
       reset({
         ...UpdateData,
         variations:
-          UpdateData.variations?.map((v) => ({
-            ...v,
-            calcAmount: v.calcAmount ?? "", // check spelling
-            qty: v.quantity ?? "",
-            images:
-              v.variationImages?.map((img) => {
-                fetchImage(img?.uid);
-                if (typeof img === "string") {
-                  return { preview: img, isServer: true };
-                }
-                if (img?.imageUrl) {
-                  return { preview: img.imageUrl, isServer: true, id: img.id };
-                }
-                if (img?.url) {
-                  return { preview: img.url, isServer: true };
-                }
-                return { preview: String(img ?? ""), isServer: true };
-                // {{debugger}}
-                if (typeof img === "string") {
-                  return { url: img, isServer: true };
-                }
-                if (img?.imageUrl) {
-                  return { url: img.imageUrl, isServer: true, id: img.id };
-                }
-                if (img?.url) {
-                  return { url: img.url, isServer: true };
-                }
-                return { url: String(img ?? ""), isServer: true };
-              }) || [],
-          })) || [],
+          UpdateData.variations?.map((v) => {
+            // Build attributes object with keys from productData
+            const attributes = {};
+            productData?.findCategoryData?.attributeKeys?.forEach((attr) => {
+              const matched = v.attributes?.find(
+                (att) => att.attributeName === attr
+              );
+              attributes[attr] = matched ? matched.value : "";
+            });
+
+            return {
+              ...v,
+              calcAmount: v.calcAmount ?? "",
+              qty: v.quantity ?? "",
+              images:
+                v.variationImages?.map((img) => {
+                  fetchImage(img?.uid);
+
+                  if (typeof img === "string") {
+                    return { preview: img, isServer: true };
+                  }
+
+                  if (img?.imageUrl) {
+                    return {
+                      preview: img.imageUrl,
+                      isServer: true,
+                      id: img.id,
+                    };
+                  }
+
+                  if (img?.url) {
+                    return { preview: img.url, isServer: true };
+                  }
+
+                  return { preview: String(img ?? ""), isServer: true };
+                }) || [],
+              ...attributes, // spread attributes into the variation object
+            };
+          }) || [],
       });
     }
-  }, [UpdateData, reset]);
+  }, [UpdateData, reset, productData]);
 
   let payload;
   const onSubmit = async (data) => {
-    console.log("data from variation", data);
+    // console.log("data from variation", data);
     payload = data.variations.map((vData) => {
       vData.attributes = productData?.findCategoryData?.attributeKeys.map(
         (key) => {
@@ -119,7 +128,7 @@ const ProductAdd_Table = ({
       };
     });
 
-    console.log(payload);
+    // console.log(payload);
     if (UpdateData) {
       try {
         setLoading(true);
@@ -379,6 +388,14 @@ const ProductAdd_Table = ({
                           placeholder="Enter MRP"
                           {...field}
                           invalid={!!errors?.variations?.[index]?.mrp}
+                          onChange={(e) => {
+                            // Allow only numeric characters
+                            const onlyNumbers = e.target.value.replace(
+                              /[^0-9]/g,
+                              ""
+                            );
+                            field.onChange(onlyNumbers);
+                          }}
                         />
                       )}
                     />
@@ -407,6 +424,14 @@ const ProductAdd_Table = ({
                           placeholder="Enter Stock QTY"
                           {...field}
                           invalid={!!errors?.variations?.[index]?.stockQty}
+                          onChange={(e) => {
+                            // Allow only numeric characters
+                            const onlyNumbers = e.target.value.replace(
+                              /[^0-9]/g,
+                              ""
+                            );
+                            field.onChange(onlyNumbers);
+                          }}
                         />
                       )}
                     />
@@ -435,6 +460,14 @@ const ProductAdd_Table = ({
                           placeholder="Enter QTY"
                           {...field}
                           invalid={!!errors?.variations?.[index]?.qty}
+                          onChange={(e) => {
+                            // Allow only numeric characters
+                            const onlyNumbers = e.target.value.replace(
+                              /[^0-9]/g,
+                              ""
+                            );
+                            field.onChange(onlyNumbers);
+                          }}
                         />
                       )}
                     />
@@ -463,6 +496,12 @@ const ProductAdd_Table = ({
                           placeholder="Enter Unit"
                           {...field}
                           invalid={!!errors?.variations?.[index]?.unit}
+                          onChange={(e) => {
+  // Allow only letters and numbers
+  const onlyAlphanumeric = e.target.value.replace(/[^A-Za-z]/g, "");
+  field.onChange(onlyAlphanumeric);
+}}
+
                         />
                       )}
                     />
@@ -587,9 +626,6 @@ const ProductAdd_Table = ({
           </div>{" "}
         </Card>
         <div className="d-flex justify-content-between align-items-center mt-3">
-          {/* Left side: Previous */}
-          {/* <Button
-=======
           <Button
             type="button"
             color="primary"
@@ -600,12 +636,8 @@ const ProductAdd_Table = ({
             <span className="align-middle d-sm-inline-block d-none">
               Previous
             </span>
+          </Button>
 
-          </Button> */}
-
-          {/* </Button> */}
-
-          {/* Right side: Next + Reset */}
           <div>
             <Button color="primary" disabled={loading} type="submit">
               {loading ? (

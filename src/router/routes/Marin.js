@@ -3,11 +3,11 @@ import { Navigate } from "react-router-dom";
 import ParkingPassListing from "../../views/dashboard/parking_pass/index";
 import AddVTypes from "../../views/dashboard/pos/vendorManagement/vendorTypes/AddVTypes";
 import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
-import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index"
-import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index"
-import VirtualTerminal from "../../views/dashboard/pos/virtualTerminal/index"
-import QrList from "../../views/dashboard/qrCode/qrList/index"
-import EventPaymentList from "../../views/dashboard/qrCode/eventPaymentList/index"
+import VirtualTerminal from "../../views/dashboard/pos/virtualTerminal/index";
+import EventPaymentList from "../../views/dashboard/qrCode/eventPaymentList/index";
+import QrList from "../../views/dashboard/qrCode/qrList/index";
+import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index";
+import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index";
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
 );
@@ -293,7 +293,7 @@ export default [
   },
   {
     element: <QrPaymentStepTwo />,
-    path: "/slip_memberform/qr_paymentsteptwo",
+    path: "/crm/marine-resort/slip_memberform/qr_paymentsteptwo",
     meta: {
       layout: "blank",
     },
@@ -301,7 +301,7 @@ export default [
 
   {
     element: <QrPaymentStepTwo />,
-    path: "/slip_memberform/qr_paymentsteptwo/:token",
+    path: "/crm/marine-resort/slip_memberform/qr_paymentsteptwo/:token",
     meta: { 
       publicRoute: true,
       layout: "blank",

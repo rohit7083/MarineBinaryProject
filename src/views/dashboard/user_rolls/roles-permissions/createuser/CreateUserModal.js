@@ -1,42 +1,40 @@
-import { Fragment, useEffect, useState, useRef } from "react";
-import Swal from "sweetalert2";
 import InputPasswordToggle from "@components/input-password-toggle";
-import { useNavigate } from "react-router-dom";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
+import CryptoJS from "crypto-js";
 import "primeicons/primeicons.css";
-import React from "react";
-import { Spinner, UncontrolledAlert } from "reactstrap";
-import { countries } from "../../../slip-management/CountryCode";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
+import { useNavigate } from "react-router-dom";
 import {
-  Row,
-  Col,
   Button,
-  Modal,
-  ModalBody,
-  ModalHeader,
+  CardTitle,
+  Col,
   Form,
+  FormFeedback,
   Input,
   InputGroup,
   InputGroupText,
   Label,
-  CardTitle,
   ListGroupItem,
-  FormFeedback,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
-import CryptoJS from "crypto-js";
+import Swal from "sweetalert2";
+import { countries } from "../../../slip-management/CountryCode";
 
-import { User, Mail, Smartphone, Lock } from "react-feather";
-import { Controller, useForm } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/bootstrap.css";
 import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
 import { selectThemeColors } from "@utils";
+import { Mail, User } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import "react-phone-input-2/lib/bootstrap.css";
+import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
-import { use } from "react";
 const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   const [passwordCreated, setPasswordCreated] = useState(false);
   const [DefaultPasswardUsed, setDefaultPasswardUsed] = useState(false);
@@ -155,10 +153,11 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       emailId: data.emailId,
       mobileNumber: data.mobileNumber,
       password: encryptedPasss,
-      pin:encrptedPin ,
-      countryCode: data.countryCode.value,
+      pin: encrptedPin,
+      countryCode: data.countryCode?.dial_code || "",
+      dialCodeCountry: data.countryCode?.code || "",
       userRoles: {
-        uid: data.userRoles, 
+        uid: data.userRoles,
       },
     };
     console.log("Transformed Data:", transformedData);
@@ -250,6 +249,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   };
   useEffect(() => {
     if (uid && row) {
+      // {{debugger}}
       const {
         firstName,
         lastName,
@@ -257,18 +257,25 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         mobileNumber,
         userRoles,
         countryCode,
+        dialCodeCountry,
         password,
       } = row;
-      const matchedCountryOption = countryOptions.find(
-        (option) =>
-          option.value === countryCode?.value || option.value === countryCode
-      );
 
+      const backendCode = row.dialCodeCountry;
+
+      // Find the country object from countryOptions
+      const selectedCountry =
+        countryOptions.find((c) => c.code === backendCode) || null;
+      {
+        {
+          debugger;
+        }
+      }
       reset({
         firstName,
         lastName,
         emailId,
-        countryCode: matchedCountryOption || null,
+        countryCode: selectedCountry || null,
         mobileNumber,
         userRoles: userRoles?.uid || null,
         password,
@@ -295,20 +302,26 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
     console.log(row);
   }, [propShow]);
 
-  const countryOptions = countries.map((country) => ({
-    value: country.dial_code,
-    label: (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <ReactCountryFlag
-          countryCode={country.code}
-          svg
-          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-        />
-        {country.name} ({country.dial_code})
-      </div>
-    ),
-    code: country.code,
-  }));
+  const countryOptions = React.useMemo(
+    () =>
+      countries.map((country) => ({
+        value: `${country.code}-${country.dial_code}`,
+        label: (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ReactCountryFlag
+              countryCode={country.code}
+              svg
+              style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+        code: country.code,
+        dial_code: country.dial_code,
+      })),
+    [countries]
+  );
+  console.log(row);
 
   return (
     <Fragment>
@@ -390,13 +403,18 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                     defaultValue=""
                     rules={{ required: "First Name is required" }}
                     render={({ field }) => (
-                      <Input type="text" placeholder="First Name" {...field}  onChange={(e) => {
+                      <Input
+                        type="text"
+                        placeholder="First Name"
+                        {...field}
+                        onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
+                            /[^a-zA-Z\s]/g, // \s allows spaces
                             ""
                           );
                           field.onChange(onlyAlphabets);
-                        }} />
+                        }}
+                      />
                     )}
                   />
                 </InputGroup>
@@ -425,13 +443,18 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                     defaultValue=""
                     rules={{ required: "Last Name is required" }}
                     render={({ field }) => (
-                      <Input type="text" placeholder="Last Name" {...field}  onChange={(e) => {
+                      <Input
+                        type="text"
+                        placeholder="Last Name"
+                        {...field}
+                        onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
-                            /[^a-zA-Z]/g,
+                            /[^a-zA-Z\s]/g, // \s allows spaces
                             ""
                           );
                           field.onChange(onlyAlphabets);
-                        }} />
+                        }}
+                      />
                     )}
                   />
                 </InputGroup>
@@ -461,8 +484,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                     rules={{
                       required: "Email is required",
                       pattern: {
-                        value:
-                          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                        value: /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/,
                         message: "Invalid email address",
                       },
                     }}
@@ -471,6 +493,14 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                         type="email"
                         placeholder="Enter Email"
                         {...field}
+                        onChange={(e) => {
+                          // allow only letters, numbers, @ and dot
+                          const onlyValid = e.target.value.replace(
+                            /[^a-zA-Z0-9@.]/g,
+                            ""
+                          );
+                          field.onChange(onlyValid);
+                        }}
                       />
                     )}
                   />
@@ -493,15 +523,14 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                 <Controller
                   name="countryCode"
                   control={control}
-                  defaultValue={countryOptions[0]}
+                  rules={{ required: "Country code is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
                       options={countryOptions}
+                      value={field.value || null} // exact object from countryOptions
                       onChange={(option) => field.onChange(option)}
-                      value={countryOptions.find(
-                        (option) => option.value === field.value?.value
-                      )}
+                      isClearable
                     />
                   )}
                 />
@@ -525,6 +554,14 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                       {...field}
                       type="tel"
                       placeholder="Enter phone number"
+                      maxLength={13} // prevent more than 13 characters
+                      onChange={(e) => {
+                        const onlyNumbers = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        ); // remove non-digits
+                        field.onChange(onlyNumbers.slice(0, 13)); // keep max 13 digits
+                      }}
                     />
                   )}
                 />
@@ -537,66 +574,72 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
               </Col>
             </Row>
 
-            <Row className="mb-2">
-              <Label sm="3" for="pin">
-                Generate Pin
-              </Label>
-              <Col sm="6">
-                <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
-                  {[...Array(4)].map((_, index) => (
-                    <Controller
-                      key={index}
-                      name={`pin[${index}]`}
-                      control={control}
-                      // rules={{
-                      //   required: "All pin digits are required",
-                      //   pattern: {
-                      //     value: /^[0-9]$/,
-                      //     message: "Each pin digit must be a number",
-                      //   },
-                      // }}
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          maxLength={1}
-                          id={`pin-input-${index}`}
-                          className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
-                            errors.pin?.[index] ? "is-invalid" : ""
-                          }`}
-                          autoFocus={index === 0}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (!/^[0-9]$/.test(value) && value !== "") return;
+            {row?.isDefaultPinUsed === false && (
+              <>
+                <Row className="mb-2">
+                  <Label sm="3" for="pin">
+                    Generate Pin
+                  </Label>
+                  <Col sm="6">
+                    <div className="auth-input-wrapper d-flex align-items-center justify-content-between">
+                      {[...Array(4)].map((_, index) => (
+                        <Controller
+                          key={index}
+                          name={`pin[${index}]`}
+                          control={control}
+                          // rules={{
+                          //   required: "All pin digits are required",
+                          //   pattern: {
+                          //     value: /^[0-9]$/,
+                          //     message: "Each pin digit must be a number",
+                          //   },
+                          // }}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              maxLength={1}
+                              id={`pin-input-${index}`}
+                              className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
+                                errors.pin?.[index] ? "is-invalid" : ""
+                              }`}
+                              autoFocus={index === 0}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                ); // ✅ only digits allowed
 
-                            field.onChange(e);
+                                field.onChange(value); // pass the cleaned value instead of event
 
-                            if (value && index < 5) {
-                              const nextInput = document.getElementById(
-                                `pin-input-${index + 1}`
-                              );
-                              nextInput?.focus();
-                            }
-                          }}
-                          onKeyDown={(e) => {
-                            if (
-                              e.key === "Backspace" &&
-                              !field.value &&
-                              index > 0
-                            ) {
-                              const prevInput = document.getElementById(
-                                `pin-input-${index - 1}`
-                              );
-                              prevInput?.focus();
-                            }
-                          }}
+                                if (value && index < 3) {
+                                  // since 4 inputs, last index = 3
+                                  const nextInput = document.getElementById(
+                                    `pin-input-${index + 1}`
+                                  );
+                                  nextInput?.focus();
+                                }
+                              }}
+                              onKeyDown={(e) => {
+                                if (
+                                  e.key === "Backspace" &&
+                                  !field.value &&
+                                  index > 0
+                                ) {
+                                  const prevInput = document.getElementById(
+                                    `pin-input-${index - 1}`
+                                  );
+                                  prevInput?.focus();
+                                }
+                              }}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  ))}
-                </div>
-              </Col>
-            </Row>
-
+                      ))}
+                    </div>
+                  </Col>
+                </Row>
+              </>
+            )}
             {((!passwordCreated && !DefaultPasswardUsed) ||
               (!passwordCreated && DefaultPasswardUsed)) && (
               <>

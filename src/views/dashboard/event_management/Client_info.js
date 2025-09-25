@@ -57,6 +57,7 @@ function AddEventTypes() {
                       placeholder="Enter Vendor type"
                       invalid={!!errors.typeName}
                       {...field}
+                      
                     />
                   )}
                 />

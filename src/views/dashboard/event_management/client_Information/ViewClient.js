@@ -69,7 +69,7 @@ const ViewPass = ({ selectedMember, memberData, updateUid }) => {
                         { label: "State", value: memData?.state },
                         { label: "Country", value: memData?.country },
                         {
-                          label: "Postal Code",
+                          label: "Zip Code",
                           value: memData?.postalCode,
                         },
                       ].map((item, index) => (

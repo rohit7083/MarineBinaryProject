@@ -151,31 +151,7 @@ export const serverSideColumns = [
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-        // <div className="d-flex">
-        //   <Link
-        //     style={{ margin: "0.5rem" }}
-        //     to={`/pos/VendorManage/addVendor`}
-        //     state={{
-        //       venderData: row,
-        //       uid: row.uid,
-        //     }}
-        //   >
-        //     <span>
-        //       <Edit2 className="font-medium-3 text-body" />
-        //     </span>
-        //   </Link>
-
-        //   <Link style={{ margin: "0.5rem" }}>
-        //     {" "}
-        //     <span
-        //       color="danger"
-        //       style={{ cursor: "pointer", color: "red" }}
-        //       onClick={() => handleDelete(row.uid)}
-        //     >
-        //       <Trash className="font-medium-3 text-body" />
-        //     </span>
-        //   </Link>
-        // </div>
+       
       );
     },
   },

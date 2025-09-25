@@ -75,7 +75,7 @@
 //   // ** Form Submit Handler
 //   const onSubmit = async (data) => {
 //    try{
-     
+
 //      const payload = {
 //       data: JSON.stringify({...data,
 // countryCode: data.countryCode.value}),
@@ -416,29 +416,24 @@
 
 // export default CreateUserForm;
 
-
-
-
-
-
 import { useState } from "react";
- 
+
 // ** Reactstrap Imports
 import { Button, Col, FormFeedback, Input, Label, Row } from "reactstrap";
- 
+
 // ** React Hook Form
 import { Controller, useForm } from "react-hook-form";
- 
+
 // ** Third Party Components
 import ReactCountryFlag from "react-country-flag";
 import Select from "react-select";
- 
+
 // ** Utils
 import { selectThemeColors } from "@utils";
- 
+
 // ** Country Json
 import { countries } from "../../../slip-management/CountryCode";
- 
+
 // ** Country Options
 const countryOptions = countries.map((country) => ({
   value: country.dial_code,
@@ -454,32 +449,32 @@ const countryOptions = countries.map((country) => ({
   ),
   code: country.code,
 }));
- 
+
 const avoidSpecialChar = (e, field) => {
-  const value = e.target.value.replace(/[^A-Za-z\s'-]/g, "");
+  const value = e.target.value.replace(/[^A-Za-z\s']/g, "");
   field.onChange(value);
 };
- 
+
 const addNum_Alphabetics = (e, field) => {
   const value = e.target.value.replace(/[^A-Za-z0-9\s,'-]/g, "");
   field.onChange(value);
 };
- 
+
 const CreateUserForm = (props) => {
   // ** Props
   const { onClose } = props;
- 
+
   console.log("CreateUserForm Props:", props);
- 
+
   // ** State
   const [open, setOpen] = useState(true);
- 
+
   // ** React Hook Form
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-    reset
+    reset,
   } = useForm({
     defaultValues: {
       firstName: "",
@@ -494,25 +489,23 @@ const CreateUserForm = (props) => {
       postalCode: "",
     },
   });
- 
+
   // ** Form Submit Handler
   const onSubmit = async (data) => {
-   try{
-     
-     const payload = {
-      data: JSON.stringify({...data,
-countryCode: data.countryCode.value}),
-      label: `${data.firstName} ${data.lastName}`,
-      value: Object.values(data).join(","),
-      isNew: true,
-    };
-    onClose(payload);
-    reset()
-   }catch (error) {
-     console.error("Error submitting form:", error);
-   }
+    try {
+      const payload = {
+        data: JSON.stringify({ ...data, countryCode: data.countryCode.value }),
+        label: `${data.firstName} ${data.lastName}`,
+        value: Object.values(data).join(","),
+        isNew: true,
+      };
+      onClose(payload);
+      reset();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
- 
+
   return (
     <div>
       <form
@@ -576,7 +569,7 @@ countryCode: data.countryCode.value}),
             )}
           </Col>
         </Row>
- 
+
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="emailId">
@@ -599,6 +592,14 @@ countryCode: data.countryCode.value}),
                   placeholder="Enter Email"
                   invalid={errors.emailId && true}
                   {...field}
+                  onChange={(e) => {
+                    // Allow letters, numbers, dot, and @
+                    const onlyValid = e.target.value.replace(
+                      /[^A-Za-z0-9.@]/g,
+                      ""
+                    );
+                    field.onChange(onlyValid);
+                  }}
                 />
               )}
             />
@@ -606,7 +607,7 @@ countryCode: data.countryCode.value}),
               <FormFeedback>{errors.emailId.message}</FormFeedback>
             )}
           </Col>
- 
+
           <Col md="12" className="mb-1">
             <Label className="form-label" for="address">
               Address
@@ -640,7 +641,7 @@ countryCode: data.countryCode.value}),
         <Row>
           <Col md="12" className="mb-1">
             <Label for="phone">Country Code</Label>
- 
+
             <Controller
               name="countryCode"
               control={control}
@@ -668,10 +669,10 @@ countryCode: data.countryCode.value}),
               </small>
             )}
           </Col>
- 
+
           <Col md="12" className="mb-1">
             <Label for="phone">Phone Number</Label>
- 
+
             <Controller
               name="phoneNumber"
               control={control}
@@ -684,7 +685,16 @@ countryCode: data.countryCode.value}),
                 },
               }}
               render={({ field }) => (
-                <Input {...field} type="tel" placeholder="Enter phone number" />
+                <Input
+                  {...field}
+                  type="tel"
+                  placeholder="Enter phone number"
+                  onChange={(e) => {
+                    // Allow only numeric characters
+                    const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                    field.onChange(onlyNumbers);
+                  }}
+                />
               )}
             />
             {errors.phoneNumber && (
@@ -694,7 +704,7 @@ countryCode: data.countryCode.value}),
             )}
           </Col>
         </Row>
- 
+
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="city">
@@ -753,7 +763,7 @@ countryCode: data.countryCode.value}),
             )}
           </Col>
         </Row>
- 
+
         <Row>
           <Col md="12" className="mb-1">
             <Label className="form-label" for="country">
@@ -784,10 +794,10 @@ countryCode: data.countryCode.value}),
               <FormFeedback>{errors.country.message}</FormFeedback>
             )}
           </Col>
- 
+
           <Col md="12" className="mb-1">
             <Label className="form-label" for="postalCode">
-              Postal Code
+              Zip Code
               <span style={{ color: "red" }}>*</span>
             </Label>
             <Controller
@@ -796,19 +806,23 @@ countryCode: data.countryCode.value}),
               rules={{
                 required: "Postal code is required",
                 pattern: {
-                  value: /^[0-9]{4,10}$/,
-                  message: "Enter a valid postal code",
+                  value: /^[0-9]{5}$/,
+                  message: "Enter a valid 5-digit postal code",
                 },
               }}
               control={control}
               render={({ field }) => (
                 <Input
-                  placeholder="Enter Postal Code"
+                  placeholder="Enter Zip Code"
                   invalid={errors.postalCode && true}
                   {...field}
+                  maxLength={5} // limit input length
                   onChange={(e) => {
-                    let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
-                    field.onChange(OnlyNumAllow);
+                    // allow only digits and max 5 characters
+                    const value = e.target.value
+                      .replace(/[^0-9]/g, "")
+                      .slice(0, 5);
+                    field.onChange(value);
                   }}
                 />
               )}
@@ -818,7 +832,7 @@ countryCode: data.countryCode.value}),
             )}
           </Col>
         </Row>
- 
+
         <div className="d-flex flex-wrap my-2">
           <Button color="secondary" onClick={() => setOpen(false)} outline>
             Cancel
@@ -836,5 +850,5 @@ countryCode: data.countryCode.value}),
     </div>
   );
 };
- 
+
 export default CreateUserForm;

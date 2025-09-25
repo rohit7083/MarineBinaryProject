@@ -1,10 +1,14 @@
 // ** React Imports
 import { Fragment, useEffect, useRef, useState } from "react";
 
-import { debounce } from "lodash";
-import { useFieldArray, useForm } from "react-hook-form";
-
 import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
+import "primeicons/primeicons.css";
+import { Toast } from "primereact/toast";
+
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Button, CardTitle, Col, Form, Input, Row, Spinner } from "reactstrap";
 import RoomCard from "./RoomCard";
@@ -55,6 +59,7 @@ const SearchRooms = ({
   const [bookedRoom, setBookRooms] = useState({});
   console.log("bookedRoom", bookedRoom);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const toast = useRef(null);
 
   useEffect(() => {
     if (allRooms && allRooms.length) {
@@ -92,71 +97,83 @@ const SearchRooms = ({
       };
   };
   const onSubmit = async (data) => {
-    const { roomUnit } = data;
+    // {{debugger}}
+    if (bookedRoom?.length >= 1) {
+      const { roomUnit } = data;
 
-    const flagRef = { hasError: false };
+      const flagRef = { hasError: false };
 
-    data.roomUnit = roomUnit.filter((item, index) =>
-      handleRoom(item, index, flagRef)
-    );
+      data.roomUnit = roomUnit.filter((item, index) =>
+        handleRoom(item, index, flagRef)
+      );
 
-    if (flagRef.hasError) {
-      return;
-    }
-
-    const Booked = bookedRoom?.map((x) => ({
-      amount: x?.fields?.amount,
-      isExtraPeople: x?.fields?.isExtraPeople,
-
-      ...(x?.fields?.isExtraPeople && {
-        noOfExtraPeople: x?.fields?.noOfExtraPeople,
-      }),
-
-      serviceType: x?.fields?.serviceType,
-      roomOnlyPricePerNight: x?.grandTotalPrice,
-      roomBreakfastPricePerNight: x?.roomAndBreakFast,
-      roomMealPricePerNight: x?.roomAndAllMeal,
-      maxRoomCapacity: x?.peopleCapacity,
-      defaultPeopleCapacity: 2,
-      uid: x?.value,
-    }));
-    const totalAmount = Booked?.reduce((sum, item) => sum + item.amount, 0);
-    console.log("roomUnit", totalAmount);
-    const payload = {
-      checkInDate: bookedRoom["0"]?.checkInDate,
-      checkOutDate: bookedRoom["0"]?.checkOutDate,
-      numberOfDays: bookedRoom["0"]?.totalNoOfDays,
-      numberOfGuests: bookedRoom["0"]?.numberOfGuests,
-      roomSearchUnit: Booked,
-      totalAmount: totalAmount,
-    };
-
-    try {
-      const res = await useJwt.submitBookedRooms(payload);
-      console.log("submitBookedRooms", res);
-      if (isRoomRequired) {
-        // setEventRooms({bookedRoom , roomSearchUid:res?.data?.roomSearchUid});
-        setEventRooms({
-          bookedRoom,
-          roomSearchUid: res?.data?.roomSearchUid,
-        });
-
-        setShowModal(!showModal);
-      } else {
-        navigate("/search-rooms/previewBooking", {
-          state: {
-            preBookingData: bookedRoom,
-            alldata: payload,
-            searchId: res?.data?.searchId,
-            searchUid: res?.data?.roomSearchUid,
-            extraRoomMode,
-            uidOfEvent,
-          },
-        });
+      if (flagRef.hasError) {
+        return;
       }
-      reset();
-    } catch (error) {
-      console.error(error);
+
+      const Booked = bookedRoom?.map((x) => ({
+        amount: x?.fields?.amount,
+        isExtraPeople: x?.fields?.isExtraPeople,
+
+        ...(x?.fields?.isExtraPeople && {
+          noOfExtraPeople: x?.fields?.noOfExtraPeople,
+        }),
+
+        serviceType: x?.fields?.serviceType,
+        roomOnlyPricePerNight: x?.grandTotalPrice,
+        roomBreakfastPricePerNight: x?.roomAndBreakFast,
+        roomMealPricePerNight: x?.roomAndAllMeal,
+        maxRoomCapacity: x?.peopleCapacity,
+        defaultPeopleCapacity: 2,
+        uid: x?.value,
+      }));
+
+      const totalAmount = Booked?.reduce((sum, item) => sum + item.amount, 0);
+
+      const payload = {
+        checkInDate: bookedRoom["0"]?.checkInDate,
+        checkOutDate: bookedRoom["0"]?.checkOutDate,
+        numberOfDays: bookedRoom["0"]?.totalNoOfDays,
+        numberOfGuests: bookedRoom["0"]?.numberOfGuests,
+        roomSearchUnit: Booked,
+        totalAmount: totalAmount,
+      };
+
+      try {
+        const res = await useJwt.submitBookedRooms(payload);
+      debugger
+        if (isRoomRequired) {
+          // setEventRooms({bookedRoom , roomSearchUid:res?.data?.roomSearchUid});
+          setEventRooms({
+            bookedRoom,
+            roomSearchUid: res?.data?.roomSearchUid,
+          });
+
+          setShowModal(!showModal);
+        } else {
+          navigate("/search-rooms/previewBooking", {
+            state: {
+              preBookingData: bookedRoom,
+              alldata: payload,
+              searchId: res?.data?.searchId,
+              searchUid: res?.data?.roomSearchUid,
+              extraRoomMode,
+              uidOfEvent,
+            },
+          });
+        }
+        reset();
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log("select room first ");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Please choose rooms first.",
+        life: 3000,
+      });
     }
   };
 
@@ -211,6 +228,7 @@ const SearchRooms = ({
       <Row>
         {roomsList.length ? (
           <Fragment>
+
             <Row className="align-items-center mb-3 mt-1">
               <Col className="d-flex align-items-center">
                 {/* {isRoomRequired ? (
@@ -220,6 +238,8 @@ const SearchRooms = ({
                     </CardTitle>
                   </>
                 ) : ( */}
+                            <Toast ref={toast} />
+
                 <CardTitle className="fs-2 fw-bold mb-0">
                   Available Rooms ({roomsList.length})
                 </CardTitle>
@@ -238,7 +258,7 @@ const SearchRooms = ({
               </Col>
             </Row>
 
-            {/* {tableData?.results?.map((fields, index) => ( */}
+          
 
             {tableData?.results?.slice(0, visibleCount).map((fields, index) => {
               const isLast = index === visibleCount - 1;
@@ -276,14 +296,7 @@ const SearchRooms = ({
               );
             })}
 
-            {/* {isLoadingMore && (
-              <Col sm="12" className="d-flex justify-content-center my-2">
-                <Spinner
-                  style={{ width: "5rem", height: "5rem" }}
-                  color="primary"
-                />
-              </Col>
-            )} */}
+          
 
             {visibleCount < tableData.results.length && (
               <Col sm="12" className="d-flex justify-content-center my-3">
@@ -303,8 +316,7 @@ const SearchRooms = ({
               </Col>
             )}
 
-            {/* <Button color={"warning"} onClick={()=>lastCardRef()}>View More</Button> */}
-
+          
             <Col sm="12" className={"d-flex justify-content-start"}>
               <Button color={"primary"} disabled={isSubmitting}>
                 {isSubmitting ? (

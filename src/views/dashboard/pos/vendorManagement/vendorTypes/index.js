@@ -7,15 +7,7 @@ import { debounce } from "lodash";
 import { ArrowLeft, ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Input,
-  Row,
-  Spinner
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const index = () => {
@@ -26,7 +18,7 @@ const index = () => {
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
-    const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -45,16 +37,14 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
 
-    const handleEdit = (row) => {
-   
-    navigate('/pos/vendor_typeList/addVendorType', { state: { row } });
-
+  const handleEdit = (row) => {
+    navigate("/pos/vendor_typeList/addVendorType", { state: { row } });
   };
 
   useEffect(() => {
@@ -101,7 +91,6 @@ const index = () => {
     setRole(value);
   };
 
-  
   const columns = [
     {
       name: "Id",
@@ -123,7 +112,6 @@ const index = () => {
       selector: (row) => row.description,
     },
 
-   
     {
       name: "Actions",
       minWidth: "150px",
@@ -200,10 +188,7 @@ const index = () => {
             <span
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-                            onClick={()=>handleEdit(row)}
-
-                
-            
+              onClick={() => handleEdit(row)}
             >
               <Edit2 className="font-medium-3 text-body" />
             </span>
@@ -261,16 +246,20 @@ const index = () => {
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <h3 className="">  <ArrowLeft
-                                       style={{
-                                         cursor: "pointer",
-                                       marginRight:"10px",
-                                         transition: "color 0.1s",
-                                       }}
-                                       onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
-                                       onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
-                                       onClick={() => window.history.back()}
-                                     />Vendor Type List</h3>
+            <h3 className="">
+              {" "}
+              <ArrowLeft
+                style={{
+                  cursor: "pointer",
+                  marginRight: "10px",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+                onClick={() => window.history.back()}
+              />
+              Vendor Type List
+            </h3>
 
             <div className="mx-2">
               <Row
