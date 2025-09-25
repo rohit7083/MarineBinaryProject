@@ -1,5 +1,5 @@
 // ** Icons Import
-import { BookCopy, HomeIcon, QrCode } from "lucide-react";
+import { BookCopy, HomeIcon } from "lucide-react";
 import {
   Calendar,
   Circle,
@@ -340,28 +340,28 @@ export default [
     ],
   },
 
-  {
-    id: "Generate QR Code",
-    title: "Generate QR Code", 
-    icon: <QrCode size={12} />,
-    navLink: "/qr-code",
-    badge: "light-warning",
+  // {
+  //   id: "Generate QR Code",
+  //   title: "Generate QR Code", 
+  //   icon: <QrCode size={12} />,
+  //   navLink: "/qr-code",
+  //   badge: "light-warning",
 
-    children: [
-      {
-        id: "Qr Code",
-        title: "Qr Code",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/qr-code/qr-list",
-      },
-      {
-        id: "Event List",
-        title: "Event Payment list ",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/qr-code/event-list",
-      },
+  //   children: [
+  //     {
+  //       id: "Qr Code",
+  //       title: "Qr Code",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/dashboard/qr-code/qr-list",
+  //     },
+  //     {
+  //       id: "Event List",
+  //       title: "Event Payment list ",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/dashboard/qr-code/event-list",
+  //     },
        
       
-    ],
-  },
+  //   ],
+  // },
 ];
