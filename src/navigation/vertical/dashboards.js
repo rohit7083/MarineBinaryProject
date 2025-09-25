@@ -167,12 +167,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/product_management",
       },
-      {
-        id: "Point Of Sale ",
-        title: "Point Of Sale ",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/point_of_sale/shop",
-      },
+      // {
+      //   id: "Point Of Sale ",
+      //   title: "Point Of Sale ",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/pos/point_of_sale/shop",
+      // },
       {
         id: "Virtual Terminal",
         title: "Virtual Terminal",
@@ -335,8 +335,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/rentroll/inverse_slip",
       },
-       
-      
+             
     ],
   },
 
