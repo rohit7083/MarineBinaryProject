@@ -424,261 +424,322 @@ const MultipleColumnForm = () => {
               </Col>
 
               {/* Email ID */}
-              <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="emailId">
-                  Email <span className="text-danger">*</span>
-                </Label>
-                <Controller
-                  name="emailId"
-                  control={control}
-                  rules={{
-                    required: "Email is required",
-                    maxLength: {
-                      value: 254,
-                      message: "Email cannot exceed 254 characters",
-                    },
-                    pattern: {
-                      // RFC 5322 compliant but practical regex
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: "Enter a valid email address",
-                    },
-                    validate: {
-                      noSpaces: (v) =>
-                        !/\s/.test(v) ? true : "Email cannot contain spaces",
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="email"
-                      id="emailId"
-                      placeholder="Email"
-                      {...field}
-                      value={field.value || ""} // Ensure controlled component
-                      onChange={(e) => field.onChange(e.target.value.trim())} // auto-trim
-                      invalid={!!errors.emailId}
-                    />
-                  )}
-                />
-                {errors.emailId && (
-                  <FormFeedback>{errors.emailId.message}</FormFeedback>
-                )}
-              </Col>
+             <Col md="6" sm="12" className="mb-1">
+  <Label className="form-label" for="emailId">
+    Email <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="emailId"
+    control={control}
+    rules={{
+      required: "Email is required",
+      maxLength: {
+        value: 254,
+        message: "Email cannot exceed 254 characters",
+      },
+      pattern: {
+        // RFC 5322 compliant but practical regex
+        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        message: "Enter a valid email address",
+      },
+      validate: {
+        noSpaces: (v) =>
+          !/\s/.test(v) ? true : "Email cannot contain spaces",
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="email"
+        id="emailId"
+        placeholder="Email"
+        {...field}
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove any character except letters, digits, @, dot, hyphen, underscore, plus
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9@._+-]/g, "");
+          field.onChange(cleaned.trim());
+        }}
+        onKeyPress={(e) => {
+          // Prevent typing characters other than letters, digits, @, dot, hyphen, underscore, plus
+          const regex = /[a-zA-Z0-9@._+-]/;
+          if (!regex.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.emailId}
+      />
+    )}
+  />
+  {errors.emailId && (
+    <FormFeedback>{errors.emailId.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* Phone Number */}
-              <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="phoneNumber">
-                  Phone Number <span className="text-danger">*</span>
-                </Label>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  rules={{
-                    required: "Phone number is required",
-                    pattern: {
-                      value: /^\+?[1-9]\d{9,14}$/,
-                      message:
-                        "Enter a valid phone number (10–15 digits, optional +)",
-                    },
-                    validate: {
-                      noSpaces: (v) =>
-                        !/\s/.test(v)
-                          ? true
-                          : "Phone number cannot contain spaces",
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="tel"
-                      id="phoneNumber"
-                      placeholder="e.g. 9876543210"
-                      {...field}
-                      value={field.value ? field.value.replace(/\D/g, "") : ""} // keep only digits
-                      onChange={(e) =>
-                        field.onChange(e.target.value.replace(/\D/g, ""))
-                      } // auto-strip formatting
-                      invalid={!!errors.phoneNumber}
-                    />
-                  )}
-                />
-                {errors.phoneNumber && (
-                  <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
-                )}
-              </Col>
+            <Col md="6" sm="12" className="mb-1">
+  <Label className="form-label" for="phoneNumber">
+    Phone Number <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="phoneNumber"
+    control={control}
+    rules={{
+      required: "Phone number is required",
+      pattern: {
+        value: /^[0-9]{10,15}$/,
+        message: "Enter a valid phone number (10–15 digits)",
+      },
+      validate: {
+        noSpaces: (v) =>
+          !/\s/.test(v) ? true : "Phone number cannot contain spaces",
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="tel"
+        id="phoneNumber"
+        placeholder="e.g. 9876543210"
+        {...field}
+        value={field.value ? field.value.replace(/\D/g, "") : ""} // only digits
+        onChange={(e) =>
+          field.onChange(e.target.value.replace(/\D/g, "")) // strip non-digits
+        }
+        onKeyPress={(e) => {
+          // block anything that's not a digit
+          if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.phoneNumber}
+      />
+    )}
+  />
+  {errors.phoneNumber && (
+    <FormFeedback>{errors.phoneNumber.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* Address */}
               <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="address">
-                  Address
-                </Label>
-                <Controller
-                  name="address"
-                  control={control}
-                  rules={{
-                    minLength: {
-                      value: 5,
-                      message: "Address must be at least 5 characters",
-                    },
-                    maxLength: {
-                      value: 255,
-                      message: "Address cannot exceed 255 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-Z0-9\s,.'\-\/#]*$/,
-                      message: "Address contains invalid characters",
-                    },
-                    validate: {
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      id="address"
-                      placeholder="Address"
-                      {...field}
-                      value={field.value || ""} // Ensure controlled component
-                      invalid={!!errors.address}
-                    />
-                  )}
-                />
-                {errors.address && (
-                  <FormFeedback>{errors.address.message}</FormFeedback>
-                )}
-              </Col>
+  <Label className="form-label" for="address">
+    Address
+  </Label>
+  <Controller
+    name="address"
+    control={control}
+    rules={{
+      minLength: {
+        value: 5,
+        message: "Address must be at least 5 characters",
+      },
+      maxLength: {
+        value: 255,
+        message: "Address cannot exceed 255 characters",
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9\s,]*$/,
+        message: "Address contains invalid characters",
+      },
+      validate: {
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="address"
+        placeholder="Address"
+        {...field}
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove all characters except letters, numbers, spaces, and commas
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s,]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Prevent typing invalid characters
+          if (!/[a-zA-Z0-9\s,]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.address}
+      />
+    )}
+  />
+  {errors.address && (
+    <FormFeedback>{errors.address.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* City */}
-              <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="city">
-                  City
-                </Label>
-                <Controller
-                  name="city"
-                  control={control}
-                  rules={{
-                    minLength: {
-                      value: 2,
-                      message: "City must be at least 2 characters",
-                    },
-                    maxLength: {
-                      value: 100,
-                      message: "City cannot exceed 100 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-ZÀ-ÿ''\-.\s]+$/,
-                      message:
-                        "City can only contain letters, spaces, hyphens, apostrophes, and periods",
-                    },
-                    validate: {
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      id="city"
-                      placeholder="City"
-                      {...field}
-                      value={field.value || ""} // Ensure controlled component
-                      invalid={!!errors.city}
-                    />
-                  )}
-                />
-                {errors.city && (
-                  <FormFeedback>{errors.city.message}</FormFeedback>
-                )}
-              </Col>
+             <Col md="6" sm="12" className="mb-1">
+  <Label className="form-label" for="city">
+    City
+  </Label>
+  <Controller
+    name="city"
+    control={control}
+    rules={{
+      minLength: {
+        value: 2,
+        message: "City must be at least 2 characters",
+      },
+      maxLength: {
+        value: 100,
+        message: "City cannot exceed 100 characters",
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9\s]+$/,
+        message: "City can only contain letters, numbers, and spaces",
+      },
+      validate: {
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="city"
+        placeholder="City"
+        {...field}
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove any character that's not a letter, number, or space
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.city}
+      />
+    )}
+  />
+  {errors.city && (
+    <FormFeedback>{errors.city.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* State */}
               <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="state">
-                  State
-                </Label>
-                <Controller
-                  name="state"
-                  control={control}
-                  rules={{
-                    minLength: {
-                      value: 2,
-                      message: "State must be at least 2 characters",
-                    },
-                    maxLength: {
-                      value: 100,
-                      message: "State cannot exceed 100 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-ZÀ-ÿ''\-. ]+$/,
-                      message:
-                        "State can only contain letters, spaces, hyphens, apostrophes, and periods",
-                    },
-                    validate: {
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      id="state"
-                      placeholder="State"
-                      {...field}
-                      value={field.value || ""} // Ensure controlled component
-                      invalid={!!errors.state}
-                    />
-                  )}
-                />
-                {errors.state && (
-                  <FormFeedback>{errors.state.message}</FormFeedback>
-                )}
-              </Col>
+  <Label className="form-label" for="state">
+    State
+  </Label>
+  <Controller
+    name="state"
+    control={control}
+    rules={{
+      minLength: {
+        value: 2,
+        message: "State must be at least 2 characters",
+      },
+      maxLength: {
+        value: 100,
+        message: "State cannot exceed 100 characters",
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9\s]+$/,
+        message: "State can only contain letters, numbers, and spaces",
+      },
+      validate: {
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="state"
+        placeholder="State"
+        {...field}
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove any character that's not a letter, number, or space
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.state}
+      />
+    )}
+  />
+  {errors.state && (
+    <FormFeedback>{errors.state.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* Country */}
-              <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="country">
-                  Country
-                </Label>
-                <Controller
-                  name="country"
-                  control={control}
-                  rules={{
-                    minLength: {
-                      value: 2,
-                      message: "Country must be at least 2 characters",
-                    },
-                    maxLength: {
-                      value: 100,
-                      message: "Country cannot exceed 100 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-ZÀ-ÿ\s\-']+$/,
-                      message:
-                        "Country can only contain letters, spaces, hyphens, and apostrophes",
-                    },
-                    validate: {
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      id="country"
-                      placeholder="Country"
-                      {...field}
-                      value={field.value || ""} // Ensure controlled component
-                      invalid={!!errors.country}
-                    />
-                  )}
-                />
-                {errors.country && (
-                  <FormFeedback>{errors.country.message}</FormFeedback>
-                )}
-              </Col>
+             <Col md="6" sm="12" className="mb-1">
+  <Label className="form-label" for="country">
+    Country
+  </Label>
+  <Controller
+    name="country"
+    control={control}
+    rules={{
+      minLength: {
+        value: 2,
+        message: "Country must be at least 2 characters",
+      },
+      maxLength: {
+        value: 100,
+        message: "Country cannot exceed 100 characters",
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9\s]+$/,
+        message: "Country can only contain letters, numbers, and spaces",
+      },
+      validate: {
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="country"
+        placeholder="Country"
+        {...field}
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove any character that's not a letter, number, or space
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.country}
+      />
+    )}
+  />
+  {errors.country && (
+    <FormFeedback>{errors.country.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* Pin Code */}
               <Col md="6" sm="12" className="mb-1">
@@ -717,46 +778,58 @@ const MultipleColumnForm = () => {
 
               {/* Product */}
               <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="product">
-                  Product <span className="text-danger">*</span>
-                </Label>
-                <Controller
-                  name="product"
-                  control={control}
-                  rules={{
-                    required: "Product is required",
-                    minLength: {
-                      value: 2,
-                      message: "Product name must be at least 2 characters",
-                    },
-                    maxLength: {
-                      value: 150,
-                      message: "Product name cannot exceed 150 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-Z0-9\s\-.'/&()]+$/,
-                      message: "Product name contains invalid characters",
-                    },
-                    validate: {
-                      trimmed: (v) =>
-                        v === v.trim() ? true : "Remove extra spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      id="product"
-                      placeholder="Enter Product"
-                      {...field}
-                      value={field.value || ""} // Ensure controlled component
-                      invalid={!!errors.product}
-                    />
-                  )}
-                />
-                {errors.product && (
-                  <FormFeedback>{errors.product.message}</FormFeedback>
-                )}
-              </Col>
+  <Label className="form-label" for="product">
+    Product <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="product"
+    control={control}
+    rules={{
+      required: "Product is required",
+      minLength: {
+        value: 2,
+        message: "Product name must be at least 2 characters",
+      },
+      maxLength: {
+        value: 150,
+        message: "Product name cannot exceed 150 characters",
+      },
+      pattern: {
+        value: /^[a-zA-Z0-9\s]+$/,
+        message: "Product name can only contain letters, numbers, and spaces",
+      },
+      validate: {
+        trimmed: (v) =>
+          v === v.trim() ? true : "Remove extra spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="product"
+        placeholder="Enter Product"
+        {...field}
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove any character that's not a letter, number, or space
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.product}
+      />
+    )}
+  />
+  {errors.product && (
+    <FormFeedback>{errors.product.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* Amount */}
               <Col md="6" sm="12" className="mb-1">
@@ -925,81 +998,97 @@ const MultipleColumnForm = () => {
 
               {/* Name on Card */}
               <Col md="6" sm="12" className="mb-1">
-                <Label className="form-label" for="card-name">
-                  Name On Card <span className="text-danger">*</span>
-                </Label>
-                <Controller
-                  name="cardHolderName"
-                  control={control}
-                  rules={{
-                    required: "Name on card is required",
-                    minLength: {
-                      value: 2,
-                      message: "Name must be at least 2 characters",
-                    },
-                    maxLength: {
-                      value: 50,
-                      message: "Name cannot exceed 50 characters",
-                    },
-                    pattern: {
-                      value: /^[a-zA-Z\s]+$/,
-                      message: "Name can only contain letters and spaces",
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      id="card-name"
-                      placeholder="John Doe"
-                      value={field.value || ""} // Ensure controlled component
-                      invalid={!!errors.cardHolderName}
-                    />
-                  )}
-                />
-                {errors.cardHolderName && (
-                  <FormFeedback>{errors.cardHolderName.message}</FormFeedback>
-                )}
-              </Col>
+  <Label className="form-label" for="card-name">
+    Name On Card <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="cardHolderName"
+    control={control}
+    rules={{
+      required: "Name on card is required",
+      minLength: {
+        value: 2,
+        message: "Name must be at least 2 characters",
+      },
+      maxLength: {
+        value: 50,
+        message: "Name cannot exceed 50 characters",
+      },
+      pattern: {
+        value: /^[a-zA-Z\s]+$/,
+        message: "Name can only contain letters and spaces",
+      },
+    }}
+    render={({ field }) => (
+      <Input
+        {...field}
+        id="card-name"
+        placeholder="John Doe"
+        value={field.value || ""} // Ensure controlled component
+        onChange={(e) => {
+          // Remove any character that's not a letter or space
+          const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.cardHolderName}
+      />
+    )}
+  />
+  {errors.cardHolderName && (
+    <FormFeedback>{errors.cardHolderName.message}</FormFeedback>
+  )}
+</Col>
+
 
               {/* Expiry Date */}
               <Col md="3" sm="12" className="mb-1">
-                <Label className="form-label" for="exp-date">
-                  Exp. Date <span className="text-danger">*</span>
-                </Label>
-                <Controller
-                  name="expiryDate"
-                  control={control}
-                  rules={{
-                    required: "Expiry date is required",
-                    validate: (value) => {
-                      if (!/^\d{2}\/\d{2}$/.test(value))
-                        return "Invalid format (MM/YY)";
-                      const [month, year] = value.split("/").map(Number);
-                      if (month < 1 || month > 12) return "Invalid month";
-                      const now = new Date();
-                      const expiry = new Date(2000 + year, month);
-                      return expiry > now ? true : "Card has expired";
-                    },
-                  }}
-                  render={({ field }) => (
-                    <Cleave
-                      {...field}
-                      id="exp-date"
-                      placeholder="MM/YY"
-                      className={`form-control ${
-                        errors.expiryDate ? "is-invalid" : ""
-                      }`}
-                      value={field.value || ""} // Ensure controlled component
-                      options={{ delimiter: "/", blocks: [2, 2] }}
-                    />
-                  )}
-                />
-                {errors.expiryDate && (
-                  <div className="invalid-feedback d-block">
-                    {errors.expiryDate.message}
-                  </div>
-                )}
-              </Col>
+  <Label className="form-label" for="exp-date">
+    Exp. Date <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="expiryDate"
+    control={control}
+    rules={{
+      required: "Expiry date is required",
+      validate: (value) => {
+        if (!/^\d{2}\/\d{2}$/.test(value)) return "Invalid format (MM/YY)";
+        const [month, year] = value.split("/").map(Number);
+        if (month < 1 || month > 12) return "Invalid month";
+        const now = new Date();
+        const expiry = new Date(2000 + year, month);
+        return expiry > now ? true : "Card has expired";
+      },
+    }}
+    render={({ field }) => (
+      <Cleave
+        {...field}
+        id="exp-date"
+        placeholder="MM/YY"
+        className={`form-control ${
+          errors.expiryDate ? "is-invalid" : ""
+        }`}
+        value={field.value || ""} // Ensure controlled component
+        options={{
+          numericOnly: true, // only allow numbers
+          delimiter: "/",
+          blocks: [2, 2],
+        }}
+      />
+    )}
+  />
+  {errors.expiryDate && (
+    <div className="invalid-feedback d-block">
+      {errors.expiryDate.message}
+    </div>
+  )}
+</Col>
+
 
               {/* CVV */}
               <Col md="3" sm="12" className="mb-1">

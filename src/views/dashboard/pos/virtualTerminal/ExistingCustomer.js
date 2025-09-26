@@ -517,64 +517,90 @@ const ExistingCustomer = () => {
 
         {/* Product */}
         <Col md="6" sm="12" className="mb-1">
-          <Label className="form-label" for="product">
-            Product <span className="text-danger">*</span>
-          </Label>
-          <Controller
-            name="product"
-            control={control}
-            rules={{
-              required: 'Product is required',
-              minLength: { value: 2, message: 'Product name must be at least 2 characters' },
-              maxLength: { value: 150, message: 'Product name cannot exceed 150 characters' },
-              pattern: { value: /^[a-zA-Z0-9\s\-.'/&()]+$/, message: 'Product name contains invalid characters' },
-              validate: { trimmed: v => (v === v.trim() ? true : 'Remove extra spaces') }
-            }}
-            render={({ field }) => (
-              <Input
-                type="text"
-                id="product"
-                placeholder="Enter Product"
-                {...field}
-                value={field.value ? field.value.trimStart() : ''}
-                onChange={e => field.onChange(e.target.value)}
-                invalid={!!errors.product}
-              />
-            )}
-          />
-          {errors.product && <FormFeedback>{errors.product.message}</FormFeedback>}
-        </Col>
+  <Label className="form-label" for="product">
+    Product <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="product"
+    control={control}
+    rules={{
+      required: 'Product is required',
+      minLength: { value: 2, message: 'Product name must be at least 2 characters' },
+      maxLength: { value: 150, message: 'Product name cannot exceed 150 characters' },
+      pattern: { value: /^[a-zA-Z0-9\s]+$/, message: 'Product name can only contain letters, numbers, and spaces' },
+      validate: { trimmed: v => (v === v.trim() ? true : 'Remove extra spaces') }
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="product"
+        placeholder="Enter Product"
+        {...field}
+        value={field.value || ''}
+        onChange={e => {
+          // Allow only letters, numbers, and spaces
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '');
+          field.onChange(cleaned);
+        }}
+        onKeyPress={e => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        invalid={!!errors.product}
+      />
+    )}
+  />
+  {errors.product && <FormFeedback>{errors.product.message}</FormFeedback>}
+</Col>
+
 
         {/* Amount */}
         <Col md="6" sm="12" className="mb-1">
-          <Label className="form-label" for="amount">
-            Amount <span className="text-danger">*</span>
-          </Label>
-          <Controller
-            name="amount"
-            control={control}
-            rules={{
-              required: 'Amount is required',
-              pattern: { value: /^(?!0\d)\d+(\.\d{1,2})?$/, message: 'Please enter a valid amount (up to 2 decimals)' },
-              min: { value: 1, message: 'Amount must be greater than 0' },
-              max: { value: 1000000, message: 'Amount cannot exceed 1,000,000' }
-            }}
-            render={({ field }) => (
-              <Input
-                type="number"
-                step="0.01"
-                min="1"
-                max="1000000"
-                id="amount"
-                placeholder="Enter Amount"
-                {...field}
-                value={field.value || ''}
-                invalid={!!errors.amount}
-              />
-            )}
-          />
-          {errors.amount && <FormFeedback>{errors.amount.message}</FormFeedback>}
-        </Col>
+  <Label className="form-label" for="amount">
+    Amount <span className="text-danger">*</span>
+  </Label>
+  <Controller
+    name="amount"
+    control={control}
+    rules={{
+      required: 'Amount is required',
+      pattern: { value: /^(?!0\d)\d+(\.\d{0,2})?$/, message: 'Please enter a valid amount (up to 2 decimals)' },
+      min: { value: 1, message: 'Amount must be greater than 0' },
+      max: { value: 1000000, message: 'Amount cannot exceed 1,000,000' }
+    }}
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="amount"
+        placeholder="Enter Amount"
+        {...field}
+        value={field.value || ''}
+        onChange={(e) => {
+          // Allow only numbers and one decimal
+          let value = e.target.value.replace(/[^0-9.]/g, '');
+          const parts = value.split('.');
+          if (parts.length > 2) {
+            value = parts[0] + '.' + parts[1]; // keep only first decimal
+          }
+          field.onChange(value);
+        }}
+        onKeyPress={(e) => {
+          if (!/[0-9.]/.test(e.key)) {
+            e.preventDefault(); // block non-numeric
+          }
+          if (e.key === '.' && field.value?.includes('.')) {
+            e.preventDefault(); // block multiple decimals
+          }
+        }}
+        invalid={!!errors.amount}
+      />
+    )}
+  />
+  {errors.amount && <FormFeedback>{errors.amount.message}</FormFeedback>}
+</Col>
+
 
         {/* Card Details */}
         <Col sm='12'>
@@ -729,45 +755,66 @@ const ExistingCustomer = () => {
                 </Col>
 
                 <Col md={6}>
-                  <Label className='form-label' for='card-name'>Name On Card</Label>
-                  <Controller
-                    name='cardHolderName'
-                    control={control}
-                    rules={{ required: 'Cardholder name is required' }}
-                    render={({ field }) => (
-                      <Input 
-                        {...field} 
-                        id='card-name' 
-                        placeholder='John Doe' 
-                        className={errors.cardHolderName ? 'is-invalid' : ''}
-                      />
-                    )}
-                  />
-                  {errors.cardHolderName && (
-                    <FormFeedback className='d-block'>{errors.cardHolderName.message}</FormFeedback>
-                  )}
-                </Col>
+  <Label className="form-label" for="card-name">Name On Card</Label>
+  <Controller
+    name="cardHolderName"
+    control={control}
+    rules={{
+      required: 'Cardholder name is required',
+      pattern: { value: /^[a-zA-Z\s]+$/, message: 'Name can only contain letters and spaces' }
+    }}
+    render={({ field }) => (
+      <Input 
+        {...field} 
+        id="card-name" 
+        placeholder="John Doe" 
+        className={errors.cardHolderName ? 'is-invalid' : ''}
+        value={field.value || ''}
+        onChange={(e) => {
+          // Allow only letters and spaces
+          const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+      />
+    )}
+  />
+  {errors.cardHolderName && (
+    <FormFeedback className="d-block">{errors.cardHolderName.message}</FormFeedback>
+  )}
+</Col>
 
-                <Col xs={6} md={3}>
-                  <Label className='form-label' for='exp-date'>Exp. Date</Label>
-                  <Controller
-                    name='expiryDate'
-                    control={control}
-                    rules={{ required: 'Expiry date is required' }}
-                    render={({ field }) => (
-                      <Cleave
-                        {...field}
-                        id='exp-date'
-                        placeholder='MM/YY'
-                        className={`form-control ${errors.expiryDate ? 'is-invalid' : ''}`}
-                        options={{ delimiter: '/', blocks: [2, 2] }}
-                      />
-                    )}
-                  />
-                  {errors.expiryDate && (
-                    <FormFeedback className='d-block'>{errors.expiryDate.message}</FormFeedback>
-                  )}
-                </Col>
+
+               <Col xs={6} md={3}>
+  <Label className="form-label" for="exp-date">Exp. Date</Label>
+  <Controller
+    name="expiryDate"
+    control={control}
+    rules={{ required: 'Expiry date is required' }}
+    render={({ field }) => (
+      <Cleave
+        {...field}
+        id="exp-date"
+        placeholder="MM/YY"
+        className={`form-control ${errors.expiryDate ? 'is-invalid' : ''}`}
+        options={{
+          numericOnly: true, // only allow numbers
+          delimiter: '/',
+          blocks: [2, 2],    // MM / YY
+        }}
+      />
+    )}
+  />
+  {errors.expiryDate && (
+    <FormFeedback className="d-block">{errors.expiryDate.message}</FormFeedback>
+  )}
+</Col>
+
 
                 <Col xs={6} md={3}>
                   <Label className='form-label' for='new-cvv'>CVV</Label>

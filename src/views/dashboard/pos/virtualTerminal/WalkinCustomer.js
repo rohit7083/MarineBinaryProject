@@ -194,26 +194,73 @@ const ExistingCustomer = () => {
         ) : null}
 
         {/* Product */}
-        <Col md='6' sm='12' className='mb-1'>
-          <Label className='form-label' for='product'>Product</Label>
-          <Controller
-            name="product"
-            control={control}
-            defaultValue=""
-            render={({ field }) => <Input type="text" id="product" placeholder="Enter Product" {...field} />}
-          />
-        </Col>
+        <Col md="6" sm="12" className="mb-1">
+  <Label className="form-label" for="product">Product</Label>
+  <Controller
+    name="product"
+    control={control}
+    defaultValue=""
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="product"
+        placeholder="Enter Product"
+        {...field}
+        value={field.value || ""}
+        onChange={(e) => {
+          // Allow only letters, numbers, and spaces
+          const cleaned = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z0-9\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+      />
+    )}
+  />
+</Col>
+
 
         {/* Amount */}
-        <Col md='6' sm='12' className='mb-1'>
-          <Label className='form-label' for='amount'>Amount</Label>
-          <Controller
-            name="amount"
-            control={control}
-            defaultValue=""
-            render={({ field }) => <Input type="text" id="amount" placeholder="Enter Amount" {...field} />}
-          />
-        </Col>
+     <Col md="6" sm="12" className="mb-1">
+  <Label className="form-label" for="amount">Amount</Label>
+  <Controller
+    name="amount"
+    control={control}
+    defaultValue=""
+    render={({ field }) => (
+      <Input
+        type="text"
+        id="amount"
+        placeholder="Enter Amount"
+        {...field}
+        value={field.value || ""}
+        onChange={(e) => {
+          // Allow only numbers and a single decimal point
+          let value = e.target.value.replace(/[^0-9.]/g, "");
+          const parts = value.split(".");
+          if (parts.length > 2) {
+            value = parts[0] + "." + parts[1]; // keep only first decimal point
+          }
+          field.onChange(value);
+        }}
+        onKeyPress={(e) => {
+          // Allow digits and single dot
+          if (!/[0-9.]/.test(e.key)) {
+            e.preventDefault();
+          }
+          if (e.key === "." && field.value.includes(".")) {
+            e.preventDefault(); // prevent multiple dots
+          }
+        }}
+      />
+    )}
+  />
+</Col>
+
 
         {/* Card Details */}
         <Col sm='12'>
@@ -287,50 +334,76 @@ const ExistingCustomer = () => {
               </Col>
 
               <Col md={6}>
-                <Label className='form-label' for='card-name'>Name On Card</Label>
-                <Controller
-                  name='cardHolderName'
-                  control={control}
-                  render={({ field }) => (
-                    <Input {...field} id='card-name' placeholder='John Doe' />
-                  )}
-                />
-              </Col>
+  <Label className="form-label" for="card-name">Name On Card</Label>
+  <Controller
+    name="cardHolderName"
+    control={control}
+    render={({ field }) => (
+      <Input
+        {...field}
+        id="card-name"
+        placeholder="John Doe"
+        value={field.value || ""}
+        onChange={(e) => {
+          // Allow only letters and spaces
+          const cleaned = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+          field.onChange(cleaned);
+        }}
+        onKeyPress={(e) => {
+          // Block typing invalid characters
+          if (!/[a-zA-Z\s]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+      />
+    )}
+  />
+</Col>
+
 
               <Col xs={6} md={3}>
-                <Label className='form-label' for='exp-date'>Exp. Date</Label>
-                <Controller
-                  name='expiryDate'
-                  control={control}
-                  render={({ field }) => (
-                    <Cleave
-                      {...field}
-                      id='exp-date'
-                      placeholder='MM/YY'
-                      className='form-control'
-                      options={{ delimiter: '/', blocks: [2, 2] }}
-                    />
-                  )}
-                />
-              </Col>
+  <Label className="form-label" for="exp-date">Exp. Date</Label>
+  <Controller
+    name="expiryDate"
+    control={control}
+    render={({ field }) => (
+      <Cleave
+        {...field}
+        id="exp-date"
+        placeholder="MM/YY"
+        className="form-control"
+        options={{
+          numericOnly: true, // allow only numbers
+          delimiter: '/',
+          blocks: [2, 2],    // MM / YY
+        }}
+      />
+    )}
+  />
+</Col>
+
 
               <Col xs={6} md={3}>
-                <Label className='form-label' for='new-cvv'>CVV</Label>
-                <Controller
-                  name='newCvv'
-                  control={control}
-                  render={({ field }) => (
-                    <Cleave
-                    type="password"
-                      {...field}
-                      id='new-cvv'
-                      placeholder='654'
-                      className='form-control'
-                      options={{ blocks: [3] }}
-                    />
-                  )}
-                />
-              </Col>
+  <Label className="form-label" for="new-cvv">CVV</Label>
+  <Controller
+    name="newCvv"
+    control={control}
+    render={({ field }) => (
+      <Cleave
+        type="password"
+        {...field}
+        id="new-cvv"
+        placeholder="654"
+        className="form-control"
+        options={{
+          numericOnly: true, // allow only numbers
+          blocks: [3],       // exactly 3 digits
+        }}
+      />
+    )}
+  />
+</Col>
+
             </Row>
           </div>
         </Col>
