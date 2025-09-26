@@ -27,6 +27,7 @@ import {
   Spinner,
   UncontrolledAlert,
 } from "reactstrap";
+import Qr_Payment from "../../../../event_management/Qr_Payment";
 // import Qr_Payment from "./Qr_Payment";
 
 function Payment({ stepper }) {
@@ -511,7 +512,7 @@ function Payment({ stepper }) {
 
     try {
       let res;
-
+// {{debugger}}
       if (location?.state?.extraRoomMode) {
         res = await useJwt.addExtraRoom(uidOfEvent, formData);
       } else {
@@ -1422,17 +1423,20 @@ function Payment({ stepper }) {
                               invalid={!!errors.accountNumber}
                               {...field}
                               // isDisabled={statusThree}
-                         onChange={(e) => {
-        // allow only digits
-        let value = e.target.value.replace(/[^0-9]/g, "");
+                              onChange={(e) => {
+                                // allow only digits
+                                let value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
 
-        // restrict to max 16 digits
-        if (value.length > 16) {
-          value = value.slice(0, 16);
-        }
+                                // restrict to max 16 digits
+                                if (value.length > 16) {
+                                  value = value.slice(0, 16);
+                                }
 
-        field.onChange(value);
-      }}
+                                field.onChange(value);
+                              }}
                             />
                           )}
                         />
@@ -1474,17 +1478,20 @@ function Payment({ stepper }) {
                               {...field}
                               maxLength="12"
                               // isDisabled={statusThree}
-                               onChange={(e) => {
-        // allow only digits
-        let value = e.target.value.replace(/[^0-9]/g, "");
+                              onChange={(e) => {
+                                // allow only digits
+                                let value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
 
-        // restrict to max 12 digits
-        if (value.length > 12) {
-          value = value.slice(0, 12);
-        }
+                                // restrict to max 12 digits
+                                if (value.length > 12) {
+                                  value = value.slice(0, 12);
+                                }
 
-        field.onChange(value);
-      }}
+                                field.onChange(value);
+                              }}
                             />
                           )}
                         />
@@ -1759,16 +1766,19 @@ function Payment({ stepper }) {
                               {...field}
                               // isDisabled={statusThree}
                               onChange={(e) => {
-        // allow only digits
-        let value = e.target.value.replace(/[^0-9]/g, "");
+                                // allow only digits
+                                let value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
 
-        // restrict to max 16 digits
-        if (value.length > 16) {
-          value = value.slice(0, 16);
-        }
+                                // restrict to max 16 digits
+                                if (value.length > 16) {
+                                  value = value.slice(0, 16);
+                                }
 
-        field.onChange(value);
-      }}
+                                field.onChange(value);
+                              }}
                             />
                           )}
                         />
@@ -2012,12 +2022,13 @@ function Payment({ stepper }) {
         </Row>
 
         {showQrModal && (
-          // <Qr_Payment
-          //   setShowQrModal={setShowQrModal}
-          //   showQrModal={showQrModal}
-          //   qr={qr}
-          // />
-          <></>
+            <>
+          <Qr_Payment
+            setShowQrModal={setShowQrModal}
+            showQrModal={showQrModal}
+            qr={qr}
+          />
+        </>
         )}
       </Form>
     </>

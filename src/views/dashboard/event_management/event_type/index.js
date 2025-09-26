@@ -61,11 +61,9 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.parkingName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.perDayDueChargesType
-            ?.toLowerCase()
-            .includes(value.toLowerCase()) ||
-          row.parkingAmount?.toString().includes(value)
+          row.eventTypeName?.toLowerCase().includes(value.toLowerCase()) 
+         
+         
       );
 
       setTableData((prev) => ({

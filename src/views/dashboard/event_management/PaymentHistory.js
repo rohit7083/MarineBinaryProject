@@ -13,7 +13,7 @@ const PaymentHistory = ({ stepper, updateData }) => {
 
   // {{debugger}}
   const location = useLocation();
-
+{{debugger}}
   const paymentHistoryData = location?.state?.Rowdata;
   console.log("paymenthostory data ", paymentHistoryData);
   const {

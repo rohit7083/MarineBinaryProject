@@ -293,7 +293,7 @@ export default [
   },
   {
     element: <QrPaymentStepTwo />,
-    path: "/crm/marine-resort/slip_memberform/qr_paymentsteptwo",
+    path: "/slip_memberform/qr_paymentsteptwo",
     meta: {
       layout: "blank",
     },

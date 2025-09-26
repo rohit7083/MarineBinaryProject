@@ -1087,35 +1087,46 @@ useEffect(() => {
         )}
 
         {/* Event Description */}
-        <Col className="mb-2">
-          <Label for="eventDescription">Event Description / Notes</Label>
-          <Controller
-            name="eventDescription"
-            control={control}
-            render={({ field }) => (
-              <Input
-                {...field}
-                type="textarea"
-                placeholder="Add any notes or description"
-                onChange={(e) => {
-                  // Allow letters, numbers, dot, space, dash, and comma
-                  let onlyValid = e.target.value.replace(
-                    /[^A-Za-z0-9 .,-]/g,
-                    ""
-                  );
+       <Col className="mb-2">
+  <Label for="eventDescription">Event Description / Notes</Label>
+  <Controller
+    name="eventDescription"
+    control={control}
+    rules={{
+      required: "Event description is required", // ✅ required validation
+      maxLength: {
+        value: 500,
+        message: "Maximum 500 characters allowed",
+      },
+    }}
+    render={({ field, fieldState: { error } }) => (
+      <>
+        <Input
+          {...field}
+          type="textarea"
+          placeholder="Add any notes or description"
+          onChange={(e) => {
+            // Allow letters, numbers, dot, space, dash, and comma
+            let onlyValid = e.target.value.replace(
+              /[^A-Za-z0-9 .,-]/g,
+              ""
+            );
 
-                  // Limit to 500 characters
-                  if (onlyValid.length > 500) {
-                    onlyValid = onlyValid.slice(0, 500);
-                  }
+            // Limit to 500 characters
+            if (onlyValid.length > 500) {
+              onlyValid = onlyValid.slice(0, 500);
+            }
 
-                  field.onChange(onlyValid);
-                }}
-              />
-            )}
-          />
-          <small className="text-muted">(max 500 characters)</small>
-        </Col>
+            field.onChange(onlyValid);
+          }}
+        />
+        {error && <small className="text-danger">{error.message}</small>}
+      </>
+    )}
+  />
+  <small className="text-muted">(max 500 characters)</small>
+</Col>
+
 
         <Col className="mb-1">
           <Label for="venue">Venue Name</Label>

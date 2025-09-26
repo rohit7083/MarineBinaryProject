@@ -1,7 +1,12 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import CryptoJS from "crypto-js";
 import Lottie from "lottie-react";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -30,9 +35,6 @@ import SingleCheck from "../../../assets/images/SingleCheck.json";
 import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
 function Payment({ stepper, allEventData, updateData, paymentData }) {
-  console.log("paymentData", paymentData);
-  console.log("updateData", updateData);
-
   const { remainingAmount, totalAmount } = paymentData?.Rowdata || {};
 
   const CompanyOptions = [
@@ -172,6 +174,29 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   };
   const [showModal, setShowModal] = useState(false);
 
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey);
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16);
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+    return CryptoJS.enc.Base64.stringify(combined);
+  }
   const handleAdvance = watch("advance");
   const handleRemaining = watch("remainingPayment");
   const handleFinal = watch("finalAmount");
@@ -380,68 +405,11 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
 
   const onSubmit = async (data) => {
     setErrorMsz("");
+    const otpArray = data.otp || [];
+    const pin = otpArray?.join("");
+    const encrypted = encryptAES(pin);
 
-    const pin = Number(data?.otp?.join(""));
-
-    // const formData = new FormData();
-
-    // formData.append("event.uid", allEventData?.eventUid);
-    // formData.append("event.isAdvancesPaymnet", data?.advancePayment);
-    // if (data?.advancePayment) {
-    //   formData.append("event.remainingAmount", data?.remainingPayment);
-    //   formData.append("event.advancePaymentAmout", data?.advance);
-    // }
-    // formData.append("event.isDiscountApply", data?.discount);
-    // if (data?.discount) {
-    //   formData.append("event.discountAmount", disAmt);
-    //   formData.append("event.discountType", mode);
-    //   if (mode === "Percentage") {
-    //     formData.append("event.discountedFinalAmount", discountPercentage);
-    //   } else {
-    //     formData.append("event.discountedFinalAmount", discountAmt);
-    //   }
-    // }
-
-    // formData.append("payment.finalPayment", data?.PfinalAmount);
-    // formData.append("payment.paymentMode", data?.paymentMode?.value);
-
-    // if (watch("paymentMode")?.label === "Credit Card") {
-    //   formData.append("payment.cardNumber", data.cardNumber);
-    //   formData.append("payment.cardType", data.cardType);
-    //   formData.append("payment.cardExpiryYear", data.cardExpiryYear);
-    //   formData.append("payment.cardExpiryMonth", data.cardExpiryMonth);
-    //   formData.append("payment.cardCvv", data.cardCvv);
-
-    //   formData.append("payment.nameOnCard", data.nameOnCard);
-    // } else if (watch("paymentMode")?.label === "Card Swipe") {
-    //   formData.append(
-    //     "payment.cardSwipeTransactionId",
-    //     data?.cardSwipeTransactionId
-    //   );
-    // } else if (watch("paymentMode")?.label === "Cash") {
-    //   formData.append("event.pin", pin);
-    // } else if (watch("paymentMode")?.label === "Cheque21") {
-    //   if (!file) {
-    //     alert("Please select a file first.");
-    //     return;
-    //   }
-    //   formData.append("payment.bankName", data.bankName);
-    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
-    //   formData.append("payment.routingNumber", data.routingNumber);
-    //   formData.append("payment.accountNumber", data.accountNumber);
-    //   formData.append("payment.chequeNumber", data.chequeNumber);
-    //   formData.append("payment.chequeImage", file);
-    // } else if (watch("paymentMode")?.label === "ChequeACH") {
-    //   formData.append("payment.bankName", data.bankName);
-    //   formData.append("payment.nameOnAccount", data.nameOnAccount);
-    //   formData.append("payment.routingNumber", data.routingNumber);
-    //   formData.append("payment.accountNumber", data.accountNumber);
-    //   formData.append("payment.accountType", data.accountType?.value);
-    // } else {
-    //   console.log("Choose differant payment Method ");
-    // }
-
-    // console.log("formdata", formData);
+    //  {{debugger}}
 
     let formData = new FormData();
 
@@ -560,8 +528,9 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
 
         case "Cash":
           if (data?.otp) {
-            const pin = Number(data.otp.join(""));
-            formData.append("event.pin", pin);
+            // const pin = Number(data.otp.join(""));
+            // const encryptedPin = encryptAES(pin); // encrypt here
+            formData.append("event.pin", encrypted);
           }
           break;
 
@@ -617,6 +586,11 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         setLoading(false);
       }
     }
+    {
+      {
+        debugger;
+      }
+    }
     if (!updateData?.listData?.uid || updateData?.listData?.step === 2) {
       try {
         setLoading(true);
@@ -626,11 +600,20 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         if (qr_code_base64) {
           setShowQrModal(true);
         }
-        setModal(true);
-        setTimeout(() => {
-          setModal(false);
-          stepper.next();
-        }, 4000);
+        if (res?.data?.status === "success") {
+          setModal(true);
+          setTimeout(() => {
+            setModal(false);
+            stepper.next();
+          }, 4000);
+        } else {
+           toast.current.show({
+          severity: "error",
+          summary: "Failed",
+          detail: "Payment Failed. Please try again.",
+          life: 2000,
+        });
+        }
       } catch (error) {
         console.error(error);
 
@@ -650,6 +633,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     toggle();
     stepper.next();
   };
+  const toast = useRef(null);
 
   return (
     <>
@@ -707,6 +691,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           </Button>
         </ModalFooter>
       </Modal>
+      <Toast ref={toast} />
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <h4 className="mb-2">Payment Information</h4>
@@ -1178,7 +1163,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       }}
                       render={({ field }) => (
                         <Input
-                          type="text" // Change type to text
+                          type="password" // Change type to text
                           maxLength={getCvvLength(cardType)} // Dynamically set maxLength
                           placeholder="Enter CVV Number"
                           invalid={!!errors.cardCvv}
@@ -1217,11 +1202,12 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           {...field}
                           // isDisabled={statusThree}
                           onChange={(e) => {
-                            const onlyAlphabets = e.target.value.replace(
-                              /[^a-zA-Z]/g,
-                              ""
-                            );
-                            field.onChange(onlyAlphabets);
+                            const onlyAlphabetsAndSpace =
+                              e.target.value.replace(
+                                /[^a-zA-Z\s]/g, // allows A-Z, a-z, and spaces
+                                ""
+                              );
+                            field.onChange(onlyAlphabetsAndSpace);
                           }}
                         />
                       )}
@@ -1262,11 +1248,12 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           invalid={!!errors.bankName}
                           {...field}
                           onChange={(e) => {
-                            const onlyAlphabets = e.target.value.replace(
-                              /[^a-zA-Z]/g,
-                              ""
-                            );
-                            field.onChange(onlyAlphabets);
+                            const onlyAlphabetsAndSpace =
+                              e.target.value.replace(
+                                /[^a-zA-Z\s]/g, // allows A-Z, a-z, and spaces
+                                ""
+                              );
+                            field.onChange(onlyAlphabetsAndSpace);
                           }}
                         />
                       )}
@@ -1296,13 +1283,13 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           placeholder="Enter Account Name"
                           invalid={!!errors.nameOnAccount}
                           {...field}
-                          // isDisabled={statusThree}
                           onChange={(e) => {
-                            const onlyAlphabets = e.target.value.replace(
-                              /[^a-zA-Z]/g,
-                              ""
-                            );
-                            field.onChange(onlyAlphabets);
+                            const onlyAlphabetsAndSpace =
+                              e.target.value.replace(
+                                /[^a-zA-Z\s]/g, // allows A-Z, a-z, and spaces
+                                ""
+                              );
+                            field.onChange(onlyAlphabetsAndSpace);
                           }}
                         />
                       )}
@@ -1338,6 +1325,15 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           // isDisabled={statusThree}
 
                           {...field}
+                          onChange={(e) => {
+                            // Allow only numbers
+                            let value = e.target.value.replace(/[^0-9]/g, "");
+
+                            // Allow only 9 digits max
+                            value = value.slice(0, 9);
+
+                            field.onChange(value);
+                          }}
                         />
                       )}
                     />
@@ -1357,11 +1353,11 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       rules={{
                         required: "Account Number is required",
                         minLength: {
-                          value: 10,
+                          value: 8,
                           message: "Account Number must be at least 10 digits",
                         },
                         maxLength: {
-                          value: 17,
+                          value: 16,
                           message: "Account Number can't exceed 17 digits",
                         },
                         pattern: {
@@ -1376,7 +1372,17 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           placeholder="Enter Account Number"
                           invalid={!!errors.accountNumber}
                           {...field}
-                          // isDisabled={statusThree}
+                          onChange={(e) => {
+                            // allow only digits
+                            let value = e.target.value.replace(/[^0-9]/g, "");
+
+                            // restrict to max 16 digits
+                            if (value.length > 16) {
+                              value = value.slice(0, 16);
+                            }
+
+                            field.onChange(value);
+                          }}
                         />
                       )}
                     />
@@ -1401,8 +1407,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           message: "Cheque Number must be at least 6 digits",
                         },
                         maxLength: {
-                          value: 10,
-                          message: "Cheque Number cannot exceed 10 digits",
+                          value: 12,
+                          message: "Cheque Number cannot exceed 12 digits",
                         },
                         pattern: {
                           value: /^[0-9]+$/,
@@ -1415,7 +1421,19 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           placeholder="Enter Cheque Number"
                           invalid={!!errors.chequeNumber}
                           {...field}
+                          maxLength="12"
                           // isDisabled={statusThree}
+                          onChange={(e) => {
+                            // allow only digits
+                            let value = e.target.value.replace(/[^0-9]/g, "");
+
+                            // restrict to max 12 digits
+                            if (value.length > 12) {
+                              value = value.slice(0, 12);
+                            }
+
+                            field.onChange(value);
+                          }}
                         />
                       )}
                     />
@@ -1623,7 +1641,15 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           placeholder="Enter Routing Number"
                           invalid={!!errors.routingNumber}
                           {...field}
-                          // isDisabled={statusThree}
+                          onChange={(e) => {
+                            // Allow only numbers
+                            let value = e.target.value.replace(/[^0-9]/g, "");
+
+                            // Allow only 9 digits max
+                            value = value.slice(0, 9);
+
+                            field.onChange(value);
+                          }}
                         />
                       )}
                     />
@@ -1643,8 +1669,16 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       rules={{
                         required: "Account Number is required",
                         minLength: {
-                          value: 10,
-                          message: "Account Number must be at least 10 digits",
+                          value: 8,
+                          message: "Account Number must be at least 8 digits",
+                        },
+                        maxLength: {
+                          value: 16,
+                          message: "Account Number can't exceed 16 digits",
+                        },
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Account Number must be numeric",
                         },
                       }}
                       control={control}
@@ -1654,7 +1688,17 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           placeholder="Enter Account Number"
                           invalid={!!errors.accountNumber}
                           {...field}
-                          // isDisabled={statusThree}
+                          onChange={(e) => {
+                            // allow only digits
+                            let value = e.target.value.replace(/[^0-9]/g, "");
+
+                            // restrict to max 16 digits
+                            if (value.length > 16) {
+                              value = value.slice(0, 16);
+                            }
+
+                            field.onChange(value);
+                          }}
                         />
                       )}
                     />
