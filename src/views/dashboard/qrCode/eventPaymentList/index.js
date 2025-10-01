@@ -6,7 +6,7 @@ import { Fragment, memo, useEffect, useRef, useState } from 'react';
 import { Toast } from "primereact/toast";
 
 // ** Table Columns
-import { qrCodeColumns } from './data';
+import { qrCodeColumns } from './Data';
 
 // ** Third Party Components
 import DataTable from 'react-data-table-component';
