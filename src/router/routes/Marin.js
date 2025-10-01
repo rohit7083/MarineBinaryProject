@@ -6,8 +6,10 @@ import VertualTerminal from "../../views/dashboard/pos/VertualTerminal";
 import VirtualTerminal from "../../views/dashboard/pos/virtualTerminal/index";
 import EventPaymentList from "../../views/dashboard/qrCode/eventPaymentList/index";
 import QrList from "../../views/dashboard/qrCode/qrList/index";
+import QrPaymentFrom from "../../views/dashboard/qrCode/qrList/QrPaymentForm";
 import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index";
 import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index";
+
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
 );
@@ -538,5 +540,24 @@ export default [
     element: <EventPaymentList/>,
     path: "dashboard/qr-code/event-list",
   },
+ {
+    element :  <QrPaymentFrom />,
+    path: 'dashboard/qr-code/paymentForm'
+  }
+  ,
+  // {
+  //   element :  <UserRoleManagement />,
+  //   path: 'dashboard/crmSetting/userRoleManagement'
+  // },
+  {
+    element :  <QrPaymentFrom />,
+    path: 'dashboard/qr-code/paymentForm/:token',
+    meta: { 
+      publicRoute: true,
+      layout: "blank",
+    },
+  }
+
+
   
 ];

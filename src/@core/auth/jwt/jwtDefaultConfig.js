@@ -202,4 +202,13 @@ export default {
   getAllEventQrEndPoint: "/eventQrCode",
   getVariationUid:'/pos/',
   updatedQty:'/pos/updateQuantity/',
+
+
+  getAllEventQrEndPoint: "/eventQrCode",
+  getVariationUid:'/pos/',
+  updatedQty:'/pos/updateQuantity/',
+  addQrEndPoint : '/eventQrCode',
+  decriptQrCodeToeknEndPoint: '/auth/qrCode/decrypt-token?token=',
+ qrPaymentEndPoint : '/auth/eventQrCode/'
+ 
 };

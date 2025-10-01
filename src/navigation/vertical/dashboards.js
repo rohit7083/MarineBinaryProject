@@ -1,11 +1,6 @@
 // ** Icons Import
-import { BookCopy, HomeIcon } from "lucide-react";
-import {
-  Calendar,
-  Circle,
-  FileText,
-  Square
-} from "react-feather";
+import { BookCopy, HomeIcon, QrCode } from "lucide-react";
+import { Calendar, Circle, FileText, Square } from "react-feather";
 
 export default [
   // {
@@ -297,13 +292,13 @@ export default [
       //   navLink: "/search-rooms/previewBooking",
       // },
 
-        {
+      {
         id: "Rooms Details",
         title: "Rooms Details",
         icon: <Circle size={12} />,
         navLink: "/room_details",
       },
-       {
+      {
         id: "manage_roomBooking",
         title: "Room Booking",
         icon: <Circle size={12} />,
@@ -318,7 +313,7 @@ export default [
       },
     ],
   },
-   {
+  {
     id: "Rent Roll",
     title: "Rent Roll",
     icon: <BookCopy size={12} />,
@@ -338,32 +333,30 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/rentroll/inverse_slip",
       },
-             
     ],
   },
 
-  // {
-  //   id: "Generate QR Code",
-  //   title: "Generate QR Code", 
-  //   icon: <QrCode size={12} />,
-  //   navLink: "/qr-code",
-  //   badge: "light-warning",
+ 
+  {
+    id: "Generate QR Code",
+    title: "Generate QR Code",
+    icon: <QrCode size={12} />,
+    navLink: "/qr-code",
+    badge: "light-warning",
 
-  //   children: [
-  //     {
-  //       id: "Qr Code",
-  //       title: "Qr Code",
-  //       icon: <Circle size={12} />,
-  //       navLink: "/dashboard/qr-code/qr-list",
-  //     },
-  //     {
-  //       id: "Event List",
-  //       title: "Event Payment list ",
-  //       icon: <Circle size={12} />,
-  //       navLink: "/dashboard/qr-code/event-list",
-  //     },
-       
-      
-  //   ],
-  // },
+    children: [
+      {
+        id: "Qr Code",
+        title: "Qr Code",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/qr-code/qr-list",
+      },
+      // {
+      //   id: "Event List",
+      //   title: "Event Payment list ",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/qr-code/event-list",
+      // },
+    ],
+  },
 ];

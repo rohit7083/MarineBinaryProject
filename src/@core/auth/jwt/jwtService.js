@@ -773,6 +773,31 @@ export default class JwtService {
   getAllEventQRCode(){
     return axios.get(this.jwtConfig.getAllEventQrEndPoint);
   }
-  //demo
+ 
+  addQrCode(...args){
+    return axios.post(this.jwtConfig.addQrEndPoint, ...args);
+  }
+
+  deleteQrCode(uid){
+    return axios.delete( `${this.jwtConfig.addQrEndPoint}/${uid}`)
+  }
+
+  updateQrCode(uid , ...args){
+
+    return axios.put(`${this.jwtConfig.addQrEndPoint}/${uid}`, ...args)
+  }
+
+   decodeQrToken(token, ...args) {
+    return axios.get(`${this.jwtConfig.decriptQrCodeToeknEndPoint}${token}`, ...args);
+  }
+
+  payQrCodePayment(token, ...args) {
+    return axios.post(`${this.jwtConfig.qrPaymentEndPoint}${token}`, ...args);
+  }
+
+  getEventQRPaymentList(){
+
+    return axios.get(this.jwtConfig.addQrEndPoint);
+  }
  
 }
