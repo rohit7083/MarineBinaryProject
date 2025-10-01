@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
-import { Clipboard, DollarSign, FileText, Users } from "react-feather";
+import { Clipboard, Users } from "react-feather";
+import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 // ** Components
 import SlipDetails from "./forms/SlipDetails";
 // import MemberInfo from "./forms/MemberInfo";
-import MemberIndex from "./forms/memberInfo/index";
-import Index from "./forms/slip_rental";
-import OtherPayment from "./forms/OtherPayment";
-import ViewDocuments from "./forms/ViewDocuments";
-import { Book } from "lucide-react";
-import useJwt from "@src/auth/jwt/useJwt";
 import { useLocation } from "react-router-dom";
+import MemberIndex from "./forms/memberInfo/index";
 const TabsCentered = () => {
   const [error, setError] = useState("");
   const [SlipData, setSlipData] = useState({});
@@ -26,15 +21,13 @@ const TabsCentered = () => {
     setSlipData(allData);
   }, [allData]);
   console.clear();
-console.log("SlipData", SlipData);
+  console.log("SlipData", SlipData);
 
   const toggle = (tab) => {
     if (active !== tab) {
       setActive(tab);
     }
   };
-
-
 
   return (
     <React.Fragment>

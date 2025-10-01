@@ -11,19 +11,19 @@ import { CheckSquare, CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import TokenExpire from "../../../../pages/authentication/slip/TokenExpire";
 
@@ -53,7 +53,7 @@ const CardPayment = () => {
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
   const getMember = async () => {
-    // {{debugger}}
+    // {{ }}
     try {
       setLoading(true);
       const res = await useJwt.getMemberDetails(token);

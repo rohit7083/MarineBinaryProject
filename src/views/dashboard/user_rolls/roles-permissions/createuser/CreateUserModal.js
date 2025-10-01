@@ -249,7 +249,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   };
   useEffect(() => {
     if (uid && row) {
-      // {{debugger}}
+      // {{ }}
       const {
         firstName,
         lastName,
@@ -266,11 +266,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       // Find the country object from countryOptions
       const selectedCountry =
         countryOptions.find((c) => c.code === backendCode) || null;
-      {
-        {
-          debugger;
-        }
-      }
+     
       reset({
         firstName,
         lastName,

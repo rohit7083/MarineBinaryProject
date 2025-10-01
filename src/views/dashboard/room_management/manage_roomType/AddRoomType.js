@@ -293,7 +293,7 @@ function AddVTypes() {
                       onChange={(e) => {
                         // allow only letters, numbers, space, dash, and dot
                         const onlyValid = e.target.value.replace(
-                          /[^A-Za-z0-9 .-]/g,
+                          /[^A-Za-z0-9 .,-]/g,
                           ""
                         );
                         field.onChange(onlyValid);

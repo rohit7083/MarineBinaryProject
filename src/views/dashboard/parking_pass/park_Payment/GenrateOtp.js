@@ -1,26 +1,17 @@
-import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
-import { Send } from "react-feather";
-import { Spinner, UncontrolledAlert } from "reactstrap";
-import {BeatLoader} from 'react-spinners';
+import React, { Fragment, useEffect, useState } from "react";
 import Countdown from "react-countdown";
-import WatchNew from '../../../../assets/images/updatedWatchnew.jpg'
+import { Send } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import { BeatLoader } from 'react-spinners';
 import {
-  Row,
-  Col,
-  Modal,
-  Label,
-  Input,
-  Button,
-  ModalBody,
-  ModalHeader,
-  InputGroup,
-  FormFeedback,
+    Button, Col, FormFeedback, Input, InputGroup, Label, Modal, ModalBody,
+    ModalHeader, Row, Spinner, UncontrolledAlert
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
+import WatchNew from '../../../../assets/images/updatedWatchnew.jpg';
 
-import { Alert } from "reactstrap";
 import { ThumbsUp } from "react-feather";
+import { Alert } from "reactstrap";
 const GenrateOtp = ({
   setotpVerify,
   memberId,
@@ -69,7 +60,7 @@ const GenrateOtp = ({
     }
   };
 
-  // {{debugger}}
+  // {{ }}
   const handleVerifyOTP = async (data) => {
     seterrMsz("");
 

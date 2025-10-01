@@ -12,20 +12,20 @@ import { Toast } from "primereact/toast";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Qr_Payment from "../../../../event_management/Qr_Payment";
 // import Qr_Payment from "./Qr_Payment";
@@ -105,7 +105,7 @@ function Payment({ stepper }) {
       padding: 0,
     }),
   };
-  // {{debugger}}
+  // {{ }}
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
@@ -512,13 +512,12 @@ function Payment({ stepper }) {
 
     try {
       let res;
-// {{debugger}}
+      // {{ }}
       if (location?.state?.extraRoomMode) {
         res = await useJwt.addExtraRoom(uidOfEvent, formData);
       } else {
         res = await useJwt.bookingPayment(formData);
       }
-      console.log(formData);
 
       const { qr_code_base64 } = res?.data;
       setQr(qr_code_base64);
@@ -678,6 +677,12 @@ function Payment({ stepper }) {
                                       invalid={!!errors.advance}
                                       onWheel={(e) => e.target.blur()}
                                       {...field}
+                                      onChange={(e) => {
+                                        // Remove everything that's not a digit
+                                        const onlyNumbers =
+                                          e.target.value.replace(/\D/g, ""); // \D = non-digit
+                                        field.onChange(onlyNumbers);
+                                      }}
                                     />
                                   )}
                                 />
@@ -2022,13 +2027,13 @@ function Payment({ stepper }) {
         </Row>
 
         {showQrModal && (
-            <>
-          <Qr_Payment
-            setShowQrModal={setShowQrModal}
-            showQrModal={showQrModal}
-            qr={qr}
-          />
-        </>
+          <>
+            <Qr_Payment
+              setShowQrModal={setShowQrModal}
+              showQrModal={showQrModal}
+              qr={qr}
+            />
+          </>
         )}
       </Form>
     </>

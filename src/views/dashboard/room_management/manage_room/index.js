@@ -7,15 +7,7 @@ import { debounce } from "lodash";
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Input,
-  Row,
-  Spinner
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const index = () => {
@@ -121,13 +113,13 @@ const index = () => {
       // minWidth: "150px",
       selector: (row) => row.numberOfRooms,
     },
-      {
+    {
       name: "Number of Rooms",
       sortable: true,
       // minWidth: "150px",
       selector: (row) => row.numberOfRooms,
     },
-      {
+    {
       name: "Number of Rooms",
       sortable: true,
       // minWidth: "150px",
@@ -182,6 +174,16 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
+                if (error?.response) {
+                  MySwal.fire({
+                    icon: "error", // success icon for deletion
+                    title: "Deletion Failed!",
+                    text: `${error?.response?.data.content}`, // message text
+                    customClass: {
+                      confirmButton: "btn btn-success", // custom button styling
+                    },
+                  });
+                }
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({

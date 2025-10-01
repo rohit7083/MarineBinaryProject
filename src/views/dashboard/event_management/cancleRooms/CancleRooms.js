@@ -4,19 +4,19 @@ import React, { useEffect, useState } from "react";
 import { Trash } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  CardText,
-  CardTitle,
-  Col,
-  Input,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    CardText,
+    CardTitle,
+    Col,
+    Input,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 import successAnimation from "../../../../assets/images/celebrate.json";
 import successAnimations from "../../../../assets/images/Congratulations.json";
@@ -59,7 +59,7 @@ console.log("singleRooms", singleRooms);
 
 
 // useEffect(() => {
-//   {{debugger}}
+//   {{ }}
 //   if (singleRooms && singleRooms.length > 0) {
 //    const slectOrNot=singleRooms.filter((room)=>room === true);
 //     setSelectedData(slectOrNot); 

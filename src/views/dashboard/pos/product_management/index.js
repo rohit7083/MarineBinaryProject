@@ -220,7 +220,7 @@ const index = () => {
         };
 
         return (
-          <div style={{ position: "relative", zIndex: 1 }}>
+         <>
             <UncontrolledDropdown>
               <DropdownToggle
                 className="icon-btn hide-arrow"
@@ -230,13 +230,8 @@ const index = () => {
               >
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu
-                style={{
-                  zIndex: 9999,
-                  position: "absolute",
-                  willChange: "transform",
-                }}
-              >
+                           <DropdownMenu end container="body">
+
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />
                   <span className="align-middle">Edit</span>
@@ -253,7 +248,7 @@ const index = () => {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-          </div>
+         </>
         );
       },
     },

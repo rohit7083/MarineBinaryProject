@@ -55,7 +55,7 @@ const ProductCard = ({ product, onAddItem, cart }) => {
 
       try {
         const url = await fetchImage(variationImageUid);
-        setImageUrl(url?url:noImage);
+        setImageUrl(url ? url : noImage);
       } catch (error) {
         setImageUrl(noImage);
       } finally {
@@ -67,9 +67,71 @@ const ProductCard = ({ product, onAddItem, cart }) => {
   }, [variationImageUid]);
 
   return (
+    // <Card
+    //   className="h-100"
+    //   style={{ fontSize: "14px", border: "1px solid black" }}
+    // >
+    //   {imageLoader ? (
+    //     <div className="d-flex justify-content-center align-items-center p-4">
+    //       <PuffLoader color="#9086F3" />
+    //     </div>
+    //   ) : (
+    //     <CardImg
+    //       top
+    //       src={imageUrl}
+    //       alt={product.name}
+    //       style={{ aspectRatio: "1 / 1" }}
+    //       className="p-2 border-bottom"
+    //     />
+    //   )}
+
+    //   <CardBody style={{ padding: "8px" }}>
+    //     <CardTitle tag="h5" style={{ fontSize: "15px", marginBottom: "5px" }}>
+    //       {product.name}
+    //     </CardTitle>
+    //     <CardText style={{ fontSize: "13px", marginBottom: "5px" }}>
+    //       {product?.description && product.description !== "undefined"
+    //         ? product.description
+    //         : "No description available"}
+    //     </CardText>
+    //   </CardBody>
+
+    //   <div className="d-flex justify-content-center align-items-center mb-2">
+    //     {cartQuantity > 0 ? (
+    //       <span style={{ fontWeight: "500", color: "green", fontSize: "14px" }}>
+    //         Added ({cartQuantity})
+    //       </span>
+    //     ) : (
+    //       <Button.Ripple
+    //         className="round m-2"
+    //         color="primary"
+    //         outline
+    //         onClick={() => onAddItem({ ...product, image: imageUrl })}
+    //         disabled={product?.isAdded ? true : false}
+    //       >
+    //         {product?.isAdded ? "Added" : `Add Item`}
+    //       </Button.Ripple>
+    //     )}
+    //   </div>
+    // </Card>
+
     <Card
-      className="h-100"
-      style={{ fontSize: "14px", border: "1px solid black" }}
+      className="h-100 shadow-sm position-relative"
+      style={{
+        fontSize: "14px",
+        border: "1px solid #ddd",
+        borderRadius: "12px",
+        transition: "transform 0.2s, box-shadow 0.2s",
+        cursor: "pointer",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "scale(1.03)";
+        e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+        e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
+      }}
     >
       {imageLoader ? (
         <div className="d-flex justify-content-center align-items-center p-4">
@@ -80,16 +142,25 @@ const ProductCard = ({ product, onAddItem, cart }) => {
           top
           src={imageUrl}
           alt={product.name}
-          style={{ aspectRatio: "1 / 1" }}
+          style={{
+            aspectRatio: "1 / 1",
+            borderRadius: "12px 12px 0 0",
+            objectFit: "cover",
+          }}
           className="p-2 border-bottom"
         />
       )}
 
-      <CardBody style={{ padding: "8px" }}>
-        <CardTitle tag="h5" style={{ fontSize: "15px", marginBottom: "5px" }}>
+      <CardBody style={{ padding: "12px" }}>
+        <CardTitle
+          tag="h5"
+          style={{ fontSize: "15px", marginBottom: "5px", fontWeight: 600 }}
+        >
           {product.name}
         </CardTitle>
-        <CardText style={{ fontSize: "13px", marginBottom: "5px" }}>
+        <CardText
+          style={{ fontSize: "13px", marginBottom: "5px", color: "#555" }}
+        >
           {product?.description && product.description !== "undefined"
             ? product.description
             : "No description available"}
@@ -98,7 +169,16 @@ const ProductCard = ({ product, onAddItem, cart }) => {
 
       <div className="d-flex justify-content-center align-items-center mb-2">
         {cartQuantity > 0 ? (
-          <span style={{ fontWeight: "500", color: "green", fontSize: "14px" }}>
+          <span
+            style={{
+              fontWeight: "500",
+              color: "green",
+              fontSize: "14px",
+              padding: "6px 12px",
+              borderRadius: "8px",
+              backgroundColor: "#e6f4ea",
+            }}
+          >
             Added ({cartQuantity})
           </span>
         ) : (
@@ -108,6 +188,20 @@ const ProductCard = ({ product, onAddItem, cart }) => {
             outline
             onClick={() => onAddItem({ ...product, image: imageUrl })}
             disabled={product?.isAdded ? true : false}
+            style={{
+              fontWeight: 500,
+              padding: "6px 16px",
+              borderRadius: "8px",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
           >
             {product?.isAdded ? "Added" : `Add Item`}
           </Button.Ripple>
@@ -331,7 +425,7 @@ const ProductCards = ({ tableData, loading, selectedCustomer }) => {
   const [selecltedProductList, setSelectedProductList] = useState([]);
   const [products, setProducts] = useState([]);
 
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   // ** Toggle
   const addProduct = (product) => {
@@ -349,7 +443,7 @@ const ProductCards = ({ tableData, loading, selectedCustomer }) => {
       state: {
         selecltedProductList,
         selectedCust: `${selectedCustomer.firstName}`,
-        customeUid:selectedCustomer.uid
+        customeUid: selectedCustomer.uid,
       },
     });
   };
@@ -364,14 +458,16 @@ const ProductCards = ({ tableData, loading, selectedCustomer }) => {
     setProducts(updatedProduct);
   };
 
-
-  useEffect(()=>{
-
-    if(tableData.results)
-    setProducts(
-      tableData.results.map((item, index) => ({ ...item, index, isAdded: false }))  
-    );
-  },[tableData])
+  useEffect(() => {
+    if (tableData.results)
+      setProducts(
+        tableData.results.map((item, index) => ({
+          ...item,
+          index,
+          isAdded: false,
+        }))
+      );
+  }, [tableData]);
 
   if (loading) return "loading....";
 

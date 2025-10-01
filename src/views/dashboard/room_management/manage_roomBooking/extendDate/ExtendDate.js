@@ -1,25 +1,25 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  FormGroup,
-  Label,
-  Col,
-  Button,
-  FormFeedback,
-  Input,
-  Spinner,
-} from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/material_blue.css";
 import useJwt from "@src/auth/jwt/useJwt";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
+import "flatpickr/dist/themes/material_blue.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { useEffect, useRef, useState } from "react";
+import Flatpickr from "react-flatpickr";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import {
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Col,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
+} from "reactstrap";
 function ExtendDate({ viewData }) {
   const navigate = useNavigate();
   const [err, setError] = useState("");
@@ -87,7 +87,7 @@ function ExtendDate({ viewData }) {
   // Set min check-out date based on selected check-in date
 
   const getCheckOutMinDate = () => {
-    // {{debugger}}
+    // {{ }}
     // const checkInDate = watch("checkInDate");
 
     // let updateDay =checkInDate;

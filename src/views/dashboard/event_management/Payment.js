@@ -69,7 +69,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
 
   const remainingAmt = updateData?.listData?.Rowdata?.remainingAmount || 0;
   const uid = updateData?.listData?.uid;
-  // {{debugger}}
+  // {{ }}
   if (remainingAmt >= 0 && uid) {
     finalAmtRemain = Number(remainingAmt) + Number(AmtDiffernce);
   } else {
@@ -409,7 +409,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     const pin = otpArray?.join("");
     const encrypted = encryptAES(pin);
 
-    //  {{debugger}}
+    //  {{ }}
 
     let formData = new FormData();
 
@@ -586,11 +586,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         setLoading(false);
       }
     }
-    {
-      {
-        debugger;
-      }
-    }
+  
     if (!updateData?.listData?.uid || updateData?.listData?.step === 2) {
       try {
         setLoading(true);
@@ -607,12 +603,12 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
             stepper.next();
           }, 4000);
         } else {
-           toast.current.show({
-          severity: "error",
-          summary: "Failed",
-          detail: "Payment Failed. Please try again.",
-          life: 2000,
-        });
+          toast.current.show({
+            severity: "error",
+            summary: "Failed",
+            detail: "Payment Failed. Please try again.",
+            life: 2000,
+          });
         }
       } catch (error) {
         console.error(error);

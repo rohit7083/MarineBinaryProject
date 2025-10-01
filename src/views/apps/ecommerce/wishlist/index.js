@@ -104,7 +104,7 @@ const Wishlist = () => {
               <span>{item.isInCart ? 'View In Cart' : 'Add To Cart'}</span>
             </Button>
           </div>
-        </Card>
+        </Card> 
       )
     })
   }

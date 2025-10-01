@@ -158,7 +158,7 @@ const index = () => {
     setDatarow(row);
     setShow(true);
   };
-const paymentStatusColor = {
+  const paymentStatusColor = {
     success: "light-success",
     error: "light-danger",
     pending: "light-warning",
@@ -202,11 +202,18 @@ const paymentStatusColor = {
       sortable: true,
       // minWidth: "150px",
       selector: (row) => {
-        return(
-          <Badge color={paymentStatusColor[row?.paymentStatus?.toLowerCase()] || "light-primary"}pill>
-       { row.paymentStatus  }
+        return (
+          <Badge
+            color={
+              paymentStatusColor[row?.paymentStatus?.toLowerCase()] ||
+              "light-primary"
+            }
+            pill
+          >
+            {row.paymentStatus}
           </Badge>
-      );},
+        );
+      },
     },
     {
       name: "Remaining Amt",
@@ -289,13 +296,12 @@ const paymentStatusColor = {
                 <MoreVertical size={15} />
               </DropdownToggle>
 
-              <DropdownMenu style={{ position: "absolute", zIndex: 1050 }}>
-                {/* {row?.paymentStatus === "success" && ( */}
+             <DropdownMenu end container="body">
+
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
-                {/* )} */}
 
                 {row?.remainingAmount > 0 && (
                   <DropdownItem
@@ -307,22 +313,18 @@ const paymentStatusColor = {
                     <span className="align-middle">Payment</span>
                   </DropdownItem>
                 )}
-                {/* {row?.paymentStatus === "Pending" && ( */}
                 <DropdownItem onClick={() => handlePaymentHistory(row)}>
                   <Calendar className="me-50" size={15} />{" "}
                   <span className="align-middle">Payment History</span>
                 </DropdownItem>
-                {/* )} */}
+              
 
                 <DropdownItem onClick={() => handleAddExtraRoom(row)}>
                   <PlusCircle className="me-50" size={15} />{" "}
                   <span className="align-middle">Add Extra Room</span>
                 </DropdownItem>
 
-                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
-                  <Eye className="me-50" size={15} />{" "}
-                  <span className="align-middle">View</span>
-                </DropdownItem> */}
+               
                 <DropdownItem onClick={() => handleCancle(row.uid)}>
                   <Trash2 className="me-50" size={15} />{" "}
                   <span className="align-middle">Cancle Event</span>

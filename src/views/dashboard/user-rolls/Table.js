@@ -15,13 +15,13 @@ import AddRoles from "../user_rolls/roles-permissions/roles/AddRoles";
 
 // ** Reactstrap Imports
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row
 } from "reactstrap";
 // ** Jwt Class
 import useJwt from "@src/auth/jwt/useJwt";
@@ -125,7 +125,7 @@ const DataTableServerSide = () => {
     }).then(async function (result) {
       if (result.value) {
         try {
-          // {{debugger}}
+          // {{ }}
           // Call delete API
           const response = await useJwt.deleteRole(uid);
 

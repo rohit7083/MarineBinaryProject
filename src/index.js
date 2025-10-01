@@ -57,7 +57,7 @@ const root = createRoot(container);
 
 root.render(
    <BrowserRouter basename='/crm/marine-resort'>
-    {/* <BrowserRouter>  */}
+       {/* <BrowserRouter>   */}
     <Provider store={store}>
       <Suspense fallback={<Spinner />}>
         <AbilityContext.Provider value={ability}>

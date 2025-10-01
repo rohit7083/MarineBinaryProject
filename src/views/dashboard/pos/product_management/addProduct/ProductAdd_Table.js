@@ -6,18 +6,18 @@ import { ArrowLeft, Plus, Trash2, X } from "react-feather";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 const ProductAdd_Table = ({
@@ -184,7 +184,7 @@ const ProductAdd_Table = ({
   const taxAmount = Number(productData?.selectedTaxData?.taxValue || 0); // ensure number
 
   const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
-  // {{debugger}}
+  // {{ }}
 
   // const mrpValues = watchMrp?.map((x) => Number(x?.mrp) || 0) || [];
 

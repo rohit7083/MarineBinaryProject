@@ -8,20 +8,20 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PuffLoader } from "react-spinners";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardImg,
-    CardText,
-    CardTitle,
-    Col,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardImg,
+  CardText,
+  CardTitle,
+  Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import noImgSpinner from "../../../../../assets/images/imgLoader.json";
 import noImage from "../../../../../assets/images/noImage.png";
@@ -186,7 +186,7 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
   }, []);
 
   const handleAddItemClick = async (product) => {4
-    debugger
+    
     setError('');
     setSelectedProduct(product);
     setVariationQty({});

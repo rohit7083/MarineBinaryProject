@@ -172,6 +172,9 @@ export default [
       //   title: "Point Of Sale ",
       //   icon: <Circle size={12} />,
       //   navLink: "/dashboard/pos/point_of_sale/shop",
+      //   meta:{
+      //     layout:'blank'
+      //   }
       // },
       {
         id: "Virtual Terminal",

@@ -1,5 +1,12 @@
 import { ArrowLeft } from "react-feather";
-import { FaCreditCard, FaMoneyBillAlt, FaQrcode } from "react-icons/fa";
+import {
+  FaCreditCard,
+  FaLink,
+  FaMoneyBillAlt,
+  FaQrcode,
+  FaRegCheckCircle,
+} from "react-icons/fa";
+import { MdOutlineSwipe } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 import { Badge, Card, CardBody, CardTitle, Col, Row, Table } from "reactstrap";
 
@@ -11,9 +18,9 @@ const PaymentHistory = ({ stepper, updateData }) => {
     totalAmount: 3500,
   };
 
-  // {{debugger}}
+  // {{ }}
   const location = useLocation();
-{{debugger}}
+ 
   const paymentHistoryData = location?.state?.Rowdata;
   console.log("paymenthostory data ", paymentHistoryData);
   const {
@@ -28,41 +35,49 @@ const PaymentHistory = ({ stepper, updateData }) => {
     postalCode,
     state,
   } = paymentHistoryData?.member;
-  const transactions = [
-    {
-      id: 1,
-      date: "2025-05-25",
-      amount: 1500,
-      mode: "Card",
-      status: "Success",
-      transactionId: "TXN001",
-    },
-    {
-      id: 2,
-      date: "2025-05-20",
-      amount: 500,
-      mode: "UPI",
-      status: "Failed",
-      transactionId: "TXN002",
-    },
-    // add more...
-  ];
-  const getPaymentIcon = (mode) => {
-    switch (mode) {
-      case "Card":
+
+  const getPaymentIcon = (paymentMode) => {
+    switch (String(paymentMode)) {
+      case "1": // Credit Card
         return <FaCreditCard />;
-      case "Cash":
+      case "2": // Card Swipe
+        return <MdOutlineSwipe />;
+      case "3": // Cash
         return <FaMoneyBillAlt />;
-      case "UPI":
+      case "4": // Cheque21
+        return <FaRegCheckCircle />;
+      case "5": // ChequeACH
+        return <FaRegCheckCircle />;
+      case "7": // Payment Link
+        return <FaLink />;
+      case "8": // QR Code
         return <FaQrcode />;
       default:
         return null;
     }
   };
 
+  const paymentMode = [
+    { value: "1", label: "Credit Card" },
+    { value: "2", label: "Card Swipe" },
+    { value: "3", label: "Cash" },
+    { value: "4", label: "Cheque21" },
+    { value: "5", label: "ChequeACH" },
+    { value: "7", label: "Payment Link" },
+    { value: "8", label: "QR Code" },
+  ];
+
   const getStatusBadge = (status) => {
     return (
-      <Badge color={status === "success" ? "success" : "danger"}>
+      <Badge
+        color={
+          status === "success"
+            ? "success"
+            : status === "error" || status === "failed"
+            ? "danger"
+            : "warning" // fallback for other statuses (like "pending")
+        }
+      >
         {status}
       </Badge>
     );
@@ -256,7 +271,6 @@ const PaymentHistory = ({ stepper, updateData }) => {
                     </div>
                   </div>
                 </Col>
-
               </Row>
             </CardBody>
           </Card>
@@ -277,15 +291,18 @@ const PaymentHistory = ({ stepper, updateData }) => {
               </tr>
             </thead>
             <tbody>
-              {paymentHistoryData?.payments.slice(0, 5).map((txn, index) => (
+              {paymentHistoryData?.payments.map((txn, index) => (
                 <tr key={txn.id}>
                   <td>{index + 1}</td>
                   <td>{new Date(txn.paymentDate).toLocaleDateString()}</td>
                   <td>{txn.finalPayment}</td>
                   <td>
-                    {getPaymentIcon(txn.mode)} {txn.paymentMode || "N/A"}
+                    {getPaymentIcon(txn.paymentMode)} {"  "}
+                    {paymentMode.find(
+                      (mode) => mode.value === String(txn.paymentMode)
+                    )?.label || "Unknown"}
                   </td>
-                  <td>{getStatusBadge(txn.paymentStatus)}</td>
+                  <td>{getStatusBadge(txn.paymentStatus || "In Progress")}</td>
                   <td>{txn.transactionId}</td>
                 </tr>
               ))}

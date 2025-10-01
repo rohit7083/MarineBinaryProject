@@ -97,7 +97,7 @@ const SearchRooms = ({
       };
   };
   const onSubmit = async (data) => {
-    // {{debugger}}
+    // {{ }}
     if (bookedRoom?.length >= 1) {
       const { roomUnit } = data;
 
@@ -141,7 +141,6 @@ const SearchRooms = ({
 
       try {
         const res = await useJwt.submitBookedRooms(payload);
-      debugger
         if (isRoomRequired) {
           // setEventRooms({bookedRoom , roomSearchUid:res?.data?.roomSearchUid});
           setEventRooms({

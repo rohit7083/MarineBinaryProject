@@ -339,17 +339,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
                   </CardTitle>
                   {/* hdey */}
                   <Row>
-                    {/* <Col className="mb-1" md="4" sm="12">
-                      <Label className="form-label">By Slip No</Label>
-                      <Select
-                        theme={selectThemeColors}
-                        className="react-select"
-                        classNamePrefix="select"
-                        defaultValue={colourOptions[0]}
-                        options={colourOptions}
-                        isClearable={false}
-                      />
-                    </Col> */}
+                  
 
                     <Col className="mb-1" md="6" sm="12">
                       <Label className="form-label">By Contact No</Label>

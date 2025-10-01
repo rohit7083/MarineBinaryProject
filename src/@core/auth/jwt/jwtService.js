@@ -303,8 +303,8 @@ export default class JwtService {
   resend_Otp(token = "") {
     return axios.get(this.jwtConfig.resend_Otp + token);
   }
-  resend_OtpCall(token = "") {
-    return axios.get(this.jwtConfig.resend_OtpCall + token);
+  resend_OtpCall(...args) {
+    return axios.post(this.jwtConfig.resend_OtpCall , ...args);
   }
 
   generate() {

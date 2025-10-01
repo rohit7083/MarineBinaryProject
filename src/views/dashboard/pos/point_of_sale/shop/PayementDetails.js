@@ -18,39 +18,34 @@ import {
   Input,
   Label,
   Row,
-
-  Spinner
+  Spinner,
 } from "reactstrap";
 import CartSummery from "../CartSummery";
 import DiscountModal from "./DiscountModal";
 
-
-
 const getVariationUids = async (uids) => {
   try {
- const response=await useJwt.getVariationUid(uids);
- console.log("Variation UIDs:", response);
+    const response = await useJwt.getVariationUid(uids);
+    console.log("Variation UIDs:", response);
     return response;
   } catch (error) {
     console.error("Error fetching variation UIDs:", error);
     return [];
   }
-}
+};
 
 export default function Payment() {
   const location = useLocation();
-  
+
   const customerUid = location.state?.customeUid || null;
-  const selectedProduct = location.state?.selecltedProductList
+  const selectedProduct = location.state?.selecltedProductList;
   const navigate = useNavigate();
   const toast = useRef(null);
 
-  
   const [paymentMode, setPaymentMode] = useState(null);
   const [loading, setLoading] = useState(false);
   const [discountModal, setDiscountModal] = useState(false);
   const [verifyDiscount, setVerifyDiscount] = useState(false);
-  
 
   const colourOptions = [
     { value: "3", label: "Cash" },
@@ -86,11 +81,11 @@ export default function Payment() {
       otp: ["", "", "", ""],
     },
   });
- 
+
   const [posUid, setPosUid] = useState(null);
   const [caldis, setCaldis] = useState(0);
   const [finalAmt, setFinalAmt] = useState(0);
-  
+
   const handleValuesChange = ({ caldis, finalAmt }) => {
     setCaldis(caldis);
     setFinalAmt(finalAmt);
@@ -116,7 +111,7 @@ export default function Payment() {
     };
 
     try {
-      // {{debugger}}
+      // {{ }}
       const res = await useJwt.posProductdis(payload);
       if (res?.data?.code === 200) {
         setPosUid(res?.data?.uid);
@@ -130,12 +125,14 @@ export default function Payment() {
     handleNoDiscount();
   }, []);
 
- 
   const watchDiscountApply = watch("isDiscountApply");
   const watchDiscountType = watch("discountType");
   const watchDiscountValue = watch("discount");
- 
-  const subtotal = selectedProduct.reduce((sum, p) => sum + (p.totalPrice || 0), 0);
+
+  const subtotal = selectedProduct.reduce(
+    (sum, p) => sum + (p.totalPrice || 0),
+    0
+  );
   const discountAmount = (() => {
     if (!watchDiscountApply) return 0;
 
@@ -158,7 +155,6 @@ export default function Payment() {
   useEffect(() => {
     setValue("finalAmount", totalToPay);
   }, [totalToPay, setValue]);
-
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -183,8 +179,7 @@ export default function Payment() {
     const combined = iv.concat(encrypted.ciphertext);
     return CryptoJS.enc.Base64.stringify(combined);
   }
-const onSubmit=()=>{}
-
+  const onSubmit = () => {};
 
   const handleDiscountSuccess = (payload) => {
     toast.current.show({
@@ -291,8 +286,6 @@ const onSubmit=()=>{}
     setAvailableMonths(months);
   }, []);
 
-
- 
   return (
     <>
       <Toast ref={toast} />
@@ -667,19 +660,13 @@ const onSubmit=()=>{}
               </CardBody>
             </Card>
           </Col>
-<Col xl="12" lg="12" md="12">
-
-<CartSummery data={selectedProduct}/>
-
- 
-</Col>
+          <Col xl="12" lg="12" md="12">
+            <CartSummery data={selectedProduct} />
+          </Col>
           {/* Cart Summary */}
-        
         </Row>
       </Form>
 
-
-      
       <DiscountModal
         showModal={discountModal}
         toggleModal={() => setDiscountModal(false)}

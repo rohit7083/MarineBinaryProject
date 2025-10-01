@@ -365,7 +365,7 @@ const View = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {viewData?.payments.slice(0, 5).map((txn, index) => (
+                  {viewData?.payments.map((txn, index) => (
                     <tr key={txn.id}>
                       <td>{index + 1}</td>
                       <td>{new Date(txn.paymentDate).toLocaleDateString()}</td>

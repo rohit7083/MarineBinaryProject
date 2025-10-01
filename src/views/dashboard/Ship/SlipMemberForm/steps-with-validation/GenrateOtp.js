@@ -2,27 +2,26 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Reactstrap Imports
 import {
+  Alert,
   Button,
+  Col,
   Form,
-  Label,
   Input,
+  Label,
   Modal,
   ModalBody,
   Row,
-  Col,
-  UncontrolledAlert,
   Spinner,
-  Alert,
+  UncontrolledAlert,
 } from "reactstrap";
 
 // ** Third Party Imports
 import Countdown from "react-countdown";
-import styled from "styled-components";
 import { BeatLoader } from "react-spinners";
-
+import styled from "styled-components";
 
 // ** React Hook Form Imports
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // ** Custom Image Imports
 import watchSrc from "@src/assets/images/updatedWatchnew.jpg";
@@ -85,8 +84,12 @@ const GenrateOtp = (props) => {
   const alreadyUpdatedRef = useRef(false);
 
   // ** React Hook Form
-  const { control, handleSubmit , watch, formState: { errors },
- } = useForm({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       otpInput: Array(6).fill(""),
     },
@@ -147,63 +150,55 @@ const GenrateOtp = (props) => {
   //   ));
   // };
 
-   
- const renderOtpInput = (count) => {
-  return Array.from({ length: count }).map((_, index) => (
-    
-    <Controller
-      key={index}
-      name={`otpInput.${index}`}
-      control={control}
-      render={({ field }) => (
-        <Input
-          {...field}
-          maxLength="1"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          className="auth-input height-50 text-center numeral-mask mx-25 mb-1"
-          autoFocus={index === 0}
-          onChange={(e) => {
-            const value = e.target.value;
-            // Only allow digits
-            if (/^\d$/.test(value)) {
-              field.onChange(value);
-              const nextInput = document.querySelector(
-                `input[name="otpInput.${index + 1}"]`
-              );
-              if (nextInput) nextInput.focus();
-            } else {
-              // Clear invalid input
-              field.onChange("");
-            }
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Backspace" && !field.value) {
-              const prevInput = document.querySelector(
-                `input[name="otpInput.${index - 1}"]`
-              );
-              if (prevInput) {
-                prevInput.focus();
-                // Clear previous input manually
-                setTimeout(() => {
-                  const event = new Event("input", { bubbles: true });
-                  prevInput.value = "";
-                  prevInput.dispatchEvent(event);
-                }, 0);
+  const renderOtpInput = (count) => {
+    return Array.from({ length: count }).map((_, index) => (
+      <Controller
+        key={index}
+        name={`otpInput.${index}`}
+        control={control}
+        render={({ field }) => (
+          <Input
+            {...field}
+            maxLength="1"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="auth-input height-50 text-center numeral-mask mx-25 mb-1"
+            autoFocus={index === 0}
+            onChange={(e) => {
+              const value = e.target.value;
+              // Only allow digits
+              if (/^\d$/.test(value)) {
+                field.onChange(value);
+                const nextInput = document.querySelector(
+                  `input[name="otpInput.${index + 1}"]`
+                );
+                if (nextInput) nextInput.focus();
+              } else {
+                // Clear invalid input
+                field.onChange("");
               }
-            }
-          }}
-          
-        />
-        
-      )}
-    />
-    
-  ));
-  
-   
-};
-
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Backspace" && !field.value) {
+                const prevInput = document.querySelector(
+                  `input[name="otpInput.${index - 1}"]`
+                );
+                if (prevInput) {
+                  prevInput.focus();
+                  // Clear previous input manually
+                  setTimeout(() => {
+                    const event = new Event("input", { bubbles: true });
+                    prevInput.value = "";
+                    prevInput.dispatchEvent(event);
+                  }, 0);
+                }
+              }
+            }}
+          />
+        )}
+      />
+    ));
+  };
 
   // ** Handle Complete
   const handleComplete = () => {
@@ -216,14 +211,25 @@ const GenrateOtp = (props) => {
   // ** Reset Timer
   const resetTimer = () => {
     alreadyUpdatedRef.current = false;
-    const newTime = Date.now() + 40000;
+    const newTime = Date.now() + 5000;
     setTargetTime(newTime);
     setTimerKey((prev) => prev + 1);
   };
   // ** Call and Text Handlers
-  const onCall = async (token) => {
-    await useJwt.resend_Otp(token);
+  // const onCall = async (token) => {
+  //   await useJwt.resend_OtpCall(token);
+  // };
+
+
+   const onCall = async () => {
+      const payloadForcall = {
+      type: 1,
+      slipId: slipIID,
+      memberId: memberId,
+    };
+    await useJwt.resend_OtpCall(payloadForcall);
   };
+
   const onText = async () => {
     const payload = {
       type: 1,
@@ -236,6 +242,7 @@ const GenrateOtp = (props) => {
 
   // ** handle Resend OTP
   const handleResendCall = async () => {
+    {{debugger}}
     try {
       if (attempt === 1) {
         const token = await onText();
@@ -254,7 +261,7 @@ const GenrateOtp = (props) => {
 
   // ** Effect to reset timer
   useEffect(() => {
-    setTargetTime(Date.now() + 40000);
+    setTargetTime(Date.now() + 5000);
   }, [timerKey]);
 
   // ** Action to handle OTP verification
@@ -320,31 +327,33 @@ const GenrateOtp = (props) => {
     <Fragment>
       <div>
         {verify || fetchDiscountFields ? (
-        <React.Fragment>
-          <Alert color="success">
-            <div className="alert-body " style={{ marginTop: "-10px" }}>
-              <span className="ms-1">
+          <React.Fragment>
+            <Alert color="success">
+              <div className="alert-body " style={{ marginTop: "-10px" }}>
+                <span className="ms-1"> OTP Verified Successfully ! </span>
+                <ThumbsUp size={15} />
+              </div>
+            </Alert>
+          </React.Fragment>
+        ) : (
+          <Button
+            color="primary"
+            className=""
+            size="sm"
+            disabled={otpLoader}
+            onClick={handleOTP}
+          >
+            {otpLoader ? (
+              <BeatLoader size={10} color="#ffffff" />
+            ) : (
+              <>
                 {" "}
-                 OTP Verified Successfully !{" "}
-              </span>
-              <ThumbsUp size={15} />
-            </div>
-          </Alert>
-        </React.Fragment>
-      ) : (
-        <Button color="primary" className="" size="sm"  onClick={handleOTP}>
-          {otpLoader ? (
-            <BeatLoader size={10} color="#ffffff" />
-          ) : (
-            <>
-              {" "}
-              <Send className="me-1" size={15} />
-              Generate otp
-            </>
-          )}
-        </Button>
-      )}
-
+                <Send className="me-1" size={15} />
+                Generate otp
+              </>
+            )}
+          </Button>
+        )}
       </div>
       <Modal
         isOpen={show}
@@ -357,6 +366,13 @@ const GenrateOtp = (props) => {
               <Label style={{ fontSize: "2em" }} className=" text-center mb-1">
                 Verify Otp
               </Label>
+              <p
+                className="text-center text-muted"
+                style={{ fontSize: "1.1em" }}
+              >
+                You will receive an OTP via SMS on your registered mobile
+                number.
+              </p>
               {errMsz && (
                 <React.Fragment>
                   <UncontrolledAlert color="danger">

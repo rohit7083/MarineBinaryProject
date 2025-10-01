@@ -49,11 +49,7 @@ const ClientDetaiils = ({
   });
 
   const onSubmit = (data) => {
-    {
-      {
-        debugger;
-      }
-    }
+   
     const payload = {
       firstName: data.firstName,
       lastName: data.lastName,

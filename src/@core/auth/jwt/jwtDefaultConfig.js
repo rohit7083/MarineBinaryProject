@@ -32,7 +32,7 @@ export default {
   sendEmail: "/auth/user/reset_password",
   createPass: "/auth/user/create_password/",
   resend_Otp: "/auth/user/resend_Otp/",
-  resend_OtpCall: "/auth/user/resend_OtpCall/",
+  resend_OtpCall: "sPayment/generate/call/discount",
   generate: "/googleAuthenticatorQR/generate",
   verifyQr: "/googleAuthenticatorQR/verify-qr",
   disable: "/googleAuthenticatorQR/disable",

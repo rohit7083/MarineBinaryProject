@@ -12,23 +12,23 @@ import { Plus } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import Select, { components } from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
-  Table,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
+    Table,
 } from "reactstrap";
 import ViewClient from "./client_Information/ViewClient";
 
@@ -155,7 +155,7 @@ const EventForm = ({
 
   useEffect(() => {
     console.log("listData", listData);
-    // {{debugger}}
+    // {{ }}
     if (listData?.Rowdata) {
       const {
         eventEndDate,
@@ -234,7 +234,7 @@ const EventForm = ({
     try {
       const { data } = await useJwt.getAllVenue();
       const { content } = data;
-      // {{debugger}}
+      // {{ }}
       const venueTypeNames = content?.result?.map((x) => ({
         label: x.venueName,
         value: x.uid,
@@ -586,14 +586,15 @@ const EventForm = ({
         },
       })) || []
   );
-{}
+  {
+  }
   const displayRooms =
     watch("isRoomRequired") && eventRooms?.roomSearchUid
       ? eventRooms?.bookedRoom
       : roomData;
 
-      // console.log("displayRooms",displayRooms);
-      
+  // console.log("displayRooms",displayRooms);
+
   const handleOk = () => {
     // toggle();
     navigate("/event_index");
@@ -603,30 +604,28 @@ const EventForm = ({
   const endDate = watch("endDateTime");
   console.log(wstartDateTime);
 
-useEffect(() => {
-  if (!eventRooms?.bookedRoom || eventRooms?.bookedRoom?.length === 0 ) {
-    setValue('isRoomRequired', false);
-  }
-}, [eventRooms?.bookedRoom, setValue ,] );4
+  useEffect(() => {
+    if (!eventRooms?.bookedRoom || eventRooms?.bookedRoom?.length === 0) {
+      setValue("isRoomRequired", false);
+    }
+  }, [eventRooms?.bookedRoom, setValue]);
+  4;
 
+  // const toggleRoomModal=()=>{
+  //   const currentState=showModal;
+  //   if(currentState){
+  //     setValue('isRoomRequired',false);
+  //   }
+  //   setShowModal(!showModal)
+  // }
 
-// const toggleRoomModal=()=>{
-//   const currentState=showModal;
-//   if(currentState){
-//     setValue('isRoomRequired',false);
-//   }
-//   setShowModal(!showModal)
-// }
+  // useEffect(()=>{
 
-// useEffect(()=>{
+  //   if(watch('isRoomRequired')){
+  //     setShowModal(true)
+  //   }
 
-//   if(watch('isRoomRequired')){
-//     setShowModal(true)
-//   }
-  
-// },[watch('isRoomRequired')])
-
-
+  // },[watch('isRoomRequired')])
 
   return (
     <>
@@ -1087,46 +1086,47 @@ useEffect(() => {
         )}
 
         {/* Event Description */}
-       <Col className="mb-2">
-  <Label for="eventDescription">Event Description / Notes</Label>
-  <Controller
-    name="eventDescription"
-    control={control}
-    rules={{
-      required: "Event description is required", // ✅ required validation
-      maxLength: {
-        value: 500,
-        message: "Maximum 500 characters allowed",
-      },
-    }}
-    render={({ field, fieldState: { error } }) => (
-      <>
-        <Input
-          {...field}
-          type="textarea"
-          placeholder="Add any notes or description"
-          onChange={(e) => {
-            // Allow letters, numbers, dot, space, dash, and comma
-            let onlyValid = e.target.value.replace(
-              /[^A-Za-z0-9 .,-]/g,
-              ""
-            );
+        <Col className="mb-2">
+          <Label for="eventDescription">Event Description / Notes</Label>
+          <Controller
+            name="eventDescription"
+            control={control}
+            rules={{
+              required: "Event description is required", // ✅ required validation
+              maxLength: {
+                value: 500,
+                message: "Maximum 500 characters allowed",
+              },
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <>
+                <Input
+                  {...field}
+                  type="textarea"
+                  placeholder="Add any notes or description"
+                  onChange={(e) => {
+                    // Allow letters, numbers, dot, space, dash, and comma
+                    let onlyValid = e.target.value.replace(
+                      /[^A-Za-z0-9 .,-]/g,
+                      ""
+                    );
 
-            // Limit to 500 characters
-            if (onlyValid.length > 500) {
-              onlyValid = onlyValid.slice(0, 500);
-            }
+                    // Limit to 500 characters
+                    if (onlyValid.length > 500) {
+                      onlyValid = onlyValid.slice(0, 500);
+                    }
 
-            field.onChange(onlyValid);
-          }}
-        />
-        {error && <small className="text-danger">{error.message}</small>}
-      </>
-    )}
-  />
-  <small className="text-muted">(max 500 characters)</small>
-</Col>
-
+                    field.onChange(onlyValid);
+                  }}
+                />
+                {error && (
+                  <small className="text-danger">{error.message}</small>
+                )}
+              </>
+            )}
+          />
+          <small className="text-muted">(max 500 characters)</small>
+        </Col>
 
         <Col className="mb-1">
           <Label for="venue">Venue Name</Label>
@@ -1802,8 +1802,7 @@ useEffect(() => {
             <RoomManageModal
               isRoomRequired={isRoomRequired}
               // setShowModal={toggleRoomModal}
-                            setShowModal={setShowModal}
-
+              setShowModal={setShowModal}
               showModal={showModal}
               setEventRooms={setEventRooms}
             />
