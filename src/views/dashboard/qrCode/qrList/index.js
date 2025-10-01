@@ -411,7 +411,7 @@ function Index() {
                 <h5 className="text-primary">{selectedQRCode.eventName}</h5>
                 <p className="text-muted mb-1">Type: <strong>{selectedQRCode.qrCodeType}</strong></p>
                 {selectedQRCode.amount && (
-                  <p className="text-muted mb-3">Amount: <strong>₹{selectedQRCode.amount}</strong></p>
+                  <p className="text-muted mb-3">Amount: <strong>${selectedQRCode.amount}</strong></p>
                 )}
               </div>
               <div className="qr-code-container mb-3">
