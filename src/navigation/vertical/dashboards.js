@@ -158,19 +158,19 @@ export default [
       // },
       {
         id: "Product Manage",
-        title: "Product Manage",
+        title: "Product Setup",
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/product_management",
       },
-      // {
-      //   id: "Point Of Sale ",
-      //   title: "Point Of Sale ",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/dashboard/pos/point_of_sale/shop",
-      //   meta:{
-      //     layout:'blank'
-      //   }
-      // },
+      {
+        id: "Point Of Sale ",
+        title: "Point Of Sale ",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/pos/point_of_sale/shop",
+        meta:{
+          layout:'blank' 
+        }
+      },
       {
         id: "Virtual Terminal",
         title: "Virtual Terminal",
