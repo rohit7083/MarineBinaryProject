@@ -5,18 +5,18 @@ import { useNavigate } from 'react-router-dom'
 
 // ** Reactstrap Imports
 import {
-    Alert,
-    Button,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row
+  Alert,
+  Button,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row
 } from 'reactstrap'
 
 // ** Auth
@@ -29,31 +29,45 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
   const [events, setEvents] = useState([])
   const [typeOfQr, setTypeOfQr] = useState('fixed')
   const [roomBookings, setRoomBooking] = useState([])
-
+  const [selectedOther, setSelectedOther] = useState('')
+  
   const [formData, setFormData] = useState({
     eventName: '',
     qrCodeType: 'other',
     amount: '',
     amountType: 'Fixed',
     slipId: null,
-    eventId: null
+    eventId: null,
+    maxPeopleCapacity: '',
+    eventPassType: ''
   })
 
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // ** Populate form for edit mode
+  // ** Populate form for edit mode - FIXED
   useEffect(() => {
     if (isEditMode && editData) {
+      console.log('Edit Data:', editData) // Debug log
+      
       setFormData({
         eventName: editData.eventName || '',
         qrCodeType: editData.qrCodeType || 'other',
         amount: editData.amount || '',
         amountType: editData.amountType || 'Fixed',
         slipId: editData.slip?.id || null,
-        eventId: editData.event?.id || null
+        eventId: editData.event?.id || null,
+        maxPeopleCapacity: editData.maxPeopleCapacity || '',
+        eventPassType: editData.eventPassType || ''
       })
       setTypeOfQr((editData.amountType || 'Fixed').toLowerCase())
+      
+      // Set selectedOther for edit mode
+      if (editData.qrCodeType === 'other' && editData.eventPassType) {
+        setSelectedOther(editData.eventPassType)
+      } else {
+        setSelectedOther('')
+      }
     } else {
       resetForm()
     }
@@ -65,7 +79,8 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
     const { name, value, type, checked } = e.target
 
     if (name === 'amountType' && type === 'checkbox') {
-      if (formData.qrCodeType === 'slip' || formData.qrCodeType === 'event') {
+      if (formData.qrCodeType === 'slip' || formData.qrCodeType === 'event' || 
+          (formData.qrCodeType === 'other' && selectedOther === 'EntryPass')) {
         return
       }
 
@@ -89,6 +104,12 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
         newFormData.amountType = 'Fixed'
         newFormData.amount = ''
         setTypeOfQr('fixed')
+      }
+
+      if (value === 'other') {
+        setSelectedOther('')
+        newFormData.maxPeopleCapacity = ''
+        newFormData.eventPassType = ''
       }
 
       setFormData(newFormData)
@@ -185,19 +206,32 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
   const validateForm = () => {
     const newErrors = {}
     if (!formData.eventName.trim()) newErrors.eventName = 'Event name is required'
-    if (formData.amountType === 'Fixed' && (!formData.amount || parseFloat(formData.amount) <= 0))
+    
+    if (formData.qrCodeType === 'other' && selectedOther === 'EntryPass') {
+      if (!formData.maxPeopleCapacity || parseInt(formData.maxPeopleCapacity) <= 0) {
+        newErrors.maxPeopleCapacity = 'Maximum pass must be greater than 0'
+      }
+      if (!formData.amount || parseFloat(formData.amount) <= 0) {
+        newErrors.amount = 'Amount must be greater than 0'
+      }
+    } else if (formData.amountType === 'Fixed' && (!formData.amount || parseFloat(formData.amount) <= 0)) {
       newErrors.amount = 'Amount must be greater than 0'
+    }
+    
     if (formData.qrCodeType === 'slip' && !formData.slipId)
       newErrors.slipId = 'Please select a slip'
     if (formData.qrCodeType === 'event' && !formData.eventId)
       newErrors.eventId = 'Please select an event'
     if (formData.qrCodeType === 'roomBooking' && !formData.eventId)
       newErrors.roomBookingId = 'Please select a room booking'
+    if (formData.qrCodeType === 'other' && !selectedOther)
+      newErrors.otherEventList = 'Please select an event type'
+    
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  // ** Handle Form Submit
+  // ** Handle Form Submit - FIXED
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validateForm()) return
@@ -212,6 +246,14 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
         slip: formData.slipId ? { id: formData.slipId } : null,
         event: formData.eventId ? { id: formData.eventId } : null
       }
+
+      // Always add these fields for 'other' type
+      if (formData.qrCodeType === 'other') {
+        apiData.eventPassType = formData.eventPassType || null;
+        apiData.maxPeopleCapacity = formData.maxPeopleCapacity ? parseInt(formData.maxPeopleCapacity) : null;
+      }
+
+     console.log('Submitting API Data:', apiData) // Debug log
 
       await onSubmit(apiData)
       if (!isEditMode) resetForm()
@@ -230,9 +272,12 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
       amount: '',
       amountType: 'Fixed',
       slipId: null,
-      eventId: null
+      eventId: null,
+      maxPeopleCapacity: '',
+      eventPassType: ''
     })
     setTypeOfQr('fixed')
+    setSelectedOther('')
     setErrors({})
     setIsSubmitting(false)
   }
@@ -272,26 +317,56 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
   }, [])
 
   useEffect(() => {
-  const fetchRoomBooking = async () => {
-    try { 
-      const response = await useJwt.bookingList()
-      const roomBookings = response.data.content.result || []
+    const fetchRoomBooking = async () => {
+      try { 
+        const response = await useJwt.bookingList()
+        const roomBookings = response.data.content.result || []
 
-      // ✅ Only keep bookings with a valid positive remainingAmount
-      const filteredRoomBooking = roomBookings.filter(
-        (roomBooking) =>
-          roomBooking.remainingAmount !== null && roomBooking.event == null  && roomBooking.remainingAmount > 0
-      )
+        const filteredRoomBooking = roomBookings.filter(
+          (roomBooking) =>
+            roomBooking.remainingAmount !== null && roomBooking.event == null  && roomBooking.remainingAmount > 0
+        )
 
-      setRoomBooking(filteredRoomBooking)
-    } catch (error) {
-      console.error("Error fetching Room Booking:", error)
-      setRoomBooking([]) 
+        setRoomBooking(filteredRoomBooking)
+      } catch (error) {
+        console.error("Error fetching Room Booking:", error)
+        setRoomBooking([]) 
+      }
+    }
+    fetchRoomBooking()
+  }, [])
+
+  const otherEventList = {
+    "Entry Pass": 'EntryPass',
+    "Event Name": 'NoEntryPass'
+  }
+
+  const handleOtherChange = (e) => {
+    const value = e.target.value
+    setSelectedOther(value)
+    
+    setFormData((prev) => ({
+      ...prev,
+      eventPassType: value
+    }))
+
+    if (value === 'EntryPass') {
+      setFormData((prev) => ({
+        ...prev,
+        amountType: 'Fixed',
+        amount: prev.amount || '',
+        maxPeopleCapacity: prev.maxPeopleCapacity || '',
+        eventPassType: value
+      }))
+      setTypeOfQr('fixed')
+    } else if (value === 'NoEntryPass') {
+      setFormData((prev) => ({
+        ...prev,
+        maxPeopleCapacity: '',
+        eventPassType: value
+      }))
     }
   }
-  fetchRoomBooking()
-}, [])
-
 
   return (
     <>
@@ -320,6 +395,7 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
                     name='qrCodeType'
                     value={formData.qrCodeType}
                     onChange={handleInputChange}
+                    disabled={isEditMode}
                   >
                     <option value='slip'>Slip</option>
                     <option value='event'>Event</option>
@@ -390,16 +466,16 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
                       type='select'
                       id='roomSelect'
                       name='roomSelect'
-                      value={formData.roomBookingId || ''}
+                      value={formData.eventId || ''}
                       onChange={handleInputChange}
                     >
                       <option value=''>-- Select Room Booking --</option>
                       {roomBookings?.length > 0 ? (
                         roomBookings.map((roomBooking) => (
-<option key={roomBooking.id} value={roomBooking.id}>
-  {roomBooking.member.firstName} {roomBooking.member.lastName} {" - "}
-  [CHECK IN: {roomBooking.checkInDate}]
-</option>
+                          <option key={roomBooking.id} value={roomBooking.id}>
+                            {roomBooking.member.firstName} {roomBooking.member.lastName} {" - "}
+                            [CHECK IN: {roomBooking.checkInDate}]
+                          </option>
                         ))
                       ) : (
                         <option disabled>No Room Booking available</option>
@@ -409,6 +485,34 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
                   </FormGroup>
                 </Col>
               )}
+
+              {/* Other Event Type Select */}
+              {formData.qrCodeType === 'other' && (
+                <Col md='12'>
+                  <FormGroup>
+                    <Label className='form-label' for='otherSelect'>Select Event Type</Label>
+                    <Input
+                      type='select'
+                      id='otherSelect'
+                      name='otherSelect'
+                      value={selectedOther || ''}
+                      onChange={handleOtherChange}
+                    >
+                      <option value=''>-- Select Event Type --</option>
+                      {Object.entries(otherEventList).map(([label, value]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </Input>
+                    {errors.otherEventList && (
+                      <div className='invalid-feedback d-block'>{errors.otherEventList}</div>
+                    )}
+                  </FormGroup>
+                </Col>
+              )}
+
+              
 
               {/* Event Name */}
               <Col md='12'>
@@ -432,6 +536,30 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
                 </FormGroup>
               </Col>
 
+{/* Max People Capacity - Only for Entry Pass */}
+              {selectedOther === 'EntryPass' && (
+                <Col md='12'>
+                  <FormGroup className='mb-2'>
+                    <Label className='form-label mb-1' for='maxPeopleCapacity'>
+                      Number of Passes <span className='text-danger'>*</span>
+                    </Label>
+                    <Input
+                      type='number'
+                      id='maxPeopleCapacity'
+                      name='maxPeopleCapacity'
+                      placeholder='Enter maximum pass'
+                      value={formData.maxPeopleCapacity}
+                      onChange={handleInputChange}
+                      invalid={!!errors.maxPeopleCapacity}
+                      min='1'
+                    />
+                    {errors.maxPeopleCapacity && (
+                      <div className='invalid-feedback d-block'>{errors.maxPeopleCapacity}</div>
+                    )}
+                  </FormGroup>
+                </Col>
+              )}
+              
               {/* Amount Type */}
               <Col md={formData.amountType === 'Fixed' ? '6' : '12'}>
                 <FormGroup className='mb-2'>
@@ -445,13 +573,21 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
                         name='amountType'
                         checked={formData.amountType === 'Fixed'}
                         onChange={handleInputChange}
-                        disabled={formData.qrCodeType === 'slip' || formData.qrCodeType === 'event' || formData.qrCodeType === 'roomBooking'}
+                        disabled={
+                          formData.qrCodeType === 'slip' || 
+                          formData.qrCodeType === 'event' || 
+                          formData.qrCodeType === 'roomBooking' ||
+                          (formData.qrCodeType === 'other' && selectedOther === 'EntryPass')
+                        }
                       />
                     </FormGroup>
                     <Label check htmlFor='amountType' className='mb-0'>Fixed</Label>
                   </div>
                   {(formData.qrCodeType === 'slip' || formData.qrCodeType === 'event' || formData.qrCodeType === 'roomBooking') && (
                     <small className='text-muted'>Amount type is fixed for {formData.qrCodeType} QR codes</small>
+                  )}
+                  {(formData.qrCodeType === 'other' && selectedOther === 'EntryPass') && (
+                    <small className='text-muted'>Amount type is fixed for Entry Pass</small>
                   )}
                 </FormGroup>
               </Col>
@@ -460,7 +596,7 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
               {formData.amountType === 'Fixed' && (
                 <Col md='6'>
                   <FormGroup className='mb-2'>
-                    <Label className='form-label mb-1' for='amount'>Amount <span className='text-danger'>*</span></Label>
+                    <Label className='form-label mb-1' for='amount'> {selectedOther === 'EntryPass'? 'Amount per pass': 'Amount'}<span className='text-danger'>*</span></Label>
                     <Input
                       type='number'
                       id='amount'

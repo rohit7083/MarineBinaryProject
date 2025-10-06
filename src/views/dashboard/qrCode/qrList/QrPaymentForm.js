@@ -10,19 +10,19 @@ import { CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Container,
-    Form,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Container,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 import TokenExpire from "../../../pages/authentication/slip/TokenExpire";
@@ -48,9 +48,10 @@ const CardPayment = () => {
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
   const [qrCodeType, setQrCodeType] = useState('');
-  
+  const [passBooked , setPassBooked] = useState('');
   const getMember = async () => {
     try {
+
       setLoading(true);
       const res = await useJwt.decodeQrToken(token);
       console.log("the Qr code type : ", res.data.qrCodeType);
@@ -64,6 +65,10 @@ const CardPayment = () => {
 
       setMemberDetails(res?.data);
     } catch (error) {
+      console.log('the response error',error.response.data.content)
+      if(error.response.data.content ==='The maximum number of people has already been reached.'){
+setPassBooked('The maximum number of people has already been reached.')
+      }
       console.error("error", error);
     } finally {
       setLoading(false);
@@ -303,8 +308,38 @@ const CardPayment = () => {
 
   if (!isValidLink) return <TokenExpire />;
 
-  return (
-    <Row className="d-flex justify-content-center mt-3">
+  
+   return passBooked ? ( 
+  <Row className="d-flex justify-content-center mt-5">
+    <Col xs="12" md="8" lg="6">
+      <Card className="text-center border-danger shadow-sm p-4">
+        <CardBody>
+          <div className="mb-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="60"
+              height="60"
+              fill="red"
+              className="bi bi-x-circle mb-3"
+              viewBox="0 0 16 16"
+            >
+              <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+            </svg>
+          </div>
+          <h2 className="text-danger mb-2">Oops! Fully Booked</h2>
+          <p className="text-muted mb-3">
+            Sorry, all passes for this event have been booked.
+          </p>
+          <Button color="primary" onClick={() => navigate("/events")}>
+            Explore Other Events
+          </Button>
+        </CardBody>
+      </Card>
+    </Col>
+  </Row>
+) : (
+  <Row className="d-flex justify-content-center mt-3">
       <Col xs="10">
         {
           qrCodeType !== 'other' && (
@@ -1146,10 +1181,10 @@ const CardPayment = () => {
               </Card>
             </div>
           </Col>
-        </Row>
+        </Row>  
       </Col>
     </Row>
-  );
-};
+)}
+
 
 export default CardPayment;

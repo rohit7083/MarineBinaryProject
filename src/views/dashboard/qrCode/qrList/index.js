@@ -34,6 +34,9 @@ import {
 // ** Auth
 import useJwt from "@src/auth/jwt/useJwt";
 
+// ** Delete Confirmation Modal
+import { DeleteConfirmationModal } from './data';
+
 function Index() {
   // ** States
   const [data, setData] = useState([])
@@ -47,6 +50,11 @@ function Index() {
   const [viewQRModal, setViewQRModal] = useState(false)
   const [selectedQRCode, setSelectedQRCode] = useState(null)
   const [isEditMode, setIsEditMode] = useState(false)
+
+  // ** Delete modal states (moved here)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState(null)
+
   const toast = useRef(null);
 
   // ** Fetch Data
@@ -63,7 +71,10 @@ function Index() {
         qrCodeType: item.qrCodeType,
         qrCodeBase64: item.qrCodeBase64,
         amount: item.amount,
-        amountType: item.amountType
+        amountType: item.amountType,
+        maxPeopleCapacity : item.maxPeopleCapacity,
+        eventPassType : item.eventPassType,
+        successMaxPeople: item.successMaxPeople
       }))
 
       let filteredData = transformedData
@@ -142,6 +153,12 @@ function Index() {
           amountType: formData.amountType,
           amount: formData.amountType === 'Fixed' ? parseFloat(formData.amount) : null
         };
+
+        // Add fields for 'other' type - always send these fields
+        if (formData.qrCodeType === 'other') {
+          updateData.eventPassType = formData.eventPassType || null;
+          updateData.maxPeopleCapacity = formData.maxPeopleCapacity ? parseInt(formData.maxPeopleCapacity) : null;
+        }
         
         response = await useJwt.updateQrCode(selectedQRCode.uid, updateData);
         
@@ -189,7 +206,13 @@ function Index() {
     setAddQRModal(true)
   }
 
-  const handleDelete = async (row) => {
+  // Delete handlers
+  const handleDeleteClick = (row) => {
+    setItemToDelete(row)
+    setDeleteModal(true)
+  }
+
+  const handleConfirmDelete = async (row) => {
     try {
       const res = await useJwt.deleteQrCode(row.uid)
       if (res.status === 204) {
@@ -305,7 +328,6 @@ function Index() {
 
   
   return ( 
-    
      <Fragment>
       <Toast ref={toast} />
       <Card>
@@ -363,7 +385,7 @@ function Index() {
               columns={qrCodeColumns({
                 onViewDetails: handleViewDetails,
                 onEdit: handleEdit,
-                onDelete: handleDelete,
+                onDelete: handleDeleteClick,
                 onDownload: handleDownload,
                 onViewQRCode: handleViewQRCode
               })}
@@ -410,6 +432,19 @@ function Index() {
               <div className="mb-3">
                 <h5 className="text-primary">{selectedQRCode.eventName}</h5>
                 <p className="text-muted mb-1">Type: <strong>{selectedQRCode.qrCodeType}</strong></p>
+{selectedQRCode.eventPassType === 'EntryPass' && (
+  <div className="d-flex justify-content-center">
+  
+    <p className="text-muted mb-1">
+      Remaining Pass: <strong>{(selectedQRCode.maxPeopleCapacity ?? 0) - (selectedQRCode?.successMaxPeople ?? 0)}
+</strong>
+    </p>
+  </div>
+)}
+
+
+
+                
                 {selectedQRCode.amount && (
                   <p className="text-muted mb-3">Amount: <strong>${selectedQRCode.amount}</strong></p>
                 )}
@@ -422,7 +457,6 @@ function Index() {
                   style={{ maxWidth: '300px', maxHeight: '300px' }}
                 />
               </div>
-              
             </div>
           )}
         </ModalBody>
@@ -432,6 +466,14 @@ function Index() {
           <Button color="secondary" onClick={toggleViewQRModal}>Close</Button>
         </ModalFooter>
       </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal}
+        toggle={() => setDeleteModal(!deleteModal)}
+        itemToDelete={itemToDelete}
+        onConfirmDelete={handleConfirmDelete}
+      />
     </Fragment>
   )
 }

@@ -10,12 +10,15 @@ import { qrCodeColumns } from './Data';
 
 // ** Third Party Components
 import DataTable from 'react-data-table-component';
-import { ChevronDown } from 'react-feather';
+import { ChevronDown, Download } from 'react-feather';
 import ReactPaginate from 'react-paginate';
 
 // ** Third Party Components
 import 'flatpickr/dist/flatpickr.css';
 import Flatpickr from 'react-flatpickr';
+
+// ** XLSX for Excel Export
+import * as XLSX from 'xlsx';
 
 // ** Reactstrap Imports
 import {
@@ -41,6 +44,7 @@ function Index() {
   // ** States
   const [data, setData] = useState([])
   const [allData, setAllData] = useState([])
+  const [filteredData, setFilteredData] = useState([])
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(7)
@@ -52,6 +56,406 @@ function Index() {
   const [endDate, setEndDate] = useState(null)
 
   const toast = useRef(null);
+
+  // ** Get Payment Mode Display Text
+  const getPaymentModeText = (paymentMode) => {
+    if (!paymentMode || paymentMode === 1 || paymentMode === '1') {
+      return 'Credit Card'
+    }
+    return paymentMode
+  }
+
+  // ** Format Currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    }).format(amount || 0)
+  }
+
+  // ** Format Date
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A'
+    try {
+      const date = new Date(dateString)
+      return new Intl.DateTimeFormat('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date)
+    } catch (error) {
+      return dateString
+    }
+  }
+
+  // ** Format Date for Excel
+  const formatDateForExcel = (dateString) => {
+    if (!dateString) return 'N/A'
+    try {
+      const date = new Date(dateString)
+      return new Intl.DateTimeFormat('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date)
+    } catch (error) {
+      return dateString
+    }
+  }
+
+  // ** Download QR Code with Complete Payment Details as PDF
+  const downloadQRCodeWithDetails = (qrData) => {
+    try {
+      if (!qrData || !qrData.qrCodeBase64) {
+        toast.current.show({
+          severity: "error",
+          summary: "Download Failed",
+          detail: "QR Code not available.",
+          life: 3000,
+        });
+        return;
+      }
+
+      // Create a new window for PDF generation
+      const printWindow = window.open('', '', 'width=800,height=600');
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Payment Receipt</title>
+          <style>
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+            
+            body {
+              font-family: Arial, sans-serif;
+              padding: 20px;
+              background: #ffffff;
+            }
+            
+            .receipt-container {
+              max-width: 800px;
+              margin: 0 auto;
+              border: 2px solid #e0e0e0;
+              background: #ffffff;
+            }
+            
+            .header {
+              background: linear-gradient(135deg, #7367f0 0%, #9e95f5 100%);
+              color: white;
+              padding: 30px;
+              text-align: center;
+            }
+            
+            .header h1 {
+              font-size: 32px;
+              margin: 0;
+              font-weight: bold;
+            }
+            
+            .qr-section {
+              text-align: center;
+              padding: 40px 20px;
+              background: #f8f9fa;
+            }
+            
+            .qr-code-wrapper {
+              display: inline-block;
+              padding: 15px;
+              background: white;
+              border-radius: 10px;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+            
+            .qr-code-wrapper img {
+              width: 250px;
+              height: 250px;
+              display: block;
+            }
+            
+            .details-section {
+              padding: 30px 40px;
+            }
+            
+            .detail-row {
+              display: flex;
+              padding: 15px 0;
+              border-bottom: 1px solid #e0e0e0;
+              align-items: center;
+            }
+            
+            .detail-row:last-child {
+              border-bottom: none;
+            }
+            
+            .detail-label {
+              font-weight: bold;
+              color: #5e5873;
+              width: 180px;
+              flex-shrink: 0;
+            }
+            
+            .detail-value {
+              color: #000000;
+              flex: 1;
+              word-break: break-word;
+            }
+            
+            .detail-value.amount {
+              color: #28c76f;
+              font-weight: bold;
+              font-size: 18px;
+            }
+            
+            .detail-value.error {
+              color: #ea5455;
+            }
+            
+            .status-badge {
+              display: inline-block;
+              padding: 5px 15px;
+              border-radius: 20px;
+              font-weight: bold;
+              font-size: 14px;
+            }
+            
+            .status-success {
+              background: #28c76f;
+              color: white;
+            }
+            
+            .status-pending {
+              background: #ff9f43;
+              color: white;
+            }
+            
+            .status-failed {
+              background: #ea5455;
+              color: white;
+            }
+            
+            .status-default {
+              background: #6c757d;
+              color: white;
+            }
+            
+            .footer {
+              background: #f0f0f0;
+              padding: 20px;
+              text-align: center;
+              color: #999999;
+              font-size: 12px;
+            }
+            
+            .footer p {
+              margin: 5px 0;
+            }
+            
+            @media print {
+              body {
+                padding: 0;
+              }
+              
+              .receipt-container {
+                border: none;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="receipt-container">
+            <div class="header">
+              <h1>Payment Receipt</h1>
+            </div>
+            
+            <div class="qr-section">
+              <div class="qr-code-wrapper">
+                <img src="data:image/png;base64,${qrData.qrCodeBase64}" alt="QR Code" />
+              </div>
+            </div>
+            
+            <div class="details-section">
+              <div class="detail-row">
+                <div class="detail-label">Event Name:</div>
+                <div class="detail-value">${qrData.eventName || 'N/A'}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Customer Name:</div>
+                <div class="detail-value">${qrData.customerName || 'N/A'}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Phone Number:</div>
+                <div class="detail-value">${qrData.customerPhone || 'N/A'}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">QR Code Type:</div>
+                <div class="detail-value">${qrData.qrCodeType || 'N/A'}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Amount:</div>
+                <div class="detail-value amount">${formatCurrency(qrData.amount)}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Transaction ID:</div>
+                <div class="detail-value">${qrData.transactionId || 'N/A'}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Payment Mode:</div>
+                <div class="detail-value">${getPaymentModeText(qrData.paymentMode)}</div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Status:</div>
+                <div class="detail-value">
+                  <span class="status-badge status-${qrData.status === 'SUCCESS' ? 'success' : qrData.status === 'PENDING' ? 'pending' : qrData.status === 'FAILED' ? 'failed' : 'default'}">
+                    ${(qrData.status || 'UNKNOWN').toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="detail-row">
+                <div class="detail-label">Transaction Date:</div>
+                <div class="detail-value">${formatDate(qrData.transactionDate)}</div>
+              </div>
+              
+              ${qrData.errorMessage ? `
+              <div class="detail-row">
+                <div class="detail-label">Error Message:</div>
+                <div class="detail-value error">${qrData.errorMessage}</div>
+              </div>
+              ` : ''}
+            </div>
+            
+            <div class="footer">
+              <p>Generated on ${new Date().toLocaleString('en-IN')}</p>
+              <p>This is a computer generated receipt</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      
+      // Wait for content to load
+      printWindow.onload = function() {
+        setTimeout(() => {
+          printWindow.print();
+          
+          // Close the window after printing (optional)
+          setTimeout(() => {
+            printWindow.close();
+          }, 500);
+          
+          toast.current.show({
+            severity: "success",
+            summary: "PDF Generated",
+            detail: "Payment receipt is ready to download.",
+            life: 2000,
+          });
+        }, 250);
+      };
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.current.show({
+        severity: "error",
+        summary: "Download Failed",
+        detail: "Could not download payment receipt.",
+        life: 3000,
+      });
+    }
+  };
+
+  // ** Export to Excel Function
+  const handleExportToExcel = () => {
+    try {
+      if (filteredData.length === 0) {
+        toast.current.show({
+          severity: "warn",
+          summary: "No Data",
+          detail: "No data available to export.",
+          life: 3000,
+        });
+        return;
+      }
+
+      // Prepare data for Excel
+      const excelData = filteredData.map((item, index) => ({
+        'Sr. No': index + 1,
+        'Transaction Date': formatDateForExcel(item.transactionDate),
+        'Event Name': item.eventName || 'N/A',
+        'Customer Name': item.customerName || 'N/A',
+        'Customer Phone': item.customerPhone || 'N/A',
+        'QR Code Type': item.qrCodeType || 'N/A',
+        'Amount': item.amount || 0,
+        'Transaction ID': item.transactionId || 'N/A',
+        'Payment Mode': getPaymentModeText(item.paymentMode),
+        'Status': item.status || 'N/A',
+        'Error Message': item.errorMessage || '-'
+      }))
+
+      // Create worksheet
+      const ws = XLSX.utils.json_to_sheet(excelData)
+
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 8 },  // Sr. No
+        { wch: 20 }, // Transaction Date
+        { wch: 25 }, // Event Name
+        { wch: 20 }, // Customer Name
+        { wch: 15 }, // Customer Phone
+        { wch: 15 }, // QR Code Type
+        { wch: 12 }, // Amount
+        { wch: 20 }, // Transaction ID
+        { wch: 15 }, // Payment Mode
+        { wch: 12 }, // Status
+        { wch: 30 }  // Error Message
+      ]
+
+      // Create workbook
+      const wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, 'Payment Transactions')
+
+      // Generate filename with date
+      const today = new Date().toISOString().split('T')[0]
+      const filename = `Event_Payments_${today}.xlsx`
+
+      // Download file
+      XLSX.writeFile(wb, filename)
+
+      toast.current.show({
+        severity: "success",
+        summary: "Export Successful",
+        detail: `${filteredData.length} transactions exported successfully.`,
+        life: 3000,
+      });
+    } catch (error) {
+      console.error("Export error:", error)
+      toast.current.show({
+        severity: "error",
+        summary: "Export Failed",
+        detail: "Unable to export data. Please try again.",
+        life: 3000,
+      });
+    }
+  }
 
   // ** Fetch Data
   const fetchData = async (page = 1, perPage = rowsPerPage, q = '') => {
@@ -74,7 +478,6 @@ function Index() {
             id: `${item.id}-${payment.id}` || `${item.id}-${paymentIndex}`,
             transactionDate: payment.paymentDate,
             eventName: item.eventName,
-            // FIXED: Get customer name and phone from payment.customer object
             customerName: customer.name || payment.customerName || item.customerName || 'N/A',
             customerPhone: customer.phone || customer.mobile || payment.phoneNumber || item.phoneNumber || 'N/A',
             qrCodeType: item.qrCodeType,
@@ -90,11 +493,11 @@ function Index() {
       
       console.log('the data is ready', transformedData)
 
-      let filteredData = transformedData
+      let filtered = transformedData
 
       // Apply search filter
       if (q) {
-        filteredData = filteredData.filter(item =>
+        filtered = filtered.filter(item =>
           item.eventName?.toLowerCase().includes(q.toLowerCase()) ||
           item.qrCodeType?.toLowerCase().includes(q.toLowerCase()) ||
           item.customerName?.toLowerCase().includes(q.toLowerCase()) ||
@@ -105,7 +508,7 @@ function Index() {
 
       // Apply date range filter
       if (startDate || endDate) {
-        filteredData = filteredData.filter(item => {
+        filtered = filtered.filter(item => {
           if (!item.transactionDate) return false
           
           const itemDate = new Date(item.transactionDate)
@@ -129,11 +532,12 @@ function Index() {
 
       const startIndex = (page - 1) * perPage
       const endIndex = startIndex + perPage
-      const paginatedData = filteredData.slice(startIndex, endIndex)
+      const paginatedData = filtered.slice(startIndex, endIndex)
 
       setData(paginatedData)
       setAllData(transformedData)
-      setTotal(filteredData.length)
+      setFilteredData(filtered)
+      setTotal(filtered.length)
       setLoading(false)
     } catch (error) {
       console.error("Error fetching QR Code data:", error)
@@ -192,33 +596,11 @@ function Index() {
   }
 
   const handleDownload = (row) => {
-    try {
-      if (row.qrCodeBase64) {
-        const link = document.createElement('a')
-        link.href = `data:image/png;base64,${row.qrCodeBase64}`
-        link.download = `QR_${row.eventName}_${row.customerName}_${row.transactionId}.png`
-        link.click()
-        toast.current.show({
-          severity: "success",
-          summary: "Download Started",
-          detail: "Your QR Code is being downloaded.",
-          life: 2000,
-        });
-      } else {
-        throw new Error("No QR Code found")
-      }
-    } catch (error) {
-      toast.current.show({
-        severity: "error",
-        summary: "Download Failed",
-        detail: "Could not download QR Code.",
-        life: 3000,
-      });
-    }
+    downloadQRCodeWithDetails(row);
   }
 
   const handleViewDetails = (row) => {
-    console.log('Selected QR Code:', row) // Debug log
+    console.log('Selected QR Code:', row)
     setSelectedQRCode(row)
     setViewQRModal(true)
   }
@@ -264,28 +646,8 @@ function Index() {
   }
 
   const downloadQRCode = () => {
-    try {
-      if (selectedQRCode?.qrCodeBase64) {
-        const link = document.createElement('a')
-        link.href = `data:image/png;base64,${selectedQRCode.qrCodeBase64}`
-        link.download = `QR_${selectedQRCode.eventName}_${selectedQRCode.customerName}_${selectedQRCode.transactionId}.png`
-        link.click()
-        toast.current.show({
-          severity: "success",
-          summary: "Download Started",
-          detail: "Your QR Code is being downloaded.",
-          life: 2000,
-        });
-      } else {
-        throw new Error("No QR Code available")
-      }
-    } catch (error) {
-      toast.current.show({
-        severity: "error",
-        summary: "Download Failed",
-        detail: "Could not download QR Code.",
-        life: 3000,
-      });
+    if (selectedQRCode) {
+      downloadQRCodeWithDetails(selectedQRCode);
     }
   }
 
@@ -294,7 +656,17 @@ function Index() {
       <Toast ref={toast} />
       <Card>
         <CardHeader className="border-bottom">
-          <h3 className="mb-0">Event Payment Listing</h3>
+          <div className="d-flex justify-content-between align-items-center w-100">
+            <h3 className="mb-0">Event Payment Listing</h3>
+            <Button 
+              color='primary' 
+              onClick={handleExportToExcel}
+              disabled={loading || filteredData.length === 0}
+            >
+              <Download size={14} className='me-1' />
+              Export to Excel ({filteredData.length})
+            </Button>
+          </div>
         </CardHeader>
 
         <CardBody>
@@ -454,7 +826,7 @@ function Index() {
                   </div>
                   
                   <div className="mb-2">
-                    <strong>Amount:</strong> <span className="text-success">₹{selectedQRCode.amount}</span>
+                    <strong>Amount:</strong> <span className="text-success">{formatCurrency(selectedQRCode.amount)}</span>
                   </div>
                   
                   <div className="mb-2">
@@ -462,7 +834,7 @@ function Index() {
                   </div>
                   
                   <div className="mb-2">
-                    <strong>Payment Mode:</strong> { 'Credit Card'}
+                    <strong>Payment Mode:</strong> {getPaymentModeText(selectedQRCode.paymentMode)}
                   </div>
                   
                   <div className="mb-2">
@@ -481,9 +853,8 @@ function Index() {
             </Row>
           )}
         </ModalBody>
-
         <ModalFooter>
-          <Button color="primary" onClick={downloadQRCode}>Download QR Code</Button>
+          <Button color="primary" onClick={downloadQRCode}>Download Receipt</Button>
           <Button color="secondary" onClick={toggleViewQRModal}>Close</Button>
         </ModalFooter>
       </Modal>
