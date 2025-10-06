@@ -167,9 +167,9 @@ export default [
         title: "Point Of Sale ",
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/point_of_sale/shop",
-        meta:{
-          layout:'blank' 
-        }
+        meta: {
+          layout: "blank",
+        },
       },
       {
         id: "Virtual Terminal",
@@ -336,7 +336,6 @@ export default [
     ],
   },
 
- 
   {
     id: "Generate QR Code",
     title: "Generate QR Code",
@@ -351,12 +350,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/qr-code/qr-list",
       },
-      // {
-      //   id: "Event List",
-      //   title: "Event Payment list ",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/dashboard/qr-code/event-list",
-      // },
+      {
+        id: "Event List",
+        title: "Event Payment list ",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/qr-code/event-list",
+      },
     ],
   },
 ];
