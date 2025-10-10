@@ -312,29 +312,34 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
   ]);
 
   useEffect(() => {
-    const sanitizeValue = (value, type) => {
-      if (!value) return value;
+   const sanitizeValue = (value, type) => {
+  if (value == null) return ""; // handle null or undefined
+  value = String(value);
 
-      switch (type) {
-        case "state":
-        case "address":
-        case "city":
-          return value.replace(/[^a-zA-Z ]/g, "");
-        case "firstName":
-        case "lastName":
-        case "secondaryGuestName":
-        case "country":
-        case "state":
-          return value.replace(/[^a-zA-Z ]/g, "");
-        case "emailId":
-          return value.replace(/[^a-zA-Z0-9@.]/g, "");
-        case "phoneNumber":
-          return value.replace(/[^0-9]/g, "");
+  switch (type) {
+    case "state":
+    case "address":
+    case "city":
+    case "firstName":
+    case "lastName":
+    case "secondaryGuestName":
+    case "country":
+      // Allow only letters and spaces
+      return value.replace(/[^a-zA-Z ]/g, "").trim();
 
-        default:
-          return value.replace(/[^a-zA-Z0-9\s]/g, "");
-      }
-    };
+    case "emailId":
+      // Allow letters, numbers, @ and .
+      return value.replace(/[^a-zA-Z0-9@.]/g, "").trim();
+
+    case "phoneNumber":
+      // Allow only digits
+      return value.replace(/[^0-9]/g, "").trim();
+
+    default:
+      // Allow letters, numbers, and spaces
+      return value.replace(/[^a-zA-Z0-9\s]/g, "").trim();
+  }
+};
 
     const fieldNames = [
       "address",
