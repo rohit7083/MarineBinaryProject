@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-  Col,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Col, Row, Spinner } from "reactstrap";
 import ProductCard from "./ProductCard";
 
 // ** Styles
@@ -19,7 +12,9 @@ const ProductArea = () => {
   // Total products (for now a mock array of 15)
   const products = new Array(15).fill(null);
 
-  const { items, loading, error } = useSelector((state) => state.productSlice);
+  const { items, loading, error, filterItems } = useSelector(
+    (state) => state.productSlice
+  );
 
   // Pagination setup
   const itemsPerPage = 6;
@@ -31,13 +26,19 @@ const ProductArea = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentProducts = products.slice(startIndex, startIndex + itemsPerPage);
 
+  const renderData = () => {
+    if (filterItems.length) return filterItems;
+    else return items;
+  };
+
   // Render products
-  const renderProducts = items.map((productDetails, index) => (
-    <Col key={index} sm="6" md="3" lg="4">
+  const renderProducts = renderData().map((productDetails, index) => (
+    <Col key={index} sm="6" md="4" lg="4">
       <ProductCard productDetails={productDetails} />
     </Col>
   ));
 
+  const scrollHeight = "600px";
   // Handle page change
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -63,9 +64,19 @@ const ProductArea = () => {
   } else
     return (
       <>
-        <Row className="ecommerce-application">{renderProducts}</Row>
-        {/* Pagination */}
-        <div className="d-flex justify-content-center mt-2">
+        <div
+          style={{
+            height: "750px", // 50% of viewport height
+            overflowY: "auto",
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+          }}
+        >
+          <Row className="ecommerce-application">{renderProducts}</Row>
+          {/* Pagination */}
+        </div>
+        {/* <div className="d-flex justify-content-center mt-2">
           <Pagination>
             <PaginationItem disabled={currentPage === 1}>
               <PaginationLink
@@ -89,7 +100,7 @@ const ProductArea = () => {
               />
             </PaginationItem>
           </Pagination>
-        </div>
+        </div> */}
       </>
     );
 };

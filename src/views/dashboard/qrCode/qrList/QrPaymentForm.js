@@ -10,19 +10,19 @@ import { CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 import TokenExpire from "../../../pages/authentication/slip/TokenExpire";
@@ -203,7 +203,7 @@ setPassBooked('The maximum number of people has already been reached.')
 
     try {
       setLoadPayment(true);
-      debugger
+       
       const res = await useJwt.payQrCodePayment(token, payload);
       console.log(res);
       if (res.data.status === "error") {

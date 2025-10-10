@@ -3,24 +3,24 @@ import { Fragment, useState } from 'react'
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Card,
-  Modal,
   Alert,
-  Input,
   Button,
+  Card,
   CardBody,
   CardText,
   CardTitle,
+  Col,
+  Input,
+  Modal,
   ModalBody,
-  ModalHeader
+  ModalHeader,
+  Row
 } from 'reactstrap'
 
 // ** Third Party Components
-import Cleave from 'cleave.js/react'
 import 'cleave.js/dist/addons/cleave-phone.us'
-import { Key, Settings, MessageSquare, ChevronRight } from 'react-feather'
+import Cleave from 'cleave.js/react'
+import { ChevronRight, Key, MessageSquare, Settings } from 'react-feather'
 
 // ** Images
 import qrCode from '@src/assets/images/icons/qrcode.png'
@@ -113,7 +113,7 @@ const AuthenticationExample = () => {
       <Card>
         <CardBody className='text-center'>
           <Key className='font-large-2 mb-1' />
-          <CardTitle tag='h5'>Two Factor Auth</CardTitle>
+          <CardTitle tag='h5'>Two Factor Auth </CardTitle>
           <CardText>
             Use this modal to enhance your application security by enabling two factor authentication.
           </CardText>

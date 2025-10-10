@@ -8,12 +8,14 @@ const initialState = {
     tax: 0,
     total: 0,
   },
+  selectedProduct: {},
+  selectedCustomerDetails:{},
 };
 
 const calculateBilling = (items) => {
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.finalAmount * item.qty, 0);
   const tax = subtotal * 0.1; // 10% example tax
-  const total = subtotal + tax;
+  const total = subtotal ;
   return { subtotal, tax, total };
 };
 
@@ -21,24 +23,24 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-   addItem: (state, action) => {
-  const item = action.payload;
-  const existing = state.items.find((i) => i.id === item.id);
+    addItem: (state, action) => {
+      const item = action.payload;
+      const existing = state.items.find((i) => i.id === item.id);
 
-  if (existing) {
-    existing.qty += item.qty || 1;
-  } else {
-    state.items.push({ ...item, qty: item.qty || 1 });
-  }
+      if (existing) {
+        existing.qty += item.qty || 1;
+      } else {
+        state.items.push({ ...item, qty: item.qty || 1 });
+      }
 
-  state.billing = calculateBilling(state.items);
-},
-
+      state.billing = calculateBilling(state.items);
+    },
 
     updateItemQty: (state, action) => {
       const { id, qty } = action.payload;
-      const existing = state.items.find((i) => i.id === id);
-
+      const existing = state.items.find((i) => {
+        return i.vrId === id
+      });
       if (existing) {
         existing.qty = qty;
       }
@@ -47,7 +49,11 @@ const cartSlice = createSlice({
     },
 
     removeItem: (state, action) => {
-      state.items = state.items.filter((i) => i.id !== action.payload);
+      
+      state.items = state.items.filter((i) => {
+      
+        return i.vrId !== action.payload
+      });
       state.billing = calculateBilling(state.items);
     },
 
@@ -55,10 +61,24 @@ const cartSlice = createSlice({
       state.items = [];
       state.billing = { subtotal: 0, tax: 0, total: 0 };
     },
+
+    addProduct: (state, action) => {
+      const { prId, productDetails } = action.payload;
+      state.selectedProduct[prId] = productDetails;
+    },
+    removeProduct: (state, action) => {
+      const { prId } = action.payload;
+      if (state[prId]) {
+        delete state[prId];
+      }
+    },
+    handleAddCustomer:(state,action)=>{
+      state.selectedCustomerDetails=action.payload
+    }
   },
 });
 
-export const { addItem, updateItemQty, removeItem, clearCart } =
+export const { addItem, updateItemQty, removeItem, clearCart, addProduct ,handleAddCustomer} =
   cartSlice.actions;
 
 export default cartSlice.reducer;

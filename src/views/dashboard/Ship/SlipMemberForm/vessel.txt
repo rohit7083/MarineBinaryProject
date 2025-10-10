@@ -541,7 +541,7 @@ const AccountDetails = ({ stepper, setSlipId, formData = {}, vuid }) => {
   };
 
   useEffect(() => {
-    console.clear();
+     ();
     console.log(vesselData);
   }, [vesselData]);
 

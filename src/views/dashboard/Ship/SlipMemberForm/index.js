@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import PaymentDetails from "./steps-with-validation/PaymentDetails";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import DocumentsDetails from "./steps-with-validation/DocumentsDetails";
 import MemberDetails from "./steps-with-validation/MemberDetails";
+import PaymentDetails from "./steps-with-validation/PaymentDetails";
 import VesselDetails from "./steps-with-validation/VesselDetails";
-import { useLocation, useNavigate } from "react-router-dom";
 // ** Custom Components
 import Wizard from "@components/wizard";
 
@@ -11,8 +11,7 @@ import Wizard from "@components/wizard";
 import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Icons Imports
-import { FileText, User, MapPin, Link, CreditCard, File } from "react-feather";
-import { useParams } from "react-router-dom";
+import { CreditCard, File, FileText, User } from "react-feather";
 
 const WizardModern = () => {
   // ** RefselectedSlipname
@@ -34,7 +33,7 @@ const WizardModern = () => {
 
   const location = useLocation();
   const uid = location.state?.uid || "";
-
+const slipNameFromDashboard=location?.state?.slipName || "";
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,7 +41,7 @@ const WizardModern = () => {
         const response = await useJwt.getslip(uid);
         const { content } = response.data;
         const { vessel, member, payment } = content;
-        console.clear();
+        
         console.log("conntent Slip id ", content);
         setId(content);
         // vessel details
@@ -88,6 +87,7 @@ const WizardModern = () => {
       icon: <File size={18} />,
       content: (
         <VesselDetails
+        slipNameFromDashboard={slipNameFromDashboard}
           stepper={stepper}
           type="wizard-modern"
           formData={{ ...formData.vessel }}

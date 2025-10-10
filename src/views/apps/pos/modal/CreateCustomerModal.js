@@ -1,5 +1,10 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Button,
@@ -13,17 +18,36 @@ import {
   Spinner,
 } from "reactstrap";
 
-const CreateCustomerModal = ({ showModal, toggleModal }) => {
+const CreateCustomerModal = ({
+  showModal,
+  toggleModal,
+  setSelectedCustomer,
+  selectedCustomer,
+}) => {
   const queryClient = useQueryClient();
+  const toast = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // ✅ local loader state
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      firstName: "John",
+      lastName: "Doe",
+      phoneNumber: "9876543210",
+      emailId: "john.doe@example.com",
+      address: "123 Main Street",
+      city: "New York",
+      state: "NY",
+      country: "US",
+      pinCode: "10001",
+    },
+  });
 
-  // ✅ define mutation at top-level
+  // Mutation for creating a new customer
   const mutation = useMutation({
     mutationFn: async (newCustomer) => {
       return await useJwt.CreateNewCustomer(newCustomer);
@@ -31,12 +55,12 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
     onSuccess: () => {
       queryClient.invalidateQueries(["users"]);
       reset();
-      toggleModal();
+      setTimeout(() => toggleModal(), 300); // Small delay to show loader
     },
   });
 
-  // ✅ submit handler
-  const onModalSubmit = (data) => {
+  // Submit handler
+  const onModalSubmit = async (data) => {
     let formattedPhoneNumber = data.phoneNumber;
     if (formattedPhoneNumber && !formattedPhoneNumber.startsWith("+91")) {
       formattedPhoneNumber = `+91-${formattedPhoneNumber}`;
@@ -54,11 +78,42 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
       pinCode: data.pinCode,
     };
 
-    console.log("📤 Final Payload:", payload);
+    try {
+      {
+        {
+          debugger;
+        }
+      }
+      setIsSubmitting(true);
+      const response = await mutation.mutateAsync(payload);
+      setSelectedCustomer(response?.data);
+      toast.current.show({
+        severity: "success",
+        summary: "Customer Added",
+        detail: "New customer has been successfully added",
+        life: 2000,
+      });
 
-    // ✅ call mutation
-    mutation.mutate(payload);
+      reset();
+      toggleModal();
+    } catch (error) {
+      console.error("Error adding customer:", error);
+      toast.current.show({
+        severity: "error",
+        summary: "Submission Failed",
+        detail: error?.response?.data?.content || "Something went wrong",
+        life: 3000,
+      });
+    } finally {
+      setIsSubmitting(false); // ✅ stop loader
+    }
   };
+
+  // Helper to restrict input to only letters
+  const onlyLetters = (value) => value.replace(/[^a-zA-Z ]/g, "");
+
+  // Helper to restrict input to only numbers
+  const onlyNumbers = (value) => value.replace(/[^0-9]/g, "");
 
   return (
     <Modal
@@ -66,6 +121,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
       toggle={toggleModal}
       className="modal-dialog-centered"
     >
+      <Toast ref={toast} />
       <ModalHeader toggle={toggleModal}>Add Customer</ModalHeader>
       <ModalBody className="px-sm-5 mx-50 pb-5">
         <form onSubmit={handleSubmit(onModalSubmit)}>
@@ -80,7 +136,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                   required: "First name is required",
                   pattern: {
                     value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters are allowed",
+                    message: "Only letters allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -90,7 +146,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     placeholder="Enter first name"
                     invalid={!!errors.firstName}
                     onChange={(e) =>
-                      field.onChange(e.target.value.replace(/[^a-zA-Z ]/g, ""))
+                      field.onChange(onlyLetters(e.target.value))
                     }
                   />
                 )}
@@ -110,7 +166,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                   required: "Last name is required",
                   pattern: {
                     value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters are allowed",
+                    message: "Only letters allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -120,7 +176,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     placeholder="Enter last name"
                     invalid={!!errors.lastName}
                     onChange={(e) =>
-                      field.onChange(e.target.value.replace(/[^a-zA-Z ]/g, ""))
+                      field.onChange(onlyLetters(e.target.value))
                     }
                   />
                 )}
@@ -132,9 +188,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* Phone Number */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="phoneNumber">
-                Phone Number *
-              </Label>
+              <Label htmlFor="phoneNumber">Phone Number *</Label>
               <Controller
                 name="phoneNumber"
                 control={control}
@@ -142,18 +196,18 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                   required: "Phone number is required",
                   pattern: {
                     value: /^[0-9]{10}$/,
-                    message: "Phone number must be 10 digits",
+                    message: "Must be 10 digits",
                   },
                 }}
                 render={({ field }) => (
                   <Input
                     {...field}
                     id="phoneNumber"
-                    placeholder="Enter phone number (10 digits)"
+                    placeholder="Enter phone number"
                     invalid={!!errors.phoneNumber}
                     maxLength={10}
                     onChange={(e) =>
-                      field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                      field.onChange(onlyNumbers(e.target.value))
                     }
                   />
                 )}
@@ -167,17 +221,14 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* Email */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="emailId">
-                Email
-              </Label>
+              <Label htmlFor="emailId">Email</Label>
               <Controller
                 name="emailId"
                 control={control}
                 rules={{
-                  required: "Email is required",
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Please enter a valid email address",
+                    message: "Invalid email",
                   },
                 }}
                 render={({ field }) => (
@@ -185,7 +236,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     {...field}
                     id="emailId"
                     type="email"
-                    placeholder="Enter email address"
+                    placeholder="Enter email"
                     invalid={!!errors.emailId}
                   />
                 )}
@@ -197,19 +248,15 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* Address */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="address">
-                Address
-              </Label>
+              <Label htmlFor="address">Address</Label>
               <Controller
                 name="address"
                 control={control}
                 rules={{
-                  required: "Address is required",
                   pattern: {
-
                     value: /^[A-Za-z0-9\s.,-]*$/,
                     message:
-                      "Only letters, numbers, spaces, dot, comma, and dash are allowed",
+                      "Only letters, numbers, spaces, dot, comma, and dash allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -220,14 +267,11 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     rows="3"
                     placeholder="Enter address"
                     invalid={!!errors.address}
-                    onChange={(e) => {
-                      // live restriction while typing
-                      const cleaned = e.target.value.replace(
-                        /[^A-Za-z0-9\s.,-]/g,
-                        ""
-                      );
-                      field.onChange(cleaned);
-                    }}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value.replace(/[^A-Za-z0-9\s.,-]/g, "")
+                      )
+                    }
                   />
                 )}
               />
@@ -238,9 +282,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* City */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="city">
-                City *
-              </Label>
+              <Label htmlFor="city">City *</Label>
               <Controller
                 name="city"
                 control={control}
@@ -248,7 +290,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                   required: "City is required",
                   pattern: {
                     value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters are allowed",
+                    message: "Only letters allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -258,7 +300,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     placeholder="Enter city"
                     invalid={!!errors.city}
                     onChange={(e) =>
-                      field.onChange(e.target.value.replace(/[^a-zA-Z ]/g, ""))
+                      field.onChange(onlyLetters(e.target.value))
                     }
                   />
                 )}
@@ -270,9 +312,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* State */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="state">
-                State *
-              </Label>
+              <Label htmlFor="state">State *</Label>
               <Controller
                 name="state"
                 control={control}
@@ -280,7 +320,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                   required: "State is required",
                   pattern: {
                     value: /^[A-Za-z ]+$/,
-                    message: "Only alphabetic characters are allowed",
+                    message: "Only letters allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -290,7 +330,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     placeholder="Enter state"
                     invalid={!!errors.state}
                     onChange={(e) =>
-                      field.onChange(e.target.value.replace(/[^a-zA-Z ]/g, ""))
+                      field.onChange(onlyLetters(e.target.value))
                     }
                   />
                 )}
@@ -302,9 +342,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* Country */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="country">
-                Country *
-              </Label>
+              <Label htmlFor="country">Country *</Label>
               <Controller
                 name="country"
                 control={control}
@@ -325,18 +363,13 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
 
             {/* PIN Code */}
             <Col md={6}>
-              <Label className="form-label" htmlFor="pinCode">
-                Zip Code *
-              </Label>
+              <Label htmlFor="pinCode">Zip Code *</Label>
               <Controller
                 name="pinCode"
                 control={control}
                 rules={{
-                  required: "PIN code is required",
-                  pattern: {
-                    value: /^[0-9]{5}$/,
-                    message: "Zip code must be 5 digits",
-                  },
+                  required: "ZIP code is required",
+                  pattern: { value: /^[0-9]{5}$/, message: "Must be 5 digits" },
                 }}
                 render={({ field }) => (
                   <Input
@@ -346,7 +379,7 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
                     invalid={!!errors.pinCode}
                     maxLength={5}
                     onChange={(e) =>
-                      field.onChange(e.target.value.replace(/[^0-9]/g, ""))
+                      field.onChange(onlyNumbers(e.target.value))
                     }
                   />
                 )}
@@ -368,14 +401,15 @@ const CreateCustomerModal = ({ showModal, toggleModal }) => {
               </Button>
               <Button
                 type="submit"
-                disabled={mutation.isLoading}
-                className="mx-1"
                 color="primary"
+                className="mx-1"
+                disabled={isSubmitting}
               >
-                {mutation.isLoading ? (
-                  <>
-                    Submitting... <Spinner size="sm" />
-                  </>
+                {isSubmitting ? (
+                  <span className="d-flex align-items-center">
+                    Submitting...
+                    <Spinner size="sm" />
+                  </span>
                 ) : (
                   "Add Customer"
                 )}

@@ -67,14 +67,11 @@ const Ecomm = lazy(() =>
   import("../../views/dashboard/pos/point_of_sale/ecommerce/shop")
 );
 
-
-const VendorManage
-= lazy(() =>
+const VendorManage = lazy(() =>
   import("../../views/dashboard/pos/vendorManagement")
 );
 
-const VendorAdd
-= lazy(() =>
+const VendorAdd = lazy(() =>
   import("../../views/dashboard/pos/vendorManagement/AddVender")
 );
 const QrPaymentStepTwo = lazy(() =>
@@ -84,15 +81,11 @@ const QrPaymentStepTwo = lazy(() =>
 );
 
 const MemberManagement = lazy(() =>
-  import(
-    "../../views/dashboard/member_management/Add_Member"
-  )
+  import("../../views/dashboard/member_management/Add_Member")
 );
 
 const MemberManagement_List = lazy(() =>
-  import(
-    "../../views/dashboard/member_management"
-  )
+  import("../../views/dashboard/member_management")
 );
 
 const AddCategory = lazy(() =>
@@ -102,83 +95,131 @@ const AddCategory = lazy(() =>
 );
 
 const CreatePass = lazy(() =>
-  import(
-    "../../views/dashboard/parking_pass/Park_Pass"
-  )
+  import("../../views/dashboard/parking_pass/Park_Pass")
 );
-
 
 const SellPass = lazy(() =>
-  import(
-    "../../views/dashboard/parking_pass/SellPass"
-  )
+  import("../../views/dashboard/parking_pass/SellPass")
 );
-
 
 const ViewRoomBooking = lazy(() =>
   import(
     "../../views/dashboard/room_management/list_of_roomBooking/view_bookingrooms/View"
   )
 );
-const Event_Info=lazy(()=>import("../../views/dashboard/event_management/Event_info"))
-const venueLocation=lazy(()=>import("../../views/dashboard/event_management/VenueLocation"))
-const ProductPayment=lazy(()=>import("../../views/apps/pos"))
-const Client_info=lazy(()=>import("../../views/dashboard/event_management/Client_info"))
-const Event_Type=lazy(()=>import("../../views/dashboard/event_management/event_type"))
-const Cretae_Event_Type=lazy(()=>import("../../views/dashboard/event_management/event_type/AddEventTypes"))
+const Event_Info = lazy(() =>
+  import("../../views/dashboard/event_management/Event_info")
+);
+const venueLocation = lazy(() =>
+  import("../../views/dashboard/event_management/VenueLocation")
+);
+const ProductPayment = lazy(() => import("../../views/apps/pos"));
+const Client_info = lazy(() =>
+  import("../../views/dashboard/event_management/Client_info")
+);
+const Event_Type = lazy(() =>
+  import("../../views/dashboard/event_management/event_type")
+);
+const Cretae_Event_Type = lazy(() =>
+  import("../../views/dashboard/event_management/event_type/AddEventTypes")
+);
 
-const EventIndex=lazy(()=>import("../../views/dashboard/event_management"))
-const CreateEvent=lazy(()=>import("../../views/dashboard/event_management/CreateEvent"))
+const EventIndex = lazy(() => import("../../views/dashboard/event_management"));
+const CreateEvent = lazy(() =>
+  import("../../views/dashboard/event_management/CreateEvent")
+);
 
-const CreateVenue=lazy(()=>import("../../views/dashboard/event_management/createVenue/CreateVenue"))
-const VenueList=lazy(()=>import("../../views/dashboard/event_management/createVenue"))
-const PaymentHistory=lazy(()=>import("../../views/dashboard/event_management/PaymentHistory"))
-const ClientDetails=lazy(()=>import("../../views/dashboard/event_management/client_Information"))
+const CreateVenue = lazy(() =>
+  import("../../views/dashboard/event_management/createVenue/CreateVenue")
+);
+const VenueList = lazy(() =>
+  import("../../views/dashboard/event_management/createVenue")
+);
+const PaymentHistory = lazy(() =>
+  import("../../views/dashboard/event_management/PaymentHistory")
+);
+const ClientDetails = lazy(() =>
+  import("../../views/dashboard/event_management/client_Information")
+);
 
-const ViewClient=lazy(()=>import("../../views/dashboard/event_management/client_Information/ViewClient"))
-const Payment=lazy(()=>import("../../views/dashboard/event_management/Payment"))
-const Preview=lazy(()=>import("../../views/dashboard/event_management/Preview"))
-const GenerateDiscountOtp=lazy(()=>import("../../views/dashboard/event_management/GenerateDiscountOtp"))
+const ViewClient = lazy(() =>
+  import("../../views/dashboard/event_management/client_Information/ViewClient")
+);
+const Payment = lazy(() =>
+  import("../../views/dashboard/event_management/Payment")
+);
+const Preview = lazy(() =>
+  import("../../views/dashboard/event_management/Preview")
+);
+const GenerateDiscountOtp = lazy(() =>
+  import("../../views/dashboard/event_management/GenerateDiscountOtp")
+);
 
-const VendorTypeList=lazy(()=>import("../../views/dashboard/pos/vendorManagement/vendorTypes"))
+const VendorTypeList = lazy(() =>
+  import("../../views/dashboard/pos/vendorManagement/vendorTypes")
+);
 
-const ManageRoomType=lazy(()=>import("../../views/dashboard/room_management/manage_roomType"))
-const AddRoomType=lazy(()=>import("../../views/dashboard/room_management/manage_roomType/AddRoomType"))
-const RoomDetails=lazy(()=>import("../../views/dashboard/room_management/manage_room"))
-const AddRoomDetails=lazy(()=>import("../../views/dashboard/room_management/manage_room/Add_RoomDetails"))
+const ManageRoomType = lazy(() =>
+  import("../../views/dashboard/room_management/manage_roomType")
+);
+const AddRoomType = lazy(() =>
+  import("../../views/dashboard/room_management/manage_roomType/AddRoomType")
+);
+const RoomDetails = lazy(() =>
+  import("../../views/dashboard/room_management/manage_room")
+);
+const AddRoomDetails = lazy(() =>
+  import("../../views/dashboard/room_management/manage_room/Add_RoomDetails")
+);
 
+const RoomPayment = lazy(() =>
+  import(
+    "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/payment/RoomPayment"
+  )
+);
 
-const RoomPayment=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/payment/RoomPayment"))
+const RoomBooking = lazy(() =>
+  import("../../views/dashboard/room_management/manage_roomBooking/calendar")
+);
 
-const RoomBooking
-=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/calendar"))
+const AddRoomBooking = lazy(() =>
+  import(
+    "../../views/dashboard/room_management/manage_roomBooking/addNewBooking"
+  )
+);
 
+const BookingListing = lazy(() =>
+  import("../../views/dashboard/room_management/list_of_roomBooking")
+);
 
-const AddRoomBooking
-=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking"))
+const SearchRoom = lazy(() =>
+  import(
+    "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/SearchRooms"
+  )
+);
 
-const BookingListing
-=lazy(()=>import("../../views/dashboard/room_management/list_of_roomBooking"))
+const Checkout = lazy(() =>
+  import(
+    "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/Checkout"
+  )
+);
 
-const SearchRoom
-=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/SearchRooms"))
+const CheckInDetails = lazy(() =>
+  import(
+    "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/CheckInDetails"
+  )
+);
 
+const UpdateEvent = lazy(() =>
+  import("../../views/dashboard/event_management/event_update/UpdateEvent")
+);
 
-
-const Checkout
-=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/Checkout"))
-
-const CheckInDetails
-=lazy(()=>import("../../views/dashboard/room_management/manage_roomBooking/addNewBooking/CheckInDetails"))
-
-
-const UpdateEvent
-=lazy(()=>import("../../views/dashboard/event_management/event_update/UpdateEvent"))
-
-const AddProductIndex
-=lazy(()=>import("../../views/dashboard/pos/product_management/addProduct"))
-
-
+const AddProductIndex = lazy(() =>
+  import("../../views/dashboard/pos/product_management/addProduct")
+);
+const SaleSummery = lazy(() =>
+  import("../../views/dashboard/sales/index")
+);
 
 export default [
   {
@@ -304,12 +345,11 @@ export default [
   {
     element: <QrPaymentStepTwo />,
     path: "/crm/marine-resort/slip_memberform/qr_paymentsteptwo/:token",
-    meta: { 
+    meta: {
       publicRoute: true,
       layout: "blank",
     },
   },
-
 
   {
     element: <VertualTerminal />,
@@ -324,196 +364,183 @@ export default [
     element: <VendorAdd />,
     path: "/pos/VendorManage/addVendor",
   },
-  
 
   {
     element: <MemberManagement />,
     path: "/member_management/add-member",
   },
   {
-    element: <MemberManagement_List/>,
+    element: <MemberManagement_List />,
     path: "/member_management",
   },
 
   {
-    element: <AddCategory/>,
+    element: <AddCategory />,
     path: "/pos/product_management/add-category",
   },
 
-
-   {
-    element: <ParkingPassListing/>,
+  {
+    element: <ParkingPassListing />,
     path: "/parking_pass",
   },
 
-    {
-    element: <CreatePass/>,
+  {
+    element: <CreatePass />,
     path: "/parking_pass/add_pass",
   },
-   {
-    element: <SellPass/>,
+  {
+    element: <SellPass />,
     path: "/parking_pass/sellpass",
   },
-   
 
-     {
-    element: <Event_Info/>,
+  {
+    element: <Event_Info />,
     path: "/event_info",
   },
-   
-    {
-    element: <Client_info/>,
+
+  {
+    element: <Client_info />,
     path: "/Client_info",
   },
-   {
-    element: <Event_Type/>,
+  {
+    element: <Event_Type />,
     path: "/addEvent_type",
   },
 
-    {
-    element: <EventIndex/>,
+  {
+    element: <EventIndex />,
     path: "/event_index",
   },
 
-
-   {
-    element: <CreateEvent/>,
+  {
+    element: <CreateEvent />,
     path: "/CreateEvent",
   },
 
-   {
-    element: <CreateVenue/>,
+  {
+    element: <CreateVenue />,
     path: "/venue",
   },
 
-
-   {
-    element: <VenueList/>,
+  {
+    element: <VenueList />,
     path: "/VenueList",
   },
 
-    {
-    element: <Cretae_Event_Type/>,
+  {
+    element: <Cretae_Event_Type />,
     path: "/eventTypes",
   },
-  
-  
-     {
-    element: <venueLocation/>,
+
+  {
+    element: <venueLocation />,
     path: "/venueLocation",
   },
-  
-   {
-    element: <PaymentHistory/>,
+
+  {
+    element: <PaymentHistory />,
     path: "/PaymentHistory",
   },
-  
-     {
-    element: <ClientDetails/>,
+
+  {
+    element: <ClientDetails />,
     path: "/ClientDetails",
   },
-  
-      {
-    element: <ViewClient/>,
+
+  {
+    element: <ViewClient />,
     path: "/ViewClient",
   },
 
-     {
-    element: <Payment/>,
+  {
+    element: <Payment />,
     path: "/payment",
   },
-  
-  
-     {
-    element: <Preview/>,
+
+  {
+    element: <Preview />,
     path: "/preview",
   },
 
-    {
-    element: <GenerateDiscountOtp/>,
+  {
+    element: <GenerateDiscountOtp />,
     path: "/genrateotp",
   },
 
   {
-    element: <VendorTypeList/>,
+    element: <VendorTypeList />,
     path: "/pos/vendor_typeList",
   },
 
-    {
-    element: <AddVTypes/>,
+  {
+    element: <AddVTypes />,
     path: "/pos/vendor_typeList/addVendorType",
   },
-      {
-    element: <ManageRoomType/>,
+  {
+    element: <ManageRoomType />,
     path: "/manage_room_types",
   },
-  
-   {
-    element: <AddRoomType/>,
+
+  {
+    element: <AddRoomType />,
     path: "/add_room_types",
   },
-  
 
-     {
-    element: <RoomDetails/>,
+  {
+    element: <RoomDetails />,
     path: "/room_details",
   },
-  
-   {
-    element: <AddRoomDetails/>,
+
+  {
+    element: <AddRoomDetails />,
     path: "/room_details/add_room_details",
   },
 
-
-   {
-    element: <RoomBooking/>,
+  {
+    element: <RoomBooking />,
     path: "/manage_roomBooking",
   },
 
-  
-   {
-    element: <AddRoomBooking/>,
+  {
+    element: <AddRoomBooking />,
     path: "/addNew_room_booking",
   },
-  
-   {
-    element: <BookingListing/>,
+
+  {
+    element: <BookingListing />,
     path: "/bookingListing",
   },
 
-     {
-    element: <SearchRoom/>,
+  {
+    element: <SearchRoom />,
     path: "/search-rooms",
   },
-    {
-    element: <Checkout/>,
+  {
+    element: <Checkout />,
     path: "/search-rooms/previewBooking",
   },
-     {
-    element: <CheckInDetails/>,
+  {
+    element: <CheckInDetails />,
     path: "/search-rooms/CheckInDetails",
   },
 
-   {
-    element: <RoomPayment/>,
+  {
+    element: <RoomPayment />,
     path: "/search-rooms/previewBooking/roomPayment",
   },
 
-    {
-    element: <ViewRoomBooking/>,
+  {
+    element: <ViewRoomBooking />,
     path: "booking_listing/view",
   },
 
-
-
-   {
-    element: <UpdateEvent/>,
+  {
+    element: <UpdateEvent />,
     path: "event/update",
   },
 
-  
-   {
-    element: <AddProductIndex/>,
+  {
+    element: <AddProductIndex />,
     path: "/dashboard/pos/product_management/addProduct_index",
   },
 
@@ -522,42 +549,45 @@ export default [
     path: "/dashboard/rentroll/view_slip",
   },
   {
-    element: <InverSlip/>,
+    element: <InverSlip />,
     path: "/dashboard/rentroll/inverse_slip",
   },
-   {
-    element: <ProductPayment/>,
+  {
+    element: <ProductPayment />,
     path: "/dashboard/pos/point_of_sale/shop/PayementDetails",
-    meta:{
-      layout:'blank'
-    }
+    // meta: {
+    //   layout: "blank",
+    // },
   },
   {
-    element: <QrList/>,
+    element: <QrList />,
     path: "/dashboard/qr-code/qr-list",
   },
   {
-    element: <EventPaymentList/>,
+    element: <EventPaymentList />,
     path: "dashboard/qr-code/event-list",
   },
- {
-    element :  <QrPaymentFrom />,
-    path: 'dashboard/qr-code/paymentForm'
-  }
-  ,
+  {
+    element: <QrPaymentFrom />,
+    path: "dashboard/qr-code/paymentForm",
+  },
   // {
   //   element :  <UserRoleManagement />,
   //   path: 'dashboard/crmSetting/userRoleManagement'
   // },
   {
-    element :  <QrPaymentFrom />,
-    path: 'dashboard/qr-code/paymentForm/:token',
-    meta: { 
+    element: <QrPaymentFrom />,
+    path: "dashboard/qr-code/paymentForm/:token",
+    meta: {
       publicRoute: true,
       layout: "blank",
     },
-  }
+  },
 
+  {
+    element: <SaleSummery />,
+    path: "/sales/sale_summery",
+  },
 
   
 ];

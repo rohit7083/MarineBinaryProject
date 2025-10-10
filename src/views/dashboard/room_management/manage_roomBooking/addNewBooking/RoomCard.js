@@ -11,13 +11,13 @@ import { Controller } from "react-hook-form";
 
 // ** Reactstrap
 import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  FormGroup,
-  Input,
-  Label
+    Badge,
+    Button,
+    Card,
+    CardBody,
+    FormGroup,
+    Input,
+    Label
 } from "reactstrap";
 
 // ** Styles
@@ -147,7 +147,7 @@ const RoomCard = (props) => {
     noOfPeople,
   ]);
   // console.log(watch(`roomUnit.${index}.fields.serviceType`))
-  // console.clear()
+  //  ()
 // console.log(fieldsDetail)
 
   function handleShowPrice(type) {

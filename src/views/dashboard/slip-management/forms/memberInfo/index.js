@@ -35,8 +35,8 @@ import { countries } from "../../../slip-management/CountryCode";
 import { useNavigate } from "react-router-dom";
 import RenewalContract from "../memberInfo/RenewalContract";
 
-const PersonalInfo = ({ fetchLoader, SlipData }) => {
-  console.log("sllipdata", SlipData);
+const PersonalInfo = ({ fetchLoader, slipData }) => {
+  console.log("sllipdata", slipData);
 
   const MySwal = withReactContent(Swal);
   const [checkvesel, setCheckvessel] = useState(null);
@@ -122,16 +122,16 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
     resolver: yupResolver(SignupSchema),
   });
 
-  const { member } = SlipData;
+  const { member } = slipData;
 
   useEffect(() => {
     // {{ }}
-    setIsAssigned(SlipData?.isAssigned);
-    setCheckvessel(SlipData?.vessel);
-    setCheckMember(SlipData?.member);
-    console.clear();
-    // console.log("assigne",SlipData?.vessel);
-  }, [SlipData]);
+    setIsAssigned(slipData?.isAssigned);
+    setCheckvessel(slipData?.vessel);
+    setCheckMember(slipData?.member);
+ 
+    // console.log("assigne",slipData?.vessel);
+  }, [slipData]);
   const onSubmit = async (data) => {
     setLoading(true);
     const {
@@ -168,7 +168,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       secondaryGuestName,
       secondaryEmail,
       secondaryPhoneNumber,
-      slipId: SlipData.id,
+      slipId: slipData.id,
     };
     let memberId;
     try {
@@ -211,8 +211,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
     }
   };
 
-  const { vessel } = SlipData;
-  const { payment } = SlipData;
+  const { vessel } = slipData;
+  const { payment } = slipData;
 
   useEffect(() => {
     if (member) {
@@ -243,7 +243,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
         setValue("contractDate", paymentItem.contractDate);
       });
     }
-  }, [member, SlipData, vessel, payment]);
+  }, [member, slipData, vessel, payment]);
 
   const countryOptions = React.useMemo(
     () =>

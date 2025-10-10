@@ -5,22 +5,22 @@ import ProductArea from "./ProductArea";
 import SearchBar from "./SearchBar";
 
 // ** Hooks
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // ** Actions
 import { useEffect } from "react";
-import { fetchProducts } from './store';
+import { fetchProducts } from "./store";
 
 const index = () => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { items, loading, error } = useSelector((state) => state.productSlice);
 
   useEffect(() => {
-    dispatch(fetchProducts())
-  }, [])
+    dispatch(fetchProducts());
+  }, []);
 
   return (
-    <div className="p-2">
+  
       <Row className="gy-2">
         {/* Top row: Search bars */}
         <Col xs={12} md={8} className="mt-2">
@@ -38,7 +38,7 @@ const index = () => {
           <CartArea />
         </Col>
       </Row>
-    </div>
+    
   );
 };
 

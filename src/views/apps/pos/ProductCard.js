@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
 import { ShoppingCart } from "react-feather";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { Button, Card, CardBody, CardText } from "reactstrap";
 import noImages from "../../../assets/images/noImages.png";
 import VariantListModal from "./modal/VariantListModal";
-
-import useJwt from "@src/auth/jwt/useJwt";
 
 const ProductCard = ({ productDetails }) => {
   const [imagesUrl, setImagesUrl] = useState(null);
   const [imageLoader, setImageLoader] = useState(false);
   const [openVariantModal, setOpenVariantModal] = useState(false);
-
-  
-
-  const { isCutomerSelected } = useSelector((state) => state.productSlice);
+  const { selectedCustomerDetails } = useSelector((store) => store.cartSlice);
+  const toast = useRef(null);
 
   // ** Fetch Images
 
@@ -24,12 +24,9 @@ const ProductCard = ({ productDetails }) => {
     (async () => {
       try {
         setImageLoader(true);
-
-        // fetch images from backend
         const res = await useJwt.getImages(
           productDetails.variations[0]?.variationImages?.[0]?.uid
         );
-
         setImagesUrl(URL.createObjectURL(res.data));
       } catch (e) {
         console.error(e);
@@ -44,22 +41,51 @@ const ProductCard = ({ productDetails }) => {
     };
   }, []);
 
+  const handleAddToCartClick = () => {
+    if (selectedCustomerDetails.emailId) {
+      setOpenVariantModal((prev) => !prev);
+    } else {
+      toast.current.show({
+        severity: "warn",
+        summary: "Customer Required",
+        detail: "Please select a customer before proceeding",
+        life: 2000,
+      });
+    }
+  };
+
   return (
     <>
-      <Card className="ecommerce-card">
-        <div className="item-img text-center mx-auto border-bottom p-2">
-          <Link to="/apps/ecommerce/product-detail/sample-product">
-            <img
-              className="img-fluid"
-              src={imagesUrl || noImages}
-              alt="Sample Product"
-            />
-          </Link>
+      <Toast ref={toast} />
+
+      <Card
+        className="ecommerce-card shadow-sm"
+        style={{
+          maxWidth: "220px", // smaller card width
+          fontSize: "0.85rem", // smaller text
+          borderRadius: "10px",
+        }}
+      >
+        <div
+          className="item-img text-center mx-auto border-bottom p-1"
+          style={{ padding: "0.5rem" }}
+        >
+          <img
+            src={imagesUrl || noImages}
+            alt="Sample Product"
+            className="img-fluid mx-auto d-block rounded"
+            style={{
+              maxWidth: "120px", // reduced image size
+              aspectRatio: "1 / 1",
+              objectFit: "cover",
+            }}
+          />
         </div>
-        <CardBody>
+
+        <CardBody className="p-2">
           <div className="item-wrapper">
-            <div className="item-cost">
-              <h6 className="item-price">
+            <div className="item-cost mb-1">
+              <h6 className="item-price mb-0" style={{ fontSize: "0.9rem" }}>
                 {productDetails.variations &&
                 productDetails.variations.length > 0
                   ? (() => {
@@ -74,10 +100,17 @@ const ProductCard = ({ productDetails }) => {
               </h6>
             </div>
           </div>
-          <div className="item-name">{productDetails.name}</div>
-          <CardText className="item-description">
+
+          <div className="item-name mb-1" style={{ fontSize: "0.9rem" }}>
+            <strong>{productDetails.name}</strong>
+          </div>
+
+          <CardText
+            className="item-description mb-2"
+            style={{ fontSize: "0.8rem", lineHeight: "1.2" }}
+          >
             {productDetails.description.length > 50
-              ? productDetails.description.substring(0, 50) + "..."
+              ? productDetails.description.substring(0, 20) + "..."
               : productDetails.description}
           </CardText>
         </CardBody>
@@ -86,20 +119,25 @@ const ProductCard = ({ productDetails }) => {
           color="primary"
           className="btn-cart move-cart"
           block
-          disabled={!isCutomerSelected}
-          style={{ borderRadius: 0 }}
-          onClick={() => setOpenVariantModal((boo) => !boo)}
+          style={{
+            borderRadius: "0 0 10px 10px",
+            padding: "0.4rem 0",
+            fontSize: "0.8rem",
+          }}
+          onClick={handleAddToCartClick}
         >
-          <ShoppingCart className="me-50" size={14} />
+          <ShoppingCart className="me-50" size={12} />
           <span>Add To Cart</span>
         </Button>
       </Card>
 
-      <VariantListModal
-        isOpen={openVariantModal}
-        toggle={() => setOpenVariantModal((boo) => !boo)}
-        prDetails={productDetails}
-      />
+      {openVariantModal ? (
+        <VariantListModal
+          isOpen={openVariantModal}
+          toggle={() => setOpenVariantModal((boo) => !boo)}
+          prDetails={productDetails}
+        />
+      ) : null}
     </>
   );
 };

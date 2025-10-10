@@ -2,17 +2,17 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-  Alert,
-  Button,
-  Col,
-  Form,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Alert,
+    Button,
+    Col,
+    Form,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 // ** Third Party Imports
@@ -242,7 +242,7 @@ const GenrateOtp = (props) => {
 
   // ** handle Resend OTP
   const handleResendCall = async () => {
-    {{debugger}}
+    {{ }}
     try {
       if (attempt === 1) {
         const token = await onText();

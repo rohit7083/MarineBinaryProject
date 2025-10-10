@@ -1,27 +1,20 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { DownloadCloud, Eye, FileText, X } from "react-feather";
-import toast from "react-hot-toast";
-import { set, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ArrowLeft, ArrowRight } from "react-feather";
-import Swal from "sweetalert2";
+import { ArrowLeft, DownloadCloud, Eye, FileText, X } from "react-feather";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
-import {
-  Button,
-  Row,
-  Col,
-  Label,
-  Card,
-  CardBody,
-  CardTitle,
-  Form,
-  Badge,
-  UncontrolledAlert,
-} from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import {
+  Badge,
+  Button,
+  Col,
+  Form,
+  Label,
+  Row,
+  UncontrolledAlert
+} from "reactstrap";
 
 const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
 const FileUploadForm = ({ Parentdocuments,stepper, slipIID ,sId}) => {

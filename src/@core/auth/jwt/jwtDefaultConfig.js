@@ -172,7 +172,7 @@ export default {
   updateProductVariation: "/product/variations/",
   updateProductSpecification: "/product/specifications/",
   addStocks: "/productVariation/addStock/",
-  getImage: "/productVariationImage/sImages/file/",
+  // getImage: "/productVariationImage/sImages/file/",
 
   //Customer
   addNewCustomerEndPoint: "/customer/",
@@ -200,15 +200,24 @@ export default {
 
   //Generate Qr
   getAllEventQrEndPoint: "/eventQrCode",
-  getVariationUid:'/pos/',
-  updatedQty:'/pos/updateQuantity/',
-
+  getVariationUid: "/pos/",
+  updatedQty: "/pos/updateQuantity/",
 
   getAllEventQrEndPoint: "/eventQrCode",
-  getVariationUid:'/pos/',
-  updatedQty:'/pos/updateQuantity/',
-  addQrEndPoint : '/eventQrCode',
-  decriptQrCodeToeknEndPoint: '/auth/qrCode/decrypt-token?token=',
- qrPaymentEndPoint : '/auth/eventQrCode/'
- 
+  getVariationUid: "/pos/",
+  updatedQty: "/pos/updateQuantity/",
+  addQrEndPoint: "/eventQrCode",
+  decriptQrCodeToeknEndPoint: "/auth/qrCode/decrypt-token?token=",
+  qrPaymentEndPoint: "/auth/eventQrCode/",
+
+  deleteCartProduct: "/pos/",
+  //view documents
+  existingImages: "/sDocuments/uploaded_files/",
+  updateDocuments: "/sDocuments/",
+
+  // donwload Receipt
+  downloadReceipt:'/sPayment/receipt/',
+
+  //sales charts 
+  sucessPaymentCharts:'/sPayment/'
 };

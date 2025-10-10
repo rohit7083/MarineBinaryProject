@@ -1,38 +1,33 @@
 
     // ** React Imports
-    import { Fragment, useState } from 'react'
-    import Flatpickr from "react-flatpickr";
     import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { Fragment, useState } from 'react';
+import Flatpickr from "react-flatpickr";
 
     // ** Reactstrap Imports
     import {
-      Card,
-      Row,
-      Col,
-      Modal,
-      Input,
-      Label,
-      Button,
-      CardBody,
-      CardText,
-      CardTitle,
-      ModalBody,
-      ModalHeader,
-      FormFeedback,
-      Form,
-      FormGroup
-    } from 'reactstrap'
+  Button,
+  Col,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row
+} from 'reactstrap';
     
     // ** Third Party Components
-    import Select from 'react-select'
-    import { User, Check, X } from 'react-feather'
-    import { useForm, Controller } from 'react-hook-form'
+    import { Controller, useForm } from 'react-hook-form';
+import Select from 'react-select';
     
     // ** Utils
-    import { selectThemeColors } from '@utils'
+    import { selectThemeColors } from '@utils';
     
     // ** Styles
-    import '@styles/react/libs/react-select/_react-select.scss'
+    import '@styles/react/libs/react-select/_react-select.scss';
     
    
     const colourOptions = [
@@ -155,12 +150,12 @@
                       isClearable
                       options={colourOptions}
                       onChange={(option) => {
-                        console.clear();
+                
                         console.log(option);
                         const { value } = option;
                         field.onChange(option);
                         setValue("rentalPrice", slipDetail[value]);
-                        // handlePaidInChange(option); // Update rental price
+                        
                       }}
                       isInvalid={!!errors.paidIn}
                     />

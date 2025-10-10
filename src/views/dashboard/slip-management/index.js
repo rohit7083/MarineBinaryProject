@@ -8,20 +8,20 @@ import { useLocation } from "react-router-dom";
 import MemberIndex from "./forms/memberInfo/index";
 const TabsCentered = () => {
   const [error, setError] = useState("");
-  const [SlipData, setSlipData] = useState({});
+  const [slipData, setSlipData] = useState({});
   const [fetchLoader, setFetchLoader] = useState(false);
   const location = useLocation();
   const uid = location?.state?.uid;
   const allData = location?.state?.slipData;
   const [active, setActive] = useState("1");
-  console.clear();
+  
   console.log("allData", allData);
 
   useEffect(() => {
     setSlipData(allData);
   }, [allData]);
-  console.clear();
-  console.log("SlipData", SlipData);
+  
+  console.log("slipData", slipData);
 
   const toggle = (tab) => {
     if (active !== tab) {
@@ -78,8 +78,8 @@ const TabsCentered = () => {
             <DollarSign />
             Other Payment
           </NavLink>
-        </NavItem>
-        <NavItem>
+        </NavItem> */}
+        {/* <NavItem>
           <NavLink
             active={active === "5"}
             onClick={() => {
@@ -89,19 +89,19 @@ const TabsCentered = () => {
             <Book />
             View Documents
           </NavLink>
-        </NavItem> */}
+        </NavItem>  */}
       </Nav>
       <TabContent className="py-50" activeTab={active}>
         <TabPane tabId="1">
           <SlipDetails
             fetchLoader={fetchLoader}
-            // assigned={SlipData.isAssigned}
+            // assigned={slipData.isAssigned}
           />
         </TabPane>
 
         <TabPane tabId="2">
           {/* <MemberInfo  */}
-          <MemberIndex SlipData={SlipData} fetchLoader={fetchLoader} />
+          <MemberIndex slipData={slipData} fetchLoader={fetchLoader} />
         </TabPane>
 
         {/* <TabPane tabId="3">
@@ -110,10 +110,10 @@ const TabsCentered = () => {
 
         <TabPane tabId="4">
           <OtherPayment />
-        </TabPane>
-        <TabPane tabId="5">
-          <ViewDocuments />
-        </TabPane> */}
+        </TabPane>*/}
+        {/* <TabPane tabId="5">
+          <ViewDocuments slipData={slipData} />
+        </TabPane>  */}
       </TabContent>
     </React.Fragment>
   );

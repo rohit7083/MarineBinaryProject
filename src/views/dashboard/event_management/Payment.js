@@ -586,7 +586,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         setLoading(false);
       }
     }
-  
+
     if (!updateData?.listData?.uid || updateData?.listData?.step === 2) {
       try {
         setLoading(true);

@@ -1,25 +1,25 @@
 import { Fragment, useEffect, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 // ** Reactstrap Imports
+import { Controller, useForm } from "react-hook-form";
 import {
-  Row,
-  Col,
-  Card,
-  Modal,
   Alert,
-  Input,
   Button,
+  Card,
   CardBody,
   CardText,
   CardTitle,
+  Col,
+  Input,
+  Modal,
   ModalBody,
   ModalHeader,
+  Row,
 } from "reactstrap";
-import { useForm, Controller, set } from "react-hook-form";
 
 // ** Third Party Components
 import "cleave.js/dist/addons/cleave-phone.us";
-import { Key, Settings, MessageSquare, ChevronRight } from "react-feather";
+import { ChevronRight, Key, Settings } from "react-feather";
 
 // ** Images
 // import qrCode from '@src/assets/images/icons/qrcode.png'

@@ -23,11 +23,15 @@ const productSlice = createSlice({
     loading: false,
     error: null,
     isCutomerSelected: false,
+    filterItems:[]
   },
   reducers: {
     // You can add extra reducers like addProduct, removeProduct if needed
     checkCustomerSelected: (state, action) => {
       state.isCutomerSelected = action.payload;
+    },
+    storefilterSearch:(state,action)=>{
+      state.filterItems=action.payload
     }
   },
   extraReducers: (builder) => {
@@ -47,6 +51,6 @@ const productSlice = createSlice({
   },
 });
 
-export const { checkCustomerSelected } = productSlice.actions;
+export const { checkCustomerSelected,storefilterSearch } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -166,10 +166,10 @@ export default [
         id: "Point Of Sale ",
         title: "Point Of Sale ",
         icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/point_of_sale/shop",
-        meta: {
-          layout: "blank",
-        },
+        navLink: "/dashboard/pos/point_of_sale/shop/PayementDetails",
+        // meta: {
+        //   layout: "blank",
+        // },
       },
       {
         id: "Virtual Terminal",
@@ -358,4 +358,25 @@ export default [
       },
     ],
   },
+
+
+
+
+  //  {
+  //   id: "Sales",
+  //   title: "Sales",
+  //   icon: <GitGraph size={12} />,
+  //   // navLink: "/sales",
+  //   badge: "light-warning",
+
+  //   children: [
+  //     {
+  //       id: "Sales Summary",
+  //       title: "Sales Summary",
+  //       icon: <Circle size={12} />,
+  //       navLink: "/sales/sale_summery",
+  //     },
+     
+  //   ],
+  // },
 ];

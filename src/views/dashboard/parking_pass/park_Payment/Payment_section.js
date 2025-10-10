@@ -377,7 +377,7 @@ const Payment_section = ({ FinalAmountRes }) => {
   }, [FinalAmountRes]);
 
   useEffect(() => {
-    console.clear();
+     ();
   }, [watch("Cash")]);
 
   const maskCardNumberForCard = (number = "") => {

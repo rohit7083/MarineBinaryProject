@@ -1,27 +1,25 @@
-import React, { useState, useEffect, Fragment, useRef } from "react";
-import { useForm, Controller } from "react-hook-form";
 import useJwt from "@src/auth/jwt/useJwt";
-import Select from "react-select";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
 
-import {
-  Form,
-  Label,
-  Input,
-  Row,
-  Col,
-  Button,
-  FormFeedback,
-  Spinner,
-} from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
+import {
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert
+} from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { UncontrolledAlert } from "reactstrap";
-import { useParams } from "react-router-dom";
 
 const AccountDetails = ({
   stepper,
@@ -29,6 +27,7 @@ const AccountDetails = ({
   slipId,
   setSlipIID,
   fetchLoader,
+  slipNameFromDashboard 
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
@@ -75,6 +74,15 @@ const AccountDetails = ({
       console.error(error);
     }
   }
+   
+useEffect(() => {
+  if (slipNameFromDashboard) {
+    reset({
+      slipName: slipNameFromDashboard,
+    });
+  }
+}, [slipNameFromDashboard, reset]);
+
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {

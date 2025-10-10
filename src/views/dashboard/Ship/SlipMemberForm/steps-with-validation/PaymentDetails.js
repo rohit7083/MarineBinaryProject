@@ -286,7 +286,7 @@ const Address = ({
   }, [slipIID, sId]);
 
   const handleDiscount = (event) => {
-    console.clear();
+     
     const isToggled = event.target.checked;
 
     setDiscountToggle(isToggled);
@@ -557,7 +557,7 @@ const Address = ({
           setLoading(true);
 
           const response = await useJwt.createPayment(formData);
-        
+
           const { qr_code_base64 } = response?.data;
           setQr(qr_code_base64);
           if (qr_code_base64) {
@@ -2262,6 +2262,14 @@ const Address = ({
                             placeholder="Enter Other Company Name"
                             invalid={!!errors.otherCompanyName}
                             {...field}
+                            onChange={(e) => {
+                              // Only allow letters and spaces
+                              const value = e.target.value.replace(
+                                /[^a-zA-Z ]/g,
+                                ""
+                              );
+                              field.onChange(value);
+                            }}
                           />
                           {errors.otherCompanyName && (
                             <span className="text-danger small">

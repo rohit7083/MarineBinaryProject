@@ -13,7 +13,6 @@ const DashboardSlipMemberList = lazy(()=> import('../../views/dashboard/Ship/Sli
 // const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
 // const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
 // const DashboardemailOTP= lazy(()=> import('../../views/dashboard/Ship/UserAuth/emailOTP'))
-const DashUI=lazy(()=> import('../../views/dashboard/Ship/UI'))
 
 const Dashboarddash=lazy(()=> import('../../views/dashboard/dash'))
 const Dashboardroles=lazy(()=> import('../../views/dashboard/user-rolls'))
@@ -101,10 +100,7 @@ const DashboardRoutes = [
       path: '/dashbord',
       element: <Dashboarddash />
     },
-    {
-      path: '/dashbord/ship/ui',
-      element: <DashUI />
-    },
+   
     {
       path: '/dashbord',
       element: <ParkBoat />

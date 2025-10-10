@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
-import useJwt from "@src/auth/jwt/useJwt";
+import { useState } from "react";
+import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
-import BoatNew from "../../../../src/assets/images/updatedboat2.png";
-import AddBoat from "../../../../src/assets/images/addBoat.png";
 import {
-  Row,
-  Col,
+  Badge,
   Card,
   CardBody,
   CardText,
-  Badge,
-  InputGroup,
+  Col,
   Input,
+  InputGroup,
   InputGroupText,
-  Spinner,
   Pagination,
   PaginationItem,
   PaginationLink,
+  Row,
+  Spinner,
 } from "reactstrap";
-import { Search } from "react-feather";
+import AddBoat from "../../../../src/assets/images/addBoat.png";
+import BoatNew from "../../../../src/assets/images/updatedboat2.png";
 
 function ParkBoat({ allBoatData, loading, setLoading }) {
   const navigate = useNavigate();
@@ -29,10 +28,10 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
 
   const filteredBoatData = allBoatData.filter(
     (boat) =>
-      boat?.category?.shipTypeName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-
+      boat?.category?.shipTypeName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
       boat.slipName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-
       boat?.member?.firstName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -47,9 +46,14 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
     // navigate("/marin/slip-management");
   };
 
-  const handleAdd = () => {
-    navigate("/dashboard/slip_memberform");
-  };
+  const handleAdd = (boat) => {
+  navigate("/dashboard/slip_memberform", {
+    state: {
+      slipName: boat?.slipName,
+    },
+  });
+};
+
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -131,100 +135,113 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
             </InputGroup>
 
             <Row>
-              {currentItems && currentItems.length > 0 ?(<>
-              {currentItems.map((boat, index) => (
-                <Col key={index} xl="4" lg="4" md="4" sm="12" className="mb-4">
-                <Card
-                    style={{}}
-                    className="h-100 shadow rounded hover-card boat-card"
-                  >
-                    <CardBody>
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <h5 className="text-primary mb-0">
-                          # {index + startIndex + 1}
-                        </h5>
-                        <Badge color="dark" pill>
-                          L - {boat?.dimensions?.length || 0}
-                        </Badge>
-                        <Badge color="primary" pill>
-                          W - {boat?.dimensions?.width || 0}
-                        </Badge>
-                        <Badge color="warning" pill>
-                          H - {boat?.dimensions?.height || 0}
-                        </Badge>
-                      </div>
+              {currentItems && currentItems.length > 0 ? (
+                <>
+                  {currentItems.map((boat, index) => (
+                    <Col
+                      key={index}
+                      xl="4"
+                      lg="4"
+                      md="4"
+                      sm="12"
+                      className="mb-4"
+                    >
+                      <Card
+                        style={{}}
+                        className="h-100 shadow rounded hover-card boat-card"
+                      >
+                        <CardBody>
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <h5 className="text-primary mb-0">
+                              # {index + startIndex + 1}
+                            </h5>
+                            <Badge color="dark" pill>
+                              L - {boat?.dimensions?.length || 0}
+                            </Badge>
+                            <Badge color="primary" pill>
+                              W - {boat?.dimensions?.width || 0}
+                            </Badge>
+                            <Badge color="warning" pill>
+                              H - {boat?.dimensions?.height || 0}
+                            </Badge>
+                          </div>
 
-                      <div className="mb-2">
-                        <CardText className="mb-1">
-                          <strong>Type:</strong> {boat?.category?.shipTypeName}
-                        </CardText>
-                        <CardText>
-                          <strong>Slip Name:</strong> {boat.slipName}
-                        </CardText>
-
-                        {boat?.isAssigned && (
-                          <>
-                            <CardText>
-                              <strong>Member Name:</strong>{" "}
-                              {(boat?.member?.firstName || "") +
-                                " " +
-                                (boat?.member?.lastName || "")}
+                          <div className="mb-2">
+                            <CardText className="mb-1">
+                              <strong>Type:</strong>{" "}
+                              {boat?.category?.shipTypeName}
                             </CardText>
                             <CardText>
-                              <strong>Amount :</strong> {boat?.finalPayment}
+                              <strong>Slip Name:</strong> {boat.slipName}
                             </CardText>
-                          </>
-                        )}
-                      </div>
 
-                      <div className="text-center">
-                        <div
-                          style={{
-                            width: "170px",
-                            height: "150px", 
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "auto",
-                          }}
-                        >
-                          {boat?.isAssigned ? (
-                            <img
-                              src={BoatNew}
-                              className="boat-enter-float"
-                              alt="Boat"
+                            {boat?.isAssigned && (
+                              <>
+                                <CardText>
+                                  <strong>Member Name:</strong>{" "}
+                                  {(boat?.member?.firstName || "") +
+                                    " " +
+                                    (boat?.member?.lastName || "")}
+                                </CardText>
+                                <CardText>
+                                  <strong>Amount :</strong> {boat?.finalPayment}
+                                </CardText>
+                              </>
+                            )}
+                          </div>
+
+                          <div className="text-center">
+                            <div
                               style={{
                                 width: "170px",
-                                height: "auto",
-                                cursor: "pointer",
+                                height: "150px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                margin: "auto",
                               }}
-                              onClick={handleView}
-                            />
-                          ) : (
-                            <img
-                              width="64"
-                              height="64"
-                              className="addimg"
-                              onClick={handleAdd}
-                              style={{
-                                cursor: "pointer",
-                              }}
-                              src={AddBoat}
-                              alt="add"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Col>
-              ))}
-              </>):(<><Col sm="12">
-    <div className="text-center mt-4">
-      <h5>No data found</h5>
-    </div>
-  </Col>
-</>)}
+                            >
+                              {boat?.isAssigned ? (
+                                <img
+                                  src={BoatNew}
+                                  className="boat-enter-float"
+                                  alt="Boat"
+                                  style={{
+                                    width: "170px",
+                                    height: "auto",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={handleView}
+                                />
+                              ) : (
+                                <img
+                                  width="64"
+                                  height="64"
+                                  className="addimg"
+                                  onClick={(e) => handleAdd(boat)}
+                                  style={{
+                                    cursor: "pointer",
+                                  }}
+                                  src={AddBoat}
+                                  alt="add"
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <Col sm="12">
+                    <div className="text-center mt-4">
+                      <h5>No data found</h5>
+                    </div>
+                  </Col>
+                </>
+              )}
             </Row>
 
             {renderPagination()}

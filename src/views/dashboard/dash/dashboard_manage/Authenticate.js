@@ -2,30 +2,29 @@ import { useEffect, useState } from "react";
 import { AlertCircle } from "react-feather";
 import { useNavigate } from "react-router-dom";
 // import Index from "./dashboard_manage";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
-  Row,
-  Col,
-  Modal,
   Alert,
+  Button,
+  Col,
+  Input,
+  Modal,
   ModalBody,
   ModalHeader,
-  Button,
-  Input,
+  Row,
+  Spinner,
 } from "reactstrap";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Spinner } from "reactstrap";
 // ** Third Party Components
-import Cleave from "cleave.js/react";
 import "cleave.js/dist/addons/cleave-phone.us";
-import { Key, Settings, MessageSquare, ChevronRight } from "react-feather";
+import { Settings } from "react-feather";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Images
 // import qrCode from '@src/assets/images/icons/qrcode.png'
 import useJwt from "@src/auth/jwt/useJwt";
 import React, { Fragment } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 // import ParkBoat from "./ParkBoat";
 
 const DefaultAlert = () => {
@@ -219,11 +218,6 @@ const DefaultAlert = () => {
           )}
         </ModalBody>
       </Modal>
-
-      
-
-
-      
     </>
   );
 };
@@ -264,17 +258,18 @@ const AppAuthComponent = ({
         otp: data?.otp, // Use the form data
       });
       if (resverify?.status == 200) {
-        toast.success('Success! Two Step Authentication succesfully Completed.', {
-          position: 'top-right',
-          autoClose: 2000,
-          theme: 'colored',
-        });
+        toast.success(
+          "Success! Two Step Authentication succesfully Completed.",
+          {
+            position: "top-right",
+            autoClose: 2000,
+            theme: "colored",
+          }
+        );
 
         setTimeout(() => {
           navigate("/dashbord");
-        }, 2000); 
-        
-       
+        }, 2000);
 
         const rawData = localStorage.getItem("userData");
         let userData = rawData ? JSON.parse(rawData) : {};
@@ -289,7 +284,6 @@ const AppAuthComponent = ({
         const { status, data } = error.response;
         const errorMessage = data.error;
         setMessage(errorMessage);
-       
       }
       console.log({ error });
     } finally {
@@ -299,8 +293,6 @@ const AppAuthComponent = ({
 
   return (
     <Fragment>
-
-
       <h1 className="text-center mb-2 pb-50">Add Authenticator App</h1>
 
       {msz && (
@@ -327,7 +319,6 @@ const AppAuthComponent = ({
         )}
       </div>
       <Alert color="warning">
-        {/* <h4 className="alert-heading">ASDLKNASDA9AHS678dGhASD78AB</h4> */}
         <div className="alert-body fw-normal">
           If you are having trouble using the QR code, select manual entry on
           your app.
@@ -365,7 +356,9 @@ const AppAuthComponent = ({
             </Button>
             <Button color="primary" disabled={loading} type="submit">
               {loading ? (
-               <>Loading.. <Spinner size="sm" /></>
+                <>
+                  Loading.. <Spinner size="sm" />
+                </>
               ) : (
                 <span className="me-50">Continue</span>
               )}

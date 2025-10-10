@@ -1,5 +1,5 @@
   useEffect(() => {
-    console.clear();
+     ();
     if (Object.keys(formData)?.length) {
       const data = { ...formData };
 

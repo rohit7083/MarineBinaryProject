@@ -1,11 +1,10 @@
-
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
-// gandu rohit
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -41,16 +40,7 @@ export default class JwtService {
           config.headers["X-Location"] = Object.values(location).join(",");
         }
 
-        // ** If token is present add it to request's Authorization Header
-
         if (accessToken) {
-          // console.log("Access Token:", accessToken);
-
-          // ** eslint-disable-next-line no-param-reassign
-          // config.headers.Authorization = `${
-          //   this.jwtConfig.tokenType
-          // } ${accessToken.slice(1, -1)}`;
-
           config.headers.Authorization = `${
             this.jwtConfig.tokenType
           } ${accessToken.slice(1, -1)}`;
@@ -69,7 +59,8 @@ export default class JwtService {
         const originalRequest = config;
 
         // ** if (status === 401) {
-        if (response && response.status === 403) {
+
+        if (response && response.status === 419) {
           window.location = "/Login";
           if (!this.isAlreadyFetchingAccessToken) {
             this.isAlreadyFetchingAccessToken = true;
@@ -91,6 +82,7 @@ export default class JwtService {
           });
           return retryOriginalRequest;
         }
+
         return Promise.reject(error);
       }
     );
@@ -304,7 +296,7 @@ export default class JwtService {
     return axios.get(this.jwtConfig.resend_Otp + token);
   }
   resend_OtpCall(...args) {
-    return axios.post(this.jwtConfig.resend_OtpCall , ...args);
+    return axios.post(this.jwtConfig.resend_OtpCall, ...args);
   }
 
   generate() {
@@ -657,7 +649,7 @@ export default class JwtService {
   updateProductVariation(uid, ...args) {
     return axios.put(`${this.jwtConfig.updateProductVariation}${uid}`, ...args);
   }
-  updateProductSpecification(uid, ...args) {  
+  updateProductSpecification(uid, ...args) {
     return axios.put(
       `${this.jwtConfig.updateProductSpecification}${uid}`,
       ...args
@@ -688,8 +680,6 @@ export default class JwtService {
   getWalkinCustomer() {
     return axios.get(this.jwtConfig.getWalkinCustomer);
   }
-
-
 
   qtypos(...args) {
     return axios.post(this.jwtConfig.qtypos, ...args);
@@ -727,11 +717,13 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.getVariationUid}${vuid}`);
   }
 
-  deleteProduct(uid, vuid) {
-    return axios.delete(`${this.jwtConfig.deleteProduct}${uid}/items/${vuid}`);
+  deleteCartProduct(uid, vuid) {
+    return axios.delete(
+      `${this.jwtConfig.deleteCartProduct}${uid}/items/${vuid}`
+    );
   }
-  updatedQty(uid, quantity) {
-    return axios.put(`${this.jwtConfig.updatedQty}${uid}?quantity=${quantity}`);
+  updatedQty(params) {
+    return axios.put(`${this.jwtConfig.updatedQty}${params}`);
   }
 
   // refreshToken() {
@@ -739,6 +731,14 @@ export default class JwtService {
   //     refreshToken: this.getRefreshToken(),
   //   });
   // }
+
+  existingImages(uid) {
+    return axios.get(`${this.jwtConfig.existingImages}${uid}`);
+  }
+
+  updateDocuments(uid) {
+    return axios.put(`${this.jwtConfig.updateDocuments}${uid}`);
+  }
 
   async refreshToken() {
     try {
@@ -752,8 +752,7 @@ export default class JwtService {
     }
   }
 
-
-  // Rent Roll Services 
+  // Rent Roll Services
   getViewRentRoll() {
     return axios.get(this.jwtConfig.viewRentRollEndpoint);
   }
@@ -761,7 +760,7 @@ export default class JwtService {
     return axios.get(this.jwtConfig.InversionRentRollEndpoint);
   }
 
-  //Virtual Terminal 
+  //Virtual Terminal
   NewCustomerInTerminal(...args) {
     return axios.post(this.jwtConfig.virtualTerminalEndPoint, ...args);
   }
@@ -770,34 +769,53 @@ export default class JwtService {
   }
 
   // Generate QR Codee
-  getAllEventQRCode(){
+  getAllEventQRCode() {
     return axios.get(this.jwtConfig.getAllEventQrEndPoint);
   }
- 
-  addQrCode(...args){
+
+  addQrCode(...args) {
     return axios.post(this.jwtConfig.addQrEndPoint, ...args);
   }
 
-  deleteQrCode(uid){
-    return axios.delete( `${this.jwtConfig.addQrEndPoint}/${uid}`)
+  deleteQrCode(uid) {
+    return axios.delete(`${this.jwtConfig.addQrEndPoint}/${uid}`);
   }
 
-  updateQrCode(uid , ...args){
-
-    return axios.put(`${this.jwtConfig.addQrEndPoint}/${uid}`, ...args)
+  updateQrCode(uid, ...args) {
+    return axios.put(`${this.jwtConfig.addQrEndPoint}/${uid}`, ...args);
   }
 
-   decodeQrToken(token, ...args) {
-    return axios.get(`${this.jwtConfig.decriptQrCodeToeknEndPoint}${token}`, ...args);
+  decodeQrToken(token, ...args) {
+    return axios.get(
+      `${this.jwtConfig.decriptQrCodeToeknEndPoint}${token}`,
+      ...args
+    );
   }
 
   payQrCodePayment(token, ...args) {
     return axios.post(`${this.jwtConfig.qrPaymentEndPoint}${token}`, ...args);
   }
 
-  getEventQRPaymentList(){
-
+  getEventQRPaymentList() {
     return axios.get(this.jwtConfig.addQrEndPoint);
   }
- 
+
+
+downloadReceipt(txnId) {
+  return axios.get(`${this.jwtConfig.downloadReceipt}${txnId}`, {
+    responseType: "blob", // important for binary data
+  });
+}
+
+
+
+  successPaymentCharts({ startDate, endDate }) {
+    return axios.get(
+      `${
+        this.jwtConfig.sucessPaymentCharts
+      }success-payments?startDate=${encodeURIComponent(
+        startDate
+      )}&endDate=${encodeURIComponent(endDate)}`
+    );
+  }
 }

@@ -1,36 +1,21 @@
-// import { Card, CardBody } from "reactstrap"
-
-// const CartArea = () => {
-//   return (
-//     <>
-//     <Card>
-//       <CardBody>
-//         Cart Area
-//       </CardBody>
-
-//     </Card>
-//     </>
-//   )
-// }
-
-// export default CartArea
-
-import {
-  Card,
-  CardBody
-} from "reactstrap";
+import { Card, CardBody } from "reactstrap";
 import CartList from "./CartList";
+import MakePayment from "./MakePayment";
 
 const CartArea = () => {
-
   return (
-  <Card className="">
-  <CardBody className="">
-
-<CartList/>
-  </CardBody>
-</Card>
-
+    <Card style={{ height: "700px" /* adjust height as needed */ }}>
+      <CardBody
+        style={{
+          height: "100%",
+          overflowY: "auto",
+          paddingRight: "10px", // optional for scrollbar spacing
+        }}
+      >
+        <CartList />
+        <MakePayment />
+      </CardBody>
+    </Card>
   );
 };
 

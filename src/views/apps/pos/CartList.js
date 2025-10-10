@@ -1,27 +1,76 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 
+import useJwt from "@src/auth/jwt/useJwt";
+import { useFieldArray, useForm } from "react-hook-form";
 
-import { Trash } from "react-feather";
-import {
-    Button,
-    CardText,
-    CardTitle,
-    Col,
-    Row,
-    Table
-} from "reactstrap";
-
-
+import { useEffect, useState } from "react";
+import { Edit2, Trash } from "react-feather";
+import toast from "react-hot-toast";
+import { Button, CardText, CardTitle, Col, Row, Table } from "reactstrap";
+import VariantListModal from "./modal/VariantListModal";
+import { removeItem } from "./store/cartSlice";
 const CartList = () => {
+  // ** State
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedEditProduct, setSelectedEditProduct] = useState({
+    variations: [],
+  });
 
-    const cartItem=useSelector(store=>store.cartSlice);
-    console.log(cartItem)
+  // ** Hook
+  const { items, selectedProduct } = useSelector((store) => store.cartSlice);
+
+  const dispatch = useDispatch();
+  const [deleteLoad, setDeleteload] = useState(false);
+  // ** Field Array
+  const { control, reset } = useForm({
+    defaultValues: { slectedProducts: items },
+  });
+
+  // ** Field Array
+  const { fields } = useFieldArray({
+    control,
+    name: "selectedProducts",
+  });
+
+  useEffect(() => {
+    reset({ selectedProducts: items });
+  }, [items, reset]);
+
+  const openEditModal = (variations) => {
+    setSelectedEditProduct({
+      ...selectedProduct[variations.productId],
+      variations: [variations],
+    });
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const { billing } = useSelector((store) => store.cartSlice);
+
+  const handleDelete = async (uid, vuid, vrId) => {
+    try {
+      setDeleteload(true);
+      const delres = await useJwt.deleteCartProduct(uid, vuid);
+      dispatch(removeItem(vrId));
+
+      //  vrId
+      toast.success("Deleted successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.content);
+    } finally {
+      setDeleteload(false);
+    }
+  };
+
   return (
-   
     <Row>
       <Col>
-      <CardTitle tag="h4">Cart Summery</CardTitle>
-        <CardText className="small mb-2">Selected Product</CardText>
+        <CardTitle tag="h4">Cart Summery</CardTitle>
+        <CardText className="small ">Selected Product</CardText>
         <Table bordered hover responsive size="sm" className="mb-0">
           <thead className="small">
             <tr>
@@ -33,43 +82,56 @@ const CartList = () => {
             </tr>
           </thead>
           <tbody className="small">
-            {[].map(item => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>${item.price}</td>
-                <td style={{ maxWidth: "80px" }}>
-                  {/* <Input
-                    bsSize="sm"
-                    type="number"
-                    min="1"
-                    value={item.qty}
-                    onChange={e => updateQty(item.id, parseInt(e.target.value))}
-                  /> */}
-                </td>
-                <td>${getTotal(item.price, item.qty)}</td>
-                <td>
-                  <Button color="danger" size="sm" onClick={() => alert(item.id)}>
-                    <Trash size={14} />
-                  </Button>
-                </td>
-              </tr>
-            ))}
+            {fields.map((item, i) => {
+              const fnAmount = item.qty * item.finalAmount;
+
+              return (
+                <tr key={item.id}>
+                  <td>{item.productName}</td>
+                  <td>${item.finalAmount}</td>
+                  <td style={{ maxWidth: "80px" }}>{item?.qty}</td>
+                  <td>${fnAmount}</td>
+                  <td className="d-flex gap-1 mt-1">
+                    <Button
+                      color="primary"
+                      style={{ padding: "0.15rem 0.3rem", fontSize: "0.7rem" }}
+                      onClick={() => openEditModal(item)}
+                    >
+                      <Edit2 size={14} />{" "}
+                    </Button>
+                    <Button
+                      color="danger"
+                      style={{ padding: "0.15rem 0.3rem", fontSize: "0.7rem" }}
+                      disabled={deleteLoad}
+                      onClick={() =>
+                        handleDelete(item.posId, item.variationId, item.vrId)
+                      }
+                    >
+                      <Trash size={12} />{" "}
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
             <tr>
               <td colSpan="3" className="text-end fw-bold small">
-                Grand Total
+                <strong> Grand Total </strong>
               </td>
               <td colSpan="2" className="fw-bold small">
-                ${0}
+                ${billing?.subtotal}
               </td>
             </tr>
           </tbody>
         </Table>
-       <Button.Ripple className='round mt-2' color='dark' outline block>
-          Proceed to Checkout
-         </Button.Ripple>
       </Col>
+      <VariantListModal
+        isOpen={isOpen}
+        prDetails={selectedEditProduct}
+        toggle={closeModal}
+        isUpdate={true}
+      />
     </Row>
-  )
-}
+  );
+};
 
-export default CartList
+export default CartList;
