@@ -197,7 +197,7 @@ const MultipleColumnForm = () => {
 
       const response = await useJwt.NewCustomerInTerminal(apiData);
 
-      if (response.status == 200) {
+      if (response.data.status === 'success') {
         toast.current.show({
           severity: "success",
           summary: "Payment Successful",
@@ -293,10 +293,10 @@ const MultipleColumnForm = () => {
           {/* Show buttons based on current customer type */}
           {customerType === "new" && (
             <>
-              <Button color="primary" onClick={() => setCustomerType("walkin")}>
+              <Button color="primary" size='sm' onClick={() => setCustomerType("walkin")}>
                 Walkin Customer
               </Button>
-              <Button
+              <Button size='sm'
                 className="ms-2"
                 color="primary"
                 onClick={() => setCustomerType("existing")}
@@ -308,7 +308,7 @@ const MultipleColumnForm = () => {
 
           {customerType === "existing" && (
             <>
-              <Button color="primary" onClick={() => setCustomerType("walkin")}>
+              <Button color="primary" size='sm' onClick={() => setCustomerType("walkin")}>
                 Walkin Customer
               </Button>
               <Button
@@ -323,10 +323,10 @@ const MultipleColumnForm = () => {
 
           {customerType === "walkin" && (
             <>
-              <Button color="primary" onClick={() => setCustomerType("new")}>
+              <Button color="primary" size='sm' onClick={() => setCustomerType("new")}>
                 New Customer
               </Button>
-              <Button
+              <Button size='sm'
                 className="ms-2"
                 color="primary"
                 onClick={() => setCustomerType("existing")}
@@ -1129,7 +1129,7 @@ const MultipleColumnForm = () => {
               {/* Submit and Reset Buttons */}
               <Col sm="12">
                 <div className="d-flex">
-                  <Button
+                  <Button size='sm'
                     className="me-1"
                     color="primary"
                     type="submit"
@@ -1137,7 +1137,7 @@ const MultipleColumnForm = () => {
                   >
                     {isLoading ? "Processing..." : "Submit"}
                   </Button>
-                  <Button
+                  <Button size='sm'
                     outline
                     color="secondary"
                     type="button"

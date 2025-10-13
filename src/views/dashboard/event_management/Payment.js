@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
+
 import {
   Button,
   Card,
@@ -31,6 +32,8 @@ import {
   Spinner,
   UncontrolledAlert,
 } from "reactstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import SingleCheck from "../../../assets/images/SingleCheck.json";
 import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
@@ -151,6 +154,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       }
     }
   }, [allEventData, updateData, setValue, AmtDiffernce]);
+  const MySwal = withReactContent(Swal);
 
   const [showQrModal, setShowQrModal] = useState(false);
   const [qr, setQr] = useState(null);
@@ -356,7 +360,6 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   ]);
 
   useEffect(() => {
-    // {{ }}
     if (
       !watch("discount") &&
       !watch("advancePayment") &&
@@ -402,14 +405,13 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     return null;
   };
   const formatDate = (date, fmt) => (date ? moment(date).format(fmt) : null);
+ const PayMode=(watch("paymentMode"));
 
   const onSubmit = async (data) => {
     setErrorMsz("");
     const otpArray = data.otp || [];
     const pin = otpArray?.join("");
     const encrypted = encryptAES(pin);
-
-    //  {{ }}
 
     let formData = new FormData();
 
@@ -597,11 +599,24 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           setShowQrModal(true);
         }
         if (res?.data?.status === "success") {
-          setModal(true);
-          setTimeout(() => {
-            setModal(false);
-            stepper.next();
-          }, 4000);
+          {{debugger}}
+          if (PayMode?.value == 7) {
+             MySwal.fire({
+                  title: "Payment Link Sent Successfully",
+                  text: "Payment link has been sent to your email address.",
+                  icon: "success",
+                  customClass: {
+                    confirmButton: "btn btn-primary",
+                  },
+                  buttonsStyling: false,
+                })
+          } else {
+            setModal(true);
+            setTimeout(() => {
+              setModal(false);
+              stepper.next();
+            }, 4000);
+          }
         } else {
           toast.current.show({
             severity: "error",
@@ -1757,11 +1772,12 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           {...field}
                           // disabled={statusThree}
                           onChange={(e) => {
-                            const numericValue = e.target.value.replace(
-                              /\D/g,
+                            // Allow only letters and numbers
+                            const alphanumericValue = e.target.value.replace(
+                              /[^a-zA-Z0-9]/g,
                               ""
                             );
-                            field.onChange(numericValue);
+                            field.onChange(alphanumericValue);
                           }}
                         />
                       )}

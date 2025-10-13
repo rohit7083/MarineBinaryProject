@@ -262,7 +262,7 @@ const index = () => {
                   MySwal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: "Your Event has been Cancle.",
+                    text: "Your Event has been cancel.",
                     customClass: {
                       confirmButton: "btn btn-success",
                     },
@@ -327,12 +327,12 @@ const index = () => {
                
                 <DropdownItem onClick={() => handleCancle(row.uid)}>
                   <Trash2 className="me-50" size={15} />{" "}
-                  <span className="align-middle">Cancle Event</span>
+                  <span className="align-middle">cancel Event</span>
                 </DropdownItem>
                 {row?.roomBookings?.length > 0 && (
                   <DropdownItem onClick={() => handleRoomCancle(row)}>
                     <Trash className="me-50" size={15} />{" "}
-                    <span className="align-middle">Cancle Room</span>
+                    <span className="align-middle">cancel Room</span>
                   </DropdownItem>
                 )}
               </DropdownMenu>

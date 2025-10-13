@@ -1,4 +1,3 @@
-
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -219,7 +218,7 @@ const PersonalInfo = ({
       const countryCode = countries.find(
         (country) => country.code === formData?.dialCodeCountry
       );
-     
+
       console.log("countryCode", countryCode);
       const data = {
         ...formData,
@@ -838,8 +837,10 @@ const PersonalInfo = ({
                     style={getReadOnlyStyle()}
                     onChange={(e) => {
                       clearFieldError("postalCode");
-                      let OnlyNumAllow = e.target.value.replace(/[^0-9]/g, "");
-                      field.onChange(OnlyNumAllow);
+                      const value = e.target.value
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, 5);
+                      field.onChange(value);
                     }}
                   />
                 )}

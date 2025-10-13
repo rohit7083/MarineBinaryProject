@@ -33,8 +33,8 @@ const CustomerSearch = () => {
   const options =
     data?.map((c) => ({
       value: c.uid,
-      label: `${c.firstName} ${c.lastName}`,
-      phoneNumber: c?.phoneNumber,
+      label: `${c.firstName} ${c.lastName} (${c?.phoneNumber})`,
+      // phoneNumber: c?.phoneNumber,
       emailId: c?.emailId,
     })) || [];
 
@@ -146,9 +146,11 @@ const CustomerSearch = () => {
                     ? `${selectedCustomer.firstName} ${selectedCustomer.lastName}`
                     : selectedCustomer?.label}
 
-                  {selectedCustomer?.customerName
-                    ? `(${selectedCustomer.customerName} : ${selectedCustomer.phoneNumber})`
-                    : selectedCustomer?.phoneNumber}
+                  {selectedCustomer
+                    ? selectedCustomer.customerName
+                      ? `(${selectedCustomer.customerName} : ${selectedCustomer.phoneNumber})`
+                      : ` ${selectedCustomer.phoneNumber || ""}`
+                    : ""}
                 </span>
               </div>
 

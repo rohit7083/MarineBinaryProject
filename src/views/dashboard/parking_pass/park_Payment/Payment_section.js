@@ -88,9 +88,10 @@ const Payment_section = ({ FinalAmountRes }) => {
     if (value.length < 6) {
       return "Transaction ID must be at least 6 characters";
     }
-    if (!/^\d+$/.test(value)) {
-      return "Transaction ID must contain only numbers";
-    }
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+  return "Transaction ID must contain only letters and numbers";
+}
+
     return true;
   };
   const [cardDetails, setCardDetails] = useState({
@@ -258,45 +259,41 @@ const Payment_section = ({ FinalAmountRes }) => {
       setLoadPayment(true);
       console.log("this is payload", payload);
 
-      
       const res = await useJwt.ParkingPayment({ allocation, payment: payload });
-      if (selectedOption === "card") {
-        if (res?.data?.status === "success") {
-          toast.current.show({
-            severity: "success",
-            summary: "Payment Successful",
-            detail: "Thank you! Your payment has been completed.",
-            life: 3000,
-          });
+      // if (selectedOption === "card") {
+      if (res?.data?.status === "success") {
+        toast.current.show({
+          severity: "success",
+          summary: "Payment Successful",
+          detail: "Thank you! Your payment has been completed.",
+          life: 3000,
+        });
 
-          setTimeout(() => {
-            navigate("/parking_pass");
-          }, 2000);
-        } else {  
-          toast.current.show({
-            severity: "error", // error, success, info, warn
-            summary: "Payment Failed", // title of the toast
-            detail:
-              "Your transaction could not be completed. Please try again.", // detailed message
-            life: 3000, // duration in milliseconds
-          });
-        }
+        setTimeout(() => {
+          navigate("/parking_pass");
+        }, 2000);
+      } else {
+        toast.current.show({
+          severity: "error", // error, success, info, warn
+          summary: "Payment Failed", // title of the toast
+          detail: "Your transaction could not be completed. Please try again.", // detailed message
+          life: 3000, // duration in milliseconds
+        });
       }
+      // }
     } catch (error) {
       console.error(error);
 
       if (error.response?.data?.content) {
         setErr(error.response.data.content);
-      } else {
-        setErr("An unexpected error occurred. Please try again.");
-      }
 
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Unable to process payment at this time.",
-        life: 3000,
-      });
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: `${error.response.data.content}`,
+          life: 3000,
+        });
+      }
     } finally {
       setLoadPayment(false);
     }
@@ -304,17 +301,19 @@ const Payment_section = ({ FinalAmountRes }) => {
 
   const detectCardType = (number) => {
     const re = {
-      visa: /^4[0-9]{0,}$/,
-      mastercard: /^(5[1-5][0-9]{0,}|2[2-7][0-9]{0,})$/,
-      amex: /^3[47][0-9]{0,}$/,
+      visa: /^4[0-9]{0,}$/, // Visa starts with 4
+      mastercard: /^(5[1-5][0-9]{0,}|2[2-7][0-9]{0,})$/, // MasterCard
+      amex: /^3[47][0-9]{0,}$/, // Amex
       discover:
-        /^6(?:011|5[0-9]{2}|22[1-9][0-9]|22[2-8][0-9]|229[0-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/,
+        /^6(?:011|5[0-9]{2}|22[1-9][0-9]|22[2-8][0-9]|229[0-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{0,}$/, // Discover progressive
+      jcb: /^35[0-9]{0,}$/, // JCB starts with 35
     };
 
     if (re.visa.test(number)) return "Visa";
     if (re.mastercard.test(number)) return "MasterCard";
-    if (re.amex.test(number)) return "American Express";
+    if (re.amex.test(number)) return "Amex";
     if (re.discover.test(number)) return "Discover";
+    if (re.jcb.test(number)) return "JCB";
     return "unknown";
   };
 
@@ -342,7 +341,7 @@ const Payment_section = ({ FinalAmountRes }) => {
         case "bankName":
           return value.replace(/[^a-zA-Z\s]/g, "");
         case "cvc":
-          return value.replace(/[^0-9]/g, "").slice(0, 3);
+          return value.replace(/[^0-9]/g, "").slice(0, 4);
         case "accountNumber":
           return value.replace(/[^0-9]/g, "");
 
@@ -375,8 +374,6 @@ const Payment_section = ({ FinalAmountRes }) => {
       setValue("Cash", FinalAmountRes?.totalAmount);
     }
   }, [FinalAmountRes]);
-
- 
 
   const maskCardNumberForCard = (number = "") => {
     const clean = number.replace(/\D/g, "");
@@ -811,11 +808,21 @@ const Payment_section = ({ FinalAmountRes }) => {
                                         <Input
                                           type="password"
                                           placeholder="Enter CVV"
-                                          maxLength="3"
+                                          maxLength={4} // ensures max 4 characters
                                           {...field}
                                           onChange={(e) => {
-                                            field.onChange(e); // React Hook Form state
-                                            handleInputChange(e); // Update card preview only
+                                            // remove any non-digit characters and slice to max 4 digits
+                                            const filtered = e.target.value
+                                              .replace(/\D/g, "")
+                                              .slice(0, 4);
+                                            field.onChange(filtered); // update React Hook Form state
+                                            handleInputChange({
+                                              ...e,
+                                              target: {
+                                                ...e.target,
+                                                value: filtered,
+                                              },
+                                            }); // update preview if needed
                                           }}
                                           onFocus={handleInputFocus}
                                         />
@@ -956,11 +963,12 @@ const Payment_section = ({ FinalAmountRes }) => {
                                           }
                                           {...field}
                                           // disabled={statusThree}
-                                          onChange={(e) => {
-                                            const numericValue =
-                                              e.target.value.replace(/\D/g, "");
-                                            field.onChange(numericValue);
-                                          }}
+                                         onChange={(e) => {
+  // Allow only letters and numbers
+  const alphanumericValue = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+  field.onChange(alphanumericValue);
+}}
+
                                         />
                                       )}
                                     />

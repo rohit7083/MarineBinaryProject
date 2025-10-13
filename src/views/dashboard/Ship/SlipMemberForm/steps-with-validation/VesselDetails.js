@@ -16,7 +16,7 @@ import {
   Label,
   Row,
   Spinner,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -27,7 +27,7 @@ const AccountDetails = ({
   slipId,
   setSlipIID,
   fetchLoader,
-  slipNameFromDashboard 
+  slipNameFromDashboard,
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
@@ -62,27 +62,28 @@ const AccountDetails = ({
         }));
 
       setSlipNames(NotAssigned);
-
-      // setSlipNames(() =>
-      //   result.map(({ slipName: label, id: value, dimensions }) => ({
-      //     label,
-      //     value,
-      //     dimensions,
-      //   }))
-      // );
     } catch (error) {
       console.error(error);
     }
   }
-   
-useEffect(() => {
-  if (slipNameFromDashboard) {
-    reset({
-      slipName: slipNameFromDashboard,
-    });
-  }
-}, [slipNameFromDashboard, reset]);
-
+  // useEffect(() => {
+  //   if (slipNameFromDashboard) {
+  //     {
+  //       {
+  //         debugger;
+  //       }
+  //     }
+  //     reset({
+  //       ...slipNameFromDashboard?.vessel,
+  //       slipName: {
+  //         label: slipNameFromDashboard?.slipName,
+  //         value: slipNameFromDashboard?.id,
+  //         dimensions: slipNameFromDashboard?.dimensions, // include dimensions in slipName if needed
+  //       },
+  //       dimensionVal: slipNameFromDashboard?.dimensions || {},
+  //     });
+  //   }
+  // }, [slipNameFromDashboard, reset]);
 
   useEffect(() => {
     if (Object.keys(formData)?.length) {
@@ -114,7 +115,7 @@ useEffect(() => {
 
     try {
       // {{ }}
-      if (slipId) {
+      if (slipId ) {
         setLoading(true);
         const updateRes = await useJwt.updateVessel(finaleData.uid, finaleData);
 
@@ -132,6 +133,7 @@ useEffect(() => {
       } else {
         setLoading(true);
         const createRes = await useJwt.postsVessel(finaleData);
+        console.log("finalData", finaleData);
 
         if (createRes.status === 201) {
           toast.current.show({

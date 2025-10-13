@@ -32,15 +32,16 @@ const WizardModern = () => {
   // const { uid } = useParams();
 
   const location = useLocation();
-  const uid = location.state?.uid || "";
-const slipNameFromDashboard=location?.state?.slipName || "";
+  const slipNameFromDashboard=location?.state?.formDataFromDashboard;
+  const uid = location.state?.uid || slipNameFromDashboard?.uid;
   useEffect(() => {
     const fetchData = async () => {
       try {
+
         setFetchLoader(true);
         const response = await useJwt.getslip(uid);
         const { content } = response.data;
-        const { vessel, member, payment } = content;
+        const { vessel, member, payment } = content || slipNameFromDashboard;
         
         console.log("conntent Slip id ", content);
         setId(content);

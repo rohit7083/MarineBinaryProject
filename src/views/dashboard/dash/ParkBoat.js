@@ -49,9 +49,13 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
   const handleAdd = (boat) => {
   navigate("/dashboard/slip_memberform", {
     state: {
-      slipName: boat?.slipName,
+      
+        formDataFromDashboard:boat
     },
   });
+
+console.log(boat);
+
 };
 
 

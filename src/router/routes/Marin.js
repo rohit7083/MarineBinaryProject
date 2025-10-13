@@ -344,7 +344,7 @@ export default [
 
   {
     element: <QrPaymentStepTwo />,
-    path: "/crm/marine-resort/slip_memberform/qr_paymentsteptwo/:token",
+    path: "/slip_memberform/qr_paymentsteptwo/:token",
     meta: {
       publicRoute: true,
       layout: "blank",

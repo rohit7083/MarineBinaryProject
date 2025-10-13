@@ -271,7 +271,7 @@ const ExistingCustomer = () => {
       setIsProcessing(true) 
       const response = await useJwt.NewCustomerInTerminal(payload);
 
-      if (response.status == 200 ) {
+      if (response?.data?.status === "success" ) {
         toast.current.show({
           severity: "success",
           summary: "Payment Successful",
@@ -639,21 +639,42 @@ const ExistingCustomer = () => {
         {/* CVV */}
        {cardOptions.length > 0 && !showCardDetail && (
   <Col md='6' sm='12' className='mb-1'>
-    <Label className='form-label' for='cvv'>CVV Number</Label>
-    <Controller
-      name="cvv"
-      control={control}
-      defaultValue=""
-      render={({ field }) => (
-        <Input 
-          type="password" 
-          id="cvv" 
-          placeholder="Enter CVV" 
-          {...field} 
-        />
-      )}
-    />
-  </Col>
+  <Label className='form-label' for='cvv'>CVV Number</Label>
+  <Controller
+    name="cvv"
+    control={control}
+    defaultValue=""
+    rules={{
+      required: "CVV is required",
+      pattern: {
+        value: /^[0-9]{4}$/,
+        message: "CVV must be 4 digits",
+      },
+      maxLength: {
+        value: 4,
+        message: "CVV cannot exceed 4 digits",
+      },
+    }}
+    render={({ field }) => (
+      <Input 
+        type="password" 
+        id="cvv" 
+        placeholder="Enter CVV" 
+        maxLength={4} // restrict input length
+        {...field} 
+        onChange={(e) => {
+          // allow only digits and max 4 characters
+          const filtered = e.target.value.replace(/[^0-9]/g, '').slice(0,4);
+          field.onChange(filtered);
+        }}
+      />
+    )}
+  />
+  {errors.cvv && (
+    <small className="text-danger">{errors.cvv.message}</small>
+  )}
+</Col>
+
 )}
 
 

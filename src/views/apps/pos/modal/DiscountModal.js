@@ -223,7 +223,7 @@ const DiscountModal = ({ isOpen, toggle, setDiscountData }) => {
               </Row>
 
               <Row className="mb-3">
-                <Col md="6">
+                {/* <Col md="6">
                   <Label>Discount Value</Label>
                   <Controller
                     name="discountValue"
@@ -258,7 +258,52 @@ const DiscountModal = ({ isOpen, toggle, setDiscountData }) => {
                       {errors.discountValue.message}
                     </small>
                   )}
+                </Col> */}
+
+                <Col md="6">
+                  <Label>Discount Value</Label>
+                  <Controller
+                    name="discountValue"
+                    control={control}
+                    rules={{
+                      required: "Enter discount value",
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: "Only numbers allowed",
+                      },
+                      validate: (value) => {
+                        if (
+                          getValues("discountType") === "Percentage" &&
+                          Number(value) >= 100
+                        )
+                          return "Percentage must be less than 100";
+                        return true;
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        type="text" // use text so we can fully control input
+                        placeholder="Enter value"
+                        {...field}
+                        className="bg-light"
+                        onChange={(e) => {
+                          // allow only digits
+                          const filteredValue = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          );
+                          field.onChange(filteredValue);
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.discountValue && (
+                    <small className="text-danger">
+                      {errors.discountValue.message}
+                    </small>
+                  )}
                 </Col>
+
                 <Col md="6">
                   <Label>Calculated Discount</Label>
                   <Controller

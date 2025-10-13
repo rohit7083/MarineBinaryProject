@@ -6,18 +6,18 @@ import { ArrowLeft, Plus, Trash2, X } from "react-feather";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
-    Button,
-    Card,
-    CardHeader,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 const ProductAdd_Table = ({
@@ -443,7 +443,7 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">QTY</Label>
+                    <Label className="form-label">No. of Items</Label>
                     <Controller
                       name={`variations[${index}].qty`}
                       control={control}
@@ -457,7 +457,7 @@ const ProductAdd_Table = ({
                       render={({ field }) => (
                         <Input
                           type="text"
-                          placeholder="Enter QTY"
+                          placeholder="Enter No. of Items"
                           {...field}
                           invalid={!!errors?.variations?.[index]?.qty}
                           onChange={(e) => {
@@ -497,11 +497,13 @@ const ProductAdd_Table = ({
                           {...field}
                           invalid={!!errors?.variations?.[index]?.unit}
                           onChange={(e) => {
-  // Allow only letters and numbers
-  const onlyAlphanumeric = e.target.value.replace(/[^A-Za-z]/g, "");
-  field.onChange(onlyAlphanumeric);
-}}
-
+                            // Allow only letters and numbers
+                            const onlyAlphanumeric = e.target.value.replace(
+                              /[^A-Za-z]/g,
+                              ""
+                            );
+                            field.onChange(onlyAlphanumeric);
+                          }}
                         />
                       )}
                     />
@@ -570,25 +572,37 @@ const ProductAdd_Table = ({
                     )}
                   </Col>
 
-                  {productData?.findCategoryData?.attributeKeys?.map(
-                    (attr, idx) => (
-                      <Col key={idx} md="4" sm="6" xs="12">
-                        <Label className="form-label">{attr}</Label>
-                        <Controller
-                          name={`variations[${index}].${attr}`}
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="text"
-                              placeholder={`Enter ${attr}`}
-                              className="rounded-3 shadow-sm"
-                              {...field}
-                            />
-                          )}
-                        />
-                      </Col>
-                    )
-                  )}
+                 {productData?.findCategoryData?.attributeKeys?.map(
+  (attr, idx) => (
+    <Col key={idx} md="4" sm="6" xs="12">
+      <Label className="form-label">{attr}</Label>
+      <Controller
+        name={`variations[${index}].${attr}`}
+        control={control}
+        rules={{
+          pattern: {
+            value: /^[a-zA-Z0-9 ]*$/, // only letters, numbers, and spaces
+            message: `${attr} can only contain letters, numbers, and spaces`,
+          },
+        }}
+        render={({ field }) => (
+          <Input
+            type="text"
+            placeholder={`Enter ${attr}`}
+            className="rounded-3 shadow-sm"
+            {...field}
+            onChange={(e) => {
+              // Optional: immediately filter invalid characters
+              const filteredValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+              field.onChange(filteredValue);
+            }}
+          />
+        )}
+      />
+    </Col>
+  )
+)}
+
 
                   <Col md="12" className="d-flex justify-content-end mt-3">
                     <button

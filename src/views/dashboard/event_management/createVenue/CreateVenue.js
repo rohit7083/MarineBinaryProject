@@ -280,11 +280,11 @@ function CreateVenue() {
                       placeholder="Enter venue capacity"
                       invalid={!!errors.capacity}
                       {...field}
-                       onChange={(e) => {
-          // allow only digits and prevent negative
-          const value = e.target.value.replace(/[^0-9]/g, "");
-          field.onChange(value);
-        }}
+                      onChange={(e) => {
+                        // allow only digits and prevent negative
+                        const value = e.target.value.replace(/[^0-9]/g, "");
+                        field.onChange(value);
+                      }}
                     />
                   )}
                 />
@@ -368,7 +368,7 @@ function CreateVenue() {
               <Row>
                 {" "}
                 <Col sm="6" className="mb-1">
-                  <Label for="state">state</Label>
+                  <Label for="state">State</Label>
                   <Controller
                     name="state"
                     control={control}
@@ -403,7 +403,7 @@ function CreateVenue() {
                   )}
                 </Col>
                 <Col sm="6" className="mb-1">
-                  <Label for="country">country</Label>
+                  <Label for="country">Country</Label>
                   <Controller
                     name="country"
                     control={control}
@@ -525,11 +525,11 @@ function CreateVenue() {
                       placeholder="Enter venue price"
                       invalid={!!errors.price}
                       {...field}
-                         onChange={(e) => {
-          // allow only digits and prevent negative
-          const value = e.target.value.replace(/[^0-9]/g, "");
-          field.onChange(value);
-        }}
+                      onChange={(e) => {
+                        // allow only digits and prevent negative
+                        const value = e.target.value.replace(/[^0-9]/g, "");
+                        field.onChange(value);
+                      }}
                     />
                   )}
                 />
@@ -558,11 +558,11 @@ function CreateVenue() {
                       placeholder="Enter No of Staff"
                       invalid={!!errors.noOfStaff}
                       {...field}
-                          onChange={(e) => {
-          // allow only digits and prevent negative
-          const value = e.target.value.replace(/[^0-9]/g, "");
-          field.onChange(value);
-        }}
+                      onChange={(e) => {
+                        // allow only digits and prevent negative
+                        const value = e.target.value.replace(/[^0-9]/g, "");
+                        field.onChange(value);
+                      }}
                     />
                   )}
                 />
@@ -589,11 +589,12 @@ function CreateVenue() {
                       type="text"
                       placeholder="Enter venue staff Price"
                       invalid={!!errors.price}
-                      {...field}    onChange={(e) => {
-          // allow only digits and prevent negative
-          const value = e.target.value.replace(/[^0-9]/g, "");
-          field.onChange(value);
-        }}
+                      {...field}
+                      onChange={(e) => {
+                        // allow only digits and prevent negative
+                        const value = e.target.value.replace(/[^0-9]/g, "");
+                        field.onChange(value);
+                      }}
                     />
                   )}
                 />
