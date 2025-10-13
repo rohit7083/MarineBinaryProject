@@ -18,7 +18,12 @@ import {
   UncontrolledAlert,
 } from "reactstrap";
 
-const Add_Specification = ({ stepper, productData, setProductData, UpdateData }) => {
+const Add_Specification = ({
+  stepper,
+  productData,
+  setProductData,
+  UpdateData,
+}) => {
   const {
     control,
     handleSubmit,
@@ -55,26 +60,50 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
 
     productData?.variations?.forEach((variation, index) => {
       formData.append(`variations[${index}].mrp`, variation.mrp || "");
-      formData.append(`variations[${index}].stockQty`, variation.stockQty || "");
+      formData.append(
+        `variations[${index}].stockQty`,
+        variation.stockQty || ""
+      );
       formData.append(`variations[${index}].quantity`, variation.qty || "");
       formData.append(`variations[${index}].unit`, variation.unit || "");
-      formData.append(`variations[${index}].calAmount`, variation.calcAmount || "");
-      formData.append(`variations[${index}].finalAmount`, variation.finalAmount || "");
+      formData.append(
+        `variations[${index}].calAmount`,
+        variation.calcAmount || ""
+      );
+      formData.append(
+        `variations[${index}].finalAmount`,
+        variation.finalAmount || ""
+      );
 
       variation?.attributes?.forEach((x, i) => {
-        formData.append(`variations[${index}].attributes[${i}].attributeName`, x.attributeName || "");
-        formData.append(`variations[${index}].attributes[${i}].value`, x.value || "");
+        formData.append(
+          `variations[${index}].attributes[${i}].attributeName`,
+          x.attributeName || ""
+        );
+        formData.append(
+          `variations[${index}].attributes[${i}].value`,
+          x.value || ""
+        );
       });
 
       variation?.images?.forEach((img, i) => {
-        formData.append(`variations[${index}].variationImages[${i}].image`, img || "");
+        formData.append(
+          `variations[${index}].variationImages[${i}].image`,
+          img || ""
+        );
       });
     });
 
     if (data?.specifications) {
       data.specifications.forEach((specification, index) => {
-        formData.append(`specifications[${index}].specKey`, specification.name || "");
-        formData.append(`specifications[${index}].specValue`, specification.value || "");
+        formData.append(
+          `specifications[${index}].specKey`,
+          specification.name || ""
+        );
+        formData.append(
+          `specifications[${index}].specValue`,
+          specification.value || ""
+        );
       });
     }
 
@@ -126,7 +155,10 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
     } catch (error) {
       console.error(error);
       if (error.response) {
-        setErr(error?.response?.data?.content || "Please check all fields and try again");
+        setErr(
+          error?.response?.data?.content ||
+            "Please check all fields and try again"
+        );
       }
     } finally {
       setLoading(false);
@@ -205,11 +237,12 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
                             placeholder="e.g. Material"
                             invalid={!!errors?.specifications?.[index]?.name}
                             {...field}
-                            onChange={(e) => {
-  // Allow only letters and spaces
-  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
-  field.onChange(onlyLettersAndSpaces);
+                          onChange={(e) => {
+  // Allow only letters, numbers, and spaces
+  const alphanumericAndSpaces = e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
+  field.onChange(alphanumericAndSpaces);
 }}
+
                           />
                         )}
                       />
@@ -238,11 +271,12 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
                             invalid={!!errors?.specifications?.[index]?.value}
                             {...field}
                             className="rounded-2"
-                            onChange={(e) => {
-  // Allow only letters and spaces
-  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
-  field.onChange(onlyLettersAndSpaces);
+                           onChange={(e) => {
+  // Allow only letters, numbers, and spaces
+  const alphanumericAndSpaces = e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
+  field.onChange(alphanumericAndSpaces);
 }}
+
                           />
                         )}
                       />
@@ -289,7 +323,9 @@ const Add_Specification = ({ stepper, productData, setProductData, UpdateData })
             onClick={() => stepper.previous()}
           >
             <ArrowLeft size={14} className="align-middle me-sm-25 me-0" />
-            <span className="align-middle d-sm-inline-block d-none">Previous</span>
+            <span className="align-middle d-sm-inline-block d-none">
+              Previous
+            </span>
           </Button>
 
           <div>
