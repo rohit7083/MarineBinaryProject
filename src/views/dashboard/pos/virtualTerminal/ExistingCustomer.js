@@ -36,8 +36,7 @@ const cardTypeOptions = [
   { value: 'mastercard', label: 'Mastercard' },
   { value: 'discover', label: 'Discover' },
   { value: 'jcb', label: 'JCB' },
-  { value: 'diners', label: 'Diners Club' },
-  { value: 'maestro', label: 'Maestro' }
+  { value: 'Amex', label: 'Amex' }
 ]
 
 const ExistingCustomer = () => {
@@ -907,6 +906,7 @@ const ExistingCustomer = () => {
         <Col sm='12'>
           <div className='d-flex'>
             <Button 
+            size='sm'
               className='me-1' 
               color='primary' 
               type='submit'
@@ -915,6 +915,8 @@ const ExistingCustomer = () => {
               {isProcessing ? 'Processing...' : 'Submit'}
             </Button>
             <Button
+                        size='sm'
+
               outline
               color='secondary'
               type='button'

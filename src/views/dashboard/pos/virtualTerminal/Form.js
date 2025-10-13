@@ -42,8 +42,7 @@ const cardTypeOptions = [
   { value: "amex", label: "American Express" },
   { value: "discover", label: "Discover" },
   { value: "jcb", label: "JCB" },
-  { value: "diners", label: "Diners Club" },
-  { value: "maestro", label: "Maestro" },
+ 
 ];
 
 // Add this function at the top of your component
@@ -296,7 +295,8 @@ const MultipleColumnForm = () => {
               <Button color="primary" size='sm' onClick={() => setCustomerType("walkin")}>
                 Walkin Customer
               </Button>
-              <Button size='sm'
+              <Button
+               size='sm'
                 className="ms-2"
                 color="primary"
                 onClick={() => setCustomerType("existing")}
@@ -312,6 +312,7 @@ const MultipleColumnForm = () => {
                 Walkin Customer
               </Button>
               <Button
+              size={'sm'}
                 className="ms-2"
                 color="primary"
                 onClick={() => setCustomerType("new")}

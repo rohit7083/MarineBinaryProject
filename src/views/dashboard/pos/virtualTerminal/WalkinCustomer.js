@@ -37,8 +37,7 @@ const cardTypeOptions = [
   { value: "mastercard", label: "Mastercard" },
   { value: "discover", label: "Discover" },
   { value: "jcb", label: "JCB" },
-  { value: "diners", label: "Diners Club" },
-  { value: "maestro", label: "Maestro" },
+  { value: "Amex", label: "Amex" },
 ];
 
 const defaultValues = {
