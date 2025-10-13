@@ -516,25 +516,42 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
 
               {/* Event Name */}
               <Col md='12'>
-                <FormGroup>
-                  <Label className='form-label' for='eventName'>Event Name <span className='text-danger'>*</span></Label>
-                  <Input
-                    type='text'
-                    id='eventName'
-                    name='eventName'
-                    placeholder='Enter event name'
-                    value={formData.eventName}
-                    onChange={handleInputChange}
-                    invalid={!!errors.eventName}
-                    readOnly={
-                      (formData.qrCodeType === 'slip' && !!formData.slipId) ||
-                      (formData.qrCodeType === 'event' && !!formData.eventId) ||
-                      (formData.qrCodeType === 'roomBooking' && !!formData.eventId)
-                    }
-                  />
-                  {errors.eventName && <div className='invalid-feedback d-block'>{errors.eventName}</div>}
-                </FormGroup>
-              </Col>
+  <FormGroup>
+    <Label className='form-label' for='eventName'>
+      Event Name <span className='text-danger'>*</span>
+    </Label>
+    <Input
+      type='text'
+      id='eventName'
+      name='eventName'
+      placeholder='Enter event name'
+      value={formData.eventName}
+      onChange={(e) => {
+        const regex = /^[a-zA-Z0-9 ]*$/; // allows only alphabets, numbers, and spaces
+        if (regex.test(e.target.value) || e.target.value === '') {
+          handleInputChange(e);
+        }
+      }}
+      onPaste={(e) => {
+        // prevent pasting invalid characters
+        const paste = e.clipboardData.getData('text');
+        if (!/^[a-zA-Z0-9 ]*$/.test(paste)) {
+          e.preventDefault();
+        }
+      }}
+      invalid={!!errors.eventName}
+      readOnly={
+        (formData.qrCodeType === 'slip' && !!formData.slipId) ||
+        (formData.qrCodeType === 'event' && !!formData.eventId) ||
+        (formData.qrCodeType === 'roomBooking' && !!formData.eventId)
+      }
+    />
+    {errors.eventName && (
+      <div className='invalid-feedback d-block'>{errors.eventName}</div>
+    )}
+  </FormGroup>
+</Col>
+
 
 {/* Max People Capacity - Only for Entry Pass */}
               {selectedOther === 'EntryPass' && (
@@ -590,15 +607,14 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
                     <small className='text-muted'>Amount type is fixed for Entry Pass</small>
                   )}
                 </FormGroup>
-              </Col>
-
-              {/* Amount */}
+            </Col>
+      
               {formData.amountType === 'Fixed' && (
                 <Col md='6'>
                   <FormGroup className='mb-2'>
                     <Label className='form-label mb-1' for='amount'> {selectedOther === 'EntryPass'? 'Amount per pass': 'Amount'}<span className='text-danger'>*</span></Label>
                     <Input
-                      type='number'
+                      type='text'
                       id='amount'
                       name='amount'
                       placeholder='Enter amount'
