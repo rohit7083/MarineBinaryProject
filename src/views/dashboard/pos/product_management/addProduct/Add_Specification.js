@@ -237,12 +237,12 @@ const Add_Specification = ({
                             placeholder="e.g. Material"
                             invalid={!!errors?.specifications?.[index]?.name}
                             {...field}
-                          onChange={(e) => {
-  // Allow only letters, numbers, and spaces
-  const alphanumericAndSpaces = e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
-  field.onChange(alphanumericAndSpaces);
-}}
-
+                            onChange={(e) => {
+                              // Allow only letters, numbers, and spaces
+                              const alphanumericAndSpaces =
+                                e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
+                              field.onChange(alphanumericAndSpaces);
+                            }}
                           />
                         )}
                       />
@@ -271,12 +271,12 @@ const Add_Specification = ({
                             invalid={!!errors?.specifications?.[index]?.value}
                             {...field}
                             className="rounded-2"
-                           onChange={(e) => {
-  // Allow only letters, numbers, and spaces
-  const alphanumericAndSpaces = e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
-  field.onChange(alphanumericAndSpaces);
-}}
-
+                            onChange={(e) => {
+                              // Allow only letters, numbers, and spaces
+                              const alphanumericAndSpaces =
+                                e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
+                              field.onChange(alphanumericAndSpaces);
+                            }}
                           />
                         )}
                       />
