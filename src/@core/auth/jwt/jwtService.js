@@ -733,11 +733,13 @@ export default class JwtService {
   // }
 
   existingImages(uid) {
-    return axios.get(`${this.jwtConfig.existingImages}${uid}`);
+    return axios.get(`${this.jwtConfig.existingImages}${uid}`, {
+      responseType: "blob", // 👈 this tells Axios to treat response as binary
+    });
   }
 
-  updateDocuments(uid) {
-    return axios.put(`${this.jwtConfig.updateDocuments}${uid}`);
+  updateDocuments(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateDocuments}${uid}`, ...args);
   }
 
   async refreshToken() {
@@ -800,16 +802,13 @@ export default class JwtService {
     return axios.get(this.jwtConfig.addQrEndPoint);
   }
 
+  downloadReceipt(txnId) {
+    return axios.get(`${this.jwtConfig.downloadReceipt}${txnId}`, {
+      responseType: "blob", // important for binary data
+    });
+  }
 
-downloadReceipt(txnId) {
-  return axios.get(`${this.jwtConfig.downloadReceipt}${txnId}`, {
-    responseType: "blob", // important for binary data
-  });
-}
-
-
-
-  successPaymentCharts({ startDate, endDate }) {
+  successPaymentCharts(startDate, endDate) {
     return axios.get(
       `${
         this.jwtConfig.sucessPaymentCharts
@@ -818,4 +817,25 @@ downloadReceipt(txnId) {
       )}&endDate=${encodeURIComponent(endDate)}`
     );
   }
+
+  daysOfWeek() {
+    return axios.get(this.jwtConfig.daysOfWeek);
+  }
+  salesByhour() {
+    return axios.get(this.jwtConfig.salesByhour);
+  }
+
+  yearlySales() {
+    return axios.get(this.jwtConfig.yearlySales);
+  }
+
+  weeklySales(type) {
+    return axios.get(`${this.jwtConfig.weeklySales}?type=${type}`);
+  }
+
+  dailySales(type) {
+    return axios.get(`${this.jwtConfig.dailySales}?type=${type}`);
+  }
 }
+
+

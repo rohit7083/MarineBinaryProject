@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Clipboard, Users } from "react-feather";
+import { Book, Clipboard, Users } from "react-feather";
 import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 // ** Components
 import SlipDetails from "./forms/SlipDetails";
 // import MemberInfo from "./forms/MemberInfo";
 import { useLocation } from "react-router-dom";
 import MemberIndex from "./forms/memberInfo/index";
+import ViewDocuments from './forms/ViewDocuments';
 const TabsCentered = () => {
   const [error, setError] = useState("");
   const [slipData, setSlipData] = useState({});
@@ -79,7 +80,7 @@ const TabsCentered = () => {
             Other Payment
           </NavLink>
         </NavItem> */}
-        {/* <NavItem>
+        <NavItem>
           <NavLink
             active={active === "5"}
             onClick={() => {
@@ -89,7 +90,7 @@ const TabsCentered = () => {
             <Book />
             View Documents
           </NavLink>
-        </NavItem>  */}
+        </NavItem> 
       </Nav>
       <TabContent className="py-50" activeTab={active}>
         <TabPane tabId="1">
@@ -111,9 +112,9 @@ const TabsCentered = () => {
         <TabPane tabId="4">
           <OtherPayment />
         </TabPane>*/}
-        {/* <TabPane tabId="5">
+        <TabPane tabId="5">
           <ViewDocuments slipData={slipData} />
-        </TabPane>  */}
+        </TabPane>  
       </TabContent>
     </React.Fragment>
   );

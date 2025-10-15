@@ -12,25 +12,25 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -599,7 +599,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           setShowQrModal(true);
         }
         if (res?.data?.status === "success") {
-          {{debugger}}
+          {{  }}
           if (PayMode?.value == 7) {
              MySwal.fire({
                   title: "Payment Link Sent Successfully",

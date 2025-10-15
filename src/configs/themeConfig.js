@@ -6,7 +6,7 @@ import logo from '@src/assets/images/logo/marina.png'
 //Template config options
 const themeConfig = {
   app: {
-    appName: 'Longcove Marina',
+    appName: 'MarinaOne',
     appLogoImage: logo
   },
   layout: {

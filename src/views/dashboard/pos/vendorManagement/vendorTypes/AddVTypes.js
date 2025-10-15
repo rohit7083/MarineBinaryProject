@@ -10,16 +10,16 @@ import Select from "react-select";
 import useJwt from "@src/auth/jwt/useJwt";
 import { ArrowLeft } from "react-feather";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormGroup,
-  Input,
-  Label,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
 } from "reactstrap";
 
 function AddVTypes() {
@@ -69,7 +69,7 @@ function AddVTypes() {
 
   const onSubmit = async (data) => {
     const { ptypeName, ...reset } = data;
-    {{debugger}}
+    {{  }}
     const { description, ...rest } = reset;
 
 const payload = {

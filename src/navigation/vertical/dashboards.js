@@ -1,6 +1,6 @@
 // ** Icons Import
 import { BookCopy, HomeIcon, QrCode } from "lucide-react";
-import { Calendar, Circle, FileText, Square } from "react-feather";
+import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
 export default [
   // {
@@ -183,41 +183,11 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/customer_management",
       },
-      // {
-      //   id: "Virtual Terminal",
-      //   title: "Virtual Terminal ",
-      //   icon: <Circle size={12} />,
-      //   navLink: '/dashboard/pos/point_of_sale/virtual-terminal'
-      // },
+     
     ],
   },
 
-  // {
-  //   id: "Member management",
-  //   title: "Memeber Manage",
-  //   icon: <Users size={12} />,
-  //   navLink: '/member_management',
-  //   badge: "light-warning",
 
-  // },
-
-  // {
-  //   id: "ui",
-  //   title: "ui",
-  //   icon: <Circle size={12} />,
-  //   // navLink: '/dashboard/create-user',
-  //   badge: "light-warning",
-  //   // badgeText: '2',
-  //   children: [
-  //     {
-  //       id: "ui1",
-  //       title: "ui  1",
-  //       icon: <Circle size={12} />,
-  //       navLink: "/dashbord/ship/ui",
-  //     },
-
-  //   ],
-  // },
 
   {
     id: "Parking Pass",
@@ -362,21 +332,26 @@ export default [
 
 
 
-  //  {
-  //   id: "Sales",
-  //   title: "Sales",
-  //   icon: <GitGraph size={12} />,
-  //   // navLink: "/sales",
-  //   badge: "light-warning",
+   {
+    id: "Sales",
+    title: "Sales",
+    icon: <BarChart2 size={12} />,
+    // navLink: "/sales",
+    badge: "light-warning",
 
-  //   children: [
-  //     {
-  //       id: "Sales Summary",
-  //       title: "Sales Summary",
-  //       icon: <Circle size={12} />,
-  //       navLink: "/sales/sale_summery",
-  //     },
+    children: [
+      {
+        id: "Sales Summary",
+        title: "Sales Summary",
+        icon: <Circle size={12} />,
+        navLink: "/sales/sale_summery",
+      },{
+        id: "Sales Trends",
+        title: "Sales Trends",
+        icon: <Circle size={12} />,
+        navLink: "/sales/sale_trends",
+      },
      
-  //   ],
-  // },
+    ],
+  },
 ];

@@ -219,5 +219,11 @@ export default {
   downloadReceipt:'/sPayment/receipt/',
 
   //sales charts 
-  sucessPaymentCharts:'/sPayment/'
+  sucessPaymentCharts:'/sPayment/',
+  daysOfWeek:'/sPayment/weekly-success',
+  salesByhour:'/sPayment/today-payment-graph',
+
+  yearlySales:'/sPayment/yearly-comparison',
+  weeklySales:'/sPayment/weekly-comparison',
+  dailySales:'/sPayment/time-of-day-comparison',
 };

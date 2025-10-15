@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ArrowLeft, DownloadCloud, Eye, FileText, X } from "react-feather";
 import { useForm } from "react-hook-form";
@@ -13,43 +13,19 @@ import {
   Form,
   Label,
   Row,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 
-const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
-const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
-  const [documents, setDocuments] = useState([]);
-  const myId = useParams();
+const Document = ({ stepper, slipIID, sId }) => {
   const [loading, setLoading] = useState(false);
-  const [isDataFetch, setIsDataFetch] = useState(false);
-  const navigate = useNavigate();
-  const [checkDocuments, setCheckDocuments] = useState(false);
   const [ermsz, setErrmsz] = useState("");
-  const {
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    clearErrors,
-    reset,
-    watch,
-  } = useForm({
+  const myId = useParams();
+  const navigate = useNavigate();
+
+  const { handleSubmit, setValue, formState: { errors }, reset, watch } = useForm({
     defaultValues: {
-      Contract: {
-        lastUploaded: "",
-        currentFile: null,
-      },
-      IdentityDocument: {
-        lastUploaded: "",
-        currentFile: null,
-      },
-      Registration: {
-        lastUploaded: "",
-        currentFile: null,
-      },
-      Insurance: {
-        lastUploaded: "",
-        currentFile: null,
-      },
+      IdentityDocument: { lastUploaded: "", currentFile: null },
+      ProofOfAddress: { lastUploaded: "", currentFile: null },
     },
   });
 
@@ -58,19 +34,18 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
       try {
         const response = await useJwt.getSingleDocuments(slipIID || sId?.id);
 
-        const doc = response.data.content.result.reduce((object, item) => {
-          const { uid, documentName, documentFilePath } = item;
-          object[documentName] = {
-            uid,
-            lastUploaded: documentFilePath,
-            currentFile: null,
-          };
-          return object;
-        }, {});
+        const doc = response.data.content.result
+          .filter((item) =>
+            ["IdentityDocument", "ProofOfAddress"].includes(item.documentName)
+          )
+          .reduce((object, item) => {
+            const { uid, documentName, documentFilePath } = item;
+            object[documentName] = { uid, lastUploaded: documentFilePath, currentFile: null };
+            return object;
+          }, {});
 
         if (Object.keys(doc).length) {
           reset(doc);
-          setIsDataFetch(true);
         }
       } catch (error) {
         console.error("Error fetching documents:", error);
@@ -81,29 +56,23 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
 
   const onSubmit = async (data) => {
     setErrmsz("");
-    const updatedDataList = Object.keys(data).reduce((obj, key) => {
-      if (data[key].currentFile == null) {
-        delete data[key];
+    const updatedDataList = Object.keys(data)
+      .filter((key) => ["IdentityDocument", "ProofOfAddress"].includes(key))
+      .reduce((obj, key) => {
+        if (!data[key].currentFile) return obj;
+
+        const formData = new FormData();
+        formData.append("documentName", key);
+        formData.append("documentFile", data[key].currentFile);
+        formData.append("slipId", slipIID || sId?.id);
+
+        obj[key] = obj[key] || {};
+        obj[key]["formData"] = formData;
+        if (data[key].uid) obj[key]["uid"] = data[key].uid;
         return obj;
-      }
-
-      const formData = new FormData();
-
-      formData.append("documentName", key);
-      formData.append("documentFile", data[key].currentFile);
-      formData.append("slipId", slipIID || sId?.id);
-
-      obj[key] = obj[key] || {};
-      obj[key]["formData"] = formData;
-      if (data[key].uid) obj[key]["uid"] = data[key].uid;
-      return obj;
-    }, {});
+      }, {});
 
     try {
-      //
-      if (myId) {
-        navigate("/event_index"); // Redirect after alert
-      }
       const results = await Promise.all(
         Object.values(updatedDataList).map(async (details) => {
           if (details?.uid) {
@@ -116,13 +85,8 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
         })
       );
 
-      // Check results and show messages accordingly
-      const updatedCount = results.filter(
-        (res) => res.type === "update"
-      ).length;
-      const createdCount = results.filter(
-        (res) => res.type === "create"
-      ).length;
+      const updatedCount = results.filter((res) => res.type === "update").length;
+      const createdCount = results.filter((res) => res.type === "create").length;
 
       let message = "";
       if (updatedCount > 0 && createdCount > 0) {
@@ -132,6 +96,7 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
       } else if (createdCount > 0) {
         message = `Successfully created ${createdCount} records!`;
       }
+
       if (message) {
         Swal.fire({
           icon: "success",
@@ -145,12 +110,8 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
       }
     } catch (error) {
       console.error(error);
-      const errMsz = error.response.data?.content;
-      console.log(errMsz);
-
-      if (errMsz) {
-        setErrmsz(errMsz);
-      }
+      const errMsz = error.response?.data?.content || "Something went wrong!";
+      setErrmsz(errMsz);
       Swal.fire({
         icon: "error",
         title: "Document Error!",
@@ -160,31 +121,17 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
   };
 
   const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) {
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
-    } else {
-      return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
-    }
+    if (Math.round(size / 100) / 10 > 1000) return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+    return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
   };
 
-  //** Render View */
   const renderFilePreview = (file) => {
-    if (file.type.startsWith("image")) {
-      return (
-        <img
-          className="rounded"
-          alt={file.name}
-          src={URL.createObjectURL(file)}
-          height="28"
-          width="28"
-        />
-      );
-    } else {
-      return <FileText size="28" />;
+    if (file?.type?.startsWith("image")) {
+      return <img className="rounded" alt={file.name} src={URL.createObjectURL(file)} height="28" width="28" />;
     }
+    return <FileText size="28" />;
   };
 
-  // ** Render Drop Zone
   const renderDropzone = (fieldName, label) => {
     const { getRootProps, getInputProps } = useDropzone({
       multiple: false,
@@ -193,23 +140,18 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
       },
     });
 
+    const file = watch(fieldName)?.currentFile;
+    const lastUploaded = watch(fieldName)?.lastUploaded;
+
     return (
-      <Col sm="6" className="mb-3">
+      <Col sm="6" xs="12" className="mb-3">
         <div className="d-flex justify-content-between align-items-center">
-          <Label className="mb-2">
-            {label} <span style={{ color: "red" }}>*</span>
-          </Label>
-          {watch(fieldName)?.lastUploaded ? (
-            <Badge
-              color={"success"}
-              style={{ cursor: "pointer" }}
-              onClick={() =>
-                window.open(watch(fieldName)?.lastUploaded, "_blank")
-              }
-            >
+          <Label className="mb-2">{label} <span style={{ color: "red" }}>*</span></Label>
+          {lastUploaded && (
+            <Badge color="success" style={{ cursor: "pointer" }} onClick={() => window.open(lastUploaded, "_blank")}>
               <Eye size={12} /> Last File Uploaded
             </Badge>
-          ) : null}
+          )}
         </div>
 
         <div
@@ -231,49 +173,32 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
         >
           <input {...getInputProps()} />
           <div className="d-flex align-items-center justify-content-center flex-column">
-            {watch(fieldName)?.currentFile ? (
-              ((file = watch(fieldName)?.currentFile) => (
-                <Fragment>
-                  <div className="file-details d-flex align-items-center">
-                    <div className="file-preview me-1">
-                      {renderFilePreview(file)}
-                    </div>
-                    <div>
-                      <p className="file-name mb-0">{file.nameX}</p>
-                      <p className="file-size mb-0">
-                        {renderFileSize(file.size)}
-                      </p>
-                    </div>
+            {file ? (
+              <div className="d-flex align-items-center justify-content-between w-100 px-2">
+                <div className="d-flex align-items-center">
+                  <div className="file-preview me-2">{renderFilePreview(file)}</div>
+                  <div>
+                    <p className="mb-0 fw-semibold">{file.name}</p>
+                    <p className="mb-0 text-muted">{renderFileSize(file.size)}</p>
                   </div>
-                  <Button
-                    color="danger"
-                    outline
-                    size="sm"
-                    className="btn-icon"
-                    onClick={() => setValue(`${fieldName}.currentFile`, null)}
-                  >
-                    <X size={14} />
-                  </Button>
-                </Fragment>
-              ))()
+                </div>
+                <Button color="danger" outline size="sm" onClick={() => setValue(`${fieldName}.currentFile`, null)}>
+                  <X size={14} />
+                </Button>
+              </div>
             ) : (
               <>
                 <DownloadCloud size={38} />
-                {/* <h5>Drop Files here or click to upload</h5> */}
-                <p className="text-secondary">
+                <p className="text-secondary mt-2">
                   Drop files here or click{" "}
-                  <a href="/" onClick={(e) => e.preventDefault()}>
-                    browse
-                  </a>{" "}
+                  <a href="/" onClick={(e) => e.preventDefault()}>browse</a>{" "}
                   through your machine
                 </p>
               </>
             )}
           </div>
         </div>
-        {errors[fieldName] && (
-          <span className="text-danger">{errors[fieldName].message}</span>
-        )}
+        {errors[fieldName] && <span className="text-danger">{errors[fieldName].message}</span>}
       </Col>
     );
   };
@@ -281,54 +206,23 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
   return (
     <Fragment>
       {ermsz && (
-        <React.Fragment>
-          <UncontrolledAlert color="danger">
-            <div className="alert-body">
-              <span className="text-danger fw-bold">
-                <strong>Error : </strong>
-                {ermsz}
-              </span>
-            </div>
-          </UncontrolledAlert>
-        </React.Fragment>
+        <UncontrolledAlert color="danger">
+          <div className="alert-body">
+            <strong>Error: </strong>{ermsz}
+          </div>
+        </UncontrolledAlert>
       )}
       <Form onSubmit={handleSubmit(onSubmit)}>
-         {/* <Card>
-          <CardBody> */} 
-            <Row className=''>
-              {[
-                "IdentityDocument",
-                "Passport",
-                "Driver’s License",
-                "Proof of Address",
-              ].map((fieldName) => renderDropzone(fieldName, fieldName))}
-            </Row>
-           {/* </CardBody>
-        </Card>  */}
-        <div className="d-flex justify-content-between">
-          <Button
-            type="button"
-            color="primary"
-            className="btn-prev"
-            onClick={() => stepper.previous()}
-          >
-            <ArrowLeft
-              size={14}
-              className="align-middle me-sm-25 me-0"
-            ></ArrowLeft>
-            <span className="align-middle d-sm-inline-block d-none">
-              Previous
-            </span>
+        <Row>
+          {["IdentityDocument", "ProofOfAddress"].map((field) => renderDropzone(field, field))}
+        </Row>
+
+        <div className="d-flex justify-content-between mt-3">
+          <Button type="button" color="primary" onClick={() => stepper.previous()}>
+            <ArrowLeft size={14} className="align-middle me-1" /> Previous
           </Button>
-          <Button
-            disabled={loading || checkDocuments}
-            type="submit"
-            color="success"
-            className="btn-next"
-          >
-            <span className="align-middle d-sm-inline-block d-none">
-              Submit
-            </span>
+          <Button type="submit" color="success" disabled={loading}>
+            Submit
           </Button>
         </div>
       </Form>
@@ -337,45 +231,3 @@ const Document = ({ Parentdocuments, stepper, slipIID, sId }) => {
 };
 
 export default Document;
-
-/*
-
-
-    const formData = new FormData();
-  
-    if (data.contractFile) {
-      formData.append("documentFile", data.contractFile);
-      formData.append("documentNames", "Contract Document");
-    }
-  
-    if (data.identityDocumentFile) {
-      formData.append("documentFile", data.identityDocumentFile);
-      formData.append("documentNames", "Identity Document");
-    }
-  
-    if (data.registrationFile) {
-      formData.append("documentFile", data.registrationFile);
-      formData.append("documentNames", "Registration Document");
-    }
-  
-    if (data.insuranceFile) {
-      formData.append("documentFile", data.insuranceFile);
-      formData.append("documentNames", "Insurance Document");
-    }
-  
-    formData.append("slipId", slipIID); // Always append slipIID
-  
-   try {
-      setLoading(true);
-      
-      const response = await useJwt.slipDocument(formData); // Send FormData directly
-  
-      toast.success("Files uploaded successfully!");
-      console.log("API Response:", response.data);
-    } catch (error) {
-      toast.error("An error occurred while uploading files.");
-      console.error("Error:", error);
-    } finally {
-      setLoading(false);
-    }
-*/

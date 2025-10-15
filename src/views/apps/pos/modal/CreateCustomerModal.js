@@ -7,15 +7,15 @@ import { Toast } from "primereact/toast";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
+    Button,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 const CreateCustomerModal = ({
@@ -81,7 +81,7 @@ const CreateCustomerModal = ({
     try {
       {
         {
-          debugger;
+            ;
         }
       }
       setIsSubmitting(true);

@@ -221,6 +221,13 @@ const SaleSummery = lazy(() =>
   import("../../views/dashboard/sales/index")
 );
 
+const SalesTrends = lazy(() =>
+  import("../../views/dashboard/sales/sales_trends/index")
+);
+
+
+
+
 export default [
   {
     path: "/marin/slip-management/:uid",
@@ -589,5 +596,9 @@ export default [
     path: "/sales/sale_summery",
   },
 
+   {
+    element: <SalesTrends />,
+    path: "/sales/sale_trends",
+  },
   
 ];

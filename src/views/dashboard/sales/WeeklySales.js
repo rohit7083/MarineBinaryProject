@@ -1,5 +1,6 @@
 // ** Third Party Components
-import '@styles/react/libs/flatpickr/flatpickr.scss';
+import useJwt from "@src/auth/jwt/useJwt";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 import {
   BarElement,
   CategoryScale,
@@ -7,22 +8,48 @@ import {
   Legend,
   LinearScale,
   Tooltip,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 // Register required chart components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 // ** Reactstrap Imports
-import { useSkin } from '@hooks/useSkin';
-import { Card, CardBody, CardHeader, CardTitle } from 'reactstrap';
+import { useSkin } from "@hooks/useSkin";
+import { useEffect, useState } from "react";
+import { Card, CardBody, CardHeader, CardTitle, Spinner } from "reactstrap";
 
 const WeeklySales = () => {
-  const { skin } = useSkin();
+  const [weekData, setWeekData] = useState([]);
+  useEffect(() => {
+    const fetchDaysOfWeek = async () => {
+      try {
+        setLoading(true);
+        const res = await useJwt.daysOfWeek();
+        console.log(res);
+        setWeekData(res);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const gridLineColor = 'rgba(200, 200, 200, 0.2)';
-  const success = '#28dac6';
-  const labelColor = skin === 'dark' ? '#b4b7bd' : '#6e6b7b';
+    fetchDaysOfWeek();
+  }, []);
+  const [loading, setLoading] = useState(false);
+
+  const { skin } = useSkin();
+  const dayNames = Object.keys(weekData?.data || []);
+  const formattedDays = dayNames?.map(
+    (day) => day.charAt(0) + day.slice(1).toLowerCase()
+  );
+  const salesData = dayNames.map((day) => weekData.data[day].totalAmount || 0);
+  const maxTotal = Math.max(...salesData);
+
+  const gridLineColor = "rgba(200, 200, 200, 0.2)";
+  const success = "#28dac6";
+  const labelColor = skin === "dark" ? "#b4b7bd" : "#6e6b7b";
 
   // ** Chart Options
   const options = {
@@ -39,13 +66,13 @@ const WeeklySales = () => {
       },
       y: {
         min: 0,
-        max: 400,
+        max: maxTotal + maxTotal * 0.1,
         grid: {
           color: gridLineColor,
           borderColor: gridLineColor,
         },
         ticks: {
-          stepSize: 100,
+          stepSize: Math.ceil((maxTotal + maxTotal * 0.1) / 5),
           color: labelColor,
         },
       },
@@ -53,43 +80,50 @@ const WeeklySales = () => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: skin === 'dark' ? '#283046' : '#fff',
-        titleColor: skin === 'dark' ? '#fff' : '#000',
-        bodyColor: skin === 'dark' ? '#b4b7bd' : '#6e6b7b',
+        backgroundColor: skin === "dark" ? "#283046" : "#fff",
+        titleColor: skin === "dark" ? "#fff" : "#000",
+        bodyColor: skin === "dark" ? "#b4b7bd" : "#6e6b7b",
       },
     },
   };
 
   // ** Chart Data
   const data = {
-    labels: [
-      '7/12', '8/12', '9/12', '10/12', '11/12',
-      '12/12', '13/12',
-    ],
+    labels: formattedDays,
     datasets: [
       {
-        label: 'Sales',
+        label: "Sales",
         maxBarThickness: 15,
         backgroundColor: success,
-        borderColor: 'transparent',
+        borderColor: "transparent",
         borderRadius: 10,
-        data: [275, 90, 190, 205, 125, 85, 55, 87, 127, 150, 230, 280, 190],
+        data: salesData,
       },
     ],
   };
 
   return (
     <Card>
-      <CardHeader className='d-flex justify-content-between align-items-center flex-wrap'>
-        <CardTitle tag='h4'>Day Of Week
-</CardTitle>
-        
+      <CardHeader className="d-flex justify-content-between align-items-center flex-wrap">
+        <CardTitle tag="h4">Day Of Week</CardTitle>
       </CardHeader>
 
       <CardBody>
-        <div style={{ height: '400px' }}>
-          <Bar data={data} options={options} />
+
+         {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "150px" }}
+            >
+              <Spinner color="primary" />
+              <span className="ms-2 text-muted">Loading chart data...</span>
+            </div>
+          ) : (
+        <div style={{ height: "400px" }}>
+         
+            <Bar data={data} options={options} />
         </div>
+          )}
       </CardBody>
     </Card>
   );
