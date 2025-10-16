@@ -32,7 +32,7 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 // Default Form Values
 const defaultValues = {
   // password: "101010",

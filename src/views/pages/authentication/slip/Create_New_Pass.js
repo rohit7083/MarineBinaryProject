@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 
 import {
   Button,

@@ -6,7 +6,7 @@ import { UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg';
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 
 // ** Reactstrap Imports
 import useJwt from "@src/auth/jwt/useJwt";

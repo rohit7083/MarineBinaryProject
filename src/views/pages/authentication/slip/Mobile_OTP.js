@@ -28,7 +28,7 @@ import { useDispatch } from "react-redux";
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 
 const TwoStepsBasic = () => {
   const MySwal = withReactContent(Swal);

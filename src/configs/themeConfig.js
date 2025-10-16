@@ -1,5 +1,5 @@
 // Logo Import
-import logo from '@src/assets/images/logo/marina.png'
+import logo from '@src/assets/images/logo/LT.png'
 
 // You can customize the template with the help of this file
 

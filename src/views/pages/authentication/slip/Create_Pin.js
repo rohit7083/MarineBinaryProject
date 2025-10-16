@@ -15,7 +15,7 @@ import { ListGroupItem, UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 
 import { Button, Card, CardBody, CardText, CardTitle, Input } from "reactstrap";
 

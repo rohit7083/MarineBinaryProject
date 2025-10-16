@@ -38,7 +38,7 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
 import ReCAPTCHA from "react-google-recaptcha";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 
 const defaultValues = {
   // password: "Ro1234567899",

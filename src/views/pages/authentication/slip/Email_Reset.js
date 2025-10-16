@@ -13,7 +13,7 @@ import { UncontrolledAlert } from "reactstrap";
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
+import MARinLogo from "./../../../../../src/assets/images/LT.png";
 
 const VerifyEmailBasic = () => {
   // Initialize the useForm hook
