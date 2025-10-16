@@ -112,12 +112,15 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-    {
-      name: "Venue Name",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.venueName,
-    },
+   {
+  name: "Venue Name",
+  sortable: true,
+  selector: (row) =>
+    row.venueName
+      ? row.venueName.charAt(0).toUpperCase() + row.venueName.slice(1).toLowerCase()
+      : "",
+},
+
     {
       name: "venue Type",
       sortable: true,

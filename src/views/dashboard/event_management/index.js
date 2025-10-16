@@ -175,7 +175,11 @@ const index = () => {
       name: "Event Name",
       sortable: true,
       minWidth: "150px",
-      selector: (row) => row.eventName,
+      selector: (row) =>
+        row.eventName
+          ? row.eventName.charAt(0).toUpperCase() +
+            row.eventName.slice(1).toLowerCase()
+          : "",
     },
 
     {
@@ -296,8 +300,7 @@ const index = () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
 
-             <DropdownMenu end container="body">
-
+              <DropdownMenu end container="body">
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />
                   <span className="align-middle">Edit</span>
@@ -317,14 +320,12 @@ const index = () => {
                   <Calendar className="me-50" size={15} />{" "}
                   <span className="align-middle">Payment History</span>
                 </DropdownItem>
-              
 
                 <DropdownItem onClick={() => handleAddExtraRoom(row)}>
                   <PlusCircle className="me-50" size={15} />{" "}
                   <span className="align-middle">Add Extra Room</span>
                 </DropdownItem>
 
-               
                 <DropdownItem onClick={() => handleCancle(row.uid)}>
                   <Trash2 className="me-50" size={15} />{" "}
                   <span className="align-middle">cancel Event</span>

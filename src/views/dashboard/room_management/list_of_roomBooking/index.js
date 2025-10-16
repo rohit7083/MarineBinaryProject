@@ -124,12 +124,22 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-    {
-      name: "Guest Name",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.member?.firstName + " " + row.member?.lastName,
-    },
+   {
+  name: "Guest Name",
+  sortable: true,
+  selector: (row) => {
+    const first = row?.member?.firstName
+      ? row.member.firstName.charAt(0).toUpperCase() +
+        row.member.firstName.slice(1).toLowerCase()
+      : "";
+    const last = row?.member?.lastName
+      ? row.member.lastName.charAt(0).toUpperCase() +
+        row.member.lastName.slice(1).toLowerCase()
+      : "";
+    return `${first} ${last}`.trim();
+  },
+},
+
     {
       name: "Room No",
       sortable: true,

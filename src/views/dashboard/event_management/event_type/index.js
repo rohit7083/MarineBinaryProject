@@ -95,12 +95,16 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-    {
-      name: "Event Type ",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.eventTypeName,
-    },
+  {
+  name: "Event Type",
+  sortable: true,
+  selector: (row) =>
+    row?.eventTypeName
+      ? row.eventTypeName.charAt(0).toUpperCase() +
+        row.eventTypeName.slice(1).toLowerCase()
+      : "",
+},
+
     {
       name: "Description",
       sortable: true,

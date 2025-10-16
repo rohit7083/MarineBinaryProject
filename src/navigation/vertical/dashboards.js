@@ -1,5 +1,5 @@
 // ** Icons Import
-import { BookCopy, HomeIcon, QrCode } from "lucide-react";
+import { BookCopy, HomeIcon, QrCode, UserRoundSearch } from "lucide-react";
 import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
 export default [
@@ -352,7 +352,7 @@ export default [
   {
     id: "Accounting",
     title: "Accounting",
-    icon: <BarChart2 size={12} />,
+    icon: <UserRoundSearch size={12} />,
     // navLink: "/sales",
     badge: "light-warning",
 

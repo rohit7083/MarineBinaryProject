@@ -101,12 +101,16 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-    {
-      name: "Room Type",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row?.roomType?.roomTypeName,
-    },
+  {
+  name: "Room Type",
+  sortable: true,
+  selector: (row) =>
+    row?.roomType?.roomTypeName
+      ? row.roomType.roomTypeName.charAt(0).toUpperCase() +
+        row.roomType.roomTypeName.slice(1).toLowerCase()
+      : "",
+},
+
     {
       name: "Number of Rooms",
       sortable: true,

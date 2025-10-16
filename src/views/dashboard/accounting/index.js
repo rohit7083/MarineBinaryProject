@@ -10,6 +10,7 @@ import {
   Card,
   CardBody,
   CardText,
+  CardTitle,
   Input,
   InputGroup,
   InputGroupText,
@@ -162,10 +163,12 @@ const Index = () => {
         <CardBody>
           <div className="d-flex justify-content-between align-items-center mb-2">
             <div>
-              <h2 style={{ fontWeight: 700, fontSize: "28px" }}>
+              {/* <h2 style={{ fontWeight: 700, fontSize: "28px" }}>
                 Reports Dashboard
-              </h2>
-            </div>
+              </h2> */}
+<CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
+  Reports Dashboard
+</CardTitle>            </div>
           </div>
 
           <div className="d-flex align-items-center gap-2 mb-2">
