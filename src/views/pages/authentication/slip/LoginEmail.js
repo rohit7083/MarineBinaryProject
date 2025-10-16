@@ -16,6 +16,8 @@ import { AbilityContext } from "@src/utility/context/Can";
 import React from "react";
 // ** Utils
 // ** Reactstrap Imports
+import MARinLogo from "../../../../assets/images/logo/LT.png";
+
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import "@styles/react/pages/page-authentication.scss";
@@ -32,7 +34,6 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import MARinLogo from "./../../../../../src/assets/images/LT.png";
 // Default Form Values
 const defaultValues = {
   // password: "101010",
@@ -149,12 +150,12 @@ const Login = () => {
             src={MARinLogo}
             alt="Longcove Marina Logo"
             width={55}
-            height={55}
-            className="mx-2"
+            height={50}
+            className=""
           />
 
           <h2
-            className="brand-text text-primary ms-1 mt-1"
+            className="brand-text text-primary  mt-1"
             style={{ fontWeight: "bold" }}
           >
            MarinaOne

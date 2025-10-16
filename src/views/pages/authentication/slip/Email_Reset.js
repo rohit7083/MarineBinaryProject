@@ -13,7 +13,7 @@ import { UncontrolledAlert } from "reactstrap";
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import MARinLogo from "./../../../../../src/assets/images/LT.png";
+import MARinLogo from "../../../../assets/images/logo/LT.png";
 
 const VerifyEmailBasic = () => {
   // Initialize the useForm hook
@@ -88,20 +88,25 @@ const VerifyEmailBasic = () => {
       <div className="auth-inner my-2">
         <Card className="mb-0">
           <CardBody>
-          <Link
-                      to="/"
-                      onClick={(e) => e.preventDefault()}
-                      className="mb-3 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
-                    >
-                      <img
-                        src={MARinLogo}
-                        alt=" MarinaOne"
-                        width={55}
-                        height={55}
-                        className="mx-2"
-                      />
-                      <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
-                    </Link>
+            <Link
+              to="/"
+              onClick={(e) => e.preventDefault()}
+              className="mb-3 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+            >
+              <img
+                src={MARinLogo}
+                alt=" MarinaOne"
+                width={55}
+                height={35}
+                className="mx-1"
+              />
+              <h2
+                className="text-primary mt-1  "
+                style={{ fontWeight: "bold" }}
+              >
+                MarinaOne
+              </h2>
+            </Link>
             <CardTitle tag="h2" className="fw-bolder mb-1">
               Verify your email ✉️
             </CardTitle>
@@ -152,7 +157,13 @@ const VerifyEmailBasic = () => {
                 color="primary"
                 className="mt-2"
               >
-                {loading ?<>Loading.. <Spinner size="sm" /> </>: "Send"}
+                {loading ? (
+                  <>
+                    Loading.. <Spinner size="sm" />{" "}
+                  </>
+                ) : (
+                  "Send"
+                )}
               </Button>
 
               <p className="text-center mt-2">

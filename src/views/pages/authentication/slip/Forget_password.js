@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
 import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
-import MARinLogo from "./../../../../../src/assets/images/LT.png";
+import MARinLogo from "../../../../assets/images/logo/LT.png";
 
 import {
   Button,
