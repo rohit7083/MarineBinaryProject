@@ -9,6 +9,7 @@ import QrList from "../../views/dashboard/qrCode/qrList/index";
 import QrPaymentFrom from "../../views/dashboard/qrCode/qrList/QrPaymentForm";
 import InverSlip from "../../views/dashboard/rentRoll/inverseSlip/index";
 import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index";
+import SwitchSlipPaymentForm from "../../views/dashboard/slip-management/forms/SwitchSlipPaymentForm";
 
 const SlipManagementRoutes = lazy(() =>
   import("../../views/dashboard/slip-management")
@@ -224,7 +225,9 @@ const SaleSummery = lazy(() =>
 const SalesTrends = lazy(() =>
   import("../../views/dashboard/sales/sales_trends/index")
 );
-
+const Report = lazy(() =>
+  import("../../views/dashboard/accounting/index")
+);
 
 
 
@@ -599,6 +602,17 @@ export default [
    {
     element: <SalesTrends />,
     path: "/sales/sale_trends",
+  },
+
+
+  {
+    element: <Report />,
+    path: "/accounting/reports",
+  },
+
+  {
+    path:'/marin/slip-management/switch-slip-payment',
+    element:<SwitchSlipPaymentForm />
   },
   
 ];

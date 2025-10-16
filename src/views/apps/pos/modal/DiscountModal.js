@@ -110,7 +110,8 @@ const DiscountModal = ({ isOpen, toggle, setDiscountData }) => {
 
   const onSubmit = async (data) => {
     const totalAfterDiscount = parseFloat(data.totalAfterDiscount);
-
+    console.log("data",data);
+    
     if (totalAfterDiscount <= 0) {
       toast.current.show({
         severity: "error",
@@ -129,7 +130,7 @@ const DiscountModal = ({ isOpen, toggle, setDiscountData }) => {
       calculatedDiscount: data.calculatedDiscount,
       totalAmount: data.totalAfterDiscount,
       pin: encryptedPin,
-      subtotal: data.totalAfterDiscount,
+      subtotal: subtotal,
       ...(selectedCustomerDetails.type == "slipMember"
         ? { slipUid: selectedCustomerDetails?.value }
         : selectedCustomerDetails.type == "member"

@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Book, Clipboard, Users } from "react-feather";
+import { Clipboard, DollarSign, Users } from "react-feather";
 import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
 // ** Components
 import SlipDetails from "./forms/SlipDetails";
 // import MemberInfo from "./forms/MemberInfo";
+import { Book } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import ViewDocuments from '../slip-management/forms/ViewDocuments';
 import MemberIndex from "./forms/memberInfo/index";
-import ViewDocuments from './forms/ViewDocuments';
+import OtherPayment from "./forms/otherPayment/OtherPayment";
+import Index from "./forms/slip_rental";
 const TabsCentered = () => {
   const [error, setError] = useState("");
-  const [slipData, setSlipData] = useState({});
+  const [SlipData, setSlipData] = useState({member:{},vessel:{},payment:{}});
   const [fetchLoader, setFetchLoader] = useState(false);
   const location = useLocation();
   const uid = location?.state?.uid;
   const allData = location?.state?.slipData;
   const [active, setActive] = useState("1");
-  
-  console.log("allData", allData);
+  console.log(location)
 
   useEffect(() => {
+    if(allData)
     setSlipData(allData);
   }, [allData]);
-  
-  console.log("slipData", slipData);
+
 
   const toggle = (tab) => {
     if (active !== tab) {
@@ -68,9 +70,9 @@ const TabsCentered = () => {
             <FileText />
             Slip Rental
           </NavLink>
-        </NavItem>
+        </NavItem> */}
         <NavItem>
-          <NavLink
+        <NavLink
             active={active === "4"}
             onClick={() => {
               toggle("4");
@@ -79,8 +81,8 @@ const TabsCentered = () => {
             <DollarSign />
             Other Payment
           </NavLink>
-        </NavItem> */}
-        <NavItem>
+        </NavItem>
+         <NavItem>
           <NavLink
             active={active === "5"}
             onClick={() => {
@@ -96,25 +98,25 @@ const TabsCentered = () => {
         <TabPane tabId="1">
           <SlipDetails
             fetchLoader={fetchLoader}
-            // assigned={slipData.isAssigned}
+            // assigned={SlipData.isAssigned}
           />
         </TabPane>
 
         <TabPane tabId="2">
           {/* <MemberInfo  */}
-          <MemberIndex slipData={slipData} fetchLoader={fetchLoader} />
+          <MemberIndex SlipData={SlipData} fetchLoader={fetchLoader} />
         </TabPane>
 
-        {/* <TabPane tabId="3">
+        <TabPane tabId="3">
           <Index />
         </TabPane>
 
         <TabPane tabId="4">
           <OtherPayment />
-        </TabPane>*/}
-        <TabPane tabId="5">
-          <ViewDocuments slipData={slipData} />
-        </TabPane>  
+        </TabPane>
+          <TabPane tabId="5">
+          <ViewDocuments  slipData={SlipData}/>
+        </TabPane>
       </TabContent>
     </React.Fragment>
   );

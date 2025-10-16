@@ -278,7 +278,7 @@ const Create_Pin = () => {
             >
               <img
                 src={MARinLogo}
-                alt="Longcove Marina Logo"
+                alt="MarinaOne Logo"
                 width={55}
                 height={55}
                 className="mx-2"
@@ -287,7 +287,7 @@ const Create_Pin = () => {
                 className="text-primary mt-1  "
                 style={{ fontWeight: "bold" }}
               >
-                Longcove Marina
+                MarinaOne
               </h2>
             </Link>
 

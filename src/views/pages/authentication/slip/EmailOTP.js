@@ -1,49 +1,46 @@
 // ** React Imports
-import { Navigate, useParams } from "react-router-dom";
+import React from "react";
+import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
+import { UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import React, { useEffect } from "react";
-import { Alert } from "reactstrap";
-import { UncontrolledAlert } from "reactstrap";
-import toast from "react-hot-toast";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
-import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg'
+import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg';
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 
 // ** Reactstrap Imports
+import useJwt from "@src/auth/jwt/useJwt";
 import {
+  Button,
   Card,
   CardBody,
-  CardTitle,
   CardText,
-  Button,
-  Form,
-  Row,
-  Label,
+  CardTitle,
   Col,
+  Form,
   Input,
+  Label,
+  Row,
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
-import { useForm, Controller } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { Spinner } from "reactstrap";
 import CryptoJS from "crypto-js";
 import { ChevronLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { Spinner } from "reactstrap";
 
 // ** Actions
 import { handleLogin } from "@store/authentication";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
-import { useDispatch, useSelector } from "react-redux";
 import Countdown from "react-countdown";
+import { useDispatch } from "react-redux";
 
 // ** Utils
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
-import { PulseLoader } from "react-spinners";
 
 const TwoStepsBasic = () => {
   const [attempt, setAttempt] = useState(0);
@@ -237,12 +234,12 @@ const TwoStepsBasic = () => {
                       >
                         <img
                           src={MARinLogo}
-                          alt="Longcove Marina Logo"
+                          alt=" Marina Logo"
                           width={55}
                           height={55}
                           className="mx-2"
                         />
-                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
+                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
                       </Link>
             <Row className="mb-1">
               <Label sm="3" for=""></Label>

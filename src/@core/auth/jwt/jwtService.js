@@ -836,6 +836,32 @@ export default class JwtService {
   dailySales(type) {
     return axios.get(`${this.jwtConfig.dailySales}?type=${type}`);
   }
+
+  report(startDate,endDate) {
+    return axios.get(`${this.jwtConfig.report}?fromDate=${startDate}&toDate=${endDate}`);
+  }
+
+
+  //get Switch Slip
+  getSwitchSlip(){
+    return axios.get(this.jwtConfig.slipGet);
+  }
+  
+
+  postSwitchSlip(...args){
+    return axios.post(this.jwtConfig.getSwitchSlipEndPoint, ...args);
+  }
+ 
+  postSwitchSlipById(...args){
+    return axios.post(this.jwtConfig.getSwitchSlipEndPointById, ...args);
+  }
+
+  //get other Payment in slipmanagement
+  getOtherPayment(){
+   return axios.get(this.jwtConfig.otherPaymentEndPoint);
+   
+  }
+  
 }
 
 

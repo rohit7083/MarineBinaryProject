@@ -1,36 +1,33 @@
 // ** React Imports
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import {useRef} from "react";
-import React, { Fragment } from "react";
+import React, { useRef } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
 // ** Icons Imports
-import { ChevronLeft } from "react-feather";
 import useJwt from "@src/auth/jwt/useJwt";
+import { ChevronLeft } from "react-feather";
 import { Spinner } from "reactstrap";
 // ** React Hook Form
-import { UncontrolledAlert, ListGroupItem } from "reactstrap";
 import Countdown from "react-countdown";
+import { ListGroupItem, UncontrolledAlert } from "reactstrap";
 
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 
 import {
-  Card,
-  Input,
-  CardBody,
-  CardTitle,
-  CardText,
-  Form,
-  Label,
   Button,
- 
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Input,
+  Label
 } from "reactstrap";
 
 // ** Custom Components
@@ -38,9 +35,9 @@ import InputPassword from "@components/input-password-toggle";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
-import { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
-import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg'
+import { useEffect, useState } from "react";
+import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg';
 const CreateNewPass = () => {
   const {
     control,
@@ -263,12 +260,12 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
            >
              <img
                src={MARinLogo}
-               alt="Longcove Marina Logo"
+               alt="MarinaOne Logo"
                width={55}
                height={55}
                className="mx-2"
              />
-             <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
+             <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
            </Link>
 
             <CardTitle tag="h4" className="mb-1">

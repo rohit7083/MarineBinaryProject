@@ -214,7 +214,7 @@ const Document = ({ stepper, slipIID, sId }) => {
       )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
-          {["IdentityDocument", "ProofOfAddress"].map((field) => renderDropzone(field, field))}
+          {["IdentityDocument", "Contract"].map((field) => renderDropzone(field, field))}
         </Row>
 
         <div className="d-flex justify-content-between mt-3">

@@ -300,7 +300,7 @@ const ResetPasswordBasic = () => {
                 className="text-primary mt-1  "
                 style={{ fontWeight: "bold" }}
               >
-                Longcove Marina
+                MarinaOne
               </h2>
             </Link>
 

@@ -179,15 +179,12 @@ export default [
       },
       {
         id: "Cusstomer manage",
-        title: "Customer Manage",
+        title: "Client Hub",
         icon: <Circle size={12} />,
         navLink: "/dashboard/pos/customer_management",
       },
-     
     ],
   },
-
-
 
   {
     id: "Parking Pass",
@@ -329,10 +326,7 @@ export default [
     ],
   },
 
-
-
-
-   {
+  {
     id: "Sales",
     title: "Sales",
     icon: <BarChart2 size={12} />,
@@ -345,13 +339,30 @@ export default [
         title: "Sales Summary",
         icon: <Circle size={12} />,
         navLink: "/sales/sale_summery",
-      },{
+      },
+      {
         id: "Sales Trends",
         title: "Sales Trends",
         icon: <Circle size={12} />,
         navLink: "/sales/sale_trends",
       },
-     
+    ],
+  },
+
+  {
+    id: "Accounting",
+    title: "Accounting",
+    icon: <BarChart2 size={12} />,
+    // navLink: "/sales",
+    badge: "light-warning",
+
+    children: [
+      {
+        id: "Reports",
+        title: "Reports",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/reports",
+      },
     ],
   },
 ];

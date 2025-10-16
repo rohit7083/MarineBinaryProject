@@ -8,6 +8,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Col, Row } from "reactstrap";
 import DocumentUploader from "./DocumentUploader";
 const ViewDocuments = ({ slipData }) => {
+ 
   const [documentList, setDocumentList] = useState({
     IdentityDocument: [],
     Contract: [],
@@ -23,53 +24,71 @@ const ViewDocuments = ({ slipData }) => {
   const handleChangeDocument = (key, list) => {
     setDocumentList((prev) => ({ ...prev, [key]: list }));
   };
-  const fetchDocument = async (uids) => {
-    try {
-      setFethchLoader(true);
-      const results = await Promise.all(
-        uids.map(async ({ uid, documentName }) => {
-          const response = await useJwt.existingImages(uid);
-          const blob = response.data;
-          const fileType = blob.type || "application/octet-stream";
-          const file = new File([blob], documentName || "document", {
-            type: fileType,
-          });
 
-          file.preview = URL.createObjectURL(blob);
-          file.uid = uid; // attach uid for updating
+  
 
-          return { file, documentName };
-        })
-      );
+const fetchDocument = async (uids) => {
+ setFethchLoader(true)
+  const documentsKey=uids.map(({documentName})=>documentName)
+  try {
+    const results = await Promise.allSettled(
+      uids.map(({ uid }) => useJwt.existingImages(uid))
+    );
 
-      const groupedDocs = {
-        IdentityDocument: [],
-        Contract: [],
-        Registration: [],
-        Insurance: [],
-      };
+    const formattedResults = results.reduce((acc,result, index) => {
+      const { uid, documentName } = uids[index];
 
-      results.forEach(({ file, documentName }) => {
-        if (groupedDocs[documentName]) {
-          groupedDocs[documentName].push(file);
-        }
-      });
+      if (result.status === "fulfilled") {
+        const blob = result.value.data;
+        const fileType = blob.type || "application/octet-stream";
 
-      setDocumentList(groupedDocs);
-    } catch (error) {
-      console.error("Error fetching documents:", error);
-      if (error?.response) {
-        toast.current.show({
-          severity: "error",
-          summary: "Failed",
-          detail: error?.response?.data?.content || "Error fetching documents",
-          life: 2000,
+        //** create a File object and attach preview URL
+        const file = new File([blob], documentName || `document_${uid}`, {
+          type: fileType,
         });
+
+        const preview = URL.createObjectURL(blob);
+
+       
+        acc[documentsKey[index]]=[{
+          uid,
+          success: true,
+          file,
+          preview, 
+          message: "Fetched successfully",
+        }]
+        
+      } else {
+         acc[documentsKey[index]]=[{
+          uid,
+          success: false,
+          error:
+            result.reason?.response?.data?.content ||
+            result.reason?.message ||
+            "Unknown error",
+          message: "Fetch failed",
+        }];
       }
-    } finally {
-      setFethchLoader(false);
-    }
-  };
+      return acc
+    },{
+
+    });
+     console.clear()
+     console.log(formattedResults);
+    const defaultValue=Object.keys(formattedResults).map(key=>handleChangeDocument(key,formattedResults[key]))
+     
+
+
+
+  } catch (err) {
+    console.error("Unexpected error in fetchDocument:", err);
+    throw err;
+  }finally{
+    setFethchLoader(false)
+  }
+};
+
+
 
   useEffect(() => {
     if (slipData?.documents?.length) {
@@ -105,3 +124,116 @@ const ViewDocuments = ({ slipData }) => {
 };
 
 export default ViewDocuments;
+
+
+
+
+
+// import useJwt from "@src/auth/jwt/useJwt";
+// import "primeicons/primeicons.css";
+// import "primereact/resources/primereact.min.css";
+// import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+// import { Toast } from "primereact/toast";
+// import { Fragment, useEffect, useRef, useState } from "react";
+
+// import { Col, Row } from "reactstrap";
+// import DocumentUploader from "./DocumentUploader";
+// const ViewDocuments = ({ slipData }) => {
+//   const [documentList, setDocumentList] = useState({
+//     IdentityDocument: [],
+//     Contract: [],
+//     Registration: [],
+//     Insurance: [],
+//   });
+
+//   const [uidForDocuments, setUidForDocument] = useState([]);
+//   console.log("slipdata", slipData);
+//   const [fetchLoader, setFethchLoader] = useState(false);
+//   const toast = useRef(null);
+
+//   const handleChangeDocument = (key, list) => {
+//     setDocumentList((prev) => ({ ...prev, [key]: list }));
+//   };
+
+//   const fetchDocument = async (uids) => {
+//     try {
+//       setFethchLoader(true);
+//       const results = await Promise.all(
+//         uids.map(async ({ uid, documentName }) => {
+//           const response = await useJwt.existingImages(uid);
+//           const blob = response.data;
+//           const fileType = blob.type || "application/octet-stream";
+//           const file = new File([blob], documentName || "document", {
+//             type: fileType,
+//           });
+
+//           file.preview = URL.createObjectURL(blob);
+//           file.uid = uid; // attach uid for updating
+
+//           return { file, documentName };
+//         })
+//       );
+
+//       const groupedDocs = {
+//         IdentityDocument: [],
+//         Contract: [],
+//         Registration: [],
+//         Insurance: [],
+//       };
+
+//       results.forEach(({ file, documentName }) => {
+//         if (groupedDocs[documentName]) {
+//           groupedDocs[documentName].push(file);
+//         }
+//       });
+
+//       setDocumentList(groupedDocs);
+//     } catch (error) {
+//       console.error("Error fetching documents:", error);
+//       if (error?.response) {
+//         toast.current.show({
+//           severity: "error",
+//           summary: "Failed",
+//           detail: error?.response?.data?.content || "Error fetching documents",
+//           life: 2000,
+//         });
+//       }
+//     } finally {
+//       setFethchLoader(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (slipData?.documents?.length) {
+//       const uids = slipData.documents.map(({ uid, documentName }) => ({
+//         uid,
+//         documentName,
+//       }));
+//       fetchDocument(uids);
+//       setUidForDocument(uids);
+//     }
+//   }, [slipData]);
+
+//   return (
+//     <Fragment>
+//       <Toast ref={toast} />
+//       <Row>
+//         {Object.keys(documentList).map((key) => (
+//           <Col sm="12" key={key}>
+//             <DocumentUploader
+//               slipId={slipData.id}
+//               uploadedFiles={documentList[key]}
+//               handleChangeDocument={handleChangeDocument}
+//               label={key}
+//               name={key}
+//               uidForDocuments={uidForDocuments}
+//               fetchLoader={fetchLoader}
+//             />
+//           </Col>
+//         ))}
+//       </Row>
+//     </Fragment>
+//   );
+// };
+
+// export default ViewDocuments;

@@ -185,7 +185,15 @@ const PaymentSummary = () => {
 
     formData.append("posOrder.uid", disCountUid || discountData?.disCountUid);
     formData.append("payment.paymentMode", data.paymentMode.value);
-    formData.append("payment.finalPayment", billing?.total);
+
+    const finalPayment =
+      Number(discountData?.calculatedDiscount) > 0
+        ? (
+            Number(billing?.total) - Number(discountData?.calculatedDiscount)
+          ).toFixed(2)
+        : Number(billing?.total).toFixed(2);
+
+    formData.append("payment.finalPayment", finalPayment);
     if (data.paymentMode.value == 1) {
       formData.append("payment.cardNumber", data?.cardNumber);
       formData.append("payment.cardType", data?.cardType);
@@ -286,9 +294,8 @@ const PaymentSummary = () => {
                   onChange={(e) => {
                     const checked = e.target.checked;
                     field.onChange(checked);
-                 
-                      setDiscountModal(checked);
-                   
+
+                    setDiscountModal(checked);
                   }}
                   className="form-check-input"
                 />
@@ -490,8 +497,9 @@ const PaymentSummary = () => {
                       classNamePrefix="select"
                       isClearable
                       value={years.find((opt) => opt.value === field.value)}
-                      onChange={(selectedOption) =>
+                      onChange={(selectedOption) =>{
                         field.onChange(selectedOption?.value || "")
+                        handleYearChange(selectedOption);}
                       }
                     />
                   )}

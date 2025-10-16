@@ -216,14 +216,22 @@ export default {
   updateDocuments: "/sDocuments/",
 
   // donwload Receipt
-  downloadReceipt:'/sPayment/receipt/',
+  downloadReceipt: "/sPayment/receipt/",
 
-  //sales charts 
-  sucessPaymentCharts:'/sPayment/',
-  daysOfWeek:'/sPayment/weekly-success',
-  salesByhour:'/sPayment/today-payment-graph',
+  //sales charts
+  sucessPaymentCharts: "/sPayment/",
+  daysOfWeek: "/sPayment/weekly-success",
+  salesByhour: "/sPayment/today-payment-graph",
 
-  yearlySales:'/sPayment/yearly-comparison',
-  weeklySales:'/sPayment/weekly-comparison',
-  dailySales:'/sPayment/time-of-day-comparison',
+  yearlySales: "/sPayment/yearly-comparison",
+  weeklySales: "/sPayment/weekly-comparison",
+  dailySales: "/sPayment/time-of-day-comparison",
+
+  report: "/sPayment/report",
+
+  // Switch Slip
+  getSwitchSlipEndPoint: "/slipSwitch/",
+  getSwitchSlipEndPointById: "/slipSwitch",
+  renewContractEndPoint: "/sPayment/renewContract",
+   otherPaymentEndPoint: '/sPayment/otherSlip',
 };

@@ -46,6 +46,22 @@ const DocumentUploader = ({
   });
 
   const renderFilePreview = (file) => {
+    debugger
+
+    if(file.uid && file.success){
+            return (
+        <img
+          className="rounded"
+          alt={file.file.name}
+          src={file.preview}
+          height="28"
+          width="28"
+        />
+      );
+    }
+    if(file.uid && !file.success){
+      return null
+    }
     if (file.preview)
       return (
         <img
@@ -146,6 +162,7 @@ const DocumentUploader = ({
       setUploadLoader(false);
     }
   };
+
   // View document in new tab
   const handleViewFile = (file) => {
     let url = file.preview || null;

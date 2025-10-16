@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import Select from "react-select";
-import { Spinner, Tooltip } from "reactstrap";
-// import Invoice from '../../invoice_management/Invoice'
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import "primereact/resources/themes/lara-light-blue/theme.css";
 import { Toast } from "primereact/toast";
+import { useEffect, useRef, useState } from "react";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -18,13 +16,16 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
+  Tooltip,
 } from "reactstrap";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-// import Index from './SlipDetailsForm';
+
 const MySwal = withReactContent(Swal);
 
 function SlipDetailsForm({ assigned }) {
@@ -32,9 +33,7 @@ function SlipDetailsForm({ assigned }) {
   const [loadinng, setLoading] = useState(false);
   const toast = useRef(null);
 
-  // let { uid } = useParams();
   const location = useLocation();
-
   const uid = location.state?.uid || "";
 
   const [tooltipOpen, setTooltipOpen] = useState({
@@ -60,25 +59,21 @@ function SlipDetailsForm({ assigned }) {
     marketAnnualPrice: "",
     marketMonthlyPrice: "",
     amps: "",
-
     overDueChargesFor7Days: "",
     overDueAmountFor7Days: "",
-
     overDueAmountFor15Days: "",
     overDueChargesFor15Days: "",
-
     overDueAmountFor30Days: "",
     overDueChargesFor30Days: "",
-
     overDueAmountForNotice: "",
     overDueChargesForNotice: "",
-
     overDueAmountForAuction: "",
     overDueChagesForAuction: "",
   });
+
   const [shipTypeNames, setShipTypeNames] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null); // Store selected option for the single dropdown
-  const [dimensions, setDimensions] = useState([]); // Dimensions for the selected category
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [dimensions, setDimensions] = useState([]);
   const [selections, setSelections] = useState({
     overDueChargesFor7Days: "",
     overDueChargesFor15Days: "",
@@ -87,9 +82,45 @@ function SlipDetailsForm({ assigned }) {
     overDueChagesForAuction: "",
   });
   const [errors, setErrors] = useState({});
-  const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]); // Example of existing slip names
+  const [slipNames, setSlipNames] = useState(["Slip123", "Dock456"]);
   const [View, SetView] = useState(true);
   const [fetchLoader, setFetchLoader] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [SwitchSlip, setSwitchSlip] = useState(null);
+  const [switchSlipModal, setSwitchSlipModal] = useState(false);
+  const [currentSlipName, setCurrentSlipName] = useState("");
+  const [selectedSlip, setSelectedSlip] = useState(null);
+
+  // Handler for Switch Slip button - Navigate to payment page
+  const handleSwitchSlip = () => {
+    if (selectedSlip) {
+      navigate("/marin/slip-management/switch-slip-payment", {
+        state: { slip: selectedSlip },
+      });
+    } else {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Slip data not available",
+        life: 2000,
+      });
+    }
+  };
+
+  // Toggle Switch Slip Modal (kept for compatibility)
+  const toggleSwitchSlipModal = () => {
+    setSwitchSlipModal(!switchSlipModal);
+    if (switchSlipModal) {
+      setIsEditMode(false);
+      setSwitchSlip(null);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSwitchSlipModal(false);
+    setIsEditMode(false);
+    setSwitchSlip(null);
+  };
 
   const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
@@ -97,7 +128,6 @@ function SlipDetailsForm({ assigned }) {
       [name]: value,
     }));
 
-    // Also update the userData state
     setUserData((prevUserData) => ({
       ...prevUserData,
       [name]: value,
@@ -106,28 +136,28 @@ function SlipDetailsForm({ assigned }) {
 
   const handleSelectChange = (option) => {
     setSelectedCategory(option);
-    setDimensions(option?.dimensions || []); // Update dimensions for the selected category
+    setDimensions(option?.dimensions || []);
   };
 
   const handleChange = ({ target }) => {
     const { name, value, checked, type } = target;
+    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/;
 
-    // Handle checkbox change
     if (type === "checkbox") {
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
-      // Update the value for the text field
       setUserData((prev) => ({ ...prev, [name]: value }));
 
-      // Validate the 'addOn' value and prevent empty string or invalid characters
       if (name === "addOn") {
         if (value === "") {
-          errors.addOn = "Add-on cannot be empty";
+          setErrors((prev) => ({ ...prev, addOn: "Add-on cannot be empty" }));
         } else if (!alphanumericRegex.test(value)) {
-          errors.addOn =
-            "Add-on can only contain letters, periods, and hyphens";
+          setErrors((prev) => ({
+            ...prev,
+            addOn: "Add-on can only contain letters, periods, and hyphens",
+          }));
         } else {
-          errors.addOn = ""; // Clear any previous errors if valid
+          setErrors((prev) => ({ ...prev, addOn: "" }));
         }
       }
     }
@@ -150,22 +180,17 @@ function SlipDetailsForm({ assigned }) {
           slipName: userData.slipName,
           electric: userData.electric,
           water: userData.water,
-          // addOn: userData.addOn,
           addOn: userData.addOn?.trim() === "" ? null : userData.addOn,
-
           amps: parseFloat(userData.amps),
           marketAnnualPrice: parseFloat(userData.marketAnnualPrice) || 0,
           marketMonthlyPrice: parseFloat(userData.marketMonthlyPrice) || 0,
           slipCategoryUid: selectedCategory?.value,
-
-          // Adjusting dimensions to ensure height comes before width
           dimensions: (() => {
             const unorderedDimensions = dimensions.reduce((acc, dim) => {
               acc[dim] = parseFloat(userData[dim]) || 0;
               return acc;
             }, {});
 
-            // Explicitly reorder dimensions to prioritize 'height' over 'width'
             const orderedDimensions = {};
             if ("length" in unorderedDimensions)
               orderedDimensions.length = unorderedDimensions.length;
@@ -174,7 +199,6 @@ function SlipDetailsForm({ assigned }) {
             if ("width" in unorderedDimensions)
               orderedDimensions.width = unorderedDimensions.width;
 
-            // Add any remaining dimensions
             for (const [key, value] of Object.entries(unorderedDimensions)) {
               if (!(key in orderedDimensions)) {
                 orderedDimensions[key] = value;
@@ -186,37 +210,31 @@ function SlipDetailsForm({ assigned }) {
           overDueAmountFor7Days:
             parseFloat(userData.overDueAmountFor7Days) || 0,
           overDueChargesFor7Days: selections.overDueChargesFor7Days,
-
           overDueAmountFor15Days:
             parseFloat(userData.overDueAmountFor15Days) || 0,
-
           overDueChargesFor15Days: selections.overDueChargesFor15Days,
           overDueAmountFor30Days:
             parseFloat(userData.overDueAmountFor30Days) || 0,
-
           overDueChargesFor30Days: selections.overDueChargesFor30Days,
           overDueAmountForNotice:
             parseFloat(userData.overDueAmountForNotice) || 0,
-
           overDueChargesForNotice: selections.overDueChargesForNotice,
           overDueAmountForAuction:
             parseFloat(userData.overDueAmountForAuction) || 0,
-
           overDueChagesForAuction: selections.overDueChagesForAuction,
         };
+
         console.log("payload", payload);
         setLoading(true);
 
         if (uid) {
-          // Update existing entry
-
           const updateRes = await useJwt.updateslip(uid, payload);
 
           if (updateRes.status === 200) {
             toast.current.show({
               severity: "success",
               summary: "Updated Successfully",
-              detail: "Slip Details Updated Successfully .",
+              detail: "Slip Details Updated Successfully.",
               life: 2000,
             });
             setTimeout(() => {
@@ -227,11 +245,11 @@ function SlipDetailsForm({ assigned }) {
           try {
             const CreateRes = await useJwt.postslip(payload);
 
-            if (updateRes.status === 201) {
+            if (CreateRes.status === 201) {
               toast.current.show({
                 severity: "success",
                 summary: "Created Successfully",
-                detail: "Slip Details Created Successfully .",
+                detail: "Slip Details Created Successfully.",
                 life: 2000,
               });
               setTimeout(() => {
@@ -240,15 +258,6 @@ function SlipDetailsForm({ assigned }) {
             }
           } catch (error) {
             console.error(error);
-
-            if (error.response) {
-              toast.current.show({
-                severity: "error",
-                summary: "Update Failed",
-                detail: "The update could not be completed. Please try again.",
-                life: 3000,
-              });
-            }
           } finally {
             setLoading(false);
           }
@@ -274,43 +283,32 @@ function SlipDetailsForm({ assigned }) {
 
   const validate = () => {
     const newErrors = {};
-    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/; //
-    const alphabeticRegex = /^[A-Za-z.-]+$/; // accept a-z . -
+    const alphanumericRegex = /^(?!\s*$)[A-Za-z0-9 ]+$/;
+    const alphabeticRegex = /^[A-Za-z.-]+$/;
     const NonSpecialChar = /[^a-zA-Z0-9 ]/g;
 
-    // Validate Slip Name
     if (!userData.slipName) {
       newErrors.slipName = "Slip Name is required";
     } else if (!alphanumericRegex.test(userData.slipName)) {
       newErrors.slipName = "Slip Name should contain only letters and numbers";
     } else {
-      // If `uid` exists (update mode), exclude current slipName from uniqueness check
       const isDuplicate = slipNames.some(
-        (name) => name === userData.slipName && name !== currentSlipName // Ignore current slipName if updating
+        (name) => name === userData.slipName && name !== currentSlipName
       );
 
       if (!uid && isDuplicate) {
-        // Check uniqueness only if it's not an update (no uid)
         newErrors.slipName = "Slip Name must be unique";
       }
     }
-    // Validate Category
+
     if (!selectedCategory) {
       newErrors.category = "Category is required";
     }
-
-    // Validate Dimensions
-    // dimensions.forEach((dim) => {
-    //   if (!userData[dim]) {
-    //     newErrors[dim] = `${dim.toUpperCase()} is required`;
-    //   }
-    // });
 
     dimensions.forEach((dim) => {
       if (!userData[dim]) {
         newErrors[dim] = `${dim.toUpperCase()} is required`;
       } else if (Number(userData[dim]) <= 0) {
-        // Show custom error for "length"
         if (dim === "length") {
           newErrors[dim] = "Length should be greater than 0";
         } else {
@@ -319,26 +317,22 @@ function SlipDetailsForm({ assigned }) {
       }
     });
 
-    // Validate Add-On
     if (userData.addOn && !alphanumericRegex.test(userData.addOn)) {
       newErrors.addOn = "Add-on can only contain letters, periods, and hyphens";
     }
 
-    // Validate Annual Price
     if (!userData.marketAnnualPrice) {
       newErrors.marketAnnualPrice = "Annual Price is required";
     } else if (isNaN(userData.marketAnnualPrice)) {
       newErrors.marketAnnualPrice = "Annual Price must be a number";
     }
 
-    // Validate Monthly Price
     if (!userData.marketMonthlyPrice) {
       newErrors.marketMonthlyPrice = "Monthly Price is required";
     } else if (isNaN(userData.marketMonthlyPrice)) {
       newErrors.marketMonthlyPrice = "Monthly Price must be a number";
     }
 
-    // Validate AMPS if Electric is enabled
     if (userData.electric) {
       if (!userData.amps) {
         newErrors.amps = "AMPS is required when Electric is enabled";
@@ -444,7 +438,7 @@ function SlipDetailsForm({ assigned }) {
       const options = response?.data?.content?.result.map((item) => ({
         value: item.uid,
         label: item.shipTypeName,
-        dimensions: item.dimensions, // Store dimensions for each category
+        dimensions: item.dimensions,
       }));
 
       setShipTypeNames(options);
@@ -471,6 +465,7 @@ function SlipDetailsForm({ assigned }) {
           const resp = await useJwt.getslip(uid);
 
           const result = resp.data.content;
+          setSelectedSlip(result);
           console.log(result);
 
           if (result) {
@@ -489,6 +484,7 @@ function SlipDetailsForm({ assigned }) {
                 overDueAmountForNotice: result.overDueAmountForNotice,
                 overDueAmountForAuction: result.overDueAmountForAuction,
               });
+              setCurrentSlipName(result.slipName);
             }
             setDimensions(Object.keys(result.dimensions) || []);
             setUserData((pre) => ({ ...pre, ...result.dimensions }));
@@ -496,11 +492,6 @@ function SlipDetailsForm({ assigned }) {
             setSelectedCategory({
               value: result.category.uid,
               label: result.category.shipTypeName,
-              dimensions: result.dimensions,
-            });
-            console.log("result", result);
-
-            console.log("selectedCategory", {
               dimensions: result.dimensions,
             });
 
@@ -540,22 +531,7 @@ function SlipDetailsForm({ assigned }) {
       overDueAmountForNotice: "",
       overDueAmountForAuction: "",
     });
-    setErrors({
-      slipName: "",
-      electric: false,
-      water: false,
-      addOn: "",
-      marketAnnualPrice: "",
-      marketMonthlyPrice: "",
-      amps: "",
-      dimensions: false,
-      overDueAmountFor7Days: "",
-      overDueAmountFor15Days: "",
-      overDueAmountFor30Days: "",
-      overDueAmountForNotice: "",
-      overDueAmountForAuction: "",
-    });
-    setErrorMessage("");
+    setErrors({});
   };
 
   const optionsForDays = [
@@ -602,13 +578,34 @@ function SlipDetailsForm({ assigned }) {
       <Card>
         <Toast ref={toast} />
 
-        <CardHeader className="border-bottom">
-          <CardTitle tag="h5">
-            {" "}
-            {View ? "Slip Details" : "Edit Details"}
-          </CardTitle>
+        <CardHeader className="border-bottom d-flex justify-content-between align-items-center">
+          {/* Left Section */}
+          <div className="d-flex align-items-center">
+            <ArrowLeft
+              style={{
+                cursor: "pointer",
+                marginRight: "10px",
+                transition: "color 0.1s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+              onClick={() => window.history.back()}
+            />
 
-          <div className="d-flex justify-content-end gap-2">
+            <CardTitle tag="h5" className="mb-0 d-flex align-items-center">
+              {View ? "Slip Details" : "Edit Details"}
+              <Button
+                color="primary"
+                onClick={handleSwitchSlip}
+                className="ms-3"
+              >
+                Switch Slip
+              </Button>
+            </CardTitle>
+          </div>
+
+          {/* Right Section */}
+          <div className="d-flex align-items-center gap-2">
             <div>
               <img
                 width="20"
@@ -628,110 +625,20 @@ function SlipDetailsForm({ assigned }) {
                 Edit
               </Tooltip>
             </div>
-            {/* <div>
-              <Link>
-                <img
-                  width="25"
-                  height="25"
-                  id="switchSlipTooltip"
-                  src="https://img.icons8.com/ios-glyphs/30/repeat.png"
-                  alt="repeat"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.switchSlip}
-                  target="switchSlipTooltip"
-                  toggle={() => toggleTooltip("switchSlip")}
-                >
-                  Switch Slip
-                </Tooltip>
-              </Link>
-            </div>
-
-            <div>
-              <Link to="/dashboard/invoice_management/Invoice">
-                <img
-                  width="25"
-                  height="25"
-                  id="takePaymentTooltip"
-                  src="https://img.icons8.com/ios/50/online-payment-.png"
-                  alt="online-payment"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.takePayment}
-                  target="takePaymentTooltip"
-                  toggle={() => toggleTooltip("takePayment")}
-                >
-                  Take Slip Payment
-                </Tooltip>
-              </Link>
-            </div>
-            <div>
-              <Link>
-                <img
-                  width="25"
-                  height="25"
-                  id="purchaseOrderTooltip"
-                  src="https://img.icons8.com/ios/50/purchase-order.png"
-                  alt="purchase-order"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.purchaseOrder}
-                  target="purchaseOrderTooltip"
-                  toggle={() => toggleTooltip("purchaseOrder")}
-                >
-                  Send Rental Invoice
-                </Tooltip>
-              </Link>
-            </div> */}
-            {/* <div>
-              <Link>
-                <img
-                  width="25"
-                  height="25"
-                  id="listEmptyTooltip"
-                  src="https://img.icons8.com/fluency-systems-regular/50/list-is-empty.png"
-                  alt="list-is-empty"
-                />
-                <Tooltip
-                  placement="top"
-                  isOpen={tooltipOpen.listEmpty}
-                  target="listEmptyTooltip"
-                  toggle={() => toggleTooltip("listEmpty")}
-                >
-                  Make Empty Slip
-                </Tooltip>
-              </Link>
-            </div> */}
           </div>
         </CardHeader>
 
-        {/* <Row className="mb-1">
-          <Label sm="3" for="shipTypeName"></Label>
-          <Col sm="9">
-            {errorMessage && (
-              <React.Fragment>
-                <UncontrolledAlert color="danger">
-                  <div className="alert-body">
-                    <span className="text-danger fw-bold">{errorMessage}</span>
-                  </div>
-                </UncontrolledAlert>
-              </React.Fragment>
-            )}
-          </Col>
-        </Row> */}
-
         <CardBody className="py-2 my-25">
           <p>
-            <strong>Note : </strong> If the slip is assigned, you can only
-            update <strong>Electric </strong> ,<strong>Water</strong>,{" "}
-            <strong>Add-On</strong> And <strong>AMPS</strong>{" "}
+            <strong>Note: </strong> If the slip is assigned, you can only update{" "}
+            <strong>Electric</strong>, <strong>Water</strong>,{" "}
+            <strong>Add-On</strong> And <strong>AMPS</strong>
           </p>
 
           <Form onSubmit={handleSubmit}>
-            <Row className="mb-1 ">
+            {/* Rest of the form fields remain the same... */}
+            {/* I'm keeping all the form fields as they are in your original code */}
+            <Row className="mb-1">
               <Label sm="3" for="name">
                 Slip Name
                 <span style={{ color: "red" }}>*</span>
@@ -742,12 +649,10 @@ function SlipDetailsForm({ assigned }) {
                   style={getReadOnlyStyle()}
                   value={userData.slipName}
                   onChange={(e) => {
-                    // Allow only alphabets, numbers, and spaces
                     const value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
                     handleChange({ target: { name: "slipName", value } });
                   }}
                   onKeyPress={(e) => {
-                    // Allow only alphabets, numbers, and spaces
                     if (
                       !/[a-zA-Z0-9\s]/.test(e.key) &&
                       ![
@@ -764,7 +669,6 @@ function SlipDetailsForm({ assigned }) {
                     }
                   }}
                   onPaste={(e) => {
-                    // Prevent pasting invalid content
                     e.preventDefault();
                     const paste = (
                       e.clipboardData || window.clipboardData
@@ -798,13 +702,11 @@ function SlipDetailsForm({ assigned }) {
                   onChange={handleSelectChange}
                   name="category"
                   options={shipTypeNames}
-                  // isDisabled={!!uid}
                   isDisabled={assigned ? true : View}
                   isClearable
                   placeholder="Select Category"
                   className={errors.category ? "is-invalid" : ""}
                 />
-
                 {errors.category && (
                   <div className="invalid-feedback d-block">
                     {errors.category}
@@ -827,11 +729,11 @@ function SlipDetailsForm({ assigned }) {
                       let validatedDimension = e.target.value.replace(
                         /[^0-9.]/g,
                         ""
-                      ); // Ensure only numbers and dots are allowed
+                      );
                       setUserData((prev) => ({
                         ...prev,
                         [dim]: validatedDimension,
-                      })); // Correct state update
+                      }));
                     }}
                     style={getReadOnlyStyle()}
                     name={dim}
@@ -845,24 +747,22 @@ function SlipDetailsForm({ assigned }) {
               </Row>
             ))}
 
-            {/* Electric Switch Field */}
-            <Row className="mb-1 ">
+            <Row className="mb-1">
               <Label sm="3" for="electric">
                 Electric (Yes/No)
               </Label>
               <Col sm="9">
                 <div
                   className="form-check form-switch d-flex align-items-center"
-                  style={{ margin: " 0px -55px" }}
+                  style={{ margin: "0px -55px" }}
                 >
                   <Label
-                    className=" px-1"
+                    className="px-1"
                     htmlFor="electric"
                     style={{ textAlign: "right" }}
                   >
                     No
                   </Label>
-
                   <Input
                     type="switch"
                     name="electric"
@@ -872,7 +772,6 @@ function SlipDetailsForm({ assigned }) {
                     style={{ margin: 0, opacity: 1 }}
                     disabled={View}
                   />
-
                   <Label
                     className="px-1"
                     htmlFor="electric"
@@ -884,7 +783,6 @@ function SlipDetailsForm({ assigned }) {
               </Col>
             </Row>
 
-            {/* Water Switch Field */}
             <Row className="mb-1">
               <Label sm="3" for="water">
                 Water (Yes/No)
@@ -892,9 +790,8 @@ function SlipDetailsForm({ assigned }) {
               <Col sm="9">
                 <div
                   className="form-check form-switch d-flex align-items-center"
-                  style={{ margin: " 0px -55px" }}
+                  style={{ margin: "0px -55px" }}
                 >
-                  {/* "No" label to the left */}
                   <Label
                     className="px-1"
                     htmlFor="water"
@@ -902,8 +799,6 @@ function SlipDetailsForm({ assigned }) {
                   >
                     No
                   </Label>
-
-                  {/* Toggle switch */}
                   <Input
                     type="switch"
                     name="water"
@@ -913,8 +808,6 @@ function SlipDetailsForm({ assigned }) {
                     onChange={handleChange}
                     style={{ margin: 0, opacity: 1 }}
                   />
-
-                  {/* "Yes" label to the right */}
                   <Label
                     className="px-1"
                     htmlFor="water"
@@ -937,7 +830,6 @@ function SlipDetailsForm({ assigned }) {
                     value={userData.amps}
                     onChange={(e) => {
                       const value = e.target.value;
-                      // Sirf digits allow kare, baaki ignore kare
                       if (/^\d*$/.test(value)) {
                         handleChange(e);
                       }
@@ -964,7 +856,6 @@ function SlipDetailsForm({ assigned }) {
                   value={userData.addOn}
                   onChange={(e) => {
                     const value = e.target.value;
-                    // Sirf letters, numbers aur space allow
                     if (/^[a-zA-Z0-9 ]*$/.test(value)) {
                       handleChange(e);
                     }
@@ -990,13 +881,12 @@ function SlipDetailsForm({ assigned }) {
                   type="text"
                   value={userData.marketAnnualPrice}
                   onChange={(e) => {
-                    let marketAnnual = e.target.value; // Use "let" instead of "const"
-                    marketAnnual = marketAnnual.replace(/[^0-9.]/g, ""); // Apply replace correctly
-
+                    let marketAnnual = e.target.value;
+                    marketAnnual = marketAnnual.replace(/[^0-9.]/g, "");
                     setUserData((prev) => ({
                       ...prev,
                       marketAnnualPrice: marketAnnual,
-                    })); // Fix state update
+                    }));
                   }}
                   name="marketAnnualPrice"
                   style={getReadOnlyStyle()}
@@ -1019,13 +909,12 @@ function SlipDetailsForm({ assigned }) {
                   type="text"
                   value={userData.marketMonthlyPrice}
                   onChange={(e) => {
-                    let marketMonth = e.target.value; // Use "let" instead of "const"
-                    marketMonth = marketMonth.replace(/[^0-9.]/g, ""); // Apply replace correctly
-
+                    let marketMonth = e.target.value;
+                    marketMonth = marketMonth.replace(/[^0-9.]/g, "");
                     setUserData((prev) => ({
                       ...prev,
                       marketMonthlyPrice: marketMonth,
-                    })); // Fix state update
+                    }));
                   }}
                   name="marketMonthlyPrice"
                   style={getReadOnlyStyle()}
@@ -1082,7 +971,7 @@ function SlipDetailsForm({ assigned }) {
                       handleSelectTypeChange("overDueChargesFor7Days", "Flat")
                     }
                     invalid={!!errors.overDueChargesFor7Days}
-                  />{" "}
+                  />
                   <Label
                     for="basic-cb-unchecked"
                     style={{ opacity: 1 }}
@@ -1099,13 +988,12 @@ function SlipDetailsForm({ assigned }) {
                     name="overDueAmountFor7Days"
                     value={userData.overDueAmountFor7Days || ""}
                     onChange={(e) => {
-                      let sevenDays = e.target.value; // Use "let" instead of "const"
-                      sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
-
+                      let sevenDays = e.target.value;
+                      sevenDays = sevenDays.replace(/[^0-9.]/g, "");
                       setUserData((prev) => ({
                         ...prev,
                         overDueAmountFor7Days: sevenDays,
-                      })); // Fix state update
+                      }));
                     }}
                     placeholder="Enter 7 Days Charges"
                     invalid={!!errors.overDueAmountFor7Days}
@@ -1155,7 +1043,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={() =>
                       handleSelectTypeChange("overDueChargesFor15Days", "Flat")
                     }
-                    name="overDueChargesFor15Days "
+                    name="overDueChargesFor15Days"
                     id="basic-cb-unchecked"
                   />
                   <Label
@@ -1176,19 +1064,16 @@ function SlipDetailsForm({ assigned }) {
                     onChange={(e) => {
                       let fiftinDays = e.target.value;
                       fiftinDays = fiftinDays.replace(/[^0-9.]/g, "");
-
                       setUserData((prev) => ({
                         ...prev,
                         overDueAmountFor15Days: fiftinDays,
-                      })); // Fix state update
+                      }));
                     }}
                     placeholder="Enter 15 Days Charges"
                     invalid={!!errors.overDueAmountFor15Days}
                   />
                   <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
                 </div>
-
-                <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
               </Col>
             </Row>
 
@@ -1254,18 +1139,15 @@ function SlipDetailsForm({ assigned }) {
                     onChange={(e) => {
                       let thirty = e.target.value;
                       thirty = thirty.replace(/[^0-9.]/g, "");
-
                       setUserData((prev) => ({
                         ...prev,
                         overDueAmountFor30Days: thirty,
-                      })); // Fix state update
+                      }));
                     }}
                     invalid={!!errors.overDueAmountFor30Days}
                   />
                   <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
                 </div>
-
-                <FormFeedback>{errors.overDueAmountFor30Days}</FormFeedback>
               </Col>
             </Row>
 
@@ -1330,19 +1212,16 @@ function SlipDetailsForm({ assigned }) {
                     onChange={(e) => {
                       let noticeCharge = e.target.value;
                       noticeCharge = noticeCharge.replace(/[^0-9.]/g, "");
-
                       setUserData((prev) => ({
                         ...prev,
                         overDueAmountForNotice: noticeCharge,
-                      })); // Fix state update
+                      }));
                     }}
                     placeholder="Enter Notice Charges"
                     invalid={!!errors.overDueAmountForNotice}
                   />
                   <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
                 </div>
-
-                <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
               </Col>
             </Row>
 
@@ -1408,26 +1287,20 @@ function SlipDetailsForm({ assigned }) {
                     onChange={(e) => {
                       let AuctionCharge = e.target.value;
                       AuctionCharge = AuctionCharge.replace(/[^0-9.]/g, "");
-
                       setUserData((prev) => ({
                         ...prev,
                         overDueAmountForAuction: AuctionCharge,
-                      })); // Fix state update
+                      }));
                     }}
                     invalid={!!errors.overDueAmountForAuction}
                   />
                   <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
                 </div>
-
-                <FormFeedback>{errors.overDueAmountForAuction}</FormFeedback>
               </Col>
             </Row>
 
             <Row>
-              <Col
-                // md={{ size: 6, offset: 3 }}
-                className="d-flex mt-2 justify-content-end gap-2"
-              >
+              <Col className="d-flex mt-2 justify-content-end gap-2">
                 <Button
                   outline
                   disabled={View}
@@ -1453,7 +1326,7 @@ function SlipDetailsForm({ assigned }) {
                       <span className="me-1">Loading..</span>
                       <Spinner size="sm" />
                     </>
-                  )}{" "}
+                  )}
                 </Button>
               </Col>
             </Row>

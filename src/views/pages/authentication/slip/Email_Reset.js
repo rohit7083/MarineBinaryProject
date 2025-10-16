@@ -2,18 +2,18 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Spinner } from "reactstrap";
 // ** Reactstrap Imports
-import { Card, Input, CardBody, CardTitle, CardText, Button } from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
 import React from "react";
+import { Button, Card, CardBody, CardText, CardTitle, Input } from "reactstrap";
 // ** React Hook Form Imports
-import { useForm, Controller } from "react-hook-form";
-import { UncontrolledAlert } from "reactstrap";
 import { ChevronLeft } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import { UncontrolledAlert } from "reactstrap";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 
 const VerifyEmailBasic = () => {
   // Initialize the useForm hook
@@ -95,12 +95,12 @@ const VerifyEmailBasic = () => {
                     >
                       <img
                         src={MARinLogo}
-                        alt="Longcove Marina Logo"
+                        alt=" MarinaOne"
                         width={55}
                         height={55}
                         className="mx-2"
                       />
-                      <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
+                      <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
                     </Link>
             <CardTitle tag="h2" className="fw-bolder mb-1">
               Verify your email ✉️

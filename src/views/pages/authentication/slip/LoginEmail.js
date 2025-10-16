@@ -20,15 +20,15 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import "@styles/react/pages/page-authentication.scss";
 import {
-    Button,
-    CardText,
-    CardTitle,
-    Col,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    UncontrolledAlert
+  Button,
+  CardText,
+  CardTitle,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  UncontrolledAlert
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -157,7 +157,7 @@ const Login = () => {
             className="brand-text text-primary ms-1 mt-1"
             style={{ fontWeight: "bold" }}
           >
-            Longcove Marina
+           MarinaOne
           </h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">

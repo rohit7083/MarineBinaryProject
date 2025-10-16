@@ -1,12 +1,8 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
 import { yupResolver } from "@hookform/resolvers/yup";
 import useJwt from "@src/auth/jwt/useJwt";
-import "primeicons/primeicons.css";
-import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import { Toast } from "primereact/toast";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Spinner, UncontrolledAlert } from "reactstrap";
@@ -35,13 +31,10 @@ import { countries } from "../../../slip-management/CountryCode";
 import { useNavigate } from "react-router-dom";
 import RenewalContract from "../memberInfo/RenewalContract";
 
-const PersonalInfo = ({ fetchLoader, slipData }) => {
-  console.log("sllipdata", slipData);
-
+const PersonalInfo = ({ fetchLoader, SlipData }) => {
   const MySwal = withReactContent(Swal);
   const [checkvesel, setCheckvessel] = useState(null);
   const [checkMember, setCheckMember] = useState(null);
-  const toast = useRef(null);
 
   const [isAssign, setIsAssigned] = useState(null);
   const [selectedFullName, setSelectedFullName] = useState(null);
@@ -51,6 +44,8 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const [ErrMsz, setErrMsz] = useState("");
+  const [slip, setSlip] = useState([]);
+  const [member,setMember]=useState({});
 
   const [loading, setLoading] = useState(false);
   const SignupSchema = yup.object().shape({
@@ -122,16 +117,16 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
     resolver: yupResolver(SignupSchema),
   });
 
-  const { member } = slipData;
+  // const { member } = SlipData;
 
   useEffect(() => {
     // {{ }}
-    setIsAssigned(slipData?.isAssigned);
-    setCheckvessel(slipData?.vessel);
-    setCheckMember(slipData?.member);
+    setIsAssigned(SlipData?.isAssigned);
+    setCheckvessel(SlipData?.vessel);
+    setCheckMember(SlipData?.member);
  
-    // console.log("assigne",slipData?.vessel);
-  }, [slipData]);
+    // console.log("assigne",SlipData?.vessel);
+  }, [SlipData]);
   const onSubmit = async (data) => {
     setLoading(true);
     const {
@@ -149,17 +144,13 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
       secondaryEmail,
       secondaryPhoneNumber,
     } = data;
-    {
-    }
 
     const payload = {
       firstName,
       lastName,
       emailId,
       address,
-      countryCode: countryCode.dial_code,
-      dialCodeCountry: countryCode?.code || "",
-
+      countryCode: countryCode.value,
       phoneNumber,
       city,
       state,
@@ -168,24 +159,28 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
       secondaryGuestName,
       secondaryEmail,
       secondaryPhoneNumber,
-      slipId: slipData.id,
+      slipId: SlipData.id,
     };
     let memberId;
     try {
       const res = await useJwt.UpdateMember(member.uid, payload);
       memberId = res.data.id;
-      if (res?.data?.code === 200) {
-        toast.current.show({
-          severity: "success",
-          summary: "Successfully updated",
-          detail: "Your Member Details Update Successfully",
-          life: 2000,
-        });
 
-        setTimeout(() => {
-          navigate("/dashboard/slipmember_list");
-        }, 2000); // same as toast life
-      }
+      return MySwal.fire({
+        title: "Successfully updated",
+        text: " Your Member Details Update Successfully",
+        icon: "success",
+        customClass: {
+          confirmButton: "btn btn-primary",
+        },
+
+        buttonsStyling: false,
+      }).then(() => {
+        // if (Object.keys(errors).length === 0) {
+        //   stepper.next();f
+        // }
+        navigate("/dashboard/slipdetail_list");
+      });
     } catch (error) {
       console.error("Error submitting vessel details:", error);
 
@@ -211,16 +206,16 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
     }
   };
 
-  const { vessel } = slipData;
-  const { payment } = slipData;
+  const { vessel } = SlipData;
+  const { payment } = SlipData;
 
   useEffect(() => {
     if (member) {
       // {{ }}
       const matchedCountryOption = countryOptions.find(
         (option) =>
-          option.code === member?.dialCodeCountry?.value ||
-          option.code === member?.dialCodeCountry
+          option.value === member?.countryCode?.value ||
+          option.value === member?.countryCode
       );
       Object.keys(member).forEach((key) => {
         setValue(key, member[key] || null);
@@ -243,27 +238,22 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
         setValue("contractDate", paymentItem.contractDate);
       });
     }
-  }, [member, slipData, vessel, payment]);
+  }, [member, SlipData, vessel, payment]);
 
-  const countryOptions = React.useMemo(
-    () =>
-      countries.map((country) => ({
-        value: `${country.code}-${country.dial_code}`,
-        label: (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <ReactCountryFlag
-              countryCode={country.code}
-              svg
-              style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
-            />
-            {country.name} ({country.dial_code})
-          </div>
-        ),
-        code: country.code,
-        dial_code: country.dial_code,
-      })),
-    [countries]
-  );
+  const countryOptions = countries.map((country) => ({
+    value: country.dial_code,
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <ReactCountryFlag
+          countryCode={country.code}
+          svg
+          style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+        />
+        {country.name} ({country.dial_code})
+      </div>
+    ),
+    code: country.code,
+  }));
 
   const handleEditBtn = () => {
     SetView(false);
@@ -312,34 +302,29 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
   ]);
 
   useEffect(() => {
-   const sanitizeValue = (value, type) => {
-  if (value == null) return ""; // handle null or undefined
-  value = String(value);
+    const sanitizeValue = (value, type) => {
+      if (!value) return value;
 
-  switch (type) {
-    case "state":
-    case "address":
-    case "city":
-    case "firstName":
-    case "lastName":
-    case "secondaryGuestName":
-    case "country":
-      // Allow only letters and spaces
-      return value.replace(/[^a-zA-Z ]/g, "").trim();
+      switch (type) {
+        case "state":
+        case "address":
+        case "city":
+          return value.replace(/[^a-zA-Z0-9\s,.-]/g, "");
+        case "firstName":
+        case "lastName":
+        case "secondaryGuestName":
+        case "country":
+        case "state":
+          return value.replace(/[^a-zA-Z]/g, "");
+        case "emailId":
+          return value.replace(/[^a-zA-Z0-9@._-]/g, "");
+        case "phoneNumber":
+          return value.replace(/[^0-9]/g, "");
 
-    case "emailId":
-      // Allow letters, numbers, @ and .
-      return value.replace(/[^a-zA-Z0-9@.]/g, "").trim();
-
-    case "phoneNumber":
-      // Allow only digits
-      return value.replace(/[^0-9]/g, "").trim();
-
-    default:
-      // Allow letters, numbers, and spaces
-      return value.replace(/[^a-zA-Z0-9\s]/g, "").trim();
-  }
-};
+        default:
+          return value.replace(/[^a-zA-Z0-9\s]/g, "");
+      }
+    };
 
     const fieldNames = [
       "address",
@@ -363,6 +348,10 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
     });
   }, [watchFields.join("|")]);
 
+  useEffect(() => {
+    setSlip(SlipData);
+  }, [SlipData]);
+
   if (fetchLoader)
     return (
       <div
@@ -383,11 +372,16 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
       </div>
     );
 
+
+    useEffect(()=>{
+      if(SlipData.member){
+        setMember(SlipData.member)
+      }
+    },[SlipData])
+
   return (
     <Fragment>
       <Card>
-        <Toast ref={toast} />
-
         <CardHeader className="border-bottom">
           <CardTitle tag="h5">
             {!View ? "Edit Member Details" : "Member Details"}
@@ -418,7 +412,7 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
               </>
             )}
 
-            {/* <div>
+            <div>
               <img
                 id="RenewContract"
                 width="25"
@@ -439,7 +433,7 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
               </Tooltip>
             </div>
 
-            <div>
+            {/* <div>
               <Link>
                 <img
                   width="25"
@@ -514,8 +508,6 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
             {checkMember && (
               <>
                 <Row>
-                  <RenewalContract setShow={setShow} show={show} />
-
                   <Col md="6" className="mb-1">
                     <Label className="form-label" for="firstName">
                       First Name
@@ -622,7 +614,7 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
                     <Controller
                       name="countryCode"
                       control={control}
-                      // defaultValue={countryOptions[0]}
+                      defaultValue={countryOptions[0]}
                       render={({ field }) => (
                         <Select
                           {...field}
@@ -741,22 +733,13 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
                       Zip Code
                     </Label>
                     <Controller
+                      id="postalCode"
                       name="postalCode"
                       control={control}
                       render={({ field }) => (
                         <Input
+                          invalid={errors.postalCode && true}
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) => {
-                            let input = e.target.value;
-                            // Keep only digits
-                            input = input.replace(/\D/g, "");
-                            // Limit to 5 characters
-                            if (input.length > 5) input = input.slice(0, 5);
-                            field.onChange(input);
-                          }}
-                          maxLength={5} // prevents typing more than 5 chars
-                          invalid={!!errors.postalCode}
                           readOnly={View}
                           style={getReadOnlyStyle()}
                         />
@@ -772,21 +755,23 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
                       Secondary Guest Name (optional)
                     </Label>
                     <Controller
+                      id="secondaryGuestName"
                       name="secondaryGuestName"
                       control={control}
                       render={({ field }) => (
                         <Input
+                          invalid={errors.secondaryGuestName && true}
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) => {
-                            let input = e.target.value;
-                            // Keep only letters (A–Z, a–z) and spaces
-                            input = input.replace(/[^A-Za-z ]/g, "");
-                            field.onChange(input);
-                          }}
-                          invalid={!!errors.secondaryGuestName}
                           readOnly={View}
                           style={getReadOnlyStyle()}
+                          onChange={(e) => {
+                            // Allow only letters and space
+                            const value = e.target.value.replace(
+                              /[^a-zA-Z\s]/g,
+                              ""
+                            );
+                            field.onChange(value);
+                          }}
                         />
                       )}
                     />
@@ -814,7 +799,7 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
                           onChange={(e) => {
                             // Allow letters, numbers, @, ., -, _
                             const value = e.target.value.replace(
-                              /[^a-zA-Z0-9@.]/g,
+                              /[^a-zA-Z0-9@._-]/g,
                               ""
                             );
                             field.onChange(value);
@@ -828,35 +813,35 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
                       </FormFeedback>
                     )}
                   </Col>
-<Controller
-  id="secondaryPhoneNumber"
-  name="secondaryPhoneNumber"
-  control={control}
-  render={({ field }) => (
-    <Input
-      invalid={errors.secondaryPhoneNumber && true}
-      {...field}
-      readOnly={View}
-      style={getReadOnlyStyle()}
-      onChange={(e) => {
-        // Trim spaces
-        let value = e.target.value.trim();
 
-        // Allow only numbers
-        value = value.replace(/[^0-9]/g, "");
-
-        // Restrict length to max 13
-        if (value.length > 13) {
-          value = value.slice(0, 13);
-        }
-
-        // If empty → set as null, else set the value
-        field.onChange(value === "" ? null : value);
-      }}
-    />
-  )}
-/>
-
+                  <Col md="6" className="mb-1">
+                    <Label className="form-label" for="secondaryPhoneNumber">
+                      Secondary Phone Number (optional)
+                    </Label>
+                    <Controller
+                      id="secondaryPhoneNumber"
+                      name="secondaryPhoneNumber"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          invalid={errors.secondaryPhoneNumber && true}
+                          {...field}
+                          readOnly={View}
+                          style={getReadOnlyStyle()}
+                          onChange={(e) => {
+                            // Allow only numbers
+                            const value = e.target.value.replace(/[^0-9]/g, "");
+                            field.onChange(value);
+                          }}
+                        />
+                      )}
+                    />
+                    {errors.secondaryPhoneNumber && (
+                      <FormFeedback>
+                        {errors.secondaryPhoneNumber.message}
+                      </FormFeedback>
+                    )}
+                  </Col>
                 </Row>
               </>
             )}
@@ -1171,20 +1156,13 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
                     </Button>
 
                     <Button
-                      disabled={View || loading}
+                      disabled={View}
                       type="submit"
                       color="primary"
                       className="btn-next"
                     >
                       <span className="align-middle d-sm-inline-block d-none">
-                        {loading ? (
-                          <>
-                            {" "}
-                            loading.. <Spinner size="sm" />{" "}
-                          </>
-                        ) : (
-                          "Update"
-                        )}
+                        {loading ? <Spinner size="sm" /> : "Update"}
                       </span>
                     </Button>
                   </div>
@@ -1194,6 +1172,9 @@ const PersonalInfo = ({ fetchLoader, slipData }) => {
           </Form>
         </CardBody>
       </Card>
+      {show ? (
+        <RenewalContract setShow={setShow} show={show} slip={slip} />
+      ) : null}
     </Fragment>
   );
 };

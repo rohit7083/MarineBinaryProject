@@ -1,31 +1,20 @@
 // ** React Imports
-import { Navigate, useParams } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
+import { useLocation } from "react-router-dom";
 
+import React from "react";
+import { ChevronLeft } from "react-feather";
+import {
+  Button, Card,
+  CardBody, CardText, CardTitle, Col, Form, Input, Label, Row, Spinner, UncontrolledAlert
+} from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import React from "react";
-import { UncontrolledAlert } from "reactstrap";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardText,
-  Button,
-  Form,
-  Row,
-  Col,
-  Label,
-  Input,
-} from "reactstrap";
-import { Spinner } from "reactstrap";
-import { ChevronLeft } from "react-feather";
 
 import useJwt from "@src/auth/jwt/useJwt";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 // ** Actions
@@ -33,14 +22,13 @@ import { handleLogin } from "@store/authentication";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 // ** Utils
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
-import { PulseLoader } from "react-spinners";
-import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png"
+import MARinLogo from "./../../../../../src/assets/images/marinaLOGO.png";
 
 const TwoStepsBasic = () => {
   const MySwal = withReactContent(Swal);
@@ -202,7 +190,7 @@ const TwoStepsBasic = () => {
                           height={55}
                           className="mx-2"
                         />
-                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>Longcove Marina</h2>
+                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
                       </Link>
 
             <Row className="mb-1">
