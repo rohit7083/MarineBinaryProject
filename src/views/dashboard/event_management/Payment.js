@@ -12,25 +12,25 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardText,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    FormGroup,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardText,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -39,7 +39,6 @@ import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
 function Payment({ stepper, allEventData, updateData, paymentData }) {
   const { remainingAmount, totalAmount } = paymentData?.Rowdata || {};
-
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
     { value: "MoneyGrams", label: "MoneyGrams" },

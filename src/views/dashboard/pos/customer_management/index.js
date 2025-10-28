@@ -6,10 +6,10 @@ import DataTable from "react-data-table-component";
 import {
   ArrowLeft,
   ChevronDown,
-  Eye,
+  Edit,
   MoreVertical,
   Plus,
-  Trash,
+  Trash
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
@@ -231,10 +231,13 @@ const index = () => {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => handleEdit(row)}>
-                  <Eye className="me-50" size={15} />{" "}
+                  <Edit className="me-50" size={15} />{" "}
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
-
+                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
+                  <Eye className="me-50" size={15} />{" "}
+                  <span className="align-middle">View</span>
+                </DropdownItem> */}
                 <DropdownItem onClick={() => handleDelete(row.uid)}>
                   <Trash className="me-50" size={15} />{" "}
                   <span className="align-middle">Delete</span>

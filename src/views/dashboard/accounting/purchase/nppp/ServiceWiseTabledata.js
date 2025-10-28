@@ -1,0 +1,360 @@
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+
+import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
+import {
+  Calendar,
+  ChevronDown,
+  DollarSign,
+  Eye,
+  MoreVertical,
+} from "react-feather";
+import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
+import {
+  Badge,
+  CardTitle,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
+} from "reactstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const ServiceWiseTabledata = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [role, setRole] = useState("");
+  const [dataUid, setDataUid] = useState(null);
+  const [datarow, setDatarow] = useState(null);
+  const [show, setShow] = useState(false);
+  const navigate = useNavigate();
+
+  const [tableData, setTableData] = useState({
+    count: 0,
+    results: [],
+  });
+
+  const [loading, setLoading] = useState(true);
+  const MySwal = withReactContent(Swal);
+  const [mode, setMode] = useState("create");
+  async function fetchTableData() {
+    try {
+      setLoading(true);
+      const { data } = await useJwt.bookingList();
+      const { content } = data;
+      console.log("getAllEvents", content);
+
+      setTableData({ count: content.count, results: content?.result });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleEdit = (row) => {
+    navigate("/booking_listing/view", { state: { row } });
+  };
+
+  useEffect(() => {
+    fetchTableData();
+  }, [currentPage, rowsPerPage]);
+
+  const handlePerPage = (e) => {
+    const newLimit = parseInt(e.target.value);
+    setRowsPerPage(newLimit);
+    setCurrentPage(1);
+  };
+
+  const debouncedFilter = debounce((value) => handleFilter(value), 300);
+
+  const handleFilter = (value) => {
+    setSearchTerm(value);
+
+    if (value) {
+      const filteredResults = tableData.results.filter(
+        (row) =>
+          row.member?.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+          row.paymentStatus?.toLowerCase().includes(value.toLowerCase()) ||
+          row.roomNumber?.toString().includes(value) ||
+          row.finalAmount?.toString().includes(value)
+      );
+
+      setTableData((prev) => ({
+        ...prev,
+        results: filteredResults,
+      }));
+    } else {
+      fetchTableData((currentPage - 1) * rowsPerPage, rowsPerPage);
+    }
+  };
+
+  const handlePagination = (page) => {
+    setCurrentPage(page.selected + 1);
+  };
+
+  const handleAssignedToChange = (value) => {
+    setRole(value);
+  };
+
+  const handlePayment = (row) => {
+    navigate("/search-rooms/previewBooking/roomPayment", { state: { row } });
+  };
+
+  const paymentStatusColor = {
+    success: "light-success",
+    error: "light-danger",
+    pending: "light-warning",
+  };
+
+  const columns = [
+    {
+      name: "Id",
+      sortable: true,
+      minWidth: "100px",
+      selector: (row, index) => index + 1,
+    },
+
+    {
+      name: "Guest Name",
+      sortable: true,
+      selector: (row) => {
+        const first = row?.member?.firstName
+          ? row.member.firstName.charAt(0).toUpperCase() +
+            row.member.firstName.slice(1).toLowerCase()
+          : "";
+        const last = row?.member?.lastName
+          ? row.member.lastName.charAt(0).toUpperCase() +
+            row.member.lastName.slice(1).toLowerCase()
+          : "";
+        return `${first} ${last}`.trim();
+      },
+    },
+
+    {
+      name: "Room No",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => {
+        return row?.roomSearch?.roomSearchUnit
+          ?.map((x) => x?.roomUnit?.roomNumber)
+          .join(", ");
+      },
+    },
+
+    {
+      name: "F.Amount",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.finalAmount,
+    },
+
+    {
+      name: "R.Amount",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.remainingAmount,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      // minWidth: "150px",
+      // selector: (row) => row.paymentStatus,
+      selector: (row) => {
+        return (
+          <Badge
+            color={
+              paymentStatusColor[row?.paymentStatus?.toLowerCase()] ||
+              "secondary"
+            }
+            pill
+          >
+            {row?.paymentStatus}
+          </Badge>
+        );
+      },
+    },
+
+    {
+      name: "Actions",
+      minWidth: "150px",
+      cell: (row) => {
+        const [data, setData] = useState([]);
+
+        return (
+          <>
+            <UncontrolledDropdown>
+              <DropdownToggle
+                className="icon-btn hide-arrow"
+                color="transparent"
+                size="sm"
+                caret
+              >
+                <MoreVertical size={15} />
+              </DropdownToggle>
+              <DropdownMenu>
+                {row?.paymentStatus === "success" && (
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Calendar className="me-50" size={15} />
+                    <span className="align-middle">Extend</span>
+                  </DropdownItem>
+                )}
+                {row?.paymentStatus === "Pending" && (
+                  <DropdownItem onClick={() => handlePayment(row)}>
+                    <DollarSign className="me-50" size={15} />{" "}
+                    <span className="align-middle">Payment</span>
+                  </DropdownItem>
+                )}
+                <DropdownItem onClick={() => handleEdit(row)}>
+                  <Eye className="me-50" size={15} />{" "}
+                  <span className="align-middle">View</span>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </>
+        );
+      },
+    },
+  ];
+
+  const CustomPagination = () => {
+    const count = Math.ceil(tableData.count / rowsPerPage);
+    return (
+      <ReactPaginate
+        previousLabel={""}
+        nextLabel={""}
+        breakLabel="..."
+        pageCount={Math.ceil(count) || 1}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={2}
+        activeClassName="active"
+        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+        onPageChange={(page) => handlePagination(page)}
+        pageClassName="page-item"
+        breakClassName="page-item"
+        nextLinkClassName="page-link"
+        pageLinkClassName="page-link"
+        breakLinkClassName="page-link"
+        previousLinkClassName="page-link"
+        nextClassName="page-item next-item"
+        previousClassName="page-item prev-item"
+        containerClassName={
+          "pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1"
+        }
+      />
+    );
+  };
+
+  // ** Table data to render
+  const dataToRender = () => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return tableData.results.slice(startIndex, endIndex);
+  };
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center flex-wrap ">
+        <CardTitle className="">Service Wise Listing</CardTitle>
+
+        <div className="mx-2">
+          <Row
+            className="px-2
+               mt-1 "
+          >
+            {/* <Col xs="auto">
+                  <Link to={"/pos/vendor_typeList/addVendorType"}>
+                    <Button
+                      // color="danger"
+                      color="primary"
+                      size="sm"
+                      className="text-nowrap mb-1"
+                    >
+                      <Plus size={14} /> Create Vendor Type
+                    </Button>
+                  </Link>
+                </Col> */}
+          </Row>{" "}
+        </div>
+      </div>
+      <hr />
+      <div className="app-user-list">{/* <Table /> */}</div>
+      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
+        <Row>
+          <Col xl="6" className="d-flex align-items-center p-0">
+            <div className="d-flex align-items-center w-100">
+              <label htmlFor="rows-per-page">Show</label>
+              <Input
+                className="mx-50"
+                type="select"
+                id="rows-per-page"
+                value={rowsPerPage}
+                onChange={handlePerPage}
+                style={{ width: "5rem" }}
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </Input>
+              <label htmlFor="rows-per-page">Entries</label>
+            </div>
+          </Col>
+          <Col xl="6" className="d-flex justify-content-end p-0 ">
+            <div className="w-48  d-flex mx-2">
+              <label className="mt-1 mx-1" htmlFor="search-invoice">
+                Search:
+              </label>
+
+              <Input
+                className="dataTable-filter"
+                name="search"
+                placeholder="Search..."
+                type="text"
+                bsSize="sm"
+                id="search-input"
+                onChange={(e) => debouncedFilter(e.target.value)}
+              />
+            </div>
+          </Col>
+        </Row>
+      </div>
+      {loading ? (
+        <div className="text-center">
+          <Spinner
+            className="me-25 spinner-border"
+            color="primary"
+            style={{ width: "4rem", height: "4rem" }}
+          />
+        </div>
+      ) : (
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            pagination
+            subHeader
+            responsive
+            paginationServer
+            columns={columns}
+            sortIcon={<ChevronDown />}
+            className="react-dataTable"
+            // data={tableData}
+            striped
+            paginationComponent={CustomPagination}
+            data={dataToRender()}
+          />
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ServiceWiseTabledata;

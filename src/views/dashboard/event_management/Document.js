@@ -1,11 +1,9 @@
+import useJwt from "@src/auth/jwt/useJwt";
 import { Fragment, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ArrowLeft, DownloadCloud, Eye, FileText, X } from "react-feather";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-
-import useJwt from "@src/auth/jwt/useJwt";
+import { useNavigate } from "react-router-dom";
 import {
   Badge,
   Button,
@@ -15,119 +13,157 @@ import {
   Row,
   UncontrolledAlert,
 } from "reactstrap";
+import Swal from "sweetalert2";
 
-const Document = ({ stepper, slipIID, sId }) => {
+const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
   const [loading, setLoading] = useState(false);
   const [ermsz, setErrmsz] = useState("");
-  const myId = useParams();
   const navigate = useNavigate();
 
-  const { handleSubmit, setValue, formState: { errors }, reset, watch } = useForm({
+  const {
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm({
     defaultValues: {
-      IdentityDocument: { lastUploaded: "", currentFile: null },
-      ProofOfAddress: { lastUploaded: "", currentFile: null },
+      IdentityDocument: { uid: "", lastUploaded: "", currentFile: null },
+      Contract: { uid: "", lastUploaded: "", currentFile: null },
     },
   });
 
+  // Fetch previously uploaded documents
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await useJwt.getSingleDocuments(slipIID || sId?.id);
+        const eventId = allEventData?.eventId || listData?.uid;
+        if (!eventId) return;
 
-        const doc = response.data.content.result
+        const response = await useJwt.getEventDocument(eventId);
+        const docList = response?.data?.content?.result || [];
+
+        const doc = docList
           .filter((item) =>
-            ["IdentityDocument", "ProofOfAddress"].includes(item.documentName)
+            ["IdentityDocument", "Contract"].includes(item.documentName)
           )
-          .reduce((object, item) => {
+          .reduce((acc, item) => {
             const { uid, documentName, documentFilePath } = item;
-            object[documentName] = { uid, lastUploaded: documentFilePath, currentFile: null };
-            return object;
+            acc[documentName] = {
+              uid,
+              lastUploaded: documentFilePath,
+              currentFile: null,
+            };
+            return acc;
           }, {});
 
-        if (Object.keys(doc).length) {
-          reset(doc);
-        }
+        if (Object.keys(doc).length > 0) reset(doc);
       } catch (error) {
         console.error("Error fetching documents:", error);
       }
     };
-    if (slipIID || sId?.id) fetchData();
-  }, [slipIID, sId?.id, reset]);
 
+    fetchData();
+  }, [allEventData, reset]);
+
+  // Submit handler (create or update)
   const onSubmit = async (data) => {
     setErrmsz("");
-    const updatedDataList = Object.keys(data)
-      .filter((key) => ["IdentityDocument", "ProofOfAddress"].includes(key))
-      .reduce((obj, key) => {
-        if (!data[key].currentFile) return obj;
+    setLoading(true);
+
+    const uploadList = Object.keys(data)
+      .filter((key) => ["IdentityDocument", "Contract"].includes(key))
+      .reduce((arr, key) => {
+        const fileData = data[key];
+        const file = fileData?.currentFile;
+        if (!file && !fileData?.uid) return arr; // Skip empty entries
 
         const formData = new FormData();
+        formData.append(
+          "eventId",
+          allEventData?.eventId || listData?.Rowdata?.id
+        );
         formData.append("documentName", key);
-        formData.append("documentFile", data[key].currentFile);
-        formData.append("slipId", slipIID || sId?.id);
+        if (file) formData.append("documentFile", file);
 
-        obj[key] = obj[key] || {};
-        obj[key]["formData"] = formData;
-        if (data[key].uid) obj[key]["uid"] = data[key].uid;
-        return obj;
-      }, {});
+        arr.push({ formData, uid: fileData?.uid, name: key });
+        return arr;
+      }, []);
+
+    if (!uploadList.length) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Files!",
+        text: "Please upload or update at least one document before submitting.",
+      });
+      setLoading(false);
+      return;
+    }
 
     try {
       const results = await Promise.all(
-        Object.values(updatedDataList).map(async (details) => {
-          if (details?.uid) {
-            await useJwt.updateDoc(details.uid, details.formData);
-            return { type: "update" };
+        uploadList.map(async ({ formData, uid }) => {
+          if (uid || listData?.uid) {
+            // update existing document
+            await useJwt.eventDocUpdate(uid || listData?.uid, formData);
+            return "updated";
           } else {
-            await useJwt.slipDocument(details.formData);
-            return { type: "create" };
+            // create new document
+            await useJwt.eventDocument(formData);
+            return "created";
           }
         })
       );
 
-      const updatedCount = results.filter((res) => res.type === "update").length;
-      const createdCount = results.filter((res) => res.type === "create").length;
+      const updatedCount = results.filter((r) => r === "updated").length;
+      const createdCount = results.filter((r) => r === "created").length;
 
       let message = "";
-      if (updatedCount > 0 && createdCount > 0) {
+      if (updatedCount && createdCount)
         message = `Successfully updated ${updatedCount} and created ${createdCount} records!`;
-      } else if (updatedCount > 0) {
-        message = `Successfully updated ${updatedCount} records!`;
-      } else if (createdCount > 0) {
-        message = `Successfully created ${createdCount} records!`;
-      }
+      else if (updatedCount)
+        message = `Successfully updated ${updatedCount} document(s)!`;
+      else message = `Successfully uploaded ${createdCount} document(s)!`;
 
-      if (message) {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: message,
-          showConfirmButton: false,
-          timer: 2000,
-        }).then(() => {
-          navigate("/event_index");
-        });
-      }
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: message,
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => navigate("/event_index"));
     } catch (error) {
       console.error(error);
       const errMsz = error.response?.data?.content || "Something went wrong!";
       setErrmsz(errMsz);
       Swal.fire({
         icon: "error",
-        title: "Document Error!",
+        title: "Upload Failed!",
         text: errMsz,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Helpers
   const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000) return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
+    if (Math.round(size / 100) / 10 > 1000)
+      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
     return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
   };
 
   const renderFilePreview = (file) => {
     if (file?.type?.startsWith("image")) {
-      return <img className="rounded" alt={file.name} src={URL.createObjectURL(file)} height="28" width="28" />;
+      return (
+        <img
+          className="rounded"
+          alt={file.name}
+          src={URL.createObjectURL(file)}
+          height="28"
+          width="28"
+        />
+      );
     }
     return <FileText size="28" />;
   };
@@ -146,10 +182,16 @@ const Document = ({ stepper, slipIID, sId }) => {
     return (
       <Col sm="6" xs="12" className="mb-3">
         <div className="d-flex justify-content-between align-items-center">
-          <Label className="mb-2">{label} <span style={{ color: "red" }}>*</span></Label>
+          <Label className="mb-2">
+            {label} <span style={{ color: "red" }}>*</span>
+          </Label>
           {lastUploaded && (
-            <Badge color="success" style={{ cursor: "pointer" }} onClick={() => window.open(lastUploaded, "_blank")}>
-              <Eye size={12} /> Last File Uploaded
+            <Badge
+              color="success"
+              style={{ cursor: "pointer" }}
+              onClick={() => window.open(lastUploaded, "_blank")}
+            >
+              <Eye size={12} /> View Document
             </Badge>
           )}
         </div>
@@ -176,13 +218,22 @@ const Document = ({ stepper, slipIID, sId }) => {
             {file ? (
               <div className="d-flex align-items-center justify-content-between w-100 px-2">
                 <div className="d-flex align-items-center">
-                  <div className="file-preview me-2">{renderFilePreview(file)}</div>
+                  <div className="file-preview me-2">
+                    {renderFilePreview(file)}
+                  </div>
                   <div>
                     <p className="mb-0 fw-semibold">{file.name}</p>
-                    <p className="mb-0 text-muted">{renderFileSize(file.size)}</p>
+                    <p className="mb-0 text-muted">
+                      {renderFileSize(file.size)}
+                    </p>
                   </div>
                 </div>
-                <Button color="danger" outline size="sm" onClick={() => setValue(`${fieldName}.currentFile`, null)}>
+                <Button
+                  color="danger"
+                  outline
+                  size="sm"
+                  onClick={() => setValue(`${fieldName}.currentFile`, null)}
+                >
                   <X size={14} />
                 </Button>
               </div>
@@ -191,14 +242,18 @@ const Document = ({ stepper, slipIID, sId }) => {
                 <DownloadCloud size={38} />
                 <p className="text-secondary mt-2">
                   Drop files here or click{" "}
-                  <a href="/" onClick={(e) => e.preventDefault()}>browse</a>{" "}
+                  <a href="/" onClick={(e) => e.preventDefault()}>
+                    browse
+                  </a>{" "}
                   through your machine
                 </p>
               </>
             )}
           </div>
         </div>
-        {errors[fieldName] && <span className="text-danger">{errors[fieldName].message}</span>}
+        {errors[fieldName] && (
+          <span className="text-danger">{errors[fieldName].message}</span>
+        )}
       </Col>
     );
   };
@@ -208,21 +263,28 @@ const Document = ({ stepper, slipIID, sId }) => {
       {ermsz && (
         <UncontrolledAlert color="danger">
           <div className="alert-body">
-            <strong>Error: </strong>{ermsz}
+            <strong>Error: </strong>
+            {ermsz}
           </div>
         </UncontrolledAlert>
       )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
-          {["IdentityDocument", "Contract"].map((field) => renderDropzone(field, field))}
+          {["IdentityDocument", "Contract"].map((field) =>
+            renderDropzone(field, field)
+          )}
         </Row>
 
         <div className="d-flex justify-content-between mt-3">
-          <Button type="button" color="primary" onClick={() => stepper.previous()}>
+          <Button
+            type="button"
+            color="primary"
+            onClick={() => stepper.previous()}
+          >
             <ArrowLeft size={14} className="align-middle me-1" /> Previous
           </Button>
           <Button type="submit" color="success" disabled={loading}>
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </Form>

@@ -375,12 +375,12 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/accounting/sales",
       },
-        {
-        id: "Purchase ",
-        title: "Purchase ",
-        icon: <Circle size={12} />,
-        navLink: "/accounting/purchase",
-      },
+      //   {
+      //   id: "Purchase ",
+      //   title: "Purchase ",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/accounting/purchase",
+      // },
     ],
   },
 ];

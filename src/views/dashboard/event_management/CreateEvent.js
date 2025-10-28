@@ -25,7 +25,6 @@ const CreateEvent = () => {
   const paymenStepsCheck = location?.state?.step;
   const paymentData = location?.state;
   // let paymentExist = !!updateData?.listData?.Rowdata?.payments.length;
-
   useEffect(() => {
     if (paymenStepsCheck === 2 && stepper) {
       stepper.to(2);
@@ -50,39 +49,7 @@ const CreateEvent = () => {
         />
       ),
     },
-    //  {
-    //   id: "review",
-    //   title: "Preview",
-    //   subtitle: "Preview details",
-    //   icon: <Clipboard size={18} />,
-    //   content: (
-    //     <Preview
-    //       stepper={stepper}
-    //       formData={formData}
-    //       // fetchLoader={fetchLoader}
-    //       allEventData={allEventData}
-    //     />
-    //   ),
-    // },
-    //  ...(paymentExist > 0
-    //     ?
-    //         [{
-    //           id: "PaymentHistory",
-    //           title: "Payment History",
-    //           subtitle: "Your Last Payment History",
-    //           icon: <Clipboard size={18} />,
-    //           content: (
-    //             <PaymentHistory
-    //               stepper={stepper}
-    //               setFormData={setFormData}
-    //               // fetchLoader={fetchLoader}
-    //               updateData={updateData}
-    //               allEventData={allEventData}
-    //             />
-    //           ),
-    //         }]
 
-    //     : []),
     {
       id: "Payment",
       title: "Payment",
@@ -109,7 +76,8 @@ const CreateEvent = () => {
           stepper={stepper}
           formData={{ ...formData.vendors }}
           setFormData={setFormData}
-          // fetchLoader={fetchLoader}
+          allEventData={allEventData}
+          listData={listData}
         />
       ),
     },

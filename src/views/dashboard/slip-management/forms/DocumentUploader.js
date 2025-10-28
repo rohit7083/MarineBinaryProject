@@ -46,7 +46,6 @@ const DocumentUploader = ({
   });
 
   const renderFilePreview = (file) => {
-    debugger
 
     if(file.uid && file.success){
             return (
