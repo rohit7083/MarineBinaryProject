@@ -96,8 +96,8 @@ const VerifyEmailBasic = () => {
               <img
                 src={MARinLogo}
                 alt=" MarinaOne"
-                width={55}
-                height={35}
+                width={60}
+                height={30}
                 className="mx-1"
               />
               <h2

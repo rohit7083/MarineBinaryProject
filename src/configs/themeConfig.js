@@ -1,13 +1,17 @@
 // Logo Import
 import logo from '@src/assets/images/logo/LT.png'
 
-// You can customize the template with the help of this file
 
 //Template config options
 const themeConfig = {
+  
   app: {
     appName: 'MarinaOne',
-    appLogoImage: logo
+    appLogoImage: logo ,
+    appLogoSize: {
+    height: 35,
+    width: 50
+  }
   },
   layout: {
     isRTL: false,

@@ -1,40 +1,46 @@
 // ** React Imports
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    FormFeedback,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+} from "reactstrap";
 
 // ** Third Party Components
-import { Controller } from 'react-hook-form';
-import Select from 'react-select';
+import { Controller } from "react-hook-form";
+import Select from "react-select";
 
-//jwt import 
+//jwt import
 
 // ** Utils
-import { selectThemeColors } from '@utils';
+import { selectThemeColors } from "@utils";
 
-const PaymentModeSection = ({ control, errors, setValue, getValues, watch }) => {
+const PaymentModeSection = ({
+  control,
+  errors,
+  setValue,
+  getValues,
+  watch,
+}) => {
   const [paymentMode, setPaymentMode] = useState(null);
-  const [cardType, setCardType] = useState('');
+  const [cardType, setCardType] = useState("");
   const [availableMonths, setAvailableMonths] = useState([]);
-    const [file, setFile] = useState(null);
-    const [isAssign, setIsassign] = useState(false);
-  
+  const [file, setFile] = useState(null);
+  const [isAssign, setIsassign] = useState(false);
+
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
-const companyName = watch("companyName");
+  const companyName = watch("companyName");
   const colourOptions3 = [
     { value: "1", label: "Credit Card" },
     { value: "2", label: "Card Swipe" },
@@ -72,7 +78,7 @@ const companyName = watch("companyName");
     { value: "12", label: "December" },
   ];
 
-   const CompanyOptions = [
+  const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
     { value: "MoneyGrams", label: "MoneyGrams" },
     { value: "Other", label: "Other" },
@@ -88,25 +94,25 @@ const companyName = watch("companyName");
   };
 
   const handleOnchangeCardNum = (e, field) => {
-    const value = e.target.value.replace(/\D/g, '');
+    const value = e.target.value.replace(/\D/g, "");
     field.onChange(value);
-    
+
     // Detect card type based on number
-    if (value.startsWith('4')) {
-      setCardType('Visa');
-      setValue('cardType', 'Visa');
-    } else if (value.startsWith('5')) {
-      setCardType('Mastercard');
-      setValue('cardType', 'Mastercard');
-    } else if (value.startsWith('34') || value.startsWith('37')) {
-      setCardType('Amex');
-      setValue('cardType', 'Amex');
-    } else if (value.startsWith('6')) {
-      setCardType('Discover');
-      setValue('cardType', 'Discover');
+    if (value.startsWith("4")) {
+      setCardType("Visa");
+      setValue("cardType", "Visa");
+    } else if (value.startsWith("5")) {
+      setCardType("Mastercard");
+      setValue("cardType", "Mastercard");
+    } else if (value.startsWith("34") || value.startsWith("37")) {
+      setCardType("Amex");
+      setValue("cardType", "Amex");
+    } else if (value.startsWith("6")) {
+      setCardType("Discover");
+      setValue("cardType", "Discover");
     } else {
-      setCardType('');
-      setValue('cardType', '');
+      setCardType("");
+      setValue("cardType", "");
     }
   };
 
@@ -145,19 +151,13 @@ const companyName = watch("companyName");
     return true;
   };
 
-    const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-    }
+  const handleFileChange = (e) => {
+    setValue("checkImage", e.target.files[0]);
   };
-
 
   const handleRemoveFile = () => {
     setFile(null);
   };
-
-
 
   const renderFileSize = (size) => {
     if (size) {
@@ -170,7 +170,7 @@ const companyName = watch("companyName");
     return null;
   };
 
-const renderFilePreview = (file) => {
+  const renderFilePreview = (file) => {
     if (file && file.type.startsWith("image")) {
       return (
         <img
@@ -204,7 +204,9 @@ const renderFilePreview = (file) => {
               <Select
                 {...field}
                 options={colourOptions3}
-                className={`react-select ${errors.paymentMode ? "is-invalid" : ""}`}
+                className={`react-select ${
+                  errors.paymentMode ? "is-invalid" : ""
+                }`}
                 onChange={(selectedOption) => {
                   field.onChange(selectedOption);
                   handlepaymentMode(selectedOption);
@@ -257,12 +259,20 @@ const renderFilePreview = (file) => {
                         if (!/^[0-9]$/.test(value) && value !== "") return;
                         field.onChange(value);
                         if (value && index < 3) {
-                          document.getElementById(`pin-input-${index + 1}`)?.focus();
+                          document
+                            .getElementById(`pin-input-${index + 1}`)
+                            ?.focus();
                         }
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === "Backspace" && !field.value && index > 0) {
-                          document.getElementById(`pin-input-${index - 1}`)?.focus();
+                        if (
+                          e.key === "Backspace" &&
+                          !field.value &&
+                          index > 0
+                        ) {
+                          document
+                            .getElementById(`pin-input-${index - 1}`)
+                            ?.focus();
                         }
                       }}
                       style={{
@@ -272,7 +282,7 @@ const renderFilePreview = (file) => {
                         borderRadius: "10px",
                         textAlign: "center",
                         flexShrink: 0,
-                        boxShadow: "0 0 3px rgba(0,0,0,0.1)"
+                        boxShadow: "0 0 3px rgba(0,0,0,0.1)",
                       }}
                     />
                   )}
@@ -364,7 +374,9 @@ const renderFilePreview = (file) => {
                     {...field}
                     options={years}
                     placeholder="Select Year"
-                    className={`react-select ${errors.cardExpiryYear ? "is-invalid" : ""}`}
+                    className={`react-select ${
+                      errors.cardExpiryYear ? "is-invalid" : ""
+                    }`}
                     classNamePrefix="select"
                     isClearable
                     value={years.find((option) => option.value === field.value)}
@@ -376,7 +388,9 @@ const renderFilePreview = (file) => {
                 )}
               />
               {errors.cardExpiryYear && (
-                <FormFeedback className="d-block">{errors.cardExpiryYear.message}</FormFeedback>
+                <FormFeedback className="d-block">
+                  {errors.cardExpiryYear.message}
+                </FormFeedback>
               )}
             </Col>
 
@@ -393,10 +407,14 @@ const renderFilePreview = (file) => {
                     {...field}
                     options={availableMonths}
                     placeholder="Select Month"
-                    className={`react-select ${errors.cardExpiryMonth ? "is-invalid" : ""}`}
+                    className={`react-select ${
+                      errors.cardExpiryMonth ? "is-invalid" : ""
+                    }`}
                     classNamePrefix="select"
                     isClearable
-                    value={availableMonths.find((option) => option.value === field.value)}
+                    value={availableMonths.find(
+                      (option) => option.value === field.value
+                    )}
                     onChange={(selectedOption) =>
                       field.onChange(selectedOption?.value || "")
                     }
@@ -404,7 +422,9 @@ const renderFilePreview = (file) => {
                 )}
               />
               {errors.cardExpiryMonth && (
-                <FormFeedback className="d-block">{errors.cardExpiryMonth.message}</FormFeedback>
+                <FormFeedback className="d-block">
+                  {errors.cardExpiryMonth.message}
+                </FormFeedback>
               )}
             </Col>
           </Row>
@@ -455,8 +475,14 @@ const renderFilePreview = (file) => {
                     value: /^[A-Za-z ]+$/,
                     message: "Only alphabetic characters and spaces allowed",
                   },
-                  minLength: { value: 2, message: "Name must be at least 2 characters" },
-                  maxLength: { value: 50, message: "Name must be at most 50 characters" },
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters",
+                  },
+                  maxLength: {
+                    value: 50,
+                    message: "Name must be at most 50 characters",
+                  },
                 }}
                 render={({ field }) => (
                   <Input
@@ -465,7 +491,10 @@ const renderFilePreview = (file) => {
                     invalid={!!errors.nameOnCard}
                     {...field}
                     onChange={(e) => {
-                      const onlyAlphabetsAndSpaces = e.target.value.replace(/[^a-zA-Z ]/g, "");
+                      const onlyAlphabetsAndSpaces = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
                       field.onChange(onlyAlphabetsAndSpaces);
                     }}
                   />
@@ -488,11 +517,18 @@ const renderFilePreview = (file) => {
                 control={control}
                 rules={{
                   required: "Address is required",
-                  minLength: { value: 5, message: "Address must be at least 5 characters" },
-                  maxLength: { value: 200, message: "Address cannot exceed 200 characters" },
+                  minLength: {
+                    value: 5,
+                    message: "Address must be at least 5 characters",
+                  },
+                  maxLength: {
+                    value: 200,
+                    message: "Address cannot exceed 200 characters",
+                  },
                   pattern: {
                     value: /^[a-zA-Z0-9 ,\-.]*$/,
-                    message: "Only letters, numbers, spaces, commas, dashes, and periods are allowed",
+                    message:
+                      "Only letters, numbers, spaces, commas, dashes, and periods are allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -502,7 +538,10 @@ const renderFilePreview = (file) => {
                     invalid={!!errors.address}
                     {...field}
                     onChange={(e) => {
-                      const allowedChars = e.target.value.replace(/[^a-zA-Z0-9\s,.\-]/g, "");
+                      const allowedChars = e.target.value.replace(
+                        /[^a-zA-Z0-9\s,.\-]/g,
+                        ""
+                      );
                       field.onChange(allowedChars);
                     }}
                   />
@@ -528,7 +567,10 @@ const renderFilePreview = (file) => {
                     invalid={!!errors.city}
                     {...field}
                     onChange={(e) => {
-                      const onlyAlphabets = e.target.value.replace(/[^a-zA-Z ]/g, "");
+                      const onlyAlphabets = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
                       field.onChange(onlyAlphabets);
                     }}
                   />
@@ -556,7 +598,10 @@ const renderFilePreview = (file) => {
                     invalid={!!errors.state}
                     {...field}
                     onChange={(e) => {
-                      const onlyAlphabets = e.target.value.replace(/[^a-zA-Z ]/g, "");
+                      const onlyAlphabets = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
                       field.onChange(onlyAlphabets);
                     }}
                   />
@@ -582,7 +627,10 @@ const renderFilePreview = (file) => {
                     invalid={!!errors.country}
                     {...field}
                     onChange={(e) => {
-                      const onlyAlphabets = e.target.value.replace(/[^a-zA-Z ]/g, "");
+                      const onlyAlphabets = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
                       field.onChange(onlyAlphabets);
                     }}
                   />
@@ -631,469 +679,466 @@ const renderFilePreview = (file) => {
         </>
       )}
 
-         {/* ===================== card Swipe ==========================*/}
-      
-                {paymentMode === "Card Swipe" && (
-                  <>
-                    <Row>
-                      <Col md="12" className="mb-1">
-                        <Label className="form-label" for="cardSwipeTransactionId">
-                          Card Swipe Transaction ID
-                          <span style={{ color: "red" }}>*</span>
-                        </Label>
-                        <Controller
-                          id="cardSwipeTransactionId"
-                          name="cardSwipeTransactionId"
-                          rules={{
-                            required: "Card Swipe Transaction ID is required",
-                            validate: validateCardSwipeTransactionId,
-                          }}
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="text"
-                              placeholder="Enter Transaction ID"
-                              invalid={!!errors.cardSwipeTransactionId}
-                              {...field}
-                              // disabled={statusThree}
-                              onChange={(e) => {
-                                const numericValue = e.target.value.replace(
-                                  /\D/g,
-                                  ""
-                                );
-                                field.onChange(numericValue);
-                              }}
-                            />
-                          )}
-                        />
-                        {errors.cardSwipeTransactionId && (
-                          <FormFeedback>
-                            {errors.cardSwipeTransactionId.message}
-                          </FormFeedback>
-                        )}
-                      </Col>
-                    </Row>
-                  </>
+      {/* ===================== card Swipe ==========================*/}
+
+      {paymentMode === "Card Swipe" && (
+        <>
+          <Row>
+            <Col md="12" className="mb-1">
+              <Label className="form-label" for="cardSwipeTransactionId">
+                Card Swipe Transaction ID
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                id="cardSwipeTransactionId"
+                name="cardSwipeTransactionId"
+                rules={{
+                  required: "Card Swipe Transaction ID is required",
+                  validate: validateCardSwipeTransactionId,
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    placeholder="Enter Transaction ID"
+                    invalid={!!errors.cardSwipeTransactionId}
+                    {...field}
+                    // disabled={statusThree}
+                    onChange={(e) => {
+                      const numericValue = e.target.value.replace(/\D/g, "");
+                      field.onChange(numericValue);
+                    }}
+                  />
                 )}
-       {/* //* ============================ Cheque21 Details =========================  */}
-      
-                {paymentMode === "Cheque21" && (
-                  <>
-                    <div className="content-header">
-                      <h5 className="mb-0 my-2">Bank Details</h5>
-                      <small>Fill Bank Details</small>
-                    </div>
-                    <Row>
-                      <Col md="6" className="mb-1">
-                        <Label className="form-label" for="bankName">
-                          Bank Name <span style={{ color: "red" }}>*</span>
-                        </Label>
-                        <Controller
-                          control={control}
-                          rules={{
-                            required: "Bank Name is required",
-                            minLength: {
-                              value: 3,
-                              message: "Bank Name must be at least 3 characters",
-                            },
-                          }}
-                          name="bankName"
-                          render={({ field }) => (
-                            <Input
-                              type="text"
-                              placeholder="Enter Bank Name"
-                              invalid={!!errors.bankName}
-                              {...field}
-                              disabled={isAssign}
-                            onChange={(e) => {
-        const onlyAlphabetsAndSpaces = e.target.value.replace(/[^a-zA-Z ]/g, "");
-        field.onChange(onlyAlphabetsAndSpaces);
-      }}
-      
-                            />
-                          )}
-                        />
-                        {errors.bankName && (
-                          <FormFeedback>{errors.bankName.message}</FormFeedback>
-                        )}
-                      </Col>
-      
-                      <Col md="6" className="mb-1">
-                        <Label className="form-label" for="nameOnAccount">
-                          Account Name <span style={{ color: "red" }}>*</span>
-                        </Label>
-                        <Controller
-                          name="nameOnAccount"
-                          control={control}
-                          rules={{
-                            required: "Account Name is required",
-                            minLength: {
-                              value: 3,
-                              message: "Account Name must be at least 3 characters",
-                            },
-                          }}
-                          render={({ field }) => (
-                            <Input
-                              type="text"
-                              placeholder="Enter Account Name"
-                              invalid={!!errors.nameOnAccount}
-                              {...field}
-                              // isDisabled={statusThree}
-                              onChange={(e) => {
-                                const onlyAlphabets = e.target.value.replace(
-                                 /[^a-zA-Z ]/g, ""
-                                );
-                                field.onChange(onlyAlphabets);
-                              }}
-                            />
-                          )}
-                        />
-                        {errors.nameOnAccount && (
-                          <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
-                        )}
-                      </Col>
-                    </Row>
-      
-                    <Row>
-                      <Col md="4" className="mb-1">
-                        <Label className="form-label" for="routingNumber">
-                          Routing Number <span style={{ color: "red" }}>*</span>
-                        </Label>
-                        <Controller
-                          name="routingNumber"
-                          rules={{
-                            required: "Routing Number is required",
-                            pattern: {
-                              value: /^[0-9]{9}$/,
-                              message: "Routing Number must be exactly 9 digits",
-                            },
-                          }}
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              placeholder="Enter Routing Number"
-                              invalid={!!errors.routingNumber}
-                              // isDisabled={statusThree}
-      
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors.routingNumber && (
-                          <FormFeedback>{errors.routingNumber.message}</FormFeedback>
-                        )}
-                      </Col>
-      
-                      <Col md="4" className="mb-1">
-                        <Label className="form-label" for="accountNumber">
-                          Account Number <span style={{ color: "red" }}>*</span>
-                        </Label>
-                        <Controller
-                          name="accountNumber"
-                          rules={{
-                            required: "Account Number is required",
-                            minLength: {
-                              value: 10,
-                              message: "Account Number must be at least 10 digits",
-                            },
-                            maxLength: {
-                              value: 17,
-                              message: "Account Number can't exceed 17 digits",
-                            },
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Account Number must be numeric",
-                            },
-                          }}
-                          control={control}
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              placeholder="Enter Account Number"
-                              invalid={!!errors.accountNumber}
-                              {...field}
-                              // isDisabled={statusThree}
-                            />
-                          )}
-                        />
-                        {errors.accountNumber && (
-                          <FormFeedback>{errors.accountNumber.message}</FormFeedback>
-                        )}
-                      </Col>
-      
-                      <Col md="4" className="mb-1">
-                        <Label className="form-label" for="chequeNumber">
-                          Cheque Number <span style={{ color: "red" }}>*</span>
-                        </Label>
-                        <Controller
-                          name="chequeNumber"
-                          control={control}
-                          rules={{
-                            required: "Cheque Number is required",
-                            minLength: {
-                              value: 6,
-                              message: "Cheque Number must be at least 6 digits",
-                            },
-                            maxLength: {
-                              value: 10,
-                              message: "Cheque Number cannot exceed 10 digits",
-                            },
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Cheque Number must be numeric",
-                            },
-                          }}
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              placeholder="Enter Cheque Number"
-                              invalid={!!errors.chequeNumber}
-                              {...field}
-                              // isDisabled={statusThree}
-                            />
-                          )}
-                        />
-                        {errors.chequeNumber && (
-                          <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
-                        )}
-                      </Col>
-                    </Row>
-      
-                    {/* <Row> */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle tag="h4">
-                          Upload Cheque Image
-                          <span style={{ color: "red" }}>*</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardBody>
-                        <FormGroup>
-                          <Label for="fileUpload">Upload File:</Label>
-                          <Input
-                            type="file"
-                            id="fileUpload"
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            // isDisabled={statusThree}
-                          />
-                        </FormGroup>
-      
-                        {file && (
-                          <div className="mt-3">
-                            <h6>File Details:</h6>
-                            <p>Name: {file.name}</p>
-                            <p>Size: {renderFileSize(file.size)}</p>
-                            {renderFilePreview(file)}
-                            <div className="d-flex justify-content-end mt-2">
-                              <Button
-                                color="danger"
-                                outline
-                                onClick={handleRemoveFile}
-                              >
-                                Remove File
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </CardBody>
-                    </Card>
-                    {/* </Row> */}
-                  </>
+              />
+              {errors.cardSwipeTransactionId && (
+                <FormFeedback>
+                  {errors.cardSwipeTransactionId.message}
+                </FormFeedback>
+              )}
+            </Col>
+          </Row>
+        </>
+      )}
+      {/* //* ============================ Cheque21 Details =========================  */}
+
+      {paymentMode === "Cheque21" && (
+        <>
+          <div className="content-header">
+            <h5 className="mb-0 my-2">Bank Details</h5>
+            <small>Fill Bank Details</small>
+          </div>
+          <Row>
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="bankName">
+                Bank Name <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                control={control}
+                rules={{
+                  required: "Bank Name is required",
+                  minLength: {
+                    value: 3,
+                    message: "Bank Name must be at least 3 characters",
+                  },
+                }}
+                name="bankName"
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    placeholder="Enter Bank Name"
+                    invalid={!!errors.bankName}
+                    {...field}
+                    disabled={isAssign}
+                    onChange={(e) => {
+                      const onlyAlphabetsAndSpaces = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
+                      field.onChange(onlyAlphabetsAndSpaces);
+                    }}
+                  />
                 )}
+              />
+              {errors.bankName && (
+                <FormFeedback>{errors.bankName.message}</FormFeedback>
+              )}
+            </Col>
 
-       {/* //* ============================ ChequeACH =========================  */}
-          {paymentMode === "ChequeACH" && (
-            <>
-              <div className="content-header">
-                <h5 className="mb-0 my-2">Bank Details</h5>
-                <small>Fill Bank Details</small>
-              </div>
-
-              <Row>
-                <Col md="12" className="mb-1">
-                  <Label className="form-label" for="acctype">
-                    Account Type <span style={{ color: "red" }}>*</span>
-                  </Label>
-
-                  <Controller
-                    name="accountType"
-                    control={control}
-                    rules={{
-                      required: "Account Typed is required",
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="nameOnAccount">
+                Account Name <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="nameOnAccount"
+                control={control}
+                rules={{
+                  required: "Account Name is required",
+                  minLength: {
+                    value: 3,
+                    message: "Account Name must be at least 3 characters",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    placeholder="Enter Account Name"
+                    invalid={!!errors.nameOnAccount}
+                    {...field}
+                    // isDisabled={statusThree}
+                    onChange={(e) => {
+                      const onlyAlphabets = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
+                      field.onChange(onlyAlphabets);
                     }}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        options={AccountType}
-                        className={`react-select ${
-                          errors.accountType ? "is-invalid" : ""
-                        }`}
-                        // isDisabled={statusThree}
-
-                        // onChange={(selectedOption) => {
-                        //   const value = selectedOption ? selectedOption.value : "";
-                        //   field.onChange(selectedOption); // Update React Hook Form with the value
-                        //   handlepaymentMode(selectedOption); // Run your custom function with the full option
-                        // }}
-                      />
-                    )}
                   />
-                  {errors.accountType && (
-                    <FormFeedback>{errors.accountType.message}</FormFeedback>
-                  )}
-                </Col>
-              </Row>
+                )}
+              />
+              {errors.nameOnAccount && (
+                <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
+              )}
+            </Col>
+          </Row>
 
-              <Row>
-                <Col md="6" className="mb-1">
-                  <Label className="form-label" for="bankName">
-                    Bank Name <span style={{ color: "red" }}>*</span>
-                  </Label>
-                  <Controller
-                    control={control}
-                    rules={{
-                      required: "Bank Name is required",
-                      minLength: {
-                        value: 3,
-                        message: "Bank Name must be at least 3 characters",
-                      },
-                      maxLength: {
-                        value: 50,
-                        message: "Bank Name can't exceed 50 characters",
-                      },
-                      pattern: {
-                        value: /^[A-Za-z ]+$/,
-                        message:
-                          "Bank Name Can Only contain letters and Spaces",
-                      },
+          <Row>
+            <Col md="4" className="mb-1">
+              <Label className="form-label" for="routingNumber">
+                Routing Number <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="routingNumber"
+                rules={{
+                  required: "Routing Number is required",
+                  pattern: {
+                    value: /^[0-9]{9}$/,
+                    message: "Routing Number must be exactly 9 digits",
+                  },
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="number"
+                    placeholder="Enter Routing Number"
+                    invalid={!!errors.routingNumber}
+                    // isDisabled={statusThree}
+
+                    {...field}
+                  />
+                )}
+              />
+              {errors.routingNumber && (
+                <FormFeedback>{errors.routingNumber.message}</FormFeedback>
+              )}
+            </Col>
+
+            <Col md="4" className="mb-1">
+              <Label className="form-label" for="accountNumber">
+                Account Number <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="accountNumber"
+                rules={{
+                  required: "Account Number is required",
+                  minLength: {
+                    value: 10,
+                    message: "Account Number must be at least 10 digits",
+                  },
+                  maxLength: {
+                    value: 17,
+                    message: "Account Number can't exceed 17 digits",
+                  },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: "Account Number must be numeric",
+                  },
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="number"
+                    placeholder="Enter Account Number"
+                    invalid={!!errors.accountNumber}
+                    {...field}
+                    // isDisabled={statusThree}
+                  />
+                )}
+              />
+              {errors.accountNumber && (
+                <FormFeedback>{errors.accountNumber.message}</FormFeedback>
+              )}
+            </Col>
+
+            <Col md="4" className="mb-1">
+              <Label className="form-label" for="chequeNumber">
+                Cheque Number <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="chequeNumber"
+                control={control}
+                rules={{
+                  required: "Cheque Number is required",
+                  minLength: {
+                    value: 6,
+                    message: "Cheque Number must be at least 6 digits",
+                  },
+                  maxLength: {
+                    value: 10,
+                    message: "Cheque Number cannot exceed 10 digits",
+                  },
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: "Cheque Number must be numeric",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input
+                    type="number"
+                    placeholder="Enter Cheque Number"
+                    invalid={!!errors.chequeNumber}
+                    {...field}
+                    // isDisabled={statusThree}
+                  />
+                )}
+              />
+              {errors.chequeNumber && (
+                <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
+              )}
+            </Col>
+          </Row>
+
+          {/* <Row> */}
+          <Card>
+            <CardHeader>
+              <CardTitle tag="h4">
+                Upload Cheque Image
+                <span style={{ color: "red" }}>*</span>
+              </CardTitle>
+            </CardHeader>
+            <CardBody>
+              <FormGroup>
+                <Label for="fileUpload">Upload File:</Label>
+                <Input
+                  type="file"
+                  id="fileUpload"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  // isDisabled={statusThree}
+                />
+              </FormGroup>
+
+              {watch("checkImage") && (
+                <div className="mt-3">
+                  <h6>File Details:</h6>
+                  <p>Name: {watch("checkImage").name}</p>
+                  <p>Size: {renderFileSize(watch("checkImage").size)}</p>
+                  {renderFilePreview(watch("checkImage"))}
+                  <div className="d-flex justify-content-end mt-2">
+                    <Button color="danger" outline onClick={handleRemoveFile}>
+                      Remove File
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardBody>
+          </Card>
+          {/* </Row> */}
+        </>
+      )}
+
+      {/* //* ============================ ChequeACH =========================  */}
+      {paymentMode === "ChequeACH" && (
+        <>
+          <div className="content-header">
+            <h5 className="mb-0 my-2">Bank Details</h5>
+            <small>Fill Bank Details</small>
+          </div>
+
+          <Row>
+            <Col md="12" className="mb-1">
+              <Label className="form-label" for="acctype">
+                Account Type <span style={{ color: "red" }}>*</span>
+              </Label>
+
+              <Controller
+                name="accountType"
+                control={control}
+                rules={{
+                  required: "Account Typed is required",
+                }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={AccountType}
+                    className={`react-select ${
+                      errors.accountType ? "is-invalid" : ""
+                    }`}
+                    // isDisabled={statusThree}
+
+                    // onChange={(selectedOption) => {
+                    //   const value = selectedOption ? selectedOption.value : "";
+                    //   field.onChange(selectedOption); // Update React Hook Form with the value
+                    //   handlepaymentMode(selectedOption); // Run your custom function with the full option
+                    // }}
+                  />
+                )}
+              />
+              {errors.accountType && (
+                <FormFeedback>{errors.accountType.message}</FormFeedback>
+              )}
+            </Col>
+          </Row>
+
+          <Row>
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="bankName">
+                Bank Name <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                control={control}
+                rules={{
+                  required: "Bank Name is required",
+                  minLength: {
+                    value: 3,
+                    message: "Bank Name must be at least 3 characters",
+                  },
+                  maxLength: {
+                    value: 50,
+                    message: "Bank Name can't exceed 50 characters",
+                  },
+                  pattern: {
+                    value: /^[A-Za-z ]+$/,
+                    message: "Bank Name Can Only contain letters and Spaces",
+                  },
+                }}
+                name="bankName"
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    placeholder="Enter Bank Name"
+                    invalid={!!errors.bankName}
+                    {...field}
+                    // isDisabled={statusThree}
+
+                    onChange={(e) => {
+                      const onlyAlphabets = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
+                      field.onChange(onlyAlphabets);
                     }}
-                    name="bankName"
-                    render={({ field }) => (
-                      <Input
-                        type="text"
-                        placeholder="Enter Bank Name"
-                        invalid={!!errors.bankName}
-                        {...field}
-                        // isDisabled={statusThree}
-
-                        onChange={(e) => {
-                          const onlyAlphabets = e.target.value.replace(
-                          /[^a-zA-Z ]/g, ""
-                          );
-                          field.onChange(onlyAlphabets);
-                        }}
-                      />
-                    )}
                   />
-                  {errors.bankName && (
-                    <FormFeedback>{errors.bankName.message}</FormFeedback>
-                  )}
-                </Col>
+                )}
+              />
+              {errors.bankName && (
+                <FormFeedback>{errors.bankName.message}</FormFeedback>
+              )}
+            </Col>
 
-                <Col md="6" className="mb-1">
-                  <Label className="form-label" for="nameOnAccount">
-                    Account Name <span style={{ color: "red" }}>*</span>
-                  </Label>
-                  <Controller
-                    name="nameOnAccount"
-                    control={control}
-                    rules={{
-                      required: "Account Name is required",
-                      minLength: {
-                        value: 3,
-                        message: "Account Name must be at least 3 characters",
-                      },
-                      maxLength: {
-                        value: 50,
-                        message: "Account Name can't exceed 50 characters",
-                      },
-                      pattern: {
-                        value: /^[A-Za-z. ]+$/,
-                        message:
-                          "Account Name can only contain letters, dots, and spaces",
-                      },
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="nameOnAccount">
+                Account Name <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="nameOnAccount"
+                control={control}
+                rules={{
+                  required: "Account Name is required",
+                  minLength: {
+                    value: 3,
+                    message: "Account Name must be at least 3 characters",
+                  },
+                  maxLength: {
+                    value: 50,
+                    message: "Account Name can't exceed 50 characters",
+                  },
+                  pattern: {
+                    value: /^[A-Za-z. ]+$/,
+                    message:
+                      "Account Name can only contain letters, dots, and spaces",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    placeholder="Enter Account Name"
+                    invalid={!!errors.nameOnAccount}
+                    {...field}
+                    // isDisabled={statusThree}
+
+                    onChange={(e) => {
+                      const onlyAlphabets = e.target.value.replace(
+                        /[^a-zA-Z ]/g,
+                        ""
+                      );
+                      field.onChange(onlyAlphabets);
                     }}
-                    render={({ field }) => (
-                      <Input
-                        type="text"
-                        placeholder="Enter Account Name"
-                        invalid={!!errors.nameOnAccount}
-                        {...field}
-                        // isDisabled={statusThree}
-
-                        onChange={(e) => {
-                          const onlyAlphabets = e.target.value.replace(
-                           /[^a-zA-Z ]/g, ""
-                          );
-                          field.onChange(onlyAlphabets);
-                        }}
-                      />
-                    )}
                   />
-                  {errors.nameOnAccount && (
-                    <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
-                  )}
-                </Col>
-              </Row>
+                )}
+              />
+              {errors.nameOnAccount && (
+                <FormFeedback>{errors.nameOnAccount.message}</FormFeedback>
+              )}
+            </Col>
+          </Row>
 
-              <Row>
-                <Col md="6" className="mb-1">
-                  <Label className="form-label" for="routingNumber">
-                    Routing Number <span style={{ color: "red" }}>*</span>
-                  </Label>
-                  <Controller
-                    name="routingNumber"
-                    rules={{
-                      required: "Routing Number is required",
-                    }}
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        type="number"
-                        placeholder="Enter Routing Number"
-                        invalid={!!errors.routingNumber}
-                        {...field}
-                        // isDisabled={statusThree}
-                      />
-                    )}
+          <Row>
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="routingNumber">
+                Routing Number <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="routingNumber"
+                rules={{
+                  required: "Routing Number is required",
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="number"
+                    placeholder="Enter Routing Number"
+                    invalid={!!errors.routingNumber}
+                    {...field}
+                    // isDisabled={statusThree}
                   />
-                  {errors.routingNumber && (
-                    <FormFeedback>{errors.routingNumber.message}</FormFeedback>
-                  )}
-                </Col>
+                )}
+              />
+              {errors.routingNumber && (
+                <FormFeedback>{errors.routingNumber.message}</FormFeedback>
+              )}
+            </Col>
 
-                <Col md="6" className="mb-1">
-                  <Label className="form-label" for="accountNumber">
-                    Account Number <span style={{ color: "red" }}>*</span>
-                  </Label>
-                  <Controller
-                    name="accountNumber"
-                    rules={{
-                      required: "Account Number is required",
-                      minLength: {
-                        value: 10,
-                        message: "Account Number must be at least 10 digits",
-                      },
-                    }}
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        type="number"
-                        placeholder="Enter Account Number"
-                        invalid={!!errors.accountNumber}
-                        {...field}
-                        // isDisabled={statusThree}
-                      />
-                    )}
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="accountNumber">
+                Account Number <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                name="accountNumber"
+                rules={{
+                  required: "Account Number is required",
+                  minLength: {
+                    value: 10,
+                    message: "Account Number must be at least 10 digits",
+                  },
+                }}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    type="number"
+                    placeholder="Enter Account Number"
+                    invalid={!!errors.accountNumber}
+                    {...field}
+                    // isDisabled={statusThree}
                   />
-                  {errors.accountNumber && (
-                    <FormFeedback>{errors.accountNumber.message}</FormFeedback>
-                  )}
-                </Col>
+                )}
+              />
+              {errors.accountNumber && (
+                <FormFeedback>{errors.accountNumber.message}</FormFeedback>
+              )}
+            </Col>
 
-                {/* <Col md="4" className="mb-1">
+            {/* <Col md="4" className="mb-1">
                     <Label className="form-label" for="chequeNumber">
                       Cheque Number <span style={{ color: "red" }}>*</span>
                     </Label>
@@ -1108,8 +1153,8 @@ const renderFilePreview = (file) => {
                           type="number"
                           placeholder="Enter Cheque Number"
                           invalid={!!errors.chequeNumber}
-                          {...field}
-                          readOnly={statusThree()}
+                          {...field}  
+                        readOnly={statusThree()}
                         />
                       )}
                     />
@@ -1117,168 +1162,169 @@ const renderFilePreview = (file) => {
                       <FormFeedback>{errors.chequeNumber.message}</FormFeedback>
                     )}
                   </Col> */}
-              </Row>
-            </>
-          )}         
-            
- {/* ===================== Money order ==========================*/}
+          </Row>
+        </>
+      )}
 
-          {paymentMode === "Money Order" && (
-            <>
-              <Row>
-                <Col md="12" className="mb-1">
-                  <Label className="form-label" for="">
-                    Company Name <span style={{ color: "red" }}>*</span>
-                  </Label>
-                  <Controller
-                    control={control}
-                    rules={{
-                      required: "Company name is required",
-                    }}
-                    name="companyName"
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        theme={selectThemeColors}
-                        className="react-select"
-                        // isDisabled={statusThree()}
-                        classNamePrefix="select"
-                        isClearable
-                        options={CompanyOptions}
-                        isInvalid={!!errors.companyName}
-                      />
-                    )}
+      {/* ===================== Money order ==========================*/}
+
+      {paymentMode === "Money Order" && (
+        <>
+          <Row>
+            <Col md="12" className="mb-1">
+              <Label className="form-label" for="companyName">
+                Company Name <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Controller
+                control={control}
+                rules={{
+                  required: "Company name is required",
+                }}
+                name="companyName"
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    theme={selectThemeColors}
+                    className={`react-select ${
+                      errors.companyName ? "is-invalid" : ""
+                    }`}
+                    classNamePrefix="select"
+                    isClearable
+                    options={CompanyOptions}
                   />
-                  {errors.companyName && (
-                    <FormFeedback>{errors.companyName.message}</FormFeedback>
-                  )}
-                </Col>
-
-                {companyName?.label !== "Other" && (
-                  <Col md="12" className="mb-1">
-                    <Label className="form-label" for="mtcn">
-                      MTCN Number
-                      <span style={{ color: "red" }}>*</span>
-                    </Label>
-                    <Controller
-                      id="mtcn"
-                      name="mtcn"
-                      rules={{
-                        required: "MTCN Number is required",
-                        pattern: {
-                          value: /^[0-9]{10}$/,
-                          message: "MTCN Number must be exactly 10 digits",
-                        },
-                      }}
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          type="text"
-                          placeholder="Enter mtcn Number "
-                          // invalid={!!errors.cardSwipeTransactionId}
-                          {...field}
-                          // readOnly={statusThree()}
-
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(
-                              /\D/g,
-                              ""
-                            );
-                            // if (numericValue.length <= getCvvLength(cardType)) {
-                            field.onChange(numericValue);
-                            // }
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.mtcn && (
-                      <FormFeedback>{errors.mtcn.message}</FormFeedback>
-                    )}
-                  </Col>
                 )}
-              </Row>
-
-              {companyName?.label === "Other" && (
-                <Row>
-                  <Col md="6" className="mb-1">
-                    <Label className="form-label" for="otherTransactionId">
-                      Other Transaction ID{" "}
-                      <span style={{ color: "red" }}>*</span>
-                    </Label>
-
-                    <Controller
-                      name="otherTransactionId"
-                      control={control}
-                      rules={{
-                        required: "Transaction ID is required",
-                        pattern: {
-                          value: /^[0-9]{10}$/,
-                          message: "Transaction ID must be exactly 10 digits",
-                        },
-                      }}
-                      render={({ field }) => (
-                        <Input
-                          type="text"
-                          placeholder="Enter Transaction ID"
-                          invalid={!!errors.otherTransactionId}
-                          {...field}
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(
-                              /\D/g,
-                              ""
-                            );
-                            field.onChange(numericValue);
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.otherTransactionId && (
-                      <FormFeedback>
-                        {errors.otherTransactionId.message}
-                      </FormFeedback>
-                    )}
-                  </Col>
-
-                  <Col md="6" className="mb-1">
-                    <Label className="form-label" for="otherCompanyName">
-                      Other Company Name <span style={{ color: "red" }}>*</span>
-                    </Label>
-
-                    <Controller
-                      name="otherCompanyName"
-                      control={control}
-                      rules={{
-                        required: "Company Name is required",
-                        pattern: {
-                          value: /^[A-Za-z0-9 ]+$/, // only letters, numbers, spaces
-                          message: "Special characters are not allowed",
-                        },
-                      }}
-                      render={({ field }) => (
-                        <div>
-                          <Input
-                            id="otherCompanyName"
-                            placeholder="Enter Other Company Name"
-                            invalid={!!errors.otherCompanyName}
-                            {...field}
-                          />
-                          {errors.otherCompanyName && (
-                            <span className="text-danger small">
-                              {errors.otherCompanyName.message}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    />
-                  </Col>
-                </Row>
+              />
+              {errors.companyName && (
+                <FormFeedback className="d-block">
+                  {errors.companyName.message}
+                </FormFeedback>
               )}
-            </>
+            </Col>
+
+            {companyName?.label !== "Other" && (
+              <Col md="12" className="mb-1">
+                <Label className="form-label" for="mtcn">
+                  MTCN Number
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  id="mtcn"
+                  name="mtcn"
+                  rules={{
+                    required: "MTCN Number is required",
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: "MTCN Number must be exactly 10 digits",
+                    },
+                  }}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter MTCN Number"
+                      invalid={!!errors.mtcn}
+                      {...field}
+                      maxLength={10}
+                      onChange={(e) => {
+                        const numericValue = e.target.value.replace(/\D/g, "");
+                        field.onChange(numericValue);
+                      }}
+                    />
+                  )}
+                />
+                {errors.mtcn && (
+                  <FormFeedback className="d-block">
+                    {errors.mtcn.message}
+                  </FormFeedback>
+                )}
+              </Col>
+            )}
+          </Row>
+
+          {companyName?.label === "Other" && (
+            <Row>
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="otherCompanyName">
+                  Other Company Name <span style={{ color: "red" }}>*</span>
+                </Label>
+
+                <Controller
+                  name="otherCompanyName"
+                  control={control}
+                  rules={{
+                    required: "Company Name is required",
+                    pattern: {
+                      value: /^[A-Za-z0-9 ]+$/,
+                      message: "Special characters are not allowed",
+                    },
+                    minLength: {
+                      value: 3,
+                      message: "Company Name must be at least 3 characters",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      id="otherCompanyName"
+                      type="text"
+                      placeholder="Enter Other Company Name"
+                      invalid={!!errors.otherCompanyName}
+                      {...field}
+                      onChange={(e) => {
+                        const alphanumericValue = e.target.value.replace(
+                          /[^A-Za-z0-9 ]/g,
+                          ""
+                        );
+                        field.onChange(alphanumericValue);
+                      }}
+                    />
+                  )}
+                />
+                {errors.otherCompanyName && (
+                  <FormFeedback className="d-block">
+                    {errors.otherCompanyName.message}
+                  </FormFeedback>
+                )}
+              </Col>
+
+              <Col md="6" className="mb-1">
+                <Label className="form-label" for="otherTransactionId">
+                  Other Transaction ID <span style={{ color: "red" }}>*</span>
+                </Label>
+
+                <Controller
+                  name="otherTransactionId"
+                  control={control}
+                  rules={{
+                    required: "Transaction ID is required",
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: "Transaction ID must be exactly 10 digits",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      placeholder="Enter Transaction ID"
+                      invalid={!!errors.otherTransactionId}
+                      {...field}
+                      maxLength={10}
+                      onChange={(e) => {
+                        const numericValue = e.target.value.replace(/\D/g, "");
+                        field.onChange(numericValue);
+                      }}
+                    />
+                  )}
+                />
+                {errors.otherTransactionId && (
+                  <FormFeedback className="d-block">
+                    {errors.otherTransactionId.message}
+                  </FormFeedback>
+                )}
+              </Col>
+            </Row>
           )}
-
-
-
-
+        </>
+      )}
     </>
   );
 };

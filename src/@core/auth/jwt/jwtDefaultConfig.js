@@ -234,4 +234,17 @@ export default {
   getSwitchSlipEndPointById: "/slipSwitch",
   renewContractEndPoint: "/sPayment/renewContract",
    otherPaymentEndPoint: '/sPayment/otherSlip',
+ renewContractEndPoint : '/sPayment/renewContract',
+
+   //sales in Accounting 
+   
+
+   //ledger
+   getUserData:"/ledger/",
+
+
+   //Event Document 
+   eventDocument:"/eventDocuments/",
+   eventDocUpdate:"/eventDocuments/",
+   getEventDocument:"/eventDocuments/",
 };

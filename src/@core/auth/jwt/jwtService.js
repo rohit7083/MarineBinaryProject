@@ -837,31 +837,50 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.dailySales}?type=${type}`);
   }
 
-  report(startDate,endDate) {
-    return axios.get(`${this.jwtConfig.report}?fromDate=${startDate}&toDate=${endDate}`);
+  report(startDate, endDate) {
+    return axios.get(
+      `${this.jwtConfig.report}?fromDate=${startDate}&toDate=${endDate}`
+    );
   }
-
 
   //get Switch Slip
-  getSwitchSlip(){
+  getSwitchSlip() {
     return axios.get(this.jwtConfig.slipGet);
   }
-  
 
-  postSwitchSlip(...args){
+  postSwitchSlip(...args) {
     return axios.post(this.jwtConfig.getSwitchSlipEndPoint, ...args);
   }
- 
-  postSwitchSlipById(...args){
+
+  postSwitchSlipById(...args) {
     return axios.post(this.jwtConfig.getSwitchSlipEndPointById, ...args);
   }
 
   //get other Payment in slipmanagement
-  getOtherPayment(){
-   return axios.get(this.jwtConfig.otherPaymentEndPoint);
-   
+  getOtherPayment() {
+    return axios.get(this.jwtConfig.otherPaymentEndPoint);
   }
+
+  getUserData(LezerId) {
+    return axios.get(`${this.jwtConfig.getUserData}${LezerId}`);
+  }
+
+
   
+  eventDocument(...args) {
+    return axios.post(this.jwtConfig.eventDocument,...args);
+  }
+
+    eventDocUpdate(uid,...args) {
+    return axios.put(`${this.jwtConfig.eventDocUpdate}${uid}`,...args);
+  }
+
+   getEventDocument(uid) {
+    return axios.get(`${this.jwtConfig.getEventDocument}${uid}`, {
+      responseType: "blob", // important for binary data
+    });
+  }
+renewContract(...args){
+    return axios.post(this.jwtConfig.renewContractEndPoint,...args)
+  }
 }
-
-

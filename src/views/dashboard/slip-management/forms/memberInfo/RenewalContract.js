@@ -50,7 +50,6 @@ const EditUserExample = ({
   slip
 }) => {
   // ** States
-  const [file, setFile] = useState(null);
   const [showCardDetail, setShowCardDetail] = useState(false);
   const [cardOptions, setCardOptions] = useState([]);
 
@@ -87,11 +86,7 @@ const EditUserExample = ({
     }
   }, [watchPaidIn, slip, setValue]);
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  // Encryption helper functions - CORRECTED VERSION
+  // Encryption helper functions
   function generateKey(secretKey) {
     return CryptoJS.SHA256(secretKey);
   }
@@ -116,9 +111,10 @@ const EditUserExample = ({
     return CryptoJS.enc.Base64.stringify(combined);
   }
 
-  const onSubmit = data => {
-    console.log('Slip data from parent component', slip)
+  const onSubmit = async data => {
+  console.log('Form data received:', data);
 
+  try {
     // Raw values from RHF
     const rawValues = getValues();
 
@@ -130,90 +126,28 @@ const EditUserExample = ({
       return v;
     }));
 
-    console.log('--- onSubmit triggered ---');
-    console.log('data (param):', data);
-    console.log('raw getValues():', rawValues);
-    console.log('serialized form values:', serialized);
-    console.log('file state:', file);
+    console.log('Serialized values:', serialized);
 
-    // Encrypt PIN if exists - CORRECTED
-    const pinValue = serialized.pin ? serialized.pin.join('') : '';
-    const encryptedPin = pinValue ? encryptAES(pinValue) : '';
+    // Get payment mode
+    const paymentModeValue = serialized.paymentMode?.value || '';
+    const paymentModeLabel = serialized.paymentMode?.label || '';
 
-    console.log('Original PIN:', pinValue);
-    console.log('Encrypted PIN:', encryptedPin);
+    console.log('Payment Mode:', paymentModeLabel, paymentModeValue);
 
-    
-
-    // Create payload
-    const payload = {
-      
+    // Base payload - common fields for all payment modes
+    const basePayload = {
       SlipId: slip?.id || '',
-      // ✅ Ensure memberId is a number (long)
-      memberId: slip?.member?.uid ? Number(slip.member.uid) : 0,
+      memberId: slip?.member?.id ? slip.member.id : 0,
       contractDate: serialized.contractDate || '',
       renewalDate: serialized.renewalDate || '',
       nextPaymentDate: serialized.nextPaymentDate || '',
       paidIn: serialized.paidIn?.value || '',
       finalPayment: serialized.finalPayment || 0.0,
-      paymentMode: serialized.paymentMode?.value || '',
-      
-      // Cash payment fields - ENCRYPTED PIN
-      pin: encryptedPin,
-      
-      // Credit Card fields (existing card)
-      cardUid: serialized.existingCard?.cardData?.cardUid || '',
-      cvv: serialized.cvv || '',
-      
-      // Credit Card fields (new card)
-      cardType: serialized.cardType || '',
-      cardNumber: serialized.cardNumber || '',
-      cardCvv: serialized.cardCvv || '',
-      cardExpiryYear: serialized.cardExpiryYear || '',
-      cardExpiryMonth: serialized.cardExpiryMonth || '',
-      nameOnCard: serialized.nameOnCard || '',
-      
-      // Address fields
-      address: serialized.address || '',
-      city: serialized.city || '',
-      state: serialized.state || '',
-      country: serialized.country || '',
-      pinCode: serialized.pinCode || '',
-      
-      // Other payment fields
-      cardSwipeTransactionId: serialized.cardSwipeTransactionId || '',
-      bankName: serialized.bankName || '',
-      nameOnAccount: serialized.nameOnAccount || '',
-      routingNumber: serialized.routingNumber || '',
-      accountNumber: serialized.accountNumber || '',
-      chequeNumber: serialized.chequeNumber || '',
-      accountType: serialized.accountType?.value || '',
-      companyName: serialized.companyName || '',
-      mtcn: serialized.mtcn || '',
-      otherCompanyName: serialized.otherCompanyName || '',
-      otherTransactionId: serialized.otherTransactionId || '',
-      documentUid: serialized.documentUid || '',
+      paymentMode: paymentModeValue,
     };
 
-    console.log('Final payload:', payload);
-
-    // ✅ Convert payload to FormData (added block)
-    const formData = new FormData();
-    for (const key in payload) {
-      if (payload[key] !== undefined && payload[key] !== null) {
-        formData.append(key, payload[key]);
-      }
-    }
-
-    // ✅ Append file if present
-    if (file) {
-      formData.append('contractFile', file);
-    }
-
-    console.log('FormData prepared:', [...formData.entries()]);
-
-    // Basic validation check
-    const requiredFields = ['contractDate', 'renewalDate', 'nextPaymentDate', 'paidIn', 'finalPayment'];
+    // Basic validation check for required fields
+    const requiredFields = ['contractDate', 'renewalDate', 'nextPaymentDate', 'paidIn', 'finalPayment', 'paymentMode'];
     let isValid = true;
 
     requiredFields.forEach(field => {
@@ -227,24 +161,278 @@ const EditUserExample = ({
       }
     });
 
-    if (isValid) {
-      console.log('Form submitted successfully');
-      
-    try{
+    if (!isValid) {
+      console.error('Basic validation failed');
+      return;
+    }
 
+    // Initialize final payload with base fields
+    let payload = { ...basePayload };
+
+    // Add payment-mode-specific fields based on selection
+    switch (paymentModeLabel) {
+      case 'Cash':
+        console.log('Processing Cash payment...');
+        
+        // Validate PIN
+        const pinArray = serialized.pin || [];
+        const pinValue = pinArray.join('');
+        
+        if (!pinValue || pinValue.length !== 4) {
+          setError('pin[0]', {
+            type: 'manual',
+            message: 'Please enter all 4 PIN digits'
+          });
+          console.error('Cash: PIN validation failed');
+          return;
+        }
+        
+        // Encrypt PIN for Cash payment
+        const encryptedPin = encryptAES(pinValue);
+        
+        payload = {
+          ...payload,
+          pin: encryptedPin,
+        };
+        console.log('Cash payload prepared');
+        break;
+
+      case 'Credit Card':
+        console.log('Processing Credit Card payment...');
+        
+        // Validate Credit Card fields
+        if (!serialized.cardNumber || !serialized.cardType || !serialized.cardCvv || 
+            !serialized.cardExpiryYear || !serialized.cardExpiryMonth || !serialized.nameOnCard ||
+            !serialized.address || !serialized.city || !serialized.state || 
+            !serialized.country || !serialized.pinCode) {
+          alert('Please fill all Credit Card details');
+          console.error('Credit Card: Missing required fields');
+          return;
+        }
+
+        payload = {
+          ...payload,
+          cardType: serialized.cardType || '',
+          cardNumber: serialized.cardNumber || '',
+          cardCvv: serialized.cardCvv || '',
+          cardExpiryYear: serialized.cardExpiryYear || '',
+          cardExpiryMonth: serialized.cardExpiryMonth || '',
+          nameOnCard: serialized.nameOnCard || '',
+          address: serialized.address || '',
+          city: serialized.city || '',
+          state: serialized.state || '',
+          country: serialized.country || '',
+          pinCode: serialized.pinCode || '',
+        };
+        console.log('Credit Card payload prepared');
+        break;
+
+      case 'Card Swipe':
+        console.log('Processing Card Swipe payment...');
+        
+        if (!serialized.cardSwipeTransactionId) {
+          setError('cardSwipeTransactionId', {
+            type: 'manual',
+            message: 'Card Swipe Transaction ID is required'
+          });
+          console.error('Card Swipe: Transaction ID missing');
+          return;
+        }
+
+        payload = {
+          ...payload,
+          cardSwipeTransactionId: serialized.cardSwipeTransactionId || '',
+        };
+        console.log('Card Swipe payload prepared');
+        break;
+
+      case 'Cheque21':
+        console.log('Processing Cheque21 payment...');
+        
+        // Validate that file is uploaded for Cheque21
+        const chequeImageFile = rawValues.checkImage;
+        
+        if (!chequeImageFile) {
+          setError('checkImage', {
+            type: 'manual',
+            message: 'Cheque image is required for Cheque21 payment mode'
+          });
+          console.error('Cheque21: File not found');
+          return;
+        }
+
+        // Validate other Cheque21 fields
+        if (!serialized.bankName || !serialized.nameOnAccount || 
+            !serialized.routingNumber || !serialized.accountNumber || !serialized.chequeNumber) {
+          alert('Please fill all Cheque21 details');
+          console.error('Cheque21: Missing required fields');
+          return;
+        }
+        
+        payload = {
+          ...payload,
+          bankName: serialized.bankName || '',
+          nameOnAccount: serialized.nameOnAccount || '',
+          routingNumber: serialized.routingNumber || '',
+          accountNumber: serialized.accountNumber || '',
+          chequeNumber: serialized.chequeNumber || '',
+          documentUid: serialized.documentUid || '',
+        };
+        console.log('Cheque21 payload prepared, file:', chequeImageFile.name);
+        break;
+
+      case 'ChequeACH':
+        console.log('Processing ChequeACH payment...');
+        
+        if (!serialized.accountType?.value || !serialized.bankName || 
+            !serialized.nameOnAccount || !serialized.routingNumber || !serialized.accountNumber) {
+          alert('Please fill all ChequeACH details');
+          console.error('ChequeACH: Missing required fields');
+          return;
+        }
+
+        payload = {
+          ...payload,
+          accountType: serialized.accountType?.value || '',
+          bankName: serialized.bankName || '',
+          nameOnAccount: serialized.nameOnAccount || '',
+          routingNumber: serialized.routingNumber || '',
+          accountNumber: serialized.accountNumber || '',
+        };
+        console.log('ChequeACH payload prepared');
+        break;
+
+      case 'Money Order':
+        console.log('Processing Money Order payment...');
+        
+        // Validate company name
+        if (!serialized.companyName?.value) {
+          setError('companyName', {
+            type: 'manual',
+            message: 'Company Name is required'
+          });
+          console.error('Money Order: Company name missing');
+          return;
+        }
+
+        payload = {
+          ...payload,
+          companyName: serialized.companyName?.value || '',
+        };
+
+        console.log('Company selected:', serialized.companyName?.label);
+
+        // Add MTCN or Other company details based on company selection
+        if (serialized.companyName?.label === 'Other') {
+          // Validate Other company fields
+          if (!serialized.otherCompanyName) {
+            setError('otherCompanyName', {
+              type: 'manual',
+              message: 'Other Company Name is required'
+            });
+            console.error('Money Order: Other company name missing');
+            return;
+          }
+          if (!serialized.otherTransactionId) {
+            setError('otherTransactionId', {
+              type: 'manual',
+              message: 'Transaction ID is required'
+            });
+            console.error('Money Order: Other transaction ID missing');
+            return;
+          }
+
+          payload.otherCompanyName = serialized.otherCompanyName || '';
+          payload.otherTransactionId = serialized.otherTransactionId || '';
+          console.log('Money Order (Other) payload prepared:', {
+            otherCompanyName: payload.otherCompanyName,
+            otherTransactionId: payload.otherTransactionId
+          });
+        } else {
+          // Validate MTCN
+          if (!serialized.mtcn) {
+            setError('mtcn', {
+              type: 'manual',
+              message: 'MTCN Number is required'
+            });
+            console.error('Money Order: MTCN missing');
+            return;
+          }
+          payload.mtcn = serialized.mtcn || '';
+          console.log('Money Order (Standard) payload prepared, MTCN:', payload.mtcn);
+        }
+        break;
+
+      case 'Payment Link':
+        console.log('Processing Payment Link...');
+        // Add any specific fields for Payment Link if needed
+        break;
+
+      case 'QR Code':
+        console.log('Processing QR Code...');
+        // Add any specific fields for QR Code if needed
+        break;
+
+      default:
+        console.warn('Unknown payment mode:', paymentModeLabel);
+        alert('Please select a valid payment mode');
+        return;
+    }
+
+    console.log('Final payload before FormData:', payload);
+
+    // Create FormData
+    const formData = new FormData();
+
+    // Append all payload fields
+    for (const key in payload) {
+      if (payload[key] !== undefined && payload[key] !== null && payload[key] !== '') {
+        formData.append(key, payload[key]);
+        console.log(`Appended to FormData: ${key} = ${payload[key]}`);
+      }
+    }
+
+    // ✅ Append file separately for Cheque21
+    if (paymentModeLabel === 'Cheque21' && rawValues.checkImage) {
+      formData.append('chequeImage', rawValues.checkImage);
+      console.log('Cheque image file appended:', rawValues.checkImage.name);
+    }
+
+    // ✅ Append contract file if exists
+    if (rawValues.fiazan) {
+      formData.append('contractFile', rawValues.fiazan);
+      console.log('Contract file appended:', rawValues.fiazan.name);
+    }
+
+    console.log('=== FormData Contents ===');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    console.log('========================');
+
+    // ** Hit API
+    console.log('🚀 Calling API with FormData...');
+    const response = await useJwt.renewContract(formData);
     
-      // 🔹 Send FormData instead of JSON
-      const response = useJwt.renewContract(formData)
-
-
-    }catch(err){
-      console.error(err
-
-      )
+    console.log('✅ API Response:', response);
+    
+    // Success handling
+    if (response.data) {
+      alert('Contract renewed successfully!');
+      setShow(false);
+      reset();
     }
-    }
-  };
 
+  } catch (error) {
+    console.error('❌ Error in onSubmit:', error);
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
+    alert('Error: ' + (error.response?.data?.message || error.message));
+  }
+};
 
   const updateCardOptions = (member) => {
     if (member && member.cards && member.cards.length > 0) {
@@ -259,8 +447,6 @@ const EditUserExample = ({
     }
     setValue('existingCard', null);
   };
-
-  
 
   return (
     <Fragment>
@@ -297,13 +483,11 @@ const EditUserExample = ({
 
                         const startDate = new Date(date[0]);
                         
-                        // Set renewal date (1 year from contract date)
                         const endDate = new Date(startDate);
                         endDate.setFullYear(endDate.getFullYear() + 1);
                         const formattedEndDate = endDate.toISOString().split("T")[0];
                         setValue("renewalDate", formattedEndDate, { shouldValidate: true });
 
-                        // Set next payment date based on paidIn value
                         const paidInValue = getValues('paidIn');
                         if (paidInValue) {
                           let nextPaymentDate = new Date(startDate);
@@ -455,7 +639,20 @@ const EditUserExample = ({
             
             <FormGroup>
               <Label for="fileInput">New Contract Upload</Label>
-              <Input type="file" id="fileInput" onChange={handleFileChange} />
+              <Controller
+                name="fiazan"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <Input 
+                    type="file" 
+                    id="fileInput" 
+                    onChange={(e) => {
+                      onChange(e.target.files[0]);
+                    }}
+                    {...field}
+                  />
+                )}
+              />
             </FormGroup>
 
             {/* Payment Mode Section Component */}

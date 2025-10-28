@@ -5,8 +5,18 @@ import { useLocation } from "react-router-dom";
 import React from "react";
 import { ChevronLeft } from "react-feather";
 import {
-  Button, Card,
-  CardBody, CardText, CardTitle, Col, Form, Input, Label, Row, Spinner, UncontrolledAlert
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Col,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -41,7 +51,7 @@ const TwoStepsBasic = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState(""); // ** React Hook Form Setup
   const [loading, setLoading] = useState(false);
-   
+
   const userData = location.state?.userData;
   const {
     control,
@@ -177,21 +187,24 @@ const TwoStepsBasic = () => {
       <div className="auth-inner my-2">
         <Card className="mb-0">
           <CardBody>
-           
-          <Link
-                        to="/"
-                        onClick={(e) => e.preventDefault()}
-                        className=" d-flex flex-row  align-items-center justify-content-center text-decoration-none"
-                      >
-                        <img
-                          src={MARinLogo}
-                          alt="Longcove Marina Logo"
-                          width={55}
-                          height={30}
-                          
-                        />
-                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
-                      </Link>
+            <Link
+              to="/"
+              onClick={(e) => e.preventDefault()}
+              className=" d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+            >
+              <img
+                src={MARinLogo}
+                alt="Longcove Marina Logo"
+                width={60}
+                height={30}
+              />
+              <h2
+                className="text-primary  mt-1  "
+                style={{ fontWeight: "bold" }}
+              >
+                MarinaOne
+              </h2>
+            </Link>
 
             <Row className="mb-1">
               <Label sm="3" for=""></Label>
@@ -212,7 +225,9 @@ const TwoStepsBasic = () => {
               Verify OTP For Login 💬
             </CardTitle>
             <CardText className="mb-75">
-            We have sent an OTP to your <strong>Google Authenticator app</strong> . Please enter the code from your mobile device in the field below
+              We have sent an OTP to your{" "}
+              <strong>Google Authenticator app</strong> . Please enter the code
+              from your mobile device in the field below
             </CardText>
             <CardText className="fw-bolder mb-2"></CardText>
             <Form
@@ -320,12 +335,12 @@ const TwoStepsBasic = () => {
                 )}
               </a>
             </p> */}
-             <p className="text-center mt-2">
-                            <Link to="/Login">
-                              <ChevronLeft className="rotate-rtl me-25" size={14} />
-                              <span className="align-middle">Back to login</span>
-                            </Link>
-                          </p>
+            <p className="text-center mt-2">
+              <Link to="/Login">
+                <ChevronLeft className="rotate-rtl me-25" size={14} />
+                <span className="align-middle">Back to login</span>
+              </Link>
+            </p>
           </CardBody>
         </Card>
       </div>

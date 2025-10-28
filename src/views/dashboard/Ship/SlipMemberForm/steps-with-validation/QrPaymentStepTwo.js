@@ -6,24 +6,24 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CheckSquare, CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Container,
-    Form,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Container,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import TokenExpire from "../../../../pages/authentication/slip/TokenExpire";
 
@@ -43,6 +43,10 @@ const CardPayment = () => {
   });
 
   const MySwal = withReactContent(Swal);
+
+  const authRef = useRef();
+  const lawRef = useRef();
+  const policyRef = useRef();
 
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
@@ -173,6 +177,38 @@ const CardPayment = () => {
 
   const onSubmit = async (data) => {
     setErr("");
+
+    const authorizePayment = authRef.current?.checked;
+    const agreeLaw = lawRef.current?.checked;
+    const agreePolicies = policyRef.current?.checked;
+    // If any checkbox is unchecked
+    if (!authorizePayment || !agreeLaw || !agreePolicies) {
+      setErr(
+        <>
+          Please agree to all the <strong>Terms & Conditions</strong> before
+          proceeding with payment.
+        </>
+      );
+
+      // Highlight unchecked ones in red
+      [authRef, lawRef, policyRef].forEach((ref) => {
+        if (ref.current) {
+          if (!ref.current.checked) {
+            ref.current.style.outline = "2px solid red";
+            ref.current.style.borderRadius = "3px";
+          } else {
+            ref.current.style.outline = "none";
+          }
+        }
+      });
+
+      return;
+    }
+
+    // Clear red outlines when all are checked
+    [authRef, lawRef, policyRef].forEach(
+      (ref) => ref.current && (ref.current.style.outline = "none")
+    );
     const { cvc, ...rest } = data;
 
     let payload = {};
@@ -713,44 +749,6 @@ const CardPayment = () => {
                               <Row>
                                 <Col sm="6" className="mb-2">
                                   <Label for="number">Card Number</Label>
-                                  {/*    <Controller
-                                    name="cardNumber"
-                                    control={control}
-                                    rules={{
-                                      required: "CardNumber  is required",
-                                      pattern: {
-                                        value: /^[0-9]+$/,
-                                        message: "Only number allowed",
-                                      },
-                                      maxLength: {
-                                        value: 16,
-                                        message: "Maximum 16 digits allowed",
-                                      },
-                                    }}
-                                    render={({ field }) => (
-                                      <Input
-                                        type="tel"
-                                        maxLength="19"
-                                        name="cardNumber"
-                                        {...field}
-                                        onChange={(e) => {
-                                          field.onChange(e);
-                                          setCardDetails((prev) => ({
-                                            ...prev,
-                                            cardNumber: e.target.value,
-                                          }));
-                                        }}
-                                        onFocus={handleInputFocus}
-                                        placeholder="Card Number"
-                                      />
-                                    )}
-                                  />
-                                  {errors.cardNumber && (
-                                    <p className="text-danger">
-                                      {errors.cardNumber.message}
-                                    </p>
-                                  )}
-                                </Col> */}
 
                                   <Controller
                                     name="cardNumber"
@@ -807,7 +805,6 @@ const CardPayment = () => {
                                     control={control}
                                     rules={{
                                       required: "Cardholder name is required",
-                                     
                                     }}
                                     render={({ field }) => (
                                       <Input
@@ -1092,8 +1089,13 @@ const CardPayment = () => {
                       <div className="form-check form-check-inline">
                         <Input
                           type="checkbox"
-                          checked
+                          innerRef={authRef}
                           id="basic-cb-unchecked"
+                          onChange={(e) =>
+                            (e.target.style.outline = e.target.checked
+                              ? "none"
+                              : "2px solid red")
+                          }
                         />
                         <Label
                           for="basic-cb-unchecked"
@@ -1116,8 +1118,13 @@ const CardPayment = () => {
                       <div className="form-check form-check-inline">
                         <Input
                           type="checkbox"
-                          checked
+                          innerRef={lawRef}
                           id="basic-cb-unchecked"
+                          onChange={(e) =>
+                            (e.target.style.outline = e.target.checked
+                              ? "none"
+                              : "2px solid red")
+                          }
                         />
                         <Label
                           for="basic-cb-unchecked"
@@ -1144,15 +1151,23 @@ const CardPayment = () => {
                       <div className="form-check form-check-inline">
                         <Input
                           type="checkbox"
-                          checked
                           id="basic-cb-unchecked"
+                          innerRef={policyRef}
+                          onChange={(e) =>
+                            (e.target.style.outline = e.target.checked
+                              ? "none"
+                              : "2px solid red")
+                          }
                         />
                         <Label
                           for="basic-cb-unchecked"
                           className="form-check-label"
                         >
                           I agree to the{" "}
-                          <span
+                          <a
+                            href="https://locktrust.com/privacy/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             style={{
                               color: "blue",
                               cursor: "pointer",
@@ -1160,39 +1175,46 @@ const CardPayment = () => {
                             }}
                           >
                             Privacy Policy
-                          </span>
-                          ,
-                          <span
+                          </a>{" "}
+                          ,{" "}
+                          <a
+                            href="https://locktrust.com/security/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             style={{
                               color: "blue",
                               cursor: "pointer",
                               textDecoration: "underline",
                             }}
                           >
-                            security policy
-                          </span>
-                          ,
-                          <span
+                            security Policy
+                          </a>{" "}
+                          ,{" "}
+                          <a
+                            href="https://locktrust.com/legal-agreement/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             style={{
                               color: "blue",
                               cursor: "pointer",
                               textDecoration: "underline",
                             }}
                           >
-                            {" "}
-                            user agreement
-                          </span>{" "}
-                          and
-                          <span
+                            User Aggrement
+                          </a>{" "}
+                          and{" "}
+                          <a
+                            href="https://locktrust.com/terms/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             style={{
                               color: "blue",
                               cursor: "pointer",
                               textDecoration: "underline",
                             }}
                           >
-                            {" "}
                             term of service
-                          </span>{" "}
+                          </a>
                         </Label>
                       </div>
                     </li>

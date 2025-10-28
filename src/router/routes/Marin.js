@@ -229,7 +229,17 @@ const Report = lazy(() =>
   import("../../views/dashboard/accounting/index")
 );
 
+const Sales = lazy(() =>
+  import("../../views/dashboard/accounting/sales/index")
+);
+const Ledger = lazy(() =>
+  import("../../views/dashboard/accounting/ledger/index")
+);
 
+
+const Purchase = lazy(() =>
+  import("../../views/dashboard/accounting/purchase/index")
+);
 
 export default [
   {
@@ -609,6 +619,24 @@ export default [
     element: <Report />,
     path: "/accounting/reports",
   },
+
+  {
+    element: <Sales />,
+    path: "/accounting/sales",
+  },
+
+{
+    element: <Ledger />,
+    path: "/accounting/ledger",
+  },
+
+
+  {
+    element: <Purchase />,
+    path: "/accounting/purchase",
+  },
+
+
 
   {
     path:'/marin/slip-management/switch-slip-payment',

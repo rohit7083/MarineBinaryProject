@@ -149,13 +149,13 @@ const Login = () => {
           <img
             src={MARinLogo}
             alt="Longcove Marina Logo"
-            width={55}
-            height={50}
-            className=""
+            width={60}
+            height={30}
+            className=" mt-1"
           />
 
           <h2
-            className="brand-text text-primary  mt-1"
+            className="brand-text text-primary  ms-1  mt-1"
             style={{ fontWeight: "bold" }}
           >
            MarinaOne

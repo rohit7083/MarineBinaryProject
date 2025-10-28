@@ -9,7 +9,7 @@ import { Spinner, UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import * as yup from "yup";
 // ** Reactstrap Imports
-import "@styles/react/libs/react-select/_react-select.scss";
+// import "@styles/react/libs/react-select/_react-select.scss";
 import ReactCountryFlag from "react-country-flag";
 import Select from "react-select";
 import {
@@ -45,7 +45,6 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
   const navigate = useNavigate();
   const [ErrMsz, setErrMsz] = useState("");
   const [slip, setSlip] = useState([]);
-  const [member,setMember]=useState({});
 
   const [loading, setLoading] = useState(false);
   const SignupSchema = yup.object().shape({
@@ -117,14 +116,14 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
     resolver: yupResolver(SignupSchema),
   });
 
-  // const { member } = SlipData;
+  const { member } = SlipData;
 
   useEffect(() => {
     // {{ }}
     setIsAssigned(SlipData?.isAssigned);
     setCheckvessel(SlipData?.vessel);
     setCheckMember(SlipData?.member);
- 
+    console.clear();
     // console.log("assigne",SlipData?.vessel);
   }, [SlipData]);
   const onSubmit = async (data) => {
@@ -144,7 +143,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       secondaryEmail,
       secondaryPhoneNumber,
     } = data;
-
+    {
+    }
     const payload = {
       firstName,
       lastName,
@@ -372,19 +372,35 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       </div>
     );
 
-
-    useEffect(()=>{
-      if(SlipData.member){
-        setMember(SlipData.member)
-      }
-    },[SlipData])
+  const handleUpdateContract = () => {
+    if (selectedSlip) {
+      navigate("/marin/slip-management/switch-slip-payment", {
+        state: { slip: selectedSlip },
+      });
+    } else {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Slip data not available",
+        life: 2000,
+      });
+    }
+  };
 
   return (
     <Fragment>
       <Card>
         <CardHeader className="border-bottom">
-          <CardTitle tag="h5">
+          <CardTitle tag="h5" className="mb-0 d-flex align-items-center">
             {!View ? "Edit Member Details" : "Member Details"}
+
+            <Button
+              color="primary"
+              onClick={handleRenwalContract}
+              className="ms-3"
+            >
+              Update Contract
+            </Button>
           </CardTitle>
 
           <div className="d-flex justify-content-end gap-2">
@@ -412,7 +428,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
               </>
             )}
 
-            <div>
+            {/* <div>
               <img
                 id="RenewContract"
                 width="25"
@@ -431,7 +447,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
               >
                 Update/Renew Contract
               </Tooltip>
-            </div>
+            </div> */}
 
             {/* <div>
               <Link>

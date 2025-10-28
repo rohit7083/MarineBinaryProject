@@ -358,10 +358,28 @@ export default [
 
     children: [
       {
+        id: "Ledger",
+        title: "Ledger",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/Ledger",
+      },
+      {
         id: "Reports",
         title: "Reports",
         icon: <Circle size={12} />,
         navLink: "/accounting/reports",
+      },
+      {
+        id: "Sales",
+        title: "Sales",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/sales",
+      },
+        {
+        id: "Purchase ",
+        title: "Purchase ",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/purchase",
       },
     ],
   },

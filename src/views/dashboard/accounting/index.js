@@ -1,6 +1,7 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/charts/recharts.scss";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
+import { debounce } from "lodash";
 import { Calendar, Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
@@ -155,6 +156,42 @@ const Index = () => {
         : "white",
     }),
   };
+  const debouncedFilter = debounce((value) => handleFilter(value), 300);
+
+  const handleFilter = (value) => {
+    setSearchTerm(value);
+
+    if (!value) {
+      // Reset to full dataset for the selected report type
+      if (reportType?.value === "all") {
+        setFilteredData(Object.values(allData).flat());
+      } else {
+        setFilteredData(allData[reportType?.value] || []);
+      }
+      return;
+    }
+
+    const dataToFilter =
+      reportType?.value === "all"
+        ? Object.values(allData).flat()
+        : allData[reportType?.value] || [];
+
+    const filteredResults = dataToFilter.filter((row) => {
+      const search = value.toLowerCase();
+    
+      return (
+        (row.member?.firstName?.toLowerCase()?.includes(search) ||
+          row.customer?.firstName.toLowerCase()?.includes(search) ||
+          row.customer?.lastName.toLowerCase()?.includes(search) ||
+          row.paymentStatus?.toLowerCase()?.includes(search) ||
+          row.roomNumber?.toString()?.includes(search) ||
+          row.finalAmount?.toString()?.includes(search)) ??
+        false
+      );
+    });
+
+    setFilteredData(filteredResults);
+  };
 
   return (
     <div className="report-container">
@@ -166,9 +203,10 @@ const Index = () => {
               {/* <h2 style={{ fontWeight: 700, fontSize: "28px" }}>
                 Reports Dashboard
               </h2> */}
-<CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
-  Reports Dashboard
-</CardTitle>            </div>
+              <CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
+                Reports Dashboard
+              </CardTitle>{" "}
+            </div>
           </div>
 
           <div className="d-flex align-items-center gap-2 mb-2">
@@ -265,7 +303,7 @@ const Index = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <CardText> Quick Select</CardText>
+              <CardText> Period</CardText>
 
               <Select
                 options={datePresets}
@@ -284,7 +322,7 @@ const Index = () => {
       <Card>
         <CardBody>
           <div className="row g-3 mb-3">
-            <div className="col-md-8">
+            <div className="col-md-12">
               <CardText> Search</CardText>
               <InputGroup>
                 <InputGroupText
@@ -296,13 +334,13 @@ const Index = () => {
                   type="text"
                   placeholder="Search reports..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => debouncedFilter(e.target.value)}
                   style={{ borderRadius: "0 8px 8px 0" }}
                 />
               </InputGroup>
             </div>
 
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
               <CardText> Entries per Page</CardText>
 
               <Select
@@ -312,7 +350,7 @@ const Index = () => {
                 classNamePrefix="select"
                 styles={customSelectStyles}
               />
-            </div>
+            </div> */}
           </div>
 
           {loading ? (
