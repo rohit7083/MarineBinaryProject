@@ -27,7 +27,7 @@ import {
   FormFeedback,
   Label,
   Row,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -38,7 +38,7 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
 import ReCAPTCHA from "react-google-recaptcha";
-import MARinLogo from "../../../../assets/images/logo/LT.png";
+import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 const defaultValues = {
   // password: "Ro1234567899",
@@ -264,16 +264,18 @@ const Login = () => {
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-          <svg viewBox="0 0 139 95" version="1.1" height="28"></svg>
 
           <img
             src={MARinLogo}
             alt="Longcove Marina Logo"
-            width={60}
-            height={30}
-            className=" mt-1"
+            style={{
+              height: "5rem",
+              width: "auto",
+              marginBottom: "0px",
+              marginTop: "0px",
+            }}
           />
-          <h2 className="brand-text text-primary ms-1 mt-1">MarinaOne</h2>
+          <h2 className="brand-text text-primary  mt-2">MarinaOne</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -298,7 +300,8 @@ const Login = () => {
                     <div className="alert-body">
                       <span className="text-danger fw-bold">
                         <strong>Error : </strong>
-                        {message}</span>
+                        {message}
+                      </span>
                     </div>
                   </UncontrolledAlert>
                 </React.Fragment>
@@ -420,17 +423,17 @@ const Login = () => {
                       name="captcha"
                       control={control}
                       rules={{
-                        required: "Captcha is required.", 
+                        required: "Captcha is required.",
                       }}
                       render={({ field }) => (
                         <div>
                           <ReCAPTCHA
-                            sitekey="6LeFXsIrAAAAAPeQmqwnRCmQspnIkpA_2N_mCuTC" 
+                            sitekey="6LeFXsIrAAAAAPeQmqwnRCmQspnIkpA_2N_mCuTC"
                             onChange={(value) => {
                               setValue("captcha", value, {
                                 shouldValidate: true,
-                              }); 
-                              field.onChange(value); 
+                              });
+                              field.onChange(value);
                             }}
                           />
                           {errors.captcha && (

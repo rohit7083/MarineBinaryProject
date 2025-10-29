@@ -7,7 +7,8 @@ import { Col, Row } from "reactstrap";
 import all from "../../../../assets/icons/all.png";
 import empty2 from "../../../../assets/icons/empty2.png";
 import occupie from "../../../../assets/icons/occupied.png";
-
+import offline2 from "../../../../assets/icons/offline2.png";
+import waitingTime from "../../../../assets/icons/waitingTime.png";
 // ** Styles
 import "@styles/react/apps/app-users.scss";
 import { useState } from "react";
@@ -38,7 +39,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
   return (
     <div className="app-user-list">
       <Row>
-        <Col md="4" className={"mt-1"}>
+        <Col md="3">
           <div
             className="d-flex align-items-center rounded p-1"
             style={getCardStyle("all")}
@@ -64,7 +65,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
           </div>
         </Col>
 
-        <Col md="4" className={"mt-1"}>
+        <Col md="2">
           <div
             className="d-flex align-items-center rounded p-1"
             style={getCardStyle("empty")}
@@ -91,7 +92,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
           </div>
         </Col>
 
-        <Col md="4" className={"mt-1"}>
+        <Col md="2">
           <div
             className="d-flex align-items-center rounded p-1"
             style={getCardStyle("occupied")}
@@ -117,7 +118,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
           </div>
         </Col>
 
-        {/* <Col md="2">
+        <Col md="2">
           <div
             className="d-flex align-items-center rounded  p-1"
             style={getCardStyle("offline")}
@@ -132,7 +133,6 @@ const UsersList = ({ count, emptySlip, occupied }) => {
               style={getIconStyle("offline")}
             />
 
-            
             <div>
               <strong
                 className="text-uppercase d-block"
@@ -160,7 +160,6 @@ const UsersList = ({ count, emptySlip, occupied }) => {
               style={getIconStyle("waiting")}
             />
 
-       
             <div>
               <strong
                 className="text-uppercase d-block"
@@ -171,7 +170,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
               <p className="mb-0 fw-bold fs-4">0</p>
             </div>
           </div>
-        </Col> */}
+        </Col>
       </Row>
     </div>
   );

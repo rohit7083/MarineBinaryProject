@@ -30,7 +30,6 @@ const WizardModern = () => {
   });
   // ** Hooks
   // const { uid } = useParams();
-
   const location = useLocation();
   const slipNameFromDashboard=location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;

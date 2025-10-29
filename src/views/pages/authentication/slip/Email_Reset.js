@@ -13,7 +13,7 @@ import { UncontrolledAlert } from "reactstrap";
 import "@styles/react/pages/page-authentication.scss";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import MARinLogo from "../../../../assets/images/logo/LT.png";
+import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 const VerifyEmailBasic = () => {
   // Initialize the useForm hook
@@ -96,14 +96,14 @@ const VerifyEmailBasic = () => {
               <img
                 src={MARinLogo}
                 alt=" MarinaOne"
-                width={60}
-                height={30}
-                className="mx-1"
+                style={{
+                  height: "5rem",
+                  width: "auto",
+                  marginBottom: "0px",
+                  marginTop: "0px",
+                }}
               />
-              <h2
-                className="text-primary mt-1  "
-                style={{ fontWeight: "bold" }}
-              >
+              <h2 className="text-primary mt-1" style={{ fontWeight: "bold" }}>
                 MarinaOne
               </h2>
             </Link>

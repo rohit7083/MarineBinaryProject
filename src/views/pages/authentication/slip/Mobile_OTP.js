@@ -38,7 +38,7 @@ import { useDispatch } from "react-redux";
 import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
-import MARinLogo from "../../../../assets/images/logo/LT.png";
+import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 const TwoStepsBasic = () => {
   const MySwal = withReactContent(Swal);
@@ -195,8 +195,12 @@ const TwoStepsBasic = () => {
               <img
                 src={MARinLogo}
                 alt="Longcove Marina Logo"
-                width={60}
-                height={30}
+                style={{
+                  height: "5rem",
+                  width: "auto",
+                  marginBottom: "0px",
+                  marginTop: "0px",
+                }}
               />
               <h2
                 className="text-primary  mt-1  "

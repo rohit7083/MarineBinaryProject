@@ -1,5 +1,5 @@
 // Logo Import
-import logo from '@src/assets/images/logo/LT.png'
+import logo from '@src/assets/images/logo/product-logo.png'
 
 
 //Template config options
@@ -9,8 +9,9 @@ const themeConfig = {
     appName: 'MarinaOne',
     appLogoImage: logo ,
     appLogoSize: {
-    height: 35,
-    width: 50
+    height: 61 ,
+    width: 65
+    
   }
   },
   layout: {

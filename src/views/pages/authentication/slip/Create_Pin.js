@@ -15,7 +15,7 @@ import { ListGroupItem, UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 // ** Reactstrap Imports
-import MARinLogo from "../../../../assets/images/logo/LT.png";
+import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 import { Button, Card, CardBody, CardText, CardTitle, Input } from "reactstrap";
 
@@ -279,9 +279,12 @@ const Create_Pin = () => {
               <img
                 src={MARinLogo}
                 alt="MarinaOne Logo"
-                width={55}
-                height={55}
-                className="mx-2"
+                   style={{
+                  height: "5rem",
+                  width: "auto",
+                  marginBottom: "0px",
+                  marginTop: "0px",
+                }}
               />
               <h2
                 className="text-primary mt-1  "

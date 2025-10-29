@@ -16,7 +16,8 @@ import { AbilityContext } from "@src/utility/context/Can";
 import React from "react";
 // ** Utils
 // ** Reactstrap Imports
-import MARinLogo from "../../../../assets/images/logo/LT.png";
+import MARinLogo from "../../../../assets/images/logo/product-logo.png";
+
 
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
@@ -30,7 +31,7 @@ import {
   Input,
   Label,
   Row,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -79,11 +80,6 @@ const Login = () => {
   };
 
   const onSubmit = async (data) => {
-    // {
-    //   {
-    //      ;
-    //   }
-    // }
     setMessage("");
     if (Object.values(data).every((field) => field.length > 0)) {
       try {
@@ -143,22 +139,24 @@ const Login = () => {
 
   return (
     <div className="auth-wrapper auth-cover">
-
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <img
             src={MARinLogo}
-            alt="Longcove Marina Logo"
-            width={60}
-            height={30}
-            className=" mt-1"
+            alt="Not Found"
+            style={{
+              height: "5rem",
+              width: "auto",
+              marginBottom: "0px",
+              marginTop: "0px",
+            }}
           />
 
           <h2
-            className="brand-text text-primary  ms-1  mt-1"
+            className="brand-text text-primary mt-2"
             style={{ fontWeight: "bold" }}
           >
-           MarinaOne
+            MarinaOne
           </h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
@@ -226,13 +224,7 @@ const Login = () => {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                color="primary"
-                disabled={loading}
-
-                block
-              >
+              <Button type="submit" color="primary" disabled={loading} block>
                 {loading ? (
                   <>
                     Loading.. <Spinner size="sm" />{" "}

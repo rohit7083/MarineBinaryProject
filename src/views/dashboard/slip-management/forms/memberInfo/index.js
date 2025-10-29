@@ -398,6 +398,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
               color="primary"
               onClick={handleRenwalContract}
               className="ms-3"
+              size={'sm'}
             >
               Update Contract
             </Button>

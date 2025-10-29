@@ -383,4 +383,22 @@ export default [
       // },
     ],
   },
+
+  {
+    id: "CRM Setting",
+    title: "CRM Setting",
+    icon: <UserRoundSearch size={12} />,
+    // navLink: "/sales",
+    badge: "light-warning",
+
+    children: [
+      // {
+      //   id: "Ledger",
+      //   title: "Ledger",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/accounting/Ledger",
+      // },
+      
+    ],
+  },
 ];

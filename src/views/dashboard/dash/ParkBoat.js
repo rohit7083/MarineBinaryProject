@@ -47,17 +47,14 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
   };
 
   const handleAdd = (boat) => {
-  navigate("/dashboard/slip_memberform", {
-    state: {
-      
-        formDataFromDashboard:boat
-    },
-  });
+    navigate("/dashboard/slip_memberform", {
+      state: {
+        formDataFromDashboard: boat,
+      },
+    });
 
-console.log(boat);
-
-};
-
+    console.log(boat);
+  };
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -117,7 +114,7 @@ console.log(boat);
   };
 
   return (
-    <div className="p-3">
+    <div className="mt-3">
       {loading ? (
         <div style={{ textAlign: "center", marginTop: "2rem" }}>
           <Spinner
