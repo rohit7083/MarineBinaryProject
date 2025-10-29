@@ -31,7 +31,6 @@ const AccountDetails = ({
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
-console.log("slipNameFromDashboard",slipNameFromDashboard);
 
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
@@ -88,22 +87,22 @@ console.log("slipNameFromDashboard",slipNameFromDashboard);
 
 
   useEffect(() => {
-    if (Object.keys(formData)?.length) {
-      const data = { ...formData };
-      
-      reset(data);
-    }else{
-      reset({
-        slipName: {
-          label: slipNameFromDashboard?.slipName,
-          value: slipNameFromDashboard?.id,
-          dimensions: slipNameFromDashboard?.dimensions, // include dimensions in slipName if needed
-        },
-        dimensionVal: slipNameFromDashboard?.dimensions || {},
-      });
-     
-    }
-  }, [reset, formData]);
+  if (Object.keys(formData || {})?.length) {
+    // If formData has keys → use it
+    reset({ ...formData });
+  } else if (slipNameFromDashboard) {
+    // If slipNameFromDashboard exists → use it
+    reset({
+      slipName: {
+        label: slipNameFromDashboard.slipName,
+        value: slipNameFromDashboard.id,
+        dimensions: slipNameFromDashboard.dimensions, // optional
+      },
+      dimensionVal: slipNameFromDashboard.dimensions || {},
+    });
+  }
+}, [reset, formData, slipNameFromDashboard]);
+
 
   useEffect(() => {
     fetchForm();
