@@ -63,6 +63,14 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/dashboard/slipmember_list",
       },
+
+      //   {
+      //   id: "WaitingSlip",
+      //   title: "Waiting Slip ",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/slip-management/waiting_slip",
+      // },
+
     ],
   },
   {
@@ -357,12 +365,12 @@ export default [
     badge: "light-warning",
 
     children: [
-      // {
-      //   id: "Ledger",
-      //   title: "Ledger",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/accounting/Ledger",
-      // },
+      {
+        id: "Ledger",
+        title: "Ledger",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/Ledger",
+      },
       {
         id: "Reports",
         title: "Reports",
