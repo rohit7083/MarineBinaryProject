@@ -64,13 +64,12 @@ export default [
         navLink: "/dashboard/slipmember_list",
       },
 
-      //   {
+      // {
       //   id: "WaitingSlip",
       //   title: "Waiting Slip ",
       //   icon: <Circle size={12} />,
       //   navLink: "/slip-management/waiting_slip",
       // },
-
     ],
   },
   {
@@ -365,12 +364,12 @@ export default [
     badge: "light-warning",
 
     children: [
-      {
-        id: "Ledger",
-        title: "Ledger",
-        icon: <Circle size={12} />,
-        navLink: "/accounting/Ledger",
-      },
+      // {
+      //   id: "Ledger",
+      //   title: "Ledger",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/accounting/Ledger",
+      // },
       {
         id: "Reports",
         title: "Reports",
@@ -392,21 +391,26 @@ export default [
     ],
   },
 
-  {
-    id: "CRM Setting",
-    title: "CRM Setting",
-    icon: <UserRoundSearch size={12} />,
-    // navLink: "/sales",
-    badge: "light-warning",
+  // {
+  //   id: "CRM Setting",
+  //   title: "CRM Setting",
+  //   icon: <Settings size={12} />,
+  //   // navLink: "/sales",
+  //   badge: "light-warning",
 
-    children: [
-      // {
-      //   id: "Ledger",
-      //   title: "Ledger",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/accounting/Ledger",
-      // },
-      
-    ],
-  },
+  //   children: [
+  //     {
+  //       id: "es",
+  //       title: "Email Settings",
+  //       icon: <Circle size={12} />,
+  //       // navLink: "/accounting/Ledger",
+  //     },
+  //     {
+  //       id: "ps",
+  //       title: "Payment Settings",
+  //       icon: <Circle size={12} />,
+  //       // navLink: "/accounting/Ledger",
+  //     },
+  //   ],
+  // },
 ];

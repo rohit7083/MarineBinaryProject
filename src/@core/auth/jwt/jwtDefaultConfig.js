@@ -233,18 +233,22 @@ export default {
   getSwitchSlipEndPoint: "/slipSwitch/",
   getSwitchSlipEndPointById: "/slipSwitch",
   renewContractEndPoint: "/sPayment/renewContract",
-   otherPaymentEndPoint: '/sPayment/otherSlip',
- renewContractEndPoint : '/sPayment/renewContract',
+  otherPaymentEndPoint: "/sPayment/otherSlip",
+  renewContractEndPoint: "/sPayment/renewContract",
 
-   //sales in Accounting 
-   
+  //sales in Accounting
 
-   //ledger
-   getUserData:"/ledger/",
+  //ledger
+  getUserData: "/ledger/",
 
+  //Event Document
+  eventDocument: "/eventDocuments/",
+  eventDocUpdate: "/eventDocuments/",
+  getEventDocument: "/eventDocuments/uploaded_files/",
 
-   //Event Document 
-   eventDocument:"/eventDocuments/",
-   eventDocUpdate:"/eventDocuments/",
-   getEventDocument:"/eventDocuments/",
+  //waiting sllip
+  createWaitingSlip: "/waitingMember/",
+  updateWaitingSlip: "/waitingMember/",
+  deleteWaiting: "/waitingMember/",
+  getAllWaiting: "/waitingMember",
 };

@@ -2,16 +2,26 @@ import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/charts/recharts.scss";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { debounce } from "lodash";
-import { Calendar, Filter, Search } from "lucide-react";
+import { Calendar, Download, Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
+import {
+  exportToCSV,
+  exportToImage,
+  exportToPDF,
+} from "../../../utility/exportUtils";
+
 import {
   Badge,
   Card,
   CardBody,
   CardText,
   CardTitle,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
   Input,
   InputGroup,
   InputGroupText,
@@ -20,6 +30,8 @@ import {
 import PosReport from "./PosReport";
 
 const Index = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const [searchTerm, setSearchTerm] = useState("");
   const [pageSize, setPageSize] = useState(20);
   const [reportType, setReportType] = useState(null);
@@ -178,7 +190,7 @@ const Index = () => {
 
     const filteredResults = dataToFilter.filter((row) => {
       const search = value.toLowerCase();
-    
+
       return (
         (row.member?.firstName?.toLowerCase()?.includes(search) ||
           row.customer?.firstName.toLowerCase()?.includes(search) ||
@@ -321,8 +333,8 @@ const Index = () => {
       {/* Search, Page Size & Report Content */}
       <Card>
         <CardBody>
-          <div className="row g-3 mb-3">
-            <div className="col-md-12">
+          <div className="row g-3 mb-1">
+            <div className="col-md-10">
               <CardText> Search</CardText>
               <InputGroup>
                 <InputGroupText
@@ -340,8 +352,8 @@ const Index = () => {
               </InputGroup>
             </div>
 
-            {/* <div className="col-md-4">
-              <CardText> Entries per Page</CardText>
+            <div className="col-md-2">
+              {/*    <CardText> Entries per Page</CardText>
 
               <Select
                 options={pageSizeOptions}
@@ -349,8 +361,31 @@ const Index = () => {
                 value={pageSizeOptions.find((opt) => opt.value === pageSize)}
                 classNamePrefix="select"
                 styles={customSelectStyles}
-              />
-            </div> */}
+              /> */}
+
+              {/* DOWNLOAD DROPDOWN */}
+              <CardText> </CardText>
+              <Dropdown
+                isOpen={dropdownOpen}
+                className="mt-3"
+                toggle={toggleDropdown}
+              >
+                <DropdownToggle color="primary" size={"sm"} caret>
+                  <Download size={16} className="me-1" /> Export
+                </DropdownToggle>
+                <DropdownMenu end>
+                  <DropdownItem onClick={() => exportToCSV(filteredData)}>
+                    Export as CSV
+                  </DropdownItem>
+                  <DropdownItem onClick={() => exportToPDF(filteredData)}>
+                    Export as PDF
+                  </DropdownItem>
+                  <DropdownItem onClick={() => exportToImage("report-section")}>
+                    Export as Image
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
 
           {loading ? (
@@ -361,13 +396,15 @@ const Index = () => {
               </p>
             </div>
           ) : reportType ? (
-            <PosReport
-              data={filteredData}
-              searchTerm={searchTerm}
-              pageSize={pageSize}
-              dateRange={dateRange}
-              reportType={reportType.value}
-            />
+            <div id="report-section">
+              <PosReport
+                data={filteredData}
+                searchTerm={searchTerm}
+                pageSize={pageSize}
+                dateRange={dateRange}
+                reportType={reportType.value}
+              />
+            </div>
           ) : (
             <div className="text-center" style={{ padding: "60px 20px" }}>
               <div

@@ -1,10 +1,10 @@
 
 
-import React, { useState,useEffect  } from "react";
+import useJwt from "@src/auth/jwt/useJwt";
+import { useEffect, useState } from "react";
 import Authenticate from "../dash/dashboard_manage/Authenticate";
 import ParkBoat from "./ParkBoat";
 import Index from "./dashboard_manage";
-import useJwt from "@src/auth/jwt/useJwt";
 
 function index() {
   const [allBoatData, setAllBoatData] = useState([]);
@@ -20,6 +20,9 @@ const [checkEmptySlip,setEmptySlip]=useState({ empty: 0, occupied: 0 });
        const occupied=res?.data?.content?.result.filter(boat=> boat.isAssigned).length;
 
        setEmptySlip({empty,occupied});
+
+      
+
     } catch (error) {
        console.error(error);
     } finally {

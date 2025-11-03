@@ -4,15 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { ArrowLeft, DownloadCloud, Eye, FileText, X } from "react-feather";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import {
-  Badge,
-  Button,
-  Col,
-  Form,
-  Label,
-  Row,
-  UncontrolledAlert,
-} from "reactstrap";
+import { Button, Col, Form, Row, UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 
 const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
@@ -20,239 +12,338 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
   const [ermsz, setErrmsz] = useState("");
   const navigate = useNavigate();
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: { errors },
-    reset,
-    watch,
-  } = useForm({
+  const { handleSubmit, setValue, reset, watch } = useForm({
     defaultValues: {
-      IdentityDocument: { uid: "", lastUploaded: "", currentFile: null },
-      Contract: { uid: "", lastUploaded: "", currentFile: null },
+      IdentityDocument: {
+        uid: "",
+        existingFile: "",
+        currentFile: null,
+      },
+      Contract: {
+        uid: "",
+        existingFile: "",
+        currentFile: null,
+      },
     },
   });
 
-  // Fetch previously uploaded documents
+  // ✅ Load existing documents when editing
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchDocuments = async () => {
       try {
-        const eventId = allEventData?.eventId || listData?.uid;
-        if (!eventId) return;
+        const eventDocs = listData?.Rowdata?.eventDocuments;
+        if (!eventDocs?.length) return;
 
-        const response = await useJwt.getEventDocument(eventId);
-        const docList = response?.data?.content?.result || [];
+        const responses = await Promise.all(
+          eventDocs.map(async (doc) => {
+            const res = await useJwt.getEventDocument(doc.uid);
+            const blob = res.data;
 
-        const doc = docList
-          .filter((item) =>
-            ["IdentityDocument", "Contract"].includes(item.documentName)
-          )
-          .reduce((acc, item) => {
-            const { uid, documentName, documentFilePath } = item;
-            acc[documentName] = {
-              uid,
-              lastUploaded: documentFilePath,
+            return {
+              documentName: doc.documentName,
+              uid: doc.uid,
+              url: URL.createObjectURL(blob),
+            };
+          })
+        );
+
+        const mapped = {
+          IdentityDocument: { uid: "", existingFile: "", currentFile: null },
+          Contract: { uid: "", existingFile: "", currentFile: null },
+        };
+
+        responses.forEach((file) => {
+          if (["IdentityDocument", "Contract"].includes(file.documentName)) {
+            mapped[file.documentName] = {
+              uid: file.uid,
+              existingFile: file.url,
               currentFile: null,
             };
-            return acc;
-          }, {});
+          }
+        });
 
-        if (Object.keys(doc).length > 0) reset(doc);
-      } catch (error) {
-        console.error("Error fetching documents:", error);
+        reset(mapped); // ✅ update form with file preview URLs
+      } catch (err) {
+        console.error("Error fetching documents:", err);
       }
     };
 
-    fetchData();
-  }, [allEventData, reset]);
+    if (listData?.Rowdata?.eventDocuments?.length) {
+      fetchDocuments();
+    }
+  }, [listData, reset]);
 
-  // Submit handler (create or update)
+  // ✅ Submit handler
   const onSubmit = async (data) => {
     setErrmsz("");
     setLoading(true);
 
+    const eventId = allEventData?.eventId || listData?.Rowdata?.id;
+
+    // Build list only for changed/new documents
     const uploadList = Object.keys(data)
       .filter((key) => ["IdentityDocument", "Contract"].includes(key))
       .reduce((arr, key) => {
-        const fileData = data[key];
-        const file = fileData?.currentFile;
-        if (!file && !fileData?.uid) return arr; // Skip empty entries
+        const { uid, currentFile, existingFile } = data[key];
 
-        const formData = new FormData();
-        formData.append(
-          "eventId",
-          allEventData?.eventId || listData?.Rowdata?.id
-        );
-        formData.append("documentName", key);
-        if (file) formData.append("documentFile", file);
+        // Case 1: New document (no uid yet, new file selected)
+        if (!uid && currentFile) {
+          const formData = new FormData();
+          formData.append("eventId", eventId);
+          formData.append("documentName", key);
+          formData.append("documentFile", currentFile);
+          arr.push({ action: "create", formData });
+        }
 
-        arr.push({ formData, uid: fileData?.uid, name: key });
+        // Case 2: Existing document replaced with a new file
+        if (uid && currentFile) {
+          const formData = new FormData();
+          formData.append("eventId", eventId);
+          formData.append("documentName", key);
+          formData.append("documentFile", currentFile);
+          arr.push({ action: "update", uid, formData });
+        }
+
+        // Case 3: Existing document left unchanged → skip
+        if (uid && !currentFile && existingFile) {
+          // No change → ignore
+        }
+
         return arr;
       }, []);
 
     if (!uploadList.length) {
       Swal.fire({
         icon: "warning",
-        title: "No Files!",
-        text: "Please upload or update at least one document before submitting.",
+        title: "No Changes!",
+        text: "You didn’t update or upload any new files.",
       });
       setLoading(false);
       return;
     }
 
     try {
-      const results = await Promise.all(
-        uploadList.map(async ({ formData, uid }) => {
-          if (uid || listData?.uid) {
-            // update existing document
-            await useJwt.eventDocUpdate(uid || listData?.uid, formData);
-            return "updated";
-          } else {
-            // create new document
-            await useJwt.eventDocument(formData);
-            return "created";
-          }
-        })
-      );
+    const results = [];
+for (const item of uploadList) {
+  try {
+    if (item.action === "update") {
+      await useJwt.eventDocUpdate(item.uid, item.formData);
+      results.push("updated");
+    } else if (item.action === "create") {
+      await useJwt.eventDocument(item.formData);
+      results.push("created");
+    }
+  } catch (err) {
+    console.error(`Error uploading ${item.name}:`, err);
+    throw err; // stop further uploads on failure
+  }
+}
+
 
       const updatedCount = results.filter((r) => r === "updated").length;
       const createdCount = results.filter((r) => r === "created").length;
 
       let message = "";
       if (updatedCount && createdCount)
-        message = `Successfully updated ${updatedCount} and created ${createdCount} records!`;
-      else if (updatedCount)
-        message = `Successfully updated ${updatedCount} document(s)!`;
-      else message = `Successfully uploaded ${createdCount} document(s)!`;
+        message = `Updated ${updatedCount} and created ${createdCount} documents.`;
+      else if (updatedCount) message = `Updated ${updatedCount} document(s).`;
+      else message = `Uploaded ${createdCount} document(s).`;
 
       Swal.fire({
         icon: "success",
-        title: "Success!",
+        title: "Success",
         text: message,
         showConfirmButton: false,
-        timer: 2000,
+        timer: 1800,
       }).then(() => navigate("/event_index"));
-    } catch (error) {
-      console.error(error);
-      const errMsz = error.response?.data?.content || "Something went wrong!";
-      setErrmsz(errMsz);
+    } catch (err) {
+      console.error(err);
+      const msg = err.response?.data?.content || "Something went wrong!";
+      setErrmsz(msg);
       Swal.fire({
         icon: "error",
-        title: "Upload Failed!",
-        text: errMsz,
+        title: "Upload Failed",
+        text: msg,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  // Helpers
-  const renderFileSize = (size) => {
-    if (Math.round(size / 100) / 10 > 1000)
-      return `${(Math.round(size / 100) / 10000).toFixed(1)} mb`;
-    return `${(Math.round(size / 100) / 10).toFixed(1)} kb`;
-  };
-
-  const renderFilePreview = (file) => {
-    if (file?.type?.startsWith("image")) {
-      return (
-        <img
-          className="rounded"
-          alt={file.name}
-          src={URL.createObjectURL(file)}
-          height="28"
-          width="28"
-        />
-      );
-    }
-    return <FileText size="28" />;
-  };
-
+  // ✅ Dropzone for single file only
   const renderDropzone = (fieldName, label) => {
     const { getRootProps, getInputProps } = useDropzone({
       multiple: false,
+      accept: { "image/*": [], "application/pdf": [] },
       onDrop: (acceptedFiles) => {
+        if (!acceptedFiles.length) return;
         setValue(`${fieldName}.currentFile`, acceptedFiles[0]);
+        setValue(`${fieldName}.existingFile`, ""); // clear old file
       },
     });
+    const currentFile = watch(`${fieldName}.currentFile`);
+    const existingFile = watch(`${fieldName}.existingFile`);
+    console.log(existingFile);
 
-    const file = watch(fieldName)?.currentFile;
-    const lastUploaded = watch(fieldName)?.lastUploaded;
+    const handleRemoveFile = () => {
+      setValue(`${fieldName}.currentFile`, null);
+    };
+
+    const handleRemoveExisting = () => {
+      setValue(`${fieldName}.existingFile`, "");
+    };
+
+    const hasFile = currentFile || existingFile;
+    console.log("hasFile", hasFile);
 
     return (
-      <Col sm="6" xs="12" className="mb-3">
-        <div className="d-flex justify-content-between align-items-center">
-          <Label className="mb-2">
-            {label} <span style={{ color: "red" }}>*</span>
-          </Label>
-          {lastUploaded && (
-            <Badge
-              color="success"
-              style={{ cursor: "pointer" }}
-              onClick={() => window.open(lastUploaded, "_blank")}
-            >
-              <Eye size={12} /> View Document
-            </Badge>
-          )}
-        </div>
+      <Col sm="6" className="mb-4">
+        <h6 className="fw-bold mb-2 text-capitalize">
+          {label.replace(/([A-Z])/g, " $1").trim()}
+        </h6>
 
         <div
           {...getRootProps({
-            className: "dropzone",
+            className: "dropzone text-center",
             style: {
-              border: "2px dashed #d3d3d3",
-              borderRadius: "8px",
-              padding: "20px",
+              border: "2px dashed #c8c8c8",
+              borderRadius: "12px",
+              padding: "25px",
+              backgroundColor: "#f8f9fa",
               cursor: "pointer",
-              backgroundColor: "#f9f9f9",
-              textAlign: "center",
-              height: "150px",
+              minHeight: "140px",
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
+              justifyContent: "center",
             },
           })}
         >
           <input {...getInputProps()} />
-          <div className="d-flex align-items-center justify-content-center flex-column">
-            {file ? (
-              <div className="d-flex align-items-center justify-content-between w-100 px-2">
-                <div className="d-flex align-items-center">
-                  <div className="file-preview me-2">
-                    {renderFilePreview(file)}
-                  </div>
-                  <div>
-                    <p className="mb-0 fw-semibold">{file.name}</p>
-                    <p className="mb-0 text-muted">
-                      {renderFileSize(file.size)}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  color="danger"
-                  outline
-                  size="sm"
-                  onClick={() => setValue(`${fieldName}.currentFile`, null)}
-                >
-                  <X size={14} />
-                </Button>
-              </div>
-            ) : (
-              <>
-                <DownloadCloud size={38} />
-                <p className="text-secondary mt-2">
-                  Drop files here or click{" "}
-                  <a href="/" onClick={(e) => e.preventDefault()}>
-                    browse
-                  </a>{" "}
-                  through your machine
-                </p>
-              </>
-            )}
-          </div>
+          {!hasFile ? (
+            <div>
+              <DownloadCloud size={36} className="mb-1 text-secondary" />
+              <p
+                className="text-secondary mb-0"
+                style={{ fontSize: "0.85rem" }}
+              >
+                Drop a file here or{" "}
+                <a href="/" onClick={(e) => e.preventDefault()}>
+                  browse
+                </a>
+              </p>
+            </div>
+          ) : (
+            <p className="text-success mb-0 fw-semibold">1 file selected!</p>
+          )}
         </div>
-        {errors[fieldName] && (
-          <span className="text-danger">{errors[fieldName].message}</span>
+
+        {/* Existing file preview */}
+        {existingFile && (
+          <div className="mt-3 text-center">
+            <div
+              style={{
+                width: "120px",
+                height: "120px",
+                margin: "0 auto 8px",
+                borderRadius: "8px",
+                overflow: "hidden",
+                background: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {existingFile.toLowerCase().includes("pdf") ? (
+                <embed
+                  src={existingFile}
+                  type="application/pdf"
+                  width="100%"
+                  height="100%"
+                />
+              ) : (
+                <img
+                  src={existingFile}
+                  alt="existing"
+                  onError={(e) => {
+                    // fallback to icon if blob URL isn’t an image
+                    e.target.style.display = "none";
+                    e.target.parentElement.innerHTML =
+                      '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#6c757d" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.104.896 2 2 2h12a2 2 0 0 0 2-2V8l-6-6zM13 9V3.5L18.5 9H13z"/></svg>';
+                  }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )}
+            </div>
+
+            <div className="d-flex justify-content-center gap-1">
+              <Button
+                color="light"
+                size="sm"
+                className="border"
+                onClick={() => window.open(existingFile, "_blank")}
+              >
+                <Eye size={12} />
+              </Button>
+              <Button
+                color="danger"
+                outline
+                size="sm"
+                onClick={handleRemoveExisting}
+              >
+                <X size={12} />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* New file preview */}
+        {currentFile && (
+          <div className="mt-3 text-center">
+            <div
+              style={{
+                width: "120px",
+                height: "120px",
+                margin: "0 auto 8px",
+                borderRadius: "8px",
+                overflow: "hidden",
+                background: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {currentFile.type.startsWith("image") ? (
+                <img
+                  src={URL.createObjectURL(currentFile)}
+                  alt={currentFile.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <FileText size={32} className="text-secondary" />
+              )}
+            </div>
+
+            <div className="d-flex justify-content-center gap-1">
+              <Button
+                color="light"
+                size="sm"
+                className="border"
+                onClick={() =>
+                  window.open(URL.createObjectURL(currentFile), "_blank")
+                }
+              >
+                <Eye size={12} />
+              </Button>
+              <Button
+                color="danger"
+                outline
+                size="sm"
+                onClick={handleRemoveFile}
+              >
+                <X size={12} />
+              </Button>
+            </div>
+          </div>
         )}
       </Col>
     );
@@ -268,11 +359,10 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
           </div>
         </UncontrolledAlert>
       )}
+
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row>
-          {["IdentityDocument", "Contract"].map((field) =>
-            renderDropzone(field, field)
-          )}
+          {["IdentityDocument", "Contract"].map((f) => renderDropzone(f, f))}
         </Row>
 
         <div className="d-flex justify-content-between mt-3">

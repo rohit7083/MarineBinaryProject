@@ -218,16 +218,12 @@ const UpdateEvent = lazy(() =>
 const AddProductIndex = lazy(() =>
   import("../../views/dashboard/pos/product_management/addProduct")
 );
-const SaleSummery = lazy(() =>
-  import("../../views/dashboard/sales/index")
-);
+const SaleSummery = lazy(() => import("../../views/dashboard/sales/index"));
 
 const SalesTrends = lazy(() =>
   import("../../views/dashboard/sales/sales_trends/index")
 );
-const Report = lazy(() =>
-  import("../../views/dashboard/accounting/index")
-);
+const Report = lazy(() => import("../../views/dashboard/accounting/index"));
 
 const Sales = lazy(() =>
   import("../../views/dashboard/accounting/sales/index")
@@ -236,9 +232,21 @@ const Ledger = lazy(() =>
   import("../../views/dashboard/accounting/ledger/index")
 );
 
-
 const Purchase = lazy(() =>
   import("../../views/dashboard/accounting/purchase/index")
+);
+
+const WaitingSlip = lazy(() =>
+  import("../../views/dashboard/slip-management/waiting_slip")
+);
+
+
+const ViewCustomer = lazy(() =>
+  import("../../views/dashboard/pos/customer_management/view/index")
+);
+
+const EnterWaitingSlipDetails = lazy(() =>
+  import("../../views/dashboard/slip-management/waiting_slip/EnterDetails")
 );
 
 export default [
@@ -609,11 +617,10 @@ export default [
     path: "/sales/sale_summery",
   },
 
-   {
+  {
     element: <SalesTrends />,
     path: "/sales/sale_trends",
   },
-
 
   {
     element: <Report />,
@@ -625,22 +632,32 @@ export default [
     path: "/accounting/sales",
   },
 
-{
+  {
     element: <Ledger />,
     path: "/accounting/ledger",
   },
-
 
   {
     element: <Purchase />,
     path: "/accounting/purchase",
   },
 
-
+  {
+    path: "/marin/slip-management/switch-slip-payment",
+    element: <SwitchSlipPaymentForm />,
+  },
 
   {
-    path:'/marin/slip-management/switch-slip-payment',
-    element:<SwitchSlipPaymentForm />
+    element: <WaitingSlip />,
+    path: "/slip-management/waiting_slip",
   },
-  
+
+  {
+    element: <ViewCustomer />,
+    path: "/pos/customer-management/view",
+  },
+   {
+    element: <EnterWaitingSlipDetails />,
+    path: "/slip-management/add_WaitingSlip",
+  },
 ];

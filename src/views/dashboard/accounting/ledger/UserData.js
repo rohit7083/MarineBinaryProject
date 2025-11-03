@@ -106,9 +106,9 @@ function EventSection({ items }) {
                 <strong>Payment Status:</strong>{" "}
                 <span
                   className={`badge ${
-                    item.paymentStatus?.toLowerCase() === "success"
+                    item.paymentStatus?.toLowerCase() === "success "
                       ? "bg-success"
-                      : item.paymentStatus?.toLowerCase() === "pending"
+                      : item.paymentStatus?.toLowerCase() === "PaymentLink"
                       ? "bg-warning"
                       : item.paymentStatus?.toLowerCase() === "failed"
                       ? "bg-danger"

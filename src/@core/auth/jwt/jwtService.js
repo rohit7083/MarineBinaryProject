@@ -865,22 +865,36 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.getUserData}${LezerId}`);
   }
 
-
-  
   eventDocument(...args) {
-    return axios.post(this.jwtConfig.eventDocument,...args);
+    return axios.post(this.jwtConfig.eventDocument, ...args);
   }
 
-    eventDocUpdate(uid,...args) {
-    return axios.put(`${this.jwtConfig.eventDocUpdate}${uid}`,...args);
+  eventDocUpdate(uid, ...args) {
+    return axios.put(`${this.jwtConfig.eventDocUpdate}${uid}`, ...args);
   }
 
-   getEventDocument(uid) {
+  getEventDocument(uid) {
     return axios.get(`${this.jwtConfig.getEventDocument}${uid}`, {
       responseType: "blob", // important for binary data
     });
   }
-renewContract(...args){
-    return axios.post(this.jwtConfig.renewContractEndPoint,...args)
+  renewContract(...args) {
+    return axios.post(this.jwtConfig.renewContractEndPoint, ...args);
+  }
+  createWaitingSlip(...args) {
+    return axios.post(this.jwtConfig.createWaitingSlip, ...args);
+  }
+
+  updateWaitingSlip(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateWaitingSlip}${uid}`, ...args);
+  }
+
+  deleteWaiting(uid) {
+    return axios.delete(`${this.jwtConfig.deleteWaiting}${uid}`);
+  }
+
+
+  getAllWaiting() {
+    return axios.get(this.jwtConfig.getAllWaiting);
   }
 }

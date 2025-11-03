@@ -1,37 +1,31 @@
-import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+
+import useJwt from "@src/auth/jwt/useJwt";
+import { debounce } from "lodash";
 import {
-  ArrowLeft,
-  ChevronDown,
-  Edit,
-  Eye,
-  MoreVertical,
-  Plus,
-  Trash,
+    Calendar,
+    ChevronDown,
+    DollarSign,
+    Eye,
+    MoreVertical,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Badge,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Row,
+    Spinner,
+    UncontrolledDropdown
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import AddCustomer from "./AddCustomer";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -41,7 +35,6 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-  const [row, setRow] = useState(null);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -54,7 +47,7 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-      const { data } = await useJwt.getAllCustomer();
+      const { data } = await useJwt.bookingList();
       const { content } = data;
       console.log("getAllEvents", content);
 
@@ -67,8 +60,7 @@ const index = () => {
   }
 
   const handleEdit = (row) => {
-    setShow(true);
-    setRow(row);
+    navigate("/booking_listing/view", { state: { row } });
   };
 
   useEffect(() => {
@@ -89,10 +81,10 @@ const index = () => {
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
-          row.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.lastName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.emailId?.toString().includes(value) ||
-          row.phoneNumber?.toString().includes(value)
+          row.member?.firstName?.toLowerCase().includes(value.toLowerCase()) ||
+          row.paymentStatus?.toLowerCase().includes(value.toLowerCase()) ||
+          row.roomNumber?.toString().includes(value) ||
+          row.finalAmount?.toString().includes(value)
       );
 
       setTableData((prev) => ({
@@ -116,11 +108,6 @@ const index = () => {
     navigate("/search-rooms/previewBooking/roomPayment", { state: { row } });
   };
 
-  const handleView = (row) => {
-    navigate("/pos/customer-management/view", { state: { row } });
-  };
-
-
   const paymentStatusColor = {
     success: "light-success",
     error: "light-danger",
@@ -136,31 +123,75 @@ const index = () => {
     },
 
     {
-      name: "Customer Name",
+      name: "Guest Name",
       sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.firstName + " " + row.lastName,
+      selector: (row) => {
+        const first = row?.member?.firstName
+          ? row.member.firstName.charAt(0).toUpperCase() +
+            row.member.firstName.slice(1).toLowerCase()
+          : "";
+        const last = row?.member?.lastName
+          ? row.member.lastName.charAt(0).toUpperCase() +
+            row.member.lastName.slice(1).toLowerCase()
+          : "";
+        return `${first} ${last}`.trim();
+      },
     },
 
     {
-      name: "Email",
+      name: "Room No",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.emailId,
+      selector: (row) => {
+        return row?.roomSearch?.roomSearchUnit
+          ?.map((x) => x?.roomUnit?.roomNumber)
+          .join(", ");
+      },
     },
 
     {
-      name: "Phone No",
+      name: "F.Amount",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.phoneNumber,
+      selector: (row) => row.finalAmount,
     },
 
     {
-      name: "Address",
+      name: "R.Amount",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.city + " " + row.state,
+      selector: (row) => row.remainingAmount,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      // minWidth: "150px",
+      // selector: (row) => row.paymentStatus,
+      selector: (row) => {
+        return (
+          <Badge
+            color={
+              paymentStatusColor[row?.paymentStatus?.toLowerCase()] ||
+              "secondary"
+            }
+            pill
+          >
+            {row?.paymentStatus}
+          </Badge>
+        );
+      },
+    },
+    {
+      name: "check In date",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.checkInDate,
+    },
+    {
+      name: "check out date",
+      sortable: true,
+      // minWidth: "150px",
+      selector: (row) => row.checkOutDate,
     },
 
     {
@@ -188,7 +219,7 @@ const index = () => {
             if (result.value) {
               try {
                 // Call delete API
-                const response = await useJwt.deleteCustomer(uid);
+                const response = await useJwt.DeleteVendorType(uid);
                 if (response?.status === 204) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(
@@ -236,18 +267,27 @@ const index = () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu>
+                {row?.paymentStatus === "success" && (
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Calendar className="me-50" size={15} />
+                    <span className="align-middle">Extend</span>
+                  </DropdownItem>
+                )}
+                {row?.paymentStatus === "Pending" && (
+                  <DropdownItem onClick={() => handlePayment(row)}>
+                    <DollarSign className="me-50" size={15} />{" "}
+                    <span className="align-middle">Payment</span>
+                  </DropdownItem>
+                )}
                 <DropdownItem onClick={() => handleEdit(row)}>
-                  <Edit className="me-50" size={15} />{" "}
-                  <span className="align-middle">Edit</span>
-                </DropdownItem>
-                <DropdownItem onClick={() => handleView(row)}>
                   <Eye className="me-50" size={15} />{" "}
                   <span className="align-middle">View</span>
                 </DropdownItem>
-                <DropdownItem onClick={() => handleDelete(row.uid)}>
-                  <Trash className="me-50" size={15} />{" "}
-                  <span className="align-middle">Delete</span>
-                </DropdownItem>
+
+                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
+                    <Trash className="me-50" size={15} />{" "}
+                    <span className="align-middle">Delete</span>
+                  </DropdownItem> */}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>
@@ -293,41 +333,14 @@ const index = () => {
 
   return (
     <>
-      <Card>
-        <CardBody>
+     
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <CardTitle>
-              <CardText>
-                {" "}
-                <ArrowLeft
-                  style={{ cursor: "pointer", transition: "color 0.1s" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#9289F3")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "#6E6B7B")
-                  }
-                  onClick={() => window.history.back()}
-                />{" "}
-                Customer Management List
-              </CardText>{" "}
-            </CardTitle>
+
             <div className="mx-2">
               <Row
                 className="px-2
                mt-1 "
-              >
-                <Col xs="auto">
-                  <Button
-                    onClick={() => setShow(true)}
-                    color="primary"
-                    size="sm"
-                    className="text-nowrap mb-1"
-                  >
-                    <Plus size={14} /> Add Customer
-                  </Button>
-                </Col>
-              </Row>{" "}
+              ></Row>{" "}
             </div>
           </div>
           <hr />
@@ -397,14 +410,7 @@ const index = () => {
               />
             </div>
           )}
-        </CardBody>
-      </Card>
-      <AddCustomer
-        showModal={show}
-        row={row}
-        onSuccess={() => fetchTableData()}
-        setShow={setShow}
-      />
+      
     </>
   );
 };
