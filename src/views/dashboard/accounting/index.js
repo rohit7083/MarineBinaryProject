@@ -22,7 +22,7 @@ import {
   InputGroupText,
   Spinner,
 } from "reactstrap";
-import { exportToCSV, exportToExcelHTML, exportToImage, exportToPDF } from "../../../utility/exportUtils";
+import { exportToCSV, exportToExcelHTML } from "../../../utility/exportUtils";
 import PosReport from "./PosReport";
 
 const Index = () => {
@@ -373,12 +373,12 @@ const Index = () => {
                   <DropdownItem onClick={() => exportToCSV(filteredData)}>
                     Export as CSV
                   </DropdownItem>
-                  <DropdownItem onClick={() => exportToPDF(filteredData)}>
+                  {/* <DropdownItem onClick={() => exportToPDF(filteredData)}>
                     Export as PDF
                   </DropdownItem>
                   <DropdownItem onClick={() => exportToImage("report-section")}>
                     Export as Image
-                  </DropdownItem>
+                  </DropdownItem> */}
                    <DropdownItem onClick={() => exportToExcelHTML(filteredData)}>
                     Export as Excel
                   </DropdownItem>
