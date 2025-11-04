@@ -1,18 +1,10 @@
-
-
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
-import {
-  ChevronDown,
-  Eye,
-  MoreVertical,
-  Plus,
-  Trash
-} from "react-feather";
+import { ChevronDown, Eye, MoreVertical, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -50,7 +42,6 @@ const index = () => {
   const [mode, setMode] = useState("create");
   async function fetchTableData() {
     try {
-     
       setLoading(true);
       const { data } = await useJwt.getAllWaiting();
       const { content } = data;
@@ -269,7 +260,7 @@ const index = () => {
               >
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu>
+              <DropdownMenu end container="body">
                 {/* {row?.paymentStatus === "success" && (
                   <DropdownItem onClick={() => handleEdit(row)}>
                     <Calendar className="me-50" size={15} />
@@ -287,10 +278,10 @@ const index = () => {
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
 
-                 <DropdownItem onClick={() => handleDelete(row.uid)}>
-                    <Trash className="me-50" size={15} />{" "}
-                    <span className="align-middle">Delete</span>
-                  </DropdownItem>
+                <DropdownItem onClick={() => handleDelete(row.uid)}>
+                  <Trash className="me-50" size={15} />{" "}
+                  <span className="align-middle">Delete</span>
+                </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
           </>

@@ -17,7 +17,6 @@ function index() {
       const res = await useJwt.getslip();
       const isOffline = res?.data?.content?.result.filter(
         (offline)=>{
-          {{debugger}}
           return offline.isOffline === true
         })
 

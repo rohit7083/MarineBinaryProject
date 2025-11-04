@@ -1,10 +1,12 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import "flatpickr/dist/themes/material_blue.css";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
 import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -19,7 +21,7 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-
+import { countries } from "../../slip-management/CountryCode";
 const VesselForm = () => {
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -27,76 +29,90 @@ const VesselForm = () => {
   const WaitingData = location.state?.row || "";
   const WaitUId = WaitingData?.uid;
   const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      // vesselName: "Sea Explorer",
-      // vesselRegistrationNumber: "INDMAR2025001",
-      // length: "45.5",
-      // width: "12.3",
-      // height: "8.2",
-      // power: "1200",
-      // firstName: "John",
-      // lastName: "Doe",
-      // emailId: "john.doe@example.com",
-      // phoneNumber: "9876543210",
-      // countryCode: "+91",
-      // dialCodeCountry: "IN",
-      // address: "123 Marine Drive",
-      // city: "Mumbai",
-      // state: "Maharashtra",
-      // country: "India",
-      // postalCode: "40001",
-    },
+    defaultValues: {},
   });
-
+  const countryOptions = React.useMemo(
+    () =>
+      countries.map((country) => ({
+        value: `${country.code}-${country.dial_code}`,
+        label: (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <ReactCountryFlag
+              countryCode={country.code}
+              svg
+              style={{ width: "1.5em", height: "1.5em", marginRight: "8px" }}
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+        code: country.code,
+        dial_code: country.dial_code,
+      })),
+    [countries]
+  );
   useEffect(() => {
-    const fetchForUpdate = () => {
-      if (WaitUId) {
-        reset(WaitingData);
-      }
-    };
-    fetchForUpdate();
-  }, [WaitingData, WaitUId]);
+    if (WaitUId && WaitingData) {
+      const backendCode = WaitingData?.dialCodeCountry;
+
+      // Find matching country object for react-select
+      const selectedCountry =
+        countryOptions.find((c) => c.code === backendCode) || null;
+
+      // Safely reset form with mapped country + phone
+      reset({
+        ...WaitingData,
+        countryCode: selectedCountry || null,
+        phoneNumber: WaitingData?.phoneNumber || "",
+      });
+    }
+  }, [WaitingData, WaitUId, countryOptions, reset]);
 
   const onSubmit = async (data) => {
+    if (!data.length && !data.width && !data.height && !data.power) {
+      toast.current.show({
+        severity: "warn",
+        summary: "Missing Vessel Data",
+        detail: "Please enter at least one of Length, Width, Height, or Power.",
+        life: 2500,
+      });
+      return; // stop form submission
+    }
+    const payload = {
+      ...data,
+      countryCode: data.countryCode?.dial_code || "",
+      dialCodeCountry: data.countryCode?.code || "",
+      phoneNumber: data.phoneNumber,
+    };
     setLoading(true);
     try {
       if (WaitUId) {
-        const Updateres = await useJwt.updateWaitingSlip(WaitUId, data);
-
+        await useJwt.updateWaitingSlip(WaitUId, payload);
         toast.current.show({
           severity: "success",
           summary: "Updated Successfully",
           detail: "Vessel record has been updated.",
           life: 2000,
         });
-        reset();
-        setTimeout(() => {
-          navigate("/slip-management/waiting_slip");
-        }, 1500);
-        console.log(Updateres);
       } else {
-        // Replace with your actual API endpoint
-        const response = await useJwt.createWaitingSlip(data);
-        console.log(response);
-
+        await useJwt.createWaitingSlip(payload);
         toast.current.show({
           severity: "success",
           summary: "Successfully Added",
           detail: "Successfully Proceed To Payment",
           life: 2000,
         });
-
-        reset();
-        setTimeout(() => {
-          navigate("/slip-management/waiting_slip");
-        }, 1500);
       }
+      reset();
+      setTimeout(() => {
+        navigate("/slip-management/waiting_slip");
+      }, 1500);
     } catch (error) {
       toast.current.show({
         severity: "error",
@@ -109,6 +125,7 @@ const VesselForm = () => {
     }
   };
 
+  // 🔒 Unified text input component with live sanitization
   const textInput = (name, label, placeholder, rules, type = "text") => (
     <Col md={6} className="mb-1">
       <Label className="fw-semibold mb-1">{label}</Label>
@@ -123,6 +140,69 @@ const VesselForm = () => {
               type={type}
               placeholder={placeholder}
               invalid={!!errors[name]}
+              onChange={(e) => {
+                let value = e.target.value;
+
+                // Live sanitization: remove invalid characters immediately
+                switch (name) {
+                  // Only letters & spaces
+                  case "firstName":
+                  case "lastName":
+                  case "city":
+                  case "state":
+                  case "country":
+                    value = value.replace(/[^A-Za-z ]/g, "");
+                    break;
+
+                  // Only numbers + optional decimal
+                  case "length":
+                  case "width":
+                  case "height":
+                    value = value.replace(/[^0-9.]/g, "");
+                    break;
+
+                  // Only whole numbers
+                  case "power":
+                  case "phoneNumber":
+                    value = value.replace(/[^0-9]/g, ""); // numbers only
+                    if (value.length > 13) value = value.slice(0, 13); // ✅ limit to 13 digits
+                    break;
+
+                  // Letters, numbers, spaces, hyphens
+                  case "vesselName":
+                    value = value.replace(/[^A-Za-z0-9 ]/g, ""); // allow letters, numbers, spaces
+                    break;
+
+                  case "vesselRegistrationNumber":
+                    value = value.replace(/[^A-Za-z0-9]/g, ""); // allow only letters and numbers (no hyphen, no space)
+                    break;
+
+                  case "postalCode":
+                    value = value.replace(/[^0-9]/g, ""); // ✅ letters only
+                    if (value.length > 5) value = value.slice(0, 5); // ✅ limit to 5 letters
+                    break;
+
+                  // + and numbers
+                  case "countryCode":
+                    value = value.replace(/[^0-9+]/g, "");
+                    break;
+
+                  // Only letters
+                  case "dialCodeCountry":
+                    value = value.replace(/[^A-Za-z]/g, "");
+                    break;
+
+                  // Letters, numbers, commas, periods, hyphens, spaces
+                  case "address":
+                    value = value.replace(/[^A-Za-z0-9\s,.-]/g, "");
+                    break;
+
+                  default:
+                    break;
+                }
+
+                field.onChange(value);
+              }}
             />
             <FormFeedback>{errors[name]?.message}</FormFeedback>
           </>
@@ -140,7 +220,6 @@ const VesselForm = () => {
             <ArrowLeft
               style={{
                 cursor: "pointer",
-                // marginRight:"10px",
                 transition: "color 0.1s",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
@@ -170,34 +249,11 @@ const VesselForm = () => {
                   "Enter registration number",
                   { required: "Registration number is required" }
                 )}
-                {textInput("length", "Length (m)", "Enter length", {
-                  required: "Length is required",
-                  pattern: {
-                    value: /^[0-9]*\.?[0-9]+$/,
-                    message: "Only numbers allowed",
-                  },
-                })}
-                {textInput("width", "Width (m)", "Enter width", {
-                  required: "Width is required",
-                  pattern: {
-                    value: /^[0-9]*\.?[0-9]+$/,
-                    message: "Only numbers allowed",
-                  },
-                })}
-                {textInput("height", "Height (m)", "Enter height", {
-                  required: "Height is required",
-                  pattern: {
-                    value: /^[0-9]*\.?[0-9]+$/,
-                    message: "Only numbers allowed",
-                  },
-                })}
-                {textInput("power", "Power (HP)", "Enter power", {
-                  required: "Power is required",
-                  pattern: {
-                    value: /^[0-9]*\.?[0-9]+$/,
-                    message: "Only numbers allowed",
-                  },
-                })}
+                {textInput("length", "Length (m)", "Enter length")}
+                {textInput("width", "Width (m)", "Enter width")}
+                {textInput("height", "Height (m)", "Enter height")}
+
+                {textInput("power", "Power (HP)", "Enter power")}
               </Row>
             </div>
 
@@ -209,17 +265,9 @@ const VesselForm = () => {
               <Row>
                 {textInput("firstName", "First Name", "Enter first name", {
                   required: "First name is required",
-                  pattern: {
-                    value: /^[A-Za-z ]+$/,
-                    message: "Only letters allowed",
-                  },
                 })}
                 {textInput("lastName", "Last Name", "Enter last name", {
                   required: "Last name is required",
-                  pattern: {
-                    value: /^[A-Za-z ]+$/,
-                    message: "Only letters allowed",
-                  },
                 })}
                 {textInput("emailId", "Email", "Enter email", {
                   required: "Email is required",
@@ -228,30 +276,80 @@ const VesselForm = () => {
                     message: "Invalid email format",
                   },
                 })}
-                {textInput(
-                  "phoneNumber",
-                  "Phone Number",
-                  "Enter phone number",
-                  {
-                    required: "Phone number is required",
-                    pattern: {
-                      value: /^[0-9]{8,15}$/,
-                      message: "Enter a valid number (8–15 digits)",
-                    },
-                  }
-                )}
-                {textInput(
-                  "countryCode",
-                  "Country Code",
-                  "Enter country code",
-                  { required: "Country code required" }
-                )}
-                {textInput(
-                  "dialCodeCountry",
-                  "Dial Code Country",
-                  "Enter country ISO (e.g. IN)",
-                  { required: "Country ISO required" }
-                )}
+                {/* Phone + Country Code in one row */}
+                <Col md={6} className="mb-1">
+                  <Label className="fw-semibold mb-1">Phone Number</Label>
+                  <div className="d-flex align-items-center">
+                    {/* Country Code Select */}
+                    <div style={{ flex: "0 0 45%", marginRight: "6px" }}>
+                      <Controller
+                        name="countryCode"
+                        control={control}
+                        rules={{ required: "Country code is required" }}
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            options={countryOptions}
+                            value={
+                              countryOptions.find(
+                                (opt) =>
+                                  opt.value === field.value?.value ||
+                                  opt.value === field.value
+                              ) || null
+                            }
+                            onChange={(option) => field.onChange(option)}
+                            isClearable
+                          />
+                        )}
+                      />
+                    </div>
+
+                    {/* Phone Number Input */}
+                    <div style={{ flex: "1 1 55%" }}>
+                      <Controller
+                        name="phoneNumber"
+                        control={control}
+                        rules={{
+                          required: "Phone number is required",
+                          maxLength: {
+                            value: 13,
+                            message: "Maximum 13 digits allowed",
+                          },
+                        }}
+                        render={({ field }) => (
+                          <>
+                            <Input
+                              {...field}
+                              type="text"
+                              placeholder="Enter phone number"
+                              invalid={!!errors.phoneNumber}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(
+                                  /[^0-9]/g,
+                                  ""
+                                );
+                                if (value.length > 13)
+                                  value = value.slice(0, 13); // max 13 digits
+                                field.onChange(value);
+                              }}
+                            />
+                            <FormFeedback>
+                              {errors.phoneNumber?.message}
+                            </FormFeedback>
+                          </>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Combined error for both fields */}
+                  {(errors.countryCode || errors.phoneNumber) && (
+                    <div className="text-danger small mt-1">
+                      {errors.countryCode?.message ||
+                        errors.phoneNumber?.message}
+                    </div>
+                  )}
+                </Col>
               </Row>
             </div>
 
@@ -273,6 +371,13 @@ const VesselForm = () => {
                           {...field}
                           placeholder="Enter address"
                           invalid={!!errors.address}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(
+                              /[^A-Za-z0-9\s,.-]/g,
+                              ""
+                            );
+                            field.onChange(value);
+                          }}
                         />
                         <FormFeedback>{errors.address?.message}</FormFeedback>
                       </>
@@ -290,6 +395,10 @@ const VesselForm = () => {
                 })}
                 {textInput("postalCode", "Postal Code", "Enter postal code", {
                   required: "Postal code is required",
+                  pattern: {
+                    value: /^[0-9]{5}$/, // ✅ exactly 5 letters only
+                    message: "Postal code must be exactly 5 letters (A–Z).",
+                  },
                 })}
               </Row>
             </div>
