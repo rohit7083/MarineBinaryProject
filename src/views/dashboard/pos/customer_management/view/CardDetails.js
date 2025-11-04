@@ -1,20 +1,40 @@
-import { Trash2 } from "react-feather"; // Feather icon
-import {
-  PaymentIcon,
-  detectCardType,
-} from "react-svg-credit-card-payment-icons";
-import { Button } from 'reactstrap';
+import { Trash2 } from "react-feather";
+import * as PaymentIcons from "react-payment-icons";
+import { Button } from "reactstrap";
+
+// simple local helper to detect card type
+function detectCardType(number) {
+  const patterns = {
+    visa: /^4/,
+    mastercard: /^5[1-5]/,
+    amex: /^3[47]/,
+    discover: /^6/,
+  };
+  for (const [type, regex] of Object.entries(patterns)) {
+    if (regex.test(number)) return type;
+  }
+  return "visa"; // default fallback
+}
+
 function CardDisplay() {
-  // 🧩 Dummy card data (normally this would come from backend)
   const cardData = {
-    cardNumber: "4111111111111234", // Visa starts with 4
+    cardNumber: "4111111111111234",
     expiryMonth: "08",
     expiryYear: "2027",
-    name: " Rohit Sonawane",
+    name: "Rohit Sonawane",
   };
 
   const { cardNumber, expiryMonth, expiryYear, name } = cardData;
-  const cardType = detectCardType(cardNumber) || "visa"; // detect type automatically
+  const cardType = detectCardType(cardNumber);
+
+  // map detected card type to the proper component
+  const cardTypeMap = {
+    visa: PaymentIcons.Visa,
+    mastercard: PaymentIcons.Mastercard,
+    amex: PaymentIcons.Amex,
+    discover: PaymentIcons.Discover,
+  };
+  const Icon = cardTypeMap[cardType] || PaymentIcons.Visa;
 
   return (
     <div
@@ -26,11 +46,7 @@ function CardDisplay() {
       }}
     >
       <div className="d-flex align-items-center gap-3">
-        <PaymentIcon
-          type={cardType.toLowerCase()}
-          width={80}
-          style={{ background: "#fff", borderRadius: 8 }}
-        />
+        <Icon style={{ width: 80, background: "#fff", borderRadius: 8 }} />
 
         <div>
           <small>{name}</small>
@@ -43,19 +59,15 @@ function CardDisplay() {
         </div>
       </div>
 
-     <Button
-                  color="danger"
-                  size="sm"
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    width: 36,
-                    height: 36,
-                    padding: 0,
-                  }}
-                  onClick={() => alert("Card deleted (dummy action)")}
-                >
-                  <Trash2 size={16} />
-                </Button>
+      <Button
+        color="danger"
+        size="sm"
+        className="rounded-circle d-flex align-items-center justify-content-center"
+        style={{ width: 36, height: 36, padding: 0 }}
+        onClick={() => alert("Card deleted (dummy action)")}
+      >
+        <Trash2 size={16} />
+      </Button>
     </div>
   );
 }

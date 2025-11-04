@@ -2,16 +2,11 @@ import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/charts/recharts.scss";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import { debounce } from "lodash";
-import { Calendar, Download, Filter, Search } from "lucide-react";
+import { Calendar, Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Download } from "react-feather";
 import Flatpickr from "react-flatpickr";
 import Select from "react-select";
-import {
-  exportToCSV,
-  exportToImage,
-  exportToPDF,
-} from "../../../utility/exportUtils";
-
 import {
   Badge,
   Card,
@@ -27,6 +22,7 @@ import {
   InputGroupText,
   Spinner,
 } from "reactstrap";
+import { exportToCSV, exportToExcelHTML, exportToImage, exportToPDF } from "../../../utility/exportUtils";
 import PosReport from "./PosReport";
 
 const Index = () => {
@@ -383,6 +379,10 @@ const Index = () => {
                   <DropdownItem onClick={() => exportToImage("report-section")}>
                     Export as Image
                   </DropdownItem>
+                   <DropdownItem onClick={() => exportToExcelHTML(filteredData)}>
+                    Export as Excel
+                  </DropdownItem>
+                  
                 </DropdownMenu>
               </Dropdown>
             </div>
