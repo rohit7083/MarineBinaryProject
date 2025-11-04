@@ -10,7 +10,6 @@ import {
   CardBody,
   CardTitle,
 } from "reactstrap";
-import CardDetails from "./CardDetails";
 // import PaymentDetails from "./Pa ymentDetails";
 function ExampleAccordion() {
   // start with Payment Details open by default
@@ -67,7 +66,7 @@ function ExampleAccordion() {
             <AccordionItem className="border rounded mb-1">
               <AccordionHeader targetId="2">Card Details</AccordionHeader>
               <AccordionBody accordionId="2">
-                <CardDetails />
+                {/* <CardDetails /> */}
               </AccordionBody>
             </AccordionItem>
 
