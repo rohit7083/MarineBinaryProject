@@ -12,10 +12,10 @@ import waitingTime from "../../../../assets/icons/waitingTime.png";
 // ** Styles
 import "@styles/react/apps/app-users.scss";
 import { useState } from "react";
-
-const UsersList = ({ count, emptySlip, occupied }) => {
+import { useNavigate } from "react-router-dom";
+const UsersList = ({isOfflineCount,waitingCount, count, emptySlip, occupied }) => {
   const [hoveredCard, setHoveredCard] = useState(null);
-
+const navigate = useNavigate();
   const getCardStyle = (key) => ({
     border: "1px solid black",
     backgroundColor: "#F8F8FF",
@@ -140,7 +140,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
               >
                 Offline
               </strong>
-              <p className="mb-0 fw-bold fs-4">0</p>
+              <p className="mb-0 fw-bold fs-4">{isOfflineCount}</p>
             </div>
           </div>
         </Col>
@@ -151,6 +151,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
             style={getCardStyle("waiting")}
             onMouseEnter={() => setHoveredCard("waiting")}
             onMouseLeave={() => setHoveredCard(null)}
+            onClick={()=>navigate("/slip-management/waiting_slip")}
           >
             <img
               src={waitingTime}
@@ -167,7 +168,7 @@ const UsersList = ({ count, emptySlip, occupied }) => {
               >
                 Waiting
               </strong>
-              <p className="mb-0 fw-bold fs-4">0</p>
+              <p className="mb-0 fw-bold fs-4">{waitingCount}</p>
             </div>
           </div>
         </Col>

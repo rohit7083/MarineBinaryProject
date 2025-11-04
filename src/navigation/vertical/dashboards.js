@@ -64,12 +64,12 @@ export default [
         navLink: "/dashboard/slipmember_list",
       },
 
-      // {
-      //   id: "WaitingSlip",
-      //   title: "Waiting Slip ",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/slip-management/waiting_slip",
-      // },
+      {
+        id: "WaitingSlip",
+        title: "Waiting Slip ",
+        icon: <Circle size={12} />,
+        navLink: "/slip-management/waiting_slip",
+      },
     ],
   },
   {

@@ -1,24 +1,23 @@
 
-import React, { Fragment, useState, useEffect, memo } from "react";
+import useJwt from "@src/auth/jwt/useJwt";
+import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { Fragment, memo, useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { ChevronDown, Plus } from "react-feather";
+import ReactPaginate from "react-paginate";
+import { Link } from "react-router-dom";
 import {
-  
+  Button,
   Card,
   CardHeader,
   CardTitle,
+  Col,
   Input,
   Label,
   Row,
-  Col,
-  Spinner,
-  Button
+  Spinner
 } from "reactstrap";
-import { Link } from "react-router-dom";
-import ReactPaginate from "react-paginate";
-import { ChevronDown, Plus } from "react-feather";
-import DataTable from "react-data-table-component";
-import useJwt from "@src/auth/jwt/useJwt";
 import { serverSideColumns } from "../../../dashboard/Ship/SlipMemberList/data";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 const DataTableServerSide = () => {
   const [data, setData] = useState([]);

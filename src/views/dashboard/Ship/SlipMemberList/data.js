@@ -1,30 +1,16 @@
 // ** Custom Components
-import Avatar from "@components/avatar";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-
-import {
-  MoreVertical,
-  Edit,
-  FileText,
-  Archive,
-  Trash,
-  Edit2,
-  Eye,
-} from "react-feather";
-import { Trash2 } from "react-feather";
-// ** Reactstrap Imports
+import useJwt from "@src/auth/jwt/useJwt";
+import { useState } from "react";
+import { Edit2, Eye, MoreVertical } from "react-feather";
+import { Link } from "react-router-dom";
 import {
   Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
   DropdownItem,
-  Button,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown,
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { CompactModal, SuccessModal } from "../../CompactModal"; // ** Reactstrap Imports
 
 // ** Vars
 const states = [
@@ -83,7 +69,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
   {
     sortable: true,
     name: "Id",
-    width:"70px",
+    width: "70px",
     selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
   },
 
@@ -94,92 +80,144 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 
     cell: (row) => {
       const [data, setData] = useState([]);
-
-      console.log("row data", row);
-      console.log("formData.stepStatus", row.stepStatus);
-
-      const MySwal = withReactContent(Swal);
-
-      // const handleDelete = async (uid) => {
-      //   return MySwal.fire({
-      //     title: "Are you sure?",
-      //     text: "You won't be able to revert this!",
-      //     icon: "warning",
-      //     showCancelButton: true,
-      //     confirmButtonText: "Yes, delete it!",
-      //     customClass: {
-      //       confirmButton: "btn btn-primary",
-      //       cancelButton: "btn btn-danger ms-1",
-      //     },
-      //     buttonsStyling: false,
-      //   }).then(async function (result) {
-      //     if (result.value) {
-      //       try {
-      //         // Call delete API
-      //         const response = await useJwt.deleteslip(uid);
-      //         if (response.status === 204) {
-      //           setData((prevData) => {
-      //             const newData = prevData.filter((item) => item.uid !== uid);
-      //             return newData;
-      //           });
-      //           // Show success message
-      //           MySwal.fire({
-      //             icon: "success",
-      //             title: "Deleted!",
-      //             text: "Your file has been deleted.",
-      //             customClass: {
-      //               confirmButton: "btn btn-success",
-      //             },
-      //           });
-      //         }
-      //       } catch (error) {
-      //         console.error("Error deleting item:", error);
-      //       }
-      //     } else if (result.dismiss === MySwal.DismissReason.cancel) {
-      //       // Show cancellation message
-      //       MySwal.fire({
-      //         title: "Cancelled",
-      //         text: "Your imaginary file is safe :)",
-      //         icon: "error",
-      //         customClass: {
-      //           confirmButton: "btn btn-success",
-      //         },
-      //       });
-      //     }
-      //   });
-      // };
+      const [activeModal, setActiveModal] = useState(null); // null or uid to delete
+      const [showSuccess, setShowSuccess] = useState(null); // null or uid to delete
 
       return (
-        <div className="d-flex">
-          <Link
-            style={{ margin: "0.5rem" }}
-            to={`/marin/slip-management`}
-            state={{ slipData: row, uid: row?.uid }}
-          >
-            <Eye className="font-medium-3 text-body" />
-          </Link>
+        <div
+        // className={`d-flex ${isOffline ? "opacity-50 pointer-events-none " : ""}`}
+        >
+          <CompactModal
+            isOpen={!!activeModal}
+            uid={activeModal}
+            onCancel={() => setActiveModal(null)}
+          />
+          <SuccessModal
+            isOpen={showSuccess}
+            message="Your file has been deleted successfully!"
+            onClose={() => setShowSuccess(false)}
+          />
 
-          <Link
-            style={{ margin: "0.5rem" }}
-            to={`/dashboard/slip_memberform`}
-            state={{ stepStatus: row.stepStatus, uid: row.uid }}
-          >
-            <span>
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-          </Link>
-
-          {/* <Link style={{ margin: "0.5rem" }}>
-            {" "}
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
+          <UncontrolledDropdown>
+            <DropdownToggle
+              className="icon-btn hide-arrow"
+              color="transparent"
+              size="sm"
+              caret
             >
-              <Trash className="font-medium-3 text-body" />
-            </span>
-          </Link> */}
+              <MoreVertical size={15} />
+            </DropdownToggle>
+
+            <DropdownMenu>
+              {/* View */}
+              <DropdownItem
+                tag={Link}
+                //  disabled={isOffline}
+
+                to="/marin/slip-management"
+                state={{ slipData: row, uid: row?.uid }}
+              >
+                <Eye className="me-50" size={15} />
+                <span className="align-middle">View</span>
+              </DropdownItem>
+
+              {/* Edit */}
+              <DropdownItem
+                tag={Link}
+                //  disabled={isOffline}
+
+                to="/dashboard/slip_memberform"
+                state={{ stepStatus: row.stepStatus, uid: row.uid }}
+              >
+                <Edit2 className="me-50" size={15} />
+                <span className="align-middle">Edit</span>
+              </DropdownItem>
+
+              {/* Offline */}
+              {/* <DropdownItem
+                onClick={() => setActiveModal(row.uid)}
+                //  disabled={isOffline}
+              >
+                <Trash className="me-50" size={15} />
+                <span className="align-middle">Offline</span>
+              </DropdownItem> */}
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </div>
+      );
+    },
+  },
+
+  {
+    name: "Offline Status",
+    minWidth: "180px",
+    sortable: true,
+    cell: (row) => {
+      const [isOffline, setIsOffline] = useState(row.isOffline);
+      const [confirmModal, setConfirmModal] = useState(false);
+      const [pendingValue, setPendingValue] = useState(null);
+
+      const handleToggleClick = (e) => {
+        // open confirmation modal first, don't switch immediately
+        const newStatus = e.target.checked;
+        setPendingValue(newStatus);
+        setConfirmModal(true);
+      };
+console.log(isOffline);
+
+      const handleConfirm = async () => {
+        try {
+          // Execute API call
+          const response = await useJwt.offlineSlip(row.uid);
+
+          if (response.status === 204) {
+            setIsOffline(pendingValue);
+          } else {
+            console.warn("Unexpected API response:", response);
+          }
+        } catch (error) {
+          console.error("Error updating offline status:", error);
+        } finally {
+          setConfirmModal(false);
+          setPendingValue(null);
+        }
+      };
+
+      const handleCancel = () => {
+        setConfirmModal(false);
+        setPendingValue(null);
+      };
+
+      return (
+        <>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="form-switch">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                checked={isOffline}
+                onChange={handleToggleClick}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            <Badge
+              color={isOffline ? "light-danger" : "light-success"}
+              pill
+              className="ms-1 text-dark"
+            >
+              {isOffline ? "Offline" : "Online"}
+            </Badge>
+          </div>
+
+          {/* Confirmation Modal */}
+          <CompactModal
+            isOpen={confirmModal}
+            uid={row.uid}
+            onCancel={handleCancel}
+            onConfirm={handleConfirm}
+            isOffline={isOffline}
+          />
+        </>
       );
     },
   },

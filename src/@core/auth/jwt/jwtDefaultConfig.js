@@ -251,4 +251,7 @@ export default {
   updateWaitingSlip: "/waitingMember/",
   deleteWaiting: "/waitingMember/",
   getAllWaiting: "/waitingMember",
+
+  //offline slip 
+  offlineSlip:"/slip/offline/",
 };

@@ -56,6 +56,11 @@ const CardPayment = () => {
   const navigate = useNavigate();
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
+
+   const today = new Date();
+
+  const formattedDate = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
+
   const getMember = async () => {
     // {{ }}
     try {
@@ -1101,9 +1106,10 @@ const CardPayment = () => {
                           for="basic-cb-unchecked"
                           className="form-check-label"
                         >
-                          I authorize Locktrust to initiate single
+                          I authorize Lock Trust to initiate single
                           ACH/electronic debit[s] to my account in the amount of
-                          $ 50 USD from on 2025-02-26
+                          $ {memberDetail?.amount} USD from on {formattedDate}
+                          
                         </Label>
                       </div>
                     </li>
@@ -1130,8 +1136,7 @@ const CardPayment = () => {
                           for="basic-cb-unchecked"
                           className="form-check-label"
                         >
-                          I agree that ACH transactions I authorize comply with
-                          all applicable law.{" "}
+                          I agree that ACH transactions I authorize comply with all applicable laws.{" "}
                         </Label>
                       </div>
                     </li>
@@ -1187,7 +1192,7 @@ const CardPayment = () => {
                               textDecoration: "underline",
                             }}
                           >
-                            security Policy
+                            Security Policy
                           </a>{" "}
                           ,{" "}
                           <a
@@ -1200,7 +1205,7 @@ const CardPayment = () => {
                               textDecoration: "underline",
                             }}
                           >
-                            User Aggrement
+                           User Agreement
                           </a>{" "}
                           and{" "}
                           <a
@@ -1213,7 +1218,7 @@ const CardPayment = () => {
                               textDecoration: "underline",
                             }}
                           >
-                            term of service
+                            Term of Service
                           </a>
                         </Label>
                       </div>

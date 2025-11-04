@@ -893,6 +893,10 @@ export default class JwtService {
     return axios.delete(`${this.jwtConfig.deleteWaiting}${uid}`);
   }
 
+   offlineSlip(uid) {
+    return axios.delete(`${this.jwtConfig.offlineSlip}${uid}`);
+  }
+
 
   getAllWaiting() {
     return axios.get(this.jwtConfig.getAllWaiting);
