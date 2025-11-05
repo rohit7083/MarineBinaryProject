@@ -105,7 +105,7 @@ const VesselForm = () => {
         toast.current.show({
           severity: "success",
           summary: "Successfully Added",
-          detail: "Successfully Proceed To Payment",
+          detail: "Successfully Added",
           life: 2000,
         });
       }
@@ -269,13 +269,40 @@ const VesselForm = () => {
                 {textInput("lastName", "Last Name", "Enter last name", {
                   required: "Last name is required",
                 })}
-                {textInput("emailId", "Email", "Enter email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email format",
-                  },
-                })}
+                <Col md={6}>
+                  <Controller
+                    name="emailId"
+                    control={control}
+                    rules={{
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z]{2,}$/,
+                        message:
+                          "Enter a valid email (letters, numbers, '@' and '.' only)",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <>
+                        <Label className="fw-semibold mb-1">Email</Label>
+                        <Input
+                          {...field}
+                          type="text"
+                          placeholder="Enter email"
+                          invalid={!!errors.emailId}
+                          onChange={(e) => {
+                            let value = e.target.value.replace(
+                              /[^A-Za-z0-9@.]/g,
+                              ""
+                            );
+                            field.onChange(value); // update form state properly
+                          }}
+                        />
+                        <FormFeedback>{errors.emailId?.message}</FormFeedback>
+                      </>
+                    )}
+                  />
+                </Col>
+
                 {/* Phone + Country Code in one row */}
                 <Col md={6} className="mb-1">
                   <Label className="fw-semibold mb-1">Phone Number</Label>

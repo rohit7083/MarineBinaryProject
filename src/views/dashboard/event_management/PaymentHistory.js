@@ -9,6 +9,7 @@ import {
 import { MdOutlineSwipe } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 import { Badge, Card, CardBody, CardTitle, Col, Row, Table } from "reactstrap";
+import ViewEventInfo from "./ViewEventInfo";
 
 const PaymentHistory = ({ stepper, updateData }) => {
   const user = {
@@ -18,9 +19,8 @@ const PaymentHistory = ({ stepper, updateData }) => {
     totalAmount: 3500,
   };
 
-  // {{ }}
   const location = useLocation();
- 
+
   const paymentHistoryData = location?.state?.Rowdata;
   console.log("paymenthostory data ", paymentHistoryData);
   const {
@@ -75,7 +75,7 @@ const PaymentHistory = ({ stepper, updateData }) => {
             ? "success"
             : status === "error" || status === "failed"
             ? "danger"
-            : "warning" // fallback for other statuses (like "pending")
+            : "warning"
         }
       >
         {status}
@@ -225,7 +225,10 @@ const PaymentHistory = ({ stepper, updateData }) => {
                       <p className="mb-0 fw-bold fs-4">
                         <strong>
                           {" "}
-                          $ {paymentHistoryData?.advancePaid || 0}{" "}
+                          ${" "}
+                          {paymentHistoryData?.advancePaid ||
+                            paymentHistoryData?.totalAmount -
+                              paymentHistoryData?.remainingAmount}{" "}
                         </strong>
                       </p>
                     </div>
@@ -276,6 +279,7 @@ const PaymentHistory = ({ stepper, updateData }) => {
           </Card>
         </Col>
       </Row>
+      <ViewEventInfo paymentHistoryData={paymentHistoryData} />
       <Card>
         <CardBody>
           <h5 className="mt-1">Recent Transactions</h5>

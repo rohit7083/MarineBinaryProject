@@ -35,7 +35,7 @@ import withReactContent from "sweetalert2-react-content";
 import CancleRooms from "./cancleRooms/CancleRooms";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [searchTerm, setSearchTerm] = useState("");
   const [role, setRole] = useState("");
   const [dataUid, setDataUid] = useState(null);
@@ -318,7 +318,7 @@ const index = () => {
                 )}
                 <DropdownItem onClick={() => handlePaymentHistory(row)}>
                   <Calendar className="me-50" size={15} />{" "}
-                  <span className="align-middle">Payment History</span>
+                  <span className="align-middle">View</span>
                 </DropdownItem>
 
                 <DropdownItem onClick={() => handleAddExtraRoom(row)}>

@@ -123,22 +123,21 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
     }
 
     try {
-    const results = [];
-for (const item of uploadList) {
-  try {
-    if (item.action === "update") {
-      await useJwt.eventDocUpdate(item.uid, item.formData);
-      results.push("updated");
-    } else if (item.action === "create") {
-      await useJwt.eventDocument(item.formData);
-      results.push("created");
-    }
-  } catch (err) {
-    console.error(`Error uploading ${item.name}:`, err);
-    throw err; // stop further uploads on failure
-  }
-}
-
+      const results = [];
+      for (const item of uploadList) {
+        try {
+          if (item.action === "update") {
+            await useJwt.eventDocUpdate(item.uid, item.formData);
+            results.push("updated");
+          } else if (item.action === "create") {
+            await useJwt.eventDocument(item.formData);
+            results.push("created");
+          }
+        } catch (err) {
+          console.error(`Error uploading ${item.name}:`, err);
+          throw err; // stop further uploads on failure
+        }
+      }
 
       const updatedCount = results.filter((r) => r === "updated").length;
       const createdCount = results.filter((r) => r === "created").length;
