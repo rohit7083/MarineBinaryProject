@@ -57,9 +57,11 @@ const CardPayment = () => {
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
 
-   const today = new Date();
+  const today = new Date();
 
-  const formattedDate = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
+  const formattedDate = `${today.getDate()}-${
+    today.getMonth() + 1
+  }-${today.getFullYear()}`;
 
   const getMember = async () => {
     // {{ }}
@@ -254,7 +256,12 @@ const CardPayment = () => {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
       console.log(res);
-      if (res.status === 200) {
+      {
+        {
+          debugger;
+        }
+      }
+      if (res?.data?.status === "success") {
         return MySwal.fire({
           title: "  Success",
           text: "Your Payment Completed  Successfully",
@@ -266,6 +273,16 @@ const CardPayment = () => {
         }).then(() => {
           navigate("/dashbord");
         });
+      } else {
+        return MySwal.fire({
+          title: "Payment Failed",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          customClass: {
+            confirmButton: "btn btn-danger",
+          },
+          buttonsStyling: false,
+        })
       }
     } catch (error) {
       console.error(error);
@@ -889,9 +906,9 @@ const CardPayment = () => {
                                     )}
                                   />
 
-                                  {errors.cardCvv && (
+                                  {errors.cvc && (
                                     <p className="text-danger">
-                                      {errors.cardCvv.message}
+                                      {errors.cvc.message}
                                     </p>
                                   )}
                                 </Col>
@@ -1109,7 +1126,6 @@ const CardPayment = () => {
                           I authorize Lock Trust to initiate single
                           ACH/electronic debit[s] to my account in the amount of
                           $ {memberDetail?.amount} USD from on {formattedDate}
-                          
                         </Label>
                       </div>
                     </li>
@@ -1136,7 +1152,8 @@ const CardPayment = () => {
                           for="basic-cb-unchecked"
                           className="form-check-label"
                         >
-                          I agree that ACH transactions I authorize comply with all applicable laws.{" "}
+                          I agree that ACH transactions I authorize comply with
+                          all applicable laws.{" "}
                         </Label>
                       </div>
                     </li>
@@ -1205,7 +1222,7 @@ const CardPayment = () => {
                               textDecoration: "underline",
                             }}
                           >
-                           User Agreement
+                            User Agreement
                           </a>{" "}
                           and{" "}
                           <a
@@ -1218,7 +1235,7 @@ const CardPayment = () => {
                               textDecoration: "underline",
                             }}
                           >
-                            Term of Service
+                            Term of Services
                           </a>
                         </Label>
                       </div>

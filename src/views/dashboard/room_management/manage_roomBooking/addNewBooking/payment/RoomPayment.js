@@ -12,20 +12,20 @@ import { Toast } from "primereact/toast";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Qr_Payment from "../../../../event_management/Qr_Payment";
 // import Qr_Payment from "./Qr_Payment";
@@ -513,6 +513,7 @@ function Payment({ stepper }) {
     try {
       let res;
       // {{ }}
+      {{debugger}}
       if (location?.state?.extraRoomMode) {
         res = await useJwt.addExtraRoom(uidOfEvent, formData);
       } else {
@@ -545,6 +546,10 @@ function Payment({ stepper }) {
           }
         }
 
+
+        if (!qr_code_base64) {
+          
+        
         if (res?.data?.status === "success") {
           toast.current.show({
             severity: "success",
@@ -557,6 +562,8 @@ function Payment({ stepper }) {
             navigate("/bookingListing");
           }, 1999);
         }
+      }
+
       } else {
         toast.current.show({
           severity: "error",
