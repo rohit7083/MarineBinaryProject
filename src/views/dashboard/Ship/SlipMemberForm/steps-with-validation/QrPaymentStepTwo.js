@@ -256,11 +256,7 @@ const CardPayment = () => {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
       console.log(res);
-      {
-        {
-          debugger;
-        }
-      }
+   
       if (res?.data?.status === "success") {
         return MySwal.fire({
           title: "  Success",
@@ -282,7 +278,7 @@ const CardPayment = () => {
             confirmButton: "btn btn-danger",
           },
           buttonsStyling: false,
-        })
+        });
       }
     } catch (error) {
       console.error(error);
@@ -1235,7 +1231,7 @@ const CardPayment = () => {
                               textDecoration: "underline",
                             }}
                           >
-                            Term of Services
+                            Terms of Service
                           </a>
                         </Label>
                       </div>

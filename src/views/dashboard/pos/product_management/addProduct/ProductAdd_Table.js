@@ -59,6 +59,8 @@ const ProductAdd_Table = ({
     }
   };
 
+  console.log("productData", productData);
+
   useEffect(() => {
     if (UpdateData) {
       reset({
@@ -371,7 +373,9 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">MRP</Label>
+                    <Label className="form-label">
+                      MRP<span style={{ color: "red" }}>*</span>
+                    </Label>
                     <Controller
                       name={`variations[${index}].mrp`}
                       control={control}
@@ -407,7 +411,9 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">Stock QTY</Label>
+                    <Label className="form-label">
+                      Stock QTY<span style={{ color: "red" }}>*</span>
+                    </Label>
                     <Controller
                       name={`variations[${index}].stockQty`}
                       control={control}
@@ -443,7 +449,9 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">No. of Items</Label>
+                    <Label className="form-label">
+                      No. of Items<span style={{ color: "red" }}>*</span>
+                    </Label>
                     <Controller
                       name={`variations[${index}].qty`}
                       control={control}
@@ -479,7 +487,9 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">Unit</Label>
+                    <Label className="form-label">
+                      Unit<span style={{ color: "red" }}>*</span>
+                    </Label>
                     <Controller
                       name={`variations[${index}].unit`}
                       control={control}
@@ -515,7 +525,9 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">Calculated Amount</Label>
+                    <Label className="form-label">
+                      Calculated Amount<span style={{ color: "red" }}>*</span>
+                    </Label>
                     <Controller
                       name={`variations[${index}].calcAmount`}
                       control={control}
@@ -544,7 +556,9 @@ const ProductAdd_Table = ({
                   </Col>
 
                   <Col md="4" sm="6" xs="12">
-                    <Label className="form-label">Final Amount</Label>
+                    <Label className="form-label">
+                      Final Amount <span style={{ color: "red" }}>*</span>
+                    </Label>
                     <Controller
                       name={`variations[${index}].finalAmount`}
                       control={control}
@@ -572,37 +586,63 @@ const ProductAdd_Table = ({
                     )}
                   </Col>
 
-                 {productData?.findCategoryData?.attributeKeys?.map(
-  (attr, idx) => (
-    <Col key={idx} md="4" sm="6" xs="12">
-      <Label className="form-label">{attr}</Label>
-      <Controller
-        name={`variations[${index}].${attr}`}
-        control={control}
-        rules={{
-          pattern: {
-            value: /^[a-zA-Z0-9 ]*$/, // only letters, numbers, and spaces
-            message: `${attr} can only contain letters, numbers, and spaces`,
-          },
-        }}
-        render={({ field }) => (
-          <Input
-            type="text"
-            placeholder={`Enter ${attr}`}
-            className="rounded-3 shadow-sm"
-            {...field}
-            onChange={(e) => {
-              // Optional: immediately filter invalid characters
-              const filteredValue = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
-              field.onChange(filteredValue);
-            }}
-          />
-        )}
-      />
-    </Col>
-  )
-)}
+                  {productData?.findCategoryData?.attributeKeys?.map(
+                    (attr, idx) => {
+                      // Check if this field is required by looking inside productData.trueAttributes
+                      const isRequired = productData?.trueAttributes?.some(
+                        (req) => req.label.toLowerCase() === attr.toLowerCase()
+                      );
 
+                      return (
+                        <Col key={idx} md="4" sm="6" xs="12">
+                          <Label className="form-label">
+                            {attr}{" "}
+                            {isRequired && (
+                              <span style={{ color: "red" }}>*</span>
+                            )}
+                          </Label>
+
+                          <Controller
+                            name={`variations[${index}].${attr}`}
+                            control={control}
+                            rules={{
+                              ...(isRequired
+                                ? {
+                                    required: `${attr} is required`,
+                                  }
+                                : {}),
+                              pattern: {
+                                value: /^[a-zA-Z0-9 ]*$/,
+                                message: `${attr} can only contain letters, numbers, and spaces`,
+                              },
+                            }}
+                            render={({ field }) => (
+                              <Input
+                                type="text"
+                                placeholder={`Enter ${attr}`}
+                                className="rounded-3 shadow-sm"
+                                {...field}
+                                invalid={!!errors?.variations?.[index]?.[attr]}
+                                onChange={(e) => {
+                                  const filteredValue = e.target.value.replace(
+                                    /[^a-zA-Z0-9 ]/g,
+                                    ""
+                                  );
+                                  field.onChange(filteredValue);
+                                }}
+                              />
+                            )}
+                          />
+
+                          {errors?.variations?.[index]?.[attr] && (
+                            <FormFeedback>
+                              {errors.variations[index][attr]?.message}
+                            </FormFeedback>
+                          )}
+                        </Col>
+                      );
+                    }
+                  )}
 
                   <Col md="12" className="d-flex justify-content-end mt-3">
                     <button

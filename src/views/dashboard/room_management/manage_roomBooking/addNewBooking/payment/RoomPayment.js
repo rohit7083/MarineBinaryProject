@@ -513,7 +513,6 @@ function Payment({ stepper }) {
     try {
       let res;
       // {{ }}
-      {{debugger}}
       if (location?.state?.extraRoomMode) {
         res = await useJwt.addExtraRoom(uidOfEvent, formData);
       } else {

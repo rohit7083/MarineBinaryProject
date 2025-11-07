@@ -96,6 +96,9 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             category?.attributeKeys?.map((attr) => attr?.attributeName) || [],
           attributeKeysUid:
             category?.attributeKeys?.map((attr) => attr?.uid) || [],
+          attributeRequired: category?.attributeKeys?.map(
+            (attr) => attr?.isRequired
+          ),
         })) || [];
 
       // taxes
@@ -131,10 +134,37 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
       }
     }
   };
-
+ 
   useEffect(() => {
     fetchAllData();
   }, []);
+
+
+
+   const categoryWatch = watch("category");
+
+  const catObject = fetchData?.categories?.filter(
+    (x, _) => x?.value === categoryWatch
+  );
+  const category = Array.isArray(catObject) ? catObject[0] : catObject;
+console.log(category);
+
+const trueAttributes = category?.attributeKeys
+  ?.map((label, i) =>
+    category.attributeRequired?.[i]
+      ? {
+          label,
+          uid: category.attributeKeysUid?.[i],
+          required: true,
+        }
+      : null
+  )
+  .filter(Boolean);
+
+console.log(trueAttributes);
+
+
+
   const watchCategory = watch("category");
   const watchTaxes = watch("taxes");
   let findCategoryData;
@@ -210,12 +240,14 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
           findCategoryData,
           selectedTaxData,
           taxChargesType: "Exclusive",
+          trueAttributes,
         });
 
         stepper.next(1);
       }
     }
   };
+ 
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>

@@ -51,7 +51,10 @@ const Add_Specification = ({
 
     const formData = new FormData();
     formData.append("name", productData?.name);
-    formData.append("description", productData?.description);
+    if (productData?.description?.trim()) {
+      formData.append("description", productData.description.trim());
+    }
+
     formData.append("productType", productData?.productType);
     formData.append("taxChargesType", "Exclusive");
     formData.append("vendorUid.uid", productData?.vendor || "");
@@ -74,18 +77,25 @@ const Add_Specification = ({
         `variations[${index}].finalAmount`,
         variation.finalAmount || ""
       );
-
-      variation?.attributes?.forEach((x, i) => {
-        formData.append(
-          `variations[${index}].attributes[${i}].attributeName`,
-          x.attributeName || ""
-        );
-        formData.append(
-          `variations[${index}].attributes[${i}].value`,
-          x.value || ""
-        );
-      });
-
+      if (Array.isArray(variation?.attributes)) {
+        variation.attributes.forEach((x, i) => {
+          if (
+            x?.attributeName?.trim() &&
+            x?.value !== undefined &&
+            x.value !== null &&
+            x.value !== ""
+          ) {
+            formData.append(
+              `variations[${index}].attributes[${i}].attributeName`,
+              x?.attributeName.trim()
+            );
+            formData.append(
+              `variations[${index}].attributes[${i}].value`,
+              x?.value
+            );
+          }
+        });
+      }
       variation?.images?.forEach((img, i) => {
         formData.append(
           `variations[${index}].variationImages[${i}].image`,
