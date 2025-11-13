@@ -220,7 +220,7 @@ const index = () => {
         };
 
         return (
-         <>
+          <>
             <UncontrolledDropdown>
               <DropdownToggle
                 className="icon-btn hide-arrow"
@@ -230,8 +230,7 @@ const index = () => {
               >
                 <MoreVertical size={15} />
               </DropdownToggle>
-                           <DropdownMenu end container="body">
-
+              <DropdownMenu end container="body">
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />
                   <span className="align-middle">Edit</span>
@@ -248,7 +247,7 @@ const index = () => {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-         </>
+          </>
         );
       },
     },
@@ -380,8 +379,6 @@ const index = () => {
 };
 
 export default index;
-  
-
 
 // import "@styles/react/libs/tables/react-dataTable-component.scss";
 // import { useEffect, useState } from "react";
@@ -606,7 +603,7 @@ export default index;
 //                   <Edit className="me-50" size={15} />
 //                   <span className="align-middle">Edit</span>
 //                 </DropdownItem>
-//                 {/* 
+//                 {/*
 //                 <DropdownItem onClick={() => handleEdit(row)}>
 //                   <Eye className="me-50" size={15} />{" "}
 //                   <span className="align-middle">View</span>
@@ -749,9 +746,3 @@ export default index;
 // };
 
 // export default index;
-
-
-
-
-
-

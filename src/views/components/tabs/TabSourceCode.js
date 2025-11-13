@@ -1,6 +1,6 @@
 export const tabsBasic = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -92,11 +92,11 @@ export default TabsBasic
 `}
     </code>
   </pre>
-)
+);
 
 export const tabsVerticalLeft = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -174,11 +174,11 @@ export default TabsVerticalLeft
 `}
     </code>
   </pre>
-)
+);
 
 export const tabsVerticalRight = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -256,11 +256,11 @@ export default TabsVerticalRight
 `}
     </code>
   </pre>
-)
+);
 
 export const tabsFilled = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -374,11 +374,11 @@ export default TabsFilled
 `}
     </code>
   </pre>
-)
+);
 
 export const tabsJustified = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -492,11 +492,11 @@ export default TabsJustified
 `}
     </code>
   </pre>
-)
+);
 
 export const tabsCentered = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -595,11 +595,11 @@ export default TabsCentered
 `}
     </code>
   </pre>
-)
+);
 
 export const tabsEnd = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -698,4 +698,4 @@ export default TabsEnd
 `}
     </code>
   </pre>
-)
+);

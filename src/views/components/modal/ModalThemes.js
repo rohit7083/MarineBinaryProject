@@ -1,8 +1,8 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState } from "react";
 
 // ** Reactstrap Imports
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 const ModalConfig = [
   // {
@@ -13,9 +13,9 @@ const ModalConfig = [
   // },
   {
     id: 2,
-    title: 'Secondary',
-    modalColor: 'modal-secondary',
-    btnColor: 'secondary'
+    title: "Secondary",
+    modalColor: "modal-secondary",
+    btnColor: "secondary",
   },
   // {
   //   id: 3,
@@ -47,37 +47,46 @@ const ModalConfig = [
   //   modalColor: 'modal-dark',
   //   btnColor: 'dark'
   // }
-]
+];
 
 const ModalTheme = () => {
   // ** State
-  const [modal, setModal] = useState(null)
+  const [modal, setModal] = useState(null);
 
-  const toggleModal = id => {
+  const toggleModal = (id) => {
     if (modal !== id) {
-      setModal(id)
+      setModal(id);
     } else {
-      setModal(null)
+      setModal(null);
     }
-  }
+  };
 
-  const renderModal = ModalConfig.map(item => {
+  const renderModal = ModalConfig.map((item) => {
     return (
       <div className={`theme-${item.modalColor}`} key={item.id}>
-        <Button color={item.btnColor} onClick={() => toggleModal(item.id)} key={item.title} outline>
+        <Button
+          color={item.btnColor}
+          onClick={() => toggleModal(item.id)}
+          key={item.title}
+          outline
+        >
           {item.title}
         </Button>
         <Modal
           isOpen={modal === item.id}
           toggle={() => toggleModal(item.id)}
-          className='modal-dialog-centered'
+          className="modal-dialog-centered"
           modalClassName={item.modalColor}
           key={item.id}
         >
-          <ModalHeader toggle={() => toggleModal(item.id)}>{item.title}</ModalHeader>
+          <ModalHeader toggle={() => toggleModal(item.id)}>
+            {item.title}
+          </ModalHeader>
           <ModalBody>
-            Tart lemon drops macaroon oat cake chocolate toffee chocolate bar icing. Pudding jelly beans carrot cake
-            pastry gummies cheesecake lollipop. I love cookie lollipop cake I love sweet gummi bears cupcake dessert.
+            Tart lemon drops macaroon oat cake chocolate toffee chocolate bar
+            icing. Pudding jelly beans carrot cake pastry gummies cheesecake
+            lollipop. I love cookie lollipop cake I love sweet gummi bears
+            cupcake dessert.
           </ModalBody>
           <ModalFooter>
             <Button color={item.btnColor} onClick={() => toggleModal(item.id)}>
@@ -86,10 +95,9 @@ const ModalTheme = () => {
           </ModalFooter>
         </Modal>
       </div>
-    )
-  }
-)
+    );
+  });
 
-  return <div className='demo-inline-spacing'>{renderModal}</div>
-}
-export default ModalTheme
+  return <div className="demo-inline-spacing">{renderModal}</div>;
+};
+export default ModalTheme;

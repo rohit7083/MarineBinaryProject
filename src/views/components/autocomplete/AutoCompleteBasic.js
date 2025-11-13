@@ -1,49 +1,49 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState } from "react";
 
 // ** Custom Components
-import AutoComplete from '@components/autocomplete'
+import AutoComplete from "@components/autocomplete";
 
 const AutoCompleteBasic = () => {
   // ** State
   const [suggestions] = useState([
     {
-      title: 'React.js'
+      title: "React.js",
     },
     {
-      title: 'Angular.js'
+      title: "Angular.js",
     },
     {
-      title: 'Javascript'
+      title: "Javascript",
     },
     {
-      title: 'Vue.js'
+      title: "Vue.js",
     },
     {
-      title: 'HTML'
+      title: "HTML",
     },
     {
-      title: 'CSS'
+      title: "CSS",
     },
     {
-      title: 'SCSS'
+      title: "SCSS",
     },
     {
-      title: 'PHP'
+      title: "PHP",
     },
     {
-      title: 'Laravel'
-    }
-  ])
+      title: "Laravel",
+    },
+  ]);
 
   return (
     <AutoComplete
-      filterKey='title'
+      filterKey="title"
       suggestionLimit={4}
       placeholder="Type 'a'"
       suggestions={suggestions}
-      className='form-control'
+      className="form-control"
     />
-  )
-}
-export default AutoCompleteBasic
+  );
+};
+export default AutoCompleteBasic;

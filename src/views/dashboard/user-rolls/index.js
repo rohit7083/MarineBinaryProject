@@ -4,7 +4,6 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { permisionTableList } from "../user_rolls/roles-permissions/roles/fakedb";
 
 const index = ({ data }) => {
-  
   // const [tableData, setTableData] = React.useState({
   //   count: 0,
   //   results: [],

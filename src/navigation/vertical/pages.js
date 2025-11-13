@@ -1,5 +1,5 @@
 // ** Icons Import
-import { FileText, Circle, Square, UserCheck } from 'react-feather'
+import { FileText, Circle, Square, UserCheck } from "react-feather";
 
 export default [
   // {
@@ -150,7 +150,6 @@ export default [
   //           navLink: '/misc/coming-soon',
   //           newTab: true
   //         },
-
   //         {
   //           id: 'notAuthorized',
   //           title: 'Not Authorized',
@@ -323,4 +322,4 @@ export default [
   //   permissions: ['admin', 'editor'],
   //   navLink: '/pages/modal-examples'
   // }
-]
+];

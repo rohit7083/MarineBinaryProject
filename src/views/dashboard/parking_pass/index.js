@@ -1,6 +1,3 @@
-
-
-
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
@@ -10,15 +7,7 @@ import { debounce } from "lodash";
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Input,
-  Row,
-  Spinner
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Add_parkDetails from "../parking_pass/Add_parkDetails";
@@ -64,7 +53,6 @@ const index = () => {
     setRowsPerPage(newLimit);
     setCurrentPage(1);
   };
-
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
@@ -142,78 +130,78 @@ const index = () => {
         const MySwal = withReactContent(Swal);
 
         const handleDelete = async (uid) => {
-  // Show confirmation modal
-  return MySwal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-    customClass: {
-      confirmButton: "btn btn-primary",
-      cancelButton: "btn btn-danger ms-1",
-    },
-    buttonsStyling: false,
-  }).then(async function (result) {
-    if (result.value) {
-      try {
-        // Call delete API
-        const response = await useJwt.Delete(uid);
-        if (response?.status === 204) {
-          setTableData((prevData) => {
-            const newData = prevData.results.filter(
-              (item) => item.uid !== uid
-            );
-            return {
-              ...prevData,
-              results: newData,
-              count: prevData.count - 1,
-            };
-          });
-          MySwal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "Your file has been deleted.",
+          // Show confirmation modal
+          return MySwal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
             customClass: {
-              confirmButton: "btn btn-success",
+              confirmButton: "btn btn-primary",
+              cancelButton: "btn btn-danger ms-1",
             },
-          });
-        }
-      } catch (error) {
-        console.error("Error deleting item:", error);
-        
-        // Extract message from error response
-        let errorMessage = "Something went wrong!";
-        
-        if (error?.response?.data?.content) {
-          errorMessage = error.response.data.content;
-        } else if (error?.response?.data?.message) {
-          errorMessage = error.response.data.message;
-        } else if (error?.message) {
-          errorMessage = error.message;
-        }
+            buttonsStyling: false,
+          }).then(async function (result) {
+            if (result.value) {
+              try {
+                // Call delete API
+                const response = await useJwt.Delete(uid);
+                if (response?.status === 204) {
+                  setTableData((prevData) => {
+                    const newData = prevData.results.filter(
+                      (item) => item.uid !== uid
+                    );
+                    return {
+                      ...prevData,
+                      results: newData,
+                      count: prevData.count - 1,
+                    };
+                  });
+                  MySwal.fire({
+                    icon: "success",
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    customClass: {
+                      confirmButton: "btn btn-success",
+                    },
+                  });
+                }
+              } catch (error) {
+                console.error("Error deleting item:", error);
 
-        MySwal.fire({
-          icon: "error", // Changed from "danger" to "error"
-          title: "Error!",
-          text: errorMessage,
-          customClass: {
-            confirmButton: "btn btn-danger", // Changed to btn-danger for error
-          },
-        });
-      }
-    } else if (result.dismiss === MySwal.DismissReason.cancel) {
-      MySwal.fire({
-        title: "Cancelled",
-        text: "Your imaginary file is safe :)",
-        icon: "error",
-        customClass: {
-          confirmButton: "btn btn-success",
-        },
-      });
-    }
-  });
-};
+                // Extract message from error response
+                let errorMessage = "Something went wrong!";
+
+                if (error?.response?.data?.content) {
+                  errorMessage = error.response.data.content;
+                } else if (error?.response?.data?.message) {
+                  errorMessage = error.response.data.message;
+                } else if (error?.message) {
+                  errorMessage = error.message;
+                }
+
+                MySwal.fire({
+                  icon: "error", // Changed from "danger" to "error"
+                  title: "Error!",
+                  text: errorMessage,
+                  customClass: {
+                    confirmButton: "btn btn-danger", // Changed to btn-danger for error
+                  },
+                });
+              }
+            } else if (result.dismiss === MySwal.DismissReason.cancel) {
+              MySwal.fire({
+                title: "Cancelled",
+                text: "Your imaginary file is safe :)",
+                icon: "error",
+                customClass: {
+                  confirmButton: "btn btn-success",
+                },
+              });
+            }
+          });
+        };
         return (
           <>
             {/* <span

@@ -52,12 +52,12 @@ const SearchCustomerModal = ({
         label: `${c.phoneNumber}`,
         name: `${c.firstName} ${c.lastName}`,
         emailId: c?.emailId,
-        type:"member",
+        type: "member",
       }))
-    : []; 
+    : [];
 
   useEffect(() => {
-    console.log('selectedCustomer',selectedCustomer);
+    console.log("selectedCustomer", selectedCustomer);
   }, [watch("customerNumber"), options]);
 
   const fetchData = async () => {
@@ -80,11 +80,10 @@ const SearchCustomerModal = ({
           emailId: item.member?.emailId,
           details: item.member,
           ...item,
-           type:"member",
+          type: "member",
         }));
 
       setMemberName(memberName);
-
     } catch (error) {
       console.error("Error fetching slip details:", error);
       toast.current.show({
@@ -103,10 +102,10 @@ const SearchCustomerModal = ({
   const slipNames = memName?.map((x) => ({
     label: `${x?.slipName} `,
     value: x?.uid,
-    customerName:`${x.member?.firstName}${x.member?.lastName}`,
+    customerName: `${x.member?.firstName}${x.member?.lastName}`,
     phoneNumber: `${x.member?.countryCode} ${x.member?.phoneNumber}`,
     emailId: x.member?.emailId,
-     type:"slipMember",
+    type: "slipMember",
   }));
 
   return (

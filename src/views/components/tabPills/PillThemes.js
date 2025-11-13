@@ -1,27 +1,27 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useState } from "react";
 
 // ** Reactstrap Imports
-import { Nav, NavItem, NavLink } from 'reactstrap'
+import { Nav, NavItem, NavLink } from "reactstrap";
 
 const PillThemes = () => {
   // ** States
-  const [pillInfo, setPillInfo] = useState(1)
-  const [pillDanger, setPillDanger] = useState(1)
-  const [pillSuccess, setPillSuccess] = useState(1)
-  const [pillWarning, setPillWarning] = useState(1)
-  const [pillSecondary, setPillSecondary] = useState(1)
+  const [pillInfo, setPillInfo] = useState(1);
+  const [pillDanger, setPillDanger] = useState(1);
+  const [pillSuccess, setPillSuccess] = useState(1);
+  const [pillWarning, setPillWarning] = useState(1);
+  const [pillSecondary, setPillSecondary] = useState(1);
 
-  const toggleInfo = tab => setPillInfo(tab)
-  const toggleDanger = tab => setPillDanger(tab)
-  const toggleSuccess = tab => setPillSuccess(tab)
-  const toggleWarning = tab => setPillWarning(tab)
-  const toggleSecondary = tab => setPillSecondary(tab)
+  const toggleInfo = (tab) => setPillInfo(tab);
+  const toggleDanger = (tab) => setPillDanger(tab);
+  const toggleSuccess = (tab) => setPillSuccess(tab);
+  const toggleWarning = (tab) => setPillWarning(tab);
+  const toggleSecondary = (tab) => setPillSecondary(tab);
 
   return (
     <Fragment>
       <h6>Secondary</h6>
-      <Nav pills className='nav-pill-secondary my-2'>
+      <Nav pills className="nav-pill-secondary my-2">
         <NavItem onClick={() => toggleSecondary(1)}>
           <NavLink active={pillSecondary === 1}>Active</NavLink>
         </NavItem>
@@ -37,7 +37,7 @@ const PillThemes = () => {
       </Nav>
 
       <h6>Success</h6>
-      <Nav pills className='nav-pill-success my-2'>
+      <Nav pills className="nav-pill-success my-2">
         <NavItem onClick={() => toggleSuccess(1)}>
           <NavLink active={pillSuccess === 1}>Active</NavLink>
         </NavItem>
@@ -54,7 +54,7 @@ const PillThemes = () => {
 
       <h6>Danger</h6>
 
-      <Nav pills className='nav-pill-danger my-2'>
+      <Nav pills className="nav-pill-danger my-2">
         <NavItem onClick={() => toggleDanger(1)}>
           <NavLink active={pillDanger === 1}>Active</NavLink>
         </NavItem>
@@ -71,7 +71,7 @@ const PillThemes = () => {
 
       <h6>Warning</h6>
 
-      <Nav pills className='nav-pill-warning my-2'>
+      <Nav pills className="nav-pill-warning my-2">
         <NavItem onClick={() => toggleWarning(1)}>
           <NavLink active={pillWarning === 1}>Active</NavLink>
         </NavItem>
@@ -88,7 +88,7 @@ const PillThemes = () => {
 
       <h6>Info</h6>
 
-      <Nav pills className='nav-pill-info my-2'>
+      <Nav pills className="nav-pill-info my-2">
         <NavItem onClick={() => toggleInfo(1)}>
           <NavLink active={pillInfo === 1}>Active</NavLink>
         </NavItem>
@@ -103,6 +103,6 @@ const PillThemes = () => {
         </NavItem>
       </Nav>
     </Fragment>
-  )
-}
-export default PillThemes
+  );
+};
+export default PillThemes;

@@ -51,7 +51,7 @@ import {
 //   "state": "NY",
 //   "uid": "uid_1001"
 
-const ViewPass = ({ watch ,setGuestChildData  }) => {
+const ViewPass = ({ watch, setGuestChildData }) => {
   const [memberDetails, setMemberDetails] = useState({
     active: false,
     address: "",
@@ -84,15 +84,13 @@ const ViewPass = ({ watch ,setGuestChildData  }) => {
     uid: "",
   });
 
-  
-
   const handlefetchGuest = async () => {
     try {
       const { data } = await useJwt.guest();
       setMemberDetails(data);
       setGuestChildData(data);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
   useEffect(() => {
@@ -109,7 +107,6 @@ const ViewPass = ({ watch ,setGuestChildData  }) => {
     { value: "Credit/debit-card", label: "Credit/debit-card" },
     { value: "Cash", label: "Cash" },
   ];
- 
 
   if (!memberDetails) return null;
   return (

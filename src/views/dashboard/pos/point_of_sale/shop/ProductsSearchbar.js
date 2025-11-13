@@ -93,7 +93,9 @@ const ProductsSearchbar = ({ selectedCustomer }) => {
       categoryUid: product?.categoryUid || null,
     }))
     .filter((product) => {
-      const matchSearch = product.name?.toLowerCase().includes((searchTerm ?? "").toLowerCase());
+      const matchSearch = product.name
+        ?.toLowerCase()
+        .includes((searchTerm ?? "").toLowerCase());
 
       const matchCategory =
         selectedCategories.length === 0 ||
@@ -106,7 +108,7 @@ const ProductsSearchbar = ({ selectedCustomer }) => {
       return matchSearch && matchCategory;
     });
 
-const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <Card>

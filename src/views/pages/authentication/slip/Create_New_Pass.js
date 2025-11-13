@@ -27,7 +27,7 @@ import {
   CardText,
   CardTitle,
   Input,
-  Label
+  Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -37,7 +37,7 @@ import InputPassword from "@components/input-password-toggle";
 import "@styles/react/pages/page-authentication.scss";
 import CryptoJS from "crypto-js";
 import { useEffect, useState } from "react";
-import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg';
+import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
 const CreateNewPass = () => {
   const {
     control,
@@ -54,11 +54,11 @@ const CreateNewPass = () => {
   const location = useLocation();
   const [encryptedPasss, setEncrypt] = useState(null);
   const [password, setPassword] = useState("");
-  const [errorMsz, setErrorMsz] = useState(""); 
-    const [resendCount, setResendcount] = useState(false);
-    const [resendcallCount, setResendcallCount] = useState(false);
-  
-const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+  const [errorMsz, setErrorMsz] = useState("");
+  const [resendCount, setResendcount] = useState(false);
+  const [resendcallCount, setResendcallCount] = useState(false);
+
+  const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const [attempt, setAttempt] = useState(0);
 
   const [requirements, setRequirements] = useState({
@@ -69,46 +69,43 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
     specialChar: false,
   });
 
+  const handleResendOTP = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await useJwt.resend_Otp(token);
+      if (res?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
 
-    const handleResendOTP = async (e) => {
-      e.preventDefault();
-      try {
-        const res = await useJwt.resend_Otp(token);
-        if (res?.status == 200) {
-          setCountdownEndTime(Date.now() + 40000);
-  
-          setResendcount(true);
-        }
-        console.log("resentOTP", res.status);
-      } catch (error) {
-        console.log(error.response);
-      } finally {
-        //   setTimeout(() => {
-        //     setResendcount(false);
-        //   }, countdownEndTime);
+        setResendcount(true);
       }
-    };
-  
-    const handleResendCall = async (e) => {
-      e.preventDefault();
-      try {
-        const res = await useJwt.resend_OtpCall(token);
-        if (res?.status == 200) {
-          setCountdownEndTime(Date.now() + 40000);
-  
-          setResendcallCount(true);
-        }
-        console.log("resentCall", res);
-      } catch (error) {
-        console.log(error.response);
-      } finally {
-        // setTimeout(() => {
-        //   setResendcallLoading(false);
-        // }, 30000);
+      console.log("resentOTP", res.status);
+    } catch (error) {
+      console.log(error.response);
+    } finally {
+      //   setTimeout(() => {
+      //     setResendcount(false);
+      //   }, countdownEndTime);
+    }
+  };
+
+  const handleResendCall = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await useJwt.resend_OtpCall(token);
+      if (res?.status == 200) {
+        setCountdownEndTime(Date.now() + 40000);
+
+        setResendcallCount(true);
       }
-    };
-
-
+      console.log("resentCall", res);
+    } catch (error) {
+      console.log(error.response);
+    } finally {
+      // setTimeout(() => {
+      //   setResendcallLoading(false);
+      // }, 30000);
+    }
+  };
 
   const validatePassword = (pwd) => {
     setRequirements({
@@ -133,7 +130,6 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   }, [onchnagePass]);
 
   // const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_KEY;
-
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -165,7 +161,6 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const previousPassword = watch("previousPassword");
 
   useEffect(() => {
-     
     if (onchnagePass && handleOtp && confirmPassword && previousPassword) {
       const encryptedotp = encryptAES(handleOtp);
       const encryptPass = encryptAES(onchnagePass);
@@ -183,7 +178,10 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   }, [handleOtp, onchnagePass, confirmPassword, previousPassword]);
 
   const onSubmit = async (data) => {
-    {{ }}
+    {
+      {
+      }
+    }
     setCountdownEndTime(0);
     setAttempt(0);
     setErrorMsz("");
@@ -193,7 +191,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
     const otp = parseInt(otpString, 10);
 
     try {
-      setLoading(true); 
+      setLoading(true);
       const res = await useJwt.chnagePassword(token, {
         previousPassword: encryptedPasss?.previousPassword,
         otp: encryptedPasss?.otp,
@@ -203,8 +201,6 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
 
       console.log(res);
       if (res.status == 200 || res.status == 201) {
-     
-
         toast.current.show({
           severity: "success",
           summary: "Successfully",
@@ -212,10 +208,11 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
           life: 2000,
         });
         setTimeout(() => {
-          navigate("/Login");        }, 2000);
+          navigate("/Login");
+        }, 2000);
       }
     } catch (error) {
-       console.error(error);
+      console.error(error);
 
       if (error.response) {
         const { status, data } = error.response;
@@ -228,7 +225,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
 
         setAttempt(otpAttempt);
         if (code === 423) {
-          return  MySwal.fire({
+          return MySwal.fire({
             title: "Blocked",
             text: "Your account has been blocked due to multiple invalid OTP attempts. Please contact the admin",
             icon: "warning",
@@ -250,26 +247,31 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
     <div className="auth-wrapper auth-basic px-2">
       <div className="auth-inner my-2">
         <Card className="mb-0">
-                <Toast ref={toast} />
-          
+          <Toast ref={toast} />
+
           <CardBody>
-           <Link
-             to="/"
-             onClick={(e) => e.preventDefault()}
-             className="mb-4 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
-           >
-             <img
-               src={MARinLogo}
-               alt="MarinaOne Logo"
-                 style={{
+            <Link
+              to="/"
+              onClick={(e) => e.preventDefault()}
+              className="mb-4 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+            >
+              <img
+                src={MARinLogo}
+                alt="MarinaOne Logo"
+                style={{
                   height: "5rem",
                   width: "auto",
                   marginBottom: "0px",
                   marginTop: "0px",
                 }}
-             />
-             <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
-           </Link>
+              />
+              <h2
+                className="text-primary mt-1  "
+                style={{ fontWeight: "bold" }}
+              >
+                MarinaOne
+              </h2>
+            </Link>
 
             <CardTitle tag="h4" className="mb-1">
               Create New Password 🔒
@@ -277,7 +279,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
             <CardText className="mb-2">
               Your new password must be different from previously used passwords
             </CardText>
-          
+
             {errorMsz && (
               <React.Fragment>
                 <UncontrolledAlert color="danger">
@@ -313,7 +315,6 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                       render={({ field }) => (
                         <Input
                           {...field}
-
                           maxLength="1"
                           className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${
                             errors.otp?.[index] ? "is-invalid" : ""
@@ -402,7 +403,7 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                   </div>
                 </>
               )}
-             {attempt === 1 && (
+              {attempt === 1 && (
                 <p className="text-center mt-2">
                   {!resendCount && (
                     <>
@@ -431,7 +432,6 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                   )}
                 </p>
               )}
-
 
               <div className="mb-1 mt-2">
                 <Label className="form-label" for="new-password">
@@ -562,7 +562,13 @@ const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
                 allowed
               </ListGroupItem>
 
-              <Button color="primary" block type="submit" disabled={loading} className="mt-2">
+              <Button
+                color="primary"
+                block
+                type="submit"
+                disabled={loading}
+                className="mt-2"
+              >
                 {loading ? (
                   <>
                     Loading.. <Spinner size="sm" />{" "}

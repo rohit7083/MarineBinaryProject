@@ -1,30 +1,30 @@
 // ** Icons Import
-import { BarChart2, Circle } from 'react-feather'
+import { BarChart2, Circle } from "react-feather";
 
 export default [
   {
-    id: 'chartsGroup',
-    title: 'Charts',
+    id: "chartsGroup",
+    title: "Charts",
     icon: <BarChart2 />,
     children: [
       {
-        id: 'apex',
-        title: 'Apex',
+        id: "apex",
+        title: "Apex",
         icon: <Circle />,
-        navLink: '/charts/apex'
+        navLink: "/charts/apex",
       },
       {
-        id: 'chartJs',
-        title: 'ChartJS',
+        id: "chartJs",
+        title: "ChartJS",
         icon: <Circle />,
-        navLink: '/charts/chartjs'
+        navLink: "/charts/chartjs",
       },
       {
-        id: 'recharts',
-        title: 'Recharts',
+        id: "recharts",
+        title: "Recharts",
         icon: <Circle />,
-        navLink: '/charts/recharts'
-      }
-    ]
-  }
-]
+        navLink: "/charts/recharts",
+      },
+    ],
+  },
+];

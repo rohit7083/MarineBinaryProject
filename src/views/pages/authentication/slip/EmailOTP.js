@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import WatchNew from '../../../../../src/assets/images/updatedWatchnew.jpg';
+import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 // ** Reactstrap Imports
@@ -228,22 +228,27 @@ const TwoStepsBasic = () => {
         <Card className="mb-0">
           <CardBody>
             <Link
-                        to="/"
-                        onClick={(e) => e.preventDefault()}
-                        className="mb-2 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
-                      >
-                        <img
-                          src={MARinLogo}
-                          alt=" Marina Logo"
-                          style={{
+              to="/"
+              onClick={(e) => e.preventDefault()}
+              className="mb-2 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
+            >
+              <img
+                src={MARinLogo}
+                alt=" Marina Logo"
+                style={{
                   height: "5rem",
                   width: "auto",
                   marginBottom: "0px",
                   marginTop: "0px",
                 }}
-                        />
-                        <h2 className="text-primary mt-1  "style={{ fontWeight: 'bold' }}>MarinaOne</h2>
-                      </Link>
+              />
+              <h2
+                className="text-primary mt-1  "
+                style={{ fontWeight: "bold" }}
+              >
+                MarinaOne
+              </h2>
+            </Link>
             <Row className="mb-1">
               <Label sm="3" for=""></Label>
               <Col sm="12">
@@ -407,7 +412,13 @@ const TwoStepsBasic = () => {
                 </p>
               )}
 
-              <Button block type="submit" className="mt-2" disabled={loading} color="primary">
+              <Button
+                block
+                type="submit"
+                className="mt-2"
+                disabled={loading}
+                color="primary"
+              >
                 {loading ? (
                   <>
                     Loading.. <Spinner size="sm" />
@@ -440,12 +451,12 @@ const TwoStepsBasic = () => {
                 )}{" "}
               </a>
             </p> */}
-       <p className="text-center mt-2">
-                      <Link to="/Login">
-                        <ChevronLeft className="rotate-rtl me-25" size={14} />
-                        <span className="align-middle">Back to login</span>
-                      </Link>
-                    </p>
+            <p className="text-center mt-2">
+              <Link to="/Login">
+                <ChevronLeft className="rotate-rtl me-25" size={14} />
+                <span className="align-middle">Back to login</span>
+              </Link>
+            </p>
           </CardBody>
         </Card>
       </div>

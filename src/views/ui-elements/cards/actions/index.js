@@ -1,30 +1,33 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment } from "react";
 
 // ** Custom Components
-import Breadcrumbs from '@components/breadcrumbs'
-import CardAction from '@components/card-actions'
+import Breadcrumbs from "@components/breadcrumbs";
+import CardAction from "@components/card-actions";
 
 // ** Icons Imports
-import { ChevronDown, RotateCw, X } from 'react-feather'
+import { ChevronDown, RotateCw, X } from "react-feather";
 
 // ** Reactstrap Imports
-import { CardBody, CardText, Row, Col, Table } from 'reactstrap'
+import { CardBody, CardText, Row, Col, Table } from "reactstrap";
 
 const CardActions = () => {
   return (
     <Fragment>
-      <Breadcrumbs title='Card Actions' data={[{ title: 'Cards' }, { title: 'Card Actions' }]} />
+      <Breadcrumbs
+        title="Card Actions"
+        data={[{ title: "Cards" }, { title: "Card Actions" }]}
+      />
       <Row>
-        <Col sm='12'>
+        <Col sm="12">
           <CardAction
-            title='Card Actions'
-            actions={['collapse', 'reload', 'remove']}
-            endReload={endLoading => {
-              setTimeout(() => endLoading(), 2000)
+            title="Card Actions"
+            actions={["collapse", "reload", "remove"]}
+            endReload={(endLoading) => {
+              setTimeout(() => endLoading(), 2000);
             }}
           >
-            <CardBody className='pt-0'>
+            <CardBody className="pt-0">
               <Table responsive bordered>
                 <thead>
                   <tr>
@@ -36,21 +39,21 @@ const CardActions = () => {
                 <tbody>
                   <tr>
                     <td>Collapse</td>
-                    <td className='text-center'>
-                      <ChevronDown className='collapse-icon' size={15} />
+                    <td className="text-center">
+                      <ChevronDown className="collapse-icon" size={15} />
                     </td>
                     <td> Collapse card content using collapse action.</td>
                   </tr>
                   <tr>
                     <td>Refresh Content</td>
-                    <td className='text-center'>
+                    <td className="text-center">
                       <RotateCw size={15} />
                     </td>
                     <td>Refresh your card content using refresh action.</td>
                   </tr>
                   <tr>
                     <td>Remove Card</td>
-                    <td className='text-center'>
+                    <td className="text-center">
                       <X size={15} />
                     </td>
                     <td> Remove card from page using remove card action</td>
@@ -62,46 +65,51 @@ const CardActions = () => {
         </Col>
       </Row>
       <Row>
-        <Col md='6' sm='12'>
-          <CardAction title='Collapse' actions='collapse'>
-            <CardBody className='pt-0'>
+        <Col md="6" sm="12">
+          <CardAction title="Collapse" actions="collapse">
+            <CardBody className="pt-0">
               <CardText>
-                You can create a collapsible content by using our <code>CardAction</code> component and by passing prop{' '}
+                You can create a collapsible content by using our{" "}
+                <code>CardAction</code> component and by passing prop{" "}
                 <code>actions='collapse'</code>.
               </CardText>
-              <CardText className='mb-0'>
-                Click on <ChevronDown size={15} /> to see card collapse in action
+              <CardText className="mb-0">
+                Click on <ChevronDown size={15} /> to see card collapse in
+                action
               </CardText>
             </CardBody>
           </CardAction>
         </Col>
-        <Col md='6' sm='12'>
+        <Col md="6" sm="12">
           <CardAction
-            title='Reload'
-            actions='reload'
-            endReload={endLoading => {
-              setTimeout(() => endLoading(), 2000)
+            title="Reload"
+            actions="reload"
+            endReload={(endLoading) => {
+              setTimeout(() => endLoading(), 2000);
             }}
           >
-            <CardBody className='pt-0'>
+            <CardBody className="pt-0">
               <CardText>
-                To create a re-loadable card pass prop <code>actions='reload'</code> and pass prop{' '}
+                To create a re-loadable card pass prop{" "}
+                <code>actions='reload'</code> and pass prop{" "}
                 <code>endReload</code> to end the loading.
               </CardText>
-              <CardText className='mb-0'>
+              <CardText className="mb-0">
                 Click on <RotateCw size={15} /> to see card refresh in action
               </CardText>
             </CardBody>
           </CardAction>
         </Col>
-        <Col md='6' sm='12'>
-          <CardAction title='Remove' actions='remove'>
-            <CardBody className='pt-0'>
+        <Col md="6" sm="12">
+          <CardAction title="Remove" actions="remove">
+            <CardBody className="pt-0">
               <CardText>
-                You can add refresh content action to card by adding class <code>.card-reload</code> with your card tag,
-                and add conditional spinner into card body to show when card is refreshing.
+                You can add refresh content action to card by adding class{" "}
+                <code>.card-reload</code> with your card tag, and add
+                conditional spinner into card body to show when card is
+                refreshing.
               </CardText>
-              <CardText className='mb-0'>
+              <CardText className="mb-0">
                 Click on <RotateCw size={15} /> to see card refresh in action
               </CardText>
             </CardBody>
@@ -109,6 +117,6 @@ const CardActions = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
-export default CardActions
+  );
+};
+export default CardActions;

@@ -855,37 +855,42 @@ const PersonalInfo = ({
           </Row>
 
           <Row>
-          <Col md="6" className="mb-1">
-  <Label className="form-label" for="secondaryGuestName">
-    Secondary Guest Name (optional)
-  </Label>
-  <Controller
-    name="secondaryGuestName"
-    control={control}
-    render={({ field }) => (
-      <Input
-        id="secondaryGuestName"
-        placeholder="Enter Secondary Guest Name"
-        invalid={!!errors.secondaryGuestName}
-        {...field}
-        style={getReadOnlyStyle()}
-        onChange={(e) => {
-          // Allow only alphabets and spaces
-          const filteredValue = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+            <Col md="6" className="mb-1">
+              <Label className="form-label" for="secondaryGuestName">
+                Secondary Guest Name (optional)
+              </Label>
+              <Controller
+                name="secondaryGuestName"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    id="secondaryGuestName"
+                    placeholder="Enter Secondary Guest Name"
+                    invalid={!!errors.secondaryGuestName}
+                    {...field}
+                    style={getReadOnlyStyle()}
+                    onChange={(e) => {
+                      // Allow only alphabets and spaces
+                      const filteredValue = e.target.value.replace(
+                        /[^a-zA-Z\s]/g,
+                        ""
+                      );
 
-          // Reflect filtered value in the input immediately
-          e.target.value = filteredValue;
+                      // Reflect filtered value in the input immediately
+                      e.target.value = filteredValue;
 
-          // Update React Hook Form state
-          field.onChange(filteredValue.trim() === "" ? null : filteredValue);
-        }}
-      />
-    )}
-  />
-  {errors.secondaryGuestName && (
-    <FormFeedback>{errors.secondaryGuestName.message}</FormFeedback>
-  )}
-</Col>
+                      // Update React Hook Form state
+                      field.onChange(
+                        filteredValue.trim() === "" ? null : filteredValue
+                      );
+                    }}
+                  />
+                )}
+              />
+              {errors.secondaryGuestName && (
+                <FormFeedback>{errors.secondaryGuestName.message}</FormFeedback>
+              )}
+            </Col>
 
             <Col md="6" className="mb-1">
               <Label className="form-label" for="secondaryEmail">

@@ -30,19 +30,17 @@ const CustomTable = ({ data }) => {
     try {
       // {{ }}
       setLoading(true);
-      const { data } = await useJwt.getallSubuser(
-      );
+      const { data } = await useJwt.getallSubuser();
       const { content } = data;
       console.log("content2", content);
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   }
-  
 
   useEffect(() => {
     // {{ }}
@@ -52,15 +50,14 @@ const CustomTable = ({ data }) => {
   const handlePerPage = (e) => {
     const newLimit = parseInt(e.target.value);
     setRowsPerPage(newLimit);
-    setCurrentPage(1); 
-
+    setCurrentPage(1);
   };
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
 
   const handleFilter = (value) => {
     setSearchTerm(value);
- 
+
     if (value) {
       const filteredResults = tableData.results.filter(
         (row) =>
@@ -80,7 +77,6 @@ const CustomTable = ({ data }) => {
   };
 
   const handlePagination = (page) => {
-    
     setCurrentPage(page.selected + 1);
   };
 
@@ -195,7 +191,7 @@ const CustomTable = ({ data }) => {
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
               onClick={() => {
-                setShowModal(false); 
+                setShowModal(false);
                 setTimeout(() => {
                   setDataUid(row.uid);
                   setDatarow(row);
@@ -220,7 +216,6 @@ const CustomTable = ({ data }) => {
   ];
 
   const CustomPagination = () => {
-     
     const count = Math.ceil(tableData.count / rowsPerPage);
     return (
       <ReactPaginate
@@ -252,7 +247,8 @@ const CustomTable = ({ data }) => {
   const dataToRender = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    return tableData.results.slice(startIndex, endIndex);  };
+    return tableData.results.slice(startIndex, endIndex);
+  };
 
   return (
     <>
@@ -275,12 +271,9 @@ const CustomTable = ({ data }) => {
               </Input>
               <label htmlFor="rows-per-page">Entries</label>
             </div>
-
-          
-
           </Col>
           <Col xl="6" className="d-flex justify-content-end p-0 ">
-          <div className="w-48  d-flex mx-2">
+            <div className="w-48  d-flex mx-2">
               <label className="mt-1 mx-1" htmlFor="search-invoice">
                 Search:
               </label>
@@ -296,7 +289,6 @@ const CustomTable = ({ data }) => {
               />
             </div>
           </Col>
-        
         </Row>
       </div>
       {loading ? (

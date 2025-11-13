@@ -1,44 +1,54 @@
-import { lazy } from 'react'
+import { lazy } from "react";
 
-const BoxedLayout = lazy(() => import('../../views/ui-elements/page-layouts/BoxedLayout'))
-const WithoutMenu = lazy(() => import('../../views/ui-elements/page-layouts/WithoutMenu'))
-const LayoutEmpty = lazy(() => import('../../views/ui-elements/page-layouts/LayoutEmpty'))
-const LayoutBlank = lazy(() => import('../../views/ui-elements/page-layouts/LayoutBlank'))
-const CollapsedMenu = lazy(() => import('../../views/ui-elements/page-layouts/CollapsedMenu'))
+const BoxedLayout = lazy(() =>
+  import("../../views/ui-elements/page-layouts/BoxedLayout")
+);
+const WithoutMenu = lazy(() =>
+  import("../../views/ui-elements/page-layouts/WithoutMenu")
+);
+const LayoutEmpty = lazy(() =>
+  import("../../views/ui-elements/page-layouts/LayoutEmpty")
+);
+const LayoutBlank = lazy(() =>
+  import("../../views/ui-elements/page-layouts/LayoutBlank")
+);
+const CollapsedMenu = lazy(() =>
+  import("../../views/ui-elements/page-layouts/CollapsedMenu")
+);
 
 const PageLayoutRoutes = [
   {
     element: <CollapsedMenu />,
-    path: '/page-layout/collapse-menu',
+    path: "/page-layout/collapse-menu",
     meta: {
-      menuCollapsed: true
-    }
+      menuCollapsed: true,
+    },
   },
   {
     element: <BoxedLayout />,
-    path: '/page-layout/layout-boxed',
+    path: "/page-layout/layout-boxed",
     meta: {
-      contentWidth: 'boxed'
-    }
+      contentWidth: "boxed",
+    },
   },
   {
     element: <WithoutMenu />,
-    path: '/page-layout/without-menu',
+    path: "/page-layout/without-menu",
     meta: {
-      menuHidden: true
-    }
+      menuHidden: true,
+    },
   },
   {
     element: <LayoutEmpty />,
-    path: '/page-layout/layout-empty'
+    path: "/page-layout/layout-empty",
   },
   {
     element: <LayoutBlank />,
-    path: '/page-layout/layout-blank',
+    path: "/page-layout/layout-blank",
     meta: {
-      layout: 'blank'
-    }
-  }
-]
+      layout: "blank",
+    },
+  },
+];
 
-export default PageLayoutRoutes
+export default PageLayoutRoutes;

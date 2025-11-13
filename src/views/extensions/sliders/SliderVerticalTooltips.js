@@ -1,40 +1,40 @@
 // ** Third Party Components
-import wNumb from 'wnumb'
-import Nouislider from 'nouislider-react'
+import wNumb from "wnumb";
+import Nouislider from "nouislider-react";
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody } from "reactstrap";
 
 const SliderTooltips = ({ direction }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Tooltips</CardTitle>
+        <CardTitle tag="h4">Tooltips</CardTitle>
       </CardHeader>
-      <CardBody className='text-center'>
+      <CardBody className="text-center">
         <Nouislider
           start={[20, 80]}
           direction={direction}
-          orientation={'vertical'}
+          orientation={"vertical"}
           tooltips={[
             wNumb({
-              decimals: 1
+              decimals: 1,
             }),
             wNumb({
-              decimals: 1
-            })
+              decimals: 1,
+            }),
           ]}
           range={{
             min: 0,
-            max: 100
+            max: 100,
           }}
           style={{
-            height: '200px'
+            height: "200px",
           }}
         />
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default SliderTooltips
+export default SliderTooltips;

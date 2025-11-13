@@ -1,74 +1,79 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 // ** Third Party Imports
-import { Plus } from 'react-feather'
-import { useForm, Controller } from 'react-hook-form'
+import { Plus } from "react-feather";
+import { useForm, Controller } from "react-hook-form";
 
 // ** Reactstrap Imports
-import { Button, Input, FormText } from 'reactstrap'
+import { Button, Input, FormText } from "reactstrap";
 
 // ** Redux Imports
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 
 // ** Actions
-import { fetchBoards, fetchTasks, addBoard } from './store'
+import { fetchBoards, fetchTasks, addBoard } from "./store";
 
 // ** Kanban Component
-import TaskSidebar from './TaskSidebar'
-import KanbanBoards from './KanbanBoards'
+import TaskSidebar from "./TaskSidebar";
+import KanbanBoards from "./KanbanBoards";
 
 // ** Styles
-import '@styles/react/apps/app-kanban.scss'
+import "@styles/react/apps/app-kanban.scss";
 
 const defaultValues = {
-  boardTitle: ''
-}
+  boardTitle: "",
+};
 
 const labelColors = {
-  App: 'info',
-  UX: 'success',
-  Images: 'warning',
-  Forms: 'success',
-  'Code Review': 'danger',
-  'Charts & Maps': 'primary'
-}
+  App: "info",
+  UX: "success",
+  Images: "warning",
+  Forms: "success",
+  "Code Review": "danger",
+  "Charts & Maps": "primary",
+};
 
 const KanbanBoard = () => {
   // ** States
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [showAddBoard, setShowAddBoard] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showAddBoard, setShowAddBoard] = useState(false);
 
   // ** Hooks
-  const dispatch = useDispatch()
-  const store = useSelector(state => state.kanban)
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.kanban);
   const {
     reset,
     control,
     handleSubmit,
-    formState: { errors }
-  } = useForm({ defaultValues })
+    formState: { errors },
+  } = useForm({ defaultValues });
 
   const handleAddBoardReset = () => {
-    reset()
-    setShowAddBoard(false)
-  }
+    reset();
+    setShowAddBoard(false);
+  };
 
   const handleOpenAddBoard = () => {
-    reset()
-    setShowAddBoard(true)
-  }
+    reset();
+    setShowAddBoard(true);
+  };
 
-  const handleAddBoardFormSubmit = data => {
-    dispatch(addBoard({ title: data.boardTitle, id: data.boardTitle.toLowerCase().replace(/ /g, '-') }))
-    handleAddBoardReset()
-  }
+  const handleAddBoardFormSubmit = (data) => {
+    dispatch(
+      addBoard({
+        title: data.boardTitle,
+        id: data.boardTitle.toLowerCase().replace(/ /g, "-"),
+      })
+    );
+    handleAddBoardReset();
+  };
 
-  const handleTaskSidebarToggle = () => setSidebarOpen(!sidebarOpen)
+  const handleTaskSidebarToggle = () => setSidebarOpen(!sidebarOpen);
 
   const renderBoards = () => {
     return store.boards.map((board, index) => {
-      const isLastBoard = store.boards[store.boards.length - 1].id === board.id
+      const isLastBoard = store.boards[store.boards.length - 1].id === board.id;
 
       return (
         <KanbanBoards
@@ -80,62 +85,71 @@ const KanbanBoard = () => {
           index={`${board.id}-${index}`}
           handleTaskSidebarToggle={handleTaskSidebarToggle}
         />
-      )
-    })
-  }
+      );
+    });
+  };
 
   const renderAddBoardForm = () => {
     return showAddBoard ? (
       <form onSubmit={handleSubmit(handleAddBoardFormSubmit)}>
-        <div className='mb-50'>
+        <div className="mb-50">
           <Controller
-            name='boardTitle'
+            name="boardTitle"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <Input
                 autoFocus
                 value={value}
-                id='board-title'
+                id="board-title"
                 onChange={onChange}
-                placeholder='Board Title'
+                placeholder="Board Title"
                 invalid={Boolean(errors.boardTitle)}
-                aria-describedby='validation-add-board'
+                aria-describedby="validation-add-board"
               />
             )}
           />
           {errors.boardTitle && (
-            <FormText color='danger' id='validation-add-board'>
+            <FormText color="danger" id="validation-add-board">
               Please enter a valid Board Title
             </FormText>
           )}
         </div>
         <div>
-          <Button color='primary' size='sm' type='submit' className='me-75'>
+          <Button color="primary" size="sm" type="submit" className="me-75">
             Add
           </Button>
-          <Button outline size='sm' color='secondary' onClick={handleAddBoardReset}>
+          <Button
+            outline
+            size="sm"
+            color="secondary"
+            onClick={handleAddBoardReset}
+          >
             Cancel
           </Button>
         </div>
       </form>
-    ) : null
-  }
+    ) : null;
+  };
 
   useEffect(() => {
-    dispatch(fetchBoards())
-    dispatch(fetchTasks())
-  }, [dispatch])
+    dispatch(fetchBoards());
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
   return store.boards ? (
-    <div className='app-kanban-wrapper'>
+    <div className="app-kanban-wrapper">
       {renderBoards()}
 
-      <div className='ms-1' style={{ minWidth: 150 }}>
+      <div className="ms-1" style={{ minWidth: 150 }}>
         {!showAddBoard ? (
-          <Button size='sm' color='light-secondary' onClick={handleOpenAddBoard}>
-            <Plus size={14} className='me-25' />
-            <span className='align-middle'> Add Board</span>
+          <Button
+            size="sm"
+            color="light-secondary"
+            onClick={handleOpenAddBoard}
+          >
+            <Plus size={14} className="me-25" />
+            <span className="align-middle"> Add Board</span>
           </Button>
         ) : (
           renderAddBoardForm()
@@ -149,7 +163,7 @@ const KanbanBoard = () => {
         handleTaskSidebarToggle={handleTaskSidebarToggle}
       />
     </div>
-  ) : null
-}
+  ) : null;
+};
 
-export default KanbanBoard
+export default KanbanBoard;

@@ -27,7 +27,7 @@ const defaultValues = {
   // pinCode: "25625",
 };
 
-const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
+const AddNewAddress = ({ showModal, row, setShow, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(""); // store API error
   const toast = useRef(null);
@@ -46,8 +46,8 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
   }, [row, reset]);
 
   const onSubmit = async (data) => {
-    console.log("data",data);
-    
+    console.log("data", data);
+
     try {
       setLoading(true);
       setErr(""); // clear previous error
@@ -62,7 +62,8 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
         });
 
         reset();
-        setShow(false);  if (onSuccess) onSuccess();
+        setShow(false);
+        if (onSuccess) onSuccess();
       } else {
         const response = await useJwt.addCustomer(data);
         console.log("✅ Customer Added:", response.data);
@@ -76,7 +77,8 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
         });
 
         reset();
-        setShow(false);  if (onSuccess) onSuccess();
+        setShow(false);
+        if (onSuccess) onSuccess();
       }
     } catch (error) {
       console.error("❌ Error adding customer:", error);
@@ -151,11 +153,14 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="firstName"
                       placeholder="Enter first name"
                       invalid={!!errors.firstName}
-                        onChange={(e) => {
-        // Allow only letters and spaces
-        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
-        field.onChange(onlyLettersAndSpaces);
-      }}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z ]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -187,11 +192,14 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="lastName"
                       placeholder="Enter last name"
                       invalid={!!errors.lastName}
-                        onChange={(e) => {
-        // Allow only letters and spaces
-        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
-        field.onChange(onlyLettersAndSpaces);
-      }}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z ]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -255,11 +263,13 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       placeholder="Enter email"
                       invalid={!!errors.emailId}
                       onChange={(e) => {
-  // Allow letters, numbers, dot, and @
-  const onlyValid = e.target.value.replace(/[^A-Za-z0-9.@]/g, "");
-  field.onChange(onlyValid);
-}}
-
+                        // Allow letters, numbers, dot, and @
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9.@]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />
@@ -287,11 +297,13 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       rows="3"
                       placeholder="Enter address"
                       onChange={(e) => {
-  // Allow letters, numbers, dot, space, dash, and comma
-  const onlyValid = e.target.value.replace(/[^A-Za-z0-9 .,-]/g, "");
-  field.onChange(onlyValid);
-}}
-
+                        // Allow letters, numbers, dot, space, dash, and comma
+                        const onlyValid = e.target.value.replace(
+                          /[^A-Za-z0-9 .,-]/g,
+                          ""
+                        );
+                        field.onChange(onlyValid);
+                      }}
                     />
                   )}
                 />
@@ -318,11 +330,14 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="city"
                       placeholder="Enter city"
                       invalid={!!errors.city}
-                                        onChange={(e) => {
-        // Allow only letters and spaces
-        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
-        field.onChange(onlyLettersAndSpaces);
-      }}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z ]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -352,11 +367,14 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="state"
                       placeholder="Enter state"
                       invalid={!!errors.state}
-                                        onChange={(e) => {
-        // Allow only letters and spaces
-        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
-        field.onChange(onlyLettersAndSpaces);
-      }}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z ]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />
@@ -380,11 +398,14 @@ const AddNewAddress = ({ showModal, row, setShow ,onSuccess }) => {
                       id="country"
                       placeholder="Enter country"
                       invalid={!!errors.country}
-                                        onChange={(e) => {
-        // Allow only letters and spaces
-        const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z ]/g, "");
-        field.onChange(onlyLettersAndSpaces);
-      }}
+                      onChange={(e) => {
+                        // Allow only letters and spaces
+                        const onlyLettersAndSpaces = e.target.value.replace(
+                          /[^A-Za-z ]/g,
+                          ""
+                        );
+                        field.onChange(onlyLettersAndSpaces);
+                      }}
                     />
                   )}
                 />

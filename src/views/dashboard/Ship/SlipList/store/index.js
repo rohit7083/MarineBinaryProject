@@ -30,10 +30,6 @@
 
 // export default datatablesSlice.reducer
 
-
-
-
-
 // // ** Redux Imports
 // import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // // ** Axios Imports
@@ -44,7 +40,6 @@
 //   const response = await axios.get('http://192.168.29.190:8000/slipCategory', { params })
 //   return { allData: response.data.content.result, data: response.data.content.result, totalPages: response.data.total, params }
 // })
-
 
 // export const datatablesSlice = createSlice({
 //   name: 'datatables',

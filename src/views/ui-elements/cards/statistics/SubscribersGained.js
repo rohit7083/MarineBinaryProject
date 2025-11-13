@@ -1,32 +1,34 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 // ** Third Party Components
-import axios from 'axios'
-import { Users } from 'react-feather'
+import axios from "axios";
+import { Users } from "react-feather";
 
 // ** Custom Components
-import StatsWithAreaChart from '@components/widgets/stats/StatsWithAreaChart'
+import StatsWithAreaChart from "@components/widgets/stats/StatsWithAreaChart";
 
 const SubscribersGained = ({ kFormatter }) => {
   // ** State
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios.get('/card/card-statistics/subscribers').then(res => setData(res.data))
-    return () => setData(null)
-  }, [])
+    axios
+      .get("/card/card-statistics/subscribers")
+      .then((res) => setData(res.data));
+    return () => setData(null);
+  }, []);
 
   return data !== null ? (
     <StatsWithAreaChart
       icon={<Users size={21} />}
-      color='primary'
+      color="primary"
       stats={kFormatter(data.analyticsData.subscribers)}
-      statTitle='Subscribers Gained'
+      statTitle="Subscribers Gained"
       series={data.series}
-      type='area'
+      type="area"
     />
-  ) : null
-}
+  ) : null;
+};
 
-export default SubscribersGained
+export default SubscribersGained;

@@ -378,7 +378,6 @@ const MultipleColumnForm = () => {
                     control={control}
                     rules={{
                       required: "Email is required",
-                    
                     }}
                     render={({ field }) => (
                       <input
@@ -387,11 +386,13 @@ const MultipleColumnForm = () => {
                         placeholder="Enter Email"
                         type="email"
                         onChange={(e) => {
-  // Allow letters, numbers, dot, and @
-  const onlyValid = e.target.value.replace(/[^A-Za-z0-9.@]/g, "");
-  field.onChange(onlyValid);
-}}
-
+                          // Allow letters, numbers, dot, and @
+                          const onlyValid = e.target.value.replace(
+                            /[^A-Za-z0-9.@]/g,
+                            ""
+                          );
+                          field.onChange(onlyValid);
+                        }}
                       />
                     )}
                   />
@@ -459,11 +460,13 @@ const MultipleColumnForm = () => {
                         inputMode="numeric"
                         pattern="[0-9]*"
                         onChange={(e) => {
-  // Allow only numeric characters
-  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
-  field.onChange(onlyNumbers);
-}}
-
+                          // Allow only numeric characters
+                          const onlyNumbers = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          );
+                          field.onChange(onlyNumbers);
+                        }}
                       />
                     )}
                   />

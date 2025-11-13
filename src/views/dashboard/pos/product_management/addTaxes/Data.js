@@ -1,20 +1,14 @@
 // ** Custom Components
 // ** Third Party Components
 
-import {
-  Archive,
-  Edit,
-  FileText,
-  MoreVertical,
-  Trash
-} from "react-feather";
+import { Archive, Edit, FileText, MoreVertical, Trash } from "react-feather";
 // ** Reactstrap Imports
 import {
   Badge,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledDropdown
+  UncontrolledDropdown,
 } from "reactstrap";
 
 // ** Vars
@@ -308,12 +302,12 @@ export const multiLingColumns = [
 ];
 
 // ** Table Server Side Column
-export const serverSideColumns =[
+export const serverSideColumns = [
   {
     sortable: true,
     name: "Id",
     // minWidth: "225px",
-    selector: (row ,index) =>index + 1,
+    selector: (row, index) => index + 1,
   },
   {
     sortable: true,
@@ -333,8 +327,6 @@ export const serverSideColumns =[
     // minWidth: "250px",
     selector: (row) => row.taxValue,
   },
-
- 
 ];
 
 // ** Table Adv Search Column

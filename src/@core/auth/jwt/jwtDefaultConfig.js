@@ -252,6 +252,18 @@ export default {
   deleteWaiting: "/waitingMember/",
   getAllWaiting: "/waitingMember",
 
-  //offline slip 
-  offlineSlip:"/slip/offline/",
+  //offline slip
+  offlineSlip: "/slip/offline/",
+
+  //emailSMSsetting
+  emailSmsSetting: "/emailSmsSetting/",
+  getSettings: "/emailSmsSetting",
+
+  updateSetting: "/emailSmsSetting/",
+  getShortcode: "/auth/emailSmsShortCode",
+  createTemaplte: "/templates/",
+  getAllTemplate: "/templates",
+  // getAllCalender
+  getCalender: "/calender/getAll",
+  getTemplateValues:'/emailSmsSetting',
 };

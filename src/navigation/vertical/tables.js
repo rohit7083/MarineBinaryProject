@@ -1,5 +1,5 @@
 // ** Icons Import
-import { Server, Grid, Circle } from 'react-feather'
+import { Server, Grid, Circle } from "react-feather";
 
 export default [
   // {
@@ -27,4 +27,4 @@ export default [
   //     }
   //   ]
   // }
-]
+];

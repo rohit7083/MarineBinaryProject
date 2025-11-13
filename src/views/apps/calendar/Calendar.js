@@ -1,22 +1,22 @@
 // ** React Import
-import { useEffect, useRef, memo } from 'react'
+import { useEffect, useRef, memo } from "react";
 
 // ** Full Calendar & it's Plugins
-import '@fullcalendar/react/dist/vdom'
-import FullCalendar from '@fullcalendar/react'
-import listPlugin from '@fullcalendar/list'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import "@fullcalendar/react/dist/vdom";
+import FullCalendar from "@fullcalendar/react";
+import listPlugin from "@fullcalendar/list";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 // ** Third Party Components
-import toast from 'react-hot-toast'
-import { Menu } from 'react-feather'
-import { Card, CardBody } from 'reactstrap'
+import toast from "react-hot-toast";
+import { Menu } from "react-feather";
+import { Card, CardBody } from "reactstrap";
 
-const Calendar = props => {
+const Calendar = (props) => {
   // ** Refs
-  const calendarRef = useRef(null)
+  const calendarRef = useRef(null);
 
   // ** Props
   const {
@@ -30,24 +30,24 @@ const Calendar = props => {
     blankEvent,
     toggleSidebar,
     selectEvent,
-    updateEvent
-  } = props
+    updateEvent,
+  } = props;
 
   // ** UseEffect checks for CalendarAPI Update
   useEffect(() => {
     if (calendarApi === null) {
-      setCalendarApi(calendarRef.current.getApi())
+      setCalendarApi(calendarRef.current.getApi());
     }
-  }, [calendarApi])
+  }, [calendarApi]);
 
   // ** calendarOptions(Props)
   const calendarOptions = {
     events: store.events.length ? store.events : [],
     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
-    initialView: 'dayGridMonth',
+    initialView: "dayGridMonth",
     headerToolbar: {
-      start: 'sidebarToggle, prev,next, title',
-      end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+      start: "sidebarToggle, prev,next, title",
+      end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
     },
     /*
       Enable dragging and resizing event
@@ -81,17 +81,18 @@ const Calendar = props => {
 
     eventClassNames({ event: calendarEvent }) {
       // eslint-disable-next-line no-underscore-dangle
-      const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar]
+      const colorName =
+        calendarsColor[calendarEvent._def.extendedProps.calendar];
 
       return [
         // Background Color
-        `bg-light-${colorName}`
-      ]
+        `bg-light-${colorName}`,
+      ];
     },
 
     eventClick({ event: clickedEvent }) {
-      dispatch(selectEvent(clickedEvent))
-      handleAddEventSidebar()
+      dispatch(selectEvent(clickedEvent));
+      handleAddEventSidebar();
 
       // * Only grab required field otherwise it goes in infinity loop
       // ! Always grab all fields rendered by form (even if it get `undefined`) otherwise due to Vue3/Composition API you might get: "object is not extensible"
@@ -103,19 +104,19 @@ const Calendar = props => {
 
     customButtons: {
       sidebarToggle: {
-        text: <Menu className='d-xl-none d-block' />,
+        text: <Menu className="d-xl-none d-block" />,
         click() {
-          toggleSidebar(true)
-        }
-      }
+          toggleSidebar(true);
+        },
+      },
     },
 
     dateClick(info) {
-      const ev = blankEvent
-      ev.start = info.date
-      ev.end = info.date
-      dispatch(selectEvent(ev))
-      handleAddEventSidebar()
+      const ev = blankEvent;
+      ev.start = info.date;
+      ev.end = info.date;
+      dispatch(selectEvent(ev));
+      handleAddEventSidebar();
     },
 
     /*
@@ -124,8 +125,8 @@ const Calendar = props => {
       ? We can use `eventDragStop` but it doesn't return updated event so we have to use `eventDrop` which returns updated event
     */
     eventDrop({ event: droppedEvent }) {
-      dispatch(updateEvent(droppedEvent))
-      toast.success('Event Updated')
+      dispatch(updateEvent(droppedEvent));
+      toast.success("Event Updated");
     },
 
     /*
@@ -133,23 +134,23 @@ const Calendar = props => {
       ? Docs: https://fullcalendar.io/docs/eventResize
     */
     eventResize({ event: resizedEvent }) {
-      dispatch(updateEvent(resizedEvent))
-      toast.success('Event Updated')
+      dispatch(updateEvent(resizedEvent));
+      toast.success("Event Updated");
     },
 
     ref: calendarRef,
 
     // Get direction from app state (store)
-    direction: isRtl ? 'rtl' : 'ltr'
-  }
+    direction: isRtl ? "rtl" : "ltr",
+  };
 
   return (
-    <Card className='shadow-none border-0 mb-0 rounded-0'>
-      <CardBody className='pb-0'>
-        <FullCalendar {...calendarOptions} />{' '}
+    <Card className="shadow-none border-0 mb-0 rounded-0">
+      <CardBody className="pb-0">
+        <FullCalendar {...calendarOptions} />{" "}
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default memo(Calendar)
+export default memo(Calendar);

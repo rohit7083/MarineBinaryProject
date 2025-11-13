@@ -460,20 +460,22 @@ const PaymentReceiptModal = ({
               <span className="text-muted">Tax</span>
               <span>${receiptData.tax}</span>
             </div>
-        <div className="d-flex justify-content-between border-top pt-1">
-  <strong>Total</strong>
-  {Number(receiptData?.discount) > 0 ? (
-    <span>
-      <s>${Number(receiptData.total).toFixed(2)}</s>{" "}
-      <strong className="text-success">
-        ${(Number(receiptData.total) - Number(receiptData.discount)).toFixed(2)}
-      </strong>
-    </span>
-  ) : (
-    <strong>${Number(receiptData.total).toFixed(2)}</strong>
-  )}
-</div>
-
+            <div className="d-flex justify-content-between border-top pt-1">
+              <strong>Total</strong>
+              {Number(receiptData?.discount) > 0 ? (
+                <span>
+                  <s>${Number(receiptData.total).toFixed(2)}</s>{" "}
+                  <strong className="text-success">
+                    $
+                    {(
+                      Number(receiptData.total) - Number(receiptData.discount)
+                    ).toFixed(2)}
+                  </strong>
+                </span>
+              ) : (
+                <strong>${Number(receiptData.total).toFixed(2)}</strong>
+              )}
+            </div>
           </div>
 
           <div className="text-center mt-2 p-2 bg-light rounded small">

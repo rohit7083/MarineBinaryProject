@@ -1,19 +1,10 @@
-
-
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Input,
-  Row
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
@@ -49,7 +40,7 @@ const index = () => {
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -100,7 +91,7 @@ const index = () => {
   };
 
   const handleEdit = (row) => {
-  //  {{ }}
+    //  {{ }}
     navigate("/venue", { state: { row } });
   };
 
@@ -112,14 +103,15 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-   {
-  name: "Venue Name",
-  sortable: true,
-  selector: (row) =>
-    row.venueName
-      ? row.venueName.charAt(0).toUpperCase() + row.venueName.slice(1).toLowerCase()
-      : "",
-},
+    {
+      name: "Venue Name",
+      sortable: true,
+      selector: (row) =>
+        row.venueName
+          ? row.venueName.charAt(0).toUpperCase() +
+            row.venueName.slice(1).toLowerCase()
+          : "",
+    },
 
     {
       name: "venue Type",
@@ -195,14 +187,16 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
-                 MySwal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: `${error?.response?.data?.content || "Failed to delete."}`,
-                    customClass: {
-                      confirmButton: "btn btn-success",
-                    },
-                  });
+                MySwal.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: `${
+                    error?.response?.data?.content || "Failed to delete."
+                  }`,
+                  customClass: {
+                    confirmButton: "btn btn-success",
+                  },
+                });
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({

@@ -1,42 +1,59 @@
 // ** Reactstrap Imports
-import { Button, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
+import {
+  Button,
+  UncontrolledPopover,
+  PopoverHeader,
+  PopoverBody,
+} from "reactstrap";
 
 const PopoverPositions = () => {
   return (
-    <div className='demo-inline-spacing'>
-      <Button color='primary' outline id='popTop'>
+    <div className="demo-inline-spacing">
+      <Button color="primary" outline id="popTop">
         Top
       </Button>
-      <UncontrolledPopover placement='top' target='popTop'>
+      <UncontrolledPopover placement="top" target="popTop">
         <PopoverHeader>Popover Top</PopoverHeader>
-        <PopoverBody>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, cumque.</PopoverBody>
+        <PopoverBody>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque,
+          cumque.
+        </PopoverBody>
       </UncontrolledPopover>
 
-      <Button color='primary' outline id='popRight'>
+      <Button color="primary" outline id="popRight">
         Right
       </Button>
-      <UncontrolledPopover placement='right' target='popRight'>
+      <UncontrolledPopover placement="right" target="popRight">
         <PopoverHeader>Popover Right</PopoverHeader>
-        <PopoverBody>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, cumque.</PopoverBody>
+        <PopoverBody>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque,
+          cumque.
+        </PopoverBody>
       </UncontrolledPopover>
 
-      <Button color='primary' outline id='popBottom'>
+      <Button color="primary" outline id="popBottom">
         Bottom
       </Button>
-      <UncontrolledPopover placement='bottom' target='popBottom'>
+      <UncontrolledPopover placement="bottom" target="popBottom">
         <PopoverHeader>Popover Bottom</PopoverHeader>
-        <PopoverBody>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, cumque.</PopoverBody>
+        <PopoverBody>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque,
+          cumque.
+        </PopoverBody>
       </UncontrolledPopover>
 
-      <Button color='primary' outline id='popLeft'>
+      <Button color="primary" outline id="popLeft">
         Left
       </Button>
-      <UncontrolledPopover placement='left' target='popLeft'>
+      <UncontrolledPopover placement="left" target="popLeft">
         <PopoverHeader>Popover Left</PopoverHeader>
-        <PopoverBody>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, cumque.</PopoverBody>
+        <PopoverBody>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque,
+          cumque.
+        </PopoverBody>
       </UncontrolledPopover>
     </div>
-  )
-}
+  );
+};
 
-export default PopoverPositions
+export default PopoverPositions;

@@ -10,19 +10,19 @@ import { CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Container,
-    Form,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Container,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 import TokenExpire from "../../../pages/authentication/slip/TokenExpire";
@@ -47,16 +47,15 @@ const CardPayment = () => {
   const navigate = useNavigate();
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
-  const [qrCodeType, setQrCodeType] = useState('');
-  const [passBooked , setPassBooked] = useState('');
+  const [qrCodeType, setQrCodeType] = useState("");
+  const [passBooked, setPassBooked] = useState("");
   const getMember = async () => {
     try {
-
       setLoading(true);
       const res = await useJwt.decodeQrToken(token);
       console.log("the Qr code type : ", res.data.qrCodeType);
       setQrCodeType(res.data.qrCodeType);
-      
+
       if (res?.data?.status === "false") {
         setIsValidLink(true);
       } else {
@@ -65,9 +64,12 @@ const CardPayment = () => {
 
       setMemberDetails(res?.data);
     } catch (error) {
-      console.log('the response error',error.response.data.content)
-      if(error.response.data.content ==='The maximum number of people has already been reached.'){
-setPassBooked('The maximum number of people has already been reached.')
+      console.log("the response error", error.response.data.content);
+      if (
+        error.response.data.content ===
+        "The maximum number of people has already been reached."
+      ) {
+        setPassBooked("The maximum number of people has already been reached.");
       }
       console.error("error", error);
     } finally {
@@ -180,12 +182,12 @@ setPassBooked('The maximum number of people has already been reached.')
       pinCode: memberDetail?.zipCode,
       finalPayment: Number(memberDetail?.amount),
       eventQrCode: {
-        id: memberDetail?.qrCodeEventId
-      }
+        id: memberDetail?.qrCodeEventId,
+      },
     };
 
     // Agar qrCodeType "other" hai to customer object add karo
-    if (qrCodeType === 'other') {
+    if (qrCodeType === "other") {
       payload.customer = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -195,7 +197,7 @@ setPassBooked('The maximum number of people has already been reached.')
         city: data.customerCity,
         state: data.customerState,
         country: data.customerCountry,
-        pinCode: data.zipCode
+        pinCode: data.zipCode,
       };
     }
 
@@ -203,24 +205,22 @@ setPassBooked('The maximum number of people has already been reached.')
 
     try {
       setLoadPayment(true);
-       
+
       const res = await useJwt.payQrCodePayment(token, payload);
       console.log(res);
       if (res.data.status === "error") {
-  return MySwal.fire({
-    title: "Failed",
-    text: "Your Payment Failed",
-    icon: "error", // corrected icon
-    customClass: {
-      confirmButton: "btn btn-primary",
-    },
-    buttonsStyling: false,
-  }).then(() => {
-    navigate("/dashbord");
-  }); 
-}
-
-    
+        return MySwal.fire({
+          title: "Failed",
+          text: "Your Payment Failed",
+          icon: "error", // corrected icon
+          customClass: {
+            confirmButton: "btn btn-primary",
+          },
+          buttonsStyling: false,
+        }).then(() => {
+          navigate("/dashbord");
+        });
+      }
     } catch (error) {
       console.log(error);
       if (error.response) {
@@ -248,11 +248,7 @@ setPassBooked('The maximum number of people has already been reached.')
     return "unknown";
   };
 
-  const watchInputes = watch([
-    "cardNumber",
-    "nameOnCard",
-    "cvc",
-  ]);
+  const watchInputes = watch(["cardNumber", "nameOnCard", "cvc"]);
 
   useEffect(() => {
     const sanitizeValue = (value, type) => {
@@ -273,11 +269,7 @@ setPassBooked('The maximum number of people has already been reached.')
       }
     };
 
-    const fieldNames = [
-      "cardNumber",
-      "nameOnCard",
-      "cvc",
-    ];
+    const fieldNames = ["cardNumber", "nameOnCard", "cvc"];
     fieldNames.forEach((fieldName, index) => {
       const watchedValue = watchInputes[index];
       const sanitized = sanitizeValue(watchedValue, fieldName);
@@ -308,125 +300,123 @@ setPassBooked('The maximum number of people has already been reached.')
 
   if (!isValidLink) return <TokenExpire />;
 
-  
-   return passBooked ? ( 
-  <Row className="d-flex justify-content-center mt-5">
-    <Col xs="12" md="8" lg="6">
-      <Card className="text-center border-danger shadow-sm p-4">
-        <CardBody>
-          <div className="mb-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="60"
-              height="60"
-              fill="red"
-              className="bi bi-x-circle mb-3"
-              viewBox="0 0 16 16"
-            >
-              <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
-              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-            </svg>
-          </div>
-          <h2 className="text-danger mb-2">Oops! Fully Booked</h2>
-          <p className="text-muted mb-3">
-            Sorry, all passes for this event have been booked.
-          </p>
-          <Button color="primary" onClick={() => navigate("/events")}>
-            Explore Other Events
-          </Button>
-        </CardBody>
-      </Card>
-    </Col>
-  </Row>
-) : (
-  <Row className="d-flex justify-content-center mt-3">
+  return passBooked ? (
+    <Row className="d-flex justify-content-center mt-5">
+      <Col xs="12" md="8" lg="6">
+        <Card className="text-center border-danger shadow-sm p-4">
+          <CardBody>
+            <div className="mb-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="60"
+                height="60"
+                fill="red"
+                className="bi bi-x-circle mb-3"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+              </svg>
+            </div>
+            <h2 className="text-danger mb-2">Oops! Fully Booked</h2>
+            <p className="text-muted mb-3">
+              Sorry, all passes for this event have been booked.
+            </p>
+            <Button color="primary" onClick={() => navigate("/events")}>
+              Explore Other Events
+            </Button>
+          </CardBody>
+        </Card>
+      </Col>
+    </Row>
+  ) : (
+    <Row className="d-flex justify-content-center mt-3">
       <Col xs="10">
-        {
-          qrCodeType !== 'other' && (
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h4">Member Details</CardTitle>
-              </CardHeader>
-              <CardBody>
-                {loading ? (
-                  <>
-                    <div className="text-center">
-                      Please Wait ..
-                      <BeatLoader className="mt-1" />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Row>
-                      <Col xl="7" xs="12">
-                        <Row tag="dl" className="mb-0">
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            First Name:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.firstName}
-                          </Col>
+        {qrCodeType !== "other" && (
+          <Card>
+            <CardHeader>
+              <CardTitle tag="h4">Member Details</CardTitle>
+            </CardHeader>
+            <CardBody>
+              {loading ? (
+                <>
+                  <div className="text-center">
+                    Please Wait ..
+                    <BeatLoader className="mt-1" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Row>
+                    <Col xl="7" xs="12">
+                      <Row tag="dl" className="mb-0">
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          First Name:
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.firstName}
+                        </Col>
 
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Last Name :
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.lastName}
-                          </Col>
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          Last Name :
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.lastName}
+                        </Col>
 
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Email:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.memberEmail}
-                          </Col>
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          Email:
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.memberEmail}
+                        </Col>
 
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Address:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.address}
-                          </Col>
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          Address:
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.address}
+                        </Col>
 
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Mobile Number :
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.countryCode} {memberDetail?.memberPhone}
-                          </Col>
-                        </Row>
-                      </Col>
-                      <Col xl="5" xs="12">
-                        <Row tag="dl" className="mb-0">
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            State :{" "}
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.state}
-                          </Col>
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          Mobile Number :
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.countryCode}{" "}
+                          {memberDetail?.memberPhone}
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col xl="5" xs="12">
+                      <Row tag="dl" className="mb-0">
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          State :{" "}
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.state}
+                        </Col>
 
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Country:
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.country}
-                          </Col>
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          Country:
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.country}
+                        </Col>
 
-                          <Col tag="dt" sm="4" className="fw-bolder mb-1">
-                            Postal Code :
-                          </Col>
-                          <Col tag="dd" sm="8" className="mb-1">
-                            {memberDetail?.zipCode}
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </>
-                )}
-              </CardBody>
-            </Card>
-          )
-        }
+                        <Col tag="dt" sm="4" className="fw-bolder mb-1">
+                          Postal Code :
+                        </Col>
+                        <Col tag="dd" sm="8" className="mb-1">
+                          {memberDetail?.zipCode}
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </CardBody>
+          </Card>
+        )}
 
         <Row>
           <Col xl="8" xs="12">
@@ -436,7 +426,7 @@ setPassBooked('The maximum number of people has already been reached.')
               </CardHeader>
 
               <Form className="form" onSubmit={handleSubmit(onSubmit)}>
-                {qrCodeType === 'other' && (
+                {qrCodeType === "other" && (
                   <>
                     <CardHeader>
                       <CardTitle tag="h4">Customer Details</CardTitle>
@@ -444,7 +434,9 @@ setPassBooked('The maximum number of people has already been reached.')
                     <CardBody>
                       <Row>
                         <Col md="6" className="mb-1">
-                          <Label for="firstName">First Name <span className="text-danger">*</span></Label>
+                          <Label for="firstName">
+                            First Name <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="firstName"
                             control={control}
@@ -452,27 +444,35 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "First name is required",
                               pattern: {
                                 value: /^[A-Za-z ]+$/,
-                                message: "Only alphabets and spaces are allowed"
-                              }
+                                message:
+                                  "Only alphabets and spaces are allowed",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
                                 {...field}
                                 placeholder="Enter First Name"
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^A-Za-z ]/g, "");
+                                  const value = e.target.value.replace(
+                                    /[^A-Za-z ]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
                           {errors.firstName && (
-                            <p className="text-danger">{errors.firstName.message}</p>
+                            <p className="text-danger">
+                              {errors.firstName.message}
+                            </p>
                           )}
                         </Col>
 
                         <Col md="6" className="mb-1">
-                          <Label for="lastName">Last Name <span className="text-danger">*</span></Label>
+                          <Label for="lastName">
+                            Last Name <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="lastName"
                             control={control}
@@ -480,29 +480,37 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "Last name is required",
                               pattern: {
                                 value: /^[A-Za-z ]+$/,
-                                message: "Only alphabets and spaces are allowed"
-                              }
+                                message:
+                                  "Only alphabets and spaces are allowed",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
                                 {...field}
                                 placeholder="Enter Last Name"
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^A-Za-z ]/g, "");
+                                  const value = e.target.value.replace(
+                                    /[^A-Za-z ]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
                           {errors.lastName && (
-                            <p className="text-danger">{errors.lastName.message}</p>
+                            <p className="text-danger">
+                              {errors.lastName.message}
+                            </p>
                           )}
                         </Col>
                       </Row>
 
                       <Row>
                         <Col md="6" className="mb-1">
-                          <Label for="memberPhone">Phone Number <span className="text-danger">*</span></Label>
+                          <Label for="memberPhone">
+                            Phone Number <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="memberPhone"
                             control={control}
@@ -510,8 +518,8 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "Phone number is required",
                               pattern: {
                                 value: /^[0-9]{10}$/,
-                                message: "Enter valid 10 digit number"
-                              }
+                                message: "Enter valid 10 digit number",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
@@ -519,19 +527,26 @@ setPassBooked('The maximum number of people has already been reached.')
                                 placeholder="Enter Phone Number"
                                 maxLength={10}
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^0-9]/g, "");
+                                  const value = e.target.value.replace(
+                                    /[^0-9]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
                           {errors.memberPhone && (
-                            <p className="text-danger">{errors.memberPhone.message}</p>
+                            <p className="text-danger">
+                              {errors.memberPhone.message}
+                            </p>
                           )}
                         </Col>
 
                         <Col md="6" className="mb-1">
-                          <Label for="memberEmail">Email <span className="text-danger">*</span></Label>
+                          <Label for="memberEmail">
+                            Email <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="memberEmail"
                             control={control}
@@ -539,8 +554,8 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "Email is required",
                               pattern: {
                                 value: /^[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z]+$/,
-                                message: "Enter valid email"
-                              }
+                                message: "Enter valid email",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
@@ -551,7 +566,8 @@ setPassBooked('The maximum number of people has already been reached.')
                                   value = value.replace(/[^A-Za-z0-9@.]/g, "");
                                   const parts = value.split("@");
                                   if (parts.length > 2) {
-                                    value = parts[0] + "@" + parts.slice(1).join("");
+                                    value =
+                                      parts[0] + "@" + parts.slice(1).join("");
                                   }
                                   field.onChange(value);
                                 }}
@@ -559,14 +575,18 @@ setPassBooked('The maximum number of people has already been reached.')
                             )}
                           />
                           {errors.memberEmail && (
-                            <p className="text-danger">{errors.memberEmail.message}</p>
+                            <p className="text-danger">
+                              {errors.memberEmail.message}
+                            </p>
                           )}
                         </Col>
                       </Row>
 
                       <Row>
                         <Col md="12" className="mb-1">
-                          <Label for="customerAddress">Address <span className="text-danger">*</span></Label>
+                          <Label for="customerAddress">
+                            Address <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="customerAddress"
                             control={control}
@@ -576,21 +596,28 @@ setPassBooked('The maximum number of people has already been reached.')
                                 {...field}
                                 placeholder="Enter Address"
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^A-Za-z0-9,.\s]/g, "");
+                                  const value = e.target.value.replace(
+                                    /[^A-Za-z0-9,.\s]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
                           {errors.customerAddress && (
-                            <p className="text-danger">{errors.customerAddress.message}</p>
+                            <p className="text-danger">
+                              {errors.customerAddress.message}
+                            </p>
                           )}
                         </Col>
                       </Row>
 
                       <Row>
                         <Col md="6" className="mb-1">
-                          <Label for="customerCity">City <span className="text-danger">*</span></Label>
+                          <Label for="customerCity">
+                            City <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="customerCity"
                             control={control}
@@ -600,19 +627,26 @@ setPassBooked('The maximum number of people has already been reached.')
                                 {...field}
                                 placeholder="Enter City"
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^A-Za-z0-9\s]/g, "");
+                                  const value = e.target.value.replace(
+                                    /[^A-Za-z0-9\s]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
                           {errors.customerCity && (
-                            <p className="text-danger">{errors.customerCity.message}</p>
+                            <p className="text-danger">
+                              {errors.customerCity.message}
+                            </p>
                           )}
                         </Col>
 
                         <Col md="6" className="mb-1">
-                          <Label for="customerState">State <span className="text-danger">*</span></Label>
+                          <Label for="customerState">
+                            State <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="customerState"
                             control={control}
@@ -620,27 +654,37 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "State is required",
                               pattern: {
                                 value: /^[a-zA-Z0-9 ]*$/,
-                                message: "Only letters, numbers, and spaces are allowed"
-                              }
+                                message:
+                                  "Only letters, numbers, and spaces are allowed",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
                                 {...field}
                                 placeholder="Enter State"
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                  const value = e.target.value.replace(
+                                    /[^a-zA-Z0-9 ]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
-                          {errors.customerState && <p className="text-danger">{errors.customerState.message}</p>}
+                          {errors.customerState && (
+                            <p className="text-danger">
+                              {errors.customerState.message}
+                            </p>
+                          )}
                         </Col>
                       </Row>
 
                       <Row>
                         <Col md="6" className="mb-1">
-                          <Label for="customerCountry">Country <span className="text-danger">*</span></Label>
+                          <Label for="customerCountry">
+                            Country <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="customerCountry"
                             control={control}
@@ -648,25 +692,34 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "Country is required",
                               pattern: {
                                 value: /^[a-zA-Z ]*$/,
-                                message: "Only letters and spaces are allowed"
-                              }
+                                message: "Only letters and spaces are allowed",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
                                 {...field}
                                 placeholder="Enter Country"
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^a-zA-Z ]/g, '');
+                                  const value = e.target.value.replace(
+                                    /[^a-zA-Z ]/g,
+                                    ""
+                                  );
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
-                          {errors.customerCountry && <p className="text-danger">{errors.customerCountry.message}</p>}
+                          {errors.customerCountry && (
+                            <p className="text-danger">
+                              {errors.customerCountry.message}
+                            </p>
+                          )}
                         </Col>
 
                         <Col md="6" className="mb-1">
-                          <Label for="zipCode">Zip Code <span className="text-danger">*</span></Label>
+                          <Label for="zipCode">
+                            Zip Code <span className="text-danger">*</span>
+                          </Label>
                           <Controller
                             name="zipCode"
                             control={control}
@@ -674,8 +727,8 @@ setPassBooked('The maximum number of people has already been reached.')
                               required: "Zip Code is required",
                               pattern: {
                                 value: /^[0-9]{5}$/,
-                                message: "Zip Code must be exactly 5 digits"
-                              }
+                                message: "Zip Code must be exactly 5 digits",
+                              },
                             }}
                             render={({ field }) => (
                               <Input
@@ -683,13 +736,19 @@ setPassBooked('The maximum number of people has already been reached.')
                                 placeholder="Enter Zip Code"
                                 maxLength={5}
                                 onChange={(e) => {
-                                  const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 5);
+                                  const value = e.target.value
+                                    .replace(/[^0-9]/g, "")
+                                    .slice(0, 5);
                                   field.onChange(value);
                                 }}
                               />
                             )}
                           />
-                          {errors.zipCode && <p className="text-danger">{errors.zipCode.message}</p>}
+                          {errors.zipCode && (
+                            <p className="text-danger">
+                              {errors.zipCode.message}
+                            </p>
+                          )}
                         </Col>
                       </Row>
                     </CardBody>
@@ -752,7 +811,10 @@ setPassBooked('The maximum number of people has already been reached.')
                         <Col md={6}>
                           <Row>
                             <Col sm="6" className="mb-2">
-                              <Label for="number">Card Number <span className="text-danger">*</span></Label>
+                              <Label for="number">
+                                Card Number{" "}
+                                <span className="text-danger">*</span>
+                              </Label>
                               <Controller
                                 name="cardNumber"
                                 control={control}
@@ -800,7 +862,10 @@ setPassBooked('The maximum number of people has already been reached.')
                             </Col>
 
                             <Col sm="6" className="mb-2">
-                              <Label for="name">Name On Card <span className="text-danger">*</span></Label>
+                              <Label for="name">
+                                Name On Card{" "}
+                                <span className="text-danger">*</span>
+                              </Label>
 
                               <Controller
                                 name="nameOnCard"
@@ -860,7 +925,9 @@ setPassBooked('The maximum number of people has already been reached.')
                             </Col>
 
                             <Col sm="6" className="mb-2">
-                              <Label for="cardCvv">CVV <span className="text-danger">*</span></Label>
+                              <Label for="cardCvv">
+                                CVV <span className="text-danger">*</span>
+                              </Label>
                               <Controller
                                 name="cvc"
                                 control={control}
@@ -896,7 +963,10 @@ setPassBooked('The maximum number of people has already been reached.')
 
                           <Row>
                             <Col sm="6" className="mb-2">
-                              <Label for="cardExpiryYear">Expiry Year <span className="text-danger">*</span></Label>
+                              <Label for="cardExpiryYear">
+                                Expiry Year{" "}
+                                <span className="text-danger">*</span>
+                              </Label>
                               <Controller
                                 name="cardExpiryYear"
                                 control={control}
@@ -933,8 +1003,12 @@ setPassBooked('The maximum number of people has already been reached.')
                             </Col>
 
                             <Col sm="6" className="mb-2">
-                              <Label for="cardExpiryMonth">Expiry Month <span className="text-danger">*</span></Label>
-                              <Controller name="cardExpiryMonth"
+                              <Label for="cardExpiryMonth">
+                                Expiry Month{" "}
+                                <span className="text-danger">*</span>
+                              </Label>
+                              <Controller
+                                name="cardExpiryMonth"
                                 control={control}
                                 rules={{
                                   required: "Expiry month is required",
@@ -1181,10 +1255,10 @@ setPassBooked('The maximum number of people has already been reached.')
               </Card>
             </div>
           </Col>
-        </Row>  
+        </Row>
       </Col>
     </Row>
-)}
-
+  );
+};
 
 export default CardPayment;

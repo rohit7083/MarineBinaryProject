@@ -9,7 +9,7 @@ import {
   ChevronDown,
   DollarSign,
   Eye,
-  MoreVertical
+  MoreVertical,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
@@ -24,13 +24,13 @@ import {
   Input,
   Row,
   Spinner,
-  UncontrolledDropdown
+  UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
   const [searchTerm, setSearchTerm] = useState("");
   const [role, setRole] = useState("");
   const [dataUid, setDataUid] = useState(null);
@@ -81,13 +81,25 @@ const index = () => {
     setSearchTerm(value);
 
     if (value) {
-      const filteredResults = tableData.results.filter(
-        (row) =>
-          row.member?.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.paymentStatus?.toLowerCase().includes(value.toLowerCase()) ||
-          row.roomNumber?.toString().includes(value) ||
-          row.finalAmount?.toString().includes(value)
-      );
+      const normalizedValue = value.toString().trim().toLowerCase();
+
+      const filteredResults = tableData.results.filter((row) => {
+        const checkIn = row.checkInDate
+          ? new Date(row.checkInDate).toISOString().split("T")[0] // "2025-11-10"
+          : "";
+        const checkOut = row.checkOutDate
+          ? new Date(row.checkOutDate).toISOString().split("T")[0]
+          : "";
+
+        return (
+          row.member?.firstName?.toLowerCase().includes(normalizedValue) ||
+          row.paymentStatus?.toLowerCase().includes(normalizedValue) ||
+          row.roomNumber?.toString().toLowerCase().includes(normalizedValue) ||
+          row.finalAmount?.toString().toLowerCase().includes(normalizedValue) ||
+          checkIn.includes(normalizedValue) ||
+          checkOut.includes(normalizedValue)
+        );
+      });
 
       setTableData((prev) => ({
         ...prev,
@@ -124,21 +136,21 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-   {
-  name: "Guest Name",
-  sortable: true,
-  selector: (row) => {
-    const first = row?.member?.firstName
-      ? row.member.firstName.charAt(0).toUpperCase() +
-        row.member.firstName.slice(1).toLowerCase()
-      : "";
-    const last = row?.member?.lastName
-      ? row.member.lastName.charAt(0).toUpperCase() +
-        row.member.lastName.slice(1).toLowerCase()
-      : "";
-    return `${first} ${last}`.trim();
-  },
-},
+    {
+      name: "Guest Name",
+      sortable: true,
+      selector: (row) => {
+        const first = row?.member?.firstName
+          ? row.member.firstName.charAt(0).toUpperCase() +
+            row.member.firstName.slice(1).toLowerCase()
+          : "";
+        const last = row?.member?.lastName
+          ? row.member.lastName.charAt(0).toUpperCase() +
+            row.member.lastName.slice(1).toLowerCase()
+          : "";
+        return `${first} ${last}`.trim();
+      },
+    },
 
     {
       name: "Room No",

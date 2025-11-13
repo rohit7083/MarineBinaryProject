@@ -2,8 +2,17 @@ import useJwt from "@src/auth/jwt/useJwt";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button, Col, FormFeedback, Input, Label, Modal, ModalBody,
-  ModalHeader, Row, Table, UncontrolledAlert
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Table,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -20,8 +29,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
   const [selectAll, setSelectAll] = useState(false);
   const [permissionData, setPermissionData] = useState({});
   const MySwal = withReactContent(Swal);
-  const[Errmessage,setMessage]=useState("");
-  
+  const [Errmessage, setMessage] = useState("");
 
   const {
     control,
@@ -53,7 +61,6 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
   };
 
   const onSubmit = async (data) => {
-    
     data.permissionIds = [];
     Object.keys(permissionData).forEach((key) => {
       if (data[key]) {
@@ -66,46 +73,46 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
     });
     console.log("Submitted Data:", data);
 
-    try{
-    if (uid) {
-       
-      const res = await useJwt.updateRole(uid, data);
-      console.log(" updated role res:", res);
+    try {
+      if (uid) {
+        const res = await useJwt.updateRole(uid, data);
+        console.log(" updated role res:", res);
 
-      if (res.status === 200) {
-        setTableData((prevData) =>
-          prevData.map((item) =>
-            item.uid === uid ? { ...item, ...updatedData } : item
-          )
-        );
-        MySwal.fire({
-          title: "Successfully Updated",
-          text: " Role Updated Successfully",
-          icon: "success",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          setShow(false);
-          reset();
-          navigate("/dashboard/user_rolls/roles-permissions/roles");
-        });
-      } else {
-        MySwal.fire({
-          title: "Failed",
-          text: "Your Role Created Failed",
-          icon: "error",
-          customClass: {
-            confirmButton: "btn btn-primary",
-          },
-          buttonsStyling: false,
-        }).then(() => {
-          // navigate("/dashboard/sliplist");
-        });
-        console.error("Failed to add role:", res.message || res);
+        if (res.status === 200) {
+          setTableData((prevData) =>
+            prevData.map((item) =>
+              item.uid === uid ? { ...item, ...updatedData } : item
+            )
+          );
+          MySwal.fire({
+            title: "Successfully Updated",
+            text: " Role Updated Successfully",
+            icon: "success",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            setShow(false);
+            reset();
+            navigate("/dashboard/user_rolls/roles-permissions/roles");
+          });
+        } else {
+          MySwal.fire({
+            title: "Failed",
+            text: "Your Role Created Failed",
+            icon: "error",
+            customClass: {
+              confirmButton: "btn btn-primary",
+            },
+            buttonsStyling: false,
+          }).then(() => {
+            // navigate("/dashboard/sliplist");
+          });
+          console.error("Failed to add role:", res.message || res);
+        }
       }
-    }}catch (error) {
+    } catch (error) {
       console.error(
         "Login Error Details:",
         error.response || error.message || error
@@ -113,11 +120,10 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
 
       if (error.response) {
         const { status, detail } = error.response.data;
-        const errorMessage =detail;
+        const errorMessage = detail;
         setMessage(errorMessage);
         // console.log("errorMessage",errorMessage);
 
-      
         switch (status) {
           case 400:
             setMessage(errorMessage);
@@ -129,9 +135,9 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
           case 403:
             setMessage(errorMessage);
             break;
-            case 500:
-              setMessage(errorMessage);
-              break;
+          case 500:
+            setMessage(errorMessage);
+            break;
           default:
             setMessage(errorMessage);
         }
@@ -182,7 +188,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         } else {
           hash.get(item.moduleName).push(item);
         }
-         
+
         if (data?.permissionIds && data.permissionIds.includes(item.id)) {
           data[item.moduleName] = {};
           data[item.moduleName][item.action] = { isSelected: true };
@@ -230,19 +236,19 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
           <h1>{modalType} Role</h1>
           <p>{uid ? "Update Roles" : "Create Roles"}</p>
           {Errmessage && (
-                <React.Fragment>
-                  <UncontrolledAlert color="danger">
-                    <div className="alert-body">
-                      <span className="text-danger fw-bold">{Errmessage}</span>
-                    </div>
-                  </UncontrolledAlert>
-                </React.Fragment>
-              )}
+            <React.Fragment>
+              <UncontrolledAlert color="danger">
+                <div className="alert-body">
+                  <span className="text-danger fw-bold">{Errmessage}</span>
+                </div>
+              </UncontrolledAlert>
+            </React.Fragment>
+          )}
         </div>
         <Row tag="form" onSubmit={handleSubmit(onSubmit)}>
           <Col xs={12}>
             <Label className="form-label" for="roleName">
-              Role Name 
+              Role Name
             </Label>
             <Controller
               name="roleName"

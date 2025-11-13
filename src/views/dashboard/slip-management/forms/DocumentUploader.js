@@ -46,9 +46,8 @@ const DocumentUploader = ({
   });
 
   const renderFilePreview = (file) => {
-
-    if(file.uid && file.success){
-            return (
+    if (file.uid && file.success) {
+      return (
         <img
           className="rounded"
           alt={file.file.name}
@@ -58,8 +57,8 @@ const DocumentUploader = ({
         />
       );
     }
-    if(file.uid && !file.success){
-      return null
+    if (file.uid && !file.success) {
+      return null;
     }
     if (file.preview)
       return (

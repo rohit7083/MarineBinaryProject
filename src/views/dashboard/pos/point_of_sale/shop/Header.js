@@ -339,8 +339,6 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
                   </CardTitle>
                   {/* hdey */}
                   <Row>
-                  
-
                     <Col className="mb-1" md="6" sm="12">
                       <Label className="form-label">By Contact No</Label>
                       <Select

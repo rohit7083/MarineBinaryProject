@@ -598,7 +598,7 @@ function SlipDetailsForm({ assigned }) {
                 color="primary"
                 onClick={handleSwitchSlip}
                 className="ms-3"
-                size={'sm'}
+                size={"sm"}
               >
                 Switch Slip
               </Button>

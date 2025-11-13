@@ -1,8 +1,14 @@
 // ** Icons Import
-import { Copy, Circle, Box, Package, RotateCw, AlertTriangle } from 'react-feather'
+import {
+  Copy,
+  Circle,
+  Box,
+  Package,
+  RotateCw,
+  AlertTriangle,
+} from "react-feather";
 
-export default
- [
+export default [
   // {
   //   header: 'Forms & Tables'
   // },
@@ -89,14 +95,12 @@ export default
   //   id: 'formLayouts',
   //   title: 'Form Layout',
   //   icon: <Box size={20} />,
-
   //   navLink: '/forms/layout/form-layout'
   // },
   // {
   //   id: 'wizard',
   //   title: 'Form Wizard',
   //   icon: <Package size={20} />,
-
   //   navLink: '/forms/wizard'
   // },
   // {
@@ -111,4 +115,4 @@ export default
   //   icon: <RotateCw size={20} />,
   //   navLink: '/forms/form-repeater'
   // }
-]
+];

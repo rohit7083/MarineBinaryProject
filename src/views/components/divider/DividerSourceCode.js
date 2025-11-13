@@ -1,6 +1,6 @@
 export const dividerDefault = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 
@@ -26,11 +26,11 @@ export default DividerDefault
 `}
     </code>
   </pre>
-)
+);
 
 export const dividerText = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 
@@ -45,11 +45,11 @@ export default DividerText
 `}
     </code>
   </pre>
-)
+);
 
 export const dividerPosition = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import { Fragment } from 'react'
 
@@ -83,11 +83,11 @@ export default DividerPosition
 `}
     </code>
   </pre>
-)
+);
 
 export const dividerColors = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 
@@ -128,11 +128,11 @@ export default DividerColors
 `}
     </code>
   </pre>
-)
+);
 
 export const dividerIcon = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Fragment } from 'react'
@@ -178,11 +178,11 @@ export default DividerIcon
 `}
     </code>
   </pre>
-)
+);
 
 export const dividerStyle = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 
@@ -207,4 +207,4 @@ export default DividerStyle
 `}
     </code>
   </pre>
-)
+);

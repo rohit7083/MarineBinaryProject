@@ -181,11 +181,7 @@ export const columns = [
   },
 ];
 
-
-
-
-
-export const serverSideColumns = (currentPage, rowsPerPage)=> [
+export const serverSideColumns = (currentPage, rowsPerPage) => [
   {
     sortable: true,
     name: "Id",
@@ -290,7 +286,6 @@ export const serverSideColumns = (currentPage, rowsPerPage)=> [
     sortable: true,
     //minWidth: "150px",
     cell: (row) => {
-      
       const MySwal = withReactContent(Swal);
 
       const handleDelete = async (uid) => {
@@ -320,12 +315,12 @@ export const serverSideColumns = (currentPage, rowsPerPage)=> [
                   },
                 });
                 window.location.reload();
-
               }
             } catch (error) {
               console.error("Error deleting item:", error);
-             if (error.response && error.response.status === 400) {
-              const errorMessage = error?.response?.data?.content || "Item not found.";
+              if (error.response && error.response.status === 400) {
+                const errorMessage =
+                  error?.response?.data?.content || "Item not found.";
                 MySwal.fire({
                   icon: "error",
                   title: errorMessage,
@@ -350,8 +345,6 @@ export const serverSideColumns = (currentPage, rowsPerPage)=> [
 
       return (
         <div className="d-flex">
-       
-
           <Link
             style={{ margin: "0.5rem" }}
             to={`/marin/slip-management`}
@@ -386,7 +379,5 @@ export const serverSideColumns = (currentPage, rowsPerPage)=> [
     },
   },
 ];
-
-
 
 export default ExpandableTable;

@@ -6,25 +6,27 @@ import SlipDetails from "./forms/SlipDetails";
 // import MemberInfo from "./forms/MemberInfo";
 import { Book } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import ViewDocuments from '../slip-management/forms/ViewDocuments';
+import ViewDocuments from "../slip-management/forms/ViewDocuments";
 import MemberIndex from "./forms/memberInfo/index";
 import OtherPayment from "./forms/otherPayment/OtherPayment";
 import Index from "./forms/slip_rental";
 const TabsCentered = () => {
   const [error, setError] = useState("");
-  const [SlipData, setSlipData] = useState({member:{},vessel:{},payment:{}});
+  const [SlipData, setSlipData] = useState({
+    member: {},
+    vessel: {},
+    payment: {},
+  });
   const [fetchLoader, setFetchLoader] = useState(false);
   const location = useLocation();
   const uid = location?.state?.uid;
   const allData = location?.state?.slipData;
   const [active, setActive] = useState("1");
-  console.log(location)
+  console.log(location);
 
   useEffect(() => {
-    if(allData)
-    setSlipData(allData);
+    if (allData) setSlipData(allData);
   }, [allData]);
-
 
   const toggle = (tab) => {
     if (active !== tab) {
@@ -72,7 +74,7 @@ const TabsCentered = () => {
           </NavLink>
         </NavItem> */}
         <NavItem>
-        <NavLink
+          <NavLink
             active={active === "4"}
             onClick={() => {
               toggle("4");
@@ -82,7 +84,7 @@ const TabsCentered = () => {
             Other Payment
           </NavLink>
         </NavItem>
-         <NavItem>
+        <NavItem>
           <NavLink
             active={active === "5"}
             onClick={() => {
@@ -92,7 +94,7 @@ const TabsCentered = () => {
             <Book />
             View Documents
           </NavLink>
-        </NavItem> 
+        </NavItem>
       </Nav>
       <TabContent className="py-50" activeTab={active}>
         <TabPane tabId="1">
@@ -114,8 +116,8 @@ const TabsCentered = () => {
         <TabPane tabId="4">
           <OtherPayment />
         </TabPane>
-          <TabPane tabId="5">
-          <ViewDocuments  slipData={SlipData}/>
+        <TabPane tabId="5">
+          <ViewDocuments slipData={SlipData} />
         </TabPane>
       </TabContent>
     </React.Fragment>

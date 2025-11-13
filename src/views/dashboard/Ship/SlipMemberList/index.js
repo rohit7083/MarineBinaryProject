@@ -1,4 +1,3 @@
-
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { Fragment, memo, useEffect, useState } from "react";
@@ -15,7 +14,7 @@ import {
   Input,
   Label,
   Row,
-  Spinner
+  Spinner,
 } from "reactstrap";
 import { serverSideColumns } from "../../../dashboard/Ship/SlipMemberList/data";
 
@@ -34,10 +33,10 @@ const DataTableServerSide = () => {
       try {
         const { data } = await useJwt.getslip();
         console.log("API Response:", data); // Log here
-  
+
         const result = data?.content?.result || []; // Adjust depending on structure
         console.log("Parsed Result:", result); // Log here
-  
+
         setData(result);
         setFilteredData(result);
       } catch (error) {
@@ -48,10 +47,10 @@ const DataTableServerSide = () => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   // Filter handler
   const handleFilter = (e) => {
     const value = e.target.value.toLowerCase();
@@ -60,7 +59,9 @@ const DataTableServerSide = () => {
     const filtered = data.filter((item) => {
       const slipMatch = item.slipName?.toLowerCase().includes(value);
       const idMatch = item.id?.toString().includes(value);
-      const catMatch = item.category?.shipTypeName?.toLowerCase().includes(value);
+      const catMatch = item.category?.shipTypeName
+        ?.toLowerCase()
+        .includes(value);
       return slipMatch || idMatch || catMatch;
     });
 
@@ -123,7 +124,7 @@ const DataTableServerSide = () => {
           <CardTitle tag="h4">Slip Members</CardTitle>
           <Link to="/dashboard/slip_memberform">
             <Button.Ripple color="primary" size="sm">
-              <Plus size={14} className="me-25"  />
+              <Plus size={14} className="me-25" />
               Add Vessels
             </Button.Ripple>
           </Link>
@@ -150,7 +151,10 @@ const DataTableServerSide = () => {
               <Label className="ms-1">entries</Label>
             </div>
           </Col>
-          <Col className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1" sm="6">
+          <Col
+            className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1"
+            sm="6"
+          >
             <Label className="me-1" for="search-input">
               Search
             </Label>
@@ -168,9 +172,17 @@ const DataTableServerSide = () => {
         {loading ? (
           <div
             className="text-center"
-            style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "4rem" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "4rem",
+            }}
           >
-            <Spinner style={{ height: "5rem", width: "5rem" }} color="primary" />
+            <Spinner
+              style={{ height: "5rem", width: "5rem" }}
+              color="primary"
+            />
           </div>
         ) : (
           <div className="react-dataTable" style={{ marginTop: "2rem" }}>

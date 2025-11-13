@@ -39,18 +39,18 @@ const fetchImage = async (uid) => {
 
 const calculateCartQuantity = (cart, productId) =>
   Object.values(cart)
-    .filter(item => item.productId === productId)
+    .filter((item) => item.productId === productId)
     .reduce((sum, item) => sum + item.quantity, 0);
 
 const calculatePriceRange = (variations) => {
   if (!variations?.length) return null;
-  
-  const prices = variations.map(v => v.finalAmount || v.price || 0);
+
+  const prices = variations.map((v) => v.finalAmount || v.price || 0);
   const minPrice = Math.min(...prices);
   const maxPrice = Math.max(...prices);
-  
-  return minPrice === maxPrice 
-    ? `$${minPrice.toFixed(2)}` 
+
+  return minPrice === maxPrice
+    ? `$${minPrice.toFixed(2)}`
     : `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
 };
 
@@ -84,7 +84,10 @@ const ProductCard = ({ product, onAddItem, cart }) => {
   }, [variationImageUid]);
 
   return (
-    <Card className="h-100" style={{ fontSize: "14px", border: "1px solid black" }}>
+    <Card
+      className="h-100"
+      style={{ fontSize: "14px", border: "1px solid black" }}
+    >
       {imageLoader ? (
         <div className="d-flex justify-content-center align-items-center p-4">
           <PuffLoader color="#9086F3" />
@@ -133,7 +136,7 @@ const ProductCard = ({ product, onAddItem, cart }) => {
 // Variation Item Component
 const VariationItem = ({ variation, quantity, onQuantityChange }) => {
   const attributes = variation.attributes
-    .map(attr => `${attr.attributeName}: ${attr.value}`)
+    .map((attr) => `${attr.attributeName}: ${attr.value}`)
     .join(" / ");
 
   return (
@@ -144,7 +147,9 @@ const VariationItem = ({ variation, quantity, onQuantityChange }) => {
           size="sm"
           outline
           color="primary"
-          onClick={() => onQuantityChange(variation.uid, Math.max(0, quantity - 1))}
+          onClick={() =>
+            onQuantityChange(variation.uid, Math.max(0, quantity - 1))
+          }
         >
           −
         </Button>
@@ -163,7 +168,14 @@ const VariationItem = ({ variation, quantity, onQuantityChange }) => {
 };
 
 // Main Product Page Component
-const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData, loading }) => {
+const ProductPage = ({
+  selectedCustomer,
+  tableData,
+  page,
+  setPage,
+  setTableData,
+  loading,
+}) => {
   // State Management
   const [cart, setCart] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
@@ -185,15 +197,17 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
     toast.current?.show({ severity, summary, detail, life: 2000 });
   }, []);
 
-  const handleAddItemClick = async (product) => {4
-    
-    setError('');
+  const handleAddItemClick = async (product) => {
+    4;
+
+    setError("");
     setSelectedProduct(product);
     setVariationQty({});
     setModalOpen(true);
 
-    const variationImageUid = product?.variations?.[0]?.variationImages?.[0]?.uid;
-    
+    const variationImageUid =
+      product?.variations?.[0]?.variationImages?.[0]?.uid;
+
     if (!variationImageUid) {
       setProductImage(noImage);
       return;
@@ -213,26 +227,39 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
 
   const handleMakePayment = () => {
     const selectedProducts = Object.values(cart);
-    
+
     if (selectedProducts.length === 0) {
-      showToast("error", "Error", "Please add at least one product to proceed to payment.");
+      showToast(
+        "error",
+        "Error",
+        "Please add at least one product to proceed to payment."
+      );
       return;
     }
 
     navigate("/dashboard/pos/point_of_sale/shop/PayementDetails", {
-      state: { selectedProducts, selectedCust: selectedCustomerName, uids, productImage },
+      state: {
+        selectedProducts,
+        selectedCust: selectedCustomerName,
+        uids,
+        productImage,
+      },
     });
   };
 
   const handleAddToCart = async () => {
     setError("");
-    
+
     const items = Object.entries(variationQty)
       .filter(([_, qty]) => qty > 0)
       .map(([uid, qty]) => ({ variationUid: uid, quantity: qty }));
 
     if (items.length === 0) {
-      showToast("error", "Error", "Select at least one variation with quantity greater than 0");
+      showToast(
+        "error",
+        "Error",
+        "Select at least one variation with quantity greater than 0"
+      );
       return;
     }
 
@@ -240,14 +267,16 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
     try {
       const res = await useJwt.qtypos({ items });
       const newUid = res?.data?.uid;
-      
+
       if (res?.data?.code === 201 && newUid) {
-        setUids(prev => [...prev, newUid]);
-        
+        setUids((prev) => [...prev, newUid]);
+
         const updatedCart = { ...cart };
         items.forEach(({ variationUid, quantity }) => {
-          const variation = selectedProduct.variations.find(v => v?.uid === variationUid);
-          
+          const variation = selectedProduct.variations.find(
+            (v) => v?.uid === variationUid
+          );
+
           if (variation) {
             const unitPrice = variation.finalAmount || variation.price || 0;
             updatedCart[variationUid] = {
@@ -275,9 +304,9 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
   };
 
   const handleQuantityChange = (uid, newQuantity) => {
-    setVariationQty(prev => ({
+    setVariationQty((prev) => ({
       ...prev,
-      [uid]: newQuantity
+      [uid]: newQuantity,
     }));
   };
 
@@ -319,7 +348,7 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
                 color="primary"
                 size="sm"
                 style={{ width: "150px" }}
-                onClick={() => setPage(prev => prev + 1)}
+                onClick={() => setPage((prev) => prev + 1)}
                 disabled={loading}
               >
                 {loading ? "Loading..." : "Load More"}
@@ -343,10 +372,8 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
 
       {/* Product Details Modal */}
       <Modal isOpen={modalOpen} toggle={closeModal} centered size="lg">
-        <ModalHeader toggle={closeModal}>
-          {selectedProduct?.name}
-        </ModalHeader>
-        
+        <ModalHeader toggle={closeModal}>{selectedProduct?.name}</ModalHeader>
+
         <ModalBody>
           {error && (
             <UncontrolledAlert color="danger">
@@ -357,10 +384,16 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
           <div className="row">
             {/* Product Image */}
             <div className="col-md-5 d-flex flex-column align-items-center">
-              <div style={{ width: "100%", height: "250px", position: "relative" }}>
+              <div
+                style={{ width: "100%", height: "250px", position: "relative" }}
+              >
                 {imgLoading ? (
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <Lottie animationData={noImgSpinner} loop style={{ width: "100%", height: 200 }} />
+                    <Lottie
+                      animationData={noImgSpinner}
+                      loop
+                      style={{ width: "100%", height: 200 }}
+                    />
                   </div>
                 ) : (
                   <img
@@ -372,7 +405,9 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
                       objectFit: "contain",
                       borderRadius: "8px",
                     }}
-                    onError={(e) => { e.target.src = noImage; }}
+                    onError={(e) => {
+                      e.target.src = noImage;
+                    }}
                   />
                 )}
               </div>
@@ -397,8 +432,11 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
 
             {/* Product Details */}
             <div className="col-md-7">
-              <h5>{calculatePriceRange(selectedProduct?.variations) || `$${selectedProduct?.price?.toFixed(2)}`}</h5>
-              
+              <h5>
+                {calculatePriceRange(selectedProduct?.variations) ||
+                  `$${selectedProduct?.price?.toFixed(2)}`}
+              </h5>
+
               <p style={{ fontSize: "14px", color: "#555" }}>
                 {selectedProduct?.description}
               </p>
@@ -406,7 +444,7 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
               {/* Specifications */}
               {selectedProduct?.specifications?.length > 0 && (
                 <ul style={{ fontSize: "13px", paddingLeft: "18px" }}>
-                  {selectedProduct.specifications.map(spec => (
+                  {selectedProduct.specifications.map((spec) => (
                     <li key={spec.uid}>
                       <strong>{spec.specKey}:</strong> {spec.specValue}
                     </li>
@@ -418,7 +456,7 @@ const ProductPage = ({ selectedCustomer, tableData, page, setPage, setTableData,
               {selectedProduct?.variations?.length > 0 && (
                 <>
                   <h6 className="mt-2">Choose Variations</h6>
-                  {selectedProduct.variations.map(variation => (
+                  {selectedProduct.variations.map((variation) => (
                     <VariationItem
                       key={variation.uid}
                       variation={variation}

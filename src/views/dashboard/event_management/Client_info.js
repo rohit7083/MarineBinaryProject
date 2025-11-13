@@ -1,4 +1,3 @@
-
 import useJwt from "@src/auth/jwt/useJwt";
 import { Fragment } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -22,13 +21,11 @@ function AddEventTypes() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    
-
     try {
       const res = await useJwt.VendorType(data);
       console.log(res);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
 
@@ -57,7 +54,6 @@ function AddEventTypes() {
                       placeholder="Enter Vendor type"
                       invalid={!!errors.typeName}
                       {...field}
-                      
                     />
                   )}
                 />
@@ -87,9 +83,7 @@ function AddEventTypes() {
                 />
 
                 {errors.description && (
-                  <p style={{ color: "red" }}>
-                    {errors.description.message}
-                  </p>
+                  <p style={{ color: "red" }}>{errors.description.message}</p>
                 )}
               </Col>
             </FormGroup>
@@ -105,6 +99,3 @@ function AddEventTypes() {
 }
 
 export default AddEventTypes;
-
-
-

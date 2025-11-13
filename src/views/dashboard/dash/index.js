@@ -15,13 +15,12 @@ function index() {
     setLoading(true);
     try {
       const res = await useJwt.getslip();
-      const isOffline = res?.data?.content?.result.filter(
-        (offline)=>{
-          return offline.isOffline === true
-        })
+      const isOffline = res?.data?.content?.result.filter((offline) => {
+        return offline.isOffline === true;
+      });
 
-        setIsOfflineCount(isOffline?.length);
-        
+      setIsOfflineCount(isOffline?.length);
+
       setAllBoatData(res?.data?.content?.result || []);
 
       const empty = res?.data?.content?.result.filter(

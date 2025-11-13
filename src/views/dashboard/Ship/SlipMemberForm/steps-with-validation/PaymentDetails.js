@@ -286,7 +286,6 @@ const Address = ({
   }, [slipIID, sId]);
 
   const handleDiscount = (event) => {
-     
     const isToggled = event.target.checked;
 
     setDiscountToggle(isToggled);
@@ -361,23 +360,22 @@ const Address = ({
     }
   };
 
- const validateCardSwipeTransactionId = (value) => {
-  if (!value) {
-    return "Card Swipe Transaction ID is required";
-  }
+  const validateCardSwipeTransactionId = (value) => {
+    if (!value) {
+      return "Card Swipe Transaction ID is required";
+    }
 
-  if (value.length < 6) {
-    return "Transaction ID must be at least 6 characters";
-  }
+    if (value.length < 6) {
+      return "Transaction ID must be at least 6 characters";
+    }
 
-  // ✅ Allow only letters and numbers (A–Z, a–z, 0–9)
-  if (!/^[a-zA-Z0-9]+$/.test(value)) {
-    return "Transaction ID must contain only letters and numbers";
-  }
+    // ✅ Allow only letters and numbers (A–Z, a–z, 0–9)
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+      return "Transaction ID must contain only letters and numbers";
+    }
 
-  return true;
-};
-
+    return true;
+  };
 
   const validateFutureDate = (value, fieldName) => {
     const today = new Date();
@@ -1030,7 +1028,8 @@ const Address = ({
                   <Input
                     placeholder="Final Amount"
                     invalid={errors.finalPayment && true}
-                    {...field}style={{ fontWeight: "bold" }}
+                    {...field}
+                    style={{ fontWeight: "bold" }}
                     readOnly
                   />
                 )}
@@ -1109,7 +1108,7 @@ const Address = ({
             </Col>
           </Row>
 
-            {/* <Col md="12" className="mb-1">
+          {/* <Col md="12" className="mb-1">
 
 <Label className="form-label mt-2" for="final-amount">
   Final Amount
@@ -1122,7 +1121,6 @@ const Address = ({
   style={{ fontWeight: "bold" }} // makes text bold
 />
     </Col> */}
-
 
           <Row>
             <Col md="12" className="mb-1">
@@ -2123,10 +2121,12 @@ const Address = ({
                         {...field}
                         // disabled={statusThree}
                         onChange={(e) => {
-  const alphanumericValue = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-  field.onChange(alphanumericValue);
-}}
-
+                          const alphanumericValue = e.target.value.replace(
+                            /[^a-zA-Z0-9]/g,
+                            ""
+                          );
+                          field.onChange(alphanumericValue);
+                        }}
                       />
                     )}
                   />

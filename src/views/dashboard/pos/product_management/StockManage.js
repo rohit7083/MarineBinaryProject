@@ -9,9 +9,7 @@ import { columns, data } from "./Data";
 
 // ** Third Party Components
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown
-} from "react-feather";
+import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
@@ -22,7 +20,7 @@ import {
   Col,
   Input,
   Label,
-  Row
+  Row,
 } from "reactstrap";
 import NavItems from "./NavItems";
 
@@ -208,7 +206,6 @@ const DataTableWithButtons = () => {
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex  mt-2 justify-content-start gap-2">
               <NavItems />
-             
             </div>
           </div>
         </CardHeader>

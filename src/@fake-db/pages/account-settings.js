@@ -1,46 +1,46 @@
-import mock from '../mock'
+import mock from "../mock";
 
 // Avatar Images
-import avatar3 from '@src/assets/images/avatars/3-small.png'
-import avatar11 from '@src/assets/images/portrait/small/avatar-s-11.jpg'
+import avatar3 from "@src/assets/images/avatars/3-small.png";
+import avatar11 from "@src/assets/images/portrait/small/avatar-s-11.jpg";
 
 const data = {
   accountSetting: {
     general: {
       avatar: avatar11,
-      username: 'johndoe',
-      fullName: 'John Doe',
-      email: 'granger007@hogward.com',
-      company: 'PIXINVENT'
+      username: "johndoe",
+      fullName: "John Doe",
+      email: "granger007@hogward.com",
+      company: "PIXINVENT",
     },
     info: {
-      bio: '',
+      bio: "",
       dob: null,
-      country: 'USA',
-      website: '',
-      phone: 6562542568
+      country: "USA",
+      website: "",
+      phone: 6562542568,
     },
     social: {
       socialLinks: {
-        twitter: 'https://www.twitter.com',
-        facebook: '',
-        google: '',
-        linkedIn: 'https://www.linkedin.com',
-        instagram: '',
-        quora: ''
+        twitter: "https://www.twitter.com",
+        facebook: "",
+        google: "",
+        linkedIn: "https://www.linkedin.com",
+        instagram: "",
+        quora: "",
       },
       connections: {
         twitter: {
           profileImg: avatar11,
-          id: 'johndoe'
+          id: "johndoe",
         },
         google: {
           profileImg: avatar3,
-          id: 'luraweber'
+          id: "luraweber",
         },
         facebook: {},
-        github: {}
-      }
+        github: {},
+      },
     },
     notification: {
       commentOnArticle: true,
@@ -48,9 +48,9 @@ const data = {
       followMe: false,
       newAnnouncements: true,
       productUpdates: true,
-      blogDigest: false
-    }
-  }
-}
+      blogDigest: false,
+    },
+  },
+};
 
-mock.onGet('/account-setting/data').reply(() => [200, data.accountSetting])
+mock.onGet("/account-setting/data").reply(() => [200, data.accountSetting]);

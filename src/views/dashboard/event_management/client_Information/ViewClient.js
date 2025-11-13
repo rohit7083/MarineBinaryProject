@@ -9,7 +9,6 @@ const ViewPass = ({ selectedMember, memberData, updateUid }) => {
   const [memData, setMemData] = useState();
 
   useEffect(() => {
-   
     if (updateUid && selectedMember?.uid === undefined) {
       setMemData(memberData);
     } else {

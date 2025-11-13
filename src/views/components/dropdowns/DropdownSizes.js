@@ -1,112 +1,205 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment } from "react";
 
 // ** Reactstrap Imports
-import { Button, UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle, Row, Col } from 'reactstrap'
+import {
+  Button,
+  UncontrolledButtonDropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownToggle,
+  Row,
+  Col,
+} from "reactstrap";
 
 const DropdownSizes = () => {
   return (
     <Fragment>
       <Row>
-        <Col md='6' sm='12'>
-          <div className='demo-inline-spacing'>
+        <Col md="6" sm="12">
+          <div className="demo-inline-spacing">
             <UncontrolledButtonDropdown>
-              <DropdownToggle color='primary' size='lg' caret>
+              <DropdownToggle color="primary" size="lg" caret>
                 Large
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 1
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 2
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 3
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
             <UncontrolledButtonDropdown>
-              <DropdownToggle color='primary' caret>
+              <DropdownToggle color="primary" caret>
                 Default
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 1
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 2
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 3
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
             <UncontrolledButtonDropdown>
-              <DropdownToggle color='primary' size='sm' caret>
+              <DropdownToggle color="primary" size="sm" caret>
                 Small
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 1
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 2
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 3
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
           </div>
         </Col>
-        <Col md='6' sm='12'>
-          <div className='demo-inline-spacing'>
+        <Col md="6" sm="12">
+          <div className="demo-inline-spacing">
             <UncontrolledButtonDropdown>
-              <Button color='primary' size='lg'>
+              <Button color="primary" size="lg">
                 Large
               </Button>
-              <DropdownToggle className='dropdown-toggle-split' color='primary' caret size='lg'></DropdownToggle>
+              <DropdownToggle
+                className="dropdown-toggle-split"
+                color="primary"
+                caret
+                size="lg"
+              ></DropdownToggle>
               <DropdownMenu end>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 1
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 2
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 3
                 </DropdownItem>
               </DropdownMenu>
-            </UncontrolledButtonDropdown>{' '}
+            </UncontrolledButtonDropdown>{" "}
             <UncontrolledButtonDropdown>
-              <Button color='primary'>Default</Button>
-              <DropdownToggle className='dropdown-toggle-split' color='primary' caret></DropdownToggle>
+              <Button color="primary">Default</Button>
+              <DropdownToggle
+                className="dropdown-toggle-split"
+                color="primary"
+                caret
+              ></DropdownToggle>
               <DropdownMenu end>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 1
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 2
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 3
                 </DropdownItem>
               </DropdownMenu>
-            </UncontrolledButtonDropdown>{' '}
+            </UncontrolledButtonDropdown>{" "}
             <UncontrolledButtonDropdown>
-              <Button color='primary' size='sm'>
+              <Button color="primary" size="sm">
                 Small
               </Button>
-              <DropdownToggle className='dropdown-toggle-split' color='primary' caret></DropdownToggle>
+              <DropdownToggle
+                className="dropdown-toggle-split"
+                color="primary"
+                caret
+              ></DropdownToggle>
               <DropdownMenu end>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 1
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 2
                 </DropdownItem>
-                <DropdownItem href='/' tag='a' onClick={e => e.preventDefault()}>
+                <DropdownItem
+                  href="/"
+                  tag="a"
+                  onClick={(e) => e.preventDefault()}
+                >
                   Option 3
                 </DropdownItem>
               </DropdownMenu>
@@ -115,6 +208,6 @@ const DropdownSizes = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
-export default DropdownSizes
+  );
+};
+export default DropdownSizes;

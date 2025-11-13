@@ -36,7 +36,7 @@ const AddProductIndex = () => {
         </>
       ),
     },
-    
+
     {
       id: "personal-info",
       title: "Variation Details",

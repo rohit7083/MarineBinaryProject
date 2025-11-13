@@ -17,9 +17,10 @@ function Index() {
   return (
     <Card>
       <CardBody>
- <CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
-                Purchase
-              </CardTitle>{" "}        <div
+        <CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
+          Purchase
+        </CardTitle>{" "}
+        <div
           className="d-flex flex-wrap align-items-center gap-2 mb-3"
           style={{ justifyContent: "flex-start" }}
         >

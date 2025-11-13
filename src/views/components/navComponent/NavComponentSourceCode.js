@@ -1,6 +1,6 @@
 export const navBasic = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -31,11 +31,11 @@ export default NavBasic
   `}
     </code>
   </pre>
-)
+);
 
 export const navBorder = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -66,11 +66,11 @@ export default NavBorder
   `}
     </code>
   </pre>
-)
+);
 
 export const navCenter = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -101,11 +101,11 @@ export default NavCenter
   `}
     </code>
   </pre>
-)
+);
 
 export const navEnd = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -136,11 +136,11 @@ export default NavEnd
   `}
     </code>
   </pre>
-)
+);
 
 export const navVertical = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -171,11 +171,11 @@ export default NavVertical
   `}
     </code>
   </pre>
-)
+);
 
 export const navVerticalBorder = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -206,11 +206,11 @@ export default NavVerticalBorder
   `}
     </code>
   </pre>
-)
+);
 
 export const navSquareBorder = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -241,11 +241,11 @@ export default NavSquareBorder
   `}
     </code>
   </pre>
-)
+);
 
 export const navDivider = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -279,4 +279,4 @@ export default NavDivider
   `}
     </code>
   </pre>
-)
+);

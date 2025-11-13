@@ -98,8 +98,7 @@ const Add_Member = () => {
   }));
 
   const selectedOption = watch("paymentMethod");
-  const onSubmit = (data) => {
-  };
+  const onSubmit = (data) => {};
   return (
     <Card>
       <CardHeader>
@@ -834,7 +833,6 @@ const Add_Member = () => {
                         </Row>
                       </Col>
                     </Row>
-
                   </Row>
                 </CardBody>
               </Card>

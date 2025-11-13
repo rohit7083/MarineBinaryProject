@@ -16,7 +16,7 @@ import {
   Col,
   Input,
   Row,
-  Table
+  Table,
 } from "reactstrap";
 
 import { Trash2 } from "react-feather";

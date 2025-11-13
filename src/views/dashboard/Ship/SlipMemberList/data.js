@@ -163,7 +163,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
         setPendingValue(newStatus);
         setConfirmModal(true);
       };
-console.log(isOffline);
+      console.log(isOffline);
 
       const handleConfirm = async () => {
         try {

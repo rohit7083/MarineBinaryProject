@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useState } from "react";
 
 // ** Router Import
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Router from "./router/Router";
 
 // ** SweetAlert2
@@ -12,7 +12,7 @@ const MySwal = withReactContent(Swal);
 
 const App = () => {
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     const checkGeolocation = async () => {
@@ -40,7 +40,7 @@ const App = () => {
           }
         );
       } catch (error) {
-        console.log({appErrorLocation:error})
+        console.log({ appErrorLocation: error });
         showLocationAlert();
       }
     };
@@ -63,10 +63,10 @@ const App = () => {
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
-    <Suspense fallback={null}>
-      <Router />
-    </Suspense>
-  </QueryClientProvider>
+      <Suspense fallback={null}>
+        <Router />
+      </Suspense>
+    </QueryClientProvider>
   );
 };
 

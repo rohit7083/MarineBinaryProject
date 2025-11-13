@@ -497,10 +497,10 @@ const PaymentSummary = () => {
                       classNamePrefix="select"
                       isClearable
                       value={years.find((opt) => opt.value === field.value)}
-                      onChange={(selectedOption) =>{
-                        field.onChange(selectedOption?.value || "")
-                        handleYearChange(selectedOption);}
-                      }
+                      onChange={(selectedOption) => {
+                        field.onChange(selectedOption?.value || "");
+                        handleYearChange(selectedOption);
+                      }}
                     />
                   )}
                 />

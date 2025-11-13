@@ -180,7 +180,7 @@ const RoomPayment = lazy(() =>
 );
 
 const RoomBooking = lazy(() =>
-  import("../../views/dashboard/room_management/manage_roomBooking/calendar")
+  import("../../views/apps/booked-events")
 );
 
 const AddRoomBooking = lazy(() =>
@@ -240,7 +240,6 @@ const WaitingSlip = lazy(() =>
   import("../../views/dashboard/slip-management/waiting_slip")
 );
 
-
 const ViewCustomer = lazy(() =>
   import("../../views/dashboard/pos/customer_management/view/index")
 );
@@ -248,7 +247,19 @@ const ViewCustomer = lazy(() =>
 const EnterWaitingSlipDetails = lazy(() =>
   import("../../views/dashboard/slip-management/waiting_slip/EnterDetails")
 );
+const EmailSMSIndex = lazy(() =>
+  import("../../views/dashboard/crm_setting/emailSetting/index")
+);
+const EmailSMSsetting = lazy(() =>
+  import("../../views/dashboard/crm_setting/emailSetting/AddEmailSMS")
+);
+const Template = lazy(() =>
+  import("../../views/dashboard/crm_setting/template/index")
+);
 
+const EmailSmsTemplate = lazy(() =>
+  import("../../views/dashboard/crm_setting/template/EmailSmsTemplate")
+);
 export default [
   {
     path: "/marin/slip-management/:uid",
@@ -656,8 +667,27 @@ export default [
     element: <ViewCustomer />,
     path: "/pos/customer-management/view",
   },
-   {
+  {
     element: <EnterWaitingSlipDetails />,
     path: "/slip-management/add_WaitingSlip",
+  },
+  {
+    element: <EmailSMSsetting />,
+    path: "/crm/email_sms_setting",
+  },
+
+  {
+    element: <EmailSMSIndex />,
+    path: "/crm/index",
+  },
+
+  {
+    element: <Template />,
+    path: "/crm/template/index",
+  },
+
+  {
+    element: <EmailSmsTemplate />,
+    path: "/crm/template",
   },
 ];

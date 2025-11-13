@@ -144,7 +144,6 @@ function AddVTypes() {
                   defaultValue=""
                   rules={{
                     required: "Event Type is required",
-                   
                   }}
                   render={({ field }) => (
                     <Input

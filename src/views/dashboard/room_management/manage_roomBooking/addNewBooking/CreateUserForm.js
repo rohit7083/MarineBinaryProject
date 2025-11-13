@@ -79,7 +79,11 @@ const CreateUserForm = (props) => {
     try {
       // {{ }}
       const payload = {
-        data: JSON.stringify({ ...data, countryCode: data.countryCode.dial_code ,  dialCodeCountry: data.countryCode?.code}),
+        data: JSON.stringify({
+          ...data,
+          countryCode: data.countryCode.dial_code,
+          dialCodeCountry: data.countryCode?.code,
+        }),
         label: `${data.firstName} ${data.lastName}`,
         value: Object.values(data).join(","),
         isNew: true,
@@ -258,33 +262,33 @@ const CreateUserForm = (props) => {
           <Col md="12" className="mb-1">
             <Label for="phone">Phone Number</Label>
 
-          <Controller
-  name="phoneNumber"
-  control={control}
-  defaultValue=""
-  rules={{
-    required: "Phone number is required",
-    pattern: {
-      value: /^[0-9]{4,13}$/, // only digits, 4 to 13 in length
-      message: "Enter a valid phone number (4-13 digits)",
-    },
-  }}
-  render={({ field }) => (
-    <Input
-      {...field}
-      type="tel"
-      placeholder="Enter phone number"
-      onChange={(e) => {
-        // Allow only numeric characters and limit length to 13
-        let onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
-        if (onlyNumbers.length > 13) {
-          onlyNumbers = onlyNumbers.slice(0, 13);
-        }
-        field.onChange(onlyNumbers);
-      }}
-    />
-  )}
-/>
+            <Controller
+              name="phoneNumber"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Phone number is required",
+                pattern: {
+                  value: /^[0-9]{4,13}$/, // only digits, 4 to 13 in length
+                  message: "Enter a valid phone number (4-13 digits)",
+                },
+              }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="tel"
+                  placeholder="Enter phone number"
+                  onChange={(e) => {
+                    // Allow only numeric characters and limit length to 13
+                    let onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                    if (onlyNumbers.length > 13) {
+                      onlyNumbers = onlyNumbers.slice(0, 13);
+                    }
+                    field.onChange(onlyNumbers);
+                  }}
+                />
+              )}
+            />
 
             {errors.phoneNumber && (
               <small className="text-danger">

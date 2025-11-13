@@ -1,6 +1,3 @@
-
-
-
 import Repeater from "@components/repeater";
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/base/pages/app-invoice.scss";
@@ -13,12 +10,7 @@ import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other 
 import { Toast } from "primereact/toast";
 import { Fragment, useEffect, useRef, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  X
-} from "react-feather";
+import { ArrowLeft, ArrowRight, Check, X } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import { SlideDown } from "react-slidedown";
@@ -88,7 +80,7 @@ const SellPass = () => {
       }));
       setparkingName(parkingName);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
 
@@ -123,7 +115,7 @@ const SellPass = () => {
       }));
       setClients(memberName);
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
   };
 
@@ -209,7 +201,6 @@ const SellPass = () => {
 
   return (
     <Fragment>
-
       <Toast ref={toast} />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Card>
@@ -267,7 +258,7 @@ const SellPass = () => {
                 <FormFeedback>{errors?.memberType?.message}</FormFeedback>
               )} 
 
-              */} 
+              */}
               <br />
               <Controller
                 name="memberType"
@@ -356,10 +347,8 @@ const SellPass = () => {
             )}
           </CardBody>
 
-           <ViewPass setGuestChildData={setGuestChildData} watch={watch} />
+          <ViewPass setGuestChildData={setGuestChildData} watch={watch} />
         </Card>
-
-       
 
         <Card className="invoice-preview-card">
           <div>

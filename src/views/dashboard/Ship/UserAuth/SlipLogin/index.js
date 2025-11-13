@@ -1,5 +1,3 @@
-
-  
 // // ** React Imports
 // import { useContext } from 'react'
 // import { Link, useNavigate } from 'react-router-dom'
@@ -53,7 +51,6 @@
 //     password: 'admin',
 //     loginEmail: 'admin@demo.com'
 //   }
-  
 
 // const Login = () => {
 //   // ** Hooks
@@ -93,7 +90,7 @@
 //     } catch (error) {
 //       console.error("Error logging in:", error)
 //       toast.error("An unexpected error occurred")
-      
+
 //     }
 //   }
 
@@ -208,12 +205,7 @@
 
 // export default Login
 
-
-
-
 // ===========================================
-
-
 
 // // ** React Imports
 // import { useContext } from 'react'

@@ -109,21 +109,19 @@ const WeeklySales = () => {
       </CardHeader>
 
       <CardBody>
-
-         {loading ? (
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ height: "150px" }}
-            >
-              <Spinner color="primary" />
-              <span className="ms-2 text-muted">Loading chart data...</span>
-            </div>
-          ) : (
-        <div style={{ height: "400px" }}>
-         
+        {loading ? (
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "150px" }}
+          >
+            <Spinner color="primary" />
+            <span className="ms-2 text-muted">Loading chart data...</span>
+          </div>
+        ) : (
+          <div style={{ height: "400px" }}>
             <Bar data={data} options={options} />
-        </div>
-          )}
+          </div>
+        )}
       </CardBody>
     </Card>
   );

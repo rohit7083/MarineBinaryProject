@@ -523,31 +523,46 @@ const AddCard = () => {
 
         {/* Invoice Note */}
         <CardBody className="invoice-padding py-0">
-  <Row>
-    <Col md={8}>
-      <div className="mb-2">
-        <Label for="note" className="form-label fw-bold">Note:</Label>
-        <Input type="textarea" rows="2" id="note"
-        //  defaultValue={note}
-         />
-      </div>
-      <div className="mb-2">
-        <Label for="terms" className="form-label fw-bold">Terms and Conditions:</Label>
-        <Input type="textarea" rows="2" id="terms" 
-        // defaultValue={terms} 
-        />
-      </div>
-    </Col>
-    <Col md={4} className="d-flex flex-column justify-content-end align-items-center">
-      <div className="mt-auto text-center">
-        <Label className="form-label fw-bold">Authorized signatory for Sender</Label>
-        {/* <div className="signature-box border border-dark " > */}
-          {/* Signature area */}
-        {/* </div> */}
-      </div>
-    </Col>
-  </Row>
-</CardBody>
+          <Row>
+            <Col md={8}>
+              <div className="mb-2">
+                <Label for="note" className="form-label fw-bold">
+                  Note:
+                </Label>
+                <Input
+                  type="textarea"
+                  rows="2"
+                  id="note"
+                  //  defaultValue={note}
+                />
+              </div>
+              <div className="mb-2">
+                <Label for="terms" className="form-label fw-bold">
+                  Terms and Conditions:
+                </Label>
+                <Input
+                  type="textarea"
+                  rows="2"
+                  id="terms"
+                  // defaultValue={terms}
+                />
+              </div>
+            </Col>
+            <Col
+              md={4}
+              className="d-flex flex-column justify-content-end align-items-center"
+            >
+              <div className="mt-auto text-center">
+                <Label className="form-label fw-bold">
+                  Authorized signatory for Sender
+                </Label>
+                {/* <div className="signature-box border border-dark " > */}
+                {/* Signature area */}
+                {/* </div> */}
+              </div>
+            </Col>
+          </Row>
+        </CardBody>
 
         {/* /Invoice Note */}
       </Card>

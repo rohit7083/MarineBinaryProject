@@ -1,337 +1,346 @@
 // ** Icons Import
-import { Layers, Type, Eye, CreditCard, Circle, Briefcase, Box, Layout } from 'react-feather'
+import {
+  Layers,
+  Type,
+  Eye,
+  CreditCard,
+  Circle,
+  Briefcase,
+  Box,
+  Layout,
+} from "react-feather";
 
 export default [
   {
-    id: 'uiElements',
-    title: 'User Interface',
+    id: "uiElements",
+    title: "User Interface",
     icon: <Layers />,
     children: [
       {
-        id: 'typography',
-        title: 'Typography',
+        id: "typography",
+        title: "Typography",
         icon: <Type />,
-        navLink: '/ui-element/typography'
+        navLink: "/ui-element/typography",
       },
       {
-        id: 'feather',
-        title: 'Feather',
+        id: "feather",
+        title: "Feather",
         icon: <Eye />,
-        navLink: '/icons/reactfeather'
+        navLink: "/icons/reactfeather",
       },
       {
-        id: 'cards',
-        title: 'Card',
+        id: "cards",
+        title: "Card",
         icon: <CreditCard />,
-        badge: 'success',
-        badgeText: 'New',
+        badge: "success",
+        badgeText: "New",
         children: [
           {
-            id: 'basic',
-            title: 'Basic',
+            id: "basic",
+            title: "Basic",
             icon: <Circle />,
-            navLink: '/cards/basic'
+            navLink: "/cards/basic",
           },
           {
-            id: 'cardAdvance',
-            title: 'Advance',
+            id: "cardAdvance",
+            title: "Advance",
             icon: <Circle />,
-            navLink: '/cards/advance'
+            navLink: "/cards/advance",
           },
           {
-            id: 'cardStatistics',
-            title: 'Statistics',
+            id: "cardStatistics",
+            title: "Statistics",
             icon: <Circle />,
-            navLink: '/cards/statistics'
+            navLink: "/cards/statistics",
           },
           {
-            id: 'CardAnalytics',
-            title: 'Analytics',
+            id: "CardAnalytics",
+            title: "Analytics",
             icon: <Circle />,
-            navLink: '/cards/analytics'
+            navLink: "/cards/analytics",
           },
           {
-            id: 'cardActions',
-            title: 'Actions',
+            id: "cardActions",
+            title: "Actions",
             icon: <Circle />,
-            navLink: '/cards/action'
-          }
-        ]
+            navLink: "/cards/action",
+          },
+        ],
       },
       {
-        id: 'components',
-        title: 'Components',
+        id: "components",
+        title: "Components",
         icon: <Briefcase />,
         children: [
           {
-            id: 'accordion',
-            title: 'Accordion',
+            id: "accordion",
+            title: "Accordion",
             icon: <Circle />,
-            navLink: '/components/accordion'
+            navLink: "/components/accordion",
           },
           {
-            id: 'alerts',
-            title: 'Alerts',
+            id: "alerts",
+            title: "Alerts",
             icon: <Circle />,
-            navLink: '/components/alerts'
+            navLink: "/components/alerts",
           },
           {
-            id: 'autoComplete',
-            title: 'Auto Complete',
+            id: "autoComplete",
+            title: "Auto Complete",
             icon: <Circle />,
-            navLink: '/components/auto-complete'
+            navLink: "/components/auto-complete",
           },
           {
-            id: 'avatar',
-            title: 'Avatar',
+            id: "avatar",
+            title: "Avatar",
             icon: <Circle />,
-            navLink: '/components/avatar'
+            navLink: "/components/avatar",
           },
           {
-            id: 'badges',
-            title: 'Badges',
+            id: "badges",
+            title: "Badges",
             icon: <Circle />,
-            navLink: '/components/badges'
+            navLink: "/components/badges",
           },
           {
-            id: 'blockui',
-            title: 'BlockUI',
+            id: "blockui",
+            title: "BlockUI",
             icon: <Circle />,
-            navLink: '/components/blockui'
+            navLink: "/components/blockui",
           },
           {
-            id: 'breadCrumbs',
-            title: 'Breadcrumbs',
+            id: "breadCrumbs",
+            title: "Breadcrumbs",
             icon: <Circle />,
-            navLink: '/components/breadcrumbs'
+            navLink: "/components/breadcrumbs",
           },
           {
-            id: 'buttons',
-            title: 'Buttons',
+            id: "buttons",
+            title: "Buttons",
             icon: <Circle />,
-            navLink: '/components/buttons'
+            navLink: "/components/buttons",
           },
           {
-            id: 'collapse',
-            title: 'Collapse',
+            id: "collapse",
+            title: "Collapse",
             icon: <Circle />,
-            navLink: '/components/collapse'
+            navLink: "/components/collapse",
           },
           {
-            id: 'divider',
-            title: 'Divider',
+            id: "divider",
+            title: "Divider",
             icon: <Circle />,
-            navLink: '/components/divider'
+            navLink: "/components/divider",
           },
           {
-            id: 'dropDowns',
-            title: 'Dropdowns',
+            id: "dropDowns",
+            title: "Dropdowns",
             icon: <Circle />,
-            navLink: '/components/dropdowns'
+            navLink: "/components/dropdowns",
           },
           {
-            id: 'listGroup',
-            title: 'List Group',
+            id: "listGroup",
+            title: "List Group",
             icon: <Circle />,
-            navLink: '/components/list-group'
+            navLink: "/components/list-group",
           },
           {
-            id: 'modals',
-            title: 'Modals',
+            id: "modals",
+            title: "Modals",
             icon: <Circle />,
-            navLink: '/components/modals'
+            navLink: "/components/modals",
           },
           {
-            id: 'navsComponent',
-            title: 'Navs Component',
+            id: "navsComponent",
+            title: "Navs Component",
             icon: <Circle />,
-            navLink: '/components/nav-component'
+            navLink: "/components/nav-component",
           },
           {
-            id: 'offCanvas',
-            title: 'OffCanvas',
+            id: "offCanvas",
+            title: "OffCanvas",
             icon: <Circle size={12} />,
-            navLink: '/components/offcanvas'
+            navLink: "/components/offcanvas",
           },
           {
-            id: 'pagination',
-            title: 'Pagination',
+            id: "pagination",
+            title: "Pagination",
             icon: <Circle />,
-            navLink: '/components/pagination'
+            navLink: "/components/pagination",
           },
           {
-            id: 'pillBadges',
-            title: 'Pill Badges',
+            id: "pillBadges",
+            title: "Pill Badges",
             icon: <Circle />,
-            navLink: '/components/pill-badges'
+            navLink: "/components/pill-badges",
           },
           {
-            id: 'pillsComponent',
-            title: 'Pills Component',
+            id: "pillsComponent",
+            title: "Pills Component",
             icon: <Circle />,
-            navLink: '/components/pills-component'
+            navLink: "/components/pills-component",
           },
           {
-            id: 'popovers',
-            title: 'Popovers',
+            id: "popovers",
+            title: "Popovers",
             icon: <Circle />,
-            navLink: '/components/popovers'
+            navLink: "/components/popovers",
           },
           {
-            id: 'progress',
-            title: 'Progress',
+            id: "progress",
+            title: "Progress",
             icon: <Circle />,
-            navLink: '/components/progress'
+            navLink: "/components/progress",
           },
           {
-            id: 'spinners',
-            title: 'Spinner',
+            id: "spinners",
+            title: "Spinner",
             icon: <Circle />,
-            navLink: '/components/spinners'
+            navLink: "/components/spinners",
           },
           {
-            id: 'tabsComponent',
-            title: 'Tabs Component',
+            id: "tabsComponent",
+            title: "Tabs Component",
             icon: <Circle />,
-            navLink: '/components/tabs-component'
+            navLink: "/components/tabs-component",
           },
           {
-            id: 'timeline',
-            title: 'Timeline',
+            id: "timeline",
+            title: "Timeline",
             icon: <Circle />,
-            navLink: '/components/timeline'
+            navLink: "/components/timeline",
           },
           {
-            id: 'react-hot-toasts',
-            title: 'React Hot Toasts',
+            id: "react-hot-toasts",
+            title: "React Hot Toasts",
             icon: <Circle />,
-            navLink: '/components/react-hot-toasts'
+            navLink: "/components/react-hot-toasts",
           },
           {
-            id: 'tooltips',
-            title: 'Tooltips',
+            id: "tooltips",
+            title: "Tooltips",
             icon: <Circle />,
-            navLink: '/components/tooltips'
-          }
-        ]
+            navLink: "/components/tooltips",
+          },
+        ],
       },
       {
-        id: 'extensions',
-        title: 'Extensions',
+        id: "extensions",
+        title: "Extensions",
         icon: <Box />,
         children: [
           {
-            id: 'sweetAlert',
-            title: 'Sweet Alert',
+            id: "sweetAlert",
+            title: "Sweet Alert",
             icon: <Circle />,
-            navLink: '/extensions/sweet-alert'
+            navLink: "/extensions/sweet-alert",
           },
 
           {
-            id: 'toastr',
-            title: 'Toastr',
+            id: "toastr",
+            title: "Toastr",
             icon: <Circle />,
-            navLink: '/extensions/toastr'
+            navLink: "/extensions/toastr",
           },
           {
-            id: 'slider',
-            title: 'Sliders',
+            id: "slider",
+            title: "Sliders",
             icon: <Circle />,
-            navLink: '/extensions/slider'
+            navLink: "/extensions/slider",
           },
           {
-            id: 'drag_&_drop',
-            title: 'Drag & Drop',
+            id: "drag_&_drop",
+            title: "Drag & Drop",
             icon: <Circle />,
-            navLink: '/extensions/drag-and-drop'
+            navLink: "/extensions/drag-and-drop",
           },
           {
-            id: 'tour',
-            title: 'Tour',
+            id: "tour",
+            title: "Tour",
             icon: <Circle />,
-            navLink: '/extensions/tour'
+            navLink: "/extensions/tour",
           },
           {
-            id: 'clipBoard',
-            title: 'Clipboard',
+            id: "clipBoard",
+            title: "Clipboard",
             icon: <Circle />,
-            navLink: '/extensions/clipboard'
+            navLink: "/extensions/clipboard",
           },
           {
-            id: 'swiper',
-            title: 'Swiper',
+            id: "swiper",
+            title: "Swiper",
             icon: <Circle />,
-            navLink: '/extensions/swiper'
+            navLink: "/extensions/swiper",
           },
           {
-            id: 'ratings',
-            title: 'Ratings',
+            id: "ratings",
+            title: "Ratings",
             icon: <Circle />,
-            navLink: '/extensions/ratings'
+            navLink: "/extensions/ratings",
           },
           {
-            id: 'i18n',
-            title: 'I18n',
+            id: "i18n",
+            title: "I18n",
             icon: <Circle />,
-            navLink: '/extensions/i18n'
+            navLink: "/extensions/i18n",
           },
           {
-            id: 'extPagination',
-            title: 'React Paginate',
+            id: "extPagination",
+            title: "React Paginate",
             icon: <Circle />,
-            navLink: '/extensions/pagination'
+            navLink: "/extensions/pagination",
           },
           {
-            id: 'extImport',
-            title: 'Import',
+            id: "extImport",
+            title: "Import",
             icon: <Circle />,
-            navLink: '/extensions/import'
+            navLink: "/extensions/import",
           },
           {
-            id: 'extExport',
-            title: 'Export',
+            id: "extExport",
+            title: "Export",
             icon: <Circle />,
-            navLink: '/extensions/export'
+            navLink: "/extensions/export",
           },
           {
-            id: 'extExportSelected',
-            title: 'Export Selected',
+            id: "extExportSelected",
+            title: "Export Selected",
             icon: <Circle />,
-            navLink: '/extensions/export-selected'
-          }
-        ]
+            navLink: "/extensions/export-selected",
+          },
+        ],
       },
       {
-        id: 'pageLayouts',
-        title: 'Page Layouts',
+        id: "pageLayouts",
+        title: "Page Layouts",
         icon: <Layout />,
         children: [
           {
-            id: 'layoutBoxed',
-            title: 'Layout Boxed',
+            id: "layoutBoxed",
+            title: "Layout Boxed",
             icon: <Circle />,
-            navLink: '/page-layout/layout-boxed'
+            navLink: "/page-layout/layout-boxed",
           },
           {
-            id: 'withoutMenu',
-            title: 'Without Menu',
+            id: "withoutMenu",
+            title: "Without Menu",
             icon: <Circle />,
-            navLink: '/page-layout/without-menu'
+            navLink: "/page-layout/without-menu",
           },
           {
-            id: 'layoutEmpty',
-            title: 'Layout Empty',
+            id: "layoutEmpty",
+            title: "Layout Empty",
             icon: <Circle />,
-            navLink: '/page-layout/layout-empty'
+            navLink: "/page-layout/layout-empty",
           },
           {
-            id: 'layoutBlank',
-            title: 'Layout Blank',
+            id: "layoutBlank",
+            title: "Layout Blank",
             icon: <Circle />,
-            navLink: '/page-layout/layout-blank'
-          }
-        ]
-      }
-    ]
-  }
-]
+            navLink: "/page-layout/layout-blank",
+          },
+        ],
+      },
+    ],
+  },
+];

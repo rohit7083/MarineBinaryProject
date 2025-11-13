@@ -85,24 +85,22 @@ const AccountDetails = ({
   //   }
   // }, [slipNameFromDashboard, reset]);
 
-
   useEffect(() => {
-  if (Object.keys(formData || {})?.length) {
-    // If formData has keys → use it
-    reset({ ...formData });
-  } else if (slipNameFromDashboard) {
-    // If slipNameFromDashboard exists → use it
-    reset({
-      slipName: {
-        label: slipNameFromDashboard.slipName,
-        value: slipNameFromDashboard.id,
-        dimensions: slipNameFromDashboard.dimensions, // optional
-      },
-      dimensionVal: slipNameFromDashboard.dimensions || {},
-    });
-  }
-}, [reset, formData, slipNameFromDashboard]);
-
+    if (Object.keys(formData || {})?.length) {
+      // If formData has keys → use it
+      reset({ ...formData });
+    } else if (slipNameFromDashboard) {
+      // If slipNameFromDashboard exists → use it
+      reset({
+        slipName: {
+          label: slipNameFromDashboard.slipName,
+          value: slipNameFromDashboard.id,
+          dimensions: slipNameFromDashboard.dimensions, // optional
+        },
+        dimensionVal: slipNameFromDashboard.dimensions || {},
+      });
+    }
+  }, [reset, formData, slipNameFromDashboard]);
 
   useEffect(() => {
     fetchForm();

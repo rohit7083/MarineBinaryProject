@@ -208,12 +208,12 @@ const DataTableWithButtons = () => {
         <Row className="justify-content-between mx-0">
           {/* Left Side - Button */}
           <Col md="6" sm="12" className="d-flex align-items-center mt-1">
-          <Link to="/member_management/add-member">
-            <Button color="primary">
-              <PlusCircle size={20} className="me-1" />
-              Add Member
-            </Button>
-          </Link>
+            <Link to="/member_management/add-member">
+              <Button color="primary">
+                <PlusCircle size={20} className="me-1" />
+                Add Member
+              </Button>
+            </Link>
           </Col>
 
           {/* Right Side - Search Bar */}

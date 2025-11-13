@@ -1,6 +1,6 @@
 export const avatarSizes = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import Avatar from '@components/avatar'
@@ -20,11 +20,11 @@ export default AvatarSizes
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarInitials = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import Avatar from '@components/avatar'
@@ -43,11 +43,11 @@ export default AvatarInitials
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarColors = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import Avatar from '@components/avatar'
@@ -68,11 +68,11 @@ export default AvatarColors
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarLightColors = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import Avatar from '@components/avatar'
@@ -93,11 +93,11 @@ export default AvatarLightColors
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarIcons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import Avatar from '@components/avatar'
@@ -119,11 +119,11 @@ export default AvatarIcons
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarStatus = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import Avatar from '@components/avatar'
@@ -144,11 +144,11 @@ export default AvatarStatus
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarGroup = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import AvatarGroup from '@components/avatar-group'
@@ -179,11 +179,11 @@ export default AvatarGroupComponent
 `}
     </code>
   </pre>
-)
+);
 
 export const avatarGroupTooltip = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import AvatarGroup from '@components/avatar-group'
@@ -219,4 +219,4 @@ export default AvatarGroupComponent
 `}
     </code>
   </pre>
-)
+);

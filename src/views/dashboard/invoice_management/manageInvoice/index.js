@@ -44,7 +44,7 @@ const TabsCentered = () => {
         setSlipData(resp.data.content);
       }
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setFetchLoader(false);
     }
@@ -53,7 +53,6 @@ const TabsCentered = () => {
   useEffect(() => {
     fetchSlipData();
   }, []);
-
 
   return (
     <React.Fragment>

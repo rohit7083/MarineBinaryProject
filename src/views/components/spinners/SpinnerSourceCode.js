@@ -1,6 +1,6 @@
 export const spinnerBorder = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -12,11 +12,11 @@ export default SpinnerBorder
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerColors = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -39,11 +39,11 @@ export default SpinnerColors
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerGrowing = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -55,11 +55,11 @@ export default SpinnerGrowing
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerGrowColors = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -81,11 +81,11 @@ const SpinnerGrowColors = () => {
 export default SpinnerGrowColors`}
     </code>
   </pre>
-)
+);
 
 export const spinnerFlex = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -108,11 +108,11 @@ export default SpinnerFlex
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerFloat = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -124,11 +124,11 @@ export default SpinnerFloat
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerTextAlignment = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -144,11 +144,11 @@ export default SpinnerTextAlignment
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerSizes = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Spinner } from 'reactstrap'
@@ -175,11 +175,11 @@ export default SpinnerSizes
 `}
     </code>
   </pre>
-)
+);
 
 export const spinnerButton = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, Spinner } from 'reactstrap'
@@ -211,4 +211,4 @@ export default SpinnerButton
 `}
     </code>
   </pre>
-)
+);

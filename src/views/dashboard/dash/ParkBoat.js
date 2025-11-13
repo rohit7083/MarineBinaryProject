@@ -43,7 +43,7 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
   );
 
   const handleView = () => {
-    // navigate("/marin/slip-management");
+    navigate("/marin/slip-management");
   };
 
   const handleAdd = (boat) => {

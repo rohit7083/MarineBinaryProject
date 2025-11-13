@@ -30,11 +30,10 @@ function ProductHeader({ selectedCustomer }) {
     setError,
   } = useForm({});
 
- const onDiscard = () => {
-  setShow(false);
-  reset();
-};
-
+  const onDiscard = () => {
+    setShow(false);
+    reset();
+  };
 
   const onSubmit = (data) => {
     if (Object.values(data).every((field) => field.length > 0)) {

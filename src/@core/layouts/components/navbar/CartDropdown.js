@@ -131,12 +131,10 @@
 
 // export default CartDropdown
 
-import React from 'react'
+import React from "react";
 
 function CartDropdown() {
-  return (
-    <div></div>
-  )
+  return <div></div>;
 }
 
-export default CartDropdown
+export default CartDropdown;

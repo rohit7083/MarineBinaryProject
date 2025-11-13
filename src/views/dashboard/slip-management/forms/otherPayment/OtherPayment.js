@@ -13,7 +13,7 @@ import ReactPaginate from "react-paginate";
 // ** PrimeReact
 import { Toast } from "primereact/toast";
 
-// ** Reactstrap Imports  
+// ** Reactstrap Imports
 import {
   Badge,
   Button,
@@ -28,7 +28,7 @@ import {
   ModalFooter,
   ModalHeader,
   Row,
-  Spinner
+  Spinner,
 } from "reactstrap";
 
 // ** Auth
@@ -47,37 +47,37 @@ const DataTablesReOrder = () => {
 
   // ** Format Currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(amount || 0)
-  }
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    }).format(amount || 0);
+  };
 
   // ** Format Date
   const formatDate = (dateString) => {
-    if (!dateString || dateString === '-') return 'N/A'
+    if (!dateString || dateString === "-") return "N/A";
     try {
-      const date = new Date(dateString)
-      return new Intl.DateTimeFormat('en-IN', {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      }).format(date)
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
     } catch (error) {
-      return dateString
+      return dateString;
     }
-  }
+  };
 
   // ** Get Payment Mode Display Text
   const getPaymentModeText = (paymentMode) => {
-    if (!paymentMode || paymentMode === 1 || paymentMode === '1') {
-      return 'Credit Card'
+    if (!paymentMode || paymentMode === 1 || paymentMode === "1") {
+      return "Credit Card";
     }
-    return paymentMode
-  }
+    return paymentMode;
+  };
 
   // ** Download Payment Receipt as PDF
   const downloadPaymentReceipt = (paymentData) => {
@@ -93,8 +93,8 @@ const DataTablesReOrder = () => {
       }
 
       // Create a new window for PDF generation
-      const printWindow = window.open('', '', 'width=800,height=600');
-      
+      const printWindow = window.open("", "", "width=800,height=600");
+
       const htmlContent = `
         <!DOCTYPE html>
         <html>
@@ -227,56 +227,70 @@ const DataTablesReOrder = () => {
             <div class="details-section">
               <div class="detail-row">
                 <div class="detail-label">Transaction ID:</div>
-                <div class="detail-value">${paymentData.transactionId || 'N/A'}</div>
+                <div class="detail-value">${
+                  paymentData.transactionId || "N/A"
+                }</div>
               </div>
               
               <div class="detail-row">
                 <div class="detail-label">Bank Reference:</div>
-                <div class="detail-value">${paymentData.bankRef || '-'}</div>
+                <div class="detail-value">${paymentData.bankRef || "-"}</div>
               </div>
               
               <div class="detail-row">
                 <div class="detail-label">Amount:</div>
-                <div class="detail-value amount">${formatCurrency(paymentData.amount)}</div>
+                <div class="detail-value amount">${formatCurrency(
+                  paymentData.amount
+                )}</div>
               </div>
               
               <div class="detail-row">
                 <div class="detail-label">Status:</div>
                 <div class="detail-value">
-                  <span class="status-badge status-${paymentData.status?.toUpperCase() === 'SUCCESS' ? 'success' : paymentData.status?.toUpperCase() === 'PENDING' ? 'pending' : paymentData.status?.toUpperCase() === 'FAILED' ? 'failed' : 'default'}">
-                    ${(paymentData.status || 'UNKNOWN').toUpperCase()}
+                  <span class="status-badge status-${
+                    paymentData.status?.toUpperCase() === "SUCCESS"
+                      ? "success"
+                      : paymentData.status?.toUpperCase() === "PENDING"
+                      ? "pending"
+                      : paymentData.status?.toUpperCase() === "FAILED"
+                      ? "failed"
+                      : "default"
+                  }">
+                    ${(paymentData.status || "UNKNOWN").toUpperCase()}
                   </span>
                 </div>
               </div>
               
               <div class="detail-row">
                 <div class="detail-label">Payment Date:</div>
-                <div class="detail-value">${formatDate(paymentData.paymentDate)}</div>
+                <div class="detail-value">${formatDate(
+                  paymentData.paymentDate
+                )}</div>
               </div>
             </div>
             
             <div class="footer">
-              <p>Generated on ${new Date().toLocaleString('en-IN')}</p>
+              <p>Generated on ${new Date().toLocaleString("en-IN")}</p>
               <p>This is a computer generated receipt</p>
             </div>
           </div>
         </body>
         </html>
       `;
-      
+
       printWindow.document.write(htmlContent);
       printWindow.document.close();
-      
+
       // Wait for content to load
-      printWindow.onload = function() {
+      printWindow.onload = function () {
         setTimeout(() => {
           printWindow.print();
-          
+
           // Close the window after printing (optional)
           setTimeout(() => {
             printWindow.close();
           }, 500);
-          
+
           toast.current.show({
             severity: "success",
             summary: "PDF Generated",
@@ -285,9 +299,8 @@ const DataTablesReOrder = () => {
           });
         }, 250);
       };
-      
     } catch (error) {
-      console.error('Download error:', error);
+      console.error("Download error:", error);
       toast.current.show({
         severity: "error",
         summary: "Download Failed",
@@ -299,7 +312,7 @@ const DataTablesReOrder = () => {
 
   // ** Handle View Details
   const handleViewDetails = (row) => {
-    console.log('Selected Payment:', row);
+    console.log("Selected Payment:", row);
     setSelectedPayment(row);
     setViewModal(true);
   };
@@ -359,21 +372,20 @@ const DataTablesReOrder = () => {
 
         const formattedData = result.map((item, index) => ({
           id: index + 1,
-          transactionId: item.transactionId || 'N/A',
-          bankRef: item.bankTransactionId || '-',
-          amount: item.finalPayment || '0',
-          status: item.paymentStatus || 'Pending',
-          paymentDate: item.paymentDate || '-',
-          rawData: item // Store raw data for additional details if needed
+          transactionId: item.transactionId || "N/A",
+          bankRef: item.bankTransactionId || "-",
+          amount: item.finalPayment || "0",
+          status: item.paymentStatus || "Pending",
+          paymentDate: item.paymentDate || "-",
+          rawData: item, // Store raw data for additional details if needed
         }));
 
         setFormatedData(formattedData);
         setFilteredData(formattedData);
-        console.log('Formatted data:', formattedData);
-        console.log('Payment response:', response);
-        
+        console.log("Formatted data:", formattedData);
+        console.log("Payment response:", response);
       } catch (error) {
-        console.log('Error fetching payment data:', error);
+        console.log("Error fetching payment data:", error);
         toast.current?.show({
           severity: "error",
           summary: "Fetch Error",
@@ -416,7 +428,7 @@ const DataTablesReOrder = () => {
   return (
     <>
       <Toast ref={toast} />
-      
+
       <Card className="overflow-hidden">
         <CardHeader className="d-flex justify-content-between align-items-center">
           <CardTitle tag="h4">Other Payment</CardTitle>
@@ -451,8 +463,8 @@ const DataTablesReOrder = () => {
               noHeader
               columns={reOrderColumns({
                 onViewDetails: handleViewDetails,
-                onDownload: handleDownload
-              })}  
+                onDownload: handleDownload,
+              })}
               sortIcon={<ChevronDown size={10} />}
               pagination
               paginationComponent={CustomPagination}
@@ -476,9 +488,7 @@ const DataTablesReOrder = () => {
         className="modal-dialog-centered"
         size="lg"
       >
-        <ModalHeader toggle={toggleViewModal}>
-          Payment Details
-        </ModalHeader>
+        <ModalHeader toggle={toggleViewModal}>Payment Details</ModalHeader>
 
         <ModalBody>
           {selectedPayment && (
@@ -486,54 +496,68 @@ const DataTablesReOrder = () => {
               <Col xs="12">
                 <div className="payment-details">
                   <h5 className="text-primary mb-3">Transaction Information</h5>
-                  
-              <div className="border-bottom">
+
+                  <div className="border-bottom">
                     <div className="mb-2">
                       <strong>Transaction ID:</strong>
-                      <div className="mt-1">{selectedPayment.transactionId}</div>
+                      <div className="mt-1">
+                        {selectedPayment.transactionId}
+                      </div>
                     </div>
                   </div>
-                  
+
                   <div className=" border-bottom">
                     <div className="mb-2">
                       <strong>Bank Reference:</strong>
-                      <div className="mt-1 text-muted">{selectedPayment.bankRef}</div>
+                      <div className="mt-1 text-muted">
+                        {selectedPayment.bankRef}
+                      </div>
                     </div>
                   </div>
-                  
+
                   <div className=" border-bottom">
                     <div className="mb-2">
                       <strong>Amount:</strong>
                       <div className="mt-1">
-                        <span className="text-success fw-bold" style={{ fontSize: '1.2rem' }}>
+                        <span
+                          className="text-success fw-bold"
+                          style={{ fontSize: "1.2rem" }}
+                        >
                           {formatCurrency(selectedPayment.amount)}
                         </span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border-bottom">
                     <div className="mb-2">
                       <strong>Status:</strong>
                       <div className="mt-1">
-                        <Badge 
+                        <Badge
                           color={
-                            selectedPayment.status?.toUpperCase() === 'SUCCESS' ? 'success' : 
-                            selectedPayment.status?.toUpperCase() === 'PENDING' ? 'warning' : 
-                            selectedPayment.status?.toUpperCase() === 'FAILED' ? 'danger' : 
-                            'secondary'
-                          } 
+                            selectedPayment.status?.toUpperCase() === "SUCCESS"
+                              ? "success"
+                              : selectedPayment.status?.toUpperCase() ===
+                                "PENDING"
+                              ? "warning"
+                              : selectedPayment.status?.toUpperCase() ===
+                                "FAILED"
+                              ? "danger"
+                              : "secondary"
+                          }
                           pill
                         >
-                          {selectedPayment.status?.toUpperCase() || 'UNKNOWN'}
+                          {selectedPayment.status?.toUpperCase() || "UNKNOWN"}
                         </Badge>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="mb-2">
                     <strong>Payment Date:</strong>
-                    <div className="mt-1">{formatDate(selectedPayment.paymentDate)}</div>
+                    <div className="mt-1">
+                      {formatDate(selectedPayment.paymentDate)}
+                    </div>
                   </div>
                 </div>
               </Col>

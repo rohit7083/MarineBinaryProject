@@ -1,5 +1,5 @@
 import React from "react";
-import LocationGuide from '../../../../src/views/pages/authentication/Images/locationguide.png';
+import LocationGuide from "../../../../src/views/pages/authentication/Images/locationguide.png";
 function EnableLocation() {
   const [show, setShow] = useState(false);
 
@@ -12,9 +12,7 @@ function EnableLocation() {
     }
   }, []);
 
-  const onSubmit=(data)=>{
-    
-  }
+  const onSubmit = (data) => {};
   return (
     <div>
       <Fragment>

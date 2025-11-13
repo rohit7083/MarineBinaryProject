@@ -20,25 +20,23 @@ const index = () => {
   }, []);
 
   return (
-  
-      <Row className="gy-2">
-        {/* Top row: Search bars */}
-        <Col xs={12} md={8} className="mt-2">
-          <SearchBar />
-        </Col>
-        <Col xs={12} md={4} className="mt-2">
-          <CustomerSearch />
-        </Col>
+    <Row className="gy-2">
+      {/* Top row: Search bars */}
+      <Col xs={12} md={8} className="mt-2">
+        <SearchBar />
+      </Col>
+      <Col xs={12} md={4} className="mt-2">
+        <CustomerSearch />
+      </Col>
 
-        {/* Main content area */}
-        <Col xs={12} md={8} className="mt-1">
-          <ProductArea />
-        </Col>
-        <Col xs={12} md={4} className="mt-1">
-          <CartArea />
-        </Col>
-      </Row>
-    
+      {/* Main content area */}
+      <Col xs={12} md={8} className="mt-1">
+        <ProductArea />
+      </Col>
+      <Col xs={12} md={4} className="mt-1">
+        <CartArea />
+      </Col>
+    </Row>
   );
 };
 

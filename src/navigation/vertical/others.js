@@ -1,5 +1,5 @@
 // ** Icons Import
-import { Menu, Circle, EyeOff, Folder, LifeBuoy, Shield } from 'react-feather'
+import { Menu, Circle, EyeOff, Folder, LifeBuoy, Shield } from "react-feather";
 
 export default [
   // {
@@ -66,4 +66,4 @@ export default [
   //   newTab: true,
   //   navLink: 'https://pixinvent.ticksy.com/'
   // }
-]
+];

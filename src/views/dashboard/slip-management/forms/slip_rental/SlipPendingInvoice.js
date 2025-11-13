@@ -81,8 +81,7 @@ const DataTablesReOrder = () => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="d-flex justify-content-between align-items-center">
-        <CardTitle tag="h4">Slip Rental Pending Invoice
-        </CardTitle>
+        <CardTitle tag="h4">Slip Rental Pending Invoice</CardTitle>
 
         <div className="d-flex align-items-center gap-2">
           {/* <div className="d-flex align-items-center">

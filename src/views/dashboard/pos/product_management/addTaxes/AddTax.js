@@ -144,7 +144,6 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
                 control={control}
                 rules={{
                   required: "Tax name is required",
-                 
                 }}
                 render={({ field }) => (
                   <Input
@@ -153,11 +152,13 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
                     placeholder="Enter tax name"
                     invalid={!!errors.taxName}
                     onChange={(e) => {
-  // Allow only letters and spaces
-  const onlyLettersAndSpaces = e.target.value.replace(/[^A-Za-z\s]/g, "");
-  field.onChange(onlyLettersAndSpaces);
-}}
-
+                      // Allow only letters and spaces
+                      const onlyLettersAndSpaces = e.target.value.replace(
+                        /[^A-Za-z\s]/g,
+                        ""
+                      );
+                      field.onChange(onlyLettersAndSpaces);
+                    }}
                   />
                 )}
               />
@@ -226,7 +227,7 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
                 rules={{
                   required: "Tax value is required",
                   pattern: {
-value: /^\d+(\.\d+)?$/,
+                    value: /^\d+(\.\d+)?$/,
 
                     message: "Only numbers are allowed",
                   },
@@ -248,11 +249,10 @@ value: /^\d+(\.\d+)?$/,
                     placeholder="Enter tax amount"
                     invalid={!!errors.taxValue}
                     onChange={(e) => {
-  // Allow only numeric characters
-  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
-  field.onChange(onlyNumbers);
-}}
-
+                      // Allow only numeric characters
+                      const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(onlyNumbers);
+                    }}
                   />
                 )}
               />

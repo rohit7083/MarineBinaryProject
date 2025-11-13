@@ -74,7 +74,7 @@ const CardPayment = () => {
 
   const [loading, setLoading] = useState(false);
   const [memberDetail, setMemberDetails] = useState();
-  
+
   const navigate = useNavigate();
   const [loadPayment, setLoadPayment] = useState(false);
   const [err, setErr] = useState("");
@@ -85,7 +85,7 @@ const CardPayment = () => {
       console.log("res", res);
       setMemberDetails(res?.data);
     } catch (error) {
-       console.error("error", error);
+      console.error("error", error);
     } finally {
       setLoading(false);
     }
@@ -232,7 +232,7 @@ const CardPayment = () => {
         });
       }
     } catch (error) {
-       console.error(error);
+      console.error(error);
       if (error.response) {
         console.log("Error data", error.response.data);
         console.log("Error status", error.response.status);
@@ -242,7 +242,6 @@ const CardPayment = () => {
     } finally {
       setLoadPayment(false);
     }
-    
   };
 
   const detectCardType = (number) => {

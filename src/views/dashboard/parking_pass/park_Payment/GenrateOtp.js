@@ -3,12 +3,22 @@ import React, { Fragment, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import { Send } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
-import { BeatLoader } from 'react-spinners';
+import { BeatLoader } from "react-spinners";
 import {
-    Button, Col, FormFeedback, Input, InputGroup, Label, Modal, ModalBody,
-    ModalHeader, Row, Spinner, UncontrolledAlert
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  InputGroup,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
-import WatchNew from '../../../../assets/images/updatedWatchnew.jpg';
+import WatchNew from "../../../../assets/images/updatedWatchnew.jpg";
 
 import { ThumbsUp } from "react-feather";
 import { Alert } from "reactstrap";
@@ -19,8 +29,8 @@ const GenrateOtp = ({
   fetchDiscountFields,
 }) => {
   // ** States
-    const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
-  
+  const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
+
   const [show, setShow] = useState(false);
   const [time, setTime] = useState(100);
   const [errMsz, seterrMsz] = useState("");
@@ -32,10 +42,12 @@ const GenrateOtp = ({
   const {
     control,
     handleSubmit,
-    setError,watch,setValue,
+    setError,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm();
-   
+
   const handleOTP = async () => {
     try {
       const payload = {
@@ -47,7 +59,6 @@ const GenrateOtp = ({
       const token = response.data.content;
       if (response?.status == 200) {
         setCountdownEndTime(Date.now() + 40000);
-
       }
       setAccessTokenOtp(token);
       setShow(true);
@@ -70,7 +81,6 @@ const GenrateOtp = ({
         return;
       }
 
-       
       const payload = { otp: parseInt(data.Userotp) };
       setLoader(true);
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
@@ -81,7 +91,6 @@ const GenrateOtp = ({
       console.log("OTP Verified Successfully!");
       // setButtonEnabled(true);
     } catch (error) {
-       
       console.error("Error verifying OTP:", error);
       console.log("Failed to verify OTP. Please try again.");
 
@@ -115,20 +124,15 @@ const GenrateOtp = ({
     return () => clearInterval(timer);
   }, [show]);
 
-const watchUserotp = watch("Userotp");
+  const watchUserotp = watch("Userotp");
 
-useEffect(()=>{
+  useEffect(() => {
+    const inputRestricted = watchUserotp?.replace(/[^0-9]/g, "");
 
-  const inputRestricted = watchUserotp?.replace(/[^0-9]/g, "");
-
-  if (watchUserotp !== inputRestricted) {
-    setValue("Userotp", inputRestricted, { shouldValidate: true }); // Update the value in the form
-    
-  }
-
-
-
-},[watchUserotp,setValue])
+    if (watchUserotp !== inputRestricted) {
+      setValue("Userotp", inputRestricted, { shouldValidate: true }); // Update the value in the form
+    }
+  }, [watchUserotp, setValue]);
 
   return (
     <Fragment>
@@ -144,8 +148,7 @@ useEffect(()=>{
       ) : (
         <Button color="primary" size="sm" onClick={handleOTP}>
           {otpLoader ? (
-           <BeatLoader size={10} color="#ffffff" />
-
+            <BeatLoader size={10} color="#ffffff" />
           ) : (
             <>
               {" "}
@@ -230,42 +233,39 @@ useEffect(()=>{
                 </a>
               </p> */}
 
+              <div className="d-flex flex-column align-items-center position-relative">
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  <img
+                    src={WatchNew}
+                    alt="Phone Call"
+                    style={{
+                      width: "120px",
+                      height: "100px",
+                      display: "block",
+                    }}
+                  />
 
-               <div className="d-flex flex-column align-items-center position-relative">
-                                  <div
-                                    style={{ position: "relative", display: "inline-block" }}
-                                  >
-                                    <img
-                                      src={WatchNew}
-                                      alt="Phone Call"
-                                      style={{
-                                        width: "120px",
-                                        height: "100px",
-                                        display: "block",
-                                      }}
-                                    />
-              
-                                    <Countdown
-                                      key={countdownEndTime} // resets the countdown on update
-                                      date={countdownEndTime}
-                                      // onComplete={() => setResendLoading(false)} // re-enable the button
-                                      renderer={({ minutes, seconds }) => (
-                                        <span
-                                          className="position-absolute top-50 start-50 translate-middle"
-                                          style={{
-                                            marginTop: "-4px",
-                                            fontSize: "14px",
-                                            fontWeight: "bold",
-                                            color: "White",
-                                          }}
-                                        >
-                                          {String(minutes).padStart(2, "0")}:
-                                          {String(seconds).padStart(2, "0")}
-                                        </span>
-                                      )}
-                                    />
-                                  </div>
-                                </div>
+                  <Countdown
+                    key={countdownEndTime} // resets the countdown on update
+                    date={countdownEndTime}
+                    // onComplete={() => setResendLoading(false)} // re-enable the button
+                    renderer={({ minutes, seconds }) => (
+                      <span
+                        className="position-absolute top-50 start-50 translate-middle"
+                        style={{
+                          marginTop: "-4px",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          color: "White",
+                        }}
+                      >
+                        {String(minutes).padStart(2, "0")}:
+                        {String(seconds).padStart(2, "0")}
+                      </span>
+                    )}
+                  />
+                </div>
+              </div>
             </Col>
 
             <Col xs={12}>

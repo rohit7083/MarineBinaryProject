@@ -49,7 +49,6 @@ const ClientDetaiils = ({
   });
 
   const onSubmit = (data) => {
-   
     const payload = {
       firstName: data.firstName,
       lastName: data.lastName,

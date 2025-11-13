@@ -73,7 +73,7 @@ const Checkout = () => {
   const [clientInfo, setClientInfo] = useState(null);
   const toast = useRef(null);
   const [accessTokenotp, setAccessTokenOtp] = useState("");
-const [load,setload]=useState(false);
+  const [load, setload] = useState(false);
   const [err, setErr] = useState("");
   const [selectMemberOptions, setSelectMemberOptions] = useState([
     {
@@ -199,7 +199,7 @@ const [load,setload]=useState(false);
 
     try {
       // setLoadPayment(true);
-        setload(true);
+      setload(true);
 
       const res = await useJwt.PreviewSubmit(payload);
       console.log(res);
@@ -235,9 +235,8 @@ const [load,setload]=useState(false);
         });
       }
     } finally {
-
-        setload(false);
-        }
+      setload(false);
+    }
   };
   // return <ChecloutCode />;
 
@@ -245,7 +244,11 @@ const [load,setload]=useState(false);
     const generateOtpIfNeeded = async () => {
       if (watch("discount") == true) {
         try {
-          const payload = { type: 3, roomId: state?.searchId };
+          const payload = {
+            type: 3,
+            roomId: state?.searchId,
+            memberId: clientInfo?.id,
+          };
           const response = await useJwt.GenerateOtp(payload);
           if (response?.status === 200) {
             setAccessTokenOtp(response?.data?.content);
@@ -367,7 +370,7 @@ const [load,setload]=useState(false);
                                 <Input
                                   {...field}
                                   type="checkbox"
-                                  disabled={verify}
+                                  disabled={verify || !clientInfo}
                                   checked={field.value}
                                 />
                               )}
@@ -378,6 +381,7 @@ const [load,setload]=useState(false);
                         {watch("discount") === true && (
                           <>
                             <OtpGenerate
+                              clientInfo={clientInfo}
                               accessTokenotp={accessTokenotp}
                               setAccessTokenOtp={setAccessTokenOtp}
                               setShowModal={setShowModal}
@@ -459,9 +463,8 @@ const [load,setload]=useState(false);
                           <div className="detail-amt">
                             $
                             {(
-                              state?.alldata?.totalAmount -
-                                discountAmt?.discountValue ||
-                              state?.alldata?.totalAmount
+                              (state?.alldata?.totalAmount || 0) -
+                              (discountAmt?.discountValue || 0)
                             ).toFixed(2)}
                           </div>
                         </li>
@@ -473,8 +476,20 @@ const [load,setload]=useState(false);
             </Card>
           </Col>
         </Row>
-        <Button type="submit" color="primary"  disabled={load} className="btn-next">
-        {load ? <> Loading.. <Spinner size="sm"/></> :<>Next</>}  
+        <Button
+          type="submit"
+          color="primary"
+          disabled={load}
+          className="btn-next"
+        >
+          {load ? (
+            <>
+              {" "}
+              Loading.. <Spinner size="sm" />
+            </>
+          ) : (
+            <>Next</>
+          )}
         </Button>
       </Form>
       <Offcanvas direction="end" toggle={toggleForm} isOpen={isOpenForm}>

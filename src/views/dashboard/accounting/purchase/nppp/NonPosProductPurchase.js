@@ -16,9 +16,7 @@ function NonPosProductPurchase() {
       label: "Non-POS Product Wise",
       content: (
         <>
-        
-            <NonPosTableData />
-        
+          <NonPosTableData />
         </>
       ),
     },

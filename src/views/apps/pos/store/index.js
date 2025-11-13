@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import useJwt from "@src/auth/jwt/useJwt";
 
-
-
 // ✅ Async thunk for fetching products
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -23,16 +21,16 @@ const productSlice = createSlice({
     loading: false,
     error: null,
     isCutomerSelected: false,
-    filterItems:[]
+    filterItems: [],
   },
   reducers: {
     // You can add extra reducers like addProduct, removeProduct if needed
     checkCustomerSelected: (state, action) => {
       state.isCutomerSelected = action.payload;
     },
-    storefilterSearch:(state,action)=>{
-      state.filterItems=action.payload
-    }
+    storefilterSearch: (state, action) => {
+      state.filterItems = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -51,6 +49,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { checkCustomerSelected,storefilterSearch } = productSlice.actions;
+export const { checkCustomerSelected, storefilterSearch } =
+  productSlice.actions;
 
 export default productSlice.reducer;

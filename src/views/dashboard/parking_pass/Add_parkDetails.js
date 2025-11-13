@@ -1,15 +1,21 @@
-
-
 import useJwt from "@src/auth/jwt/useJwt";
 import React, { Fragment, useEffect, useState } from "react";
 import {
-  Button, Col, Input, Label, Modal, ModalBody,
-  ModalHeader, Row, Spinner, UncontrolledAlert
+  Button,
+  Col,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 import { Controller, useForm } from "react-hook-form";
 
-const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
+const AddCardExample = ({ show, mode, setShow, resetTableData, uid, row }) => {
   const {
     reset,
     control,
@@ -87,25 +93,20 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
     }
   };
 
+  const toggle = () => {
+    setShow(!show);
+    reset();
+  };
 
-  const toggle=()=>{
-    setShow(!show)
-    reset()
-  }
-
-  useEffect(()=>{
-
-    if(row)
-    reset(row)
-  else{
-    reset( {
-      parkingName: "",
-      parkingAmount: "",
-    })
-  }
-  },[reset,row])
-
-
+  useEffect(() => {
+    if (row) reset(row);
+    else {
+      reset({
+        parkingName: "",
+        parkingAmount: "",
+      });
+    }
+  }, [reset, row]);
 
   return (
     <Fragment>
@@ -115,15 +116,13 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
         className="modal-dialog-centered"
         onClosed={() => reset()}
       >
-        <ModalHeader
-          className="bg-transparent"
-          toggle={toggle}
-        ></ModalHeader>
+        <ModalHeader className="bg-transparent" toggle={toggle}></ModalHeader>
 
         <ModalBody className="px-sm-5 mx-50 pb-5">
           <h1 className="text-center mb-1">
-            {row?.uid ?"Update " :"Create "}
-             Parking Pass</h1>
+            {row?.uid ? "Update " : "Create "}
+            Parking Pass
+          </h1>
 
           {HeaderError && (
             <React.Fragment>
@@ -165,10 +164,12 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
                     id="parkingName"
                     placeholder="Enter Pass  name"
                     invalid={!!errors.parkingName}
-                    onChange={(e)=>{
-                      const avoidSpecialChars=e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
-                                            field.onChange(avoidSpecialChars);
-
+                    onChange={(e) => {
+                      const avoidSpecialChars = e.target.value.replace(
+                        /[^a-zA-Z0-9 ]/g,
+                        ""
+                      );
+                      field.onChange(avoidSpecialChars);
                     }}
                   />
                 )}
@@ -201,8 +202,11 @@ const AddCardExample = ({ show, mode,setShow, resetTableData, uid, row }) => {
                     id="parkingAmount"
                     placeholder="Enter Pass Amount"
                     invalid={!!errors.parkingAmount}
-                    onChange={(e)=>{
-                      const avoidSpecialChars=e.target.value.replace(/[^0-9]/g, '');
+                    onChange={(e) => {
+                      const avoidSpecialChars = e.target.value.replace(
+                        /[^0-9]/g,
+                        ""
+                      );
                       field.onChange(avoidSpecialChars);
                     }}
                   />

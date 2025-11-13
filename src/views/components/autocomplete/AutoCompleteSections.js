@@ -1,90 +1,90 @@
 // ** React Imports
-import { useState } from 'react'
+import { useState } from "react";
 
 // ** Custom Components
-import AutoComplete from '@components/autocomplete'
+import AutoComplete from "@components/autocomplete";
 
 const AutoCompleteSections = () => {
   // ** State
   const [suggestions] = useState([
     {
-      groupTitle: '1970s',
+      groupTitle: "1970s",
       data: [
         {
-          title: 'C'
-        }
-      ]
+          title: "C",
+        },
+      ],
     },
     {
-      groupTitle: '1980s',
+      groupTitle: "1980s",
       data: [
         {
-          title: 'C++'
+          title: "C++",
         },
         {
-          title: 'Perl'
-        }
-      ]
+          title: "Perl",
+        },
+      ],
     },
     {
-      groupTitle: '1990s',
+      groupTitle: "1990s",
       data: [
         {
-          title: 'Haskell'
+          title: "Haskell",
         },
         {
-          title: 'Python'
+          title: "Python",
         },
         {
-          title: 'Java'
+          title: "Java",
         },
         {
-          title: 'Javascript'
+          title: "Javascript",
         },
         {
-          title: 'PHP'
+          title: "PHP",
         },
         {
-          title: 'Ruby'
-        }
-      ]
+          title: "Ruby",
+        },
+      ],
     },
     {
-      groupTitle: '2000s',
+      groupTitle: "2000s",
       data: [
         {
-          title: 'C#'
+          title: "C#",
         },
         {
-          title: 'Scala'
+          title: "Scala",
         },
         {
-          title: 'Clojure'
+          title: "Clojure",
         },
         {
-          title: 'Go'
-        }
-      ]
+          title: "Go",
+        },
+      ],
     },
     {
-      groupTitle: '2010s',
+      groupTitle: "2010s",
       data: [
         {
-          title: 'Elm'
-        }
-      ]
-    }
-  ])
+          title: "Elm",
+        },
+      ],
+    },
+  ]);
 
   return (
     <AutoComplete
       grouped={true}
-      filterKey='title'
+      filterKey="title"
       placeholder="Type 'c'"
-      className='form-control'
+      className="form-control"
       suggestions={suggestions}
-      filterHeaderKey='groupTitle'
+      filterHeaderKey="groupTitle"
     />
-  )
-}
-export default AutoCompleteSections
+  );
+};
+export default AutoCompleteSections;

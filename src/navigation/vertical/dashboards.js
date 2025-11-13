@@ -1,5 +1,11 @@
 // ** Icons Import
-import { BookCopy, HomeIcon, QrCode, UserRoundSearch } from "lucide-react";
+import {
+  BookCopy,
+  HomeIcon,
+  QrCode,
+  Settings,
+  UserRoundSearch,
+} from "lucide-react";
 import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
 export default [
@@ -391,26 +397,26 @@ export default [
     ],
   },
 
-  // {
-  //   id: "CRM Setting",
-  //   title: "CRM Setting",
-  //   icon: <Settings size={12} />,
-  //   // navLink: "/sales",
-  //   badge: "light-warning",
+  {
+    id: "CRM Setting",
+    title: "CRM Setting",
+    icon: <Settings size={12} />,
+    // navLink: "/sales",
+    badge: "light-warning",
 
-  //   children: [
-  //     {
-  //       id: "es",
-  //       title: "Email Settings",
-  //       icon: <Circle size={12} />,
-  //       // navLink: "/accounting/Ledger",
-  //     },
-  //     {
-  //       id: "ps",
-  //       title: "Payment Settings",
-  //       icon: <Circle size={12} />,
-  //       // navLink: "/accounting/Ledger",
-  //     },
-  //   ],
-  // },
+    children: [
+      {
+        id: "es",
+        title: "Email-Sms Settings",
+        icon: <Circle size={12} />,
+        navLink: "/crm/index",
+      },
+      {
+        id: "ps",
+        title: "Template",
+        icon: <Circle size={12} />,
+        navLink: "/crm/template/index",
+      },
+    ],
+  },
 ];

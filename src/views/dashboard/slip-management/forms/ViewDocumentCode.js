@@ -1,6 +1,3 @@
-
-
-
 import useJwt from "@src/auth/jwt/useJwt";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -65,64 +62,59 @@ const FileUploadForm = ({ SlipData, stepper, slipIID, sId }) => {
   };
 
   useEffect(() => {
-   
     if (documentUids.length) fetchExistingImages();
   }, [documentUids]);
 
-const onSubmit = async (data) => {
-  setErrmsz("");
-  setLoading(true);
+  const onSubmit = async (data) => {
+    setErrmsz("");
+    setLoading(true);
 
-  try {
-    for (const docName of filesName) {
-      const currentFiles = data[docName]?.currentFiles || [];
+    try {
+      for (const docName of filesName) {
+        const currentFiles = data[docName]?.currentFiles || [];
 
-      // Skip if no files selected
-      if (currentFiles.length === 0) continue;
+        // Skip if no files selected
+        if (currentFiles.length === 0) continue;
 
-      const file = currentFiles[0]; // Only one image per document
-      const formData = new FormData();
-      formData.append("slipId", SlipData.id);
-      formData.append("documentName", docName);
-      formData.append("DocumentFile", file);
-      console.log(file);
-      
+        const file = currentFiles[0]; // Only one image per document
+        const formData = new FormData();
+        formData.append("slipId", SlipData.id);
+        formData.append("documentName", docName);
+        formData.append("DocumentFile", file);
+        console.log(file);
 
-      // Check if a document with this name already exists
-      const existingDoc = SlipData?.documents?.find(
-        (doc) => doc?.documentName === docName
-      );
+        // Check if a document with this name already exists
+        const existingDoc = SlipData?.documents?.find(
+          (doc) => doc?.documentName === docName
+        );
 
-      try {
-        if (existingDoc && existingDoc?.uid) {
-          // ✅ Update existing document
-          await useJwt.updateDocuments(existingDoc.uid, formData);
-          console.log(`✅ Updated document: ${docName}`);
-        } else {
-          // 🆕 Create new document
-          await useJwt.slipDocument(formData);
-          console.log(`🆕 Created new document: ${docName}`);
+        try {
+          if (existingDoc && existingDoc?.uid) {
+            // ✅ Update existing document
+            await useJwt.updateDocuments(existingDoc.uid, formData);
+            console.log(`✅ Updated document: ${docName}`);
+          } else {
+            // 🆕 Create new document
+            await useJwt.slipDocument(formData);
+            console.log(`🆕 Created new document: ${docName}`);
+          }
+        } catch (err) {
+          console.error(`❌ Error processing ${docName}:`, err);
+          setErrmsz(`Failed to process ${docName}`);
         }
-      } catch (err) {
-        console.error(`❌ Error processing ${docName}:`, err);
-        setErrmsz(`Failed to process ${docName}`);
       }
+
+      setCheckDocuments(true);
+
+      // Refresh documents after processing
+      await fetchExistingImages();
+    } catch (error) {
+      console.error("Error in onSubmit:", error);
+      setErrmsz("Something went wrong while processing documents.");
+    } finally {
+      setLoading(false);
     }
-
-    
-    setCheckDocuments(true);
-
-    // Refresh documents after processing
-    await fetchExistingImages();
-  } catch (error) {
-    console.error("Error in onSubmit:", error);
-    setErrmsz("Something went wrong while processing documents.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+  };
 
   // ✅ Dropzone Renderer
   const renderDropzone = (fieldName) => {

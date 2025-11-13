@@ -1,5 +1,3 @@
-
-
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -784,7 +782,7 @@ function ShipDetails() {
 
               <Row className="mb-1">
                 <Label sm="3" for="addOn">
-                  Add-on 
+                  Add-on
                 </Label>
                 <Col sm="9">
                   <Input

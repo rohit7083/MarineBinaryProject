@@ -1,13 +1,13 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { useEffect, useState } from "react";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Row,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Row,
 } from "reactstrap";
 
 function ViewEventInfo({ paymentHistoryData }) {

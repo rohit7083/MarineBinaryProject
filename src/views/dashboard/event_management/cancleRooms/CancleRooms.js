@@ -4,19 +4,19 @@ import React, { useEffect, useState } from "react";
 import { Trash } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import {
-    Button,
-    CardText,
-    CardTitle,
-    Col,
-    Input,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-    Spinner,
-    Table,
-    UncontrolledAlert,
+  Button,
+  CardText,
+  CardTitle,
+  Col,
+  Input,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
+  Table,
+  UncontrolledAlert,
 } from "reactstrap";
 import successAnimation from "../../../../assets/images/celebrate.json";
 import successAnimations from "../../../../assets/images/Congratulations.json";
@@ -55,18 +55,14 @@ function CancelRooms({ show, setShow, datarow }) {
   }, [datarow]);
 
   const singleRooms = watch("room");
-console.log("singleRooms", singleRooms);
+  console.log("singleRooms", singleRooms);
 
-
-// useEffect(() => {
-//   {{ }}
-//   if (singleRooms && singleRooms.length > 0) {
-//    const slectOrNot=singleRooms.filter((room)=>room === true);
-//     setSelectedData(slectOrNot); 
-// }}, [singleRooms]);
-
-
-
+  // useEffect(() => {
+  //   {{ }}
+  //   if (singleRooms && singleRooms.length > 0) {
+  //    const slectOrNot=singleRooms.filter((room)=>room === true);
+  //     setSelectedData(slectOrNot);
+  // }}, [singleRooms]);
 
   const grouped = {};
 
@@ -133,7 +129,7 @@ console.log("singleRooms", singleRooms);
       } finally {
         setLoading(false);
       }
-    }else{
+    } else {
       setErrorMsz("Please select at least one room to cancel.");
       return;
     }
@@ -312,7 +308,12 @@ console.log("singleRooms", singleRooms);
                                         "Row Unselected Room Number:",
                                         x.roomNumber
                                       );
-                                      setSelectedData((prev) =>[...prev.filter((item) => item.roomNumber !== x.roomNumber)]);
+                                      setSelectedData((prev) => [
+                                        ...prev.filter(
+                                          (item) =>
+                                            item.roomNumber !== x.roomNumber
+                                        ),
+                                      ]);
                                     }
                                   }}
                                 />

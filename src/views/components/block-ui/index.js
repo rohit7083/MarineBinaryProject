@@ -1,25 +1,25 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment } from "react";
 
 // ** Reactstrap Imports
-import { Row, Col } from 'reactstrap'
+import { Row, Col } from "reactstrap";
 
 // ** Demo Components
-import BasicBlocking from './BasicBlocking'
-import CustomSpinner from './CustomSpinner'
-import CustomColorBlocking from './CustomColor'
-import MessageBlocking from './MessageBlocking'
+import BasicBlocking from "./BasicBlocking";
+import CustomSpinner from "./CustomSpinner";
+import CustomColorBlocking from "./CustomColor";
+import MessageBlocking from "./MessageBlocking";
 
 // ** Custom Components
-import ExtensionsHeader from '@components/extensions-header'
+import ExtensionsHeader from "@components/extensions-header";
 
 const Editor = () => {
   return (
     <Fragment>
       <ExtensionsHeader
-        title='React BlockUI'
-        subTitle='Easy way to block the user from interacting with your UI.'
-        link='https://availity.github.io/react-block-ui/'
+        title="React BlockUI"
+        subTitle="Easy way to block the user from interacting with your UI."
+        link="https://availity.github.io/react-block-ui/"
       />
 
       <Row>
@@ -37,7 +37,7 @@ const Editor = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;

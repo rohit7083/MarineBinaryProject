@@ -110,8 +110,8 @@ const DiscountModal = ({ isOpen, toggle, setDiscountData }) => {
 
   const onSubmit = async (data) => {
     const totalAfterDiscount = parseFloat(data.totalAfterDiscount);
-    console.log("data",data);
-    
+    console.log("data", data);
+
     if (totalAfterDiscount <= 0) {
       toast.current.show({
         severity: "error",

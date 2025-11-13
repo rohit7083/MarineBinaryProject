@@ -163,19 +163,25 @@ const AddCard = () => {
       <Card className="invoice-preview-card">
         {/* Header */}
 
-        <div className="d-flex justify-content-end mt-1" style={{ maxWidth: '20%' }}>
-          <img className="" src="https://www.longcoveresort.com/assets/img/navbar-logo.png" width="60px" height="60px " alt="error"/>
+        <div
+          className="d-flex justify-content-end mt-1"
+          style={{ maxWidth: "20%" }}
+        >
+          <img
+            className=""
+            src="https://www.longcoveresort.com/assets/img/navbar-logo.png"
+            width="60px"
+            height="60px "
+            alt="error"
+          />
         </div>
 
         <CardBody className="invoice-padding pb-0">
-          
           <div className="d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0">
-            <div> 
-         
+            <div>
               <div className="logo-wrapper">
-              {/* <img className="" src="https://www.longcoveresort.com/assets/img/navbar-logo.png" width="20px" height="20px " alt="error"/> */}
+                {/* <img className="" src="https://www.longcoveresort.com/assets/img/navbar-logo.png" width="20px" height="20px " alt="error"/> */}
 
-                
                 <h3 className="text-primary invoice-logo">Longcove Marine</h3>
               </div>
               <p className="card-text mb-25">
@@ -226,29 +232,26 @@ const AddCard = () => {
               <div className="d-flex align-items-center mb-1">
                 <span className="title">PO Bill No</span>
                 <Input
-                    type="number"
-                    className="invoice-edit-input"
-                    
-                    placeholder="53634"
-                  />
+                  type="number"
+                  className="invoice-edit-input"
+                  placeholder="53634"
+                />
               </div>
               <div className="d-flex align-items-center mb-1">
                 <span className="title">Payment Term</span>
                 <Input
-                    type="number"
-                    className="invoice-edit-input"
-                    
-                    placeholder="30"
-                  />
+                  type="number"
+                  className="invoice-edit-input"
+                  placeholder="30"
+                />
               </div>
               <div className="d-flex align-items-center">
                 <span className="title">Vehical No</span>
                 <Input
-                    type="number"
-                    className="invoice-edit-input"
-                    
-                    placeholder="53634"
-                  />
+                  type="number"
+                  className="invoice-edit-input"
+                  placeholder="53634"
+                />
               </div>
             </div>
           </div>
@@ -416,7 +419,6 @@ const AddCard = () => {
           </Row>
         </CardBody>
 
-
         {/* Invoice Total */}
         <CardBody className="invoice-padding">
           <Row className="invoice-sales-total-wrapper">
@@ -425,14 +427,12 @@ const AddCard = () => {
               md={{ size: "6", order: 1 }}
               xs={{ size: 12, order: 2 }}
             >
-                <div className="d-flex align-items-center mb-1">
+              <div className="d-flex align-items-center mb-1">
                 {!chargesShow ? (
-               
-                  <Button.Ripple color='flat-secondary' onClick={handleCharges}>
-                      <Plus size={14} className="me-25"></Plus>Add Charges</Button.Ripple>
-
+                  <Button.Ripple color="flat-secondary" onClick={handleCharges}>
+                    <Plus size={14} className="me-25"></Plus>Add Charges
+                  </Button.Ripple>
                 ) : (
-                 
                   <X onClick={handleclosed} />
                 )}
                 {chargesShow && (
@@ -449,14 +449,17 @@ const AddCard = () => {
               </div>
 
               <div className="d-flex align-items-center mb-1">
-              {!DiscountShow ? (    
-              <Button.Ripple color='flat-secondary' onClick={handleDiscounts}>
-                      <Plus size={14} className="me-25"></Plus>Add Discount</Button.Ripple>
-              ):(                 
-                 <X onClick={()=>setDiscountShow(false)} />
-              )}
-                              {DiscountShow && (    
-
+                {!DiscountShow ? (
+                  <Button.Ripple
+                    color="flat-secondary"
+                    onClick={handleDiscounts}
+                  >
+                    <Plus size={14} className="me-25"></Plus>Add Discount
+                  </Button.Ripple>
+                ) : (
+                  <X onClick={() => setDiscountShow(false)} />
+                )}
+                {DiscountShow && (
                   <Input
                     style={{
                       width: "15rem",
@@ -532,7 +535,7 @@ const AddCard = () => {
                   Note:
                 </Label>
                 <Input
-                defaultValue="20 days return policy."
+                  defaultValue="20 days return policy."
                   type="textarea"
                   rows="2"
                   id="note"
@@ -544,7 +547,7 @@ const AddCard = () => {
                   Terms and Conditions:
                 </Label>
                 <Input
-                defaultValue="10 days return policy. Damaged items won't be taken back Bill is compulsory for returning items"
+                  defaultValue="10 days return policy. Damaged items won't be taken back Bill is compulsory for returning items"
                   type="textarea"
                   rows="2"
                   id="terms"
@@ -583,22 +586,24 @@ const AddCard = () => {
         <Form>
           <div className="mb-2">
             <Label for="customer-name" className="form-label">
-            PARTY NAME            </Label>
+              PARTY NAME{" "}
+            </Label>
             <Input id="customer-name" placeholder="John Doe" />
           </div>
           <div className="mb-2">
             <Label for="customer-email" className="form-label">
-            Email             </Label>
+              Email{" "}
+            </Label>
             <Input
               type="email"
               id="customer-email"
               placeholder="example@domain.com"
             />
           </div>
-         
+
           <div className="mb-2">
             <Label for="country" className="form-label">
-            Mobile Number
+              Mobile Number
             </Label>
             <Input
               type="textarea"
@@ -610,7 +615,8 @@ const AddCard = () => {
           </div>
           <div className="mb-2">
             <Label for="customer-address" className="form-label">
-           Billing Address           </Label>
+              Billing Address{" "}
+            </Label>
             <Input
               type="textarea"
               cols="2"
@@ -619,12 +625,11 @@ const AddCard = () => {
               placeholder="1307 Lady Bug Drive New York"
             />
           </div>
-
-
 
           <div className="mb-2">
             <Label for="customer-address" className="form-label">
-            Shiping Addres  (Optional)          </Label>
+              Shiping Addres (Optional){" "}
+            </Label>
             <Input
               type="textarea"
               cols="2"
@@ -633,11 +638,10 @@ const AddCard = () => {
               placeholder="1307 Lady Bug Drive New York"
             />
           </div>
-       
 
           <div className="mb-2">
             <Label for="country" className="form-label">
-            place Of Supply (Country) (Optional) 
+              place Of Supply (Country) (Optional)
             </Label>
             <Select
               theme={selectThemeColors}

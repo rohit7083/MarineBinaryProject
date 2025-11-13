@@ -38,7 +38,11 @@ import SingleCheck from "../../../assets/images/SingleCheck.json";
 import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
 function Payment({ stepper, allEventData, updateData, paymentData }) {
-  const { remainingAmount, totalAmount } = paymentData?.Rowdata || {};
+  const {
+    remainingAmount,
+    totalAmount,
+    uid: userId,
+  } = paymentData?.Rowdata || {};
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
     { value: "MoneyGrams", label: "MoneyGrams" },
@@ -136,6 +140,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   useEffect(() => {
     setAvailableMonths(months);
   }, []);
+  const calTax = watch("calculatedTax");
 
   useEffect(() => {
     if (
@@ -143,16 +148,19 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       updateData?.listData?.uid &&
       paymentData?.step !== 2
     ) {
-      setValue("finalAmount", AmtDiffernce);
+      setValue("finalAmount", AmtDiffernce + Number(calTax));
       console.log(finalAmtRemain);
     } else if (paymentData?.step === 2) {
-      setValue("finalAmount", paymentData?.Rowdata?.remainingAmount);
+      setValue(
+        "finalAmount",
+        Number(paymentData?.Rowdata?.remainingAmount || 0) + Number(calTax || 0)
+      );
     } else {
       if (allEventData?.totalAmount) {
-        setValue("finalAmount", allEventData?.totalAmount);
+        setValue("finalAmount", allEventData?.totalAmount + Number(calTax));
       }
     }
-  }, [allEventData, updateData, setValue, AmtDiffernce]);
+  }, [allEventData, updateData, setValue, calTax, AmtDiffernce]);
   const MySwal = withReactContent(Swal);
 
   const [showQrModal, setShowQrModal] = useState(false);
@@ -205,7 +213,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   const handleFinal = watch("finalAmount");
   const isDiscount = watch("discount");
   const CurrentAmount = watch("PfinalAmount");
-
+  const discountAmount = watch("discount_amt");
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -282,7 +290,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       mode === "Flat" &&
       !watch("advancePayment")
     ) {
-      const afterDiscount = handleFinal - watch("discount_amt");
+      const discount = Number(watch("discount_amt") || 0);
+      const afterDiscount = handleFinal - discount;
       setValue("PfinalAmount", afterDiscount);
     } else if (
       watch("discount") &&
@@ -300,6 +309,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   useEffect(() => {
     if (!watch("discount") && watch("advance") && watch("advancePayment")) {
       const afterDiscount = handleFinal - watch("advance");
+
       setValue("PfinalAmount", watch("advance"));
       setValue("remainingPayment", afterDiscount);
     }
@@ -313,11 +323,13 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           handleFinal - watch("discount_amt") - watch("advance");
 
         setValue("remainingPayment", afterDiscount);
+
         setValue("PfinalAmount", watch("advance"));
       }
       if (!watch("discount_amt") && watch("advance")) {
         const afterDiscount = handleFinal - watch("advance");
         setValue("remainingPayment", afterDiscount);
+
         setValue("PfinalAmount", watch("advance"));
       }
       if (watch("discount_amt") && !watch("advance")) {
@@ -335,11 +347,13 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         const afterDiscount = handleFinal - percentageAmount - watch("advance");
 
         setValue("remainingPayment", afterDiscount);
+
         setValue("PfinalAmount", watch("advance"));
       }
       if (!watch("discount_amt") && watch("advance")) {
         const afterDiscount = handleFinal - watch("advance");
         setValue("remainingPayment", afterDiscount);
+
         setValue("PfinalAmount", watch("advance"));
       }
       if (watch("discount_amt") && !watch("advance")) {
@@ -347,6 +361,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         const afterDiscount = handleFinal - percentageAmount;
 
         setValue("remainingPayment", afterDiscount);
+
         setValue("PfinalAmount", afterDiscount);
       }
     }
@@ -370,6 +385,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
 
   useEffect(() => {
     if (!watch("advancePayment") && !watch("discount")) {
+      // const taxAmount = Number(calTax || 0);
+
       setValue("PfinalAmount", watch("finalAmount"));
     }
   }, [
@@ -404,7 +421,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     return null;
   };
   const formatDate = (date, fmt) => (date ? moment(date).format(fmt) : null);
- const PayMode=(watch("paymentMode"));
+  const PayMode = watch("paymentMode");
 
   const onSubmit = async (data) => {
     setErrorMsz("");
@@ -598,17 +615,20 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           setShowQrModal(true);
         }
         if (res?.data?.status === "success") {
-          {{  }}
+          {
+            {
+            }
+          }
           if (PayMode?.value == 7) {
-             MySwal.fire({
-                  title: "Payment Link Sent Successfully",
-                  text: "Payment link has been sent to your email address.",
-                  icon: "success",
-                  customClass: {
-                    confirmButton: "btn btn-primary",
-                  },
-                  buttonsStyling: false,
-                })
+            MySwal.fire({
+              title: "Payment Link Sent Successfully",
+              text: "Payment link has been sent to your email address.",
+              icon: "success",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+              buttonsStyling: false,
+            });
           } else {
             setModal(true);
             setTimeout(() => {
@@ -644,6 +664,16 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     stepper.next();
   };
   const toast = useRef(null);
+
+  const [disabledStatus, setDisabledStatus] = useState(false);
+
+  useEffect(() => {
+    if (userId) {
+      setDisabledStatus(true);
+    } else {
+      setDisabledStatus(false);
+    }
+  }, [userId]);
 
   return (
     <>
@@ -720,12 +750,106 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
               </React.Fragment>
             )}
           </Col>
+
           <Col md="8" className="mb-1">
+            <Row className={"mb-2 border"} style={{ margin: "2px" }}>
+              <Col md="12" className="mb-1">
+                <div className="content-header">
+                  <h5 className="mb-0 my-2">Tax Details</h5>
+                  <small>
+                    Specify tax type and amount to auto-calculate total
+                  </small>
+                </div>
+              </Col>
+              <Col md="4" className="mb-1">
+                <Label for="taxType">Tax Type</Label>
+                <Controller
+                  name="taxType"
+                  control={control}
+                  defaultValue="Percentage"
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      id="taxType"
+                      readOnly
+                      disabled
+                      value="Percentage"
+                      {...field}
+                    />
+                  )}
+                />
+              </Col>
+
+              <Col md="4" className="mb-1">
+                <Label for="taxValue">
+                  Tax Value ({watch("taxType") === "Percentage" ? "%" : "Flat"})
+                  <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Controller
+                  name="taxValue"
+                  control={control}
+                  rules={{
+                    required: "Tax value is required",
+                    min: { value: 0, message: "Tax cannot be negative" },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="number"
+                      disabled={disabledStatus}
+                      placeholder={`Enter ${
+                        watch("taxType") === "Percentage"
+                          ? "tax %"
+                          : "flat amount"
+                      }`}
+                      invalid={!!errors.taxValue}
+                      {...field}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value) || 0;
+                        field.onChange(val);
+
+                        const total = getValues("finalAmount") || 0;
+                        const taxType = getValues("taxType");
+                        const calculated =
+                          taxType === "Percentage"
+                            ? (total * val) / 100
+                            : parseFloat(val || 0);
+                        setValue("calculatedTax", calculated.toFixed(2));
+                        setValue(
+                          "PfinalAmount",
+                          (total + calculated).toFixed(2)
+                        );
+                      }}
+                    />
+                  )}
+                />
+                {errors.taxValue && (
+                  <FormFeedback>{errors.taxValue.message}</FormFeedback>
+                )}
+              </Col>
+
+              <Col md="4" className="mb-1">
+                <Label for="calculatedTax">Calculated Tax</Label>
+                <Controller
+                  name="calculatedTax"
+                  control={control}
+                  defaultValue={0}
+                  render={({ field }) => (
+                    <Input
+                      type="number"
+                      disabled
+                      placeholder="Calculated tax amount"
+                      {...field}
+                    />
+                  )}
+                />
+              </Col>
+            </Row>
+
             <Col md="12" className="mb-1">
               <Label for="finalInvoice">
                 {remainingAmount > 0
-                  ? "Final Amount (Remaining)"
-                  : "Final Amount"}
+                  ? "Final Amount (incl.Tax)"
+                  : "Final Amount (incl.Tax)"}
               </Label>
               <Controller
                 name="finalAmount"
@@ -751,6 +875,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                 <FormFeedback>{errors.finalAmount.message}</FormFeedback>
               )}
             </Col>
+
             {!updateData?.listData?.uid && (
               <>
                 <Col check className="mb-2">
@@ -1864,11 +1989,38 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                         marginBottom: "8px",
                       }}
                     >
-                      <div className="details-title">Total Amount</div>
+                      <div className="details-title"> Amount</div>
                       <div className="detail-amt">
-                        <strong>$ {handleFinal || "0"}</strong>
+                        <strong>$ {handleFinal - calTax || "0"}</strong>
                       </div>
                     </li>
+
+                    <li
+                      className="price-detail"
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div className="details-title">Tax</div>
+                      <div className="detail-amt">
+                        <strong>+ ${watch("calculatedTax")} </strong> <hr />
+                      </div>
+                    </li>
+
+                    <li
+                      className="price-detail "
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div className="details-title">Total Amount</div>
+                      <div className="detail-amt">
+                        <strong>${Number(handleFinal || 0).toFixed(2)}</strong>
+                      </div>
+                    </li>
+
                     <li
                       className="price-detail"
                       style={{
@@ -1924,6 +2076,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       </>
                     )}
                   </ul>
+
                   <hr />
                   <ul
                     className="list-unstyled price-details"

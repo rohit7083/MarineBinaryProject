@@ -1,11 +1,16 @@
 // ** Third Party Components
-import { Bubble } from 'react-chartjs-2'
-import { ArrowDown } from 'react-feather'
+import { Bubble } from "react-chartjs-2";
+import { ArrowDown } from "react-feather";
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody, Badge } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, Badge } from "reactstrap";
 
-const ChartjsRadarChart = ({ labelColor, primaryColorShade, yellowColor, gridLineColor }) => {
+const ChartjsRadarChart = ({
+  labelColor,
+  primaryColorShade,
+  yellowColor,
+  gridLineColor,
+}) => {
   // ** Chart Options
   const options = {
     responsive: true,
@@ -16,37 +21,37 @@ const ChartjsRadarChart = ({ labelColor, primaryColorShade, yellowColor, gridLin
         max: 140,
         grid: {
           color: gridLineColor,
-          borderColor: gridLineColor
+          borderColor: gridLineColor,
         },
         ticks: {
           stepSize: 10,
-          color: labelColor
-        }
+          color: labelColor,
+        },
       },
       y: {
         min: 0,
         max: 400,
         grid: {
           color: gridLineColor,
-          borderColor: gridLineColor
+          borderColor: gridLineColor,
         },
         ticks: {
           stepSize: 100,
-          color: labelColor
-        }
-      }
+          color: labelColor,
+        },
+      },
     },
     plugins: {
-      legend: { display: false }
-    }
-  }
+      legend: { display: false },
+    },
+  };
 
   // ** Chart data
   const data = {
     animation: { duration: 10000 },
     datasets: [
       {
-        label: 'Dataset 1',
+        label: "Dataset 1",
         borderColor: primaryColorShade,
         backgroundColor: primaryColorShade,
         data: [
@@ -62,11 +67,11 @@ const ChartjsRadarChart = ({ labelColor, primaryColorShade, yellowColor, gridLin
           { x: 100, y: 310, r: 5 },
           { x: 110, y: 240, r: 5 },
           { x: 120, y: 270, r: 7 },
-          { x: 130, y: 300, r: 6 }
-        ]
+          { x: 130, y: 300, r: 6 },
+        ],
       },
       {
-        label: 'Dataset 2',
+        label: "Dataset 2",
         borderColor: yellowColor,
         backgroundColor: yellowColor,
         data: [
@@ -82,31 +87,31 @@ const ChartjsRadarChart = ({ labelColor, primaryColorShade, yellowColor, gridLin
           { x: 100, y: 220, r: 7 },
           { x: 120, y: 230, r: 4 },
           { x: 110, y: 320, r: 15 },
-          { x: 130, y: 330, r: 7 }
-        ]
-      }
-    ]
-  }
+          { x: 130, y: 330, r: 7 },
+        ],
+      },
+    ],
+  };
 
   return (
     <Card>
-      <CardHeader className='d-flex justify-content-between align-items-sm-center align-items-start flex-sm-row flex-column'>
-        <CardTitle tag='h4'>Bubble Chart</CardTitle>
-        <div className='d-flex align-items-center flex-wrap'>
-          <h5 className='fw-bolder mb-0 me-1'>$ 100,000</h5>
-          <Badge color='light-secondary'>
-            <ArrowDown size={13} className='text-danger' />
-            <span className='align-middle ms-25'>20%</span>
+      <CardHeader className="d-flex justify-content-between align-items-sm-center align-items-start flex-sm-row flex-column">
+        <CardTitle tag="h4">Bubble Chart</CardTitle>
+        <div className="d-flex align-items-center flex-wrap">
+          <h5 className="fw-bolder mb-0 me-1">$ 100,000</h5>
+          <Badge color="light-secondary">
+            <ArrowDown size={13} className="text-danger" />
+            <span className="align-middle ms-25">20%</span>
           </Badge>
         </div>
       </CardHeader>
       <CardBody>
-        <div style={{ height: '500px' }}>
+        <div style={{ height: "500px" }}>
           <Bubble data={data} options={options} height={500} />
         </div>
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default ChartjsRadarChart
+export default ChartjsRadarChart;

@@ -5,24 +5,24 @@ import DataTable from "react-data-table-component";
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
 import {
-    Calendar,
-    ChevronDown,
-    DollarSign,
-    Eye,
-    MoreVertical,
+  Calendar,
+  ChevronDown,
+  DollarSign,
+  Eye,
+  MoreVertical,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-    Badge,
-    Col,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input,
-    Row,
-    Spinner,
-    UncontrolledDropdown
+  Badge,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -333,84 +333,81 @@ const index = () => {
 
   return (
     <>
-     
-          <div className="d-flex justify-content-between align-items-center flex-wrap ">
-
-            <div className="mx-2">
-              <Row
-                className="px-2
+      <div className="d-flex justify-content-between align-items-center flex-wrap ">
+        <div className="mx-2">
+          <Row
+            className="px-2
                mt-1 "
-              ></Row>{" "}
+          ></Row>{" "}
+        </div>
+      </div>
+      <hr />
+      <div className="app-user-list">{/* <Table /> */}</div>
+      <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
+        <Row>
+          <Col xl="6" className="d-flex align-items-center p-0">
+            <div className="d-flex align-items-center w-100">
+              <label htmlFor="rows-per-page">Show</label>
+              <Input
+                className="mx-50"
+                type="select"
+                id="rows-per-page"
+                value={rowsPerPage}
+                onChange={handlePerPage}
+                style={{ width: "5rem" }}
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </Input>
+              <label htmlFor="rows-per-page">Entries</label>
             </div>
-          </div>
-          <hr />
-          <div className="app-user-list">{/* <Table /> */}</div>
-          <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
-            <Row>
-              <Col xl="6" className="d-flex align-items-center p-0">
-                <div className="d-flex align-items-center w-100">
-                  <label htmlFor="rows-per-page">Show</label>
-                  <Input
-                    className="mx-50"
-                    type="select"
-                    id="rows-per-page"
-                    value={rowsPerPage}
-                    onChange={handlePerPage}
-                    style={{ width: "5rem" }}
-                  >
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                  </Input>
-                  <label htmlFor="rows-per-page">Entries</label>
-                </div>
-              </Col>
-              <Col xl="6" className="d-flex justify-content-end p-0 ">
-                <div className="w-48  d-flex mx-2">
-                  <label className="mt-1 mx-1" htmlFor="search-invoice">
-                    Search:
-                  </label>
+          </Col>
+          <Col xl="6" className="d-flex justify-content-end p-0 ">
+            <div className="w-48  d-flex mx-2">
+              <label className="mt-1 mx-1" htmlFor="search-invoice">
+                Search:
+              </label>
 
-                  <Input
-                    className="dataTable-filter"
-                    name="search"
-                    placeholder="Search..."
-                    type="text"
-                    bsSize="sm"
-                    id="search-input"
-                    onChange={(e) => debouncedFilter(e.target.value)}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </div>
-          {loading ? (
-            <div className="text-center">
-              <Spinner
-                className="me-25 spinner-border"
-                color="primary"
-                style={{ width: "4rem", height: "4rem" }}
+              <Input
+                className="dataTable-filter"
+                name="search"
+                placeholder="Search..."
+                type="text"
+                bsSize="sm"
+                id="search-input"
+                onChange={(e) => debouncedFilter(e.target.value)}
               />
             </div>
-          ) : (
-            <div className="react-dataTable">
-              <DataTable
-                noHeader
-                pagination
-                subHeader
-                responsive
-                paginationServer
-                columns={columns}
-                sortIcon={<ChevronDown />}
-                className="react-dataTable"
-                // data={tableData}
-                striped
-                paginationComponent={CustomPagination}
-                data={dataToRender()}
-              />
-            </div>
-          )}
-      
+          </Col>
+        </Row>
+      </div>
+      {loading ? (
+        <div className="text-center">
+          <Spinner
+            className="me-25 spinner-border"
+            color="primary"
+            style={{ width: "4rem", height: "4rem" }}
+          />
+        </div>
+      ) : (
+        <div className="react-dataTable">
+          <DataTable
+            noHeader
+            pagination
+            subHeader
+            responsive
+            paginationServer
+            columns={columns}
+            sortIcon={<ChevronDown />}
+            className="react-dataTable"
+            // data={tableData}
+            striped
+            paginationComponent={CustomPagination}
+            data={dataToRender()}
+          />
+        </div>
+      )}
     </>
   );
 };

@@ -1,6 +1,6 @@
 export const inputGroupBasic = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Search } from 'react-feather'
@@ -45,11 +45,11 @@ export default InputGroupBasic
   `}
     </code>
   </pre>
-)
+);
 
 export const inputGroupMerged = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Search } from 'react-feather'
@@ -94,11 +94,11 @@ export default InputGroupMerged
   `}
     </code>
   </pre>
-)
+);
 
 export const inputGroupCBRadio = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { InputGroup, Input, InputGroupText, Row, Col, Input } from 'reactstrap'
@@ -151,11 +151,11 @@ export default InputGroupCbAndRadio
   `}
     </code>
   </pre>
-)
+);
 
 export const inputGroupButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, InputGroup, Input,  Row, Col } from 'reactstrap'
@@ -191,11 +191,11 @@ export default InputGroupButtons
   `}
     </code>
   </pre>
-)
+);
 
 export const inputGroupDropdowns = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import {
@@ -279,11 +279,11 @@ export default InputGroupDropdowns
   `}
     </code>
   </pre>
-)
+);
 
 export const inputGroupSizes = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { InputGroup, InputGroupText, Input } from 'reactstrap'
@@ -313,4 +313,4 @@ export default InputGroupSizes
   `}
     </code>
   </pre>
-)
+);

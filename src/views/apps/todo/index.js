@@ -1,57 +1,64 @@
 // ** React Imports
-import { Fragment, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Fragment, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 // ** Third Party Components
-import classnames from 'classnames'
+import classnames from "classnames";
 
 // ** Todo App Components
-import Tasks from './Tasks'
-import Sidebar from './Sidebar'
-import TaskSidebar from './TaskSidebar'
+import Tasks from "./Tasks";
+import Sidebar from "./Sidebar";
+import TaskSidebar from "./TaskSidebar";
 
 // ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux'
-import { getTasks, updateTask, selectTask, addTask, deleteTask, reOrderTasks } from './store'
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getTasks,
+  updateTask,
+  selectTask,
+  addTask,
+  deleteTask,
+  reOrderTasks,
+} from "./store";
 
 // ** Styles
-import '@styles/react/apps/app-todo.scss'
+import "@styles/react/apps/app-todo.scss";
 
 const TODO = () => {
   // ** States
-  const [sort, setSort] = useState('')
-  const [query, setQuery] = useState('')
-  const [mainSidebar, setMainSidebar] = useState(false)
-  const [openTaskSidebar, setOpenTaskSidebar] = useState(false)
+  const [sort, setSort] = useState("");
+  const [query, setQuery] = useState("");
+  const [mainSidebar, setMainSidebar] = useState(false);
+  const [openTaskSidebar, setOpenTaskSidebar] = useState(false);
 
   // ** Store Vars
-  const dispatch = useDispatch()
-  const store = useSelector(state => state.todo)
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.todo);
 
   // ** URL Params
-  const paramsURL = useParams()
+  const paramsURL = useParams();
   const params = {
-    filter: paramsURL.filter || '',
-    q: query || '',
-    sortBy: sort || '',
-    tag: paramsURL.tag || ''
-  }
+    filter: paramsURL.filter || "",
+    q: query || "",
+    sortBy: sort || "",
+    tag: paramsURL.tag || "",
+  };
 
   // ** Function to handle Left sidebar & Task sidebar
-  const handleMainSidebar = () => setMainSidebar(!mainSidebar)
-  const handleTaskSidebar = () => setOpenTaskSidebar(!openTaskSidebar)
+  const handleMainSidebar = () => setMainSidebar(!mainSidebar);
+  const handleTaskSidebar = () => setOpenTaskSidebar(!openTaskSidebar);
 
   // ** Get Tasks on mount & based on dependency change
   useEffect(() => {
     dispatch(
       getTasks({
-        filter: paramsURL.filter || '',
-        q: query || '',
-        sortBy: sort || '',
-        tag: paramsURL.tag || ''
+        filter: paramsURL.filter || "",
+        q: query || "",
+        sortBy: sort || "",
+        tag: paramsURL.tag || "",
       })
-    )
-  }, [store.tasks.length, paramsURL.filter, paramsURL.tag, query, sort])
+    );
+  }, [store.tasks.length, paramsURL.filter, paramsURL.tag, query, sort]);
 
   return (
     <Fragment>
@@ -65,12 +72,12 @@ const TODO = () => {
         setMainSidebar={setMainSidebar}
         handleTaskSidebar={handleTaskSidebar}
       />
-      <div className='content-right'>
-        <div className='content-wrapper'>
-          <div className='content-body'>
+      <div className="content-right">
+        <div className="content-wrapper">
+          <div className="content-body">
             <div
-              className={classnames('body-content-overlay', {
-                show: mainSidebar === true
+              className={classnames("body-content-overlay", {
+                show: mainSidebar === true,
               })}
               onClick={handleMainSidebar}
             ></div>
@@ -110,7 +117,7 @@ const TODO = () => {
         </div>
       </div>
     </Fragment>
-  )
-}
+  );
+};
 
-export default TODO
+export default TODO;

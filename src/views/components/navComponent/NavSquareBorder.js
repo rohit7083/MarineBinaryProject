@@ -1,26 +1,26 @@
 // ** Reactstrap Imports
-import { Nav, NavItem, NavLink } from 'reactstrap'
+import { Nav, NavItem, NavLink } from "reactstrap";
 
 const NavSquareBorder = () => {
   return (
-    <Nav vertical className='wrap-border square-border'>
+    <Nav vertical className="wrap-border square-border">
       <NavItem>
-        <NavLink href='#' active>
+        <NavLink href="#" active>
           Active
         </NavLink>
       </NavItem>
       <NavItem>
-        <NavLink href='#'>Link</NavLink>
+        <NavLink href="#">Link</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink href='#'>Link</NavLink>
+        <NavLink href="#">Link</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink disabled href='#'>
+        <NavLink disabled href="#">
           Disabled
         </NavLink>
       </NavItem>
     </Nav>
-  )
-}
-export default NavSquareBorder
+  );
+};
+export default NavSquareBorder;

@@ -570,17 +570,6 @@
 
 // export default Register;
 
-
-
-
-
-
-
-
-
-
-
-
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -644,12 +633,28 @@ const Register = () => {
   } = useForm({ defaultValues });
 
   const onSubmit = (data) => {
-    console.log("Form submitted with data:", data);  // Check the form data
-    
-    const { firstName, lastName, emailId, mobileNumber, password, countryCode, terms } = data;
-  
+    console.log("Form submitted with data:", data); // Check the form data
+
+    const {
+      firstName,
+      lastName,
+      emailId,
+      mobileNumber,
+      password,
+      countryCode,
+      terms,
+    } = data;
+
     // Validate the form data
-    if (firstName && lastName && emailId && mobileNumber && password && countryCode && terms) {
+    if (
+      firstName &&
+      lastName &&
+      emailId &&
+      mobileNumber &&
+      password &&
+      countryCode &&
+      terms
+    ) {
       const payload = {
         firstName,
         lastName,
@@ -659,24 +664,26 @@ const Register = () => {
         countryCode,
       };
 
-      console.log("Payload sent to API:", payload);  // Log the payload being sent to the backend
-      
+      console.log("Payload sent to API:", payload); // Log the payload being sent to the backend
+
       axios
         .post("http://192.168.29.190:8001/auth/user/create", payload)
         .then((response) => {
-          console.log("API response:", response);  // Check the API response
+          console.log("API response:", response); // Check the API response
           if (response.data.success) {
             const { user, accessToken } = response.data;
             const loginData = { ...user, accessToken };
             ability.update(user.ability);
             dispatch(handleLogin(loginData));
-            navigate("/");  // Redirect on successful registration
+            navigate("/"); // Redirect on successful registration
           } else {
-            alert(response.data.message || "Something went wrong, please try again.");
+            alert(
+              response.data.message || "Something went wrong, please try again."
+            );
           }
         })
         .catch((error) => {
-          console.error("There was an error creating the user:", error);  // Log any error
+          console.error("There was an error creating the user:", error); // Log any error
           alert("Error creating user. Please try again later.");
         });
     } else {
@@ -722,12 +729,20 @@ const Register = () => {
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
             <img
               className="img-fluid"
-              src={skin === "dark" ? "@src/assets/images/pages/register-v2-dark.svg" : "@src/assets/images/pages/register-v2.svg"}
+              src={
+                skin === "dark"
+                  ? "@src/assets/images/pages/register-v2-dark.svg"
+                  : "@src/assets/images/pages/register-v2.svg"
+              }
               alt="Login Cover"
             />
           </div>
         </Col>
-        <Col className="d-flex align-items-center auth-bg px-2 p-lg-5" lg="4" sm="12">
+        <Col
+          className="d-flex align-items-center auth-bg px-2 p-lg-5"
+          lg="4"
+          sm="12"
+        >
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
               Please Register For Entry
@@ -736,7 +751,10 @@ const Register = () => {
               Make your app management easy and fun!
             </CardText>
 
-            <Form className="auth-register-form mt-2" onSubmit={handleSubmit(onSubmit)}>
+            <Form
+              className="auth-register-form mt-2"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               {/* First Name */}
               <div className="mb-1">
                 <Label className="form-label" for="register-firstname">
@@ -755,7 +773,9 @@ const Register = () => {
                     />
                   )}
                 />
-                {errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
+                {errors.firstName && (
+                  <FormFeedback>{errors.firstName.message}</FormFeedback>
+                )}
               </div>
 
               {/* Last Name */}
@@ -776,7 +796,9 @@ const Register = () => {
                     />
                   )}
                 />
-                {errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
+                {errors.lastName && (
+                  <FormFeedback>{errors.lastName.message}</FormFeedback>
+                )}
               </div>
 
               {/* Phone Number */}
@@ -784,7 +806,9 @@ const Register = () => {
                 <Label for="phone-number">Phone Number</Label>
                 <InputGroup className="input-group-merge">
                   <Select
-                    value={countryCodes.find((code) => code.value === countryCode)}
+                    value={countryCodes.find(
+                      (code) => code.value === countryCode
+                    )}
                     options={countryCodes}
                     onChange={handleCountryCodeChange}
                     className="react-select-container"
@@ -798,7 +822,8 @@ const Register = () => {
                   rules={{
                     required: "Phone number is required",
                     pattern: {
-                      value: /^[+]?(\d{1,4}[\s-])?(\(?\d{1,3}\)?[\s-])?[\d\s-]{7,15}$/,
+                      value:
+                        /^[+]?(\d{1,4}[\s-])?(\(?\d{1,3}\)?[\s-])?[\d\s-]{7,15}$/,
                       message: "Please enter a valid phone number",
                     },
                   }}
@@ -810,7 +835,9 @@ const Register = () => {
                     />
                   )}
                 />
-                {errors.mobileNumber && <FormFeedback>{errors.mobileNumber.message}</FormFeedback>}
+                {errors.mobileNumber && (
+                  <FormFeedback>{errors.mobileNumber.message}</FormFeedback>
+                )}
               </div>
 
               {/* Email */}
@@ -838,7 +865,9 @@ const Register = () => {
                     />
                   )}
                 />
-                {errors.emailId && <FormFeedback>{errors.emailId.message}</FormFeedback>}
+                {errors.emailId && (
+                  <FormFeedback>{errors.emailId.message}</FormFeedback>
+                )}
               </div>
 
               {/* Password */}
@@ -864,7 +893,9 @@ const Register = () => {
                     />
                   )}
                 />
-                {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+                {errors.password && (
+                  <FormFeedback>{errors.password.message}</FormFeedback>
+                )}
               </div>
 
               {/* Terms & Conditions */}
@@ -879,13 +910,15 @@ const Register = () => {
                     }}
                     render={({ field }) => (
                       <div>
-                        <input type="checkbox" {...field} />
-                        I agree to the terms and conditions
+                        <input type="checkbox" {...field} />I agree to the terms
+                        and conditions
                       </div>
                     )}
                   />
                 </Label>
-                {errors.terms && <FormFeedback>{errors.terms.message}</FormFeedback>}
+                {errors.terms && (
+                  <FormFeedback>{errors.terms.message}</FormFeedback>
+                )}
               </div>
 
               {/* Submit Button */}

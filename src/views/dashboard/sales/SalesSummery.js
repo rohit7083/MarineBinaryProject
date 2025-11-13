@@ -142,7 +142,6 @@ const SalesSummery = () => {
           <small className="text-muted">Select a date range to view data</small>
         </div>
         <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3">
-        
           <Select
             options={options}
             onChange={handleChange}

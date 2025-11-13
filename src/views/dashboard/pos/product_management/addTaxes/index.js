@@ -13,30 +13,30 @@ import AddTax from "./AddTax";
 // ** Third Party Components
 import DataTable from "react-data-table-component";
 import {
-    ArrowLeft,
-    ChevronDown,
-    Edit,
-    MoreVertical,
-    Plus,
-    Trash,
+  ArrowLeft,
+  ChevronDown,
+  Edit,
+  MoreVertical,
+  Plus,
+  Trash,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
 import {
-    Button,
-    Card,
-    CardHeader,
-    CardTitle,
-    Col,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledDropdown,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
 import NavItems from "../NavItems";
 
@@ -95,7 +95,7 @@ const DataTableWithButtons = () => {
 
   const tableData = async () => {
     try {
-      //  
+      //
       setLoading(true);
       const res = await useJwt.getAlltax();
       setData(res?.data?.content?.result);

@@ -1,125 +1,133 @@
 // ** React Imports
-import { Fragment, useContext } from 'react'
+import { Fragment, useContext } from "react";
 
 // ** Custom Components
-import ExtensionsHeader from '@components/extensions-header'
+import ExtensionsHeader from "@components/extensions-header";
 
 // ** Reactstrap Imports
-import { Row, Col, Card, CardHeader, CardTitle, CardBody, Button } from 'reactstrap'
+import {
+  Row,
+  Col,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  Button,
+} from "reactstrap";
 
 // ** Third Party Components
-import { ShepherdTour, ShepherdTourContext } from 'react-shepherd'
+import { ShepherdTour, ShepherdTourContext } from "react-shepherd";
 
 // ** Styles
-import 'shepherd.js/dist/css/shepherd.css'
-import '@styles/react/libs/shepherd-tour/shepherd-tour.scss'
+import "shepherd.js/dist/css/shepherd.css";
+import "@styles/react/libs/shepherd-tour/shepherd-tour.scss";
 
-const backBtnClass = 'btn btn-sm btn-outline-primary',
-  nextBtnClass = 'btn btn-sm btn-primary btn-next'
+const backBtnClass = "btn btn-sm btn-outline-primary",
+  nextBtnClass = "btn btn-sm btn-primary btn-next";
 
-let instance = null
+let instance = null;
 
 const steps = [
   {
-    id: 'navbar',
-    title: 'Navbar',
-    text: 'This is your navbar',
-    attachTo: { element: '.navbar', on: 'bottom' },
+    id: "navbar",
+    title: "Navbar",
+    text: "This is your navbar",
+    attachTo: { element: ".navbar", on: "bottom" },
     cancelIcon: {
-      enabled: true
+      enabled: true,
     },
     buttons: [
       {
         action: () => instance.cancel(),
         classes: backBtnClass,
-        text: 'Skip'
+        text: "Skip",
       },
       {
-        text: 'Next',
+        text: "Next",
         classes: nextBtnClass,
-        action: () => instance.next()
-      }
-    ]
+        action: () => instance.next(),
+      },
+    ],
   },
   {
-    id: 'card',
-    title: 'Card',
-    text: 'This is a card',
-    attachTo: { element: '#basic-tour .card', on: 'top' },
+    id: "card",
+    title: "Card",
+    text: "This is a card",
+    attachTo: { element: "#basic-tour .card", on: "top" },
     cancelIcon: {
-      enabled: true
+      enabled: true,
     },
     buttons: [
       {
-        text: 'Skip',
+        text: "Skip",
         classes: backBtnClass,
-        action: () => instance.cancel()
+        action: () => instance.cancel(),
       },
       {
-        text: 'Back',
+        text: "Back",
         classes: backBtnClass,
-        action: () => instance.back()
+        action: () => instance.back(),
       },
       {
-        text: 'Next',
+        text: "Next",
         classes: nextBtnClass,
-        action: () => instance.next()
-      }
-    ]
+        action: () => instance.next(),
+      },
+    ],
   },
   {
-    id: 'footer',
-    title: 'Footer',
-    text: 'This is the footer',
-    attachTo: { element: '.footer', on: 'top' },
+    id: "footer",
+    title: "Footer",
+    text: "This is the footer",
+    attachTo: { element: ".footer", on: "top" },
     cancelIcon: {
-      enabled: true
+      enabled: true,
     },
     buttons: [
       {
-        text: 'Back',
+        text: "Back",
         classes: backBtnClass,
-        action: () => instance.back()
+        action: () => instance.back(),
       },
       {
-        text: 'Finish',
+        text: "Finish",
         classes: nextBtnClass,
-        action: () => instance.cancel()
-      }
-    ]
-  }
-]
+        action: () => instance.cancel(),
+      },
+    ],
+  },
+];
 
 const Content = () => {
-  const tour = useContext(ShepherdTourContext)
-  instance = tour
+  const tour = useContext(ShepherdTourContext);
+  instance = tour;
 
   return (
-    <Button color='primary' onClick={() => tour.start()} outline>
+    <Button color="primary" onClick={() => tour.start()} outline>
       Start Tour
     </Button>
-  )
-}
+  );
+};
 
 const TourComponent = () => {
   return (
     <Fragment>
       <ExtensionsHeader
-        title='React Shepherd'
-        subTitle='Tourist Guide into your React Components With React Shepherd'
-        link='https://github.com/shipshapecode/react-shepherd'
+        title="React Shepherd"
+        subTitle="Tourist Guide into your React Components With React Shepherd"
+        link="https://github.com/shipshapecode/react-shepherd"
       />
-      <Row id='basic-tour'>
+      <Row id="basic-tour">
         <Col xs={12}>
           <Card>
             <CardHeader>
-              <CardTitle tag='h4'>Tour</CardTitle>
+              <CardTitle tag="h4">Tour</CardTitle>
             </CardHeader>
             <CardBody>
               <ShepherdTour
                 steps={steps}
                 tourOptions={{
-                  useModalOverlay: true
+                  useModalOverlay: true,
                 }}
               >
                 <Content />
@@ -129,7 +137,7 @@ const TourComponent = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
+  );
+};
 
-export default TourComponent
+export default TourComponent;

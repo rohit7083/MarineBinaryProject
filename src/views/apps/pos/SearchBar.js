@@ -34,7 +34,6 @@ const SearchBar = ({ onSearch }) => {
   });
 
   const onSubmit = (data) => {
-
     const { searchTerm, categories } = data;
 
     // Array of selected category values

@@ -1,5 +1,15 @@
 // ** Icons Import
-import { Mail, MessageSquare, CheckSquare, Calendar, FileText, Circle, ShoppingCart, User, Shield } from 'react-feather'
+import {
+  Mail,
+  MessageSquare,
+  CheckSquare,
+  Calendar,
+  FileText,
+  Circle,
+  ShoppingCart,
+  User,
+  Shield,
+} from "react-feather";
 
 export default [
   // {
@@ -66,7 +76,6 @@ export default [
   //     }
   //   ]
   // },
-
   // {
   //   id: 'roles-permissions',
   //   title: 'Roles & Permissions',
@@ -134,6 +143,6 @@ export default [
   //       icon: <Circle size={12} />,
   //       navLink: '/apps/user/view'
   //     }
-    // ]
+  // ]
   // }
-]
+];

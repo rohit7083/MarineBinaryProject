@@ -1,24 +1,25 @@
 // ** Third Party Components
-import Chart from 'react-apexcharts'
+import Chart from "react-apexcharts";
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody } from "reactstrap";
 
 // ** heat chart data generator
 function generateDataHeat(count, yrange) {
-  let i = 0
-  const series = []
+  let i = 0;
+  const series = [];
   while (i < count) {
-    const x = `w${(i + 1).toString()}`
-    const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
+    const x = `w${(i + 1).toString()}`;
+    const y =
+      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
     series.push({
       x,
-      y
-    })
-    i++
+      y,
+    });
+    i++;
   }
-  return series
+  return series;
 }
 
 const ApexHeatmapChart = () => {
@@ -27,8 +28,8 @@ const ApexHeatmapChart = () => {
     chart: {
       parentHeightOffset: 0,
       toolbar: {
-        show: false
-      }
+        show: false,
+      },
     },
     plotOptions: {
       heatmap: {
@@ -39,131 +40,131 @@ const ApexHeatmapChart = () => {
             {
               from: 0,
               to: 10,
-              name: '0-10',
-              color: '#b9b3f8'
+              name: "0-10",
+              color: "#b9b3f8",
             },
             {
               from: 11,
               to: 20,
-              name: '10-20',
-              color: '#aba4f6'
+              name: "10-20",
+              color: "#aba4f6",
             },
             {
               from: 21,
               to: 30,
-              name: '20-30',
-              color: '#9d95f5'
+              name: "20-30",
+              color: "#9d95f5",
             },
             {
               from: 31,
               to: 40,
-              name: '30-40',
-              color: '#8f85f3'
+              name: "30-40",
+              color: "#8f85f3",
             },
             {
               from: 41,
               to: 50,
-              name: '40-50',
-              color: '#8176f2'
+              name: "40-50",
+              color: "#8176f2",
             },
             {
               from: 51,
               to: 60,
-              name: '50-60',
-              color: '#7367f0'
-            }
-          ]
-        }
-      }
+              name: "50-60",
+              color: "#7367f0",
+            },
+          ],
+        },
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     legend: {
-      position: 'bottom'
+      position: "bottom",
     },
     grid: {
       padding: {
-        top: -20
-      }
+        top: -20,
+      },
     },
 
     xaxis: {
       labels: {
-        show: false
+        show: false,
       },
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
-      }
-    }
-  }
+        show: false,
+      },
+    },
+  };
 
   // ** Chart Series
   const series = [
     {
-      name: 'SUN',
+      name: "SUN",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
-      name: 'MON',
+      name: "MON",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
-      name: 'TUE',
+      name: "TUE",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
-      name: 'WED',
+      name: "WED",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
-      name: 'THU',
+      name: "THU",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
-      name: 'FRI',
+      name: "FRI",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
+        max: 60,
+      }),
     },
     {
-      name: 'SAT',
+      name: "SAT",
       data: generateDataHeat(24, {
         min: 0,
-        max: 60
-      })
-    }
-  ]
+        max: 60,
+      }),
+    },
+  ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Daily Sales States</CardTitle>
+        <CardTitle tag="h4">Daily Sales States</CardTitle>
       </CardHeader>
-      <CardBody className='apex-charts-heatmap'>
-        <Chart options={options} series={series} type='heatmap' height={350} />
+      <CardBody className="apex-charts-heatmap">
+        <Chart options={options} series={series} type="heatmap" height={350} />
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default ApexHeatmapChart
+export default ApexHeatmapChart;

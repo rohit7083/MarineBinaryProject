@@ -17,7 +17,7 @@ import { Card, CardBody, Row, Col, Button } from "reactstrap";
 //   isExtraStaffRequired: true,
 //   extraNoOfStaff: 5,
 //   extraNoOfStaffAmount: 5000,
-  
+
 //   firstName: "John",
 //   lastName: "Doe",
 //   email: "john.doe@example.com",
@@ -44,8 +44,8 @@ import { Card, CardBody, Row, Col, Button } from "reactstrap";
 //   ],
 // };
 
-const EventPreview = ({stepper, allEventData}) => {
-    console.log("eventData",allEventData);
+const EventPreview = ({ stepper, allEventData }) => {
+  console.log("eventData", allEventData);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -63,20 +63,20 @@ const EventPreview = ({stepper, allEventData}) => {
   // const handlePreview=async()=>{
 
   //   try {
-      
+
   //     const res=await useJwt.api();
   //     log("Response from API:", res);
   //   } catch (error) {
   //     console.log("Error in handlePreview:", error);
-      
+
   //   }
-  
+
   // }
 
   // useEffect(()=>{
   //   handlePreview();
   // },[])
- 
+
   return (
     <div className="">
       <h3>Event Confirmation </h3>
@@ -84,68 +84,110 @@ const EventPreview = ({stepper, allEventData}) => {
         <Card className="mt-2  border bg-light">
           <CardBody>
             <Row className="mb-2">
-              <Col md="6"><strong>Event Name:</strong> {allEventData?.eventName}</Col>
-              <Col md="6"><strong>Event Type:</strong> {allEventData?.eventTypes}</Col>
+              <Col md="6">
+                <strong>Event Name:</strong> {allEventData?.eventName}
+              </Col>
+              <Col md="6">
+                <strong>Event Type:</strong> {allEventData?.eventTypes}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Theme:</strong> {allEventData?.eventTheme || "N/A"}</Col>
-              <Col md="6"><strong>Date:</strong> {new Date(allEventData?.eventStartDate).toLocaleString()} - {new Date(allEventData?.eventEndDate).toLocaleString()}</Col>
+              <Col md="6">
+                <strong>Theme:</strong> {allEventData?.eventTheme || "N/A"}
+              </Col>
+              <Col md="6">
+                <strong>Date:</strong>{" "}
+                {new Date(allEventData?.eventStartDate).toLocaleString()} -{" "}
+                {new Date(allEventData?.eventEndDate).toLocaleString()}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Recurring:</strong> {allEventData?.isRecurringEvent ? "Yes" : "No"}</Col>
-              <Col md="6"><strong>Pattern:</strong> {allEventData?.recurrencePattern || "N/A"}</Col>
+              <Col md="6">
+                <strong>Recurring:</strong>{" "}
+                {allEventData?.isRecurringEvent ? "Yes" : "No"}
+              </Col>
+              <Col md="6">
+                <strong>Pattern:</strong>{" "}
+                {allEventData?.recurrencePattern || "N/A"}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Venue:</strong> {allEventData?.label || "Other"}</Col>
-              <Col md="6"><strong>Total Price:</strong> $ {allEventData?.totalAmount}</Col>
+              <Col md="6">
+                <strong>Venue:</strong> {allEventData?.label || "Other"}
+              </Col>
+              <Col md="6">
+                <strong>Total Price:</strong> $ {allEventData?.totalAmount}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Extra Staff:</strong> {allEventData?.isExtraStaff ? "Yes" : "No"}</Col>
+              <Col md="6">
+                <strong>Extra Staff:</strong>{" "}
+                {allEventData?.isExtraStaff ? "Yes" : "No"}
+              </Col>
               {allEventData?.isExtraStaffRequired && (
                 <Col md="6">
                   <strong>Staff Count:</strong> {allEventData?.extraNoOfStaff} |
-                  <strong> Amount:</strong> $ {allEventData?.extraNoOfStaffAmount}
+                  <strong> Amount:</strong> ${" "}
+                  {allEventData?.extraNoOfStaffAmount}
                 </Col>
               )}
             </Row>
             <Row className="mb-2">
-              <Col><strong>Description:</strong> {allEventData?.eventDescription}</Col>
+              <Col>
+                <strong>Description:</strong> {allEventData?.eventDescription}
+              </Col>
             </Row>
           </CardBody>
         </Card>
 
-      <h3>Member Details</h3>
+        <h3>Member Details</h3>
 
-         <Card className="mt-2 border bg-light">
+        <Card className="mt-2 border bg-light">
           <CardBody>
             <Row className="mb-2">
-              <Col md="6"><strong>First Name:</strong> {allEventData?.firstName}</Col>
-              <Col md="6"><strong>Last  Name:</strong> {allEventData?.lastName}</Col>
+              <Col md="6">
+                <strong>First Name:</strong> {allEventData?.firstName}
+              </Col>
+              <Col md="6">
+                <strong>Last Name:</strong> {allEventData?.lastName}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Email ID:</strong> {allEventData?.emailId || "N/A"}</Col>
-              <Col md="6"><strong>phone Number:</strong> {allEventData?.phoneNumber}</Col>
+              <Col md="6">
+                <strong>Email ID:</strong> {allEventData?.emailId || "N/A"}
+              </Col>
+              <Col md="6">
+                <strong>phone Number:</strong> {allEventData?.phoneNumber}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Address:</strong> {allEventData?.address || ""}</Col>
-              <Col md="6"><strong>City:</strong> {allEventData?.city || "N/A"}</Col>
+              <Col md="6">
+                <strong>Address:</strong> {allEventData?.address || ""}
+              </Col>
+              <Col md="6">
+                <strong>City:</strong> {allEventData?.city || "N/A"}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>State:</strong> {allEventData?.state  || "Other"}</Col>
-              <Col md="6"><strong>Country:</strong> {allEventData?.country}</Col>
+              <Col md="6">
+                <strong>State:</strong> {allEventData?.state || "Other"}
+              </Col>
+              <Col md="6">
+                <strong>Country:</strong> {allEventData?.country}
+              </Col>
             </Row>
             <Row className="mb-2">
-              <Col md="6"><strong>Postal Code</strong> {allEventData?.postalCode || "N/A"}</Col>
-             
-             
+              <Col md="6">
+                <strong>Postal Code</strong> {allEventData?.postalCode || "N/A"}
+              </Col>
             </Row>
-            
           </CardBody>
         </Card>
 
         <hr />
-      <h3>Vendor</h3>
-        {allEventData?.vendorN?.selectedVendors && allEventData?.vendorN?.selectedVendors?.length > 0 ? (
+        <h3>Vendor</h3>
+        {allEventData?.vendorN?.selectedVendors &&
+        allEventData?.vendorN?.selectedVendors?.length > 0 ? (
           allEventData?.vendorN?.selectedVendors?.map((vendor, i) => (
             <div key={i} className="border rounded p-2 mb-2 bg-light">
               <strong>{vendor?.vName}</strong> ({vendor?.vtype}) <br />

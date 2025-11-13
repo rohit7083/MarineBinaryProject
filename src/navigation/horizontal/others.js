@@ -1,75 +1,84 @@
 // ** Icons Import
-import { Box, Menu, Circle, EyeOff, Folder, LifeBuoy, Shield } from 'react-feather'
+import {
+  Box,
+  Menu,
+  Circle,
+  EyeOff,
+  Folder,
+  LifeBuoy,
+  Shield,
+} from "react-feather";
 
 export default [
   {
-    id: 'misc',
-    title: 'Misc',
+    id: "misc",
+    title: "Misc",
     icon: <Box />,
     children: [
       {
-        id: 'access-control',
-        title: 'Access Control',
+        id: "access-control",
+        title: "Access Control",
         icon: <Shield size={20} />,
-        action: 'read',
-        resource: 'ACL',
-        navLink: '/access-control'
+        action: "read",
+        resource: "ACL",
+        navLink: "/access-control",
       },
       {
-        id: 'menuLevels',
-        title: 'Menu Levels',
+        id: "menuLevels",
+        title: "Menu Levels",
         icon: <Menu />,
         children: [
           {
-            id: 'secondLevel',
-            title: 'Second Level 2.1',
+            id: "secondLevel",
+            title: "Second Level 2.1",
             icon: <Circle />,
-            navLink: '#'
+            navLink: "#",
           },
           {
-            id: 'secondLevel1',
-            title: 'Second Level 2.2',
+            id: "secondLevel1",
+            title: "Second Level 2.2",
             icon: <Circle />,
             children: [
               {
-                id: 'ThirdLevel',
-                title: 'Third Level 3.1',
+                id: "ThirdLevel",
+                title: "Third Level 3.1",
                 icon: <Circle />,
-                navLink: '#'
+                navLink: "#",
               },
               {
-                id: 'ThirdLevel1',
-                title: 'Third Level 3.2',
+                id: "ThirdLevel1",
+                title: "Third Level 3.2",
                 icon: <Circle />,
-                navLink: '#'
-              }
-            ]
-          }
-        ]
+                navLink: "#",
+              },
+            ],
+          },
+        ],
       },
       {
-        id: 'disabledMenu',
-        title: 'Disabled Menu',
+        id: "disabledMenu",
+        title: "Disabled Menu",
         icon: <EyeOff />,
-        navLink: '#',
-        disabled: true
+        navLink: "#",
+        disabled: true,
       },
       {
-        id: 'documentation',
-        title: 'Documentation',
+        id: "documentation",
+        title: "Documentation",
         icon: <Folder />,
         externalLink: true,
         newTab: true,
-        navLink: 'https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation'
+        navLink:
+          "https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation",
       },
       {
-        id: 'raiseSupport',
-        title: 'Raise Support',
+        id: "raiseSupport",
+        title: "Raise Support",
         icon: <LifeBuoy />,
         externalLink: true,
         newTab: true,
-        navLink: 'https://pixinvent.ticksy.com/'
-      }
-    ]
-  }
-]
+        navLink: "https://pixinvent.ticksy.com/",
+      },
+    ],
+  },
+];

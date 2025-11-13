@@ -7,15 +7,7 @@ import { debounce } from "lodash";
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Input,
-  Row,
-  Spinner
-} from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const index = () => {
@@ -105,14 +97,15 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-   {
-  name: "Room Type",
-  sortable: true,
-  selector: (row) =>
-    row.roomTypeName
-      ? row.roomTypeName.charAt(0).toUpperCase() + row.roomTypeName.slice(1).toLowerCase()
-      : "",
-},
+    {
+      name: "Room Type",
+      sortable: true,
+      selector: (row) =>
+        row.roomTypeName
+          ? row.roomTypeName.charAt(0).toUpperCase() +
+            row.roomTypeName.slice(1).toLowerCase()
+          : "",
+    },
 
     {
       name: "Tax Name",
@@ -176,14 +169,17 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
-                 MySwal.fire({
-                    icon: "error",
-                    title: "Not Deleted!",
-                    text: `${error.response?.data?.content || "An error occurred while deleting."}`,
-                    customClass: {
-                      confirmButton: "btn btn-success",
-                    },
-                  });
+                MySwal.fire({
+                  icon: "error",
+                  title: "Not Deleted!",
+                  text: `${
+                    error.response?.data?.content ||
+                    "An error occurred while deleting."
+                  }`,
+                  customClass: {
+                    confirmButton: "btn btn-success",
+                  },
+                });
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({

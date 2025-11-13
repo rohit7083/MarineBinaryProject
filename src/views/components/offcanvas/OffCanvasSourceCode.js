@@ -1,6 +1,6 @@
 export const offCanvasPlacement = (
   <pre>
-    <code className='language-jsx'>{`import { useState } from 'react'
+    <code className="language-jsx">{`import { useState } from 'react'
 import classnames from 'classnames'
 import { Button, Offcanvas, OffcanvasHeader, OffcanvasBody } from 'reactstrap'
 
@@ -86,11 +86,11 @@ const OffCanvasPlacement = () => {
 export default OffCanvasPlacement
 `}</code>
   </pre>
-)
+);
 
 export const offCanvasOptions = (
   <pre>
-    <code className='language-jsx'>{`import { useState } from 'react'
+    <code className="language-jsx">{`import { useState } from 'react'
 import { Button, Offcanvas, OffcanvasHeader, OffcanvasBody } from 'reactstrap'
 
 const OffCanvasPlacement = () => {
@@ -160,4 +160,4 @@ const OffCanvasPlacement = () => {
 export default OffCanvasPlacement
 `}</code>
   </pre>
-)
+);

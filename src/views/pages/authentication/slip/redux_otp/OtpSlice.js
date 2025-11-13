@@ -1,13 +1,11 @@
-import React from 'react'
-import {createSlice} from '@reduxjs/toolkit';
+import React from "react";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-
-    countDown:30,
-    canResendOtp: false,
-    showCallOption: false,
-    mode:"initial",
-
+  countDown: 30,
+  canResendOtp: false,
+  showCallOption: false,
+  mode: "initial",
 };
 
 const OtpSlice = createSlice({
@@ -39,8 +37,6 @@ const OtpSlice = createSlice({
     resetOtp: () => initialState,
   },
 });
-
-
 
 export const { startOtpCountdown, tickCountdown, resetOtp } = OtpSlice.actions;
 export default OtpSlice.reducer;

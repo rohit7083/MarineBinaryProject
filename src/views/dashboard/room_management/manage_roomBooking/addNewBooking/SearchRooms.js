@@ -227,7 +227,6 @@ const SearchRooms = ({
       <Row>
         {roomsList.length ? (
           <Fragment>
-
             <Row className="align-items-center mb-3 mt-1">
               <Col className="d-flex align-items-center">
                 {/* {isRoomRequired ? (
@@ -237,7 +236,7 @@ const SearchRooms = ({
                     </CardTitle>
                   </>
                 ) : ( */}
-                            <Toast ref={toast} />
+                <Toast ref={toast} />
 
                 <CardTitle className="fs-2 fw-bold mb-0">
                   Available Rooms ({roomsList.length})
@@ -256,8 +255,6 @@ const SearchRooms = ({
                 />
               </Col>
             </Row>
-
-          
 
             {tableData?.results?.slice(0, visibleCount).map((fields, index) => {
               const isLast = index === visibleCount - 1;
@@ -295,8 +292,6 @@ const SearchRooms = ({
               );
             })}
 
-          
-
             {visibleCount < tableData.results.length && (
               <Col sm="12" className="d-flex justify-content-center my-3">
                 <Button
@@ -315,7 +310,6 @@ const SearchRooms = ({
               </Col>
             )}
 
-          
             <Col sm="12" className={"d-flex justify-content-start"}>
               <Button color={"primary"} disabled={isSubmitting}>
                 {isSubmitting ? (

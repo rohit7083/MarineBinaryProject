@@ -1,28 +1,28 @@
 import {
-    CreditCard,
-    Filter,
-    Minus,
-    Package,
-    Plus,
-    Search,
-    Tag,
-    X,
+  CreditCard,
+  Filter,
+  Minus,
+  Package,
+  Plus,
+  Search,
+  Tag,
+  X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ShoppingCart } from "react-feather";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Container,
-    Input,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Col,
+  Container,
+  Input,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
 } from "reactstrap";
 
 export default function POS({ data = [] }) {
@@ -93,7 +93,11 @@ export default function POS({ data = [] }) {
                     <Search
                       size={16}
                       className="position-absolute"
-                      style={{ left: "10px", top: "50%", transform: "translateY(-50%)" }}
+                      style={{
+                        left: "10px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                      }}
                     />
                     <Input
                       type="text"
@@ -150,7 +154,8 @@ export default function POS({ data = [] }) {
                                   <div className="text-muted small">
                                     {variation.attributes
                                       ?.map(
-                                        (attr) => `${attr.attributeName}: ${attr.value}`
+                                        (attr) =>
+                                          `${attr.attributeName}: ${attr.value}`
                                       )
                                       .join(", ")}
                                   </div>
@@ -206,8 +211,7 @@ export default function POS({ data = [] }) {
           <Card className="sticky-top" style={{ top: "20px" }}>
             <CardHeader className="bg-primary text-white d-flex justify-content-between align-items-center">
               <div>
-                <ShoppingCart
-                 size={20} /> Cart Summary
+                <ShoppingCart size={20} /> Cart Summary
               </div>
               <div>{totalItems} items</div>
             </CardHeader>
@@ -228,7 +232,9 @@ export default function POS({ data = [] }) {
                         <strong>{item.sku}</strong>
                         <div className="text-muted small">
                           {item.attributes
-                            ?.map((attr) => `${attr.attributeName}: ${attr.value}`)
+                            ?.map(
+                              (attr) => `${attr.attributeName}: ${attr.value}`
+                            )
                             .join(", ")}
                         </div>
                         <div>
@@ -264,7 +270,10 @@ export default function POS({ data = [] }) {
                       value={discount}
                       onChange={(e) =>
                         setDiscount(
-                          Math.max(0, Math.min(100, parseFloat(e.target.value) || 0))
+                          Math.max(
+                            0,
+                            Math.min(100, parseFloat(e.target.value) || 0)
+                          )
                         )
                       }
                       placeholder="Discount %"
@@ -323,8 +332,14 @@ export default function POS({ data = [] }) {
       </Row>
 
       {/* Checkout Modal */}
-      <Modal isOpen={showCheckout} toggle={() => setShowCheckout(false)} centered>
-        <ModalHeader toggle={() => setShowCheckout(false)}>Checkout</ModalHeader>
+      <Modal
+        isOpen={showCheckout}
+        toggle={() => setShowCheckout(false)}
+        centered
+      >
+        <ModalHeader toggle={() => setShowCheckout(false)}>
+          Checkout
+        </ModalHeader>
         <ModalBody className="text-center">
           <CreditCard size={48} className="text-success mb-3" />
           <h3>₹{total.toFixed(2)}</h3>

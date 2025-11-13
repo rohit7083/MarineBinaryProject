@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
-import classnames from 'classnames'
-import { Star, ShoppingCart, Heart } from 'react-feather'
-import { Card, CardBody, CardText, Button, Badge, Row, Col } from 'reactstrap'
+import { Link } from "react-router-dom";
+import classnames from "classnames";
+import { Star, ShoppingCart, Heart } from "react-feather";
+import { Card, CardBody, CardText, Button, Badge, Row, Col } from "reactstrap";
 
-const ProductCards = props => {
+const ProductCards = (props) => {
   const {
     store,
     products,
@@ -13,25 +13,25 @@ const ProductCards = props => {
     getProducts,
     getCartItems,
     addToWishlist,
-    deleteWishlistItem
-  } = props
+    deleteWishlistItem,
+  } = props;
 
   const handleCartBtn = (id, val) => {
     if (!val) {
-      dispatch(addToCart(id))
+      dispatch(addToCart(id));
     }
-    dispatch(getCartItems())
-    dispatch(getProducts(store.params))
-  }
+    dispatch(getCartItems());
+    dispatch(getProducts(store.params));
+  };
 
   const handleWishlistClick = (id, val) => {
     if (val) {
-      dispatch(deleteWishlistItem(id))
+      dispatch(deleteWishlistItem(id));
     } else {
-      dispatch(addToWishlist(id))
+      dispatch(addToWishlist(id));
     }
-    dispatch(getProducts(store.params))
-  }
+    dispatch(getProducts(store.params));
+  };
 
   // const renderProducts = () => {
   //   if (products.length) {
@@ -54,7 +54,7 @@ const ProductCards = props => {
   //                       <ul className="unstyled-list list-inline">
   //                         {new Array(5).fill().map((_, index) => (
   //                           <li key={index} className="ratings-list-item me-25">
-                           
+
   //                           </li>
   //                         ))}
   //                       </ul>
@@ -78,7 +78,7 @@ const ProductCards = props => {
   //                 <div className="item-options text-center">
   //                   <div className="item-wrapper">
   //                     <div className="item-cost">
-                       
+
   //                     </div>
   //                   </div>
   //                   <Button
@@ -117,15 +117,15 @@ const ProductCards = props => {
     if (products.length) {
       return (
         <Row className="gy-3">
-          {products.map(item => {
-            const CartBtnTag = item.isInCart ? Link : 'button'
+          {products.map((item) => {
+            const CartBtnTag = item.isInCart ? Link : "button";
 
             return (
-              <Col lg="4" md="6" sm="12" >
+              <Col lg="4" md="6" sm="12">
                 <Card className="ecommerce-card">
                   <div className="item-img text-center mx-auto">
                     {/* <Link to={`/apps/ecommerce/product-detail/${item.slug}`}> */}
-                      <img className="img-fluid card-img-top" src={item.image}  />
+                    <img className="img-fluid card-img-top" src={item.image} />
                     {/* </Link> */}
                   </div>
                   <CardBody>
@@ -133,9 +133,7 @@ const ProductCards = props => {
                       <div className="item-rating">
                         <ul className="unstyled-list list-inline">
                           {/* {new Array(5).fill().map((_, index) => ( */}
-                            <li className="ratings-list-item me-25">
-                           
-                            </li>
+                          <li className="ratings-list-item me-25"></li>
                           {/* ))} */}
                         </ul>
                       </div>
@@ -145,12 +143,16 @@ const ProductCards = props => {
                     </div>
                     <h6 className="item-name">
                       {/* <Link className="text-body" to={`/apps/ecommerce/product-detail/${item.slug}`}> */}
-                        {/* {item.name} */}
-                        name
+                      {/* {item.name} */}
+                      name
                       {/* </Link> */}
                       <CardText tag="span" className="item-company">
-                        By{' '}
-                        <a className="company-name" href="/" onClick={e => e.preventDefault()}>
+                        By{" "}
+                        <a
+                          className="company-name"
+                          href="/"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           {/* {item.brand} */}
                           brand
                         </a>
@@ -159,9 +161,7 @@ const ProductCards = props => {
                   </CardBody>
                   <div className="item-options text-center">
                     <div className="item-wrapper">
-                      <div className="item-cost">
-                       
-                      </div>
+                      <div className="item-cost"></div>
                     </div>
                     <Button
                       className="btn-wishlist"
@@ -189,22 +189,22 @@ const ProductCards = props => {
                   </div>
                 </Card>
               </Col>
-            )
+            );
           })}
         </Row>
-      )
+      );
     }
-  }
+  };
   return (
     <div
       className={classnames({
-        'grid-view': activeView === 'grid',
-        'list-view': activeView === 'list'
+        "grid-view": activeView === "grid",
+        "list-view": activeView === "list",
       })}
     >
       {renderProducts()}
     </div>
-  )
-}
+  );
+};
 
-export default ProductCards
+export default ProductCards;

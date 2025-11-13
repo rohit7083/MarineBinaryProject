@@ -1,5 +1,5 @@
 // ** Icons Import
-import { PieChart, Circle } from 'react-feather'
+import { PieChart, Circle } from "react-feather";
 
 export default [
   // {
@@ -32,4 +32,4 @@ export default [
   //     }
   //   ]
   // }
-]
+];

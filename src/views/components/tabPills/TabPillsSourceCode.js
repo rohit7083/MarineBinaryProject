@@ -1,6 +1,6 @@
 export const pillBasic = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import classnames from 'classnames'
@@ -139,11 +139,11 @@ export default PillBasic
 `}
     </code>
   </pre>
-)
+);
 
 export const pillsFilled = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -224,11 +224,11 @@ export default PillFilled
 `}
     </code>
   </pre>
-)
+);
 
 export const pillsJustified = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -309,11 +309,11 @@ export default PillsJustified
 `}
     </code>
   </pre>
-)
+);
 
 export const pillsCentered = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -394,11 +394,11 @@ export default PillCentered
 `}
     </code>
   </pre>
-)
+);
 
 export const pillsEnd = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap'
@@ -479,11 +479,11 @@ export default PillEnd
 `}
     </code>
   </pre>
-)
+);
 
 export const pillsVertical = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap'
@@ -568,11 +568,11 @@ export default PillsVertical
 `}
     </code>
   </pre>
-)
+);
 
 export const pillThemes = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Nav, NavItem, NavLink } from 'reactstrap'
@@ -670,4 +670,4 @@ export default PillThemes
 `}
     </code>
   </pre>
-)
+);

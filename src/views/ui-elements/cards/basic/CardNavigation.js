@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useState } from "react";
 
 // ** Reactstrap Imports
 import {
@@ -15,38 +15,38 @@ import {
   CardText,
   CardTitle,
   CardHeader,
-  TabContent
-} from 'reactstrap'
+  TabContent,
+} from "reactstrap";
 
 const CardNavigation = () => {
   // ** States
-  const [activeTab, setTabActive] = useState('1')
-  const [activePill, setPillActive] = useState('1')
+  const [activeTab, setTabActive] = useState("1");
+  const [activePill, setPillActive] = useState("1");
 
-  const togglePills = tab => {
+  const togglePills = (tab) => {
     if (activePill !== tab) {
-      setPillActive(tab)
+      setPillActive(tab);
     }
-  }
+  };
 
-  const toggleTabs = tab => {
+  const toggleTabs = (tab) => {
     if (activeTab !== tab) {
-      setTabActive(tab)
+      setTabActive(tab);
     }
-  }
+  };
   return (
     <Fragment>
-      <h5 className='mt-3 mb-2'>Navigation</h5>
+      <h5 className="mt-3 mb-2">Navigation</h5>
       <Row>
-        <Col md='6'>
-          <Card className='text-center'>
+        <Col md="6">
+          <Card className="text-center">
             <CardHeader>
               <Nav pills>
                 <NavItem>
                   <NavLink
-                    active={activePill === '1'}
+                    active={activePill === "1"}
                     onClick={() => {
-                      togglePills('1')
+                      togglePills("1");
                     }}
                   >
                     Home
@@ -54,9 +54,9 @@ const CardNavigation = () => {
                 </NavItem>
                 <NavItem>
                   <NavLink
-                    active={activePill === '2'}
+                    active={activePill === "2"}
                     onClick={() => {
-                      togglePills('2')
+                      togglePills("2");
                     }}
                   >
                     Profile
@@ -69,17 +69,23 @@ const CardNavigation = () => {
             </CardHeader>
             <CardBody>
               <TabContent activeTab={activePill}>
-                <TabPane tabId='1'>
-                  <CardTitle tag='h4'>Special title treatment</CardTitle>
-                  <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                  <Button color='primary' outline>
+                <TabPane tabId="1">
+                  <CardTitle tag="h4">Special title treatment</CardTitle>
+                  <CardText>
+                    With supporting text below as a natural lead-in to
+                    additional content.
+                  </CardText>
+                  <Button color="primary" outline>
                     Go somewhere
                   </Button>
                 </TabPane>
-                <TabPane tabId='2'>
-                  <CardTitle tag='h4'>Special title </CardTitle>
-                  <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                  <Button color='primary' outline>
+                <TabPane tabId="2">
+                  <CardTitle tag="h4">Special title </CardTitle>
+                  <CardText>
+                    With supporting text below as a natural lead-in to
+                    additional content.
+                  </CardText>
+                  <Button color="primary" outline>
                     Go somewhere
                   </Button>
                 </TabPane>
@@ -87,15 +93,15 @@ const CardNavigation = () => {
             </CardBody>
           </Card>
         </Col>
-        <Col md='6'>
-          <Card className='text-center'>
+        <Col md="6">
+          <Card className="text-center">
             <CardHeader>
               <Nav tabs>
                 <NavItem>
                   <NavLink
-                    active={activeTab === '1'}
+                    active={activeTab === "1"}
                     onClick={() => {
-                      toggleTabs('1')
+                      toggleTabs("1");
                     }}
                   >
                     Home
@@ -103,9 +109,9 @@ const CardNavigation = () => {
                 </NavItem>
                 <NavItem>
                   <NavLink
-                    active={activeTab === '2'}
+                    active={activeTab === "2"}
                     onClick={() => {
-                      toggleTabs('2')
+                      toggleTabs("2");
                     }}
                   >
                     Profile
@@ -118,17 +124,23 @@ const CardNavigation = () => {
             </CardHeader>
             <CardBody>
               <TabContent activeTab={activeTab}>
-                <TabPane tabId='1'>
-                  <CardTitle tag='h4'>Special title treatment</CardTitle>
-                  <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                  <Button color='primary' outline>
+                <TabPane tabId="1">
+                  <CardTitle tag="h4">Special title treatment</CardTitle>
+                  <CardText>
+                    With supporting text below as a natural lead-in to
+                    additional content.
+                  </CardText>
+                  <Button color="primary" outline>
                     Go somewhere
                   </Button>
                 </TabPane>
-                <TabPane tabId='2'>
-                  <CardTitle tag='h4'>Special title </CardTitle>
-                  <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-                  <Button color='primary' outline>
+                <TabPane tabId="2">
+                  <CardTitle tag="h4">Special title </CardTitle>
+                  <CardText>
+                    With supporting text below as a natural lead-in to
+                    additional content.
+                  </CardText>
+                  <Button color="primary" outline>
                     Go somewhere
                   </Button>
                 </TabPane>
@@ -138,7 +150,7 @@ const CardNavigation = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
+  );
+};
 
-export default CardNavigation
+export default CardNavigation;

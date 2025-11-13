@@ -266,7 +266,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       // Find the country object from countryOptions
       const selectedCountry =
         countryOptions.find((c) => c.code === backendCode) || null;
-     
+
       reset({
         firstName,
         lastName,

@@ -120,7 +120,6 @@ const index = () => {
     navigate("/pos/customer-management/view", { state: { row } });
   };
 
-
   const paymentStatusColor = {
     success: "light-success",
     error: "light-danger",

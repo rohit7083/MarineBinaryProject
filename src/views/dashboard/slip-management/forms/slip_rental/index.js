@@ -79,12 +79,11 @@ const TabsCentered = () => {
             <SlipRentalManagement />
           </TabPane>
           <TabPane tabId="3">
-           <SlipPendingInvoice />
+            <SlipPendingInvoice />
           </TabPane>
           <TabPane tabId="4">
-           <SlipRentalArchive />
+            <SlipRentalArchive />
           </TabPane>
-         
         </TabContent>
       </React.Fragment>
     </Card>

@@ -893,12 +893,42 @@ export default class JwtService {
     return axios.delete(`${this.jwtConfig.deleteWaiting}${uid}`);
   }
 
-   offlineSlip(uid) {
+  offlineSlip(uid) {
     return axios.delete(`${this.jwtConfig.offlineSlip}${uid}`);
   }
 
-
   getAllWaiting() {
     return axios.get(this.jwtConfig.getAllWaiting);
+  }
+
+  emailSmsSetting(...args) {
+    return axios.post(this.jwtConfig.emailSmsSetting, ...args);
+  }
+
+  getSettings() {
+    return axios.get(this.jwtConfig.getSettings);
+  }
+
+  updateSetting(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateSetting}${uid}`, ...args);
+  }
+  getShortcode() {
+    return axios.get(this.jwtConfig.getShortcode);
+  }
+
+  getCalender() {
+    return axios.get(this.jwtConfig.getCalender);
+  }
+
+  createTemaplte(...args) {
+    return axios.post(this.jwtConfig.createTemaplte, ...args);
+  }
+
+  getAllTemplate() {
+    return axios.get(this.jwtConfig.getAllTemplate);
+  }
+
+  getTemplateValues() {
+    return axios.get(this.jwtConfig.getTemplateValues);
   }
 }

@@ -1,18 +1,15 @@
-import React, { Fragment , useState ,useEffect} from 'react'
+import React, { Fragment, useState, useEffect } from "react";
 
 // ** Custom Components
-import Breadcrumbs from '@components/breadcrumbs'
+import Breadcrumbs from "@components/breadcrumbs";
 
 // ** Third Party Components
-import { Row, Col } from 'reactstrap'
+import { Row, Col } from "reactstrap";
 
 // ** Other Components
-import TerminalForm from "./Form"
-
+import TerminalForm from "./Form";
 
 function Index() {
-
- 
   return (
     <Fragment>
       <h3>Virtual Terminal</h3>
@@ -20,9 +17,9 @@ function Index() {
         <Col sm="12">
           <TerminalForm />
         </Col>
-      </Row>      
+      </Row>
     </Fragment>
-  )
+  );
 }
 
-export default Index
+export default Index;

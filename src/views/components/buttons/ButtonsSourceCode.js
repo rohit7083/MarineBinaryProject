@@ -1,6 +1,6 @@
 export const filledButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -22,11 +22,11 @@ export default FilledButtons
 `}
     </code>
   </pre>
-)
+);
 
 export const outlineButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -62,11 +62,11 @@ export default OutlineButtons
   `}
     </code>
   </pre>
-)
+);
 
 export const flatButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -88,11 +88,11 @@ export default FlatButtons
     `}
     </code>
   </pre>
-)
+);
 
 export const gradientButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -114,11 +114,11 @@ export default GradientButtons
       `}
     </code>
   </pre>
-)
+);
 
 export const reliefButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -139,11 +139,11 @@ const ReliefButtons = () => {
 export default ReliefButtons`}
     </code>
   </pre>
-)
+);
 
 export const roundButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -178,11 +178,11 @@ const RoundButtons = () => {
 export default RoundButtons`}
     </code>
   </pre>
-)
+);
 
 export const iconButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -214,11 +214,11 @@ export default ButtonsIcon
               `}
     </code>
   </pre>
-)
+);
 
 export const iconOnlyButtons = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -257,11 +257,11 @@ const ButtonsIconOnly = () => {
 export default ButtonsIconOnly`}
     </code>
   </pre>
-)
+);
 
 export const buttonGroup = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, ButtonGroup, Row, Col } from 'reactstrap'
@@ -298,11 +298,11 @@ const ButtonGroups = () => {
 export default ButtonGroups`}
     </code>
   </pre>
-)
+);
 
 export const buttonCBRadio = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { Button, ButtonGroup, Row, Col, CardText } from 'reactstrap'
@@ -358,11 +358,11 @@ const ButtonCheckboxRadio = () => {
 export default ButtonCheckboxRadio`}
     </code>
   </pre>
-)
+);
 
 export const buttonSizes = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, Row, Col } from 'reactstrap'
@@ -416,11 +416,11 @@ export default ButtonSizes
               `}
     </code>
   </pre>
-)
+);
 
 export const buttonBlock = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, Row, Col } from 'reactstrap'
@@ -445,11 +445,11 @@ const ButtonBlock = () => {
 export default ButtonBlock`}
     </code>
   </pre>
-)
+);
 
 export const buttonTags = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button } from 'reactstrap'
@@ -486,4 +486,4 @@ export default ButtonTags
               `}
     </code>
   </pre>
-)
+);

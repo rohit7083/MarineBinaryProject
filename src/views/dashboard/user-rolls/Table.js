@@ -15,13 +15,13 @@ import AddRoles from "../user_rolls/roles-permissions/roles/AddRoles";
 
 // ** Reactstrap Imports
 import {
-    Card,
-    CardHeader,
-    CardTitle,
-    Col,
-    Input,
-    Label,
-    Row
+  Card,
+  CardHeader,
+  CardTitle,
+  Col,
+  Input,
+  Label,
+  Row,
 } from "reactstrap";
 // ** Jwt Class
 import useJwt from "@src/auth/jwt/useJwt";
@@ -150,14 +150,14 @@ const DataTableServerSide = () => {
           }
         } catch (error) {
           console.error("Error deleting item:", error);
-            MySwal.fire({
-              icon: "error",
-              title: "Can not Delete!",
-              text: `${error.response?.data?.content || "Something went wrong."}`,
-              customClass: {
-                confirmButton: "btn btn-success",
-              },
-            });
+          MySwal.fire({
+            icon: "error",
+            title: "Can not Delete!",
+            text: `${error.response?.data?.content || "Something went wrong."}`,
+            customClass: {
+              confirmButton: "btn btn-success",
+            },
+          });
         }
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         // Show cancellation message

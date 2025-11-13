@@ -25,7 +25,7 @@ import {
   CardText,
   CardTitle,
   Input,
-  Label
+  Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -292,7 +292,7 @@ const ResetPasswordBasic = () => {
               <img
                 src={MARinLogo}
                 alt="Longcove Marina Logo"
-               style={{
+                style={{
                   height: "5rem",
                   width: "auto",
                   marginBottom: "0px",

@@ -1,5 +1,5 @@
 // ** Reactstrap Imports
-import { ListGroup, ListGroupItem } from 'reactstrap'
+import { ListGroup, ListGroupItem } from "reactstrap";
 
 const ListGroupSimple = () => {
   return (
@@ -10,6 +10,6 @@ const ListGroupSimple = () => {
       <ListGroupItem>Porta ac consectetur ac</ListGroupItem>
       <ListGroupItem>Vestibulum at eros</ListGroupItem>
     </ListGroup>
-  )
-}
-export default ListGroupSimple
+  );
+};
+export default ListGroupSimple;

@@ -23,7 +23,7 @@ import {
   InputGroup,
   InputGroupText,
   Label,
-  Row
+  Row,
 } from "reactstrap";
 const MultipleColumnForm = () => {
   const {
@@ -52,7 +52,6 @@ const MultipleColumnForm = () => {
   };
 
   const [cardType, setCardType] = useState("");
-  
 
   return (
     <Card className="round">
@@ -69,7 +68,11 @@ const MultipleColumnForm = () => {
                   <CardHeader>
                     <CardTitle tag="h4">Search</CardTitle>
 
-                    <Button className="card-text " size='sm' color="relief-primary">
+                    <Button
+                      className="card-text "
+                      size="sm"
+                      color="relief-primary"
+                    >
                       {" "}
                       Walking Customer
                     </Button>

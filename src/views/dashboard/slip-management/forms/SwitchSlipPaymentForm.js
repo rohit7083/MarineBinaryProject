@@ -321,10 +321,10 @@ function SwitchSlipPaymentForm() {
             });
             setIsLoading(false);
             return;
-          }else{
+          } else {
             setTimeout(() => {
-            navigate("/dashboard/slipmember_list");
-          }, 3000);
+              navigate("/dashboard/slipmember_list");
+            }, 3000);
           }
 
           console.log("*****monthly Response", monthlyResponse);
@@ -375,7 +375,6 @@ function SwitchSlipPaymentForm() {
         }
       }
 
-      
       // Success message for annual slips
       toast.current.show({
         severity: "success",

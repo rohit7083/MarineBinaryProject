@@ -115,7 +115,7 @@ const ExistingCustomer = () => {
       setIsProcessing(true);
       const response = await useJwt.NewCustomerInTerminal(payload);
 
-      if (response?.data?.status === 'success') {
+      if (response?.data?.status === "success") {
         toast.current.show({
           severity: "success",
           summary: "Payment Successful",
@@ -449,7 +449,7 @@ const ExistingCustomer = () => {
         {/* Submit & Reset Buttons */}
         <Col sm="12">
           <div className="d-flex">
-            <Button className="me-1" size='sm' color="primary" type="submit">
+            <Button className="me-1" size="sm" color="primary" type="submit">
               {isProcessing ? "Processing..." : "Submit"}
             </Button>
             <Button outline color="secondary" type="button" onClick={resetForm}>

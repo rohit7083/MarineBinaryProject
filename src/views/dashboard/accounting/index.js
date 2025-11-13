@@ -379,10 +379,9 @@ const Index = () => {
                   <DropdownItem onClick={() => exportToImage("report-section")}>
                     Export as Image
                   </DropdownItem> */}
-                   <DropdownItem onClick={() => exportToExcelHTML(filteredData)}>
+                  <DropdownItem onClick={() => exportToExcelHTML(filteredData)}>
                     Export as Excel
                   </DropdownItem>
-                  
                 </DropdownMenu>
               </Dropdown>
             </div>

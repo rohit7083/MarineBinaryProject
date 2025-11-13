@@ -1,6 +1,6 @@
 export const carouselBasic = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import {
@@ -90,11 +90,11 @@ export default CarouselBasic
     `}
     </code>
   </pre>
-)
+);
 
 export const carouselCaptions = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import {
@@ -195,11 +195,11 @@ export default CarouselCaptions
     `}
     </code>
   </pre>
-)
+);
 
 export const carouselUncontrolled = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { UncontrolledCarousel } from 'reactstrap'
@@ -229,11 +229,11 @@ export default CarouselUncontrolled
         `}
     </code>
   </pre>
-)
+);
 
 export const carouselInterval = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { UncontrolledCarousel } from 'reactstrap'
@@ -265,11 +265,11 @@ const CarouselInterval = () => {
 export default CarouselInterval`}
     </code>
   </pre>
-)
+);
 
 export const carouselKeyboard = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { UncontrolledCarousel } from 'reactstrap'
@@ -303,11 +303,11 @@ export default CarouselKeyboard
             `}
     </code>
   </pre>
-)
+);
 
 export const carouselPause = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { UncontrolledCarousel } from 'reactstrap'
@@ -346,4 +346,4 @@ export default CarouselPause
 `}
     </code>
   </pre>
-)
+);

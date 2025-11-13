@@ -45,59 +45,62 @@ function AddEventTypes() {
     }
   }, []);
 
-const onSubmit = async (data) => {
-  seterrMsz("");
-  setLoading(true);
+  const onSubmit = async (data) => {
+    seterrMsz("");
+    setLoading(true);
 
-  try {
-    if (uid) {
-      // 🔹 Update event type
-      try {
-       const  res = await useJwt.UpdateEventType(uid, data);
-        console.log("Updated:", res);
+    try {
+      if (uid) {
+        // 🔹 Update event type
+        try {
+          const res = await useJwt.UpdateEventType(uid, data);
+          console.log("Updated:", res);
 
-        if (res.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Updated Successfully",
-            detail: "Event Type updated successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/addEvent_type");
-          }, 2000);
+          if (res.status === 200) {
+            toast.current.show({
+              severity: "success",
+              summary: "Updated Successfully",
+              detail: "Event Type updated successfully.",
+              life: 2000,
+            });
+            setTimeout(() => {
+              navigate("/addEvent_type");
+            }, 2000);
+          }
+        } catch (error) {
+          console.error("Update Error:", error);
+          seterrMsz(
+            error.response?.data?.content || "Failed to update Event Type!"
+          );
         }
-      } catch (error) {
-        console.error("Update Error:", error);
-        seterrMsz(error.response?.data?.content || "Failed to update Event Type!");
-      }
-    } else {
-      // 🔹 Create event type
-      try {
+      } else {
+        // 🔹 Create event type
+        try {
+          const createRes = await useJwt.EventType(data);
+          console.log("Created:", createRes);
 
-       const createRes = await useJwt.EventType(data);
-        console.log("Created:", createRes);
-
-        if (createRes?.status === 201) {
-          toast.current.show({
-            severity: "success",
-            summary: "Created Successfully",
-            detail: "Event Type created successfully.",
-            life: 2000,
-          });
-          setTimeout(() => {
-            navigate("/addEvent_type");
-          }, 2000);
+          if (createRes?.status === 201) {
+            toast.current.show({
+              severity: "success",
+              summary: "Created Successfully",
+              detail: "Event Type created successfully.",
+              life: 2000,
+            });
+            setTimeout(() => {
+              navigate("/addEvent_type");
+            }, 2000);
+          }
+        } catch (error) {
+          console.error("Create Error:", error);
+          seterrMsz(
+            error.response?.data?.content || "Failed to create Event Type!"
+          );
         }
-      } catch (error) {
-        console.error("Create Error:", error);
-        seterrMsz(error.response?.data?.content || "Failed to create Event Type!");
       }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <Fragment>

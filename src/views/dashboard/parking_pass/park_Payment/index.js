@@ -39,7 +39,7 @@ const CustomTable = ({ data }) => {
 
       setTableData({ count: content.count, results: content.result });
     } catch (error) {
-       console.error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -260,14 +260,10 @@ const CustomTable = ({ data }) => {
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
             <h3 className="">Add new user </h3>
 
-            <div className="mx-2">
-              {/* <Createuser /> */}
-            </div>
+            <div className="mx-2">{/* <Createuser /> */}</div>
           </div>
           <hr />
-          <div className="app-user-list">
-            {/* <Table /> */}
-          </div>
+          <div className="app-user-list">{/* <Table /> */}</div>
           <div className="invoice-list-table-header w-100 me-1 ms-50 mt-2 mb-75">
             <Row>
               <Col xl="6" className="d-flex align-items-center p-0">

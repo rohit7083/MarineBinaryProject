@@ -89,8 +89,8 @@ const Payment_section = ({ FinalAmountRes }) => {
       return "Transaction ID must be at least 6 characters";
     }
     if (!/^[a-zA-Z0-9]+$/.test(value)) {
-  return "Transaction ID must contain only letters and numbers";
-}
+      return "Transaction ID must contain only letters and numbers";
+    }
 
     return true;
   };
@@ -963,12 +963,15 @@ const Payment_section = ({ FinalAmountRes }) => {
                                           }
                                           {...field}
                                           // disabled={statusThree}
-                                         onChange={(e) => {
-  // Allow only letters and numbers
-  const alphanumericValue = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-  field.onChange(alphanumericValue);
-}}
-
+                                          onChange={(e) => {
+                                            // Allow only letters and numbers
+                                            const alphanumericValue =
+                                              e.target.value.replace(
+                                                /[^a-zA-Z0-9]/g,
+                                                ""
+                                              );
+                                            field.onChange(alphanumericValue);
+                                          }}
                                         />
                                       )}
                                     />

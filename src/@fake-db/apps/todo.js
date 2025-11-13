@@ -1,448 +1,461 @@
-import mock from '../mock'
+import mock from "../mock";
 
 // Avatar Imports
-import avatar1 from '@src/assets/images/avatars/1.png'
-import avatar5 from '@src/assets/images/avatars/5.png'
-import avatar7 from '@src/assets/images/avatars/7.png'
-import avatar9 from '@src/assets/images/avatars/9.png'
-import avatar12 from '@src/assets/images/avatars/12.png'
-import avatarSmall9 from '@src/assets/images/portrait/small/avatar-s-9.jpg'
+import avatar1 from "@src/assets/images/avatars/1.png";
+import avatar5 from "@src/assets/images/avatars/5.png";
+import avatar7 from "@src/assets/images/avatars/7.png";
+import avatar9 from "@src/assets/images/avatars/9.png";
+import avatar12 from "@src/assets/images/avatars/12.png";
+import avatarSmall9 from "@src/assets/images/portrait/small/avatar-s-9.jpg";
 
 const data = {
   tasks: [
     {
       id: 1,
-      title: 'Entire change break our wife wide it daughter mention member.',
-      dueDate: '2020-11-25',
+      title: "Entire change break our wife wide it daughter mention member.",
+      dueDate: "2020-11-25",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Jacob Ramirez',
-        avatar: avatar12
+        fullName: "Jacob Ramirez",
+        avatar: avatar12,
       },
-      tags: ['update'],
+      tags: ["update"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 2,
-      title: 'Citizen stand administration step agency century.',
-      dueDate: '2020-12-14',
+      title: "Citizen stand administration step agency century.",
+      dueDate: "2020-12-14",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Andrew Anderson',
-        avatar: ''
+        fullName: "Andrew Anderson",
+        avatar: "",
       },
-      tags: ['team', 'medium'],
+      tags: ["team", "medium"],
       isCompleted: true,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 3,
-      title: 'Meet Jane and ask for coffee ❤️',
-      dueDate: '2020-11-25',
+      title: "Meet Jane and ask for coffee ❤️",
+      dueDate: "2020-11-25",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Benjamin Jacobs',
-        avatar: ''
+        fullName: "Benjamin Jacobs",
+        avatar: "",
       },
-      tags: ['high'],
+      tags: ["high"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 4,
-      title: 'Answer the support tickets and close completed tickets. ',
-      dueDate: '2020-11-20',
+      title: "Answer the support tickets and close completed tickets. ",
+      dueDate: "2020-11-20",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Curtis Schmidt',
-        avatar: avatar9
+        fullName: "Curtis Schmidt",
+        avatar: avatar9,
       },
-      tags: ['medium'],
+      tags: ["medium"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: true
+      isImportant: true,
     },
     {
       id: 5,
-      title: 'Test functionality of apps developed by dev team for enhancements. ',
-      dueDate: '2020-12-06',
+      title:
+        "Test functionality of apps developed by dev team for enhancements. ",
+      dueDate: "2020-12-06",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Katherine Perkins',
-        avatar: avatar9
+        fullName: "Katherine Perkins",
+        avatar: avatar9,
       },
-      tags: ['medium'],
+      tags: ["medium"],
       isCompleted: true,
       isDeleted: false,
-      isImportant: true
+      isImportant: true,
     },
     {
       id: 6,
-      title: 'Conduct a mini awareness meeting regarding health care. ',
-      dueDate: '2020-12-06',
+      title: "Conduct a mini awareness meeting regarding health care. ",
+      dueDate: "2020-12-06",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'David Murphy',
-        avatar: ''
+        fullName: "David Murphy",
+        avatar: "",
       },
-      tags: ['high', 'medium'],
+      tags: ["high", "medium"],
       isCompleted: true,
       isDeleted: true,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 7,
-      title: 'Plan new dashboard design with design team for Google app store. ',
-      dueDate: '2020-12-05',
+      title:
+        "Plan new dashboard design with design team for Google app store. ",
+      dueDate: "2020-12-05",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Karina Miller',
-        avatar: avatar1
+        fullName: "Karina Miller",
+        avatar: avatar1,
       },
-      tags: ['medium'],
+      tags: ["medium"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: true
+      isImportant: true,
     },
     {
       id: 8,
-      title: 'Pick up Nats from her school and drop at dance class😁 ',
-      dueDate: '2020-12-08',
+      title: "Pick up Nats from her school and drop at dance class😁 ",
+      dueDate: "2020-12-08",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Thomas Moses',
-        avatar: avatar7
+        fullName: "Thomas Moses",
+        avatar: avatar7,
       },
-      tags: ['low', 'medium'],
+      tags: ["low", "medium"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 9,
-      title: 'Finish documentation and make it live',
-      dueDate: '2020-11-25',
+      title: "Finish documentation and make it live",
+      dueDate: "2020-11-25",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Angel Morrow',
-        avatar: ''
+        fullName: "Angel Morrow",
+        avatar: "",
       },
-      tags: ['high', 'update'],
+      tags: ["high", "update"],
       isCompleted: false,
       isDeleted: true,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 10,
-      title: 'List out all the SEO resources and send it to new SEO team. ',
-      dueDate: '2020-12-09',
+      title: "List out all the SEO resources and send it to new SEO team. ",
+      dueDate: "2020-12-09",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Karen Carrillo',
-        avatar: ''
+        fullName: "Karen Carrillo",
+        avatar: "",
       },
-      tags: ['low'],
+      tags: ["low"],
       isCompleted: true,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 11,
-      title: 'Refactor Code and fix the bugs and test it on server ',
-      dueDate: '2020-12-01',
+      title: "Refactor Code and fix the bugs and test it on server ",
+      dueDate: "2020-12-01",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Timothy Brewer',
-        avatar: avatar1
+        fullName: "Timothy Brewer",
+        avatar: avatar1,
       },
-      tags: ['low'],
+      tags: ["low"],
       isCompleted: true,
       isDeleted: false,
-      isImportant: true
+      isImportant: true,
     },
     {
       id: 12,
-      title: 'Reminder to mail clients for holidays',
-      dueDate: '2020-12-09',
+      title: "Reminder to mail clients for holidays",
+      dueDate: "2020-12-09",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Brian Barry',
-        avatar: ''
+        fullName: "Brian Barry",
+        avatar: "",
       },
-      tags: ['team'],
+      tags: ["team"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 13,
       title: "Submit quotation for Abid's ecommerce website and admin project",
-      dueDate: '2020-12-01',
+      dueDate: "2020-12-01",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Joshua Golden',
-        avatar: avatar5
+        fullName: "Joshua Golden",
+        avatar: avatar5,
       },
-      tags: ['team'],
+      tags: ["team"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 14,
-      title: 'Send PPT with real-time reports',
-      dueDate: '2020-11-29',
+      title: "Send PPT with real-time reports",
+      dueDate: "2020-11-29",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Paula Hammond',
-        avatar: avatar5
+        fullName: "Paula Hammond",
+        avatar: avatar5,
       },
-      tags: ['medium'],
+      tags: ["medium"],
       isCompleted: true,
       isDeleted: false,
-      isImportant: true
+      isImportant: true,
     },
     {
       id: 15,
-      title: 'Skype Tommy for project status & report',
-      dueDate: '2020-11-29',
+      title: "Skype Tommy for project status & report",
+      dueDate: "2020-11-29",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Tyler Garcia',
-        avatar: ''
+        fullName: "Tyler Garcia",
+        avatar: "",
       },
-      tags: ['medium'],
+      tags: ["medium"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 16,
-      title: 'Hire 5 new Fresher or Experienced, frontend and backend developers ',
-      dueDate: '2020-12-12',
+      title:
+        "Hire 5 new Fresher or Experienced, frontend and backend developers ",
+      dueDate: "2020-12-12",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Darlene Shields',
-        avatar: avatar1
+        fullName: "Darlene Shields",
+        avatar: avatar1,
       },
-      tags: ['low'],
+      tags: ["low"],
       isCompleted: true,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 17,
-      title: 'Plan a party for development team 🎁',
-      dueDate: '2020-12-04',
+      title: "Plan a party for development team 🎁",
+      dueDate: "2020-12-04",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Destiny Michael',
-        avatar: ''
+        fullName: "Destiny Michael",
+        avatar: "",
       },
-      tags: ['medium', 'low'],
+      tags: ["medium", "low"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: false
+      isImportant: false,
     },
     {
       id: 18,
-      title: 'Fix Responsiveness for new structure 💻',
-      dueDate: '2020-11-18',
+      title: "Fix Responsiveness for new structure 💻",
+      dueDate: "2020-11-18",
       description:
-        'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.',
+        "Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",
       assignee: {
-        fullName: 'Danielle Anderson',
-        avatar: avatarSmall9
+        fullName: "Danielle Anderson",
+        avatar: avatarSmall9,
       },
-      tags: ['low'],
+      tags: ["low"],
       isCompleted: false,
       isDeleted: false,
-      isImportant: true
-    }
-  ]
-}
+      isImportant: true,
+    },
+  ],
+};
 
 // ------------------------------------------------
 // GET: Return Tasks
 // ------------------------------------------------
-mock.onGet('/apps/todo/tasks').reply(config => {
+mock.onGet("/apps/todo/tasks").reply((config) => {
   // eslint-disable-next-line object-curly-newline
-  const { q = '', filter, tag, sortBy: sortByParam = 'latest' } = config.params
+  const { q = "", filter, tag, sortBy: sortByParam = "latest" } = config.params;
   /* eslint-enable */
   // ------------------------------------------------
   // Get Sort by and Sort Direction
   // ------------------------------------------------
-  let sortDesc = true
+  let sortDesc = true;
 
   const sortBy = (() => {
-    if (sortByParam === 'title-asc') {
-      sortDesc = false
-      return 'title'
+    if (sortByParam === "title-asc") {
+      sortDesc = false;
+      return "title";
     }
-    if (sortByParam === 'title-desc') return 'title'
-    if (sortByParam === 'assignee') {
-      sortDesc = false
-      return 'assignee'
+    if (sortByParam === "title-desc") return "title";
+    if (sortByParam === "assignee") {
+      sortDesc = false;
+      return "assignee";
     }
-    if (sortByParam === 'due-date') {
-      sortDesc = false
-      return 'dueDate'
+    if (sortByParam === "due-date") {
+      sortDesc = false;
+      return "dueDate";
     }
-    return 'id'
-  })()
+    return "id";
+  })();
 
   // ------------------------------------------------
   // Filtering
   // ------------------------------------------------
-  const queryLowered = q.toLowerCase()
+  const queryLowered = q.toLowerCase();
 
-  const hasFilter = task => {
-    if (filter === 'important') return task.isImportant && !task.isDeleted
-    if (filter === 'completed') return task.isCompleted && !task.isDeleted
-    if (filter === 'deleted') return task.isDeleted
-    return !task.isDeleted
-  }
+  const hasFilter = (task) => {
+    if (filter === "important") return task.isImportant && !task.isDeleted;
+    if (filter === "completed") return task.isCompleted && !task.isDeleted;
+    if (filter === "deleted") return task.isDeleted;
+    return !task.isDeleted;
+  };
 
-  const includesFilter = task => task.tags.includes(queryLowered) || task.tags.some(tag => tag.includes(queryLowered))
+  const includesFilter = (task) =>
+    task.tags.includes(queryLowered) ||
+    task.tags.some((tag) => tag.includes(queryLowered));
 
-  const includesDueDate = task => {
-    const date = new Date(task.dueDate).getDate().toString().padStart(2, '0')
-    const month = new Date(task.dueDate).toLocaleString('default', { month: 'short' }).toLowerCase()
-    const dateMonth = `${date} ${month}`
-    const monthDate = `${month} ${date}`
+  const includesDueDate = (task) => {
+    const date = new Date(task.dueDate).getDate().toString().padStart(2, "0");
+    const month = new Date(task.dueDate)
+      .toLocaleString("default", { month: "short" })
+      .toLowerCase();
+    const dateMonth = `${date} ${month}`;
+    const monthDate = `${month} ${date}`;
 
     return (
       date.includes(queryLowered) ||
       month.includes(queryLowered) ||
       dateMonth.includes(queryLowered) ||
       monthDate.includes(queryLowered)
-    )
-  }
+    );
+  };
 
   /* eslint-disable */
-  const filteredData = data.tasks.filter(task => {
+  const filteredData = data.tasks.filter((task) => {
     if (filter || tag) {
       return (
-        task.title.toLowerCase().includes(queryLowered) && hasFilter(task) && (tag ? task.tags.includes(tag) : true)
-      )
+        task.title.toLowerCase().includes(queryLowered) &&
+        hasFilter(task) &&
+        (tag ? task.tags.includes(tag) : true)
+      );
     } else {
-      return task.title.toLowerCase().includes(queryLowered) || includesFilter(task) || includesDueDate(task)
+      return (
+        task.title.toLowerCase().includes(queryLowered) ||
+        includesFilter(task) ||
+        includesDueDate(task)
+      );
     }
-  })
+  });
   /* eslint-enable  */
 
   // ------------------------------------------------
   // Perform sorting
   // ------------------------------------------------
-  const sortTasks = key => (a, b) => {
-    let fieldA
-    let fieldB
+  const sortTasks = (key) => (a, b) => {
+    let fieldA;
+    let fieldB;
 
     // If sorting is by dueDate => Convert data to date
-    if (key === 'dueDate') {
-      fieldA = new Date(a[key])
-      fieldB = new Date(b[key])
+    if (key === "dueDate") {
+      fieldA = new Date(a[key]);
+      fieldB = new Date(b[key]);
       // eslint-disable-next-line brace-style
     }
 
     // If sorting is by assignee => Use `fullName` of assignee
-    else if (key === 'assignee') {
-      fieldA = a.assignee ? a.assignee.fullName : null
-      fieldB = b.assignee ? b.assignee.fullName : null
+    else if (key === "assignee") {
+      fieldA = a.assignee ? a.assignee.fullName : null;
+      fieldB = b.assignee ? b.assignee.fullName : null;
     } else {
-      fieldA = a[key]
-      fieldB = b[key]
+      fieldA = a[key];
+      fieldB = b[key];
     }
 
-    let comparison = 0
+    let comparison = 0;
 
     if (fieldA === fieldB) {
-      comparison = 0
+      comparison = 0;
     } else if (fieldA === null) {
-      comparison = 1
+      comparison = 1;
     } else if (fieldB === null) {
-      comparison = -1
+      comparison = -1;
     } else if (fieldA > fieldB) {
-      comparison = 1
+      comparison = 1;
     } else if (fieldA < fieldB) {
-      comparison = -1
+      comparison = -1;
     }
 
-    return comparison
-  }
+    return comparison;
+  };
 
   // Sort Data
-  const sortedData = filteredData.sort(sortTasks(sortBy))
-  if (sortDesc) sortedData.reverse()
-  return [200, sortedData]
-})
+  const sortedData = filteredData.sort(sortTasks(sortBy));
+  if (sortDesc) sortedData.reverse();
+  return [200, sortedData];
+});
 
 // ------------------------------------------------
 // POST: Add new task
 // ------------------------------------------------
-mock.onPost('/apps/todo/add-tasks').reply(config => {
+mock.onPost("/apps/todo/add-tasks").reply((config) => {
   // Get event from post data
-  const { task } = JSON.parse(config.data)
+  const { task } = JSON.parse(config.data);
 
-  const { length } = data.tasks
-  let lastIndex = 0
+  const { length } = data.tasks;
+  let lastIndex = 0;
   if (length) {
-    lastIndex = data.tasks[length - 1].id
+    lastIndex = data.tasks[length - 1].id;
   }
-  task.id = lastIndex + 1
+  task.id = lastIndex + 1;
 
-  data.tasks.push(task)
+  data.tasks.push(task);
 
-  return [201, { task }]
-})
+  return [201, { task }];
+});
 
 // ------------------------------------------------
 // POST: Update Task
 // ------------------------------------------------
-mock.onPost('/apps/todo/update-task').reply(config => {
-  const taskData = JSON.parse(config.data).task
+mock.onPost("/apps/todo/update-task").reply((config) => {
+  const taskData = JSON.parse(config.data).task;
 
   // Convert Id to number
-  taskData.id = Number(taskData.id)
+  taskData.id = Number(taskData.id);
 
-  const task = data.tasks.find(e => e.id === Number(taskData.id))
-  Object.assign(task, taskData)
+  const task = data.tasks.find((e) => e.id === Number(taskData.id));
+  Object.assign(task, taskData);
 
-  return [200, { task }]
-})
+  return [200, { task }];
+});
 
 // ------------------------------------------------
 // DELETE: Remove Task
 // ------------------------------------------------
-mock.onDelete('/apps/todo/delete-task').reply(config => {
+mock.onDelete("/apps/todo/delete-task").reply((config) => {
   // Get task id from URL
-  let taskId = config.taskId
+  let taskId = config.taskId;
 
   // Convert Id to number
-  taskId = Number(taskId)
+  taskId = Number(taskId);
 
-  const task = data.tasks.find(t => t.id === taskId)
-  Object.assign(task, { isDeleted: true })
-  return [200]
-})
+  const task = data.tasks.find((t) => t.id === taskId);
+  Object.assign(task, { isDeleted: true });
+  return [200];
+});

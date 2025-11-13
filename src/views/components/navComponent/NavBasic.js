@@ -1,26 +1,26 @@
 // ** Reactstrap Imports
-import { Nav, NavItem, NavLink } from 'reactstrap'
+import { Nav, NavItem, NavLink } from "reactstrap";
 
 const NavBasic = () => {
   return (
     <Nav>
       <NavItem>
-        <NavLink href='#' active>
+        <NavLink href="#" active>
           Active
         </NavLink>
       </NavItem>
       <NavItem>
-        <NavLink href='#'>Link</NavLink>
+        <NavLink href="#">Link</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink href='#'>Link</NavLink>
+        <NavLink href="#">Link</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink disabled href='#'>
+        <NavLink disabled href="#">
           Disabled
         </NavLink>
       </NavItem>
     </Nav>
-  )
-}
-export default NavBasic
+  );
+};
+export default NavBasic;

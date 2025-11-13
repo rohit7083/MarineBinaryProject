@@ -281,12 +281,14 @@ function AddVTypes() {
                                 placeholder="Room No."
                                 className="form-control-sm"
                                 invalid={fieldState.invalid}
-                               onChange={(e) => {
-  // Allow only numbers, dash, and space
-  const validValue = e.target.value.replace(/[^0-9A-Za-z\- ]/g, "");
-  field.onChange(validValue);
-}}
-
+                                onChange={(e) => {
+                                  // Allow only numbers, dash, and space
+                                  const validValue = e.target.value.replace(
+                                    /[^0-9A-Za-z\- ]/g,
+                                    ""
+                                  );
+                                  field.onChange(validValue);
+                                }}
                               />
                             )}
                           />

@@ -13,9 +13,15 @@ import waitingTime from "../../../../assets/icons/waitingTime.png";
 import "@styles/react/apps/app-users.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const UsersList = ({isOfflineCount,waitingCount, count, emptySlip, occupied }) => {
+const UsersList = ({
+  isOfflineCount,
+  waitingCount,
+  count,
+  emptySlip,
+  occupied,
+}) => {
   const [hoveredCard, setHoveredCard] = useState(null);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const getCardStyle = (key) => ({
     border: "1px solid black",
     backgroundColor: "#F8F8FF",
@@ -151,7 +157,7 @@ const navigate = useNavigate();
             style={getCardStyle("waiting")}
             onMouseEnter={() => setHoveredCard("waiting")}
             onMouseLeave={() => setHoveredCard(null)}
-            onClick={()=>navigate("/slip-management/waiting_slip")}
+            onClick={() => navigate("/slip-management/waiting_slip")}
           >
             <img
               src={waitingTime}

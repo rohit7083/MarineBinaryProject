@@ -18,7 +18,6 @@ import React from "react";
 // ** Reactstrap Imports
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
-
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import "@styles/react/pages/page-authentication.scss";

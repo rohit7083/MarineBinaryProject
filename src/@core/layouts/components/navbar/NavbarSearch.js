@@ -161,12 +161,10 @@
 
 // export default NavbarSearch
 
-import React from 'react'
+import React from "react";
 
 function NavbarSearch() {
-  return (
-    <div></div>
-  )
+  return <div></div>;
 }
 
-export default NavbarSearch
+export default NavbarSearch;

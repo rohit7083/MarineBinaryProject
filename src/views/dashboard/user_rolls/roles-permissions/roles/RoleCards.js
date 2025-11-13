@@ -7,8 +7,19 @@ import { Toast } from "primereact/toast";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Alert, Button, Col, FormFeedback, Input, Label, Modal, ModalBody,
-  ModalHeader, Row, Spinner, Table, UncontrolledTooltip
+  Alert,
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Spinner,
+  Table,
+  UncontrolledTooltip,
 } from "reactstrap";
 
 // ** Third Party Components
@@ -31,14 +42,12 @@ import {
   structurePermissionList,
 } from "../utils";
 
-
-
-    const indexes = {
-       0:'CREATE',
-       1:'VIEW',
-       2:'UPDATE',
-       3:'DELETE',
-    };
+const indexes = {
+  0: "CREATE",
+  1: "VIEW",
+  2: "UPDATE",
+  3: "DELETE",
+};
 
 const AddRoles = ({ props, refreshTable }) => {
   // ** Props
@@ -84,25 +93,22 @@ const AddRoles = ({ props, refreshTable }) => {
     }
   };
 
-  const  handleSelectAll = (e) => {
-    
+  const handleSelectAll = (e) => {
     if (e.target.checked) {
       Object.keys(permissionList).forEach((category, index) => {
-        if(!permissionList[category]) return;
+        if (!permissionList[category]) return;
         // {{ }}
-        permissionList[category].forEach((item,idx) => {
+        permissionList[category].forEach((item, idx) => {
           setValue(`${category}.${[idx]}.isSelected`, true);
-       
         });
       });
     } else {
       Object.keys(permissionList).forEach((category, index) => {
-        permissionList[category].forEach((item,idx) => {
+        permissionList[category].forEach((item, idx) => {
           setValue(`${category}.${[idx]}.isSelected`, false);
         });
       });
     }
-    
   };
 
   const onSubmit = async (data) => {
@@ -125,9 +131,9 @@ const AddRoles = ({ props, refreshTable }) => {
         //   buttonsStyling: false,
         // }).then(() => {
         //   toggle();
-          // navigate("/dashboard/user_rolls/roles-permissions/roles", {
-          //   state: { forceRefresh: true },
-          // });
+        // navigate("/dashboard/user_rolls/roles-permissions/roles", {
+        //   state: { forceRefresh: true },
+        // });
         //   reset();
 
         //   setMessage("");
@@ -138,10 +144,10 @@ const AddRoles = ({ props, refreshTable }) => {
           detail: " Role Created Successfully.",
           life: 2000,
         });
-       
+
         setTimeout(() => {
           toggle(); // Close modal
-          reset();  // Reset form
+          reset(); // Reset form
           navigate("/dashboard/user_rolls/roles-permissions/roles", {
             state: { forceRefresh: true },
           });
@@ -216,7 +222,7 @@ const AddRoles = ({ props, refreshTable }) => {
             toggle();
           }}
         >
-         <Plus size={14}/> Add New Role
+          <Plus size={14} /> Add New Role
         </Button>
       </Row>
 
@@ -226,8 +232,8 @@ const AddRoles = ({ props, refreshTable }) => {
         toggle={() => toggle()}
         className="modal-dialog-centered modal-lg"
       >
-              <Toast ref={toast} />
-        
+        <Toast ref={toast} />
+
         <ModalHeader
           className="bg-transparent"
           toggle={() => toggle()}
@@ -235,7 +241,7 @@ const AddRoles = ({ props, refreshTable }) => {
         <ModalBody className="px-5 pb-5">
           <div className="text-center mb-4">
             <h1>Add New Roles</h1>
-            <p>Set role permissions</p> 
+            <p>Set role permissions</p>
             {errors?.server && (
               <Fragment>
                 <Alert color="danger">
@@ -317,10 +323,15 @@ const AddRoles = ({ props, refreshTable }) => {
                                 {permissionList[category].map((data, index) => {
                                   if (data === null)
                                     return (
-                                      <div                                     
-                                      className="form-check me-3 me-lg-5"
-                                       style={{visibility:"hidden"}} key={index}>
-                                       <Label><Input type="checkbox" />{indexes[index]}</Label> 
+                                      <div
+                                        className="form-check me-3 me-lg-5"
+                                        style={{ visibility: "hidden" }}
+                                        key={index}
+                                      >
+                                        <Label>
+                                          <Input type="checkbox" />
+                                          {indexes[index]}
+                                        </Label>
                                       </div>
                                     );
 

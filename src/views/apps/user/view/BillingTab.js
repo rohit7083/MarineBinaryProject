@@ -1,10 +1,10 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment } from "react";
 
 // ** Billing Components
-import PaymentMethods from './PaymentMethods'
-import BillingAddress from './BillingAddress'
-import BillingCurrentPlan from './BillingCurrentPlan'
+import PaymentMethods from "./PaymentMethods";
+import BillingAddress from "./BillingAddress";
+import BillingCurrentPlan from "./BillingCurrentPlan";
 
 const BillingTab = () => {
   return (
@@ -13,7 +13,7 @@ const BillingTab = () => {
       <PaymentMethods />
       <BillingAddress />
     </Fragment>
-  )
-}
+  );
+};
 
-export default BillingTab
+export default BillingTab;

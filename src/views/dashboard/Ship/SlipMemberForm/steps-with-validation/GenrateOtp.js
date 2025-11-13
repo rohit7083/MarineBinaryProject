@@ -1,18 +1,19 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Reactstrap Imports
+import CryptoJS from "crypto-js";
 import {
-    Alert,
-    Button,
-    Col,
-    Form,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Alert,
+  Button,
+  Col,
+  Form,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 // ** Third Party Imports
@@ -94,6 +95,27 @@ const GenrateOtp = (props) => {
       otpInput: Array(6).fill(""),
     },
   });
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey);
+  }
+
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16);
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+    const combined = iv.concat(encrypted.ciphertext);
+    return CryptoJS.enc.Base64.stringify(combined);
+  }
 
   // ** Render Timer
   const renderer = ({ minutes, seconds, completed }) => {
@@ -129,26 +151,6 @@ const GenrateOtp = (props) => {
         return null;
     }
   };
-
-  // ** Render OTP Input Fields
-  // const renderOtpInput = (count) => {
-  //   const inputs = Array.from({ length: count }).fill(0);
-  //   return inputs.map((_, index) => (
-  //     <Controller
-  //       key={index}
-  //       name={`otpInput${index}`}
-  //       control={control}
-  //       render={({ field }) => (
-  //         <Input
-  //           {...field}
-  //           maxLength="1"
-  //           className="auth-input height-50 text-center numeral-mask mx-25 mb-1"
-  //           autoFocus={index === 0}
-  //         />
-  //       )}
-  //     />
-  //   ));
-  // };
 
   const renderOtpInput = (count) => {
     return Array.from({ length: count }).map((_, index) => (
@@ -211,7 +213,7 @@ const GenrateOtp = (props) => {
   // ** Reset Timer
   const resetTimer = () => {
     alreadyUpdatedRef.current = false;
-    const newTime = Date.now() + 5000;
+    const newTime = Date.now() + 40000;
     setTargetTime(newTime);
     setTimerKey((prev) => prev + 1);
   };
@@ -220,9 +222,8 @@ const GenrateOtp = (props) => {
   //   await useJwt.resend_OtpCall(token);
   // };
 
-
-   const onCall = async () => {
-      const payloadForcall = {
+  const onCall = async () => {
+    const payloadForcall = {
       type: 1,
       slipId: slipIID,
       memberId: memberId,
@@ -242,7 +243,10 @@ const GenrateOtp = (props) => {
 
   // ** handle Resend OTP
   const handleResendCall = async () => {
-    {{ }}
+    {
+      {
+      }
+    }
     try {
       if (attempt === 1) {
         const token = await onText();
@@ -261,7 +265,7 @@ const GenrateOtp = (props) => {
 
   // ** Effect to reset timer
   useEffect(() => {
-    setTargetTime(Date.now() + 5000);
+    setTargetTime(Date.now() + 40000);
   }, [timerKey]);
 
   // ** Action to handle OTP verification
@@ -273,12 +277,14 @@ const GenrateOtp = (props) => {
         console.log("Access token is missing. Please regenerate OTP.");
         return;
       }
+      const rowotp = data.otpInput.join("");
 
-      const payload = {
-        otp: data.otpInput.join(""),
-      };
+      const encrypted = encryptAES(rowotp);
+
       setLoader(true);
-      const response = await useJwt.verifyOTP(accessTokenotp, payload);
+      const response = await useJwt.verifyOTP(accessTokenotp, {
+        otp: encrypted,
+      });
       setVerify(true);
       console.log(response);
       setShow(false);
@@ -359,6 +365,7 @@ const GenrateOtp = (props) => {
         isOpen={show}
         toggle={() => setShow(!show)}
         className="modal-dialog-centered"
+        size="sm"
       >
         <ModalBody className={"p-2"}>
           <Form onSubmit={handleSubmit(handleVerifyOtp)}>

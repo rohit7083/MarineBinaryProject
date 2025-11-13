@@ -1,38 +1,38 @@
 // ** Third Party Components
-import InputNumber from 'rc-input-number'
-import { Plus, Minus } from 'react-feather'
+import InputNumber from "rc-input-number";
+import { Plus, Minus } from "react-feather";
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody, Label } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, Label } from "reactstrap";
 
 const NumberInputFormat = () => {
-  const numberWithCommas = x => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  }
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
-  const format = num => {
-    return `$ ${numberWithCommas(num)}`
-  }
+  const format = (num) => {
+    return `$ ${numberWithCommas(num)}`;
+  };
 
-  const parser = num => {
-    const cells = num.toString().split(' ')
+  const parser = (num) => {
+    const cells = num.toString().split(" ");
     if (!cells[1]) {
-      return num
+      return num;
     }
 
-    const parsed = cells[1].replace(/,*/g, '')
+    const parsed = cells[1].replace(/,*/g, "");
 
-    return parsed
-  }
+    return parsed;
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Formatting</CardTitle>
+        <CardTitle tag="h4">Formatting</CardTitle>
       </CardHeader>
       <CardBody>
         <div>
-          <Label className='form-label' for='formatting-number-input'>
+          <Label className="form-label" for="formatting-number-input">
             Formatting Input
           </Label>
           <InputNumber
@@ -41,11 +41,11 @@ const NumberInputFormat = () => {
             formatter={format}
             upHandler={<Plus />}
             downHandler={<Minus />}
-            id='formatting-number-input'
+            id="formatting-number-input"
           />
         </div>
       </CardBody>
     </Card>
-  )
-}
-export default NumberInputFormat
+  );
+};
+export default NumberInputFormat;

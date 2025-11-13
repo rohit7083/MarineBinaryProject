@@ -9,13 +9,16 @@ const initialState = {
     total: 0,
   },
   selectedProduct: {},
-  selectedCustomerDetails:{},
+  selectedCustomerDetails: {},
 };
 
 const calculateBilling = (items) => {
-  const subtotal = items.reduce((sum, item) => sum + item.finalAmount * item.qty, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.finalAmount * item.qty,
+    0
+  );
   const tax = subtotal * 0.1; // 10% example tax
-  const total = subtotal ;
+  const total = subtotal;
   return { subtotal, tax, total };
 };
 
@@ -39,7 +42,7 @@ const cartSlice = createSlice({
     updateItemQty: (state, action) => {
       const { id, qty } = action.payload;
       const existing = state.items.find((i) => {
-        return i.vrId === id
+        return i.vrId === id;
       });
       if (existing) {
         existing.qty = qty;
@@ -49,10 +52,8 @@ const cartSlice = createSlice({
     },
 
     removeItem: (state, action) => {
-      
       state.items = state.items.filter((i) => {
-      
-        return i.vrId !== action.payload
+        return i.vrId !== action.payload;
       });
       state.billing = calculateBilling(state.items);
     },
@@ -72,13 +73,19 @@ const cartSlice = createSlice({
         delete state[prId];
       }
     },
-    handleAddCustomer:(state,action)=>{
-      state.selectedCustomerDetails=action.payload
-    }
+    handleAddCustomer: (state, action) => {
+      state.selectedCustomerDetails = action.payload;
+    },
   },
 });
 
-export const { addItem, updateItemQty, removeItem, clearCart, addProduct ,handleAddCustomer} =
-  cartSlice.actions;
+export const {
+  addItem,
+  updateItemQty,
+  removeItem,
+  clearCart,
+  addProduct,
+  handleAddCustomer,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

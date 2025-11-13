@@ -28,9 +28,10 @@ function HeaderCard({ members, setSelectedMembers }) {
     <div>
       <Card>
         <CardHeader>
- <CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
-               Ledger
-              </CardTitle>{" "}        </CardHeader>
+          <CardTitle tag="h3" className="mb-1" style={{ fontSize: "20px" }}>
+            Ledger
+          </CardTitle>{" "}
+        </CardHeader>
         <CardBody className="pb-2">
           <FormGroup>
             <Label for="memberName">Select Member</Label>

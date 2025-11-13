@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  FolderPlus,
-  Percent,
-  PlusCircle,
-  UserPlus
-} from "react-feather";
+import { FolderPlus, Percent, PlusCircle, UserPlus } from "react-feather";
 import { Link } from "react-router-dom";
 import {
   Dropdown,
@@ -48,10 +43,7 @@ function ProductDropdown() {
           <Percent size={16} className="me-2" />
           Add Taxes
         </DropdownItem>
-        <DropdownItem
-          tag={Link}
-          to="/pos/VendorManage"
-        >
+        <DropdownItem tag={Link} to="/pos/VendorManage">
           <UserPlus size={16} className="me-2" />
           Add vendor
         </DropdownItem>

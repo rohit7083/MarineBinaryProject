@@ -264,7 +264,6 @@ const Login = () => {
 
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-
           <img
             src={MARinLogo}
             alt="Longcove Marina Logo"

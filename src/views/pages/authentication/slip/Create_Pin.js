@@ -60,9 +60,7 @@ const Create_Pin = () => {
     setRequirements({
       noAscending: !/(0123|1234|2345|3456|4567|5678|6789)/.test(pwd),
       noDescending: !/(9876|8765|7654|6543|5432|4321|3210)/.test(pwd),
-      noRepeatingNumbers: !/^(.)\1{3}$/.test(pwd)
-       
-     
+      noRepeatingNumbers: !/^(.)\1{3}$/.test(pwd),
     });
   };
 
@@ -243,26 +241,26 @@ const Create_Pin = () => {
     console.log({ attempt });
   }, [attempt]);
 
-//   if (expireTokenLoader) {
-//     return (
-//       <div
-//         style={{
-//           display: "flex",
-//           justifyContent: "center",
-//           alignItems: "center",
-//           marginTop: "4rem",
-//         }}
-//       >
-//         <Spinner
-//           color="primary"
-//           style={{
-//             height: "5rem",
-//             width: "5rem",
-//           }}
-//         />
-//       </div>
-//     );
-//   }
+  //   if (expireTokenLoader) {
+  //     return (
+  //       <div
+  //         style={{
+  //           display: "flex",
+  //           justifyContent: "center",
+  //           alignItems: "center",
+  //           marginTop: "4rem",
+  //         }}
+  //       >
+  //         <Spinner
+  //           color="primary"
+  //           style={{
+  //             height: "5rem",
+  //             width: "5rem",
+  //           }}
+  //         />
+  //       </div>
+  //     );
+  //   }
 
   return (
     <div className="auth-wrapper auth-basic px-2">
@@ -279,7 +277,7 @@ const Create_Pin = () => {
               <img
                 src={MARinLogo}
                 alt="MarinaOne Logo"
-                   style={{
+                style={{
                   height: "5rem",
                   width: "auto",
                   marginBottom: "0px",

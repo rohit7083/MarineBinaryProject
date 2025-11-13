@@ -11,7 +11,6 @@ function Index() {
 
   return (
     <>
-    
       <Col md="12">
         <DailyGrossSales />
       </Col>
@@ -20,10 +19,7 @@ function Index() {
           <WeeklyGrossSales />
         </Col>
         <Col md="12">
-          <YearlySales
-            info={colors.info.main}
-            warning={colors.warning.main}
-          />
+          <YearlySales info={colors.info.main} warning={colors.warning.main} />
         </Col>
       </Row>
     </>

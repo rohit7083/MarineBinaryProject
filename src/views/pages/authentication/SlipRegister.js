@@ -34,8 +34,8 @@ import illustrationsDark from "@src/assets/images/pages/register-v2-dark.svg";
 import "@styles/react/pages/page-authentication.scss";
 import { useForm, Controller } from "react-hook-form";
 const RegisterCover = () => {
-    const MySwal = withReactContent(Swal);
-  
+  const MySwal = withReactContent(Swal);
+
   const { skin } = useSkin();
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
@@ -46,7 +46,7 @@ const RegisterCover = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit =async (data) => {
+  const onSubmit = async (data) => {
     if (Object.keys(errors).length === 0) {
       console.log("Submitted data", data);
 
@@ -60,9 +60,9 @@ const RegisterCover = () => {
             confirmButton: "btn btn-primary",
           },
           buttonsStyling: false,
-        })
+        });
       } catch (error) {
-         console.error(error);
+        console.error(error);
         return MySwal.fire({
           title: "Error!",
           text: "An error occurred while submitting the form.",
@@ -72,13 +72,11 @@ const RegisterCover = () => {
           },
           buttonsStyling: false,
         });
-        
       }
     } else {
       console.log("Form has errors");
     }
   };
-  
 
   return (
     <div className="auth-wrapper auth-cover">
@@ -258,17 +256,16 @@ const RegisterCover = () => {
                       </Input>
                     )}
                   />
-
                   <div className="d-flex gap-2">
                     <Controller
                       control={control}
                       defaultValue=""
                       rules={{
                         required: "Please Enter The mobile Number",
-                         pattern: {
+                        pattern: {
                           value: /^[0-9]{10}$/,
                           message: "Please Enter Valid Mobile Number",
-                        }
+                        },
                       }}
                       name="mobileNumber"
                       autoFocus
@@ -279,17 +276,13 @@ const RegisterCover = () => {
                           invalid={!!errors.mobileNumber}
                           placeholder="Enter your mobile number"
                         />
-                        
                       )}
-                      
                     />
-                    
                   </div>
                   {errors.mobileNumber && (
-                  <FormFeedback>{errors.mobileNumber.message}</FormFeedback>
-                )}{" "}
+                    <FormFeedback>{errors.mobileNumber.message}</FormFeedback>
+                  )}{" "}
                 </div>
-                
               </div>
 
               <div className="mb-1">
@@ -302,7 +295,8 @@ const RegisterCover = () => {
                   rules={{
                     required: "Please Enter Email",
                     pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                      value:
+                        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                       message: "Please Enter Valid Email",
                     },
                   }}

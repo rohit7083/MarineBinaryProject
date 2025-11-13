@@ -134,36 +134,32 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
       }
     }
   };
- 
+
   useEffect(() => {
     fetchAllData();
   }, []);
 
-
-
-   const categoryWatch = watch("category");
+  const categoryWatch = watch("category");
 
   const catObject = fetchData?.categories?.filter(
     (x, _) => x?.value === categoryWatch
   );
   const category = Array.isArray(catObject) ? catObject[0] : catObject;
-console.log(category);
+  console.log(category);
 
-const trueAttributes = category?.attributeKeys
-  ?.map((label, i) =>
-    category.attributeRequired?.[i]
-      ? {
-          label,
-          uid: category.attributeKeysUid?.[i],
-          required: true,
-        }
-      : null
-  )
-  .filter(Boolean);
+  const trueAttributes = category?.attributeKeys
+    ?.map((label, i) =>
+      category.attributeRequired?.[i]
+        ? {
+            label,
+            uid: category.attributeKeysUid?.[i],
+            required: true,
+          }
+        : null
+    )
+    .filter(Boolean);
 
-console.log(trueAttributes);
-
-
+  console.log(trueAttributes);
 
   const watchCategory = watch("category");
   const watchTaxes = watch("taxes");
@@ -247,7 +243,6 @@ console.log(trueAttributes);
       }
     }
   };
- 
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>

@@ -13,18 +13,18 @@ import {
   Form,
   Label,
   Row,
-  UncontrolledAlert
+  UncontrolledAlert,
 } from "reactstrap";
 
 const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
-const FileUploadForm = ({ Parentdocuments,stepper, slipIID ,sId}) => {
+const FileUploadForm = ({ Parentdocuments, stepper, slipIID, sId }) => {
   const [documents, setDocuments] = useState([]);
   const myId = useParams();
   const [loading, setLoading] = useState(false);
   const [isDataFetch, setIsDataFetch] = useState(false);
   const navigate = useNavigate();
-const [checkDocuments,setCheckDocuments]=useState(false);
-const [ermsz,setErrmsz]=useState("");
+  const [checkDocuments, setCheckDocuments] = useState(false);
+  const [ermsz, setErrmsz] = useState("");
   const {
     handleSubmit,
     setValue,
@@ -53,15 +53,13 @@ const [ermsz,setErrmsz]=useState("");
     },
   });
 
-// useEffect(() => {
-//     if (Parentdocuments === null) {
-//       setCheckDocuments(true);
-//     }
-//   }, [Parentdocuments,checkDocuments]);
-  
+  // useEffect(() => {
+  //     if (Parentdocuments === null) {
+  //       setCheckDocuments(true);
+  //     }
+  //   }, [Parentdocuments,checkDocuments]);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const response = await useJwt.getSingleDocuments(slipIID || sId?.id);
@@ -85,10 +83,9 @@ const [ermsz,setErrmsz]=useState("");
       }
     };
     if (slipIID || sId?.id) fetchData();
-  }, [slipIID ,sId?.id, reset]);
+  }, [slipIID, sId?.id, reset]);
 
   const onSubmit = async (data) => {
-    
     setErrmsz("");
     const updatedDataList = Object.keys(data).reduce((obj, key) => {
       if (data[key].currentFile == null) {
@@ -109,7 +106,7 @@ const [ermsz,setErrmsz]=useState("");
     }, {});
 
     try {
-      //  
+      //
       if (myId) {
         navigate("/dashboard/slipmember_list"); // Redirect after alert
       }
@@ -153,17 +150,17 @@ const [ermsz,setErrmsz]=useState("");
         });
       }
     } catch (error) {
-       console.error(error);
-      const errMsz=error.response.data?.content;
+      console.error(error);
+      const errMsz = error.response.data?.content;
       console.log(errMsz);
-      
+
       if (errMsz) {
         setErrmsz(errMsz);
       }
       Swal.fire({
         icon: "error",
         title: "Document Error!",
-        text:errMsz,
+        text: errMsz,
       });
     }
   };
@@ -290,29 +287,26 @@ const [ermsz,setErrmsz]=useState("");
   return (
     <Fragment>
       {ermsz && (
-              <React.Fragment>
-                <UncontrolledAlert color="danger">
-                  <div className="alert-body">
-                    <span className="text-danger fw-bold">
-                      <strong>Error : </strong>
-                      {ermsz}      
-                      </span>
-                  </div>
-                </UncontrolledAlert>
-              </React.Fragment>
-            )}
+        <React.Fragment>
+          <UncontrolledAlert color="danger">
+            <div className="alert-body">
+              <span className="text-danger fw-bold">
+                <strong>Error : </strong>
+                {ermsz}
+              </span>
+            </div>
+          </UncontrolledAlert>
+        </React.Fragment>
+      )}
       <Form onSubmit={handleSubmit(onSubmit)}>
         {/* <Card>
           <CardBody> */}
-            <Row className=''>
-              {[
-                "IdentityDocument",
-                "Contract",
-                "Registration",
-                "Insurance",
-              ].map((fieldName) => renderDropzone(fieldName, fieldName))}
-            </Row>
-          {/* </CardBody>
+        <Row className="">
+          {["IdentityDocument", "Contract", "Registration", "Insurance"].map(
+            (fieldName) => renderDropzone(fieldName, fieldName)
+          )}
+        </Row>
+        {/* </CardBody>
         </Card> */}
         <div className="d-flex justify-content-between">
           <Button
@@ -330,13 +324,11 @@ const [ermsz,setErrmsz]=useState("");
             </span>
           </Button>
           <Button
-            disabled={loading || checkDocuments
-            }
+            disabled={loading || checkDocuments}
             type="submit"
             color="success"
             className="btn-next"
           >
-
             <span className="align-middle d-sm-inline-block d-none">
               Submit
             </span>

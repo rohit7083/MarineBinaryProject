@@ -116,6 +116,7 @@ const index = () => {
       state: {
         Rowdata: row,
         uid: row.uid,
+        edit: "event",
       },
     });
   };

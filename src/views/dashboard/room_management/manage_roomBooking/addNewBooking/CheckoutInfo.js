@@ -9,17 +9,17 @@ const CheckoutInfo = ({ propsData }) => {
   // ** Props
   console.log("CheckoutInfo Props:", propsData);
 
-  const { preBookingData, alldata, searchId, searchUid } = propsData;
+  const { preBookingData, alldata, searchId, searchUid } = propsData || {};
 
   //seperate Month and Year from date
-  const date = new Date(alldata.checkInDate);
+  const date = new Date(alldata?.checkInDate);
   const day = String(date.getDate()).padStart(2, "0"); // "17"
   const monthYear = date.toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",
   });
 
-  const outDate = new Date(alldata.checkOutDate);
+  const outDate = new Date(alldata?.checkOutDate);
   const outDay = String(outDate.getDate()).padStart(2, "0"); // "20"
   const outMonthYear = outDate.toLocaleDateString("en-US", {
     month: "short",
@@ -120,7 +120,7 @@ const CheckoutInfo = ({ propsData }) => {
   );
 };
 
-const ClientInfo = ({selectedMember , clientInfo ,setClientInfo}) => { 
+const ClientInfo = ({ selectedMember, clientInfo, setClientInfo }) => {
   // ** State
 
   useEffect(() => {
@@ -131,11 +131,9 @@ const ClientInfo = ({selectedMember , clientInfo ,setClientInfo}) => {
       setClientInfo(null);
     }
   }, [selectedMember]);
-  
 
   return (
     <>
-      
       <CardTitle>Selected Member details</CardTitle>
       {clientInfo ? (
         <>
@@ -205,10 +203,8 @@ const ClientInfo = ({selectedMember , clientInfo ,setClientInfo}) => {
       ) : (
         <p>No client selected.</p>
       )}
-      
     </>
   );
 };
 
 export { CheckoutInfo, ClientInfo };
-

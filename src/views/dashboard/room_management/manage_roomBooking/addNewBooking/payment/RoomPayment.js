@@ -545,24 +545,20 @@ function Payment({ stepper }) {
           }
         }
 
-
         if (!qr_code_base64) {
-          
-        
-        if (res?.data?.status === "success") {
-          toast.current.show({
-            severity: "success",
-            summary: "Successfully",
-            detail: "Payment Completed Successfully.",
-            life: 2000,
-          });
+          if (res?.data?.status === "success") {
+            toast.current.show({
+              severity: "success",
+              summary: "Successfully",
+              detail: "Payment Completed Successfully.",
+              life: 2000,
+            });
 
-          setTimeout(() => {
-            navigate("/bookingListing");
-          }, 1999);
+            setTimeout(() => {
+              navigate("/bookingListing");
+            }, 1999);
+          }
         }
-      }
-
       } else {
         toast.current.show({
           severity: "error",

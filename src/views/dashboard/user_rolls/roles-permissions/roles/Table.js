@@ -43,7 +43,6 @@
 //   modalType: "Add",
 // };
 
-
 // const Table = () => {
 //   // ** Store Vars & Hooks
 //   const dispatch = useDispatch();
@@ -367,7 +366,7 @@
 //           columns={updatedColumns}
 //           // sortIcon={<ChevronDown />}
 //           sortIcon={<ChevronDown size={10} />}
-          
+
 //           className="react-dataTable"
 //           paginationComponent={CustomPagination}
 //           data={dataToRender()}
@@ -384,7 +383,6 @@
 //           // }
 //         />
 //       </div>
-      
 
 //       <AddRoles
 //         {...rowDetails}
@@ -393,7 +391,6 @@
 //         // uid={""}
 //         // modalType={"Add"}
 //       />
- 
 
 //       {/* <Modal
 //         isOpen={show}
@@ -421,7 +418,6 @@
 //           {renderForm()}
 //         </ModalBody>
 //       </Modal> */}
-
 
 //     </Fragment>
 //   );

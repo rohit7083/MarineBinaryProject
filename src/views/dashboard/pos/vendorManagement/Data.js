@@ -151,7 +151,6 @@ export const serverSideColumns = [
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
-       
       );
     },
   },

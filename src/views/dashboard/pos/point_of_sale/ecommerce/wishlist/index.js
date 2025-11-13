@@ -1,129 +1,141 @@
 // ** React Imports
-import { Link } from 'react-router-dom'
-import { Fragment, useEffect } from 'react'
+import { Link } from "react-router-dom";
+import { Fragment, useEffect } from "react";
 
 // ** Custom Components
-import BreadCrumbs from '@components/breadcrumbs'
+import BreadCrumbs from "@components/breadcrumbs";
 
 // ** Third Party Components
-import classnames from 'classnames'
-import { Star, X, ShoppingCart, Info } from 'react-feather'
+import classnames from "classnames";
+import { Star, X, ShoppingCart, Info } from "react-feather";
 
 // ** Reactstrap Imports
-import { Card, CardBody, CardText, Button, Alert } from 'reactstrap'
+import { Card, CardBody, CardText, Button, Alert } from "reactstrap";
 
 // ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux'
-import { getWishlistItems, deleteWishlistItem, addToCart, getCartItems } from '../store'
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getWishlistItems,
+  deleteWishlistItem,
+  addToCart,
+  getCartItems,
+} from "../store";
 
 // ** Styles
-import '@styles/base/pages/app-ecommerce.scss'
+import "@styles/base/pages/app-ecommerce.scss";
 
 const Wishlist = () => {
   // ** Store Vars
-  const dispatch = useDispatch()
-  const store = useSelector(state => state.ecommerce)
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.ecommerce);
 
   //** ComponentDidMount : get wishlist items
   useEffect(() => {
-    dispatch(getWishlistItems())
-  }, [])
+    dispatch(getWishlistItems());
+  }, []);
 
   // ** Handle Move/Add to cart
   const handleCartBtn = (id, val) => {
     if (val === false) {
-      dispatch(addToCart(id))
+      dispatch(addToCart(id));
     }
-    dispatch(getWishlistItems())
-    dispatch(getCartItems())
-  }
+    dispatch(getWishlistItems());
+    dispatch(getCartItems());
+  };
 
   // ** Renders wishlist products
   const renderWishlist = () => {
-    return store.wishlist.map(item => {
-      const CartBtnTag = item.isInCart ? Link : 'button'
+    return store.wishlist.map((item) => {
+      const CartBtnTag = item.isInCart ? Link : "button";
       return (
-        <Card className='ecommerce-card' key={item.name}>
-          <div className='item-img text-center mx-auto'>
+        <Card className="ecommerce-card" key={item.name}>
+          <div className="item-img text-center mx-auto">
             <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>
-              <img className='img-fluid' src={item.image} alt={item.name} />
+              <img className="img-fluid" src={item.image} alt={item.name} />
             </Link>
           </div>
           <CardBody>
-            <div className='item-wrapper'>
-              <div className='item-rating'>
-                <ul className='unstyled-list list-inline'>
+            <div className="item-wrapper">
+              <div className="item-rating">
+                <ul className="unstyled-list list-inline">
                   {new Array(5).fill().map((listItem, index) => {
                     return (
-                      <li key={index} className='ratings-list-item me-25'>
+                      <li key={index} className="ratings-list-item me-25">
                         <Star
                           className={classnames({
-                            'filled-star': index + 1 <= item.rating,
-                            'unfilled-star': index + 1 > item.rating
+                            "filled-star": index + 1 <= item.rating,
+                            "unfilled-star": index + 1 > item.rating,
                           })}
                         />
                       </li>
-                    )
+                    );
                   })}
                 </ul>
               </div>
-              <div className='item-cost'>
-                <h6 className='item-price'>$ {item.price}</h6>
+              <div className="item-cost">
+                <h6 className="item-price">$ {item.price}</h6>
               </div>
             </div>
-            <div className='item-name'>
-              <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>{item.name}</Link>
+            <div className="item-name">
+              <Link to={`/apps/ecommerce/product-detail/${item.slug}`}>
+                {item.name}
+              </Link>
             </div>
-            <CardText className='item-description'>{item.description}</CardText>
+            <CardText className="item-description">{item.description}</CardText>
           </CardBody>
-          <div className='item-options text-center'>
+          <div className="item-options text-center">
             <Button
-              className='btn-wishlist remove-wishlist'
-              color='light'
+              className="btn-wishlist remove-wishlist"
+              color="light"
               onClick={() => {
-                dispatch(deleteWishlistItem(item.id))
+                dispatch(deleteWishlistItem(item.id));
               }}
             >
-              <X className='me-25' size={14} />
+              <X className="me-25" size={14} />
               <span>Remove</span>
             </Button>
             <Button
-              color='primary'
+              color="primary"
               tag={CartBtnTag}
-              className='btn-cart move-cart'
+              className="btn-cart move-cart"
               onClick={() => handleCartBtn(item.id, item.isInCart)}
               /*eslint-disable */
               {...(item.isInCart
                 ? {
-                    to: '/apps/ecommerce/checkout'
+                    to: "/apps/ecommerce/checkout",
                   }
                 : {})}
               /*eslint-enable */
             >
-              <ShoppingCart className='me-50' size={14} />
-              <span>{item.isInCart ? 'View In Cart' : 'Add To Cart'}</span>
+              <ShoppingCart className="me-50" size={14} />
+              <span>{item.isInCart ? "View In Cart" : "Add To Cart"}</span>
             </Button>
           </div>
         </Card>
-      )
-    })
-  }
+      );
+    });
+  };
 
   return (
     <Fragment>
-      <BreadCrumbs title='Wishlist' data={[{ title: 'eCommerce' }, { title: 'Wishlist' }]} />
+      <BreadCrumbs
+        title="Wishlist"
+        data={[{ title: "eCommerce" }, { title: "Wishlist" }]}
+      />
       {store.wishlist.length ? (
-        <section className='grid-view wishlist-items'>{renderWishlist()}</section>
+        <section className="grid-view wishlist-items">
+          {renderWishlist()}
+        </section>
       ) : (
-        <Alert color='info'>
-          <div className='alert-body'>
+        <Alert color="info">
+          <div className="alert-body">
             <Info size={14} />
-            <span className='align-middle ms-50'>Your Wishlist is empty</span>
+            <span className="align-middle ms-50">Your Wishlist is empty</span>
           </div>
         </Alert>
       )}
     </Fragment>
-  )
-}
+  );
+};
 
-export default Wishlist
+export default Wishlist;

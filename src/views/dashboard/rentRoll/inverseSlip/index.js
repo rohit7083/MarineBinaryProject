@@ -1,19 +1,14 @@
-import { Fragment } from 'react'
+import { Fragment } from "react";
 
 // ** Custom Components
 
 // ** Third Party Components
-import { Col, Row } from 'reactstrap'
+import { Col, Row } from "reactstrap";
 
 // ** Other Components
-import TableZeroConfig from './TableIversionSlip'
-
-
+import TableZeroConfig from "./TableIversionSlip";
 
 function Index() {
-
-
-
   return (
     <Fragment>
       <h3>Inverse Slip Rental</h3>
@@ -21,9 +16,9 @@ function Index() {
         <Col sm="12">
           <TableZeroConfig />
         </Col>
-      </Row>      
+      </Row>
     </Fragment>
-  )
+  );
 }
 
-export default Index
+export default Index;

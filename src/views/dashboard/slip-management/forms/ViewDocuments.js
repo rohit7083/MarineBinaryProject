@@ -8,7 +8,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Col, Row } from "reactstrap";
 import DocumentUploader from "./DocumentUploader";
 const ViewDocuments = ({ slipData }) => {
- 
   const [documentList, setDocumentList] = useState({
     IdentityDocument: [],
     Contract: [],
@@ -25,70 +24,64 @@ const ViewDocuments = ({ slipData }) => {
     setDocumentList((prev) => ({ ...prev, [key]: list }));
   };
 
-  
+  const fetchDocument = async (uids) => {
+    setFethchLoader(true);
+    const documentsKey = uids.map(({ documentName }) => documentName);
+    try {
+      const results = await Promise.allSettled(
+        uids.map(({ uid }) => useJwt.existingImages(uid))
+      );
 
-const fetchDocument = async (uids) => {
- setFethchLoader(true)
-  const documentsKey=uids.map(({documentName})=>documentName)
-  try {
-    const results = await Promise.allSettled(
-      uids.map(({ uid }) => useJwt.existingImages(uid))
-    );
+      const formattedResults = results.reduce((acc, result, index) => {
+        const { uid, documentName } = uids[index];
 
-    const formattedResults = results.reduce((acc,result, index) => {
-      const { uid, documentName } = uids[index];
+        if (result.status === "fulfilled") {
+          const blob = result.value.data;
+          const fileType = blob.type || "application/octet-stream";
 
-      if (result.status === "fulfilled") {
-        const blob = result.value.data;
-        const fileType = blob.type || "application/octet-stream";
+          //** create a File object and attach preview URL
+          const file = new File([blob], documentName || `document_${uid}`, {
+            type: fileType,
+          });
 
-        //** create a File object and attach preview URL
-        const file = new File([blob], documentName || `document_${uid}`, {
-          type: fileType,
-        });
+          const preview = URL.createObjectURL(blob);
 
-        const preview = URL.createObjectURL(blob);
-
-       
-        acc[documentsKey[index]]=[{
-          uid,
-          success: true,
-          file,
-          preview, 
-          message: "Fetched successfully",
-        }]
-        
-      } else {
-         acc[documentsKey[index]]=[{
-          uid,
-          success: false,
-          error:
-            result.reason?.response?.data?.content ||
-            result.reason?.message ||
-            "Unknown error",
-          message: "Fetch failed",
-        }];
-      }
-      return acc
-    },{
-
-    });
-     console.clear()
-     console.log(formattedResults);
-    const defaultValue=Object.keys(formattedResults).map(key=>handleChangeDocument(key,formattedResults[key]))
-     
-
-
-
-  } catch (err) {
-    console.error("Unexpected error in fetchDocument:", err);
-    throw err;
-  }finally{
-    setFethchLoader(false)
-  }
-};
-
-
+          acc[documentsKey[index]] = [
+            {
+              uid,
+              success: true,
+              file,
+              preview,
+              message: "Fetched successfully",
+            },
+          ];
+        } else {
+          acc[documentsKey[index]] = [
+            {
+              uid,
+              success: false,
+              error:
+                result.reason?.response?.data?.content ||
+                result.reason?.message ||
+                "Unknown error",
+              message: "Fetch failed",
+            },
+          ];
+        }
+        return acc;
+      }, {});
+      console.clear();
+      console.log(formattedResults);
+      const defaultValue = Object.keys(formattedResults).map((key) =>
+        handleChangeDocument(key, formattedResults[key])
+      );
+    } catch (err) {
+      console.error("Unexpected error in fetchDocument:", err);
+      throw err;
+    } finally {
+      setFethchLoader(false);
+    }
+  };
 
   useEffect(() => {
     if (slipData?.documents?.length) {
@@ -124,10 +117,6 @@ const fetchDocument = async (uids) => {
 };
 
 export default ViewDocuments;
-
-
-
-
 
 // import useJwt from "@src/auth/jwt/useJwt";
 // import "primeicons/primeicons.css";

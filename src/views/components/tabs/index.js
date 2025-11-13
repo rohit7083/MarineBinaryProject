@@ -1,25 +1,25 @@
 // ** React Imports
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect } from "react";
 
 // ** Third Party Components
-import Prism from 'prismjs'
+import Prism from "prismjs";
 
 // ** Reactstrap Imports
-import { Row, Col } from 'reactstrap'
+import { Row, Col } from "reactstrap";
 
 // ** Custom Components
-import Card from '@components/card-snippet'
-import BreadCrumbs from '@components/breadcrumbs'
+import Card from "@components/card-snippet";
+import BreadCrumbs from "@components/breadcrumbs";
 
 // ** Demo Components
-import TabsEnd from './TabsEnd'
-import TabsBasic from './TabsBasic'
-import TabsIcons from './TabsIcons'
-import TabsFilled from './TabsFilled'
-import TabsCentered from './TabsCentered'
-import TabsJustified from './TabsJustified'
-import TabsVerticalLeft from './TabsVerticalLeft'
-import TabsVerticalRight from './TabsVerticalRight'
+import TabsEnd from "./TabsEnd";
+import TabsBasic from "./TabsBasic";
+import TabsIcons from "./TabsIcons";
+import TabsFilled from "./TabsFilled";
+import TabsCentered from "./TabsCentered";
+import TabsJustified from "./TabsJustified";
+import TabsVerticalLeft from "./TabsVerticalLeft";
+import TabsVerticalRight from "./TabsVerticalRight";
 
 // ** Source Code
 import {
@@ -29,63 +29,66 @@ import {
   tabsCentered,
   tabsJustified,
   tabsVerticalLeft,
-  tabsVerticalRight
-} from './TabSourceCode'
+  tabsVerticalRight,
+} from "./TabSourceCode";
 
 const Tabs = () => {
   useEffect(() => {
-    Prism.highlightAll()
-  }, [])
+    Prism.highlightAll();
+  }, []);
   return (
     <Fragment>
-      <BreadCrumbs title='Tabs' data={[{ title: 'Components' }, { title: 'Tabs' }]} />
+      <BreadCrumbs
+        title="Tabs"
+        data={[{ title: "Components" }, { title: "Tabs" }]}
+      />
       <Row>
-        <Col xl='6' lg='12'>
-          <Card title='Basic Tabs' code={tabsBasic}>
+        <Col xl="6" lg="12">
+          <Card title="Basic Tabs" code={tabsBasic}>
             <TabsBasic />
           </Card>
         </Col>
-        <Col xl='6' lg='12'>
-          <Card title='Tabs with icons' code={tabsBasic}>
+        <Col xl="6" lg="12">
+          <Card title="Tabs with icons" code={tabsBasic}>
             <TabsIcons />
           </Card>
         </Col>
       </Row>
       <Row>
-        <Col xl='6' lg='12'>
-          <Card title='Vertical Left Tabs' code={tabsVerticalLeft}>
+        <Col xl="6" lg="12">
+          <Card title="Vertical Left Tabs" code={tabsVerticalLeft}>
             <TabsVerticalLeft />
           </Card>
         </Col>
-        <Col xl='6' lg='12'>
-          <Card title='Vertical Right Tabs' code={tabsVerticalRight}>
+        <Col xl="6" lg="12">
+          <Card title="Vertical Right Tabs" code={tabsVerticalRight}>
             <TabsVerticalRight />
           </Card>
         </Col>
       </Row>
       <Row>
-        <Col xl='6' lg='12'>
-          <Card title='Filled' code={tabsFilled}>
+        <Col xl="6" lg="12">
+          <Card title="Filled" code={tabsFilled}>
             <TabsFilled />
           </Card>
         </Col>
-        <Col xl='6' lg='12'>
-          <Card title='Justified' code={tabsJustified}>
+        <Col xl="6" lg="12">
+          <Card title="Justified" code={tabsJustified}>
             <TabsJustified />
           </Card>
         </Col>
-        <Col xl='6' lg='12'>
-          <Card title='Centered' code={tabsCentered}>
+        <Col xl="6" lg="12">
+          <Card title="Centered" code={tabsCentered}>
             <TabsCentered />
           </Card>
         </Col>
-        <Col xl='6' lg='12'>
-          <Card title='End' code={tabsEnd}>
+        <Col xl="6" lg="12">
+          <Card title="End" code={tabsEnd}>
             <TabsEnd />
           </Card>
         </Col>
       </Row>
     </Fragment>
-  )
-}
-export default Tabs
+  );
+};
+export default Tabs;

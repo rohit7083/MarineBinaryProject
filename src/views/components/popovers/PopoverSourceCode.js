@@ -1,6 +1,6 @@
 export const popoverControlled = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap'
@@ -32,11 +32,11 @@ export default PopoverControlled
 `}
     </code>
   </pre>
-)
+);
 
 export const popoverUncontrolled = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import {
@@ -66,11 +66,11 @@ export default PopoverUncontrolled
 `}
     </code>
   </pre>
-)
+);
 
 export const popoverPositions = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
@@ -117,11 +117,11 @@ export default PopoverPositions
 `}
     </code>
   </pre>
-)
+);
 
 export const popoverTriggers = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 
 import { Button, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap'
@@ -171,4 +171,4 @@ export default PopoverTriggers
 `}
     </code>
   </pre>
-)
+);

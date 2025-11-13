@@ -1,17 +1,18 @@
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody, CardText } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, CardText } from "reactstrap";
 
 const ListUnordered = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Lists Unordered </CardTitle>
+        <CardTitle tag="h4">Lists Unordered </CardTitle>
       </CardHeader>
 
       <CardBody>
         <CardText>
-          List of items in which the order does not explicitly matter. Use <code>.list-style-circle</code> or{' '}
-          <code>.list-style-square</code> class in unordered list to add circle or square bullet points.
+          List of items in which the order does not explicitly matter. Use{" "}
+          <code>.list-style-circle</code> or <code>.list-style-square</code>{" "}
+          class in unordered list to add circle or square bullet points.
         </CardText>
         <ul>
           <li>Lorem ipsum dolor sit amet</li>
@@ -20,7 +21,7 @@ const ListUnordered = () => {
           <li>Facilisis in pretium nisl aliquet</li>
           <li>
             Nulla volutpat aliquam velit
-            <ul className='list-style-square'>
+            <ul className="list-style-square">
               <li>Phasellus iaculis neque</li>
               <li>Purus sodales ultricies</li>
               <li>Vestibulum laoreet porttitor sem</li>
@@ -35,6 +36,6 @@ const ListUnordered = () => {
         </ul>
       </CardBody>
     </Card>
-  )
-}
-export default ListUnordered
+  );
+};
+export default ListUnordered;

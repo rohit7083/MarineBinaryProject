@@ -32,14 +32,14 @@
 //   const [data, setData] = useState([]);
 
 //   const dataToRender = () => {
- 
+
 // //     if (data) {
 // //       return data;
 // //     }
 
 //     const limit = currentPage * rowsPerPage;
 //     const start = limit - rowsPerPage;
-   
+
 //     return store.data
 //       .filter((item) => {
 //         const idMatch = item.id.toString().includes(searchValue); // Ensure search matches the id as a string
@@ -100,7 +100,7 @@
 //         console.log(response.data);
 
 //         setData(response.data); //
-//         setLoading(true); 
+//         setLoading(true);
 //         await dispatch(
 //           getData({
 //             page: currentPage,
@@ -111,7 +111,7 @@
 //       } catch (error) {
 //         console.error("Error fetching data:", error);
 //       } finally {
-//         setLoading(false); 
+//         setLoading(false);
 //       }
 //     };
 //     fetchData();
@@ -201,7 +201,6 @@
 //             />
 //           </Col>
 //         </Row>
-       
 
 //         {loading ? (
 //           <div className="text-center "  style={{
@@ -217,7 +216,7 @@
 //           </div>
 //         ) : (
 //              <div style={{ marginTop: "20px" }}>
-              
+
 //             <DataTable
 //               noHeader
 //               pagination
@@ -238,10 +237,6 @@
 
 // export default memo(DataTableServerSide);
 
-
-
-
-
 import React, { Fragment, useState, useEffect, memo } from "react";
 import {
   Card,
@@ -252,7 +247,7 @@ import {
   Row,
   Col,
   Spinner,
-  Button
+  Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
@@ -270,17 +265,17 @@ const DataTableServerSide = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const { data } = await useJwt.getslipCatogory();
         console.log("API Response:", data); // Log here
-  
+
         const result = data?.content?.result || []; // Adjust depending on structure
         console.log("Parsed Result:", result); // Log here
-  
+
         setData(result);
         setFilteredData(result);
       } catch (error) {
@@ -291,10 +286,10 @@ const DataTableServerSide = () => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   // Filter handler
   // {{ }}
   const handleFilter = (e) => {
@@ -303,7 +298,7 @@ const DataTableServerSide = () => {
     const filtered = data.filter((item) => {
       const slipMatch = item.shipTypeName?.toLowerCase().includes(value);
       const idMatch = item.id?.toString().includes(value);
-      return slipMatch || idMatch ;
+      return slipMatch || idMatch;
     });
 
     setFilteredData(filtered);
@@ -352,7 +347,7 @@ const DataTableServerSide = () => {
   // Paginate filtered data
   const paginatedData = () => {
     const filtered = filteredData.filter((item) => item); // filter here
-console.log("fiter",filtered);
+    console.log("fiter", filtered);
 
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -393,7 +388,10 @@ console.log("fiter",filtered);
               <Label className="ms-1">entries</Label>
             </div>
           </Col>
-          <Col className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1" sm="6">
+          <Col
+            className="d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1"
+            sm="6"
+          >
             <Label className="me-1" for="search-input">
               Search
             </Label>
@@ -411,9 +409,17 @@ console.log("fiter",filtered);
         {loading ? (
           <div
             className="text-center"
-            style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "4rem" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "4rem",
+            }}
           >
-            <Spinner style={{ height: "5rem", width: "5rem" }} color="primary" />
+            <Spinner
+              style={{ height: "5rem", width: "5rem" }}
+              color="primary"
+            />
           </div>
         ) : (
           <div className="react-dataTable" style={{ marginTop: "2rem" }}>

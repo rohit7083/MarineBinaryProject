@@ -1,45 +1,52 @@
 // ** React Imports
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect } from "react";
 
 // ** Reactstrap Imports
-import { Row, Col, CardText } from 'reactstrap'
+import { Row, Col, CardText } from "reactstrap";
 
 // ** Third Party Components
-import Prism from 'prismjs'
+import Prism from "prismjs";
 
 // ** Custom Components
-import Card from '@components/card-snippet'
-import BreadCrumbs from '@components/breadcrumbs'
+import Card from "@components/card-snippet";
+import BreadCrumbs from "@components/breadcrumbs";
 
 // ** Demo Components
-import CollapseBasic from './CollapseBasic'
-import CollapseHorizontal from './CollapseHorizontal'
-import CollapseMultipleTargets from './CollapseMultipleTargets'
+import CollapseBasic from "./CollapseBasic";
+import CollapseHorizontal from "./CollapseHorizontal";
+import CollapseMultipleTargets from "./CollapseMultipleTargets";
 
 // ** Source Code
-import { collapseBasic, collapseHorizontal, collapseMultipleTargets } from './CollapseSourceCode'
+import {
+  collapseBasic,
+  collapseHorizontal,
+  collapseMultipleTargets,
+} from "./CollapseSourceCode";
 
 const Collapse = () => {
   useEffect(() => {
-    Prism.highlightAll()
-  }, [])
+    Prism.highlightAll();
+  }, []);
 
   return (
     <Fragment>
-      <BreadCrumbs title='Collapse' data={[{ title: 'Components' }, { title: 'Collapse' }]} />
+      <BreadCrumbs
+        title="Collapse"
+        data={[{ title: "Components" }, { title: "Collapse" }]}
+      />
       <Row>
-        <Col sm='12'>
-          <Card title='Collapse Basic' code={collapseBasic}>
+        <Col sm="12">
+          <Card title="Collapse Basic" code={collapseBasic}>
             <CollapseBasic />
           </Card>
         </Col>
-        <Col sm='12'>
-          <Card title='Multiple Target' code={collapseMultipleTargets}>
+        <Col sm="12">
+          <Card title="Multiple Target" code={collapseMultipleTargets}>
             <CollapseMultipleTargets />
           </Card>
         </Col>
-        <Col sm='12'>
-          <Card title='Horizontal' code={collapseHorizontal}>
+        <Col sm="12">
+          <Card title="Horizontal" code={collapseHorizontal}>
             <CardText>
               Use props <code>horizontal</code> to create horizontal collapse
             </CardText>
@@ -48,6 +55,6 @@ const Collapse = () => {
         </Col>
       </Row>
     </Fragment>
-  )
-}
-export default Collapse
+  );
+};
+export default Collapse;

@@ -1,6 +1,6 @@
 export const modalBasic = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap'
@@ -106,11 +106,11 @@ export default ModalBasic
   `}
     </code>
   </pre>
-)
+);
 
 export const modalTheme = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
@@ -205,11 +205,11 @@ export default ModalTheme
 `}
     </code>
   </pre>
-)
+);
 
 export const modalSizes = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import { Fragment, useState } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
@@ -379,11 +379,11 @@ export default ModalSizes
 `}
     </code>
   </pre>
-)
+);
 
 export const modalEvents = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import React, { useState } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
@@ -445,11 +445,11 @@ const ModalEvents = () => {
 export default ModalEvents`}
     </code>
   </pre>
-)
+);
 
 export const modalForm = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import { useState } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input } from 'reactstrap'
@@ -672,11 +672,11 @@ export default ModalForm
 `}
     </code>
   </pre>
-)
+);
 
 export const modalUnmount = (
   <pre>
-    <code className='language-jsx'>
+    <code className="language-jsx">
       {`
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Form, Row, Col } from 'reactstrap'
 
@@ -728,4 +728,4 @@ export default ModalDestructuring
         `}
     </code>
   </pre>
-)
+);

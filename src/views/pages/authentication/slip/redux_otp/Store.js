@@ -1,6 +1,6 @@
 // store.js
-import { configureStore } from '@reduxjs/toolkit';
-import otpReducer from './path/to/OtpSlice'; // adjust this path
+import { configureStore } from "@reduxjs/toolkit";
+import otpReducer from "./path/to/OtpSlice"; // adjust this path
 
 const Store = configureStore({
   reducer: {

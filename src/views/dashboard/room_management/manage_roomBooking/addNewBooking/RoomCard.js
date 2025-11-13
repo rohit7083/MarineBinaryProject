@@ -11,13 +11,13 @@ import { Controller } from "react-hook-form";
 
 // ** Reactstrap
 import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    FormGroup,
-    Input,
-    Label
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  FormGroup,
+  Input,
+  Label,
 } from "reactstrap";
 
 // ** Styles
@@ -148,19 +148,19 @@ const RoomCard = (props) => {
   ]);
   // console.log(watch(`roomUnit.${index}.fields.serviceType`))
   //  ()
-// console.log(fieldsDetail)
+  // console.log(fieldsDetail)
 
   function handleShowPrice(type) {
     if (isDisabled) {
       switch (type) {
         case "room-only":
-          return fieldsDetail.roomOnlyPricePerNight
+          return fieldsDetail.roomOnlyPricePerNight;
         case "room-breakfast":
           return fieldsDetail.roomBreakfastPricePerNight;
         case "room-meals":
-          return fieldsDetail.roomMealPricePerNight
+          return fieldsDetail.roomMealPricePerNight;
         default:
-        return 0;
+          return 0;
       }
     } else {
       switch (type) {
@@ -178,7 +178,7 @@ const RoomCard = (props) => {
           );
 
         default:
-        return 0;
+          return 0;
       }
     }
   }
@@ -187,7 +187,12 @@ const RoomCard = (props) => {
     <Card className={`shadow ${isBooked ? "border border-success" : ""}`}>
       <div className="d-flex mt-1 mx-1 justify-content-between align-items-center">
         <Badge color="primary" className="me-auto">
-          Room {isDisabled ? <>{fieldsDetail?.roomUnit?.roomNumber}</>:<>{fieldsDetail?.roomNumber}</>}
+          Room{" "}
+          {isDisabled ? (
+            <>{fieldsDetail?.roomUnit?.roomNumber}</>
+          ) : (
+            <>{fieldsDetail?.roomNumber}</>
+          )}
         </Badge>
 
         {fieldsDetail?.fields?.isBooked ? (
@@ -206,13 +211,27 @@ const RoomCard = (props) => {
         <div className="d-flex align-items-center mb-1">
           <Home size={16} className="me-2 text-secondary" />
           <span>
-            Room Type {" "}
-            <strong>{isDisabled ? <> {fieldsDetail?.roomUnit?.roomType?.roomTypeName} </>: <>{fieldsDetail?.roomTypeName}</>}</strong>
+            Room Type{" "}
+            <strong>
+              {isDisabled ? (
+                <> {fieldsDetail?.roomUnit?.roomType?.roomTypeName} </>
+              ) : (
+                <>{fieldsDetail?.roomTypeName}</>
+              )}
+            </strong>
           </span>
         </div>
         <div className="d-flex align-items-center mb-2">
           <Users size={16} className="me-2 text-secondary" />
-          <span>Up to {isDisabled ? <>{fieldsDetail?.maxRoomCapacity}</> :<>{fieldsDetail?.peopleCapacity}</>} people</span>
+          <span>
+            Up to{" "}
+            {isDisabled ? (
+              <>{fieldsDetail?.maxRoomCapacity}</>
+            ) : (
+              <>{fieldsDetail?.peopleCapacity}</>
+            )}{" "}
+            people
+          </span>
         </div>
         <h6 className="text-muted">Select Service Package:</h6>
         {errors?.roomUnit?.[index]?.fields?.serviceType && (
@@ -246,8 +265,7 @@ const RoomCard = (props) => {
             <span className="ms-1 fs-6">Room-only</span>
           </Label>
           <span className="text-primary fw-semibold fs-6">
-            $
-            {handleShowPrice('room-only')}
+            ${handleShowPrice("room-only")}
             /night
           </span>
         </FormGroup>
@@ -277,8 +295,7 @@ const RoomCard = (props) => {
             <span className="ms-1 fs-6">Room-Breakfast</span>
           </Label>
           <span className="text-primary fw-semibold fs-6">
-            $
-            {handleShowPrice('room-breakfast')}
+            ${handleShowPrice("room-breakfast")}
             /night
           </span>
         </FormGroup>
@@ -308,8 +325,7 @@ const RoomCard = (props) => {
             <span className="ms-1 fs-6">Room-Meals</span>
           </Label>
           <span className="text-primary fw-semibold fs-6">
-            $
-            {handleShowPrice("room-meals")}
+            ${handleShowPrice("room-meals")}
             /night
           </span>
         </FormGroup>
@@ -393,13 +409,14 @@ const RoomCard = (props) => {
                 </>
               )}
               <br />
-              {fieldsDetail?.fields?.isExtraPeople === true && !isDisabled ?
-                `${
-                  fieldsDetail?.fields?.noOfExtraPeople || 0
-                }${" "}Extra People • $${
-                  fieldsDetail?.fields?.amount -
-                  fieldsDetail?.fields?.baseAmount
-                }`:null}
+              {fieldsDetail?.fields?.isExtraPeople === true && !isDisabled
+                ? `${
+                    fieldsDetail?.fields?.noOfExtraPeople || 0
+                  }${" "}Extra People • $${
+                    fieldsDetail?.fields?.amount -
+                    fieldsDetail?.fields?.baseAmount
+                  }`
+                : null}
             </div>
           </>
         ) : null}

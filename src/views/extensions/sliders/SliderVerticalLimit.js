@@ -1,34 +1,34 @@
 // ** Third Party Components
-import Nouislider from 'nouislider-react'
+import Nouislider from "nouislider-react";
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody } from "reactstrap";
 
 const SliderLimit = ({ direction }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag='h4'>Limit</CardTitle>
+        <CardTitle tag="h4">Limit</CardTitle>
       </CardHeader>
-      <CardBody className='text-center'>
+      <CardBody className="text-center">
         <Nouislider
           limit={40}
           connect={true}
           start={[40, 60]}
-          behaviour={'drag'}
+          behaviour={"drag"}
           direction={direction}
-          orientation={'vertical'}
+          orientation={"vertical"}
           range={{
             min: 0,
-            max: 100
+            max: 100,
           }}
           style={{
-            height: '200px'
+            height: "200px",
           }}
         />
       </CardBody>
     </Card>
-  )
-}
+  );
+};
 
-export default SliderLimit
+export default SliderLimit;

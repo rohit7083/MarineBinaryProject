@@ -9,12 +9,12 @@ function index() {
         <SalesSummery />
       </Col>
       <Row>
-      <Col md="12">
-        <WeeklySales />
-      </Col>
-      <Col md="12">
-        <WeeklyTime />
-      </Col>
+        <Col md="12">
+          <WeeklySales />
+        </Col>
+        <Col md="12">
+          <WeeklyTime />
+        </Col>
       </Row>
     </>
   );

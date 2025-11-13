@@ -192,7 +192,7 @@ function SwitchSlipForm({ payer, ammountTobePaid, payloadsent, responseData }) {
         console.log("Cash Payload:", payload);
         const response = await useJwt.postSwitchSlip(payload);
         console.log("Cash Response:", response);
- setTimeout(() => {
+        setTimeout(() => {
           navigate("/dashboard/slipmember_list");
         }, [2000]);
         if (response?.data?.code === 200 || 201) {
@@ -209,9 +209,9 @@ function SwitchSlipForm({ payer, ammountTobePaid, payloadsent, responseData }) {
           setPaymentMode("");
           setCardType("");
 
-           setTimeout(() => {
-          navigate("/dashboard/slipmember_list");
-        }, [2000]);
+          setTimeout(() => {
+            navigate("/dashboard/slipmember_list");
+          }, [2000]);
         } else {
           toast.current.show({
             severity: "error",
@@ -253,9 +253,9 @@ function SwitchSlipForm({ payer, ammountTobePaid, payloadsent, responseData }) {
             detail: "Payment Failed",
             life: 2000,
           });
-           setTimeout(() => {
-          navigate("/dashboard/slipmember_list");
-        }, [2000]);
+          setTimeout(() => {
+            navigate("/dashboard/slipmember_list");
+          }, [2000]);
           reset();
           setPaymentMode("");
           setCardType("");

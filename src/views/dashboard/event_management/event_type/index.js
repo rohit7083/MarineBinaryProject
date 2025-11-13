@@ -59,11 +59,8 @@ const index = () => {
     setSearchTerm(value);
 
     if (value) {
-      const filteredResults = tableData.results.filter(
-        (row) =>
-          row.eventTypeName?.toLowerCase().includes(value.toLowerCase()) 
-         
-         
+      const filteredResults = tableData.results.filter((row) =>
+        row.eventTypeName?.toLowerCase().includes(value.toLowerCase())
       );
 
       setTableData((prev) => ({
@@ -95,15 +92,15 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-  {
-  name: "Event Type",
-  sortable: true,
-  selector: (row) =>
-    row?.eventTypeName
-      ? row.eventTypeName.charAt(0).toUpperCase() +
-        row.eventTypeName.slice(1).toLowerCase()
-      : "",
-},
+    {
+      name: "Event Type",
+      sortable: true,
+      selector: (row) =>
+        row?.eventTypeName
+          ? row.eventTypeName.charAt(0).toUpperCase() +
+            row.eventTypeName.slice(1).toLowerCase()
+          : "",
+    },
 
     {
       name: "Description",
@@ -163,14 +160,17 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
-                  MySwal.fire({
-                    icon: "error",
-                    title: "Error!",
-                    text: `${error.response?.data?.content || "Failed to delete Event Type."}`,
-                    customClass: {
-                      confirmButton: "btn btn-success",
-                    },
-                  });
+                MySwal.fire({
+                  icon: "error",
+                  title: "Error!",
+                  text: `${
+                    error.response?.data?.content ||
+                    "Failed to delete Event Type."
+                  }`,
+                  customClass: {
+                    confirmButton: "btn btn-success",
+                  },
+                });
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({

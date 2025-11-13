@@ -1,18 +1,15 @@
-import React, { Fragment , useState ,useEffect} from 'react'
+import React, { Fragment, useState, useEffect } from "react";
 
 // ** Custom Components
-import Breadcrumbs from '@components/breadcrumbs'
+import Breadcrumbs from "@components/breadcrumbs";
 
 // ** Third Party Components
-import { Row, Col } from 'reactstrap'
+import { Row, Col } from "reactstrap";
 
 // ** Other Components
-import TableZeroConfig from "./tableViewSlip"
-
+import TableZeroConfig from "./tableViewSlip";
 
 function Index() {
-
- 
   return (
     <Fragment>
       <h3>Slip Rental</h3>
@@ -20,9 +17,9 @@ function Index() {
         <Col sm="12">
           <TableZeroConfig />
         </Col>
-      </Row>      
+      </Row>
     </Fragment>
-  )
+  );
 }
 
-export default Index
+export default Index;

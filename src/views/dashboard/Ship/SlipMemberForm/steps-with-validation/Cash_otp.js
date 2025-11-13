@@ -4,7 +4,7 @@ import { Send } from "react-feather";
 import { Link } from "react-router-dom";
 import Countdown from "react-countdown";
 import { Spinner, UncontrolledAlert } from "reactstrap";
-import WatchNew from '../../../../../../src/assets/images/updatedWatchnew.jpg'
+import WatchNew from "../../../../../../src/assets/images/updatedWatchnew.jpg";
 
 import {
   Row,
@@ -36,7 +36,6 @@ const Cash_otp = ({
   totalPayment,
   cashOtpVerify,
   setErrMsz,
-
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -45,17 +44,16 @@ const Cash_otp = ({
   const [verify, setVerify] = useState(false);
   const [countdownEndTime, setCountdownEndTime] = useState(Date.now() + 40000);
   const [errorMessage, setErrorMsz] = useState("");
-    // const [errMsz, setErrMsz] = useState("");
-  
+  // const [errMsz, setErrMsz] = useState("");
+
   const {
     control,
     handleSubmit,
     setError,
     formState: { errors },
   } = useForm();
-   
+
   const handleOTP = async () => {
-     
     try {
       const payload = {
         slipId: slipIID,
@@ -66,7 +64,7 @@ const Cash_otp = ({
       if (response?.status == 200) {
         setCountdownEndTime(Date.now() + 40000);
       }
-       
+
       const token = response?.data?.content;
       console.log("response from cash otp", response);
 
@@ -77,14 +75,11 @@ const Cash_otp = ({
       console.error("Error generating OTP:", error);
       console.log("Failed to generate OTP. Please try again.");
 
-      
-       if (error.response) {
+      if (error.response) {
         console.error("Error verifying OTP:", error);
         const errorMessage = error?.response?.data?.content;
         setErrMsz(errorMessage);
-
-    }
-
+      }
     }
   };
 
@@ -92,7 +87,6 @@ const Cash_otp = ({
     setErrorMsz("");
     setAttempt(0);
     setCountdownEndTime(0);
-    
 
     try {
       if (!accessTokenotp) {
@@ -100,7 +94,7 @@ const Cash_otp = ({
         return;
       }
 
-      //   
+      //
       const payload = {
         cashOtp: Number(data.otp.join("")),
       };
@@ -109,7 +103,6 @@ const Cash_otp = ({
       setVerify(true);
       setShowModal(false);
       setotpVerify(true);
-      
     } catch (error) {
       if (error.response) {
         console.error("Error verifying OTP:", error);
@@ -157,8 +150,7 @@ const Cash_otp = ({
 
   const [attempt, setAttempt] = useState(0);
 
-    const [resendcallCount, setResendcallCount] = useState(false);
-  
+  const [resendcallCount, setResendcallCount] = useState(false);
 
   const handleResendOTP = async (e) => {
     // {{ }}
@@ -329,48 +321,53 @@ const Cash_otp = ({
                   </div>
                   {/* {attempt < 3 && ( */}
 
-<>  
-                <div className="d-flex flex-column align-items-center position-relative">
-                    <div
-                      style={{ position: "relative", display: "inline-block" }}
-                    >
-                      <img
-                        src={WatchNew}
-                        alt="Phone Call"
+                  <>
+                    <div className="d-flex flex-column align-items-center position-relative">
+                      <div
                         style={{
-                          width: "120px",
-                          height: "100px",
-                          display: "block",
+                          position: "relative",
+                          display: "inline-block",
                         }}
-                      />
+                      >
+                        <img
+                          src={WatchNew}
+                          alt="Phone Call"
+                          style={{
+                            width: "120px",
+                            height: "100px",
+                            display: "block",
+                          }}
+                        />
 
-                      <Countdown
-                        key={countdownEndTime} // resets the countdown on update
-                        date={countdownEndTime}
-                        // onComplete={() => setResendLoading(false)} // re-enable the button
-                        renderer={({ minutes, seconds }) => (
-                          <span
-                            className="position-absolute top-50 start-50 translate-middle"
-                            style={{
-                              marginTop: "-4px",
-                              fontSize: "14px",
-                              fontWeight: "bold",
-                              color: "White",
-                            }}
-                          >
-                            {String(minutes).padStart(2, "0")}:
-                            {String(seconds).padStart(2, "0")}
-                          </span>
-                        )}
-                      />
+                        <Countdown
+                          key={countdownEndTime} // resets the countdown on update
+                          date={countdownEndTime}
+                          // onComplete={() => setResendLoading(false)} // re-enable the button
+                          renderer={({ minutes, seconds }) => (
+                            <span
+                              className="position-absolute top-50 start-50 translate-middle"
+                              style={{
+                                marginTop: "-4px",
+                                fontSize: "14px",
+                                fontWeight: "bold",
+                                color: "White",
+                              }}
+                            >
+                              {String(minutes).padStart(2, "0")}:
+                              {String(seconds).padStart(2, "0")}
+                            </span>
+                          )}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  {errors.otp && (
-                    <small className="text-danger">{errors.otp.message}</small>
-                  )}
+                    {errors.otp && (
+                      <small className="text-danger">
+                        {errors.otp.message}
+                      </small>
+                    )}
                   </>
-                {/* )} */}
+                  {/* )} */}
                 </div>
                 <Button block type="submit" color="primary">
                   {loading ? (
@@ -382,13 +379,13 @@ const Cash_otp = ({
                   )}
                 </Button>
               </Form>
-            
+
               {/* {attempt === 1 && ( */}
               {/* <div className="d-flex"> */}
-               <p className="text-center mt-2">
-                  {/* {!resendCount && ( */}
-                    <>
-                      {/* <span>Didn’t get the code?</span>{" "}
+              <p className="text-center mt-2">
+                {/* {!resendCount && ( */}
+                <>
+                  {/* <span>Didn’t get the code?</span>{" "}
                       <a
                         href="#"
                         onClick={handleResendOTP}
@@ -396,24 +393,24 @@ const Cash_otp = ({
                       >
                         Resend
                       </a> */}
-                    </>
-                  {/* )} */}
-                </p>
+                </>
+                {/* )} */}
+              </p>
               {/* )}  */}
 
-             {/* {attempt === 2 && ( */}
-                {/* <p className="text-center mt-2"> */}
-                  {/* {!resendcallCount && ( */}
-                    <>
-                  {/* <span className="mx-1">Or</span> */}
-                      {/* <span>Didn’t get the code?</span>{" "} */}
-                      {/* <a href="#" onClick={handleResendCall}> */}
-                        {/* Call us */}
-                      {/* </a> */}
-                    </>
-                  {/* )}   */}
-                {/* </p> */}
-                {/* </div> */}
+              {/* {attempt === 2 && ( */}
+              {/* <p className="text-center mt-2"> */}
+              {/* {!resendcallCount && ( */}
+              <>
+                {/* <span className="mx-1">Or</span> */}
+                {/* <span>Didn’t get the code?</span>{" "} */}
+                {/* <a href="#" onClick={handleResendCall}> */}
+                {/* Call us */}
+                {/* </a> */}
+              </>
+              {/* )}   */}
+              {/* </p> */}
+              {/* </div> */}
               {/* )}  */}
             </CardBody>
           </Card>

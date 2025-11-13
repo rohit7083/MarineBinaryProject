@@ -256,7 +256,7 @@ const CardPayment = () => {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
       console.log(res);
-   
+
       if (res?.data?.status === "success") {
         return MySwal.fire({
           title: "  Success",

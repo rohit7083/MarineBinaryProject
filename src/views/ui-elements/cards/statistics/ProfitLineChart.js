@@ -1,56 +1,58 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 // ** Third Party Components
-import axios from 'axios'
+import axios from "axios";
 
 // ** Custom Components
-import TinyChartStats from '@components/widgets/stats/TinyChartStats'
+import TinyChartStats from "@components/widgets/stats/TinyChartStats";
 
 const ProfitLineChart = ({ info }) => {
   // ** State
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios.get('/card/card-statistics/profit-line-chart').then(res => setData(res.data))
-    return () => setData(null)
-  }, [])
+    axios
+      .get("/card/card-statistics/profit-line-chart")
+      .then((res) => setData(res.data));
+    return () => setData(null);
+  }, []);
 
   const options = {
     chart: {
       toolbar: {
-        show: false
+        show: false,
       },
       zoom: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     grid: {
-      borderColor: '#EBEBEB',
+      borderColor: "#EBEBEB",
       strokeDashArray: 5,
       xaxis: {
         lines: {
-          show: true
-        }
+          show: true,
+        },
       },
       yaxis: {
         lines: {
-          show: false
-        }
+          show: false,
+        },
       },
       padding: {
         top: -30,
-        bottom: -10
-      }
+        bottom: -10,
+      },
     },
     stroke: {
-      width: 3
+      width: 3,
     },
     colors: [info],
     series: [
       {
-        data: [0, 20, 5, 30, 15, 45]
-      }
+        data: [0, 20, 5, 30, 15, 45],
+      },
     ],
     markers: {
       size: 2,
@@ -64,51 +66,51 @@ const ProfitLineChart = ({ info }) => {
         {
           seriesIndex: 0,
           dataPointIndex: 5,
-          fillColor: '#ffffff',
+          fillColor: "#ffffff",
           strokeColor: info,
-          size: 5
-        }
+          size: 5,
+        },
       ],
-      shape: 'circle',
+      shape: "circle",
       radius: 2,
       hover: {
-        size: 3
-      }
+        size: 3,
+      },
     },
     xaxis: {
       labels: {
         show: true,
         style: {
-          fontSize: '0px'
-        }
+          fontSize: "0px",
+        },
       },
       axisBorder: {
-        show: false
+        show: false,
       },
       axisTicks: {
-        show: false
-      }
+        show: false,
+      },
     },
     yaxis: {
-      show: false
+      show: false,
     },
     tooltip: {
       x: {
-        show: false
-      }
-    }
-  }
+        show: false,
+      },
+    },
+  };
 
   return data !== null ? (
     <TinyChartStats
       height={70}
-      type='line'
+      type="line"
       options={options}
       title={data.title}
       stats={data.statistics}
       series={data.series}
     />
-  ) : null
-}
+  ) : null;
+};
 
-export default ProfitLineChart
+export default ProfitLineChart;

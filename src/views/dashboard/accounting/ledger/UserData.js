@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem, Spinner } from "reactstrap";
+import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
+  AccordionItem,
+  Spinner,
+} from "reactstrap";
 
 function UserData({ active, toggleTab, userDataById, UserDataLoader }) {
   if (!Array.isArray(userDataById)) return null;
@@ -42,7 +48,9 @@ function UserData({ active, toggleTab, userDataById, UserDataLoader }) {
               {sections.map((section) => (
                 <li className="nav-item" key={section.id}>
                   <button
-                    className={`nav-link ${active === section.id ? "active" : ""}`}
+                    className={`nav-link ${
+                      active === section.id ? "active" : ""
+                    }`}
                     onClick={() => toggleTab(section.id)}
                   >
                     {section.label}

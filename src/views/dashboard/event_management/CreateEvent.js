@@ -19,10 +19,10 @@ const CreateEvent = () => {
     venueLocation: {},
     vendors: {},
   });
-
   const location = useLocation();
   const listData = location.state || "";
   const paymenStepsCheck = location?.state?.step;
+  const eventEdit = location?.state?.edit;
   const paymentData = location?.state;
   // let paymentExist = !!updateData?.listData?.Rowdata?.payments.length;
   useEffect(() => {
@@ -49,23 +49,27 @@ const CreateEvent = () => {
         />
       ),
     },
+    ...(eventEdit != "event"
+      ? [
+          {
+            id: "Payment",
+            title: "Payment",
+            subtitle: "Payment details",
+            icon: <Settings size={18} />,
+            content: (
+              <Payment
+                updateData={updateData}
+                stepper={stepper}
+                paymentData={paymentData}
+                setFormData={setFormData}
+                // fetchLoader={fetchLoader}
+                allEventData={allEventData}
+              />
+            ),
+          },
+        ]
+      : []),
 
-    {
-      id: "Payment",
-      title: "Payment",
-      subtitle: "Payment details",
-      icon: <Settings size={18} />,
-      content: (
-        <Payment
-          updateData={updateData}
-          stepper={stepper}
-          paymentData={paymentData}
-          setFormData={setFormData}
-          // fetchLoader={fetchLoader}
-          allEventData={allEventData}
-        />
-      ),
-    },
     {
       id: "Documents",
       title: "Documents",
