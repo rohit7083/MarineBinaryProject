@@ -76,7 +76,6 @@ const CalendarComponent = () => {
 
 
 
-  console.clear()
   console.log(store)
   // ** Fetch Events On Mount
   useEffect(() => {
@@ -106,6 +105,7 @@ const CalendarComponent = () => {
             />
           </Col> */}
           <Col className="position-relative">
+          
             <Calendar
               isRtl={isRtl}
               store={store}

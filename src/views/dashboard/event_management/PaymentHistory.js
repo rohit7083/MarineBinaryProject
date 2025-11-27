@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "react-feather";
+import { useFieldArray, useForm } from "react-hook-form";
 import {
   FaCreditCard,
   FaLink,
@@ -10,18 +12,21 @@ import { MdOutlineSwipe } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 import { Badge, Card, CardBody, CardTitle, Col, Row, Table } from "reactstrap";
 import ViewEventInfo from "./ViewEventInfo";
+import ViewRoomInfo from "./ViewRoomInfo";
 
 const PaymentHistory = ({ stepper, updateData }) => {
-  const user = {
-    discountAmount: 500,
-    advancePaid: 2000,
-    remainingAmount: 1000,
-    totalAmount: 3500,
-  };
-
   const location = useLocation();
-
-  const paymentHistoryData = location?.state?.Rowdata;
+  const { control, watch, reset } = useForm({
+    defaultValues: { roomData: [] },
+  });
+  const [roomDataa, setRoomData] = useState([]);
+  const { fields: roomDatas } = useFieldArray({
+    control,
+    name: "roomUnit",
+  });
+  console.log("room roomDataa  roomDataa", roomDataa);
+  const paymentHistoryData =
+    location?.state?.Rowdata || location?.state?.info?.content ||location?.state?.info;
   console.log("paymenthostory data ", paymentHistoryData);
   const {
     lastName,
@@ -35,6 +40,47 @@ const PaymentHistory = ({ stepper, updateData }) => {
     postalCode,
     state,
   } = paymentHistoryData?.member;
+
+  useEffect(() => {
+    const roomSearchUnit =
+      paymentHistoryData?.roomBookings?.[0]?.roomSearch?.roomSearchUnit || [];
+    console.log("roomSearchUnit", roomSearchUnit);
+
+    const roomData = roomSearchUnit.map((unit) => ({
+      id: unit?.id,
+      uid: unit.uid,
+      createdAt: unit.createdAt,
+      updatedAt: unit.updatedAt,
+      createdBy: unit.createdBy,
+      updatedBy: unit.updatedBy,
+      isExtraPeople: unit.isExtraPeople,
+      noOfExtraPeople: unit.noOfExtraPeople,
+      serviceType: unit.serviceType,
+      roomOnlyPricePerNight: unit.roomOnlyPricePerNight,
+      roomBreakfastPricePerNight: unit.roomBreakfastPricePerNight,
+      roomMealPricePerNight: unit.roomMealPricePerNight,
+      amount: unit.amount,
+      maxRoomCapacity: unit.maxRoomCapacity,
+      defaultPeopleCapacity: unit.defaultPeopleCapacity,
+      roomUnit: unit.roomUnit,
+      active: unit.active,
+
+      taxValue: unit.roomUnit?.roomType?.taxValue ?? null,
+
+      fields: {
+        isBooked: true,
+        serviceType: unit.serviceType,
+        amount: unit.amount,
+        isExtraPeople: unit.isExtraPeople,
+        noOfExtraPeople: unit.noOfExtraPeople,
+      },
+    }));
+    console.log("roomData", roomData);
+
+    reset({ roomUnit: roomData });
+
+    setRoomData(roomData);
+  }, [paymentHistoryData, reset]);
 
   const getPaymentIcon = (paymentMode) => {
     switch (String(paymentMode)) {
@@ -82,6 +128,22 @@ const PaymentHistory = ({ stepper, updateData }) => {
       </Badge>
     );
   };
+
+  //  useEffect(() => {
+  //   if (!paymentHistoryData) return;
+  //   const roomSearchUnit = paymentHistoryData?.roomBookings?.[0]?.roomSearch?.roomSearchUnit || [];
+
+  //   const formatted = roomSearchUnit.map(unit => ({
+  //     ...unit,
+  //     unit: { amount: unit.amount },
+
+  //     taxValue: unit?.roomUnit?.roomType?.taxValue,
+  //   }));
+  // console.log(formatted);
+
+  //   reset({ roomUnit: formatted });
+  //   setRoomData(formatted);
+  // }, [paymentHistoryData, reset]);
 
   return (
     <>
@@ -280,6 +342,8 @@ const PaymentHistory = ({ stepper, updateData }) => {
         </Col>
       </Row>
       <ViewEventInfo paymentHistoryData={paymentHistoryData} />
+      <ViewRoomInfo roomUnits={roomDataa} control={control} watch={watch} />
+
       <Card>
         <CardBody>
           <h5 className="mt-1">Recent Transactions</h5>

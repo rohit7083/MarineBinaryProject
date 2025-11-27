@@ -38,6 +38,7 @@ import SingleCheck from "../../../assets/images/SingleCheck.json";
 import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
 function Payment({ stepper, allEventData, updateData, paymentData }) {
+
   const {
     remainingAmount,
     totalAmount,
@@ -67,21 +68,21 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     { value: "8", label: "QR Code" },
   ];
 
+
   const AmtDiffernce =
-    updateData?.data?.totalAmount - updateData?.listData?.Rowdata?.totalAmount;
+    updateData?.data?.finalPayble - (updateData?.listData?.Rowdata?.advancePaymentAmout || updateData?.listData?.Rowdata?.totalAmount);
   console.log("AmtDiffernce", AmtDiffernce);
 
   let finalAmtRemain;
 
   const remainingAmt = updateData?.listData?.Rowdata?.remainingAmount || 0;
   const uid = updateData?.listData?.uid;
-  // {{ }}
+  
   if (remainingAmt >= 0 && uid) {
     finalAmtRemain = Number(remainingAmt) + Number(AmtDiffernce);
   } else {
     finalAmtRemain = allEventData?.totalAmount || 0;
   }
-
   const {
     control,
     handleSubmit,
@@ -148,19 +149,18 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       updateData?.listData?.uid &&
       paymentData?.step !== 2
     ) {
-      setValue("finalAmount", AmtDiffernce + Number(calTax));
-      console.log(finalAmtRemain);
+      setValue("finalAmount", AmtDiffernce);
     } else if (paymentData?.step === 2) {
       setValue(
         "finalAmount",
-        Number(paymentData?.Rowdata?.remainingAmount || 0) + Number(calTax || 0)
+        Number(paymentData?.Rowdata?.remainingAmount || 0)
       );
     } else {
       if (allEventData?.totalAmount) {
-        setValue("finalAmount", allEventData?.totalAmount + Number(calTax));
+        setValue("finalAmount", allEventData?.totalAmount);
       }
     }
-  }, [allEventData, updateData, setValue, calTax, AmtDiffernce]);
+  }, [allEventData, updateData, setValue, AmtDiffernce]);
   const MySwal = withReactContent(Swal);
 
   const [showQrModal, setShowQrModal] = useState(false);
@@ -424,6 +424,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   const PayMode = watch("paymentMode");
 
   const onSubmit = async (data) => {
+    console.log("from the paymentdata",data);
+    
     setErrorMsz("");
     const otpArray = data.otp || [];
     const pin = otpArray?.join("");
@@ -435,6 +437,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       if (allEventData?.eventUid || paymentData?.uid) {
         formData.append("event.uid", allEventData.eventUid || paymentData?.uid);
       }
+                    formData.append("event.calculatedTax", updateData?.data?.calculatedTax || 0);
 
       if (data?.advancePayment !== undefined) {
         formData.append("event.isAdvancesPaymnet", data.advancePayment);
@@ -468,6 +471,17 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     }
 
     if (updateData?.listData?.uid && paymentData?.step !== 2) {
+              formData.append("event.calculatedTax", updateData?.data?.calculatedTax || 0);
+
+       if (data?.advance !== undefined) {
+        formData.append("event.advancePaymentAmout", data.advance);
+      }
+       if (data?.advancePayment !== undefined) {
+        formData.append("event.isAdvancesPaymnet", data.advancePayment);
+      }
+       if (data?.advancePayment && data?.remainingPayment !== undefined) {
+        formData.append("event.remainingAmount", data.remainingPayment);
+      }
       formData.append("event.uid", updateData?.listData?.uid);
       formData.append("event.eventName", updateData?.data?.eventName);
       formData.append(
@@ -490,14 +504,20 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         "event.eventEndTime",
         formatDate(updateData?.data.endDateTime, "HH:mm")
       );
-      formData.append("event.amount", updateData?.data?.amount);
+      formData.append("event.amount", updateData?.data?.totalAmount);
       formData.append("event.isExtraStaff", updateData?.data?.isExtraStaff);
-      formData.append("event.extraNoOfStaff", updateData?.data?.extraNoOfStaff);
+     if ((updateData?.data?.extraNoOfStaff) != null) {
+      
+       formData.append("event.extraNoOfStaff", updateData?.data?.extraNoOfStaff);
+     } 
+          if ((updateData?.data?.extraNoOfStaffAmount) != null) {
+
       formData.append(
         "event.extraNoOfStaffAmount",
         updateData?.data?.extraNoOfStaffAmount
       );
-      formData.append("event.totalAmount", updateData?.data?.totalAmount);
+    }
+      formData.append("event.totalAmount", updateData?.data?.finalPayble);
       formData.append(
         "event.isRecurringEvent",
         updateData?.data?.isRecurringEvent
@@ -511,7 +531,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         "event.member.uid",
         updateData?.data?.selectedMember?.value
       );
-      formData.append("payment.finalPayment", AmtDiffernce);
+    
+      // formData.append("payment.finalPayment", AmtDiffernce);
     }
 
     if (data?.PfinalAmount !== undefined) {
@@ -752,99 +773,6 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           </Col>
 
           <Col md="8" className="mb-1">
-            <Row className={"mb-2 border"} style={{ margin: "2px" }}>
-              <Col md="12" className="mb-1">
-                <div className="content-header">
-                  <h5 className="mb-0 my-2">Tax Details</h5>
-                  <small>
-                    Specify tax type and amount to auto-calculate total
-                  </small>
-                </div>
-              </Col>
-              <Col md="4" className="mb-1">
-                <Label for="taxType">Tax Type</Label>
-                <Controller
-                  name="taxType"
-                  control={control}
-                  defaultValue="Percentage"
-                  render={({ field }) => (
-                    <Input
-                      type="text"
-                      id="taxType"
-                      readOnly
-                      disabled
-                      value="Percentage"
-                      {...field}
-                    />
-                  )}
-                />
-              </Col>
-
-              <Col md="4" className="mb-1">
-                <Label for="taxValue">
-                  Tax Value ({watch("taxType") === "Percentage" ? "%" : "Flat"})
-                  <span style={{ color: "red" }}>*</span>
-                </Label>
-                <Controller
-                  name="taxValue"
-                  control={control}
-                  rules={{
-                    required: "Tax value is required",
-                    min: { value: 0, message: "Tax cannot be negative" },
-                  }}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      disabled={disabledStatus}
-                      placeholder={`Enter ${
-                        watch("taxType") === "Percentage"
-                          ? "tax %"
-                          : "flat amount"
-                      }`}
-                      invalid={!!errors.taxValue}
-                      {...field}
-                      onChange={(e) => {
-                        const val = parseFloat(e.target.value) || 0;
-                        field.onChange(val);
-
-                        const total = getValues("finalAmount") || 0;
-                        const taxType = getValues("taxType");
-                        const calculated =
-                          taxType === "Percentage"
-                            ? (total * val) / 100
-                            : parseFloat(val || 0);
-                        setValue("calculatedTax", calculated.toFixed(2));
-                        setValue(
-                          "PfinalAmount",
-                          (total + calculated).toFixed(2)
-                        );
-                      }}
-                    />
-                  )}
-                />
-                {errors.taxValue && (
-                  <FormFeedback>{errors.taxValue.message}</FormFeedback>
-                )}
-              </Col>
-
-              <Col md="4" className="mb-1">
-                <Label for="calculatedTax">Calculated Tax</Label>
-                <Controller
-                  name="calculatedTax"
-                  control={control}
-                  defaultValue={0}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      disabled
-                      placeholder="Calculated tax amount"
-                      {...field}
-                    />
-                  )}
-                />
-              </Col>
-            </Row>
-
             <Col md="12" className="mb-1">
               <Label for="finalInvoice">
                 {remainingAmount > 0
@@ -908,7 +836,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
               </>
             )}
             <Row>
-              {!updateData?.listData?.uid || paymentData?.step == 2 ? (
+              {/* {
+              paymentData?.edit === "event" ?( */}
                 <>
                   <Col check className="mb-2">
                     <Label check>
@@ -935,12 +864,12 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                             ...(AmtDiffernce > 0
                               ? {
                                   min: {
-                                    value: AmtDiffernce,
+                                    value: 0,
                                     message: (
                                       <>
                                         Advance payment must be at least{" "}
                                         <span style={{ fontWeight: "bold" }}>
-                                          ${AmtDiffernce}
+                                          ${AmtDiffernce || 0}
                                         </span>
                                       </>
                                     ),
@@ -1027,7 +956,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     )}
                   </Col>
                 </>
-              ) : null}
+               {/* ) : null}  */}
 
               <Col md="12" className="mb-1">
                 <Label className="form-label" for="hf-picker">
@@ -1991,7 +1920,9 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     >
                       <div className="details-title"> Amount</div>
                       <div className="detail-amt">
-                        <strong>$ {handleFinal - calTax || "0"}</strong>
+                        <strong>
+                          $ {handleFinal - allEventData?.calculatedTax || watch('finalAmount')}
+                        </strong>
                       </div>
                     </li>
 
@@ -2004,7 +1935,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     >
                       <div className="details-title">Tax</div>
                       <div className="detail-amt">
-                        <strong>+ ${watch("calculatedTax")} </strong> <hr />
+                        <strong>+ ${allEventData?.calculatedTax || 0} </strong>{" "}
+                        <hr />
                       </div>
                     </li>
 
@@ -2022,7 +1954,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     </li>
 
                     <li
-                      className="price-detail"
+                      className="price-detail mt-1"
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -2031,18 +1963,18 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     >
                       {verify && (
                         <>
-                          <div className="details-title">Discount Amount</div>
+                          <div className="details-title ">Discount Amount</div>
                           <div className="detail-amt discount-amt text-danger">
                             {isDiscount ? isDiscount : "0"}{" "}
                             {mode === "Percentage"
-                              ? -discountPercentage.toFixed(2)
-                              : -discountAmt}
+                              ? `-$ ${discountPercentage.toFixed(2)}`
+                              : `-$ ${discountAmt}`}
                           </div>
                         </>
                       )}
                     </li>
 
-                    {!AmtDiffernce > 0 && (
+                 
                       <>
                         <li
                           className="price-detail"
@@ -2074,7 +2006,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           </div>
                         </li>
                       </>
-                    )}
+                  
                   </ul>
 
                   <hr />

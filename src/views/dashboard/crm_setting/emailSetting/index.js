@@ -297,7 +297,7 @@ const index = () => {
                       size="sm"
                       className="text-nowrap mb-1"
                     >
-                      <Settings size={14} /> Setting
+                      <Settings size={14} /> Create Setting
                     </Button>
                   </Link>
                 </Col>

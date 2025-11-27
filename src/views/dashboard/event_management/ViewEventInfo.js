@@ -1,5 +1,6 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { useEffect, useState } from "react";
+import { Eye } from "react-feather";
 import {
   Button,
   Card,
@@ -9,7 +10,6 @@ import {
   Col,
   Row,
 } from "reactstrap";
-
 function ViewEventInfo({ paymentHistoryData }) {
   const [documents, setDocuments] = useState([]);
 
@@ -119,14 +119,17 @@ function ViewEventInfo({ paymentHistoryData }) {
             <div className="d-flex flex-wrap gap-2 mt-2">
               {documents.length > 0 ? (
                 documents.map((doc) => (
-                  <Button
-                    key={doc.uid}
-                    color="primary"
-                    size="sm"
-                    onClick={() => handleViewDocument(doc.url)}
-                  >
-                    {doc.name}
-                  </Button>
+                  <>
+                    {" "}
+                    <Button
+                      key={doc.uid}
+                      color="primary"
+                      size="sm"
+                      onClick={() => handleViewDocument(doc.url)}
+                    >
+                      <Eye size={13} /> {doc.name}
+                    </Button>
+                  </>
                 ))
               ) : (
                 <span className="text-muted">No documents available</span>

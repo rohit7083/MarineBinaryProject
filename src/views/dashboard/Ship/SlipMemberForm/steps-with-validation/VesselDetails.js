@@ -28,6 +28,7 @@ const AccountDetails = ({
   setSlipIID,
   fetchLoader,
   slipNameFromDashboard,
+  waitingSlipData,
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
@@ -66,24 +67,13 @@ const AccountDetails = ({
       console.error(error);
     }
   }
-  // useEffect(() => {
-  //   if (slipNameFromDashboard) {
-  //     {
-  //       {
-  //           ;
-  //       }
-  //     }
-  //     reset({
-  //       ...slipNameFromDashboard?.vessel,
-  //       slipName: {
-  //         label: slipNameFromDashboard?.slipName,
-  //         value: slipNameFromDashboard?.id,
-  //         dimensions: slipNameFromDashboard?.dimensions, // include dimensions in slipName if needed
-  //       },
-  //       dimensionVal: slipNameFromDashboard?.dimensions || {},
-  //     });
-  //   }
-  // }, [slipNameFromDashboard, reset]);
+  useEffect(() => {
+    if (waitingSlipData) {
+      reset({vesselName: waitingSlipData.vesselName,
+        vesselRegistrationNumber: waitingSlipData.vesselRegistrationNumber,
+      });
+    }
+  }, [waitingSlipData, reset]);
 
   useEffect(() => {
     if (Object.keys(formData || {})?.length) {

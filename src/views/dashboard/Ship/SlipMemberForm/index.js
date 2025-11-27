@@ -31,6 +31,8 @@ const WizardModern = () => {
   // ** Hooks
   // const { uid } = useParams();
   const location = useLocation();
+  
+  const waitingSlipData = location?.state?.row;
   const slipNameFromDashboard = location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;
   useEffect(() => {
@@ -87,6 +89,7 @@ const WizardModern = () => {
       content: (
         <VesselDetails
           slipNameFromDashboard={slipNameFromDashboard}
+          waitingSlipData={waitingSlipData}
           stepper={stepper}
           type="wizard-modern"
           formData={{ ...formData.vessel }}

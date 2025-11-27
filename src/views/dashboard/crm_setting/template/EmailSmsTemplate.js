@@ -13,7 +13,7 @@ import ShortcodeTable from "./ShortcodeTable";
 const TemplateManager = () => {
   const [shortcodes, setShortcodes] = React.useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [isemptySetting, setIsemptySetting] = useState(false);
   const location = useLocation();
 
   const editTemplate = location?.state?.row;
@@ -256,6 +256,19 @@ const TemplateManager = () => {
       try {
         const res = await useJwt.getTemplateValues();
         console.log(res);
+
+        if (res?.data?.content?.result?.length === 0) {
+          toast.current.show({
+            severity: "error",
+            summary: "Settings Missing",
+            detail: "Setting must be created before creating a template.",
+            life: 3000,
+          });
+          setTimeout(() => {
+            navigate("/crm/email_sms_setting");
+          }, 2500);
+        }
+
         const resData = res?.data?.content?.result?.map((x, i) => {
           return {
             emailSentFromName: x?.siteName,
@@ -264,7 +277,7 @@ const TemplateManager = () => {
             smsPhoneNumber: x?.phoneNumber,
           };
         });
-       
+
         setValue("emailTemplate.senderName", resData[0]?.emailSentFromName);
 
         setValue("emailTemplate.senderEmail", resData[0]?.emailSentFromEmail);

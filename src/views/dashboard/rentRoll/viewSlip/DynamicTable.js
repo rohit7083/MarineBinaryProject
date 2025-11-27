@@ -13,16 +13,16 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CardTitle,
   Col,
   Input,
   Label,
   Row,
   Spinner,
 } from "reactstrap";
-
 // ** Auth
 import useJwt from "@src/auth/jwt/useJwt";
-
+import Summery from "./Summery";
 const DynamicTable = () => {
   // ** States
   const [loading, setLoading] = useState(true);
@@ -36,10 +36,10 @@ const DynamicTable = () => {
   const [paymentMonths, setPaymentMonths] = useState([]);
   const [exporting, setExporting] = useState(false);
 
-  // ** Static First Column
+  const [summeryData, setSummerydata] = useState({});
 
   const indexColumn = {
-    name: "#",
+    name: "Sr",
     width: "70px",
     center: true,
     selector: (row) => row.rowIndex || "",
@@ -53,13 +53,59 @@ const DynamicTable = () => {
 
   const staticColumn = {
     sortable: true,
-    name: "Slip No./ Month",
+    name: "Slip Name",
     minWidth: "225px",
     selector: (row) => row.slipName || row.full_name,
     cell: (row) => (
       <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
         {row.slipName || row.full_name || "-"}
         {row.paidIn && `(${row.paidIn})`}
+      </div>
+    ),
+  };
+
+  const memberNameColumn = {
+    sortable: true,
+    name: "Member Name",
+    minWidth: "225px",
+    selector: (row) => row.memberName,
+    cell: (row) => (
+      <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
+        {row.memberName}
+      </div>
+    ),
+  };
+
+  const LeasrStartColumn = {
+    sortable: true,
+    name: "Lease Start",
+    minWidth: "225px",
+    selector: (row) => row.contractDate,
+    cell: (row) => (
+      <div className={row.contractDate ? "fw-bold border-top" : "fw-bold"}>
+        {row.contractDate}
+      </div>
+    ),
+  };
+  const leaserEndColumn = {
+    sortable: true,
+    name: "Lease End",
+    minWidth: "225px",
+    selector: (row) => row.nextPaymentDate,
+    cell: (row) => (
+      <div className={row.nextPaymentDate ? "fw-bold border-top" : "fw-bold"}>
+        {row.nextPaymentDate}
+      </div>
+    ),
+  };
+  const LeaserTypeColumn = {
+    sortable: true,
+    name: "Lease Type",
+    minWidth: "225px",
+    selector: (row) => row.paidIn,
+    cell: (row) => (
+      <div className={row.paidIn ? "fw-bold border-top" : "fw-bold"}>
+        {row.paidIn}
       </div>
     ),
   };
@@ -288,6 +334,7 @@ const DynamicTable = () => {
         exportData = exportData.filter((item) => {
           const searchFields = [
             item.slipName,
+            item.memberName,
             item.full_name,
             item.totalPaid?.toString(),
             item.expectedAmount?.toString(),
@@ -305,17 +352,20 @@ const DynamicTable = () => {
       // Prepare data for Excel
       const excelData = exportData.map((slip) => {
         const row = {
-          "Slip No./ Month": slip.slipName || slip.full_name || "-",
+          // "Sr": slip.rowIndex || "-",
+          "Slip Name": slip.slipName || slip.full_name || "-",
+          "Member Name": slip.memberName || "-",
+          "Lease Start": slip.contractDate || "-",
+          "Lease End": slip.nextPaymentDate || "-",
+          "Lease Type": slip.paidIn || "-",
         };
 
-        // Add dynamic month columns (in display order - latest first)
         paymentMonths.forEach((month) => {
           const payment = slip.payments?.find((p) => p.paymentMonth === month);
           const amount = payment ? payment.amountPaid : 0;
           row[month] = amount > 0 ? amount : 0;
         });
 
-        // Add static columns
         row["Total Paid"] = slip.totalPaid || 0;
         row["Expected Amount"] = slip.expectedAmount || 0;
         row["Pending Amount"] = slip.pendingAmount || 0;
@@ -394,7 +444,7 @@ const DynamicTable = () => {
       setLoading(true);
       const response = await useJwt.getViewRentRoll();
       console.log("API Response:", response);
-
+      setSummerydata(response?.data || {});
       if (response?.data?.slips && response.data.slips.length > 0) {
         const slips = response.data.slips;
 
@@ -478,6 +528,10 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
+          memberNameColumn,
+          LeasrStartColumn,
+          leaserEndColumn,
+          LeaserTypeColumn,
           ...dynamicColumns,
           totalPaidColumn,
           expectedAmountColumn,
@@ -492,6 +546,10 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
+          memberNameColumn,
+          LeasrStartColumn,
+          leaserEndColumn,
+          LeaserTypeColumn,
           totalPaidColumn,
           expectedAmountColumn,
           pendingAmountColumn,
@@ -507,6 +565,10 @@ const DynamicTable = () => {
       const finalColumns = [
         indexColumn,
         staticColumn,
+        memberNameColumn,
+        LeasrStartColumn,
+        leaserEndColumn,
+        LeaserTypeColumn,
         totalPaidColumn,
         expectedAmountColumn,
         pendingAmountColumn,
@@ -661,13 +723,20 @@ const DynamicTable = () => {
   return (
     <Fragment>
       <Card className="overflow-hidden">
-        <CardHeader className="d-flex justify-content-between align-items-center">
-          <div>
+        <CardHeader className="">
+          <CardTitle>Slip Rental</CardTitle>
+        </CardHeader>
+
+        <Summery summeryData={summeryData} />
+
+        <CardBody>
+          <div className="d-flex justify-content-end align-items-end">
             <Button.Ripple
               color="secondary"
               className="me-2"
               onClick={fetchViewRentRoll}
               disabled={loading}
+              size="sm"
             >
               {loading ? "Refreshing..." : "Refresh"}
             </Button.Ripple>
@@ -675,12 +744,12 @@ const DynamicTable = () => {
               color="primary"
               onClick={exportToExcel}
               disabled={exporting || allData.length === 0}
+              size="sm"
             >
               {exporting ? "Exporting..." : "Export"}
             </Button.Ripple>
           </div>
-        </CardHeader>
-        <CardBody>
+
           {loading ? (
             <LoadingComponent />
           ) : (
@@ -723,6 +792,7 @@ const DynamicTable = () => {
                   />
                 </Col>
               </Row>
+
               <div className="react-dataTable">
                 <DataTable
                   noHeader

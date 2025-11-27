@@ -182,7 +182,6 @@ const RoomCard = (props) => {
       }
     }
   }
-
   return (
     <Card className={`shadow ${isBooked ? "border border-success" : ""}`}>
       <div className="d-flex mt-1 mx-1 justify-content-between align-items-center">

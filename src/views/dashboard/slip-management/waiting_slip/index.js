@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
-import { ChevronDown, Eye, MoreVertical, Plus, Trash } from "react-feather";
+import { Activity, ChevronDown, Eye, MoreVertical, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -100,8 +100,10 @@ const index = () => {
     setRole(value);
   };
 
-  const handlePayment = (row) => {
-    navigate("/search-rooms/previewBooking/roomPayment", { state: { row } });
+  const handleOpen   = (row) => {
+    console.log(row);
+    
+    navigate("/dashboard/slip_memberform", { state: { row } });
   };
 
   const paymentStatusColor = {
@@ -266,13 +268,12 @@ const index = () => {
                     <Calendar className="me-50" size={15} />
                     <span className="align-middle">Extend</span>
                   </DropdownItem>
-                )}
-                {row?.paymentStatus === "Pending" && (
-                  <DropdownItem onClick={() => handlePayment(row)}>
-                    <DollarSign className="me-50" size={15} />{" "}
-                    <span className="align-middle">Payment</span>
-                  </DropdownItem>
                 )} */}
+                  <DropdownItem onClick={() => handleOpen(row)}>
+                    <Activity className="me-50" size={15} />{" "}
+                    <span className="align-middle">Avaliable</span>
+                  </DropdownItem>
+              
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Eye className="me-50" size={15} />{" "}
                   <span className="align-middle">Edit</span>

@@ -1,31 +1,3 @@
-// // ** React Imports
-// import { useState } from "react";
-
-// // ** Third Party Components
-// import { EditorState } from "draft-js";
-// import { Editor } from "react-draft-wysiwyg";
-
-// // ** Reactstrap Imports
-// import { CardTitle } from "reactstrap";
-
-// const EditorControlled = () => {
-//   // ** State
-//   const [value, setValue] = useState(EditorState.createEmpty());
-
-//   return (
-//     <>
-//       <CardTitle tag="h4">Message </CardTitle>
-
-//       <Editor
-//         editorState={value}
-//         onEditorStateChange={(data) => setValue(data)}
-//       />
-//     </>
-//   );
-// };
-
-// export default EditorControlled;
-
 import { ContentState, convertToRaw, EditorState } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
@@ -37,12 +9,12 @@ import { CardTitle } from "reactstrap";
 const EditorCompo = ({ value = "", onChange }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-  // Load initial HTML into editor
   useEffect(() => {
     if (value) {
-      const blocksFromHtml = htmlToDraft(value);
+      const { contentBlocks, entityMap } = htmlToDraft(value);
       const contentState = ContentState.createFromBlockArray(
-        blocksFromHtml.contentBlocks
+        contentBlocks,
+        entityMap
       );
       setEditorState(EditorState.createWithContent(contentState));
     } else {
@@ -52,9 +24,8 @@ const EditorCompo = ({ value = "", onChange }) => {
 
   const handleEditorChange = (state) => {
     setEditorState(state);
-    const rawContent = convertToRaw(state.getCurrentContent());
-    const html = draftToHtml(rawContent);
-    onChange(html); // Emit HTML string to parent (react-hook-form)
+    const raw = convertToRaw(state.getCurrentContent());
+    onChange(draftToHtml(raw));
   };
 
   return (
@@ -71,6 +42,8 @@ const EditorCompo = ({ value = "", onChange }) => {
           minHeight: "200px",
           padding: "10px",
           borderRadius: "5px",
+          direction: "ltr",          // HARD FIX
+          unicodeBidi: "plaintext",  // HARD FIX
         }}
       />
     </>

@@ -16,7 +16,7 @@ import ExtendDate from "../../manage_roomBooking/extendDate/ExtendDate";
 
 const View = () => {
   const location = useLocation();
-  const viewData = location?.state?.row;
+  const viewData = location?.state?.row || location?.state?.info;
   console.log("viewdata", viewData);
 
   /*
@@ -56,6 +56,8 @@ const View = () => {
     control,
     name: "roomUnit",
   });
+
+  console.log("roomunits", roomUnits);
 
   useEffect(() => {
     if (viewData) {

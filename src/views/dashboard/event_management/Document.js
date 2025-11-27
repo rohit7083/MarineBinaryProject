@@ -182,7 +182,6 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
     });
     const currentFile = watch(`${fieldName}.currentFile`);
     const existingFile = watch(`${fieldName}.existingFile`);
-    console.log(existingFile);
 
     const handleRemoveFile = () => {
       setValue(`${fieldName}.currentFile`, null);
@@ -193,7 +192,6 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
     };
 
     const hasFile = currentFile || existingFile;
-    console.log("hasFile", hasFile);
 
     return (
       <Col sm="6" className="mb-4">

@@ -7,13 +7,16 @@ export function combineDateTime(date, time) {
 
 // Convert your backend event to FullCalendar event
 export function normalizeEvent(e) {
-  
   return {
     id: e.id,
     title: e.eventName,
     start: combineDateTime(e.eventStartDate, e.eventStartTime),
     end: combineDateTime(e.eventEndDate, e.eventEndTime),
+    // uid: e.uid,
     allDay: false,
+    eventUID: e?.eventUID,
+    calendarType: e?.calendarType,
+
     extendedProps: {
       calendar: "Business", // CHANGE THIS IF YOU HAVE ACTUAL EVENT TYPES
       description: e.eventDescription,
@@ -22,26 +25,29 @@ export function normalizeEvent(e) {
       guestCount: e.numberOfGuests,
       isRoomRequired: e.isRoomRequired,
       createdBy: e.createdBy?.name,
-      updatedBy: e.updatedBy?.name
-    }
+      updatedBy: e.updatedBy?.name,
+    },
   };
 }
 
-// Convert room booking to FullCalendar event
 export function normalizeRoomBooking(rb) {
-  console.log("rb",rb);
-  
+  console.log("rb", rb);
+
   return {
     id: `room-${rb.id}`,
-    title: `Room Booking (${rb.numberOfGuests} guests)`,
+    title: `Room Booked: (${rb.numberOfGuests} guests)`,
     start: combineDateTime(rb.checkInDate, "00:00:00"),
     end: combineDateTime(rb.checkOutDate, "23:59:59"),
+    eventUID: rb?.eventUID,
+    uid: rb.uid,
+
     allDay: true,
+    calendarType: rb?.calendarType,
     extendedProps: {
       calendar: "Holiday", // or "Rooms" — your choice
       paymentStatus: rb.paymentStatus,
-      specialRequirement: rb.specialRequirement
-    }
+      specialRequirement: rb.specialRequirement,
+    },
   };
 }
 
@@ -87,7 +93,7 @@ export const mockCalendarData = {
 
           paymentStatus: "Partial",
           eventType: "Business",
-          active: true
+          active: true,
         },
 
         {
@@ -127,8 +133,8 @@ export const mockCalendarData = {
 
           paymentStatus: "Pending",
           eventType: "Family",
-          active: true
-        }
+          active: true,
+        },
       ],
 
       roomBookings: [
@@ -152,7 +158,7 @@ export const mockCalendarData = {
 
           isAdvancesPaymnet: false,
           isCancel: false,
-          active: true
+          active: true,
         },
         {
           id: 202,
@@ -175,7 +181,7 @@ export const mockCalendarData = {
           advancePaymentAmout: 2800,
           remainingAmount: 0,
           isCancel: false,
-          active: true
+          active: true,
         },
         {
           id: 203,
@@ -196,7 +202,7 @@ export const mockCalendarData = {
 
           isAdvancesPaymnet: false,
           isCancel: false,
-          active: true
+          active: true,
         },
 
         // Group 2 — Event 102 — 2 Rooms
@@ -215,7 +221,7 @@ export const mockCalendarData = {
           advancePaymentAmout: 3000,
           remainingAmount: 3000,
           isCancel: false,
-          active: true
+          active: true,
         },
         {
           id: 205,
@@ -232,19 +238,18 @@ export const mockCalendarData = {
           advancePaymentAmout: 3500,
           remainingAmount: 0,
           isCancel: false,
-          active: true
-        }
-      ]
-    }
-  }
+          active: true,
+        },
+      ],
+    },
+  },
 };
-
 
 // Build final event array
 
 // export function normalizeCalendarResponse(api) {
 //   console.log(api);
-  
+
 // //   const events = api.content.events.map(normalizeEvent);
 //   const events =api?.content?.events.content.events.map(normalizeEvent);
 //   const rooms = api?.content?.roomBookings.map(normalizeRoomBooking);
@@ -253,14 +258,11 @@ export const mockCalendarData = {
 
 // }
 
-
-
-
 export function normalizeCalendarResponse(api) {
   if (!api || !api.content) return [];
 
   const events = (api.content.events || []).map(normalizeEvent);
-  const rooms  = (api.content.roomBookings || []).map(normalizeRoomBooking);
+  const rooms = (api.content.roomBookings || []).map(normalizeRoomBooking);
 
-  return [...events, ...rooms];
+  return [ ...rooms];
 }

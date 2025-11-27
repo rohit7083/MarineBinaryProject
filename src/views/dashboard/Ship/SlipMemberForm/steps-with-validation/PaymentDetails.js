@@ -181,7 +181,6 @@ const Address = ({
     formState: { errors },
     clearErrors,
   } = useForm({});
-
   const handleYearChange = (selectedYear) => {
     const selectedYearValue = selectedYear ? selectedYear.value : currentYear;
 
@@ -246,32 +245,42 @@ const Address = ({
     field.onChange(value); // Update React Hook Form
   };
 
-  const fetchMarketPrices = async () => {
-    try {
-      const response = await useJwt.getslip();
+const fetchMarketPrices = async () => {
+  try {
+    const response = await useJwt.getslip();
+    console.log(response);
 
-      const { marketAnnualPrice, id, marketMonthlyPrice } =
-        response.data.content.result.find((item) => {
-          // const fakeID = 18;
-          if (item.id === slipIID || sId) {
-            return item;
-          }
-        });
+    const result = response.data.content.result.find((item) =>
+      item.id === (slipIID ?? sId)
+    );
+console.log(sId);
 
-      if (!marketAnnualPrice || !marketMonthlyPrice || !id) {
-        console.log("Not Found Slip Chanrges");
-        return;
-      }
-
-      setSlipDetail({
-        Monthly: marketMonthlyPrice,
-        Annual: marketAnnualPrice,
-        id,
-      });
-    } catch (error) {
-      console.error(error);
+    if (!result) {
+      console.log("Not Found Slip Charges");
+      return;
     }
-  };
+
+    const { marketAnnualPrice, id, marketMonthlyPrice } = result;
+
+    if (
+      marketAnnualPrice === undefined ||
+      marketMonthlyPrice === undefined ||
+      id === undefined
+    ) {
+      console.log("Invalid slip charge data");
+      return;
+    }
+
+    setSlipDetail({
+      Monthly: marketMonthlyPrice,
+      Annual: marketAnnualPrice,
+      id,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const getReadOnlyStyle = () => {
     return {
@@ -465,7 +474,6 @@ const Address = ({
     const combined = iv.concat(encrypted.ciphertext);
     return CryptoJS.enc.Base64.stringify(combined);
   }
-
   const onSubmit = async (data) => {
     const pinArray = data.pin || [];
     // const isValid =
@@ -819,6 +827,8 @@ const Address = ({
                     isClearable
                     options={colourOptions}
                     onChange={(option) => {
+                    
+
                       field.onChange(option); // Ensure field can accept object
                       setValue("rentalPrice", slipDetail[option?.value] || ""); // Avoid undefined errors
                     }}

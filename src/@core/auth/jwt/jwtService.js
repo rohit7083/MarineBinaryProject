@@ -3,7 +3,7 @@ import jwtDefaultConfig from "./jwtDefaultConfig";
 
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
-// axios.defaults.baseURL = "http://192.168.1.3:8000"; //airtel saga
+// axios.defaults.baseURL = "http://192.168.1.16:8000"; //airtel saga
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -31,7 +31,7 @@ export default class JwtService {
         const location = await this.getLocation();
 
         // ** Get IP
-        const ipResponse = await fetch("https://api.ipify.org?format=json");
+        const ipResponse = await fetch("https://api64.ipify.org?format=json");
         const ipData = await ipResponse.json();
         const userIp = ipData.ip;
 
@@ -931,4 +931,15 @@ export default class JwtService {
   getTemplateValues() {
     return axios.get(this.jwtConfig.getTemplateValues);
   }
+
+
+  retriveRoom(uid) {
+    return axios.get(`${this.jwtConfig.retriveRoom}${uid}`);
+  }
+
+    retriveEvent(uid) {
+    return axios.get(`${this.jwtConfig.retriveEvent}${uid}`);
+  }
+
+
 }

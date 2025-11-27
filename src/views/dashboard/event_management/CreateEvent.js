@@ -49,26 +49,26 @@ const CreateEvent = () => {
         />
       ),
     },
-    ...(eventEdit != "event"
-      ? [
-          {
-            id: "Payment",
-            title: "Payment",
-            subtitle: "Payment details",
-            icon: <Settings size={18} />,
-            content: (
-              <Payment
-                updateData={updateData}
-                stepper={stepper}
-                paymentData={paymentData}
-                setFormData={setFormData}
-                // fetchLoader={fetchLoader}
-                allEventData={allEventData}
-              />
-            ),
-          },
-        ]
-      : []),
+    // ..`.(eventEdit != "event"
+    //   ? [`
+    {
+      id: "Payment",
+      title: "Payment",
+      subtitle: "Payment details",
+      icon: <Settings size={18} />,
+      content: (
+        <Payment
+          updateData={updateData}
+          stepper={stepper}
+          paymentData={paymentData}
+          setFormData={setFormData}
+          // fetchLoader={fetchLoader}
+          allEventData={allEventData}
+        />
+      ),
+    },
+    // ]
+    // : []),
 
     {
       id: "Documents",

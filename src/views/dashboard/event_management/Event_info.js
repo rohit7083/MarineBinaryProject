@@ -1,15 +1,17 @@
+import useJwt from "@src/auth/jwt/useJwt";
 import { selectThemeColors } from "@utils";
+import "flatpickr/dist/themes/airbnb.css"; // or 'material_blue.css', 'dark.css', etc.
+import Lottie from "lottie-react";
+import moment from "moment"; // or use native Date methods if preferred
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
-import successAnimation from "../../../assets/images/celebrate.json";
-import successAnimations from "../../../assets/images/Congratulations.json";
-
-import Lottie from "lottie-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Plus } from "react-feather";
-import { Controller, useForm } from "react-hook-form";
+import Flatpickr from "react-flatpickr";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import Select, { components } from "react-select";
 import {
   Button,
@@ -18,7 +20,6 @@ import {
   CardText,
   CardTitle,
   Col,
-  Form,
   FormFeedback,
   Input,
   Label,
@@ -29,17 +30,13 @@ import {
   Row,
   Spinner,
   Table,
+  UncontrolledAlert,
 } from "reactstrap";
-import ViewClient from "./client_Information/ViewClient";
-
-import useJwt from "@src/auth/jwt/useJwt";
-import "flatpickr/dist/themes/airbnb.css"; // or 'material_blue.css', 'dark.css', etc.
-import moment from "moment"; // or use native Date methods if preferred
-import Flatpickr from "react-flatpickr";
-import { useWatch } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { UncontrolledAlert } from "reactstrap";
+import successAnimation from "../../../assets/images/celebrate.json";
+import successAnimations from "../../../assets/images/Congratulations.json";
 import ClientDetaiils from "./client_Information";
+import ViewClient from "./client_Information/ViewClient";
+import PaymentConfirmModal from "./ConfirmPaymentModal";
 import RoomManageModal from "./RoomManageModal";
 
 const EventForm = ({
@@ -50,14 +47,13 @@ const EventForm = ({
   updateData,
 }) => {
   const [modal, setModal] = useState(false);
-
   const toggle = () => setModal(!modal);
   const [EventType, setEventsType] = useState([]);
   const [venueType, setVenueType] = useState([]);
   const [vendor, setVendorType] = useState([]);
   const [additionOFroom, setAdditionOFroom] = useState();
   const toast = useRef(null);
-  // const [open, setOpen] = useState(false);
+  const [disabledStatus, setDisabledStatus] = useState(false);
   const [errMsz, seterrMsz] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -66,6 +62,10 @@ const EventForm = ({
   const [selectMem, setSelectedMember] = useState({});
   const [eventRooms, setEventRooms] = useState([]);
   const [memberAppendData, setMemberAppendData] = useState({});
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirmStatus, setShowConfirmStatus] = useState(false);
+  const [amtDiffer, setAmtDiffer] = useState(0);
+
   const {
     control,
     handleSubmit,
@@ -128,6 +128,15 @@ const EventForm = ({
       color: "flat-success",
     },
   ]);
+
+  useEffect(() => {
+    if (listData?.uid) {
+      setDisabledStatus(true);
+    } else {
+      setDisabledStatus(false);
+    }
+  }, [listData?.uid]);
+
   const fetchExistingMem = async () => {
     setMemberDataLoading(true);
     try {
@@ -155,7 +164,7 @@ const EventForm = ({
 
   useEffect(() => {
     console.log("listData", listData);
-    // {{ }}
+
     if (listData?.Rowdata) {
       const {
         eventEndDate,
@@ -168,6 +177,7 @@ const EventForm = ({
         vendors,
         member,
         totalAmount,
+
         ...rest
       } = listData.Rowdata;
 
@@ -211,6 +221,7 @@ const EventForm = ({
         },
 
         totalAmount: updatedAmount,
+        finalPayble: totalAmount,
       });
     }
   }, [listData?.Rowdata]);
@@ -234,7 +245,7 @@ const EventForm = ({
     try {
       const { data } = await useJwt.getAllVenue();
       const { content } = data;
-      // {{ }}
+
       const venueTypeNames = content?.result?.map((x) => ({
         label: x.venueName,
         value: x.uid,
@@ -288,13 +299,18 @@ const EventForm = ({
     }
   }, [eventRooms?.roomSearchUid]);
 
+  const watchTaxType = watch("taxType");
+  const watchtaxValue = watch("taxValue");
+  const watchcalculatedTax = watch("calculatedTax");
+  const watchtotalAmount = watch("totalAmount");
+  const watchfinalPayble = watch("finalPayble");
+
   const onSubmit = async (data) => {
-    console.log("update Data", data);
-
+ 
     seterrMsz("");
-
-    const isOtherVenue = data.venue?.value === "other";
-    const isOtherEventType = data.eventType?.value === "other";
+    console.log("event OnSubmit Data", data);
+    const isOtherVenue = data?.venue?.value === "other";
+    const isOtherEventType = data?.eventType?.value === "other";
 
     const venuePayload = isOtherVenue
       ? {
@@ -312,21 +328,21 @@ const EventForm = ({
           postCode: data.postCode,
           address: data.address,
         }
-      : { uid: data.venue.value };
+      : { uid: data?.venue?.value };
 
     const memberPayload = selectMem?.uid
       ? { uid: selectMem.uid }
       : { ...memberAppendData };
 
-    const eventType = isOtherEventType
-      ? { uid: null, eventTypeName: data.eventTypeName }
-      : { uid: data.eventType.value };
+    const eventTypePayload = isOtherEventType
+      ? { uid: null, eventTypeName: data?.eventTypeName }
+      : { uid: data?.eventType?.value };
 
     const formatDate = (date, fmt) => (date ? moment(date).format(fmt) : null);
 
     const payload = {
       ...data,
-      eventType,
+      eventType: eventTypePayload,
       eventStartDate: formatDate(data.startDateTime, "YYYY-MM-DD"),
       eventEndDate: formatDate(data.endDateTime, "YYYY-MM-DD"),
       eventStartTime: formatDate(data.startDateTime, "HH:mm"),
@@ -334,6 +350,10 @@ const EventForm = ({
       vendors: data.vendors?.map((v) => ({ uid: v.value })),
       venue: venuePayload,
       member: memberPayload,
+      taxType: watchTaxType,
+      taxValue: watchtaxValue,
+      calculatedTax: watchcalculatedTax,
+      totalAmount: watchfinalPayble,
       isRecurringEvent: !!data.isRecurringEvent,
       isExtraStaff: !!data.isExtraStaff,
       isRoomRequired: !!data.isRoomRequired,
@@ -354,21 +374,35 @@ const EventForm = ({
       }),
     };
 
-    const allData = {
-      ...data,
-      ...payload,
-      ...memberPayload,
-      ...memberAppendData,
-      ...selectMem,
-      vendorN: { selectedVendors },
-      ...isVenue,
-      eventTypes: seletctType?.label,
-    };
+    const adv = Number(data?.advancePaymentAmout) || 0;
+    const final = Number(data?.finalPayble) || 0;
 
-    const AmtDiffernce =
-      data?.totalAmount - updateData?.listData?.Rowdata?.totalAmount;
-    console.log("event doffer", AmtDiffernce);
-    console.log(data);
+    let diff = 0;
+    const alreadyPaid = listData?.Rowdata?.payments || [];
+    const totalPaidAmount = alreadyPaid?.reduce((acc, curr) => {
+      const value = Number(curr?.finalPayment);
+      if (isNaN(value)) return acc;
+      return acc + value;
+    }, 0);
+    console.log(totalPaidAmount);
+    // Determine user action
+    if (totalPaidAmount >= final) {
+      diff = final - totalPaidAmount;
+    } else if (final >= totalPaidAmount) {
+      diff = final - totalPaidAmount;
+    } else if (alreadyPaid?.length == 0) {
+      diff = 0;
+    } else if (data?.payment?.finalPayment == 0) {
+      diff = 0;
+    } else {
+      diff = 0;
+      console.log("not happend anything ");
+    }
+    // Update state correctly
+    setAmtDiffer(diff);
+
+    // Prefer logging after state update using useEffect
+    console.log("calculated:", { adv, final, diff });
 
     const eventUpdatePayload = {
       "event.uid": listData?.uid,
@@ -378,28 +412,29 @@ const EventForm = ({
       "event.eventEndDate": formatDate(data.endDateTime, "YYYY-MM-DD"),
       "event.eventStartTime": formatDate(data.startDateTime, "HH:mm"),
       "event.eventEndTime": formatDate(data.endDateTime, "HH:mm"),
-      "event.amount": data?.amount,
+      "event.amount": data?.totalAmount,
       "event.isExtraStaff": data?.isExtraStaff,
       "event.extraNoOfStaff": data?.extraNoOfStaff,
       "event.extraNoOfStaffAmount": data?.extraNoOfStaffAmount,
-      "event.totalAmount": data?.totalAmount,
+      "event.totalAmount": data?.finalPayble,
       "event.isRecurringEvent": data?.isRecurringEvent,
       "event.venue.uid": data?.venue?.value,
       "event.eventType.uid": data?.eventType?.value,
       "event.member.uid": data?.selectedMember?.value,
-      "payment.finalPayment": AmtDiffernce,
+      'event.calculatedTax': watchcalculatedTax,
+
+      "payment.finalPayment":
+        typeof data?.payment?.finalPayment === "number"
+          ? data.payment.finalPayment
+          : diff,
+      // "event.isAdvancesPaymnet":;
     };
+    console.log("eventUpdatePayload", eventUpdatePayload);
 
     const formData = new FormData();
-    if (displayVendors) {
-      displayVendors.forEach((v, index) => {
-        formData.append(`event.vendors[${index}].uid`, v.uid || v.value);
-      });
-    }
-
-    //     (Array.isArray(displayVendors) ? displayVendors : []).map((v, index) => {
-    //   formData.append(`event.vendors[${index}].uid`, v.uid || v.value);
-    // });
+    displayVendors?.forEach((v, idx) => {
+      formData.append(`event.vendors[${idx}].uid`, v.uid || v.value);
+    });
 
     Object.entries(eventUpdatePayload).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -407,11 +442,17 @@ const EventForm = ({
       }
     });
 
-    if (AmtDiffernce === 0 || AmtDiffernce < 0) {
+    const paymentValue =
+      data?.payment?.finalPayment === undefined ||
+      data?.payment?.finalPayment === null
+        ? diff
+        : data.payment.finalPayment;
+
+    if (listData?.uid && paymentValue <= 0) {
       setLoading(true);
       try {
         const res = await useJwt.UpdateEventAndPayment(formData);
-        console.log(res);
+
         if (res?.data?.refundAmount > 0) {
           setModal(true);
           setTimeout(() => {
@@ -428,48 +469,61 @@ const EventForm = ({
 
           setTimeout(() => navigate("/event_index"), 1500);
         }
-      } catch (error) {
-        console.log(error);
-        seterrMsz(error.response?.data?.content || "Something went wrong!");
+      } catch (err) {
+        seterrMsz(err.response?.data?.content || "Something went wrong!");
       } finally {
         setLoading(false);
+        setShowConfirmStatus(null); // Reset for next submission
       }
+      return;
     }
 
-    if (listData?.uid && AmtDiffernce > 0) {
+    if (listData?.uid && (diff > 0 || data?.payment?.finalPayment > 0)) {
       stepper.next();
-      setUpdateData((prev) => ({
-        ...prev,
-        data,
-      }));
-    } else {
-      if (!listData?.uid) {
-        try {
-          setLoading(true);
-          const res = await useJwt.createEvent(payload);
+      setUpdateData((prev) => ({ ...prev, data }));
+      setShowConfirmStatus(null); // Reset for next submission
+      return;
+    }
 
-          setAllEventData({
-            ...allData,
-            eventId: res?.data?.id,
-            memberId: selectMem?.id,
-            eventUid: res?.data?.uid,
-          });
+    if (!listData?.uid) {
+      setLoading(true);
+      try {
+        const res = await useJwt.createEvent(payload);
 
-          toast.current.show({
-            severity: "success",
-            summary: "Event Created Successfully",
-            detail: "Event Details Created Successfully.",
-            life: 2000,
-          });
+        setAllEventData({
+          ...data,
+          ...payload,
+          ...memberPayload,
+          ...memberAppendData,
+          ...selectMem,
+          vendorN: { selectedVendors },
+          ...isVenue,
+          eventTypes: seletctType?.label,
+          eventId: res?.data?.id,
+          memberId: selectMem?.id,
+          eventUid: res?.data?.uid,
+        });
 
-          setTimeout(() => stepper.next(), 1500);
-        } catch (error) {
-          console.error(error);
-          const msg = error.response?.data?.content || "Something went wrong!";
-          seterrMsz((prev) => (prev !== msg ? msg : prev + " "));
-        } finally {
-          setLoading(false);
+        toast.current.show({
+          severity: "success",
+          summary: "Event Created Successfully",
+          detail: "Event Details Created Successfully.",
+          life: 2000,
+        });
+if (payload?.payment?.finalPayment > 0 ) {
+  
+
+        setTimeout(() => stepper.next(), 1500);
         }
+        else{
+          setTimeout(() => navigate('/event_index'), 1500);
+        }
+      } catch (err) {
+        const msg = err.response?.data?.content || "Something went wrong!";
+        seterrMsz((prev) => (prev !== msg ? msg : prev + " "));
+      } finally {
+        setLoading(false);
+        setShowConfirmStatus(null); // Reset for next submission
       }
     }
   };
@@ -570,6 +624,29 @@ const EventForm = ({
     }
   }, [setValue, eventRooms?.roomSearchUid]);
 
+  useEffect(() => {
+    const updateAmountWithTax =
+      Number(watch("totalAmount")) + Number(watch("calculatedTax"));
+    setValue("finalPayble", updateAmountWithTax);
+  }, [watch("totalAmount")]);
+
+  useEffect(() => {
+    const val = parseFloat(watch("taxValue")) || 0;
+    const total = parseFloat(watch("totalAmount")) || 0;
+    const taxType = watch("taxType");
+
+    let calculated = 0;
+
+    if (taxType === "Percentage") {
+      calculated = (total * val) / 100;
+    } else {
+      calculated = val;
+    }
+
+    setValue("calculatedTax", calculated.toFixed(2));
+    setValue("finalPayble", (total + calculated).toFixed(2));
+  }, [watch("taxValue"), watch("taxType"), watch("totalAmount"), setValue]);
+
   const isRoomRequired = watch("isRoomRequired");
 
   const displayVendors =
@@ -602,33 +679,27 @@ const EventForm = ({
 
   const wstartDateTime = watch("startDateTime");
   const endDate = watch("endDateTime");
-  console.log(wstartDateTime);
 
   useEffect(() => {
     if (!eventRooms?.bookedRoom || eventRooms?.bookedRoom?.length === 0) {
       setValue("isRoomRequired", false);
     }
   }, [eventRooms?.bookedRoom, setValue]);
-  4;
 
-  // const toggleRoomModal=()=>{
-  //   const currentState=showModal;
-  //   if(currentState){
-  //     setValue('isRoomRequired',false);
-  //   }
-  //   setShowModal(!showModal)
-  // }
-
-  // useEffect(()=>{
-
-  //   if(watch('isRoomRequired')){
-  //     setShowModal(true)
-  //   }
-
-  // },[watch('isRoomRequired')])
+  const handleConfirm = () => {
+    handleSubmit(onSubmit)();
+  };
 
   return (
     <>
+      <PaymentConfirmModal
+        isOpen={showConfirm}
+        toggle={() => setShowConfirm(false)}
+        onConfirm={handleConfirm}
+        setValue={setValue}
+        finalValuesPayment={watch("finalPayble")}
+      />
+
       <Modal isOpen={modal} toggle={toggle} centered size="sm">
         <ModalHeader
           toggle={toggle}
@@ -639,7 +710,8 @@ const EventForm = ({
             fontSize: "1.25rem",
           }}
         >
-          🎉 Refund Initiated
+          🎉 Refund Initiated -{" "}
+          <strong>${Math.abs(amtDiffer).toFixed(2)}</strong>
         </ModalHeader>
 
         <ModalBody style={{ textAlign: "center", paddingTop: 0 }}>
@@ -712,7 +784,7 @@ const EventForm = ({
           </UncontrolledAlert>
         </React.Fragment>
       )}
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Row>
           <Col md={6} className="mb-1">
             <Label for="eventName">Event Name</Label>
@@ -834,6 +906,7 @@ const EventForm = ({
                   }`}
                   onChange={(date) => field.onChange(date[0])}
                   options={{
+                    minDate: "today",
                     maxDate: endDate,
                   }}
                 />
@@ -864,7 +937,7 @@ const EventForm = ({
                   }`}
                   onChange={(date) => field.onChange(date[0])}
                   options={{
-                    minDate: wstartDateTime,
+                    minDate: wstartDateTime || "today",
                   }}
                 />
               )}
@@ -1042,7 +1115,7 @@ const EventForm = ({
                     disabled={
                       eventRooms?.bookedRoom?.length > 0 || !!listData?.uid
                     }
-                    onchange={(e) => field.onChange(e.target.checked)}
+                    onChange={(e) => field.onChange(e.target.checked)} // ✅ FIXED
                   />
                 );
               }}
@@ -1722,79 +1795,170 @@ const EventForm = ({
             selectedMember={watch("selectedMember")}
           />
         )}
-        <Row>
-          {" "}
-          <Col sm="6" className="mb-1">
-            <Label for="totalPrice">Currently Payable Amount</Label>
-            <Controller
-              name="totalAmount"
-              control={control}
-              defaultValue=""
-              rules={{
-                required: "total Price is required",
-                pattern: {
-                  value: /^[0-9]+$/,
-                  message: " Total price must be a number",
-                },
-              }}
-              render={({ field }) => (
-                <Input
-                  id="totalAmount"
-                  type="number"
-                  placeholder="Enter Total price"
-                  invalid={!!errors.totalAmount}
-                  {...field}
-                  disabled={!!listData?.uid}
-                />
-              )}
-            />
-            {errors.totalAmount && (
-              <FormFeedback>{errors.totalAmount.message}</FormFeedback>
-            )}
-          </Col>
-          {/* <Col sm="6" className="mb-1">
-          <Label for="totalPrice">Total Cost</Label>
+
+        <Col sm="12" className="mb-1">
+          <Label for="totalPrice">Final Amount</Label>
           <Controller
-            name="totalcost"
+            name="totalAmount"
             control={control}
             defaultValue=""
-            // rules={{
-            //   required: "total Price is required",
-            //   pattern: {
-            //     value: /^[0-9]+$/,
-            //     message: " Total price must be a number",
-            //   },
-            // }}
+            rules={{
+              required: "total Price is required",
+              pattern: {
+                value: /^[0-9]+$/,
+                message: " Total price must be a number",
+              },
+            }}
             render={({ field }) => (
               <Input
-                id="totalcost"
+                id="totalAmount"
                 type="number"
                 placeholder="Enter Total price"
-                invalid={!!errors.totalcost}
-                disabled={true}
+                invalid={!!errors.totalAmount}
                 {...field}
+                disabled={!!listData?.uid || true}
               />
             )}
           />
-          {errors.totalcost && (
-            <FormFeedback>{errors.totalcost.message}</FormFeedback>
+          {errors.totalAmount && (
+            <FormFeedback>{errors.totalAmount.message}</FormFeedback>
           )}
-        </Col> */}
+        </Col>
+        <Row className={"mb-2 border"} style={{ margin: "2px" }}>
+          <Col md="12" className="mb-1">
+            <div className="content-header">
+              <h5 className="mb-0 my-2">Tax Details</h5>
+              <small>Specify tax type and amount to auto-calculate total</small>
+            </div>
+          </Col>
+          <Col md="4" className="mb-1">
+            <Label for="taxType">Tax Type</Label>
+            <Controller
+              name="taxType"
+              control={control}
+              defaultValue="Percentage"
+              render={({ field }) => (
+                <Input
+                  type="text"
+                  id="taxType"
+                  readOnly
+                  disabled
+                  value="Percentage"
+                  {...field}
+                />
+              )}
+            />
+          </Col>
+
+          <Col md="4" className="mb-1">
+            <Label for="taxValue">
+              Tax Value ({watch("taxType") === "Percentage" ? "%" : "Flat"})
+              <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Controller
+              name="taxValue"
+              control={control}
+              rules={{
+                required: "Tax value is required",
+                min: { value: 0, message: "Tax cannot be negative" },
+              }}
+              render={({ field }) => (
+                <Input
+                  type="number"
+                  disabled={disabledStatus}
+                  placeholder={`Enter ${
+                    watch("taxType") === "Percentage" ? "tax %" : "flat amount"
+                  }`}
+                  invalid={!!errors.taxValue}
+                  {...field}
+                />
+              )}
+            />
+
+            {errors.taxValue && (
+              <FormFeedback>{errors.taxValue.message}</FormFeedback>
+            )}
+          </Col>
+
+          <Col md="4" className="mb-1">
+            <Label for="calculatedTax">Calculated Tax</Label>
+            <Controller
+              name="calculatedTax"
+              control={control}
+              defaultValue={0}
+              render={({ field }) => (
+                <Input
+                  type="number"
+                  disabled
+                  placeholder="Calculated tax amount"
+                  {...field}
+                />
+              )}
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          {" "}
+          <Col sm="6" className="mb-1">
+            <Label for="finalPayble"> Payable Amount (Incl. Tax)</Label>
+            <Controller
+              name="finalPayble"
+              control={control}
+              defaultValue={""}
+              rules={{
+                required: "total Price is required",
+              }}
+              render={({ field }) => (
+                <Input
+                  id="finalPayble"
+                  type="number"
+                  placeholder="Enter Total price"
+                  invalid={!!errors.finalPayble}
+                  {...field}
+                  disabled={!!listData?.uid || true}
+                />
+              )}
+            />
+            {errors.finalPayble && (
+              <FormFeedback>{errors.finalPayble.message}</FormFeedback>
+            )}
+          </Col>
         </Row>
 
         <div className="d-flex justify-content-end">
-          <Button disabled={loading} color="primary" type="submit">
-            {loading ? (
-              <>
-                <span>Loading.. </span>
-                <Spinner size="sm" />{" "}
-              </>
+          <div className="d-flex justify-content-end">
+            {listData?.Rowdata?.advancePaymentAmout ||
+            listData?.Rowdata?.payments[0]?.finalPayment ? (
+              <Button disabled={loading} color="primary" type="submit">
+                {loading ? (
+                  <>
+                    <span>Loading.. </span>
+                    <Spinner size="sm" />
+                  </>
+                ) : (
+                  "Next Dark"
+                )}
+              </Button>
             ) : (
-              "Next"
+              <Button
+                type="button"
+                color="primary"
+                onClick={() => setShowConfirm(true)}
+              >
+                {loading ? (
+                  <>
+                    <span>Loading.. </span>
+                    <Spinner size="sm" />
+                  </>
+                ) : (
+                  "Next ok"
+                )}
+              </Button>
             )}
-          </Button>
+          </div>
         </div>
-      </Form>
+      </form>
 
       {!listData?.uid && (
         <>

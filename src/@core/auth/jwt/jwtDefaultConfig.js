@@ -266,4 +266,9 @@ export default {
   // getAllCalender
   getCalender: "/calender/getAll",
   getTemplateValues:'/emailSmsSetting',
+
+  //retrive Room and Event Booking Details
+
+  retriveRoom:'/booking/',
+  retriveEvent:'/events/'
 };

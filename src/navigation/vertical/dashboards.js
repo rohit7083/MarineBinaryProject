@@ -184,12 +184,12 @@ export default [
         //   layout: "blank",
         // },
       },
-      {
-        id: "Virtual Terminal",
-        title: "Virtual Terminal",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/pos/virtualTerminal",
-      },
+      // {
+      //   id: "Virtual Terminal",
+      //   title: "Virtual Terminal",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/pos/virtualTerminal",
+      // },
       {
         id: "Cusstomer manage",
         title: "Client Hub",
@@ -382,18 +382,18 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/accounting/reports",
       },
-      // {
-      //   id: "Sales",
-      //   title: "Sales",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/accounting/sales",
-      // },
-      //   {
-      //   id: "Purchase ",
-      //   title: "Purchase ",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/accounting/purchase",
-      // },
+      {
+        id: "Sales",
+        title: "Sales",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/sales",
+      },
+        {
+        id: "Purchase ",
+        title: "Purchase ",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/purchase",
+      },
     ],
   },
 
