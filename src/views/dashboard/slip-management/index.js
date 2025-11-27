@@ -114,7 +114,7 @@ const TabsCentered = () => {
         </TabPane>
 
         <TabPane tabId="4">
-          <OtherPayment />
+          <OtherPayment  SlipData={SlipData}/>
         </TabPane>
         <TabPane tabId="5">
           <ViewDocuments slipData={SlipData} />

@@ -6,6 +6,7 @@ import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
+import Summery from "../viewSlip/Summery";
 
 // ** Reactstrap Imports
 import {
@@ -13,6 +14,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  CardTitle,
   Col,
   Input,
   Label,
@@ -35,9 +37,10 @@ const DynamicTable = () => {
   const [total, setTotal] = useState(0);
   const [paymentMonths, setPaymentMonths] = useState([]);
   const [exporting, setExporting] = useState(false);
+  const [summeryData, setSummerydata] = useState({});
 
-   const indexColumn = {
-    name: "#",
+  const indexColumn = {
+    name: "Sr",
     width: "70px",
     center: true,
     selector: (row) => row.rowIndex || "",
@@ -51,13 +54,115 @@ const DynamicTable = () => {
   // ** Static First Column
   const staticColumn = {
     sortable: true,
-    name: "Slip No./ Month",
+    name: "Slip Name",
     minWidth: "225px",
     selector: (row) => row.slipName || row.full_name,
     cell: (row) => (
       <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
         {row.slipName || row.full_name || "-"}
-        {row.paidIn && `(${row.paidIn})`}
+      </div>
+    ),
+  };
+
+  const slipTypeColumn = {
+    sortable: true,
+    name: "Slip Type",
+    minWidth: "225px",
+    selector: (row) => row.slipType,
+    cell: (row) => (
+      <div className={row.slipType ? "fw-bold border-top" : "fw-bold"}>
+        {row.slipType || "-"}
+      </div>
+    ),
+  };
+
+  const memberNameColumn = {
+    sortable: true,
+    name: "Member Name",
+    minWidth: "225px",
+    selector: (row) => row.memberName,
+    cell: (row) => (
+      <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
+        {row.memberName || "-"}
+      </div>
+    ),
+  };
+
+  const LeasrStartColumn = {
+    sortable: true,
+    name: "Lease Start",
+    minWidth: "150px",
+    selector: (row) => row.contractDate,
+    cell: (row) => (
+      <div className={row.contractDate ? "fw-bold border-top" : "fw-bold"}>
+        {row.contractDate || "-"}
+      </div>
+    ),
+  };
+  const leaserEndColumn = {
+    sortable: true,
+    name: "Lease End",
+    minWidth: "150px",
+    selector: (row) => row.nextPaymentDate,
+    cell: (row) => (
+      <div className={row.nextPaymentDate ? "fw-bold border-top" : "fw-bold"}>
+        {row.nextPaymentDate || "-"}
+      </div>
+    ),
+  };
+  const LeaserTypeColumn = {
+    sortable: true,
+    name: "Lease Type",
+    minWidth: "225px",
+    selector: (row) => row.paidIn,
+    cell: (row) => (
+      <div className={row.paidIn ? "fw-bold border-top" : "fw-bold"}>
+        {row.paidIn || "-"}
+      </div>
+    ),
+  };
+
+  const rentalPriceColumn = {
+    sortable: true,
+    name: "Rental Price",
+    minWidth: "225px",
+    selector: (row) => row.rentalPrice,
+    cell: (row) => (
+      <div className={row.rentalPrice ? "fw-bold border-top" : "fw-bold"}>
+        {row.rentalPrice || "-"}
+      </div>
+    ),
+  };
+  const marketRentalColumn = {
+    sortable: true,
+    name: "Market Rental",
+    minWidth: "225px",
+    selector: (row) => row.marketRent,
+    cell: (row) => (
+      <div className={row.marketRent ? "fw-bold border-top" : "fw-bold"}>
+        {row.marketRent || "-"}
+      </div>
+    ),
+  };
+  const rentGapColumn = {
+    sortable: true,
+    name: "Rent Gap",
+    minWidth: "225px",
+    selector: (row) => row.rentGap,
+    cell: (row) => (
+      <div className={row.rentGap ? "fw-bold border-top" : "fw-bold"}>
+        {row.rentGap || "-"}
+      </div>
+    ),
+  };
+  const depositeColumn = {
+    sortable: true,
+    name: "Deposite",
+    minWidth: "225px",
+    selector: (row) => row.deposite,
+    cell: (row) => (
+      <div className={row.deposite ? "fw-bold border-top" : "fw-bold"}>
+        {row.deposite || "-"}
       </div>
     ),
   };
@@ -360,6 +465,7 @@ const DynamicTable = () => {
       setLoading(true);
       const response = await useJwt.getInversionRentRoll();
       console.log("API Response:", response);
+      setSummerydata(response?.data || {});
 
       if (response?.data?.slips && response.data.slips.length > 0) {
         const slips = response.data.slips;
@@ -441,6 +547,16 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
+          slipTypeColumn,
+          memberNameColumn,
+          LeasrStartColumn,
+          leaserEndColumn,
+
+          rentalPriceColumn,
+          marketRentalColumn,
+          rentGapColumn,
+          depositeColumn,
+          LeaserTypeColumn,
           ...dynamicColumns,
           totalPaidColumn,
           expectedAmountColumn,
@@ -455,6 +571,16 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
+          slipTypeColumn,
+          memberNameColumn,
+          LeasrStartColumn,
+          leaserEndColumn,
+
+          rentalPriceColumn,
+          marketRentalColumn,
+          rentGapColumn,
+          depositeColumn,
+          LeaserTypeColumn,
           totalPaidColumn,
           expectedAmountColumn,
           pendingAmountColumn,
@@ -470,6 +596,16 @@ const DynamicTable = () => {
       const finalColumns = [
         indexColumn,
         staticColumn,
+        slipTypeColumn,
+        memberNameColumn,
+        LeasrStartColumn,
+        leaserEndColumn,
+
+        rentalPriceColumn,
+        marketRentalColumn,
+        rentGapColumn,
+        depositeColumn,
+        LeaserTypeColumn,
         totalPaidColumn,
         expectedAmountColumn,
         pendingAmountColumn,
@@ -484,51 +620,51 @@ const DynamicTable = () => {
   };
 
   // ** Function to apply filters and pagination
-const applyFiltersAndPagination = (data = allData) => {
-  let filteredData = [...data];
+  const applyFiltersAndPagination = (data = allData) => {
+    let filteredData = [...data];
 
-  // Apply search filter
-  if (searchValue) {
-    filteredData = filteredData.filter((item) => {
-      const searchFields = [
-        item.slipName,
-        item.full_name,
-        item.totalPaid?.toString(),
-        item.expectedAmount?.toString(),
-        item.pendingAmount?.toString(),
-        ...(item.payments || []).map((p) => p.paymentMonth),
-      ];
-      return searchFields.some(
-        (field) =>
-          field &&
-          field.toString().toLowerCase().includes(searchValue.toLowerCase())
-      );
-    });
-  }
+    // Apply search filter
+    if (searchValue) {
+      filteredData = filteredData.filter((item) => {
+        const searchFields = [
+          item.slipName,
+          item.full_name,
+          item.totalPaid?.toString(),
+          item.expectedAmount?.toString(),
+          item.pendingAmount?.toString(),
+          ...(item.payments || []).map((p) => p.paymentMonth),
+        ];
+        return searchFields.some(
+          (field) =>
+            field &&
+            field.toString().toLowerCase().includes(searchValue.toLowerCase())
+        );
+      });
+    }
 
-  // Update total count
-  setTotal(filteredData.length);
+    // Update total count
+    setTotal(filteredData.length);
 
-  // Pagination slice
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
+    // Pagination slice
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
 
-  let currentPageData = filteredData.slice(startIndex, endIndex);
+    let currentPageData = filteredData.slice(startIndex, endIndex);
 
-  // 🔥 Assign index numbers
-  currentPageData = currentPageData.map((item, idx) => ({
-    ...item,
-    rowIndex: startIndex + idx + 1,
-  }));
+    // 🔥 Assign index numbers
+    currentPageData = currentPageData.map((item, idx) => ({
+      ...item,
+      rowIndex: startIndex + idx + 1,
+    }));
 
-  // Add month total row
-  if (currentPageData.length > 0) {
-    const monthTotalRow = createCurrentPageTotalRow(currentPageData);
-    return [...currentPageData, monthTotalRow];
-  }
+    // Add month total row
+    if (currentPageData.length > 0) {
+      const monthTotalRow = createCurrentPageTotalRow(currentPageData);
+      return [...currentPageData, monthTotalRow];
+    }
 
-  return currentPageData;
-};
+    return currentPageData;
+  };
 
   // ** Function to handle filter
   const handleFilter = (e) => {
@@ -536,9 +672,8 @@ const applyFiltersAndPagination = (data = allData) => {
     setSearchValue(value);
     setCurrentPage(1); // Reset to first page when searching
 
-  const filteredData = applyFiltersAndPagination(allData);
-setTableData(filteredData);
-
+    const filteredData = applyFiltersAndPagination(allData);
+    setTableData(filteredData);
   };
 
   // ** Function to handle Pagination
@@ -551,12 +686,11 @@ setTableData(filteredData);
   };
 
   // ** Function to handle per page
- const handlePerPage = (e) => {
-  const value = parseInt(e.target.value);
-  setRowsPerPage(value);
-  setCurrentPage(1);
-};
-
+  const handlePerPage = (e) => {
+    const value = parseInt(e.target.value);
+    setRowsPerPage(value);
+    setCurrentPage(1);
+  };
 
   // ** Custom Pagination
   const CustomPagination = () => {
@@ -594,14 +728,14 @@ setTableData(filteredData);
   }, []);
 
   // ** useEffect to handle data changes
- useEffect(() => {
-  if (allData.length > 0) {
-    const filteredData = applyFiltersAndPagination();
-    setTableData(filteredData);
-  } else {
-    setTableData([]);
-  }
-}, [currentPage, rowsPerPage, searchValue, allData, paymentMonths]);
+  useEffect(() => {
+    if (allData.length > 0) {
+      const filteredData = applyFiltersAndPagination();
+      setTableData(filteredData);
+    } else {
+      setTableData([]);
+    }
+  }, [currentPage, rowsPerPage, searchValue, allData, paymentMonths]);
 
   // ** Custom Loading Component
   const LoadingComponent = () => (
@@ -621,13 +755,19 @@ setTableData(filteredData);
   return (
     <Fragment>
       <Card className="overflow-hidden">
-        <CardHeader className="d-flex justify-content-between align-items-center">
-          <div>
+        <CardHeader className="">
+          <CardTitle>Inverse Rent Roll</CardTitle>
+        </CardHeader>
+        <Summery summeryData={summeryData} />
+
+        <CardBody>
+          <div className="d-flex justify-content-end align-items-end">
             <Button.Ripple
               color="secondary"
               className="me-2"
               onClick={fetchViewRentRoll}
               disabled={loading}
+              size="sm"
             >
               {loading ? "Refreshing..." : "Refresh"}
             </Button.Ripple>
@@ -635,12 +775,11 @@ setTableData(filteredData);
               color="primary"
               onClick={exportToExcel}
               disabled={exporting || allData.length === 0}
+              size="sm"
             >
               {exporting ? "Exporting..." : "Export"}
             </Button.Ripple>
           </div>
-        </CardHeader>
-        <CardBody>
           {loading ? (
             <LoadingComponent />
           ) : (
@@ -687,8 +826,7 @@ setTableData(filteredData);
                 <DataTable
                   noHeader
                   pagination
-                                    paginationServer // <-- CRITICAL
-
+                  paginationServer // <-- CRITICAL
                   responsive
                   className="react-dataTable"
                   columns={columns}

@@ -30,7 +30,7 @@ const DynamicTable = () => {
   const [tableData, setTableData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
   const [total, setTotal] = useState(0);
   const [paymentMonths, setPaymentMonths] = useState([]);
@@ -59,7 +59,18 @@ const DynamicTable = () => {
     cell: (row) => (
       <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
         {row.slipName || row.full_name || "-"}
-        {row.paidIn && `(${row.paidIn})`}
+      </div>
+    ),
+  };
+
+  const slipTypeColumn = {
+    sortable: true,
+    name: "Slip Type",
+    minWidth: "225px",
+    selector: (row) => row.slipType,
+    cell: (row) => (
+      <div className={row.slipType ? "fw-bold border-top" : "fw-bold"}>
+        {row.slipType || "-"}
       </div>
     ),
   };
@@ -71,7 +82,7 @@ const DynamicTable = () => {
     selector: (row) => row.memberName,
     cell: (row) => (
       <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
-        {row.memberName}
+        {row.memberName || "-"}
       </div>
     ),
   };
@@ -79,22 +90,22 @@ const DynamicTable = () => {
   const LeasrStartColumn = {
     sortable: true,
     name: "Lease Start",
-    minWidth: "225px",
+    minWidth: "150px",
     selector: (row) => row.contractDate,
     cell: (row) => (
       <div className={row.contractDate ? "fw-bold border-top" : "fw-bold"}>
-        {row.contractDate}
+        {row.contractDate || "-"}
       </div>
     ),
   };
   const leaserEndColumn = {
     sortable: true,
     name: "Lease End",
-    minWidth: "225px",
+    minWidth: "150px",
     selector: (row) => row.nextPaymentDate,
     cell: (row) => (
       <div className={row.nextPaymentDate ? "fw-bold border-top" : "fw-bold"}>
-        {row.nextPaymentDate}
+        {row.nextPaymentDate || "-"}
       </div>
     ),
   };
@@ -105,7 +116,52 @@ const DynamicTable = () => {
     selector: (row) => row.paidIn,
     cell: (row) => (
       <div className={row.paidIn ? "fw-bold border-top" : "fw-bold"}>
-        {row.paidIn}
+        {row.paidIn || "-"}
+      </div>
+    ),
+  };
+
+  const rentalPriceColumn = {
+    sortable: true,
+    name: "Rental Price",
+    minWidth: "225px",
+    selector: (row) => row.rentalPrice,
+    cell: (row) => (
+      <div className={row.rentalPrice ? "fw-bold border-top" : "fw-bold"}>
+        {row.rentalPrice || "-"}
+      </div>
+    ),
+  };
+  const marketRentalColumn = {
+    sortable: true,
+    name: "Market Rental",
+    minWidth: "225px",
+    selector: (row) => row.marketRent,
+    cell: (row) => (
+      <div className={row.marketRent ? "fw-bold border-top" : "fw-bold"}>
+        {row.marketRent || "-"}
+      </div>
+    ),
+  };
+  const rentGapColumn = {
+    sortable: true,
+    name: "Rent Gap",
+    minWidth: "225px",
+    selector: (row) => row.rentGap,
+    cell: (row) => (
+      <div className={row.rentGap ? "fw-bold border-top" : "fw-bold"}>
+        {row.rentGap || "-"}
+      </div>
+    ),
+  };
+  const depositeColumn = {
+    sortable: true,
+    name: "Deposite",
+    minWidth: "225px",
+    selector: (row) => row.deposite,
+    cell: (row) => (
+      <div className={row.deposite ? "fw-bold border-top" : "fw-bold"}>
+        {row.deposite || "-"}
       </div>
     ),
   };
@@ -528,9 +584,15 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
+          slipTypeColumn,
           memberNameColumn,
           LeasrStartColumn,
           leaserEndColumn,
+
+          rentalPriceColumn,
+          marketRentalColumn,
+          rentGapColumn,
+          depositeColumn,
           LeaserTypeColumn,
           ...dynamicColumns,
           totalPaidColumn,
@@ -546,9 +608,15 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
+          slipTypeColumn,
           memberNameColumn,
           LeasrStartColumn,
           leaserEndColumn,
+
+          rentalPriceColumn,
+          marketRentalColumn,
+          rentGapColumn,
+          depositeColumn,
           LeaserTypeColumn,
           totalPaidColumn,
           expectedAmountColumn,
@@ -565,9 +633,15 @@ const DynamicTable = () => {
       const finalColumns = [
         indexColumn,
         staticColumn,
+        slipTypeColumn,
         memberNameColumn,
         LeasrStartColumn,
         leaserEndColumn,
+
+        rentalPriceColumn,
+        marketRentalColumn,
+        rentGapColumn,
+        depositeColumn,
         LeaserTypeColumn,
         totalPaidColumn,
         expectedAmountColumn,

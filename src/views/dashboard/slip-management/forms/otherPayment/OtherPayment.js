@@ -33,7 +33,7 @@ import {
 
 // ** Auth
 
-const DataTablesReOrder = () => {
+const DataTablesReOrder = ({SlipData}) => {
   // ** States
   const [currentPage, setCurrentPage] = useState(0);
   const [searchValue, setSearchValue] = useState("");
@@ -41,10 +41,9 @@ const DataTablesReOrder = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewModal, setViewModal] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState(null);
-
+  const [selectedPayment, setSelectedPayment] = useState();
   const toast = useRef(null);
-
+const memberId=SlipData?.member?.id;
   // ** Format Currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-US", {
@@ -312,6 +311,7 @@ const DataTablesReOrder = () => {
 
   // ** Handle View Details
   const handleViewDetails = (row) => {
+    
     console.log("Selected Payment:", row);
     setSelectedPayment(row);
     setViewModal(true);
@@ -367,7 +367,10 @@ const DataTablesReOrder = () => {
     const fetchPayment = async () => {
       try {
         setLoading(true);
-        const response = await useJwt.getOtherPayment();
+        if (memberId) {
+          
+          const response = await useJwt.getOtherPayment(memberId);
+       
         const result = response?.data?.content?.result || [];
 
         const formattedData = result.map((item, index) => ({
@@ -384,6 +387,7 @@ const DataTablesReOrder = () => {
         setFilteredData(formattedData);
         console.log("Formatted data:", formattedData);
         console.log("Payment response:", response);
+         }
       } catch (error) {
         console.log("Error fetching payment data:", error);
         toast.current?.show({
@@ -400,7 +404,7 @@ const DataTablesReOrder = () => {
     };
 
     fetchPayment();
-  }, []);
+  }, [memberId]);
 
   // ** Custom Pagination Component
   const CustomPagination = () => (

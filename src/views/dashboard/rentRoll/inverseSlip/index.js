@@ -10,9 +10,7 @@ import TableZeroConfig from "./TableIversionSlip";
 
 function Index() {
   return (
-    <Fragment>
-      <h3>Inverse Slip Rental</h3>
-      <Row>
+    <Fragment>      <Row>
         <Col sm="12">
           <TableZeroConfig />
         </Col>

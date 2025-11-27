@@ -857,8 +857,8 @@ export default class JwtService {
   }
 
   //get other Payment in slipmanagement
-  getOtherPayment() {
-    return axios.get(this.jwtConfig.otherPaymentEndPoint);
+  getOtherPayment(mid) {
+    return axios.get(`${this.jwtConfig.otherPaymentEndPoint}${mid}`);
   }
 
   getUserData(LezerId) {

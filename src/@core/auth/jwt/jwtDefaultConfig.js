@@ -233,7 +233,7 @@ export default {
   getSwitchSlipEndPoint: "/slipSwitch/",
   getSwitchSlipEndPointById: "/slipSwitch",
   renewContractEndPoint: "/sPayment/renewContract",
-  otherPaymentEndPoint: "/sPayment/otherSlip",
+  otherPaymentEndPoint: "/sPayment/otherSlip/",
   renewContractEndPoint: "/sPayment/renewContract",
 
   //sales in Accounting

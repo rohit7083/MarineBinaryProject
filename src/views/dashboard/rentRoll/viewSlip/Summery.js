@@ -14,7 +14,7 @@ const MarinaStatistics = ({ summeryData }) => {
   } = summeryData;
 
   const revenueTableData = [
-    { label: "Total Revenue", value: grandTotal },
+    { label: "Total Revenue", value: grandTotal.toFixed(2)  },
     { label: "Annual Payers", value: annual },
     { label: "Monthly Payers", value: monthly },
     { label: "Total Occupied (Annual + Monthly)", value: annual + monthly },
@@ -31,8 +31,6 @@ const MarinaStatistics = ({ summeryData }) => {
     <div className="p-0">
       <Card className="shadow-sm border-0">
         <CardBody>
-         
-
           <Row>
             {/* Revenue and Payer Details */}
             <Col md="6">
