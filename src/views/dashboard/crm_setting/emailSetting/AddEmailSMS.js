@@ -141,13 +141,14 @@ const SiteSettingsForm = () => {
               <Controller
                 name="email"
                 control={control}
-                rules={{
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email address",
-                  },
-                }}
+               rules={{
+  required: "Email is required",
+  pattern: {
+    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: "Invalid email address",
+  },
+}}
+
                 render={({ field }) => (
                   <Input
                     {...field}
@@ -155,6 +156,12 @@ const SiteSettingsForm = () => {
                     type="email"
                     placeholder="Enter support email"
                     invalid={!!errors.email}
+                    onKeyDown={(e) => {
+  if (!/[a-zA-Z0-9@.]/.test(e.key) && e.key !== "Backspace") {
+    e.preventDefault();
+  }
+}}
+
                   />
                 )}
               />
@@ -203,7 +210,8 @@ const SiteSettingsForm = () => {
                 rules={{
                   required: "Email key is required",
                   pattern: {
-                    value: /^[A-Za-z0-9.-]+$/,
+                    value: /^[A-Za-z0-9.\-\ ]+$/
+,
                     message:
                       "Only letters, numbers, dots (.) and dashes (-) allowed",
                   },
@@ -216,7 +224,7 @@ const SiteSettingsForm = () => {
                     placeholder="Enter email API key"
                     invalid={!!errors.emailKey}
                     onChange={(e) =>
-                      handleRestrictedInput(e, /[^A-Za-z0-9.-]/g, "emailKey")
+handleRestrictedInput(e, /[^A-Za-z0-9.\- ]/g, "emailKey")
                     }
                   />
                 )}
