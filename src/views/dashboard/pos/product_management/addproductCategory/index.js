@@ -1,7 +1,7 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ArrowLeft, ChevronDown, Edit, Plus } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -10,7 +10,14 @@ import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import NavItems from "../NavItems";
+
+// ** Context
+import { AbilityContext } from "@src/utility/context/Can";
 const index = () => {
+  // ** Context
+  const ability = useContext(AbilityContext);
+    
+  // ** States
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -263,6 +270,7 @@ const index = () => {
     return tableData.results.slice(startIndex, endIndex);
   };
 
+
   return (
     <>
       <Card>
@@ -283,7 +291,7 @@ const index = () => {
             </h3>
 
             {/* Right side */}
-            <div className="d-flex align-items-center gap-2">
+            {ability.can("create", "slip management") ?  <div className="d-flex align-items-center gap-2">
               <Link
                 to="/pos/product_management/add-category"
                 state={{
@@ -296,7 +304,8 @@ const index = () => {
                 </Button>
               </Link>
               <NavItems />
-            </div>
+            </div>:null}
+          
           </div>
 
           <hr />

@@ -56,6 +56,7 @@ function SlipDetailsForm({ assigned }) {
     electric: false,
     water: false,
     addOn: "",
+    marketRent: "",
     marketAnnualPrice: "",
     marketMonthlyPrice: "",
     amps: "",
@@ -182,6 +183,8 @@ function SlipDetailsForm({ assigned }) {
           water: userData.water,
           addOn: userData.addOn?.trim() === "" ? null : userData.addOn,
           amps: parseFloat(userData.amps),
+          marketRent: parseFloat(userData.marketRent) || 0,
+
           marketAnnualPrice: parseFloat(userData.marketAnnualPrice) || 0,
           marketMonthlyPrice: parseFloat(userData.marketMonthlyPrice) || 0,
           slipCategoryUid: selectedCategory?.value,
@@ -327,6 +330,11 @@ function SlipDetailsForm({ assigned }) {
       newErrors.marketAnnualPrice = "Annual Price must be a number";
     }
 
+    if (!userData.marketRent) {
+      newErrors.marketRent = "Market Rent is required";
+    } else if (isNaN(userData.marketRent)) {
+      newErrors.marketRent = "Market Rent must be a number";
+    }
     if (!userData.marketMonthlyPrice) {
       newErrors.marketMonthlyPrice = "Monthly Price is required";
     } else if (isNaN(userData.marketMonthlyPrice)) {
@@ -475,6 +483,8 @@ function SlipDetailsForm({ assigned }) {
                 electric: result.electric,
                 water: result.water,
                 addOn: result.addOn,
+                marketRent: result.marketRent || 0,
+
                 marketAnnualPrice: result.marketAnnualPrice,
                 marketMonthlyPrice: result.marketMonthlyPrice,
                 amps: result.amps,
@@ -522,6 +532,8 @@ function SlipDetailsForm({ assigned }) {
       electric: false,
       water: false,
       addOn: "",
+      marketRent: "",
+
       marketAnnualPrice: "",
       marketMonthlyPrice: "",
       amps: "",
@@ -871,7 +883,33 @@ function SlipDetailsForm({ assigned }) {
                 <FormFeedback>{errors.addOn}</FormFeedback>
               </Col>
             </Row>
+            <Row className="mb-1">
+              <Label sm="3" for="marketRent">
+                Market Rent
+                <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Col sm="9">
+                <Input
+                  type="text"
+                  value={userData.marketRent}
+                  onChange={(e) => {
+                    let marketRent = e.target.value; // Use "let" instead of "const"
+                    marketRent = marketRent.replace(/[^0-9.]/g, ""); // Apply replace correctly
 
+                    setUserData((prev) => ({
+                      ...prev,
+                      marketRent: marketRent,
+                    })); // Fix state update
+                  }}
+                  name="marketRent"
+                  id="marketRent"
+                  placeholder="Enter Market Rent"
+                  disabled={assigned ? true : View}
+                  invalid={!!errors.marketRent}
+                />
+                <FormFeedback>{errors.marketRent}</FormFeedback>
+              </Col>
+            </Row>
             <Row className="mb-1">
               <Label sm="3" for="marketAnnualPrice">
                 Market Annual Price

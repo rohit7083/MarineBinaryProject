@@ -35,11 +35,24 @@ const PersonalInfo = ({
   setMemberID,
   memberID,
   fetchLoader,
+  waitingSlipData,
   sId,
 }) => {
   console.log({ formData });
   const toast = useRef(null);
-
+  const {
+    firstName,
+    address,
+    city,
+    country,
+    countryCode,
+    dialCodeCountry,
+    emailId,
+    lastName,
+    postalCode,
+    state,
+    phoneNumber,
+  } = waitingSlipData || {} ;
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
@@ -214,6 +227,7 @@ const PersonalInfo = ({
   };
 
   useEffect(() => {
+   
     if (Object.keys(formData)?.length) {
       const countryCode = countries.find(
         (country) => country.code === formData?.dialCodeCountry
@@ -246,9 +260,41 @@ const PersonalInfo = ({
       };
 
       reset(data);
-      console.log("formData", data);
+    } else {
+      reset({
+        firstName: firstName || "",
+        lastName: lastName || "",
+        emailId: emailId || "",
+        address: address || "",
+        phoneNumber: phoneNumber || "",
+        city: city || "",
+        state: state || "",
+        country: country || "",
+        postalCode: postalCode || "",
+        countryCode: countryCode
+          ? {
+              value: `${dialCodeCountry}-${countryCode}`,
+              code: dialCodeCountry,
+              dial_code: countryCode,
+            }
+          : null,
+      });
     }
-  }, [reset, formData]);
+  }, [
+    reset,
+    formData,
+    firstName,
+    lastName,
+    emailId,
+    address,
+    city,
+    state,
+    country,
+    postalCode,
+    countryCode,
+    dialCodeCountry,
+    countries,phoneNumber,
+  ]);
 
   const handleMemberChange = (option) => {
     setSelectedFullName(option);

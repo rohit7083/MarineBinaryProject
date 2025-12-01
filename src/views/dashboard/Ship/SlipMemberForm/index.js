@@ -31,7 +31,6 @@ const WizardModern = () => {
   // ** Hooks
   // const { uid } = useParams();
   const location = useLocation();
-  
   const waitingSlipData = location?.state?.row;
   const slipNameFromDashboard = location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;
@@ -113,6 +112,7 @@ const WizardModern = () => {
           slipIID={slipIID}
           setMemberID={setMemberID}
           memberID={memberID}
+           waitingSlipData={waitingSlipData}
           fetchLoader={fetchLoader}
           sId={sId?.id}
         />

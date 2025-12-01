@@ -264,11 +264,19 @@ export default [
   {
     path: "/marin/slip-management/:uid",
     element: <SlipManagementRoutes />,
+    meta:{
+      subject:'slip management',
+      action:'view'
+    },
   },
 
   {
     path: "/marin/slip-management",
     element: <SlipManagementRoutes />,
+     meta:{
+      subject:'slip management',
+      action:'view'
+    },
   },
 
   // {
@@ -330,48 +338,85 @@ export default [
   {
     path: "/dashboard/pos/product_management/addProduct",
     element: <AddProduct />,
+      meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <InvoiceAdd />,
     path: "/dashboard/invoice_management/invoice/add",
+    
   },
 
   {
     element: <AddProductCategory />,
     path: "/dashboard/pos/product_management/addproductCategory",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <AddProductTax />,
     path: "/dashboard/pos/product_management/addtaxes",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <ProductManagement />,
     path: "/dashboard/pos/product_management/",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <AddStocks />,
     path: "/dashboard/pos/product_management/AddStocks",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <ManageStocks />,
     path: "/dashboard/pos/product_management/manageStocks",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <CustomerManagement />,
     path: "/dashboard/pos/customer_management",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <PointOfSale />,
     path: "/dashboard/pos/point_of_sale/shop",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <VirtualTerminal />,
     path: "/dashboard/pos/virtualTerminal",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <QrPaymentStepTwo />,
@@ -393,15 +438,27 @@ export default [
   {
     element: <VertualTerminal />,
     path: "/dashboard/pos/point_of_sale/virtual-terminal",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <VendorManage />,
     path: "/pos/VendorManage",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <VendorAdd />,
     path: "/pos/VendorManage/addVendor",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
@@ -416,25 +473,45 @@ export default [
   {
     element: <AddCategory />,
     path: "/pos/product_management/add-category",
+     meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <ParkingPassListing />,
     path: "/parking_pass",
+     meta:{
+      subject:'parking pass',
+      action:'view'
+    },
   },
 
   {
     element: <CreatePass />,
     path: "/parking_pass/add_pass",
+     meta:{
+      subject:'parking pass',
+      action:'view'
+    },
   },
   {
     element: <SellPass />,
     path: "/parking_pass/sellpass",
+     meta:{
+      subject:'parking pass',
+      action:'view'
+    },
   },
 
   {
     element: <Event_Info />,
     path: "/event_info",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
 
   {
@@ -444,16 +521,28 @@ export default [
   {
     element: <Event_Type />,
     path: "/addEvent_type",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
 
   {
     element: <EventIndex />,
     path: "/event_index",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
 
   {
     element: <CreateEvent />,
     path: "/CreateEvent",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
 
   {
@@ -469,6 +558,10 @@ export default [
   {
     element: <Cretae_Event_Type />,
     path: "/eventTypes",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
 
   {
@@ -508,88 +601,159 @@ export default [
 
   {
     element: <VendorTypeList />,
-    path: "/pos/vendor_typeList",
+    path: "/pos/vendor_typeList",   meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <AddVTypes />,
-    path: "/pos/vendor_typeList/addVendorType",
+    path: "/pos/vendor_typeList/addVendorType",   meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <ManageRoomType />,
     path: "/manage_room_types",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
+    
   },
 
   {
     element: <AddRoomType />,
     path: "/add_room_types",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <RoomDetails />,
     path: "/room_details",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <AddRoomDetails />,
     path: "/room_details/add_room_details",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <RoomBooking />,
     path: "/manage_roomBooking",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <AddRoomBooking />,
     path: "/addNew_room_booking",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <BookingListing />,
     path: "/bookingListing",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <SearchRoom />,
     path: "/search-rooms",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
   {
     element: <Checkout />,
     path: "/search-rooms/previewBooking",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
   {
     element: <CheckInDetails />,
     path: "/search-rooms/CheckInDetails",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <RoomPayment />,
     path: "/search-rooms/previewBooking/roomPayment",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <ViewRoomBooking />,
     path: "booking_listing/view",
+     meta:{
+      subject:'room management',
+      action:'view'
+    },
   },
 
   {
     element: <UpdateEvent />,
     path: "event/update",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
 
   {
     element: <AddProductIndex />,
-    path: "/dashboard/pos/product_management/addProduct_index",
+    path: "/dashboard/pos/product_management/addProduct_index",  meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
 
   {
     element: <ViewSlip />,
     path: "/dashboard/rentroll/view_slip",
+    
+     meta:{
+      subject:'rent roll',
+      action:'view'
+    },
   },
   {
     element: <InverSlip />,
     path: "/dashboard/rentroll/inverse_slip",
+     meta:{
+      subject:'rent roll',
+      action:'view'
+    },
   },
   {
     element: <ProductPayment />,
@@ -597,6 +761,10 @@ export default [
     // meta: {
     //   layout: "blank",
     // },
+      meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <QrList />,
@@ -605,6 +773,10 @@ export default [
   {
     element: <EventPaymentList />,
     path: "dashboard/qr-code/event-list",
+     meta:{
+      subject:'event management',
+      action:'view'
+    },
   },
   {
     element: <QrPaymentFrom />,
@@ -626,46 +798,82 @@ export default [
   {
     element: <SaleSummery />,
     path: "/sales/sale_summery",
+     meta:{
+      subject:'sales',
+      action:'view'
+    },
   },
 
   {
     element: <SalesTrends />,
     path: "/sales/sale_trends",
+     meta:{
+      subject:'sales',
+      action:'view'
+    },
   },
 
   {
     element: <Report />,
     path: "/accounting/reports",
+      meta:{
+      subject:'accounting',
+      action:'view'
+    },
   },
 
   {
     element: <Sales />,
     path: "/accounting/sales",
+      meta:{
+      subject:'accounting',
+      action:'view'
+    },
   },
 
   {
     element: <Ledger />,
     path: "/accounting/ledger",
+      meta:{
+      subject:'accounting',
+      action:'view'
+    },
   },
 
   {
     element: <Purchase />,
     path: "/accounting/purchase",
+      meta:{
+      subject:'accounting',
+      action:'view'
+    },
   },
 
   {
     path: "/marin/slip-management/switch-slip-payment",
     element: <SwitchSlipPaymentForm />,
+      meta:{
+      subject:'crm setting',
+      action:'view'
+    },
   },
 
   {
     element: <WaitingSlip />,
     path: "/slip-management/waiting_slip",
+      meta:{
+      subject:'crm setting',
+      action:'view'
+    },
   },
 
   {
     element: <ViewCustomer />,
     path: "/pos/customer-management/view",
+      meta:{
+      subject:'pos',
+      action:'view'
+    },
   },
   {
     element: <EnterWaitingSlipDetails />,
@@ -674,20 +882,36 @@ export default [
   {
     element: <EmailSMSsetting />,
     path: "/crm/email_sms_setting",
+      meta:{
+      subject:'crm setting',
+      action:'view'
+    },
   },
 
   {
     element: <EmailSMSIndex />,
     path: "/crm/index",
+      meta:{
+      subject:'crm setting',
+      action:'view'
+    },
   },
 
   {
     element: <Template />,
     path: "/crm/template/index",
+      meta:{
+      subject:'crm setting',
+      action:'view'
+    },
   },
 
   {
     element: <EmailSmsTemplate />,
     path: "/crm/template",
+     meta:{
+      subject:'crm setting',
+      action:'view'
+    },
   },
 ];

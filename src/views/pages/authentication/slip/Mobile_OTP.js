@@ -132,10 +132,10 @@ const TwoStepsBasic = () => {
       // const otpString = formData.otp.join("");
       // const otp = parseInt(otpString, 10);
       const otp = encryptAES(otpData?.otp.join(""));
-
+debugger
       const res = await useJwt.mobileOtp(token, { otp });
-      console.log(res);
-
+      
+/*
       const data = {
         ...{
           ...res.data.profile,
@@ -156,6 +156,20 @@ const TwoStepsBasic = () => {
           subject: "all",
         },
       ]);
+      navigate(getHomeRouteForLoggedInUser("admin"));
+      */
+
+      const abilityList=res.data.profile.permissions.map(({action,moduleName})=>({action:action.toLowerCase(),subject:moduleName}))
+
+      const data={
+        ...{...res.data.profile,
+        ability:abilityList,
+         accessToken: res.data.access,
+        refreshToken: res.data.refresh,
+        }
+      }
+      dispatch(handleLogin(data));
+      ability.update(ability)
       navigate(getHomeRouteForLoggedInUser("admin"));
     } catch (error) {
       console.log({ error });

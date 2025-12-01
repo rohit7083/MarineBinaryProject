@@ -73,38 +73,12 @@ const TemplateManager = () => {
   const emailTemplate = watch("emailTemplate");
   const smsTemplate = watch("smsTemplate");
 
-  const generateEmailHTML = (subject, message) => {
-    const safeMessage = message
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/\n/g, "<br>");
-
-    return `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>${subject}</title>
-  </head>
-  <body style="margin:0;padding:0;background-color:#eceff1;font-family:Montserrat,Arial,sans-serif;color:#333;">
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
-      <tr>
-        <td align="center" style="padding:20px 0;">
-          <table role="presentation" cellpadding="0" cellspacing="0" width="600" style="max-width:600px;background:#ffffff;border-radius:8px;padding:40px;">
-            <tr>
-              <td style="font-size:16px;line-height:1.6;color:#333;">
-                ${safeMessage}
-                <p style="margin-top:30px;">Thanks,<br><strong>The Marine Team</strong></p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
+  const cleanHtml = (value) => {
+    if (!value) return "";
+    return value
+      .replace(/\s*(<\/?[^>]+>)\s*/g, "$1") // remove indentation
+      .replace(/<br\s*\/?>/g, "") // drop redundant <br>
+      .trim();
   };
 
   const onSubmit = async (data) => {
@@ -127,18 +101,17 @@ const TemplateManager = () => {
       templateType: data?.templateType?.value,
     };
 
-    // Add email fields if email is enabled
     if (emailStatus) {
-      const emailBody = generateEmailHTML(
-        data.emailTemplate.subject,
-        data.emailTemplate.message
-      );
+      const raw = convertToRaw(data.emailTemplate.message.getCurrentContent());
+      const html = draftToHtml(raw);
 
-      payload.emailStatus = true;
-      payload.emailSubject = data.emailTemplate.subject;
-      payload.emailSenderName = data.emailTemplate.senderName;
-      payload.emailSenderEmail = data.emailTemplate.senderEmail;
-      payload.emailBody = emailBody;
+      payload.emailBody = `
+    <html>
+      <body>
+        ${cleanHtml(html)}
+      </body>
+    </html>
+  `.trim();
     } else {
       payload.emailStatus = false;
     }

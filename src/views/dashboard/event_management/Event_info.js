@@ -1112,9 +1112,9 @@ if (payload?.payment?.finalPayment > 0 ) {
                     {...field}
                     type="checkbox"
                     checked={field.value || false}
-                    disabled={
-                      eventRooms?.bookedRoom?.length > 0 || !!listData?.uid
-                    }
+                    // disabled={
+                    //   eventRooms?.bookedRoom?.length > 0 || !!listData?.uid
+                    // }
                     onChange={(e) => field.onChange(e.target.checked)} // ✅ FIXED
                   />
                 );

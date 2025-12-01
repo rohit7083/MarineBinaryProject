@@ -24,7 +24,7 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 16;
 
   const filteredBoatData = allBoatData.filter(
     (boat) =>

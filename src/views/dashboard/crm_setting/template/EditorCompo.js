@@ -1,31 +1,30 @@
-import { ContentState, convertToRaw, EditorState } from "draft-js";
-import draftToHtml from "draftjs-to-html";
+import {
+  ContentState,
+  EditorState
+} from "draft-js";
 import htmlToDraft from "html-to-draftjs";
 import { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { CardTitle } from "reactstrap";
 
-const EditorCompo = ({ value = "", onChange }) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+const EditorCompo = ({ value, onChange }) => {
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
+  // Set editor state only when initial value is passed or changed externally
   useEffect(() => {
-    if (value) {
+    if (typeof value === "string" && value.trim().length > 0) {
       const { contentBlocks, entityMap } = htmlToDraft(value);
-      const contentState = ContentState.createFromBlockArray(
-        contentBlocks,
-        entityMap
-      );
+      const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
       setEditorState(EditorState.createWithContent(contentState));
-    } else {
+    } else if (!value) {
       setEditorState(EditorState.createEmpty());
     }
   }, [value]);
 
   const handleEditorChange = (state) => {
     setEditorState(state);
-    const raw = convertToRaw(state.getCurrentContent());
-    onChange(draftToHtml(raw));
+    onChange(state); // Pass EditorState to form
   };
 
   return (
@@ -42,8 +41,7 @@ const EditorCompo = ({ value = "", onChange }) => {
           minHeight: "200px",
           padding: "10px",
           borderRadius: "5px",
-          direction: "ltr",          // HARD FIX
-          unicodeBidi: "plaintext",  // HARD FIX
+          direction: "ltr",
         }}
       />
     </>
@@ -51,3 +49,5 @@ const EditorCompo = ({ value = "", onChange }) => {
 };
 
 export default EditorCompo;
+
+
