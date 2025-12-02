@@ -48,7 +48,7 @@ function AddVTypes({ isRoomRequired, showModal, setShowModal, setEventRooms }) {
   const location = useLocation();
   const extraRoomMode = location?.state?.mode;
   const uidOfEvent = location?.state?.uidOfEvent;
-
+const autofillMemberALLDATA =location?.state?.Rowdata;
   const rowData = location.state?.row;
   const uid = rowData?.uid;
   const toast = useRef(null);
@@ -320,6 +320,7 @@ function AddVTypes({ isRoomRequired, showModal, setShowModal, setEventRooms }) {
         isRoomRequired={isRoomRequired}
         allRooms={allRooms}
         searchField={searchedValue}
+        autofillMemberALLDATA={autofillMemberALLDATA}
       />
     </Fragment>
   );

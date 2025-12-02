@@ -38,7 +38,7 @@ const PersonalInfo = ({
   waitingSlipData,
   sId,
 }) => {
-  console.log({ formData });
+  console.log("waitingSlipData", waitingSlipData);
   const toast = useRef(null);
   const {
     firstName,
@@ -52,7 +52,7 @@ const PersonalInfo = ({
     postalCode,
     state,
     phoneNumber,
-  } = waitingSlipData || {} ;
+  } = waitingSlipData || {};
   const [fullname, setFullname] = useState([]);
   const [selectedFullName, setSelectedFullName] = useState(null);
   const [SelectedDetails, setSelectedDetails] = useState(null);
@@ -205,6 +205,12 @@ const PersonalInfo = ({
     }
   };
 
+  useEffect(() => {
+    if (waitingSlipData) {
+      reset({ ...waitingSlipData });
+    }
+  }, [waitingSlipData]);
+
   // Clear field error when user starts typing
   const clearFieldError = (fieldName) => {
     if (errors[fieldName]) {
@@ -212,22 +218,7 @@ const PersonalInfo = ({
     }
   };
 
-  const handleSweetAlert = (title, text, next) => {
-    return MySwal.fire({
-      title,
-      text,
-      icon: "success",
-      customClass: {
-        confirmButton: "btn btn-primary",
-      },
-      buttonsStyling: false,
-    }).then(() => {
-      stepper.next();
-    });
-  };
-
   useEffect(() => {
-   
     if (Object.keys(formData)?.length) {
       const countryCode = countries.find(
         (country) => country.code === formData?.dialCodeCountry
@@ -293,7 +284,8 @@ const PersonalInfo = ({
     postalCode,
     countryCode,
     dialCodeCountry,
-    countries,phoneNumber,
+    countries,
+    phoneNumber,
   ]);
 
   const handleMemberChange = (option) => {
@@ -387,7 +379,6 @@ const PersonalInfo = ({
       } else {
         const res = await useJwt.postsMember(payload);
         console.log("this is creating res", res);
-
         memberId = res?.data?.id;
         console.log("memberid ", memberId);
 
@@ -401,6 +392,11 @@ const PersonalInfo = ({
           setTimeout(() => {
             stepper.next();
           }, 2000);
+
+          if (waitingSlipData?.id) {
+            const deleteRes = await useJwt.deleteWaiting(waitingSlipData.uid);
+            console.log(deleteRes);
+          }
         }
       }
       setMemberID(memberId);

@@ -941,5 +941,12 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.retriveEvent}${uid}`);
   }
 
+    deleteWaiting(uid) {
+    return axios.delete(`${this.jwtConfig.deleteWaiting}${uid}`);
+  }
+  
+ updateTemplate(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateTemplate}${uid}`, ...args);
+  }
 
 }

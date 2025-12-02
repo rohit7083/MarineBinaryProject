@@ -31,6 +31,7 @@ const SearchRooms = ({
   showModal,
   extraRoomMode,
   uidOfEvent,
+  autofillMemberALLDATA,
 }) => {
   const {
     control,
@@ -158,6 +159,7 @@ const SearchRooms = ({
               searchUid: res?.data?.roomSearchUid,
               extraRoomMode,
               uidOfEvent,
+              autofillMemberALLDATA,
             },
           });
         }
@@ -239,7 +241,7 @@ const SearchRooms = ({
                 <Toast ref={toast} />
 
                 <CardTitle className="fs-2 fw-bold mb-0">
-                  Available Rooms ({roomsList.length})
+                  Available Rooms3 ({roomsList.length})
                 </CardTitle>
                 {/* )} */}
               </Col>

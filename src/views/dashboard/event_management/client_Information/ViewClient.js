@@ -21,7 +21,7 @@ const ViewPass = ({ selectedMember, memberData, updateUid }) => {
       <Card className="invoice-action-wrapper">
         <>
           <CardBody>
-            <CardTitle>Selected Member details</CardTitle>
+            <CardTitle>Selected Member details </CardTitle>
             <Row>
               <Col xl="12" xs="12">
                 <div style={{ fontSize: "12px" }}>

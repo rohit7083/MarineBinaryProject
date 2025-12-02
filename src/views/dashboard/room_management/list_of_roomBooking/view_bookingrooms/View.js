@@ -204,7 +204,10 @@ const View = () => {
                         Total Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                        <strong> $ {viewData?.finalAmount || 0}</strong>
+                        <strong>
+                          {" "}
+                          $ {Number(viewData?.finalAmount || 0).toFixed(2)}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -239,7 +242,9 @@ const View = () => {
                         Discount Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                        <strong>$ {viewData?.discountAmount || 0}</strong>
+                        <strong>
+                          $ {Number(viewData?.discountAmount || 0).toFixed(2)}
+                        </strong>
                       </p>
                     </div>
                   </div>
@@ -276,7 +281,13 @@ const View = () => {
                         Paid Amount
                       </strong>
                       <p className="mb-0 fw-bold fs-4">
-                        <strong> $ {viewData?.advancePaymentAmout || 0}</strong>
+                        <strong>
+                          {" "}
+                          ${" "}
+                          {Number(viewData?.advancePaymentAmout || 0).toFixed(
+                            2
+                          )}
+                        </strong>
                       </p>
                     </div>
                   </div>

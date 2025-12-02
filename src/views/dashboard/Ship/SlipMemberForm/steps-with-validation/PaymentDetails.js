@@ -55,6 +55,7 @@ const Address = ({
     { value: "Annual", label: "Annual" },
   ];
   const toast = useRef(null);
+console.log("formdata",formData);
 
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
@@ -245,42 +246,41 @@ const Address = ({
     field.onChange(value); // Update React Hook Form
   };
 
-const fetchMarketPrices = async () => {
-  try {
-    const response = await useJwt.getslip();
-    console.log(response);
+  const fetchMarketPrices = async () => {
+    try {
+      const response = await useJwt.getslip();
+      console.log(response);
 
-    const result = response.data.content.result.find((item) =>
-      item.id === (slipIID ?? sId)
-    );
-console.log(sId);
+      const result = response.data.content.result.find(
+        (item) => item.id === (slipIID ?? sId)
+      );
+      console.log(sId);
 
-    if (!result) {
-      console.log("Not Found Slip Charges");
-      return;
+      if (!result) {
+        console.log("Not Found Slip Charges");
+        return;
+      }
+
+      const { marketAnnualPrice, id, marketMonthlyPrice } = result;
+
+      if (
+        marketAnnualPrice === undefined ||
+        marketMonthlyPrice === undefined ||
+        id === undefined
+      ) {
+        console.log("Invalid slip charge data");
+        return;
+      }
+
+      setSlipDetail({
+        Monthly: marketMonthlyPrice,
+        Annual: marketAnnualPrice,
+        id,
+      });
+    } catch (error) {
+      console.error(error);
     }
-
-    const { marketAnnualPrice, id, marketMonthlyPrice } = result;
-
-    if (
-      marketAnnualPrice === undefined ||
-      marketMonthlyPrice === undefined ||
-      id === undefined
-    ) {
-      console.log("Invalid slip charge data");
-      return;
-    }
-
-    setSlipDetail({
-      Monthly: marketMonthlyPrice,
-      Annual: marketAnnualPrice,
-      id,
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
+  };
 
   const getReadOnlyStyle = () => {
     return {
@@ -312,6 +312,9 @@ console.log(sId);
     }
   };
 
+  const depositAmount = Number(watch("deposite"));
+  console.log(depositAmount);
+
   useEffect(() => {
     const rentalPrice = getValues("rentalPrice");
     const uid = watch("uid");
@@ -324,9 +327,9 @@ console.log(sId);
 
     if (!uid && rentalPrice) {
       setFinalPayment(rentalPrice);
-      setValue("finalPayment", rentalPrice);
+      setValue("finalPayment", rentalPrice + depositAmount);
     }
-  }, [watch("rentalPrice")]);
+  }, [watch("rentalPrice"), depositAmount]);
 
   //Discount Calculations
 
@@ -335,9 +338,12 @@ console.log(sId);
     if (!isNaN(percentage)) {
       const discountValue = (percentage / 100) * rentalPriceState;
       setValue("calDisAmount", discountValue);
-      setValue("finalPayment", rentalPriceState - discountValue);
+      setValue(
+        "finalPayment",
+        rentalPriceState - discountValue + depositAmount
+      );
     } else {
-      setValue("finalPayment", rentalPriceState);
+      setValue("finalPayment", rentalPriceState + depositAmount);
     }
   };
 
@@ -345,7 +351,7 @@ console.log(sId);
     const amount = Number(e.target.value);
     setValue("calDisAmount", amount);
     const finalPaymentcal = rentalPriceState - amount;
-    setValue("finalPayment", finalPaymentcal);
+    setValue("finalPayment", finalPaymentcal + depositAmount);
     setFinalPayment(finalPaymentcal);
   };
 
@@ -438,6 +444,7 @@ console.log(sId);
 
       const updatedData = {
         ...data,
+        
         paymentMode: pmVal,
         paidIn: paidInVal,
         accountType: accoTypeValue,
@@ -474,6 +481,7 @@ console.log(sId);
     const combined = iv.concat(encrypted.ciphertext);
     return CryptoJS.enc.Base64.stringify(combined);
   }
+
   const onSubmit = async (data) => {
     const pinArray = data.pin || [];
     // const isValid =
@@ -494,6 +502,8 @@ console.log(sId);
     formData.append("paidIn", data.paidIn?.value);
     formData.append("rentalPrice", data.rentalPrice);
     formData.append("finalPayment", data.finalPayment);
+    formData.append("deposite", data.deposite);
+
     formData.append("renewalDate", data.renewalDate);
     formData.append("nextPaymentDate", data.nextPaymentDate);
     formData.append("paymentMode", data.paymentMode);
@@ -827,8 +837,6 @@ console.log(sId);
                     isClearable
                     options={colourOptions}
                     onChange={(option) => {
-                    
-
                       field.onChange(option); // Ensure field can accept object
                       setValue("rentalPrice", slipDetail[option?.value] || ""); // Avoid undefined errors
                     }}
@@ -1020,6 +1028,40 @@ console.log(sId);
           )}
 
           <Row>
+            <Col md="12" className="mb-1">
+              <Label className="form-label" for="deposit">
+                Deposit <span style={{ color: "red" }}>*</span>
+              </Label>
+
+              <Controller
+                name="deposite"
+                control={control}
+                rules={{
+                  validate: (value) =>
+                    value !== "" && !isNaN(value) && parseFloat(value) >= 0
+                      ? true
+                      : "Enter a valid non-negative number",
+                }}
+                render={({ field: { onChange, ...rest } }) => (
+                  <Input
+                    type="text"
+                    placeholder="Enter Deposit Amount"
+                    invalid={!!errors.deposite}
+                    onChange={(e) => {
+                      // Sanitize input: digits only
+                      const sanitized = e.target.value.replace(/[^0-9]/g, "");
+                      onChange(sanitized);
+                    }}
+                    {...rest}
+                  />
+                )}
+              />
+
+              {errors.deposite && (
+                <FormFeedback>{errors.deposite.message}</FormFeedback>
+              )}
+            </Col>
+
             <Col md="12" className="mb-1">
               <Label className="form-label" for="landmark">
                 Total Amount <span style={{ color: "red" }}>*</span>

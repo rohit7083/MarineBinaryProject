@@ -95,7 +95,7 @@ const Checkout = () => {
   const location = useLocation();
   const state = location.state;
   console.log("location firstr ", location);
-
+const memberForAutofill = location?.state?.autofillMemberALLDATA?.member;
   const deta = state?.alldata;
   // ** Function to toggle Offcanvas
   const toggleForm = () => setIsOpenForm(!isOpenForm);
@@ -268,6 +268,23 @@ const Checkout = () => {
       setValue("discount", false);
     }
   }, [showModal, verify]);
+
+
+  useEffect(()=>{
+    if(memberForAutofill){
+      const autofillData = {
+        label: `${memberForAutofill.firstName} ${memberForAutofill.lastName}`,
+        value: memberForAutofill.uid,
+        data: JSON.stringify(memberForAutofill),
+      };
+      setValue("selectedMember", autofillData);
+      setClientInfo(memberForAutofill);
+
+      const lastSelectedMemberList = [...selectMemberOptions];
+      lastSelectedMemberList.splice(1, 0, autofillData);
+      setSelectMemberOptions(lastSelectedMemberList);
+    }
+  },[ memberForAutofill]);
 
   return (
     <>

@@ -134,7 +134,7 @@ const ClientInfo = ({ selectedMember, clientInfo, setClientInfo }) => {
 
   return (
     <>
-      <CardTitle>Selected Member details</CardTitle>
+      <CardTitle>Selected Member details </CardTitle>
       {clientInfo ? (
         <>
           <Row>

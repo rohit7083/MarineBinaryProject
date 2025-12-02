@@ -103,7 +103,7 @@ const index = () => {
     {
       name: "Id",
       sortable: true,
-      //   minWidth: "100px",
+        minWidth: "100px",
       selector: (row, index) => index + 1,
     },
 
@@ -112,12 +112,7 @@ const index = () => {
       sortable: true,
       selector: (row) => row.emailSubject,
     },
-    {
-      name: "Email Subject",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.emailSubject,
-    },
+    
     {
       name: "Template Type",
       sortable: true,

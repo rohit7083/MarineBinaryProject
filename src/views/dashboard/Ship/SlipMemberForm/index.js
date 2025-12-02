@@ -59,7 +59,7 @@ const WizardModern = () => {
         setFormData({
           vessel: { ...vessel },
           member,
-          payment: payment ? { ...payment } : {},
+          payment: payment ? { ...payment   } : {},
           documents: document ? { ...document } : {},
         });
       } catch (error) {
@@ -164,7 +164,8 @@ const WizardModern = () => {
         ref={ref}
         steps={steps}
         options={{
-          linear: false,
+          linear: true
+          ,
         }}
         instance={(el) => setStepper(el)}
       />

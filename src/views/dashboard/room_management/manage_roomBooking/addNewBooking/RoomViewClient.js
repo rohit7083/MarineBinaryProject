@@ -1,22 +1,15 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Select from "react-select";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Reactstrap Imports
 import {
   Card,
   CardBody,
-  Button,
-  Input,
-  CardText,
   CardTitle,
-  Row,
   Col,
+  Row
 } from "reactstrap";
 
 const ViewPass = ({ selectedMember }) => {
