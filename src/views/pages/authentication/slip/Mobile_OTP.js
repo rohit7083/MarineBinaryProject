@@ -132,7 +132,6 @@ const TwoStepsBasic = () => {
       // const otpString = formData.otp.join("");
       // const otp = parseInt(otpString, 10);
       const otp = encryptAES(otpData?.otp.join(""));
-debugger
       const res = await useJwt.mobileOtp(token, { otp });
       
 /*

@@ -84,12 +84,7 @@ const TemplateManager = () => {
   };
 
   const onSubmit = async (data) => {
-    {
-      {
-        debugger;
-      }
-    }
-
+  
     console.log(data);
 
     const emailStatus = data.emailTemplate.status;
