@@ -229,7 +229,6 @@ const DynamicTable = () => {
     if (slip.payments && Array.isArray(slip.payments)) {
       slip.payments.forEach((payment) => {
         const amount = payment.amountPaid || 0;
-
         if (payment.paymentStatus === "success") {
           totalPaid += amount;
           expectedAmount += amount;
@@ -793,6 +792,15 @@ const DynamicTable = () => {
       <span>No data available</span>
     </div>
   );
+  const tinyBox = {
+    width: "14px",
+    height: "14px",
+    padding: 0,
+    minWidth: "14px",
+    minHeight: "14px",
+    borderRadius: "3px",
+    marginRight: "2px",
+  };
 
   return (
     <Fragment>
@@ -804,25 +812,78 @@ const DynamicTable = () => {
         <Summery summeryData={summeryData} />
 
         <CardBody>
-          <div className="d-flex justify-content-end align-items-end">
-            <Button.Ripple
-              color="secondary"
-              className="me-2"
-              onClick={fetchViewRentRoll}
-              disabled={loading}
-              size="sm"
-            >
-              {loading ? "Refreshing..." : "Refresh"}
-            </Button.Ripple>
-            <Button.Ripple
-              color="primary"
-              onClick={exportToExcel}
-              disabled={exporting || allData.length === 0}
-              size="sm"
-            >
-              {exporting ? "Exporting..." : "Export"}
-            </Button.Ripple>
-          </div>
+          <Row className="align-items-center mb-1">
+            <Col className="d-flex align-items-center gap-2">
+              <div className="d-flex align-items-center gap-1">
+                <Button color="success" size="sm" style={tinyBox} />
+                <Label className="mb-0">Success</Label>
+              </div>
+
+              <div className="d-flex align-items-center gap-1">
+                <Button color="danger" size="sm" style={tinyBox} />
+                <Label className="mb-0">Failed</Label>
+              </div>
+
+              <div className="d-flex align-items-center gap-1">
+                <Button color="warning" size="sm" style={tinyBox} />
+                <Label className="mb-0">Pending</Label>
+              </div>
+            </Col>
+
+            <Col className="d-flex justify-content-end align-items-center">
+              <Button.Ripple
+                color="secondary"
+                className="me-2"
+                onClick={fetchViewRentRoll}
+                disabled={loading}
+                size="sm"
+              >
+                {loading ? "Refreshing..." : "Refresh"}
+              </Button.Ripple>
+
+              <Button.Ripple
+                color="primary"
+                onClick={exportToExcel}
+                disabled={exporting || allData.length === 0}
+                size="sm"
+              >
+                {exporting ? "Exporting..." : "Export"}
+              </Button.Ripple>
+            </Col>
+          </Row>
+          {/* <Row>
+            <Col className="d-flex align-items-center">
+              <Button color="success" size="sm" style={tinyBox} />
+              <Label className="me-1">Success</Label>
+
+              <Button color="danger" size="sm" style={tinyBox} />
+              <Label className="me-1">Failed</Label>
+
+              <Button color="warning" size="sm" style={tinyBox} />
+              <Label className="me-1">Pending</Label>
+            </Col>
+
+            <Col className="d-flex justify-content-end align-items-end">
+              <Button.Ripple
+                color="secondary"
+                className="me-2"
+                onClick={fetchViewRentRoll}
+                disabled={loading}
+                size="sm"
+              >
+                {loading ? "Refreshing..." : "Refresh"}
+              </Button.Ripple>
+
+              <Button.Ripple
+                color="primary"
+                onClick={exportToExcel}
+                disabled={exporting || allData.length === 0}
+                size="sm"
+              >
+                {exporting ? "Exporting..." : "Export"}
+              </Button.Ripple>
+            </Col>
+          </Row> */}
 
           {loading ? (
             <LoadingComponent />

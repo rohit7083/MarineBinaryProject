@@ -48,6 +48,7 @@ const Address = ({
   fetchLoader,
   slipId,
   isAssigned,
+  isAssignedStatus,
   member,
 }) => {
   const colourOptions = [
@@ -55,7 +56,7 @@ const Address = ({
     { value: "Annual", label: "Annual" },
   ];
   const toast = useRef(null);
-console.log("formdata",formData);
+  console.log("formdata", formData);
 
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
@@ -444,7 +445,7 @@ console.log("formdata",formData);
 
       const updatedData = {
         ...data,
-        
+
         paymentMode: pmVal,
         paidIn: paidInVal,
         accountType: accoTypeValue,
@@ -566,6 +567,7 @@ console.log("formdata",formData);
     } else {
       console.log("Choose differant payment Method ");
     }
+    console.log(isAssignedStatus);
 
     if (isAssigned?.isAssigned) {
       stepper.next();
@@ -1030,7 +1032,7 @@ console.log("formdata",formData);
           <Row>
             <Col md="12" className="mb-1">
               <Label className="form-label" for="deposit">
-                Deposit <span style={{ color: "red" }}>*</span>
+                Security Deposit <span style={{ color: "red" }}>*</span>
               </Label>
 
               <Controller
@@ -1045,7 +1047,7 @@ console.log("formdata",formData);
                 render={({ field: { onChange, ...rest } }) => (
                   <Input
                     type="text"
-                    placeholder="Enter Deposit Amount"
+                    placeholder="Enter Security Deposit Amount"
                     invalid={!!errors.deposite}
                     onChange={(e) => {
                       // Sanitize input: digits only

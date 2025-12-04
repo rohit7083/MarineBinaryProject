@@ -265,7 +265,7 @@ export default [
     path: "/marin/slip-management/:uid",
     element: <SlipManagementRoutes />,
     meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -274,7 +274,7 @@ export default [
     path: "/marin/slip-management",
     element: <SlipManagementRoutes />,
      meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -339,7 +339,7 @@ export default [
     path: "/dashboard/pos/product_management/addProduct",
     element: <AddProduct />,
       meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -353,7 +353,7 @@ export default [
     element: <AddProductCategory />,
     path: "/dashboard/pos/product_management/addproductCategory",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -361,7 +361,7 @@ export default [
     element: <AddProductTax />,
     path: "/dashboard/pos/product_management/addtaxes",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -370,7 +370,7 @@ export default [
     element: <ProductManagement />,
     path: "/dashboard/pos/product_management/",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -379,7 +379,7 @@ export default [
     element: <AddStocks />,
     path: "/dashboard/pos/product_management/AddStocks",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -388,7 +388,7 @@ export default [
     element: <ManageStocks />,
     path: "/dashboard/pos/product_management/manageStocks",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -397,7 +397,7 @@ export default [
     element: <CustomerManagement />,
     path: "/dashboard/pos/customer_management",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -406,7 +406,7 @@ export default [
     element: <PointOfSale />,
     path: "/dashboard/pos/point_of_sale/shop",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -414,7 +414,7 @@ export default [
     element: <VirtualTerminal />,
     path: "/dashboard/pos/virtualTerminal",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -439,7 +439,7 @@ export default [
     element: <VertualTerminal />,
     path: "/dashboard/pos/point_of_sale/virtual-terminal",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -448,7 +448,7 @@ export default [
     element: <VendorManage />,
     path: "/pos/VendorManage",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -456,7 +456,7 @@ export default [
     element: <VendorAdd />,
     path: "/pos/VendorManage/addVendor",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -474,7 +474,7 @@ export default [
     element: <AddCategory />,
     path: "/pos/product_management/add-category",
      meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -483,7 +483,7 @@ export default [
     element: <ParkingPassListing />,
     path: "/parking_pass",
      meta:{
-      subject:'parking pass',
+      resource:'parking pass',
       action:'view'
     },
   },
@@ -492,7 +492,7 @@ export default [
     element: <CreatePass />,
     path: "/parking_pass/add_pass",
      meta:{
-      subject:'parking pass',
+      resource:'parking pass',
       action:'view'
     },
   },
@@ -500,7 +500,7 @@ export default [
     element: <SellPass />,
     path: "/parking_pass/sellpass",
      meta:{
-      subject:'parking pass',
+      resource:'parking pass',
       action:'view'
     },
   },
@@ -509,7 +509,7 @@ export default [
     element: <Event_Info />,
     path: "/event_info",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -522,7 +522,7 @@ export default [
     element: <Event_Type />,
     path: "/addEvent_type",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -531,7 +531,7 @@ export default [
     element: <EventIndex />,
     path: "/event_index",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -540,7 +540,7 @@ export default [
     element: <CreateEvent />,
     path: "/CreateEvent",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -559,7 +559,7 @@ export default [
     element: <Cretae_Event_Type />,
     path: "/eventTypes",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -602,7 +602,7 @@ export default [
   {
     element: <VendorTypeList />,
     path: "/pos/vendor_typeList",   meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -610,7 +610,7 @@ export default [
   {
     element: <AddVTypes />,
     path: "/pos/vendor_typeList/addVendorType",   meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -618,7 +618,7 @@ export default [
     element: <ManageRoomType />,
     path: "/manage_room_types",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
     
@@ -628,7 +628,7 @@ export default [
     element: <AddRoomType />,
     path: "/add_room_types",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -637,7 +637,7 @@ export default [
     element: <RoomDetails />,
     path: "/room_details",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -646,7 +646,7 @@ export default [
     element: <AddRoomDetails />,
     path: "/room_details/add_room_details",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -655,7 +655,7 @@ export default [
     element: <RoomBooking />,
     path: "/manage_roomBooking",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -664,7 +664,7 @@ export default [
     element: <AddRoomBooking />,
     path: "/addNew_room_booking",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -673,7 +673,7 @@ export default [
     element: <BookingListing />,
     path: "/bookingListing",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -682,7 +682,7 @@ export default [
     element: <SearchRoom />,
     path: "/search-rooms",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -690,7 +690,7 @@ export default [
     element: <Checkout />,
     path: "/search-rooms/previewBooking",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -698,7 +698,7 @@ export default [
     element: <CheckInDetails />,
     path: "/search-rooms/CheckInDetails",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -707,7 +707,7 @@ export default [
     element: <RoomPayment />,
     path: "/search-rooms/previewBooking/roomPayment",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -716,7 +716,7 @@ export default [
     element: <ViewRoomBooking />,
     path: "booking_listing/view",
      meta:{
-      subject:'room management',
+      resource:'room management',
       action:'view'
     },
   },
@@ -725,7 +725,7 @@ export default [
     element: <UpdateEvent />,
     path: "event/update",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -733,7 +733,7 @@ export default [
   {
     element: <AddProductIndex />,
     path: "/dashboard/pos/product_management/addProduct_index",  meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -743,7 +743,7 @@ export default [
     path: "/dashboard/rentroll/view_slip",
     
      meta:{
-      subject:'rent roll',
+      resource:'rent roll',
       action:'view'
     },
   },
@@ -751,7 +751,7 @@ export default [
     element: <InverSlip />,
     path: "/dashboard/rentroll/inverse_slip",
      meta:{
-      subject:'rent roll',
+      resource:'rent roll',
       action:'view'
     },
   },
@@ -762,7 +762,7 @@ export default [
     //   layout: "blank",
     // },
       meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -774,7 +774,7 @@ export default [
     element: <EventPaymentList />,
     path: "dashboard/qr-code/event-list",
      meta:{
-      subject:'event management',
+      resource:'event management',
       action:'view'
     },
   },
@@ -799,7 +799,7 @@ export default [
     element: <SaleSummery />,
     path: "/sales/sale_summery",
      meta:{
-      subject:'sales',
+      resource:'sales',
       action:'view'
     },
   },
@@ -808,7 +808,7 @@ export default [
     element: <SalesTrends />,
     path: "/sales/sale_trends",
      meta:{
-      subject:'sales',
+      resource:'sales',
       action:'view'
     },
   },
@@ -817,7 +817,7 @@ export default [
     element: <Report />,
     path: "/accounting/reports",
       meta:{
-      subject:'accounting',
+      resource:'accounting',
       action:'view'
     },
   },
@@ -826,7 +826,7 @@ export default [
     element: <Sales />,
     path: "/accounting/sales",
       meta:{
-      subject:'accounting',
+      resource:'accounting',
       action:'view'
     },
   },
@@ -835,7 +835,7 @@ export default [
     element: <Ledger />,
     path: "/accounting/ledger",
       meta:{
-      subject:'accounting',
+      resource:'accounting',
       action:'view'
     },
   },
@@ -844,7 +844,7 @@ export default [
     element: <Purchase />,
     path: "/accounting/purchase",
       meta:{
-      subject:'accounting',
+      resource:'accounting',
       action:'view'
     },
   },
@@ -853,7 +853,7 @@ export default [
     path: "/marin/slip-management/switch-slip-payment",
     element: <SwitchSlipPaymentForm />,
       meta:{
-      subject:'crm setting',
+      resource:'crm setting',
       action:'view'
     },
   },
@@ -862,7 +862,7 @@ export default [
     element: <WaitingSlip />,
     path: "/slip-management/waiting_slip",
       meta:{
-      subject:'crm setting',
+      resource:'crm setting',
       action:'view'
     },
   },
@@ -871,7 +871,7 @@ export default [
     element: <ViewCustomer />,
     path: "/pos/customer-management/view",
       meta:{
-      subject:'pos',
+      resource:'pos',
       action:'view'
     },
   },
@@ -883,7 +883,7 @@ export default [
     element: <EmailSMSsetting />,
     path: "/crm/email_sms_setting",
       meta:{
-      subject:'crm setting',
+      resource:'crm setting',
       action:'view'
     },
   },
@@ -892,7 +892,7 @@ export default [
     element: <EmailSMSIndex />,
     path: "/crm/index",
       meta:{
-      subject:'crm setting',
+      resource:'crm setting',
       action:'view'
     },
   },
@@ -901,7 +901,7 @@ export default [
     element: <Template />,
     path: "/crm/template/index",
       meta:{
-      subject:'crm setting',
+      resource:'crm setting',
       action:'view'
     },
   },
@@ -910,7 +910,7 @@ export default [
     element: <EmailSmsTemplate />,
     path: "/crm/template",
      meta:{
-      subject:'crm setting',
+      resource:'crm setting',
       action:'view'
     },
   },

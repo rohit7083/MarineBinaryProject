@@ -1,6 +1,6 @@
 // ** React Imports
+import { Suspense, useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { useContext, Suspense } from "react";
 
 // ** Context Imports
 import { AbilityContext } from "@src/utility/context/Can";
@@ -12,7 +12,6 @@ const PrivateRoute = ({ children, route }) => {
   // ** Hooks & Vars
   const ability = useContext(AbilityContext);
   const user = JSON.parse(localStorage.getItem("userData"));
-
   if (route) {
     let action = null;
     let resource = null;
@@ -32,9 +31,9 @@ const PrivateRoute = ({ children, route }) => {
     if (user && restrictedRoute && user.role === "client") {
       return <Navigate to="/access-control" />;
     }
-    // if (user && !ability.can(action || 'read', resource)) {
-    //   return <Navigate to='/misc/not-authorized' replace />
-    // }
+    if (user && !ability.can(action || 'read', resource)) {
+      return <Navigate to='/misc/not-authorized' replace />
+    }
   }
 
   return (

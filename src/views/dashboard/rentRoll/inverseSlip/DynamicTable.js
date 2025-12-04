@@ -157,7 +157,7 @@ const DynamicTable = () => {
   };
   const depositeColumn = {
     sortable: true,
-    name: "Deposite",
+    name: "Security Deposit",
     minWidth: "225px",
     selector: (row) => row.deposite,
     cell: (row) => (
@@ -761,7 +761,47 @@ const DynamicTable = () => {
         <Summery summeryData={summeryData} />
 
         <CardBody>
-          <div className="d-flex justify-content-end align-items-end">
+         
+         <Row className="align-items-center mb-1">
+            <Col className="d-flex align-items-center gap-2">
+              <div className="d-flex align-items-center gap-1">
+                <Button color="success" size="sm" style={tinyBox} />
+                <Label className="mb-0">Success</Label>
+              </div>
+
+              <div className="d-flex align-items-center gap-1">
+                <Button color="danger" size="sm" style={tinyBox} />
+                <Label className="mb-0">Failed</Label>
+              </div>
+
+              <div className="d-flex align-items-center gap-1">
+                <Button color="warning" size="sm" style={tinyBox} />
+                <Label className="mb-0">Pending</Label>
+              </div>
+            </Col>
+
+            <Col className="d-flex justify-content-end align-items-center">
+              <Button.Ripple
+                color="secondary"
+                className="me-2"
+                onClick={fetchViewRentRoll}
+                disabled={loading}
+                size="sm"
+              >
+                {loading ? "Refreshing..." : "Refresh"}
+              </Button.Ripple>
+
+              <Button.Ripple
+                color="primary"
+                onClick={exportToExcel}
+                disabled={exporting || allData.length === 0}
+                size="sm"
+              >
+                {exporting ? "Exporting..." : "Export"}
+              </Button.Ripple>
+            </Col>
+          </Row>
+          {/* <div className="d-flex justify-content-end align-items-end">
             <Button.Ripple
               color="secondary"
               className="me-2"
@@ -779,7 +819,7 @@ const DynamicTable = () => {
             >
               {exporting ? "Exporting..." : "Export"}
             </Button.Ripple>
-          </div>
+          </div> */}
           {loading ? (
             <LoadingComponent />
           ) : (

@@ -34,6 +34,9 @@ const WizardModern = () => {
   const waitingSlipData = location?.state?.row;
   const slipNameFromDashboard = location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;
+  const isAssigned = location.state?.isAssigned ;
+  const isRevenu=location.state?.isRevenu ;
+  const [isAssignedStatus, setIsAssignedStatus] = useState(isAssigned);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,7 +73,7 @@ const WizardModern = () => {
     };
 
     if (uid) fetchData();
-  }, [uid]);
+  }, [uid,isAssignedStatus]);
 
   useEffect(() => {
     console.log(formData);
@@ -107,6 +110,8 @@ const WizardModern = () => {
         <MemberDetails
           formData={{ ...formData.member }}
           slipId={uid}
+          isAssigned={isAssigned}
+          isRevenu={isRevenu}
           stepper={stepper}
           type="wizard-modern"
           slipIID={slipIID}
@@ -115,6 +120,7 @@ const WizardModern = () => {
            waitingSlipData={waitingSlipData}
           fetchLoader={fetchLoader}
           sId={sId?.id}
+          setIsAssignedStatus={setIsAssignedStatus}
         />
       ),
     },
@@ -136,6 +142,7 @@ const WizardModern = () => {
           sId={sId?.id}
           mId={sId?.member?.id}
           member={sId?.member}
+          isAssignedStatus={isAssignedStatus}
         />
       ),
     },
@@ -164,7 +171,7 @@ const WizardModern = () => {
         ref={ref}
         steps={steps}
         options={{
-          linear: true
+          linear: false
           ,
         }}
         instance={(el) => setStepper(el)}

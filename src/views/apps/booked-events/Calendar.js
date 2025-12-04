@@ -178,7 +178,7 @@ const Calendar = (props) => {
 
     dragScroll: true,
 
-dayMaxEvents: 2,
+    dayMaxEvents: 1,
 
     navLinks: true,
 
@@ -275,11 +275,9 @@ dayMaxEvents: 2,
           color={"primary"}
           onClick={(e) => navigate("/addNew_room_booking")}
         >
+          
           Book Rooms
         </Button>
-     
-
-
         <FullCalendar {...calendarOptions} />{" "}
       </CardBody>
     </Card>

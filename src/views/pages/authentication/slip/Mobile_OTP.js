@@ -35,7 +35,6 @@ import { AbilityContext } from "@src/utility/context/Can";
 import { useDispatch } from "react-redux";
 
 // ** Utils
-import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
@@ -157,11 +156,11 @@ const TwoStepsBasic = () => {
       ]);
       navigate(getHomeRouteForLoggedInUser("admin"));
       */
-
       const abilityList=res.data.profile.permissions.map(({action,moduleName})=>({action:action.toLowerCase(),subject:moduleName}))
 
       const data={
         ...{...res.data.profile,
+        role:res.data.profile.roleName?res.data.profile.roleName.toLowerCase():'admin',
         ability:abilityList,
          accessToken: res.data.access,
         refreshToken: res.data.refresh,
@@ -169,7 +168,8 @@ const TwoStepsBasic = () => {
       }
       dispatch(handleLogin(data));
       ability.update(ability)
-      navigate(getHomeRouteForLoggedInUser("admin"));
+      window.location='/';
+      // navigate(getHomeRouteForLoggedInUser("admin"));
     } catch (error) {
       console.log({ error });
       if (error.response) {

@@ -68,7 +68,7 @@ const DashboardRoutes = [
     path: "/dashboard/slip",
     element: <DashboardShip />,
      meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -76,7 +76,7 @@ const DashboardRoutes = [
     path: "/dashboard/slipcategory/:uid",
     element: <DashboardSlipCategory />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -84,7 +84,7 @@ const DashboardRoutes = [
     path: "/dashboard/slipcategory",
     element: <DashboardSlipCategory />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   }, 
@@ -92,7 +92,7 @@ const DashboardRoutes = [
     path: "/dashboard/slip-details",
     element: <DashboardSlipDetails />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -100,7 +100,7 @@ const DashboardRoutes = [
     path: "/dashboard/slip-details/:uid",
     element: <DashboardSlipDetails />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -108,7 +108,7 @@ const DashboardRoutes = [
     path: "slip_Management/sliplist",
     element: <DashboardSlipList />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -116,7 +116,7 @@ const DashboardRoutes = [
     path: "/dashboard/slipdetail_list",
     element: <DashboardSlipDetailList />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -124,7 +124,7 @@ const DashboardRoutes = [
     path: "/dashboard/slip_memberform",
     element: <DashboardSlipMemberForm />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -132,7 +132,7 @@ const DashboardRoutes = [
     path: "/dashboard/slip_memberform/:uid",
     element: <DashboardSlipMemberForm />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -141,7 +141,7 @@ const DashboardRoutes = [
     path: "/dashboard/slipmember_list",
     element: <DashboardSlipMemberList />,
       meta:{
-      subject:'slip management',
+      resource:'slip management',
       action:'view'
     },
   },
@@ -158,12 +158,16 @@ const DashboardRoutes = [
   {
     path: "/dashbord",
     element: <Dashboarddash />,
+    meta:{
+      resource:'dashboard',
+      action:'view'
+    }
   },
 
-  {
-    path: "/dashbord",
-    element: <ParkBoat />,
-  },
+  // {
+  //   path: "/dashbord",
+  //   element: <ParkBoat />,
+  // },
 ];
 
 export default DashboardRoutes;

@@ -241,7 +241,7 @@ const SearchRooms = ({
                 <Toast ref={toast} />
 
                 <CardTitle className="fs-2 fw-bold mb-0">
-                  Available Rooms3 ({roomsList.length})
+                  Available Rooms ({roomsList.length})
                 </CardTitle>
                 {/* )} */}
               </Col>

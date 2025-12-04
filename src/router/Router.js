@@ -2,7 +2,7 @@
 import { lazy } from "react";
 
 // ** Router imports
-import { useRoutes, Navigate } from "react-router-dom";
+import { Navigate, useRoutes } from "react-router-dom";
 
 // ** Layouts
 import BlankLayout from "@layouts/BlankLayout";
@@ -11,7 +11,7 @@ import BlankLayout from "@layouts/BlankLayout";
 import { useLayout } from "@hooks/useLayout";
 
 // ** Utils
-import { getUserData, getHomeRouteForLoggedInUser } from "../utility/Utils";
+import { getHomeRouteForLoggedInUser, getUserData } from "../utility/Utils";
 
 // ** GetRoutes
 import { getRoutes } from "./routes";
@@ -60,7 +60,9 @@ const Router = () => {
     {
       path: "/login",
       element: <BlankLayout />,
+      
       children: [{ path: "/login", element: <LoginEmail /> }],
+      
     },
     {
       path: "/login_password",

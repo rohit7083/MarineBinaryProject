@@ -10,7 +10,7 @@ import navigation from "@src/navigation/vertical";
 
 const VerticalLayout = (props) => {
   // const [menuData, setMenuData] = useState([])
-
+ 
   // ** For ServerSide navigation
   // useEffect(() => {
   //   axios.get(URL).then(response => setMenuData(response.data))

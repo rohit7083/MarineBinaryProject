@@ -127,7 +127,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                 //  disabled={isOffline}
 
                 to="/dashboard/slip_memberform"
-                state={{ stepStatus: row.stepStatus, uid: row.uid }}
+                state={{ stepStatus: row.stepStatus, uid: row.uid , isAssigned: row.isAssigned , isRevenu:row.nonRevenue}}
               >
                 <Edit2 className="me-50" size={15} />
                 <span className="align-middle">Edit</span>

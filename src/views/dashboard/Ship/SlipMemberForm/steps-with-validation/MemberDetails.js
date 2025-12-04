@@ -15,7 +15,7 @@ import React from "react";
 import { ArrowLeft, ArrowRight, UserPlus, Users } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { Spinner, UncontrolledAlert } from "reactstrap";
+import { FormGroup, Spinner, UncontrolledAlert } from "reactstrap";
 import * as yup from "yup";
 // ** Utils
 // ** Reactstrap Imports
@@ -23,6 +23,7 @@ import { Button, Col, Form, FormFeedback, Input, Label, Row } from "reactstrap";
 
 // ** Styles
 import "@styles/react/libs/react-select/_react-select.scss";
+import { useNavigate } from "react-router-dom";
 
 // ** Sweet Alert
 const MySwal = withReactContent(Swal);
@@ -37,6 +38,9 @@ const PersonalInfo = ({
   fetchLoader,
   waitingSlipData,
   sId,
+  isAssigned,
+  isRevenu,
+  setIsAssignedStatus,
 }) => {
   console.log("waitingSlipData", waitingSlipData);
   const toast = useRef(null);
@@ -138,7 +142,7 @@ const PersonalInfo = ({
       secondaryPhoneNumber: null,
     },
   });
-
+  const navigate = useNavigate();
   // Enhanced error handling function
   const handleApiErrors = (error) => {
     if (error.response && error.response.data) {
@@ -224,9 +228,9 @@ const PersonalInfo = ({
         (country) => country.code === formData?.dialCodeCountry
       );
 
-      console.log("countryCode", countryCode);
       const data = {
         ...formData,
+        nonRevenue: isRevenu || false,
         countryCode: countryCode
           ? {
               value: `${countryCode.code}-${countryCode.dial_code}`,
@@ -346,11 +350,11 @@ const PersonalInfo = ({
     const payload = {
       ...data,
       slipId: slipIID || sId,
-      countryCode: countryCodeValue, // Only the dial code like "+93"
-      dialCodeCountry: dialCodeCountry, // Only the country code like "AF"
+      countryCode: countryCodeValue,
+      dialCodeCountry: dialCodeCountry,
+      // nonRevenue: watchRevenue || false,
     };
 
-    // Remove the original countryCode object from payload since we've extracted what we need
     delete payload.countryCode;
 
     // Add back the separated values
@@ -373,7 +377,12 @@ const PersonalInfo = ({
             life: 2000,
           });
           setTimeout(() => {
-            stepper.next();
+            if (watchRevenue === true) {
+              navigate("/dashboard/slipmember_list");
+            } else {
+              stepper.next();
+              setIsAssignedStatus(watchRevenue);
+            }
           }, 2000);
         }
       } else {
@@ -390,7 +399,11 @@ const PersonalInfo = ({
             life: 2000,
           });
           setTimeout(() => {
-            stepper.next();
+            if (watchRevenue === true) {
+              navigate("/dashboard/slipmember_list");
+            } else {
+              stepper.next();
+            }
           }, 2000);
 
           if (waitingSlipData?.id) {
@@ -503,6 +516,9 @@ const PersonalInfo = ({
     dial_code: country.dial_code, // keep dial code separately for later use
   }));
 
+  const watchRevenue = watch("nonRevenue");
+  console.log(watchRevenue);
+
   return (
     <Fragment>
       <Toast ref={toast} />
@@ -525,31 +541,112 @@ const PersonalInfo = ({
           </React.Fragment>
         )}
 
-        <div className="d-flex gap-2 mb-2">
-          <Button
-            onClick={() => {
-              setNewMember(true);
-              setExMember(false);
-            }}
-            color="primary"
-            className="btn-next"
-            size="sm"
-          >
-            <UserPlus className="me-1" size={20} />
-            Add New Member
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => {
-              setExMember(true);
-              setNewMember(false);
-            }}
-            color="primary"
-            className="btn-next"
-          >
-            <Users className="me-1" size={20} />
-            Existing Member
-          </Button>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          {/* LEFT SIDE BUTTONS */}
+          <div className="d-flex gap-2">
+            <Button
+              size="sm"
+              onClick={() => {
+                setNewMember(true);
+                setExMember(false);
+              }}
+              color="primary"
+              className="btn-next"
+            >
+              <UserPlus className="me-1" size={20} />
+              Add New Member
+            </Button>
+
+            <Button
+              size="sm"
+              onClick={() => {
+                setExMember(true);
+                setNewMember(false);
+              }}
+              color="primary"
+              className="btn-next"
+            >
+              <Users className="me-1" size={20} />
+              Existing Member
+            </Button>
+          </div>
+
+          {/* RIGHT SIDE CHECKBOX */}
+          <FormGroup check className="mb-0">
+            <Controller
+              name="nonRevenue"
+              control={control}
+              render={({ field }) => {
+                const disabled = isAssigned && !isRevenu;
+                // let disabled;
+                
+                console.log("checkk statuts", isAssigned, isRevenu);
+
+                // if (isAssigned === true && isRevenu === true) {
+                //   disabled = false;
+                //   console.log("che", false);
+                // } else if (isAssigned === true && isRevenu === false) {
+                //   disabled = true;
+                //   console.log("che", true);
+                // } else if (isAssigned === false && isRevenu === false) {
+                //   disabled = false;
+                //   console.log("che", false);
+                // } else {
+                //   disabled = false;
+                // }
+                return (
+                  <div
+                    className="d-flex align-items-center"
+                    style={{
+                      cursor: disabled ? "not-allowed" : "pointer",
+                      userSelect: "none",
+                      opacity: disabled ? 0.5 : 1,
+                    }}
+                    onClick={() => {
+                      if (!disabled) field.onChange(!field.value);
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "4px",
+                        border: "2px solid black",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight: "6px",
+                        transition: "0.2s ease",
+                        backgroundColor: field.value ? "black" : "transparent",
+                      }}
+                    >
+                      {field.value && (
+                        <span
+                          style={{
+                            color: "white",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            lineHeight: 1,
+                          }}
+                        >
+                          ✓
+                        </span>
+                      )}
+                    </div>
+
+                    <Label
+                      for="checkbox2"
+                      check
+                      className="mb-0"
+                      style={{ cursor: disabled ? "not-allowed" : "pointer" }}
+                    >
+                      Is Revenue
+                    </Label>
+                  </div>
+                );
+              }}
+            />
+          </FormGroup>
         </div>
 
         <>
