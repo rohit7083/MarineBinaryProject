@@ -32,6 +32,7 @@ import { handleLogin } from "@store/authentication";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
+import { getHomeRouteForLoggedInUser } from "@utils";
 import { useDispatch } from "react-redux";
 
 // ** Utils
@@ -168,8 +169,8 @@ const TwoStepsBasic = () => {
       }
       dispatch(handleLogin(data));
       ability.update(ability)
-      window.location='/';
-      // navigate(getHomeRouteForLoggedInUser("admin"));
+      // window.location='/';
+      navigate(getHomeRouteForLoggedInUser("admin"));
     } catch (error) {
       console.log({ error });
       if (error.response) {
