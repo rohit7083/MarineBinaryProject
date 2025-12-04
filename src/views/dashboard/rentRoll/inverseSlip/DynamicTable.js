@@ -752,6 +752,16 @@ const DynamicTable = () => {
     </div>
   );
 
+  const tinyBox = {
+  width: "14px",
+  height: "14px",
+  padding: 0,
+  minWidth: "14px",
+  minHeight: "14px",
+  borderRadius: "3px",
+  marginRight: "4px"
+};
+
   return (
     <Fragment>
       <Card className="overflow-hidden">
