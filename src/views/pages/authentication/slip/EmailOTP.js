@@ -200,7 +200,7 @@ const TwoStepsBasic = () => {
       };
       dispatch(handleLogin(data));
       ability.update(ability);
-      window.location = "/dashbord";
+      window.location = "/crm/marine-resort/dashbord";
     } catch (error) {
       console.log({ error });
       if (error.response) {

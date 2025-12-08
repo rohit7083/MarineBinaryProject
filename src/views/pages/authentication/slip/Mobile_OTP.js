@@ -168,7 +168,7 @@ const TwoStepsBasic = () => {
       }
       dispatch(handleLogin(data));
       ability.update(ability)
-      window.location='/dashbord';
+      window.location='/crm/marine-resort/dashbord';
       // navigate(getHomeRouteForLoggedInUser("admin"));
     } catch (error) {
       console.log({ error });
