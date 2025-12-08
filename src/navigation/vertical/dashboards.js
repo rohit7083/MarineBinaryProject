@@ -37,7 +37,7 @@ export default [
     icon: <Circle size={12} />,
     navLink: "/dashbord",
     action: "view",
-    resource: "slip management",
+    resource: "dashboard",
   },
   {
     id: "Slip",
@@ -452,14 +452,14 @@ export default [
         action: "view",
         resource: "accounting",
       },
-      {
-        id: "Purchase ",
-        title: "Purchase ",
-        icon: <Circle size={12} />,
-        navLink: "/accounting/purchase",
-        action: "view",
-        resource: "accounting",
-      },
+      // {
+      //   id: "Purchase ",
+      //   title: "Purchase ",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/accounting/purchase",
+      //   action: "view",
+      //   resource: "accounting",
+      // },
     ],
   },
 

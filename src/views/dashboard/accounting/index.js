@@ -22,7 +22,11 @@ import {
   InputGroupText,
   Spinner,
 } from "reactstrap";
-import { exportToCSV, exportToExcelHTML } from "../../../utility/exportUtils";
+import {
+  exportToCSV,
+  exportToExcelHTML,
+  exportToPDF,
+} from "../../../utility/exportUtils";
 import PosReport from "./PosReport";
 
 const Index = () => {
@@ -349,17 +353,6 @@ const Index = () => {
             </div>
 
             <div className="col-md-2">
-              {/*    <CardText> Entries per Page</CardText>
-
-              <Select
-                options={pageSizeOptions}
-                onChange={(opt) => setPageSize(opt.value)}
-                value={pageSizeOptions.find((opt) => opt.value === pageSize)}
-                classNamePrefix="select"
-                styles={customSelectStyles}
-              /> */}
-
-              {/* DOWNLOAD DROPDOWN */}
               <CardText> </CardText>
               <Dropdown
                 isOpen={dropdownOpen}
@@ -373,12 +366,10 @@ const Index = () => {
                   <DropdownItem onClick={() => exportToCSV(filteredData)}>
                     Export as CSV
                   </DropdownItem>
-                  {/* <DropdownItem onClick={() => exportToPDF(filteredData)}>
+                  <DropdownItem onClick={() => exportToPDF(filteredData)}>
                     Export as PDF
                   </DropdownItem>
-                  <DropdownItem onClick={() => exportToImage("report-section")}>
-                    Export as Image
-                  </DropdownItem> */}
+
                   <DropdownItem onClick={() => exportToExcelHTML(filteredData)}>
                     Export as Excel
                   </DropdownItem>

@@ -39,7 +39,6 @@ import Countdown from "react-countdown";
 import { useDispatch } from "react-redux";
 
 // ** Utils
-import { getHomeRouteForLoggedInUser } from "@utils";
 import { useContext, useState } from "react";
 
 const TwoStepsBasic = () => {
@@ -160,27 +159,48 @@ const TwoStepsBasic = () => {
       console.log(res);
       // setAuthStatus(res.data.profile.TwoNf);
 
+      // const data = {
+      //   ...{
+      //     ...res.data.profile,
+      //     ability: [
+      //       {
+      //         action: "manage",
+      //         subject: "all",
+      //       },
+      //     ],
+      //   },
+      //   accessToken: res.data.access,
+      //   refreshToken: res.data.refresh,
+      // };
+      // dispatch(handleLogin(data));
+      // ability.update([
+      //   {
+      //     action: "manage",
+      //     subject: "all",
+      //   },
+      // ]);
+      // navigate(getHomeRouteForLoggedInUser("admin"));
+      const abilityList = res.data.profile.permissions.map(
+        ({ action, module }) => ({
+          action: action.toLowerCase(),
+          subject: module,
+        })
+      );
+
       const data = {
         ...{
           ...res.data.profile,
-          ability: [
-            {
-              action: "manage",
-              subject: "all",
-            },
-          ],
+          role: res.data.profile.roleName
+            ? res.data.profile.roleName.toLowerCase()
+            : "admin",
+          ability: abilityList,
+          accessToken: res.data.access,
+          refreshToken: res.data.refresh,
         },
-        accessToken: res.data.access,
-        refreshToken: res.data.refresh,
       };
       dispatch(handleLogin(data));
-      ability.update([
-        {
-          action: "manage",
-          subject: "all",
-        },
-      ]);
-      navigate(getHomeRouteForLoggedInUser("admin"));
+      ability.update(ability);
+      window.location = "/dashbord";
     } catch (error) {
       console.log({ error });
       if (error.response) {

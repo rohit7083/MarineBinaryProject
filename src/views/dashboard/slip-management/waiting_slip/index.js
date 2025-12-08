@@ -1,10 +1,18 @@
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
-import { Activity, ChevronDown, Eye, MoreVertical, Plus, Trash } from "react-feather";
+import {
+  Activity,
+  ChevronDown,
+  Eye,
+  MoreVertical,
+  Plus,
+  Trash,
+} from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -31,6 +39,7 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+        const ability = useContext(AbilityContext);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -100,9 +109,9 @@ const index = () => {
     setRole(value);
   };
 
-  const handleOpen   = (row) => {
+  const handleOpen = (row) => {
     console.log(row);
-    
+
     navigate("/dashboard/slip_memberform", { state: { row } });
   };
 
@@ -269,20 +278,22 @@ const index = () => {
                     <span className="align-middle">Extend</span>
                   </DropdownItem>
                 )} */}
-                  <DropdownItem onClick={() => handleOpen(row)}>
-                    <Activity className="me-50" size={15} />{" "}
-                    <span className="align-middle">Avaliable</span>
+                <DropdownItem onClick={() => handleOpen(row)}>
+                  <Activity className="me-50" size={15} />{" "}
+                  <span className="align-middle">Avaliable</span>
+                </DropdownItem>
+                {ability.can("update", "slip management") ? (
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Eye className="me-50" size={15} />{" "}
+                    <span className="align-middle">Edit</span>
                   </DropdownItem>
-              
-                <DropdownItem onClick={() => handleEdit(row)}>
-                  <Eye className="me-50" size={15} />{" "}
-                  <span className="align-middle">Edit</span>
-                </DropdownItem>
-
-                <DropdownItem onClick={() => handleDelete(row.uid)}>
-                  <Trash className="me-50" size={15} />{" "}
-                  <span className="align-middle">Delete</span>
-                </DropdownItem>
+                ) : null}
+                {ability.can("delete", "slip management") ? (
+                  <DropdownItem onClick={() => handleDelete(row.uid)}>
+                    <Trash className="me-50" size={15} />{" "}
+                    <span className="align-middle">Delete</span>
+                  </DropdownItem>
+                ) : null}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>
@@ -339,6 +350,7 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
+                            {ability.can("create", "slip management") ? 
                   <Link to={"/slip-management/add_WaitingSlip"}>
                     <Button
                       // color="danger"
@@ -349,6 +361,7 @@ const index = () => {
                       <Plus size={14} /> Create Waiting Slip
                     </Button>
                   </Link>
+                  :null}
                 </Col>
               </Row>{" "}
             </div>

@@ -16,7 +16,7 @@ import { AbilityContext } from "@src/utility/context/Can";
 const index = () => {
   // ** Context
   const ability = useContext(AbilityContext);
-    
+
   // ** States
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -225,10 +225,14 @@ const index = () => {
 
               </DropdownMenu>
             </UncontrolledDropdown> */}
-
-            <span style={{ cursor: "pointer" }} onClick={() => handleEdit(row)}>
-              <Edit className="me-50" size={15} />
-            </span>
+            {ability.can("update", "pos") ? (
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => handleEdit(row)}
+              >
+                <Edit className="me-50" size={15} />
+              </span>
+            ) : null}
           </>
         );
       },
@@ -270,7 +274,6 @@ const index = () => {
     return tableData.results.slice(startIndex, endIndex);
   };
 
-
   return (
     <>
       <Card>
@@ -291,21 +294,22 @@ const index = () => {
             </h3>
 
             {/* Right side */}
-            {ability.can("create", "slip management") ?  <div className="d-flex align-items-center gap-2">
-              <Link
-                to="/pos/product_management/add-category"
-                state={{
-                  parentCategoryData: tableData.results,
-                }}
-              >
-                <Button size="sm" color="primary">
-                  <Plus size={15} />
-                  <span className="align-middle">Add Category</span>
-                </Button>
-              </Link>
-              <NavItems />
-            </div>:null}
-          
+            {ability.can("create", "pos") ? (
+              <div className="d-flex align-items-center gap-2">
+                <Link
+                  to="/pos/product_management/add-category"
+                  state={{
+                    parentCategoryData: tableData.results,
+                  }}
+                >
+                  <Button size="sm" color="primary">
+                    <Plus size={15} />
+                    <span className="align-middle">Add Category</span>
+                  </Button>
+                </Link>
+                <NavItems />
+              </div>
+            ) : null}
           </div>
 
           <hr />

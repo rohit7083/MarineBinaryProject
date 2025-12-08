@@ -179,9 +179,7 @@ const RoomPayment = lazy(() =>
   )
 );
 
-const RoomBooking = lazy(() =>
-  import("../../views/apps/booked-events")
-);
+const RoomBooking = lazy(() => import("../../views/apps/booked-events"));
 
 const AddRoomBooking = lazy(() =>
   import(
@@ -264,18 +262,18 @@ export default [
   {
     path: "/marin/slip-management/:uid",
     element: <SlipManagementRoutes />,
-    meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
 
   {
     path: "/marin/slip-management",
     element: <SlipManagementRoutes />,
-     meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
 
@@ -338,84 +336,83 @@ export default [
   {
     path: "/dashboard/pos/product_management/addProduct",
     element: <AddProduct />,
-      meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
     element: <InvoiceAdd />,
     path: "/dashboard/invoice_management/invoice/add",
-    
   },
 
   {
     element: <AddProductCategory />,
     path: "/dashboard/pos/product_management/addproductCategory",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
     element: <AddProductTax />,
     path: "/dashboard/pos/product_management/addtaxes",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <ProductManagement />,
     path: "/dashboard/pos/product_management/",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <AddStocks />,
     path: "/dashboard/pos/product_management/AddStocks",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <ManageStocks />,
     path: "/dashboard/pos/product_management/manageStocks",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <CustomerManagement />,
     path: "/dashboard/pos/customer_management",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <PointOfSale />,
     path: "/dashboard/pos/point_of_sale/shop",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
     element: <VirtualTerminal />,
     path: "/dashboard/pos/virtualTerminal",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
@@ -438,26 +435,26 @@ export default [
   {
     element: <VertualTerminal />,
     path: "/dashboard/pos/point_of_sale/virtual-terminal",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <VendorManage />,
     path: "/pos/VendorManage",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
     element: <VendorAdd />,
     path: "/pos/VendorManage/addVendor",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
@@ -473,44 +470,44 @@ export default [
   {
     element: <AddCategory />,
     path: "/pos/product_management/add-category",
-     meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <ParkingPassListing />,
     path: "/parking_pass",
-     meta:{
-      resource:'parking pass',
-      action:'view'
+    meta: {
+      resource: "parking pass",
+      action: "view",
     },
   },
 
   {
     element: <CreatePass />,
     path: "/parking_pass/add_pass",
-     meta:{
-      resource:'parking pass',
-      action:'view'
+    meta: {
+      resource: "parking pass",
+      action: "view",
     },
   },
   {
     element: <SellPass />,
     path: "/parking_pass/sellpass",
-     meta:{
-      resource:'parking pass',
-      action:'view'
+    meta: {
+      resource: "parking pass",
+      action: "view",
     },
   },
 
   {
     element: <Event_Info />,
     path: "/event_info",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
 
@@ -521,46 +518,54 @@ export default [
   {
     element: <Event_Type />,
     path: "/addEvent_type",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
 
   {
     element: <EventIndex />,
     path: "/event_index",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
 
   {
     element: <CreateEvent />,
     path: "/CreateEvent",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
 
   {
     element: <CreateVenue />,
     path: "/venue",
+     meta: {
+      resource: "event management",
+      action: "view",
+    },
   },
 
   {
     element: <VenueList />,
     path: "/VenueList",
+     meta: {
+      resource: "event management",
+      action: "view",
+    },
   },
 
   {
     element: <Cretae_Event_Type />,
     path: "/eventTypes",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
 
@@ -601,158 +606,160 @@ export default [
 
   {
     element: <VendorTypeList />,
-    path: "/pos/vendor_typeList",   meta:{
-      resource:'pos',
-      action:'view'
+    path: "/pos/vendor_typeList",
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <AddVTypes />,
-    path: "/pos/vendor_typeList/addVendorType",   meta:{
-      resource:'pos',
-      action:'view'
+    path: "/pos/vendor_typeList/addVendorType",
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
     element: <ManageRoomType />,
     path: "/manage_room_types",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
-    
   },
 
   {
     element: <AddRoomType />,
     path: "/add_room_types",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <RoomDetails />,
     path: "/room_details",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <AddRoomDetails />,
     path: "/room_details/add_room_details",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <RoomBooking />,
     path: "/manage_roomBooking",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <AddRoomBooking />,
     path: "/addNew_room_booking",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <BookingListing />,
     path: "/bookingListing",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <SearchRoom />,
     path: "/search-rooms",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
   {
     element: <Checkout />,
     path: "/search-rooms/previewBooking",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
   {
     element: <CheckInDetails />,
     path: "/search-rooms/CheckInDetails",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <RoomPayment />,
     path: "/search-rooms/previewBooking/roomPayment",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <ViewRoomBooking />,
     path: "booking_listing/view",
-     meta:{
-      resource:'room management',
-      action:'view'
+    meta: {
+      resource: "room management",
+      action: "view",
     },
   },
 
   {
     element: <UpdateEvent />,
     path: "event/update",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
 
   {
     element: <AddProductIndex />,
-    path: "/dashboard/pos/product_management/addProduct_index",  meta:{
-      resource:'pos',
-      action:'view'
+    path: "/dashboard/pos/product_management/addProduct_index",
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
 
   {
     element: <ViewSlip />,
     path: "/dashboard/rentroll/view_slip",
-    
-     meta:{
-      resource:'rent roll',
-      action:'view'
+
+    meta: {
+      resource: "rent roll",
+      action: "view",
     },
   },
   {
     element: <InverSlip />,
     path: "/dashboard/rentroll/inverse_slip",
-     meta:{
-      resource:'rent roll',
-      action:'view'
+    meta: {
+      resource: "rent roll",
+      action: "view",
     },
   },
   {
@@ -761,9 +768,9 @@ export default [
     // meta: {
     //   layout: "blank",
     // },
-      meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
@@ -773,9 +780,9 @@ export default [
   {
     element: <EventPaymentList />,
     path: "dashboard/qr-code/event-list",
-     meta:{
-      resource:'event management',
-      action:'view'
+    meta: {
+      resource: "event management",
+      action: "view",
     },
   },
   {
@@ -798,81 +805,81 @@ export default [
   {
     element: <SaleSummery />,
     path: "/sales/sale_summery",
-     meta:{
-      resource:'sales',
-      action:'view'
+    meta: {
+      resource: "sales",
+      action: "view",
     },
   },
 
   {
     element: <SalesTrends />,
     path: "/sales/sale_trends",
-     meta:{
-      resource:'sales',
-      action:'view'
+    meta: {
+      resource: "sales",
+      action: "view",
     },
   },
 
   {
     element: <Report />,
     path: "/accounting/reports",
-      meta:{
-      resource:'accounting',
-      action:'view'
+    meta: {
+      resource: "accounting",
+      action: "view",
     },
   },
 
   {
     element: <Sales />,
     path: "/accounting/sales",
-      meta:{
-      resource:'accounting',
-      action:'view'
+    meta: {
+      resource: "accounting",
+      action: "view",
     },
   },
 
   {
     element: <Ledger />,
     path: "/accounting/ledger",
-      meta:{
-      resource:'accounting',
-      action:'view'
+    meta: {
+      resource: "accounting",
+      action: "view",
     },
   },
 
   {
     element: <Purchase />,
     path: "/accounting/purchase",
-      meta:{
-      resource:'accounting',
-      action:'view'
+    meta: {
+      resource: "accounting",
+      action: "view",
     },
   },
 
   {
     path: "/marin/slip-management/switch-slip-payment",
     element: <SwitchSlipPaymentForm />,
-      meta:{
-      resource:'crm setting',
-      action:'view'
+    meta: {
+      resource: "crm setting",
+      action: "view",
     },
   },
 
   {
     element: <WaitingSlip />,
     path: "/slip-management/waiting_slip",
-      meta:{
-      resource:'crm setting',
-      action:'view'
+    meta: {
+      resource: "crm setting",
+      action: "view",
     },
   },
 
   {
     element: <ViewCustomer />,
     path: "/pos/customer-management/view",
-      meta:{
-      resource:'pos',
-      action:'view'
+    meta: {
+      resource: "pos",
+      action: "view",
     },
   },
   {
@@ -882,36 +889,36 @@ export default [
   {
     element: <EmailSMSsetting />,
     path: "/crm/email_sms_setting",
-      meta:{
-      resource:'crm setting',
-      action:'view'
+    meta: {
+      resource: "crm setting",
+      action: "view",
     },
   },
 
   {
     element: <EmailSMSIndex />,
     path: "/crm/index",
-      meta:{
-      resource:'crm setting',
-      action:'view'
+    meta: {
+      resource: "crm setting",
+      action: "view",
     },
   },
 
   {
     element: <Template />,
     path: "/crm/template/index",
-      meta:{
-      resource:'crm setting',
-      action:'view'
+    meta: {
+      resource: "crm setting",
+      action: "view",
     },
   },
 
   {
     element: <EmailSmsTemplate />,
     path: "/crm/template",
-     meta:{
-      resource:'crm setting',
-      action:'view'
+    meta: {
+      resource: "crm setting",
+      action: "view",
     },
   },
 ];

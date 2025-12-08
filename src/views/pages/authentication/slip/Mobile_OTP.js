@@ -32,7 +32,6 @@ import { handleLogin } from "@store/authentication";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
-import { getHomeRouteForLoggedInUser } from "@utils";
 import { useDispatch } from "react-redux";
 
 // ** Utils
@@ -157,8 +156,8 @@ const TwoStepsBasic = () => {
       ]);
       navigate(getHomeRouteForLoggedInUser("admin"));
       */
-      const abilityList=res.data.profile.permissions.map(({action,moduleName})=>({action:action.toLowerCase(),subject:moduleName}))
-
+      const abilityList=res.data.profile.permissions.map(({action,module})=>({action:action.toLowerCase(),subject:module  }))
+      
       const data={
         ...{...res.data.profile,
         role:res.data.profile.roleName?res.data.profile.roleName.toLowerCase():'admin',
@@ -169,8 +168,8 @@ const TwoStepsBasic = () => {
       }
       dispatch(handleLogin(data));
       ability.update(ability)
-      // window.location='/';
-      navigate(getHomeRouteForLoggedInUser("admin"));
+      window.location='/dashbord';
+      // navigate(getHomeRouteForLoggedInUser("admin"));
     } catch (error) {
       console.log({ error });
       if (error.response) {

@@ -1,14 +1,16 @@
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { ArrowLeft, ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
+
 import withReactContent from "sweetalert2-react-content";
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,6 +21,7 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const ability = useContext(AbilityContext);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -184,22 +187,24 @@ const index = () => {
               Sell
             </Badge> */}
             {/* </span> */}
-
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => handleEdit(row)}
-            >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+            {ability.can("update", "pos") ? (
+              <span
+                color="danger"
+                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                onClick={() => handleEdit(row)}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            ) : null}
+            {ability.can("delete", "pos") ? (
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            ) : null}
           </>
         );
       },
@@ -268,14 +273,16 @@ const index = () => {
               >
                 <Col xs="auto">
                   <Link to={"/pos/vendor_typeList/addVendorType"}>
-                    <Button
-                      // color="danger"
-                      color="primary"
-                      size="sm"
-                      className="text-nowrap mb-1"
-                    >
-                      <Plus size={14} /> Create Vendor Type
-                    </Button>
+                    {ability.can("create", "pos") ? (
+                      <Button
+                        // color="danger"
+                        color="primary"
+                        size="sm"
+                        className="text-nowrap mb-1"
+                      >
+                        <Plus size={14} /> Create Vendor Type
+                      </Button>
+                    ) : null}
                   </Link>
                 </Col>
               </Row>{" "}

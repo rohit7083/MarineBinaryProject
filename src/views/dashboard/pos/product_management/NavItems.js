@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
+import { useContext, useState } from "react";
 import { FolderPlus, Percent, PlusCircle, UserPlus } from "react-feather";
 import { Link } from "react-router-dom";
 import {
@@ -10,6 +11,7 @@ import {
 
 function ProductDropdown() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const ability = useContext(AbilityContext);
 
   const toggle = () => setDropdownOpen((prev) => !prev);
 
@@ -18,16 +20,16 @@ function ProductDropdown() {
       <DropdownToggle size="sm" caret color="primary" outline>
         Product Management
       </DropdownToggle>
-
       <DropdownMenu>
-        <DropdownItem
-          tag={Link}
-          to="/dashboard/pos/product_management/addProduct_index"
-        >
-          <PlusCircle size={16} className="me-2" />
-          Add Product
-        </DropdownItem>
-
+        {ability.can("create", "pos") ? (
+          <DropdownItem
+            tag={Link}
+            to="/dashboard/pos/product_management/addProduct_index"
+          >
+            <PlusCircle size={16} className="me-2" />
+            Add Product
+          </DropdownItem>
+        ) : null}
         <DropdownItem
           tag={Link}
           to="/dashboard/pos/product_management/addproductCategory"

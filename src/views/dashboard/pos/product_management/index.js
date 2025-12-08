@@ -1,9 +1,10 @@
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import NavItems from "./NavItems";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { ChevronDown, Edit, MoreVertical, Package, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -26,6 +27,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const index = () => {
+  const ability = useContext(AbilityContext);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -231,20 +234,24 @@ const index = () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu end container="body">
-                <DropdownItem onClick={() => handleEdit(row)}>
-                  <Edit className="me-50" size={15} />
-                  <span className="align-middle">Edit</span>
-                </DropdownItem>
-
-                <DropdownItem onClick={() => handleStocks(row)}>
-                  <Package className="me-50" size={15} />
-                  <span className="align-middle">Add Stocks</span>
-                </DropdownItem>
-
-                <DropdownItem onClick={() => handleDelete(row.uid)}>
-                  <Trash className="me-50" size={15} />
-                  <span className="align-middle">Delete</span>
-                </DropdownItem>
+                {ability.can("update", "pos") ? (
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Edit className="me-50" size={15} />
+                    <span className="align-middle">Edit</span>
+                  </DropdownItem>
+                ) : null}
+                {ability.can("create", "pos") ? (
+                  <DropdownItem onClick={() => handleStocks(row)}>
+                    <Package className="me-50" size={15} />
+                    <span className="align-middle">Add Stocks</span>
+                  </DropdownItem>
+                ) : null}
+                {ability.can("delete", "pos") ? (
+                  <DropdownItem onClick={() => handleDelete(row.uid)}>
+                    <Trash className="me-50" size={15} />
+                    <span className="align-middle">Delete</span>
+                  </DropdownItem>
+                ) : null}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>

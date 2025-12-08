@@ -2,7 +2,7 @@ import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import {
   Button,
@@ -21,6 +21,7 @@ import {
 } from "reactstrap";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -50,6 +51,7 @@ function SlipDetailsForm({ assigned }) {
       [tooltip]: !prevState[tooltip],
     }));
   };
+  const ability = useContext(AbilityContext);
 
   const [userData, setUserData] = useState({
     slipName: "",
@@ -619,25 +621,27 @@ function SlipDetailsForm({ assigned }) {
 
           {/* Right Section */}
           <div className="d-flex align-items-center gap-2">
-            <div>
-              <img
-                width="20"
-                height="20"
-                id="editTooltip"
-                src="https://img.icons8.com/ios/50/edit--v1.png"
-                alt="edit"
-                onClick={handleEditBtn}
-                style={{ cursor: "pointer" }}
-              />
-              <Tooltip
-                placement="top"
-                isOpen={tooltipOpen.edit}
-                target="editTooltip"
-                toggle={() => toggleTooltip("edit")}
-              >
-                Edit
-              </Tooltip>
-            </div>
+            {ability.can("update", "slip management") ? (
+              <div>
+                <img
+                  width="20"
+                  height="20"
+                  id="editTooltip"
+                  src="https://img.icons8.com/ios/50/edit--v1.png"
+                  alt="edit"
+                  onClick={handleEditBtn}
+                  style={{ cursor: "pointer" }}
+                />
+                <Tooltip
+                  placement="top"
+                  isOpen={tooltipOpen.edit}
+                  target="editTooltip"
+                  toggle={() => toggleTooltip("edit")}
+                >
+                  Edit
+                </Tooltip>
+              </div>
+            ) : null}
           </div>
         </CardHeader>
 

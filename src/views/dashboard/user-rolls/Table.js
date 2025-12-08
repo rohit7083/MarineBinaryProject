@@ -1,11 +1,12 @@
 // ** React Imports
 import { debounce } from "lodash";
-import { Fragment, memo, useCallback, useEffect, useState } from "react";
+import { Fragment, memo, useCallback, useContext, useEffect, useState } from "react";
 
 import { Spinner } from "reactstrap";
 // ** Table Columns
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 // ** Third Party Components
+import { AbilityContext } from "@src/utility/context/Can";
 import DataTable from "react-data-table-component";
 import { ChevronDown, Edit2, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -50,6 +51,7 @@ const DataTableServerSide = () => {
     results: [],
   });
   const [rowDetails, setRowDetails] = useState({ ...defaultRowDetails });
+  const ability = useContext(AbilityContext);
 
   const handleEditClick = (row = {}) => {
     const { show } = rowDetails;
@@ -191,26 +193,29 @@ const DataTableServerSide = () => {
       minWidth: "150px",
       cell: (row) => (
         <>
-          <span
-            color="danger"
-            style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-            // onClick={() => {
-            //   setDataUid(row.uid);
-            //   setDatarow(row);
-            //   setShowModal((x) => !x);
-            // }}
-            onClick={() => handleEditClick(row)}
-          >
-            <Edit2 className="font-medium-3 text-body" />
-          </span>
-
-          <span
-            color="danger"
-            style={{ cursor: "pointer", color: "red" }}
-            onClick={() => handleDelete(row.uid)}
-          >
-            <Trash className="font-medium-3 text-body" />
-          </span>
+          {ability.can("update", "user management") ? (
+            <span
+              color="danger"
+              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+              // onClick={() => {
+              //   setDataUid(row.uid);
+              //   setDatarow(row);
+              //   setShowModal((x) => !x);
+              // }}
+              onClick={() => handleEditClick(row)}
+            >
+              <Edit2 className="font-medium-3 text-body" />
+            </span>
+          ) : null}
+          {ability.can("delete", "user management") ? (
+            <span
+              color="danger"
+              style={{ cursor: "pointer", color: "red" }}
+              onClick={() => handleDelete(row.uid)}
+            >
+              <Trash className="font-medium-3 text-body" />
+            </span>
+          ) : null}
         </>
       ),
     },

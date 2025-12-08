@@ -1,8 +1,9 @@
-import { forwardRef, Fragment, useEffect, useState } from "react";
+import { forwardRef, Fragment, useContext, useEffect, useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { Link, useNavigate } from "react-router-dom";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import NavItems from "../product_management/NavItems";
 
@@ -33,6 +34,7 @@ const BootstrapCheckbox = forwardRef((props, ref) => (
 const DataTableWithButtons = () => {
   const [show, setShow] = useState(false);
   const [data, setData] = useState([]);
+  const ability = useContext(AbilityContext);
 
   const [tooltipOpen, setTooltipOpen] = useState({
     ANP: false,
@@ -123,12 +125,13 @@ const DataTableWithButtons = () => {
           <div className="d-flex mt-md-0 mt-1">
             <div className="d-flex justify-content-end gap-2">
               <div>
-                <Link to="/pos/VendorManage/addVendor">
+              {ability.can("create", "pos") ?  <Link to="/pos/VendorManage/addVendor">
                   <Button size="sm" color="primary">
                     {/* <PlusCircle size={13}/> */}
                     Add Vendor
                   </Button>
                 </Link>
+                :null}
               </div>
               <div>
                 <Link to="/pos/vendor_typeList">

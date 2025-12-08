@@ -1,7 +1,8 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import {
   Calendar,
@@ -33,6 +34,7 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import CancleRooms from "./cancleRooms/CancleRooms";
+
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(15);
@@ -41,6 +43,7 @@ const index = () => {
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
+  const ability = useContext(AbilityContext);
 
   const navigate = useNavigate();
 
@@ -302,41 +305,55 @@ const index = () => {
               </DropdownToggle>
 
               <DropdownMenu end container="body">
-                <DropdownItem onClick={() => handleEdit(row)}>
-                  <Edit className="me-50" size={15} />
-                  <span className="align-middle">Edit</span>
-                </DropdownItem>
-
-                {row?.remainingAmount > 0 && (
-                  <DropdownItem
-                    onClick={() =>
-                      handlePayment({ ...row, setting: "payment" })
-                    }
-                  >
-                    <DollarSign className="me-50" size={15} />{" "}
-                    <span className="align-middle">Payment</span>
+                {ability.can("update", "event management") ? (
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Edit className="me-50" size={15} />
+                    <span className="align-middle">Edit</span>
                   </DropdownItem>
-                )}
+                ) : null}
+
+                {ability.can("create", "event management") ? (
+                  <>
+                    {row?.remainingAmount > 0 && (
+                      <DropdownItem
+                        onClick={() =>
+                          handlePayment({ ...row, setting: "payment" })
+                        }
+                      >
+                        <DollarSign className="me-50" size={15} />{" "}
+                        <span className="align-middle">Payment</span>
+                      </DropdownItem>
+                    )}
+                  </>
+                ) : null}
                 <DropdownItem onClick={() => handlePaymentHistory(row)}>
                   <Calendar className="me-50" size={15} />{" "}
                   <span className="align-middle">View</span>
                 </DropdownItem>
-
-                <DropdownItem onClick={() => handleAddExtraRoom(row)}>
-                  <PlusCircle className="me-50" size={15} />{" "}
-                  <span className="align-middle">Add Extra Room</span>
-                </DropdownItem>
-
-                <DropdownItem onClick={() => handleCancle(row.uid)}>
-                  <Trash2 className="me-50" size={15} />{" "}
-                  <span className="align-middle">cancel Event</span>
-                </DropdownItem>
-                {row?.roomBookings?.length > 0 && (
-                  <DropdownItem onClick={() => handleRoomCancle(row)}>
-                    <Trash className="me-50" size={15} />{" "}
-                    <span className="align-middle">cancel Room</span>
+                {ability.can("create", "event management") ? (
+                  <>
+                    <DropdownItem onClick={() => handleAddExtraRoom(row)}>
+                      <PlusCircle className="me-50" size={15} />{" "}
+                      <span className="align-middle">Add Extra Room</span>
+                    </DropdownItem>
+                  </>
+                ) : null}
+                {ability.can("delete", "event management") ? (
+                  <DropdownItem onClick={() => handleCancle(row.uid)}>
+                    <Trash2 className="me-50" size={15} />{" "}
+                    <span className="align-middle">cancel Event</span>
                   </DropdownItem>
-                )}
+                ) : null}
+                {ability.can("delete", "event management") ? (
+                  <>
+                    {row?.roomBookings?.length > 0 && (
+                      <DropdownItem onClick={() => handleRoomCancle(row)}>
+                        <Trash className="me-50" size={15} />{" "}
+                        <span className="align-middle">cancel Room</span>
+                      </DropdownItem>
+                    )}
+                  </>
+                ) : null}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>
@@ -392,16 +409,18 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Link to={"/CreateEvent"}>
-                    <Button
-                      // color="danger"
-                      color="primary"
-                      size="sm"
-                      className="text-nowrap mb-1"
-                    >
-                      <Plus size={14} /> Create Event
-                    </Button>
-                  </Link>
+                  {ability.can("create", "event management") ? (
+                    <Link to={"/CreateEvent"}>
+                      <Button
+                        // color="danger"
+                        color="primary"
+                        size="sm"
+                        className="text-nowrap mb-1"
+                      >
+                        <Plus size={14} /> Create Event
+                      </Button>
+                    </Link>
+                  ) : null}
                 </Col>
               </Row>{" "}
             </div>

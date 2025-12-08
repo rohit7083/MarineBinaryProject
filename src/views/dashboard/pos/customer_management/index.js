@@ -1,16 +1,16 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import {
   ArrowLeft,
   ChevronDown,
   Edit,
-  Eye,
   MoreVertical,
   Plus,
-  Trash,
+  Trash
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +32,7 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import AddCustomer from "./AddCustomer";
+
 const index = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -42,6 +43,7 @@ const index = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const [row, setRow] = useState(null);
+  const ability = useContext(AbilityContext);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -235,18 +237,24 @@ const index = () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem onClick={() => handleEdit(row)}>
-                  <Edit className="me-50" size={15} />{" "}
-                  <span className="align-middle">Edit</span>
-                </DropdownItem>
-                <DropdownItem onClick={() => handleView(row)}>
-                  <Eye className="me-50" size={15} />{" "}
-                  <span className="align-middle">View</span>
-                </DropdownItem>
-                <DropdownItem onClick={() => handleDelete(row.uid)}>
-                  <Trash className="me-50" size={15} />{" "}
-                  <span className="align-middle">Delete</span>
-                </DropdownItem>
+                {ability.can("update", "pos") ? (
+                  <DropdownItem onClick={() => handleEdit(row)}>
+                    <Edit className="me-50" size={15} />{" "}
+                    <span className="align-middle">Edit</span>
+                  </DropdownItem>
+                ) : null}
+                {/* {ability.can("view", "pos") ? (
+                  <DropdownItem onClick={() => handleView(row)}>
+                    <Eye className="me-50" size={15} />{" "}
+                    <span className="align-middle">View</span>
+                  </DropdownItem>
+                ) : null} */}
+                {ability.can("delete", "pos") ? (
+                  <DropdownItem onClick={() => handleDelete(row.uid)}>
+                    <Trash className="me-50" size={15} />{" "}
+                    <span className="align-middle">Delete</span>
+                  </DropdownItem>
+                ) : null}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>
@@ -317,14 +325,16 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Button
-                    onClick={() => setShow(true)}
-                    color="primary"
-                    size="sm"
-                    className="text-nowrap mb-1"
-                  >
-                    <Plus size={14} /> Add Customer
-                  </Button>
+                  {ability.can("create", "pos") ? (
+                    <Button
+                      onClick={() => setShow(true)}
+                      color="primary"
+                      size="sm"
+                      className="text-nowrap mb-1"
+                    >
+                      <Plus size={14} /> Add Customer
+                    </Button>
+                  ) : null}
                 </Col>
               </Row>{" "}
             </div>

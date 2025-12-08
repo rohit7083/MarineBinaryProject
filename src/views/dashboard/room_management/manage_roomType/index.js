@@ -1,8 +1,9 @@
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -10,7 +11,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
 const index = () => {
+    const ability = useContext(AbilityContext);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -204,22 +208,24 @@ const index = () => {
               Sell
             </Badge> */}
             {/* </span> */}
-
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => handleEdit(row)}
-            >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+            {ability.can("update", "room management") ? (
+              <span
+                color="danger"
+                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                onClick={() => handleEdit(row)}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            ) : null}
+            {ability.can("delete", "room management") ? (
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            ) : null}
           </>
         );
       },
@@ -274,16 +280,18 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Link to={"/add_room_types"}>
-                    <Button
-                      // color="danger"
-                      color="primary"
-                      size="sm"
-                      className="text-nowrap mb-1"
-                    >
-                      <Plus size={14} /> Add Room Type
-                    </Button>
-                  </Link>
+                  {ability.can("create", "room management") ? (
+                    <Link to={"/add_room_types"}>
+                      <Button
+                        // color="danger"
+                        color="primary"
+                        size="sm"
+                        className="text-nowrap mb-1"
+                      >
+                        <Plus size={14} /> Add Room Type
+                      </Button>
+                    </Link>
+                  ) : null}
                 </Col>
               </Row>{" "}
             </div>

@@ -180,7 +180,7 @@ const AddRoles = (props) => {
       <ModalBody className="px-5 pb-5">
         <div className="text-center mb-4">
           <h1>{modalType} Role</h1>
-          <p>Set role permissions Edit</p>
+          <p>Update  Permissions</p>
           {errors?.server && (
             <Fragment>
               <Alert color="danger">
@@ -280,48 +280,7 @@ const AddRoles = (props) => {
                         </div>
                       </td>
                     </tr>
-                    {/* {permissionList &&
-                      Object.keys(permissionList).map((category, index) => {
-                        // console.log({category})
-                        return (
-                          <tr key={index}>
-                            <td className="text-nowrap fw-bolder">
-                              {category}
-                            </td>
-                            <td>
-                              <div className="d-flex">
-                                {permissionList[category].map(
-                                  ({ action, uid }, index) => (
-                                    <div
-                                      key={uid}
-                                      className="form-check me-3 me-lg-5"
-                                    >
-                                      <Controller
-                                        name={`${category}.${[
-                                          index,
-                                        ]}.isSelected`}
-                                        control={control}
-                                        render={({ field }) => (
-                                          <Label>
-                                            <Input
-                                              type="checkbox"
-                                              checked={field.value}
-                                              onChange={(e) =>
-                                                field.onChange(e.target.checked)
-                                              }
-                                            />
-                                            {action}
-                                          </Label>
-                                        )}
-                                      />
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })} */}
+                  
 
                     {permissionList &&
                       Object.keys(permissionList).map((category, catIndex) => (

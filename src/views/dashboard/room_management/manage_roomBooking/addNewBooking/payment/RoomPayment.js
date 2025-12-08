@@ -488,7 +488,7 @@ function Payment({ stepper }) {
         data?.cardSwipeTransactionId
       );
     } else if (paymentModeLabel === "Cash") {
-      formData.append("roomBooking.pin", encrypted);
+      formData.append("events.pin", encrypted);
     } else if (paymentModeLabel === "Cheque21") {
       if (!file) {
         alert("Please select a file first.");

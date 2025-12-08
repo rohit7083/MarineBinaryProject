@@ -1,5 +1,6 @@
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
@@ -23,6 +24,8 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const index = () => {
+    const ability = useContext(AbilityContext);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [searchTerm, setSearchTerm] = useState("");
@@ -225,11 +228,11 @@ const index = () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu end container="body">
-                <DropdownItem onClick={() => handleEdit(row)}>
+           {ability.can("update", "crm setting") ? (      <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit2 className="me-50" size={15} />{" "}
                   <span className="align-middle">Edit</span>
                 </DropdownItem>
-
+           ):null}
                 {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
                     <Trash className="me-50" size={15} />{" "}
                     <span className="align-middle">Delete</span>
@@ -290,7 +293,7 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Link to={"/crm/email_sms_setting"}>
+                         {ability.can("create", "crm setting") ? (     <Link to={"/crm/email_sms_setting"}>
                     <Button
                       // color="danger"
                       color="primary"
@@ -300,6 +303,7 @@ const index = () => {
                       <Settings size={14} /> Create Setting
                     </Button>
                   </Link>
+                         ):null}
                 </Col>
               </Row>{" "}
             </div>

@@ -1,12 +1,13 @@
 import InputPasswordToggle from "@components/input-password-toggle";
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { selectThemeColors } from "@utils";
 import CryptoJS from "crypto-js";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { Mail, Plus, User } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
@@ -31,6 +32,7 @@ import {
   Spinner,
   UncontrolledAlert,
 } from "reactstrap";
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { countries } from "../../../slip-management/CountryCode";
@@ -40,6 +42,8 @@ const RoleCards = () => {
   const [EncryptPin, setEncryptPin] = useState([]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+    const ability = useContext(AbilityContext);
+  
   const {
     reset,
     watch,
@@ -293,17 +297,18 @@ const RoleCards = () => {
 
   return (
     <Fragment>
-      <Row className="px-2 mt-1">
-        <Button
+       <Row className="px-2 mt-1">
+    {ability.can("create", "user management") ?     <Button
           color="primary"
           className="text-nowrap mb-1"
+          size={'sm'}
           onClick={() => {
             setModalType("Add New");
             setShow(true);
           }}
         >
           <Plus size={14} /> Create User
-        </Button>
+        </Button> :null}
       </Row>
       <Modal
         isOpen={show}

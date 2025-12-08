@@ -1,7 +1,8 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -9,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
 const index = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,6 +19,7 @@ const index = () => {
   const [role, setRole] = useState("");
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
+  const ability = useContext(AbilityContext);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -186,21 +189,24 @@ const index = () => {
         };
         return (
           <>
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => handleEdit(row)}
-            >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+            {ability.can("update", "event management") ? (
+              <span
+                color="danger"
+                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                onClick={() => handleEdit(row)}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            ) : null}{" "}
+            {ability.can("delete", "event management") ? (
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            ) : null}
           </>
         );
       },
@@ -255,15 +261,17 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Link to={"/eventTypes"}>
-                    <Button
-                      color="primary"
-                      size="sm"
-                      className="text-nowrap mb-1"
-                    >
-                      <Plus size={14} /> Create Event Type
-                    </Button>
-                  </Link>
+                  {ability.can("create", "event management") ? (
+                    <Link to={"/eventTypes"}>
+                      <Button
+                        color="primary"
+                        size="sm"
+                        className="text-nowrap mb-1"
+                      >
+                        <Plus size={14} /> Create Event Type
+                      </Button>
+                    </Link>
+                  ) : null}
                 </Col>
               </Row>{" "}
             </div>

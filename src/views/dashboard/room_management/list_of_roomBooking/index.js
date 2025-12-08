@@ -1,8 +1,9 @@
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import {
   Calendar,
@@ -28,7 +29,10 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
 const index = () => {
+    const ability = useContext(AbilityContext);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [searchTerm, setSearchTerm] = useState("");
@@ -281,23 +285,32 @@ const index = () => {
                 <MoreVertical size={15} />
               </DropdownToggle>
               <DropdownMenu>
-                {row?.paymentStatus === "success" && (
+                {ability.can("create", "room management") ? (
+                  <>
+                    {row?.paymentStatus === "success" && (
+                      <DropdownItem onClick={() => handleEdit(row)}>
+                        <Calendar className="me-50" size={15} />
+                        <span className="align-middle">Extend</span>
+                      </DropdownItem>
+                    )}
+                  </>
+                ) : null}
+                {ability.can("update", "room management") ? (
+                  <>
+                    {row?.paymentStatus === "Pending" && (
+                      <DropdownItem onClick={() => handlePayment(row)}>
+                        <DollarSign className="me-50" size={15} />{" "}
+                        <span className="align-middle">Payment</span>
+                      </DropdownItem>
+                    )}
+                  </>
+                ) : null}
+                {ability.can("view", "room management") ? (
                   <DropdownItem onClick={() => handleEdit(row)}>
-                    <Calendar className="me-50" size={15} />
-                    <span className="align-middle">Extend</span>
+                    <Eye className="me-50" size={15} />{" "}
+                    <span className="align-middle">View</span>
                   </DropdownItem>
-                )}
-                {row?.paymentStatus === "Pending" && (
-                  <DropdownItem onClick={() => handlePayment(row)}>
-                    <DollarSign className="me-50" size={15} />{" "}
-                    <span className="align-middle">Payment</span>
-                  </DropdownItem>
-                )}
-                <DropdownItem onClick={() => handleEdit(row)}>
-                  <Eye className="me-50" size={15} />{" "}
-                  <span className="align-middle">View</span>
-                </DropdownItem>
-
+                ) : null}
                 {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
                     <Trash className="me-50" size={15} />{" "}
                     <span className="align-middle">Delete</span>

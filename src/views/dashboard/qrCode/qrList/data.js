@@ -1,4 +1,6 @@
 // ** Third Party Components
+import { AbilityContext } from "@src/utility/context/Can";
+import { useContext } from "react";
 import { Edit2, Eye, Trash } from "react-feather";
 import {
   Badge,
@@ -8,7 +10,6 @@ import {
   ModalFooter,
   ModalHeader,
 } from "reactstrap";
-
 // ** QR Code Type Status Colors
 const qrCodeTypeColors = {
   event: "light-primary",
@@ -32,6 +33,7 @@ export const DeleteConfirmationModal = ({
   itemToDelete,
   onConfirmDelete,
 }) => {
+
   return (
     <>
       {isOpen && (
@@ -84,6 +86,8 @@ export const qrCodeColumns = ({
   onDownload,
   onViewQRCode,
 }) => {
+      const ability = useContext(AbilityContext);
+
   return [
     {
       name: "ID",
@@ -166,24 +170,35 @@ export const qrCodeColumns = ({
       minWidth: "200px",
       cell: (row) => (
         <div className="d-flex">
+        {ability.can("view", "qr code generator") ? (
+          
           <span
             style={{ margin: "0.5rem", cursor: "pointer" }}
             onClick={() => onViewDetails(row)}
           >
             <Eye className="font-medium-3 text-body" />
           </span>
+
+        ):null}
+        {ability.can("update", "qr code generator") ? (
+          
           <span
             style={{ margin: "0.5rem", cursor: "pointer" }}
             onClick={() => onEdit(row)}
           >
             <Edit2 className="font-medium-3 text-body" />
           </span>
+
+        ):null}
+          {ability.can("delete", "qr code generator") ? (
+          
           <span
             style={{ margin: "0.5rem", cursor: "pointer", color: "red" }}
             onClick={() => onDelete(row)}
           >
             <Trash className="font-medium-3 text-body" />
           </span>
+        ):null}
         </div>
       ),
     },

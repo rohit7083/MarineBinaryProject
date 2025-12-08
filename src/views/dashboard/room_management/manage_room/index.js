@@ -1,5 +1,6 @@
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
@@ -19,6 +20,7 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const ability = useContext(AbilityContext);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -212,7 +214,7 @@ const index = () => {
               Sell
             </Badge> */}
             {/* </span> */}
-
+ {ability.can("update", "room management") ? (
             <span
               color="danger"
               style={{ margin: "1rem", cursor: "pointer", color: "red" }}
@@ -220,14 +222,17 @@ const index = () => {
             >
               <Edit2 className="font-medium-3 text-body" />
             </span>
-
-            <span
+ ):null}
+          {ability.can("delete", "room management") ? (   <span
               color="danger"
               style={{ cursor: "pointer", color: "red" }}
               onClick={() => handleDelete(row.uid)}
             >
               <Trash className="font-medium-3 text-body" />
             </span>
+
+
+          ):null}
           </>
         );
       },
@@ -282,7 +287,7 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Link to={"/room_details/add_room_details"}>
+         {ability.can("create", "room management") ? (         <Link to={"/room_details/add_room_details"}>
                     <Button
                       // color="danger"
                       color="primary"
@@ -292,6 +297,7 @@ const index = () => {
                       <Plus size={14} /> Add Room Details
                     </Button>
                   </Link>
+         ):null}
                 </Col>
               </Row>{" "}
             </div>

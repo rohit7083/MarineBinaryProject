@@ -1,8 +1,9 @@
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { ChevronDown, Edit2, Plus, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -11,7 +12,10 @@ import { Button, Card, CardBody, Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Add_parkDetails from "../parking_pass/Add_parkDetails";
+
 const index = () => {
+  const ability = useContext(AbilityContext);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
@@ -213,27 +217,29 @@ const index = () => {
               Sell
             </Badge> */}
             {/* </span> */}
-
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => {
-                setMode("edit");
-                setDatarow(row);
-                setDataUid(row.uid);
-                setShow(true);
-              }}
-            >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+            {ability.can("update", "parking pass") ? (
+              <span
+                color="danger"
+                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                onClick={() => {
+                  setMode("edit");
+                  setDatarow(row);
+                  setDataUid(row.uid);
+                  setShow(true);
+                }}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            ) : null}
+            {ability.can("delete", "parking pass") ? (
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            ) : null}
           </>
         );
       },
@@ -288,31 +294,35 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-                  <Button
-                    color="primary"
-                    size="sm"
-                    className="text-nowrap mb-1"
-                    onClick={() => {
-                      setMode("create");
-                      setDatarow(null);
-                      setDataUid(null);
-                      setShow(true);
-                    }}
-                  >
-                    <Plus size={14} /> Create Pass
-                  </Button>
-                </Col>
-
-                <Col xs="auto">
-                  <Link to={"/parking_pass/add_pass"}>
+                  {ability.can("create", "parking pass") ? (
                     <Button
                       color="primary"
                       size="sm"
                       className="text-nowrap mb-1"
+                      onClick={() => {
+                        setMode("create");
+                        setDatarow(null);
+                        setDataUid(null);
+                        setShow(true);
+                      }}
                     >
-                      <Plus size={14} /> Sell Pass
+                      <Plus size={14} /> Create Pass
                     </Button>
-                  </Link>
+                  ) : null}
+                </Col>
+
+                <Col xs="auto">
+                  {ability.can("create", "parking pass") ? (
+                    <Link to={"/parking_pass/add_pass"}>
+                      <Button
+                        color="primary"
+                        size="sm"
+                        className="text-nowrap mb-1"
+                      >
+                        <Plus size={14} /> Sell Pass
+                      </Button>
+                    </Link>
+                  ) : null}
                 </Col>
               </Row>{" "}
             </div>

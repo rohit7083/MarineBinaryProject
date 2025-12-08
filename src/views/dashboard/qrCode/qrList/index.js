@@ -1,4 +1,4 @@
-import { Fragment, memo, useEffect, useRef, useState } from "react";
+import { Fragment, memo, useContext, useEffect, useRef, useState } from "react";
 
 // ** Custom Components
 import AddQRCodeModal from "./AddQr";
@@ -13,7 +13,6 @@ import { qrCodeColumns } from "./data";
 import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
-
 // ** Reactstrap Imports
 import {
   Button,
@@ -33,12 +32,15 @@ import {
 
 // ** Auth
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 
 // ** Delete Confirmation Modal
 import { DeleteConfirmationModal } from "./data";
 
 function Index() {
   // ** States
+  const ability = useContext(AbilityContext);
+
   const [data, setData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [total, setTotal] = useState(0);
@@ -340,9 +342,11 @@ function Index() {
         <CardHeader className="border-bottom">
           <div className="d-flex justify-content-between align-items-center w-100">
             <h3 className="mb-0">QR Code Management</h3>
-            <Button color="primary" onClick={toggleAddQRModal}>
-              Add QR Code
-            </Button>
+            {ability.can("create", "qr code generator") ? (
+              <Button color="primary" size={"sm"} onClick={toggleAddQRModal}>
+                Add QR Code
+              </Button>
+            ) : null}
           </div>
         </CardHeader>
 

@@ -4,9 +4,11 @@ import withReactContent from "sweetalert2-react-content";
 // ** Third Party Components
 
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { Edit, MoreVertical, Trash } from "react-feather";
 
 // ** Reactstrap Imports
+import { useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
   DropdownItem,
@@ -14,7 +16,6 @@ import {
   DropdownToggle,
   UncontrolledDropdown,
 } from "reactstrap";
-
 export let data;
 
 // ** Expandable table component
@@ -73,6 +74,7 @@ export const serverSideColumns = [
     // minWidth: "150px",
     cell: (row) => {
       const MySwal = withReactContent(Swal);
+  const ability = useContext(AbilityContext);
 
       const handleDelete = async (uid) => {
         return MySwal.fire({
@@ -141,14 +143,16 @@ export const serverSideColumns = [
             <MoreVertical size={15} />
           </DropdownToggle>
           <DropdownMenu>
-            <DropdownItem onClick={() => handleEdit(row)}>
+             {ability.can("update", "pos") ? (    <DropdownItem onClick={() => handleEdit(row)}>
               <Edit className="me-50" size={15} />
               <span className="align-middle">Edit</span>
             </DropdownItem>
-            <DropdownItem onClick={() => handleDelete(row.uid)}>
+             ):null}
+        {ability.can("delete", "pos") ? (     <DropdownItem onClick={() => handleDelete(row.uid)}>
               <Trash className="me-50" size={15} />
               <span className="align-middle">Delete</span>
             </DropdownItem>
+        ):null}
           </DropdownMenu>
         </UncontrolledDropdown>
       );

@@ -1,6 +1,7 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, Edit2, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -8,6 +9,7 @@ import { Col, Input, Row, Spinner } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import CreateuserModal from "./CreateUserModal";
+
 const CustomTable = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -25,6 +27,7 @@ const CustomTable = ({ data }) => {
 
   const [loading, setLoading] = useState(true);
   const MySwal = withReactContent(Swal);
+  const ability = useContext(AbilityContext);
 
   async function fetchTableData() {
     try {
@@ -187,28 +190,31 @@ const CustomTable = ({ data }) => {
         };
         return (
           <>
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => {
-                setShowModal(false);
-                setTimeout(() => {
-                  setDataUid(row.uid);
-                  setDatarow(row);
-                  setShowModal(true);
-                }, 0);
-              }}
-            >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
+            {ability.can("update", "user management") ? (
+              <span
+                color="danger"
+                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                onClick={() => {
+                  setShowModal(false);
+                  setTimeout(() => {
+                    setDataUid(row.uid);
+                    setDatarow(row);
+                    setShowModal(true);
+                  }, 0);
+                }}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            ) : null}
+            {ability.can("delete", "user management") ? (
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            ) : null}
           </>
         );
       },

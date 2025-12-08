@@ -55,6 +55,7 @@
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^2.0.1",
     "jquery": "^3.6.0",
+    "js-html2pdf": "^1.1.4",
     "jsonwebtoken": "8.5.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",

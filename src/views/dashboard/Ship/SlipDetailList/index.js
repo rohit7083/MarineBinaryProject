@@ -1,6 +1,7 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { Fragment, memo, useEffect, useState } from "react";
+import { Fragment, memo, useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { ChevronDown, Plus } from "react-feather";
 import ReactPaginate from "react-paginate";
@@ -22,6 +23,7 @@ const DataTableServerSide = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const ability = useContext(AbilityContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -122,11 +124,11 @@ const DataTableServerSide = () => {
       <Card>
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Details</CardTitle>
-          <Link to="/dashboard/slip-details">
+       {ability.can("create", "slip management") ?    <Link to="/dashboard/slip-details">
             <Button.Ripple color="primary" size="sm">
               <Plus size={14} /> Add Slip Details
             </Button.Ripple>
-          </Link>
+          </Link> :null}
         </CardHeader>
 
         {/* Filter and Pagination Controls */}

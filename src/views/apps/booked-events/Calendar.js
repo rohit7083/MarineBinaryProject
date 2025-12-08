@@ -1,5 +1,5 @@
 // ** React Import
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useContext, useEffect, useRef, useState } from "react";
 
 import "@fullcalendar/react/dist/vdom";
 import useJwt from "@src/auth/jwt/useJwt";
@@ -13,6 +13,7 @@ import FullCalendar from "@fullcalendar/react";
 import "@fullcalendar/react/dist/vdom";
 import timeGridPlugin from "@fullcalendar/timegrid";
 // ** Third Party Components
+import { AbilityContext } from "@src/utility/context/Can";
 import { Menu } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, CardBody } from "reactstrap";
@@ -20,6 +21,7 @@ import { Button, Card, CardBody } from "reactstrap";
 const Calendar = (props) => {
   // ** Refs
   const calendarRef = useRef(null);
+  const ability = useContext(AbilityContext);
 
   // ** Props
   const {
@@ -270,7 +272,7 @@ const Calendar = (props) => {
     <Card className="shadow-none border-0 ">
       <CardBody className="">
         <Toast ref={toast} />
-        <Button
+     {ability.can("create", "room management") ? (     <Button
           size={"sm"}
           color={"primary"}
           onClick={(e) => navigate("/addNew_room_booking")}
@@ -278,6 +280,7 @@ const Calendar = (props) => {
           
           Book Rooms
         </Button>
+     ):null}
         <FullCalendar {...calendarOptions} />{" "}
       </CardBody>
     </Card>

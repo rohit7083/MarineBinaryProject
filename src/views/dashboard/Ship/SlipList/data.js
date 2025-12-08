@@ -1,32 +1,17 @@
 // ** Custom Components
-import Avatar from "@components/avatar";
+import { AbilityContext } from "@src/utility/context/Can";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 // ** Third Party Components
-import axios from "axios";
 import {
-  MoreVertical,
-  Edit,
-  FileText,
-  Archive,
-  Trash,
   Edit2,
-  Eye,
+  Trash
 } from "react-feather";
-import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
-import {
-  Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  Button,
-} from "reactstrap";
 import useJwt from "@src/auth/jwt/useJwt";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 
 const states = [
   "success",
@@ -118,6 +103,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
       const [data, setData] = useState([]);
 
       const MySwal = withReactContent(Swal);
+  const ability = useContext(AbilityContext);
 
       const handleDelete = async (uid) => {
         return MySwal.fire({
@@ -187,7 +173,8 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 
       return (
         <div className="d-flex">
-          <Link
+        {ability.can("update", "slip management") ?
+           <Link
             to={`/dashboard/slipcategory`} // Don't pass UID in the path
             state={{
               shipTypeName: row.shipTypeName,
@@ -202,6 +189,8 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
               <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
+:null}
+        {ability.can("delete", "slip management") ?
 
           <Link>
             <span
@@ -211,7 +200,8 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
             >
               <Trash className="font-medium-3 text-body" />
             </span>
-          </Link>
+          </Link> :null}
+
         </div>
       );
     },

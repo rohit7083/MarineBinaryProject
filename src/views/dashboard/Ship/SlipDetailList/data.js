@@ -1,34 +1,31 @@
 // ** Custom Components
 import Avatar from "@components/avatar";
+import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 // ** Third Party Components
-import axios from "axios";
+import { AbilityContext } from "@src/utility/context/Can";
+
 import {
-  MoreVertical,
-  Edit,
-  FileText,
   Archive,
-  Trash,
+  Edit,
   Edit2,
   Eye,
+  FileText,
+  MoreVertical,
+  Trash,
 } from "react-feather";
-import { Trash2 } from "react-feather";
 // ** Reactstrap Imports
+import useJwt from "@src/auth/jwt/useJwt";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 import {
   Badge,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
   DropdownItem,
-  Button,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown
 } from "reactstrap";
-import useJwt from "@src/auth/jwt/useJwt";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-
 // ** Vars
 const states = [
   "success",
@@ -287,6 +284,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
     //minWidth: "150px",
     cell: (row) => {
       const MySwal = withReactContent(Swal);
+  const ability = useContext(AbilityContext);
 
       const handleDelete = async (uid) => {
         // Show confirmation modal
@@ -354,6 +352,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
           </Link>
 
           {/* Edit Button */}
+           {ability.can("update", "slip management") ? (
           <Link
             style={{ margin: "0.5rem" }}
             to={`/dashboard/slip-details`}
@@ -363,17 +362,20 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
               <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
-
-          <Link style={{ margin: "0.5rem" }}>
-            {" "}
-            <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
-          </Link>
+          
+           ): null}
+          {ability.can("delete", "slip management") ? (
+            <Link style={{ margin: "0.5rem" }}>
+              {" "}
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            </Link>
+          ) : null}
         </div>
       );
     },

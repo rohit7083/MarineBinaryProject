@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 // ** Table Data & Columns
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
@@ -8,6 +8,7 @@ import withReactContent from "sweetalert2-react-content";
 
 import { serverSideColumns } from "./Data";
 // ** Add New Modal Component
+import { AbilityContext } from "@src/utility/context/Can";
 import AddTax from "./AddTax";
 
 // ** Third Party Components
@@ -44,6 +45,8 @@ const MySwal = withReactContent(Swal);
 
 const DataTableWithButtons = () => {
   // const [modal, setModal] = useState(false);
+    const ability = useContext(AbilityContext);
+  
   const [isDataUpdated, setIsDataUpdated] = useState(false);
   const [show, setShow] = useState(false);
   const [data, setData] = useState([]);
@@ -225,14 +228,18 @@ const DataTableWithButtons = () => {
               <MoreVertical size={15} />
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem onClick={() => handleEdit(row)}>
-                <Edit className="me-50" size={15} />
-                <span className="align-middle">Edit</span>
-              </DropdownItem>
-              <DropdownItem onClick={() => handleDelete(row.uid)}>
-                <Trash className="me-50" size={15} />
-                <span className="align-middle">Delete</span>
-              </DropdownItem>
+              {ability.can("update", "pos") ? (
+                <DropdownItem onClick={() => handleEdit(row)}>
+                  <Edit className="me-50" size={15} />
+                  <span className="align-middle">Edit</span>
+                </DropdownItem>
+              ) : null}
+              {ability.can("delete", "pos") ? (
+                <DropdownItem onClick={() => handleDelete(row.uid)}>
+                  <Trash className="me-50" size={15} />
+                  <span className="align-middle">Delete</span>
+                </DropdownItem>
+              ) : null}
             </DropdownMenu>
           </UncontrolledDropdown>
         );
@@ -260,16 +267,17 @@ const DataTableWithButtons = () => {
 
           {/* Right side */}
           <div className="d-flex align-items-center gap-2 mt-2 mt-md-0">
-            <Button
-              color="primary"
-              size="sm"
-              onClick={() => setShow(true)}
-              className="d-flex align-items-center gap-1"
-            >
-              <Plus size={15} />
-              <span>Add Taxes</span>
-            </Button>
-
+            {ability.can("create", "pos") ? (
+              <Button
+                color="primary"
+                size="sm"
+                onClick={() => setShow(true)}
+                className="d-flex align-items-center gap-1"
+              >
+                <Plus size={15} />
+                <span>Add Taxes</span>
+              </Button>
+            ) : null}
             <NavItems />
           </div>
         </CardHeader>

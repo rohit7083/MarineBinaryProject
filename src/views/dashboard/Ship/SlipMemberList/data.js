@@ -1,6 +1,7 @@
 // ** Custom Components
 import useJwt from "@src/auth/jwt/useJwt";
-import { useState } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
+import { useContext, useState } from "react";
 import { Edit2, Eye, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import {
@@ -11,7 +12,6 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import { CompactModal, SuccessModal } from "../../CompactModal"; // ** Reactstrap Imports
-
 // ** Vars
 const states = [
   "success",
@@ -82,6 +82,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
       const [data, setData] = useState([]);
       const [activeModal, setActiveModal] = useState(null); // null or uid to delete
       const [showSuccess, setShowSuccess] = useState(null); // null or uid to delete
+  const ability = useContext(AbilityContext);
 
       return (
         <div
@@ -110,28 +111,36 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 
             <DropdownMenu>
               {/* View */}
-              <DropdownItem
-                tag={Link}
-                //  disabled={isOffline}
+              {ability.can("view", "slip management") ? (
+                <DropdownItem
+                  tag={Link}
+                  //  disabled={isOffline}
 
-                to="/marin/slip-management"
-                state={{ slipData: row, uid: row?.uid }}
-              >
-                <Eye className="me-50" size={15} />
-                <span className="align-middle">View</span>
-              </DropdownItem>
-
+                  to="/marin/slip-management"
+                  state={{ slipData: row, uid: row?.uid }}
+                >
+                  <Eye className="me-50" size={15} />
+                  <span className="align-middle">View</span>
+                </DropdownItem>
+              ) : null}
               {/* Edit */}
-              <DropdownItem
-                tag={Link}
-                //  disabled={isOffline}
+              {ability.can("update", "slip management") ? (
+                <DropdownItem
+                  tag={Link}
+                  //  disabled={isOffline}
 
-                to="/dashboard/slip_memberform"
-                state={{ stepStatus: row.stepStatus, uid: row.uid , isAssigned: row.isAssigned , isRevenu:row.nonRevenue}}
-              >
-                <Edit2 className="me-50" size={15} />
-                <span className="align-middle">Edit</span>
-              </DropdownItem>
+                  to="/dashboard/slip_memberform"
+                  state={{
+                    stepStatus: row.stepStatus,
+                    uid: row.uid,
+                    isAssigned: row.isAssigned,
+                    isRevenu: row.nonRevenue,
+                  }}
+                >
+                  <Edit2 className="me-50" size={15} />
+                  <span className="align-middle">Edit</span>
+                </DropdownItem>
+              ) : null}
 
               {/* Offline */}
               {/* <DropdownItem

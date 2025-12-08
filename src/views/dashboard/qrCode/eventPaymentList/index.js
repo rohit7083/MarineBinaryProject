@@ -691,6 +691,7 @@ function Index() {
               color="primary"
               onClick={handleExportToExcel}
               disabled={loading || filteredData.length === 0}
+              size={'sm'}
             >
               <Download size={14} className="me-1" />
               Export to Excel ({filteredData.length})

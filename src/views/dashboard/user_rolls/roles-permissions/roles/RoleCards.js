@@ -1,10 +1,11 @@
 //============ Create Roles ===================
 // ** React Imports
+import { AbilityContext } from "@src/utility/context/Can";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Alert,
@@ -21,7 +22,6 @@ import {
   Table,
   UncontrolledTooltip,
 } from "reactstrap";
-
 // ** Third Party Components
 import { Info, Plus, X } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
@@ -52,6 +52,7 @@ const indexes = {
 const AddRoles = ({ props, refreshTable }) => {
   // ** Props
   // const { show, toggle, uid, modalType, row } = props;
+  const ability = useContext(AbilityContext);
 
   const [show, setShow] = useState(false);
   const toast = useRef(null);
@@ -173,15 +174,42 @@ const AddRoles = ({ props, refreshTable }) => {
         const res = await useJwt.permission();
         const { result } = res?.data.content;
 
+        // let data = structurePermissionList(result);
+
+        // if (data && Object.keys(data).length) {
+        //   const { permissionIds, roleName, uid } = data;
+
+        //   const updatedList = handleUpdatePermissionList(permissionIds, {
+        //     ...data,
+        //   });
+        //   setPermissionList({ ...updatedList });
+        //   reset({
+        //     roleName,
+        //     ...updatedList,
+        //     uid,
+        //   });
+        // }
         let data = structurePermissionList(result);
 
         if (data && Object.keys(data).length) {
           const { permissionIds, roleName, uid } = data;
 
-          const updatedList = handleUpdatePermissionList(permissionIds, {
+          let updatedList = handleUpdatePermissionList(permissionIds, {
             ...data,
           });
+
+          // === FORCE DASHBOARD VIEW DEFAULT SELECTED + DISABLED ===
+          const dashboardKey = Object.keys(updatedList).find(
+            (key) => key.toLowerCase() === "dashboard"
+          );
+
+          if (dashboardKey && updatedList[dashboardKey][1]) {
+            updatedList[dashboardKey][1].isSelected = true; // force checked
+            updatedList[dashboardKey][1].disabled = true; // mark as disabled
+          }
+
           setPermissionList({ ...updatedList });
+
           reset({
             roleName,
             ...updatedList,
@@ -215,15 +243,18 @@ const AddRoles = ({ props, refreshTable }) => {
   return (
     <Fragment>
       <Row className="px-2">
-        <Button
-          color="primary"
-          className="text-nowrap mb-1"
-          onClick={() => {
-            toggle();
-          }}
-        >
-          <Plus size={14} /> Add New Role
-        </Button>
+        {ability.can("create", "user management") ? (
+          <Button
+            color="primary"
+            size={"sm"}
+            className="text-nowrap mb-1"
+            onClick={() => {
+              toggle();
+            }}
+          >
+            <Plus size={14} /> Add New Role
+          </Button>
+        ) : null}
       </Row>
 
       <Modal
@@ -337,25 +368,61 @@ const AddRoles = ({ props, refreshTable }) => {
 
                                   const { action, uid } = data;
 
+                                  // === Permission Hierarchy ===
+                                  // 0 = CREATE, 1 = VIEW, 2 = UPDATE, 3 = DELETE
+                                  const enforcePermissionRules = (checked) => {
+                                    // If CREATE / UPDATE / DELETE → force VIEW checked
+                                    if (checked && index !== 1) {
+                                      setValue(
+                                        `${category}.1.isSelected`,
+                                        true
+                                      );
+                                    }
+
+                                    // If VIEW is being unchecked → block it if others active
+                                    if (!checked && index === 1) {
+                                      const c = watch(
+                                        `${category}.0.isSelected`
+                                      );
+                                      const u = watch(
+                                        `${category}.2.isSelected`
+                                      );
+                                      const d = watch(
+                                        `${category}.3.isSelected`
+                                      );
+
+                                      if (c || u || d) {
+                                        setValue(
+                                          `${category}.1.isSelected`,
+                                          true
+                                        );
+                                      }
+                                    }
+                                  };
+
                                   return (
                                     <div
                                       key={uid}
                                       className="form-check me-3 me-lg-5"
                                     >
                                       <Controller
-                                        name={`${category}.${[
-                                          index,
-                                        ]}.isSelected`}
+                                        name={`${category}.${index}.isSelected`}
                                         control={control}
                                         render={({ field }) => (
                                           <Label>
                                             <Input
                                               type="checkbox"
                                               checked={field.value}
-                                              onChange={(e) =>
-                                                field.onChange(e.target.checked)
-                                              }
+                                              disabled={data.disabled === true}
+                                              onChange={(e) => {
+                                                if (data.disabled) return; // block manual toggle
+                                                const checked =
+                                                  e.target.checked;
+                                                field.onChange(checked);
+                                                enforcePermissionRules(checked);
+                                              }}
                                             />
+
                                             {action}
                                           </Label>
                                         )}
