@@ -212,21 +212,7 @@ function SlipDetailsForm({ assigned }) {
 
             return orderedDimensions;
           })(),
-          overDueAmountFor7Days:
-            parseFloat(userData.overDueAmountFor7Days) || 0,
-          overDueChargesFor7Days: selections.overDueChargesFor7Days,
-          overDueAmountFor15Days:
-            parseFloat(userData.overDueAmountFor15Days) || 0,
-          overDueChargesFor15Days: selections.overDueChargesFor15Days,
-          overDueAmountFor30Days:
-            parseFloat(userData.overDueAmountFor30Days) || 0,
-          overDueChargesFor30Days: selections.overDueChargesFor30Days,
-          overDueAmountForNotice:
-            parseFloat(userData.overDueAmountForNotice) || 0,
-          overDueChargesForNotice: selections.overDueChargesForNotice,
-          overDueAmountForAuction:
-            parseFloat(userData.overDueAmountForAuction) || 0,
-          overDueChagesForAuction: selections.overDueChagesForAuction,
+         
         };
 
         console.log("payload", payload);
@@ -351,91 +337,7 @@ function SlipDetailsForm({ assigned }) {
       }
     }
 
-    if (
-      !userData.overDueAmountFor7Days ||
-      isNaN(userData.overDueAmountFor7Days)
-    ) {
-      newErrors.overDueAmountFor7Days = "Please enter a valid number.";
-    } else if (userData.overDueAmountFor7Days <= 0) {
-      newErrors.overDueAmountFor7Days = "Amount must be greater than zero.";
-    } else if (
-      selections.overDueChargesFor7Days === "Percentage" &&
-      userData.overDueAmountFor7Days > 100
-    ) {
-      newErrors.overDueAmountFor7Days =
-        "Percentage amount must be less than or equal to 100.";
-    } else if (!selections.overDueChargesFor7Days) {
-      newErrors.overDueAmountFor7Days = "Please select a type.";
-    }
-
-    if (
-      !userData.overDueAmountFor15Days ||
-      isNaN(userData.overDueAmountFor15Days)
-    ) {
-      newErrors.overDueAmountFor15Days = "Please enter a valid number.";
-    } else if (userData.overDueAmountFor15Days <= 0) {
-      newErrors.overDueAmountFor15Days = "Amount must be greater than zero.";
-    } else if (
-      selections.overDueChargesFor15Days === "Percentage" &&
-      userData.overDueAmountFor15Days > 100
-    ) {
-      newErrors.overDueAmountFor15Days =
-        "Percentage amount must be less than or equal to 100.";
-    } else if (!selections.overDueChargesFor15Days) {
-      newErrors.overDueAmountFor15Days = "Please select a type.";
-    }
-
-    if (
-      !userData.overDueAmountFor30Days ||
-      isNaN(userData.overDueAmountFor30Days)
-    ) {
-      newErrors.overDueAmountFor30Days = "Please enter a valid number.";
-    } else if (userData.overDueAmountFor30Days <= 0) {
-      newErrors.overDueAmountFor30Days = "Amount must be greater than zero.";
-    } else if (
-      selections.overDueChargesFor30Days === "Percentage" &&
-      userData.overDueAmountFor30Days > 100
-    ) {
-      newErrors.overDueAmountFor30Days =
-        "Percentage amount must be less than or equal to 100.";
-    } else if (!selections.overDueChargesFor30Days) {
-      newErrors.overDueAmountFor30Days = "Please select a type.";
-    }
-
-    if (
-      !userData.overDueAmountForNotice ||
-      isNaN(userData.overDueAmountForNotice)
-    ) {
-      newErrors.overDueAmountForNotice = "Please enter a valid number.";
-    } else if (userData.overDueAmountForNotice <= 0) {
-      newErrors.overDueAmountForNotice = "Amount must be greater than zero.";
-    } else if (
-      selections.overDueChargesForNotice === "Percentage" &&
-      userData.overDueAmountForNotice > 100
-    ) {
-      newErrors.overDueAmountForNotice =
-        "Percentage amount must be less than or equal to 100.";
-    } else if (!selections.overDueChargesForNotice) {
-      newErrors.overDueAmountForNotice = "Please select a type.";
-    }
-
-    if (
-      !userData.overDueAmountForAuction ||
-      isNaN(userData.overDueAmountForAuction)
-    ) {
-      newErrors.overDueAmountForAuction = "Please enter a valid number.";
-    } else if (userData.overDueAmountForAuction <= 0) {
-      newErrors.overDueAmountForAuction = "Amount must be greater than zero.";
-    } else if (
-      selections.overDueChagesForAuction === "Percentage" &&
-      userData.overDueAmountForAuction > 100
-    ) {
-      newErrors.overDueAmountForAuction =
-        "Percentage amount must be less than or equal to 100.";
-    } else if (!selections.overDueChagesForAuction) {
-      newErrors.overDueAmountForAuction = "Please select a type.";
-    }
-
+   
     return newErrors;
   };
 
@@ -477,7 +379,6 @@ function SlipDetailsForm({ assigned }) {
           const result = resp.data.content;
           setSelectedSlip(result);
           console.log(result);
-
           if (result) {
             if (result && result.uid === uid) {
               setUserData({
@@ -490,11 +391,11 @@ function SlipDetailsForm({ assigned }) {
                 marketAnnualPrice: result.marketAnnualPrice,
                 marketMonthlyPrice: result.marketMonthlyPrice,
                 amps: result.amps,
-                overDueAmountFor7Days: result.overDueAmountFor7Days,
-                overDueAmountFor15Days: result.overDueAmountFor15Days,
-                overDueAmountFor30Days: result.overDueAmountFor30Days,
-                overDueAmountForNotice: result.overDueAmountForNotice,
-                overDueAmountForAuction: result.overDueAmountForAuction,
+                overDueAmountFor7Days: result?.category?.overDueAmountFor7Days,
+                overDueAmountFor15Days: result?.category?.overDueAmountFor15Days,
+                overDueAmountFor30Days: result?.category?.overDueAmountFor30Days,
+                overDueAmountForNotice: result?.category?.overDueAmountForNotice,
+                overDueAmountForAuction: result?.category?.overDueAmountForAuction,
               });
               setCurrentSlipName(result.slipName);
             }
@@ -508,11 +409,11 @@ function SlipDetailsForm({ assigned }) {
             });
 
             setSelections({
-              overDueChargesFor7Days: result.overDueChargesFor7Days,
-              overDueChargesFor15Days: result.overDueChargesFor15Days,
-              overDueChargesFor30Days: result.overDueChargesFor30Days,
-              overDueChargesForNotice: result.overDueChargesForNotice,
-              overDueChagesForAuction: result.overDueChagesForAuction,
+              overDueChargesFor7Days: result?.category?.overDueChargesFor7Days,
+              overDueChargesFor15Days: result?.category?.overDueChargesFor15Days,
+              overDueChargesFor30Days: result?.category?.overDueChargesFor30Days,
+              overDueChargesForNotice: result?.category?.overDueChargesForNotice,
+              overDueChagesForAuction: result?.category?.overDueChargesForAuction,
             });
           }
         } catch (error) {
@@ -969,7 +870,7 @@ function SlipDetailsForm({ assigned }) {
                 <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
               </Col>
             </Row>
-
+ <fieldset disabled={true}>
             <Row className="mb-1">
               <Label sm="3" style={{ opacity: 1 }} for="marketMonthlyPrice">
                 7 Days Charges
@@ -1038,7 +939,6 @@ function SlipDetailsForm({ assigned }) {
                         overDueAmountFor7Days: sevenDays,
                       }));
                     }}
-                    placeholder="Enter 7 Days Charges"
                     invalid={!!errors.overDueAmountFor7Days}
                   />
                   <FormFeedback>{errors.overDueAmountFor7Days}</FormFeedback>
@@ -1112,7 +1012,6 @@ function SlipDetailsForm({ assigned }) {
                         overDueAmountFor15Days: fiftinDays,
                       }));
                     }}
-                    placeholder="Enter 15 Days Charges"
                     invalid={!!errors.overDueAmountFor15Days}
                   />
                   <FormFeedback>{errors.overDueAmountFor15Days}</FormFeedback>
@@ -1177,7 +1076,6 @@ function SlipDetailsForm({ assigned }) {
                     disabled={assigned ? true : View}
                     style={getReadOnlyStyle()}
                     name="overDueAmountFor30Days"
-                    placeholder="Enter 30 Days Charges"
                     value={userData.overDueAmountFor30Days || ""}
                     onChange={(e) => {
                       let thirty = e.target.value;
@@ -1260,7 +1158,6 @@ function SlipDetailsForm({ assigned }) {
                         overDueAmountForNotice: noticeCharge,
                       }));
                     }}
-                    placeholder="Enter Notice Charges"
                     invalid={!!errors.overDueAmountForNotice}
                   />
                   <FormFeedback>{errors.overDueAmountForNotice}</FormFeedback>
@@ -1325,7 +1222,6 @@ function SlipDetailsForm({ assigned }) {
                     style={getReadOnlyStyle()}
                     disabled={assigned ? true : View}
                     name="overDueAmountForAuction"
-                    placeholder="Enter Auction Charges"
                     value={userData.overDueAmountForAuction || ""}
                     onChange={(e) => {
                       let AuctionCharge = e.target.value;
@@ -1341,7 +1237,7 @@ function SlipDetailsForm({ assigned }) {
                 </div>
               </Col>
             </Row>
-
+</fieldset>
             <Row>
               <Col className="d-flex mt-2 justify-content-end gap-2">
                 <Button
