@@ -88,6 +88,14 @@ export default [
         action: "view",
         resource: "slip management",
       },
+        {
+        id: "Auto payment List",
+        title: "Auto payment List ",
+        icon: <Circle size={12} />,
+        navLink: "/autopaylist",
+        action: "view",
+        resource: "slip management",
+      },
     ],
   },
   {
@@ -421,6 +429,12 @@ export default [
     ],
   },
 
+
+
+
+  
+  
+
   {
     id: "Accounting",
     title: "Accounting",
@@ -430,12 +444,7 @@ export default [
     action: "view",
     resource: "accounting",
     children: [
-      // {
-      //   id: "Ledger",
-      //   title: "Ledger",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/accounting/Ledger",
-      // },
+      
       {
         id: "Reports",
         title: "Reports",
@@ -451,6 +460,14 @@ export default [
         navLink: "/accounting/sales",
         action: "view",
         resource: "accounting",
+      },
+      {
+        id: "Ledger",
+        title: "Ledger",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/Ledger",
+         action: "view",
+        resource: "accounting", 
       },
       // {
       //   id: "Purchase ",
@@ -488,6 +505,27 @@ export default [
         action: "view",
         resource: "crm setting",
       },
+    ],
+  },
+
+  {
+    id: "BranchManagement",
+    title: "Manage Branch",
+    icon: <BarChart2 size={12} />,
+    // navLink: "/sales",
+    badge: "light-warning",
+    action: "view",
+    resource: "sales",
+    children: [
+      {
+        id: "addbranch",
+        title: "Add Branch",
+        icon: <Circle size={12} />,
+        navLink: "/branch",
+        action: "view",
+        resource: "sales",
+      },
+     
     ],
   },
 ];
