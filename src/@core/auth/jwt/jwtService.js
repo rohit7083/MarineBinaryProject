@@ -959,9 +959,9 @@ export default class JwtService {
     return axios.post(this.jwtConfig.createBranch, ...args);
   }
 
-  getBranch(uid) {
-    return axios.get(`${this.jwtConfig.getBranch}${uid}`);
-  }
+  // getBranch(uid) {
+  //   return axios.get(`${this.jwtConfig.getBranch}${uid}`);
+  // }
 
   declinePayment(){
         return axios.get(`${this.jwtConfig.declinePayment}`);

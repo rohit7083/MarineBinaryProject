@@ -279,7 +279,7 @@ export default {
   createBranch: "/branch/",
   updateBranch: "/branch/",
 
-  getBranch: "/sub_user/branch/",
+  // getBranch: "/sub_user/branch/",
 
   declinePayment: "/sPayment/auto-payment/declined",
   sucessPayment: "/sPayment/auto-payment/success",

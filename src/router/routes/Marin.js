@@ -259,13 +259,13 @@ const EmailSmsTemplate = lazy(() =>
   import("../../views/dashboard/crm_setting/template/EmailSmsTemplate")
 );
 
-const AddBranch = lazy(() =>
-  import("../../views/dashboard/branch_management/AddBranch")
-);
+// const AddBranch = lazy(() =>
+//   import("../../views/dashboard/branch_management/AddBranch")
+// );
 
-const BranchIndex = lazy(() =>
-  import("../../views/dashboard/branch_management/index")
-);
+// const BranchIndex = lazy(() =>
+//   import("../../views/dashboard/branch_management/index")
+// );
 const AutoPay = lazy(() =>
   import("../../views/dashboard/slip-management/autopaymentlist/index")
 );
@@ -936,22 +936,22 @@ export default [
     },
   },
 
-  {
-    element: <AddBranch />,
-    path: "/branch/add_branch",
-    meta: {
-      resource: "sales",
-      action: "view",
-    },
-  },
-   {
-    element: <BranchIndex />,
-    path: "/branch",
-    meta: {
-      resource: "sales",
-      action: "view",
-    },
-  },
+  // {
+  //   element: <AddBranch />,
+  //   path: "/branch/add_branch",
+  //   meta: {
+  //     resource: "sales",
+  //     action: "view",
+  //   },
+  // },
+  //  {
+  //   element: <BranchIndex />,
+  //   path: "/branch",
+  //   meta: {
+  //     resource: "sales",
+  //     action: "view",
+  //   },
+  // },
 
 
   {
