@@ -274,4 +274,14 @@ export default {
 
   updateTemplate: "/templates/",
   deleteWaiting: "/waitingMember/",
+
+  getAllBranch: "/branch",
+  createBranch: "/branch/",
+  updateBranch: "/branch/",
+
+  getBranch: "/sub_user/branch/",
+
+  declinePayment: "/sPayment/auto-payment/declined",
+  sucessPayment: "/sPayment/auto-payment/success",
+  autoPayment:'/sPayment/auto-payment/',
 };

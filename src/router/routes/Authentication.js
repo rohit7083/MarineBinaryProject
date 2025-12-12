@@ -76,9 +76,9 @@ const Forget_password = lazy(() =>
   import("../../views/pages/authentication/slip/Forget_password")
 );
 // const twoStep_auth=lazy(()=>import('../../views/pages/authentication/slip/twoStep_auth'))
- const GetBranch = lazy(() =>
-  import("../../views/pages/authentication/slip/GetBranch")
-);
+//  const GetBranch = lazy(() =>
+//   import("../../views/pages/authentication/slip/GetBranch")
+// );
 const AuthenticationRoutes = [
   {
     path: "/login",
@@ -167,15 +167,15 @@ const AuthenticationRoutes = [
     },
   },
 
-    {
-    path: "/getbranch",
-    element: <GetBranch />,
-    meta: {
-      layout: "blank",
-      publicRoute: true,
-      // restricted: true,
-    },
-  },
+  //   {
+  //   path: "/getbranch",
+  //   element: <GetBranch />,
+  //   meta: {
+  //     layout: "blank",
+  //     publicRoute: true,
+  //     // restricted: true,
+  //   },
+  // },
 
   {
     path: "/forget-password",

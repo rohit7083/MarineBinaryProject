@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.16:8000"; //airtel saga
 
 import Swal from "sweetalert2";
@@ -710,7 +710,7 @@ export default class JwtService {
   getImages(uid) {
     return axios.get(`${this.jwtConfig.getImages}${uid}`, {
       responseType: "blob", // 👈 this tells Axios to treat response as binary
-    });
+    }); 
   }
 
   getVariationUid(vuid) {
@@ -949,4 +949,31 @@ export default class JwtService {
     return axios.put(`${this.jwtConfig.updateTemplate}${uid}`, ...args);
   }
 
+   getAllBranch() {
+    return axios.get(`${this.jwtConfig.getAllBranch}`);
+  }
+   updateBranch(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateBranch}${uid}`, ...args);
+  }
+    createBranch(...args) {
+    return axios.post(this.jwtConfig.createBranch, ...args);
+  }
+
+  getBranch(uid) {
+    return axios.get(`${this.jwtConfig.getBranch}${uid}`);
+  }
+
+  declinePayment(){
+        return axios.get(`${this.jwtConfig.declinePayment}`);
+
+  }
+   sucessPayment(){
+        return axios.get(`${this.jwtConfig.sucessPayment}`);
+
+  }
+
+    autoPayment(id){
+        return axios.get(`${this.jwtConfig.autoPayment}${id}`);
+
+  }
 }
