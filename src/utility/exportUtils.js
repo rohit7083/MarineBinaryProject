@@ -340,61 +340,377 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
   URL.revokeObjectURL(link.href);
 };
 
-import jsPDF from "jspdf";
-import "jspdf-autotable";
 
-export const exportToPDF = (data, filename = "report.pdf") => {
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+
+/**
+ * Configuration for PDF generation
+ */
+const PDF_CONFIG = {
+  pageMargin: 25,
+  fontSize: 6.5,
+  lineHeight: 8,
+  titleFontSize: 16,
+  titleBottomMargin: 15,
+  headerBottomMargin: 6,
+  rowBottomMargin: 2,
+  headerLineThickness: 1,
+  headerLineBottomMargin: 3,
+  cellPadding: 2,
+  headerFontSize: 7,
+};
+
+// Optimized column widths for landscape A4
+const COLUMN_WIDTHS = [22, 65, 58, 45, 55, 95, 75, 65, 85];
+
+const TABLE_HEADERS = [
+  "ID",
+  "Payment Date",
+  "Payment From",
+  "Status",
+  "Final Amount",
+  "Email",
+  "Customer",
+  "Phone",
+  "Transaction ID",
+];
+
+/**
+ * Formats data row from payment item
+ */
+const formatDataRow = (item, index) => {
+  const customer = item.customer || item.member || {};
+  
+  return [
+    String(index + 1),
+    formatDateTime(item.paymentDate),
+    item.paymentFrom ?? "",
+    item.paymentStatus ?? "",
+    String(item.finalPayment ?? ""),
+    customer.emailId ?? "",
+    [customer.firstName, customer.lastName].filter(Boolean).join(" "),
+    [customer.countryCode, customer.phoneNumber].filter(Boolean).join(" "),
+    item.transactionId ?? "",
+  ];
+};
+
+/**
+ * PDF Generator Class
+ */
+class PDFGenerator {
+  constructor(pdfDoc, font, boldFont) {
+    this.pdfDoc = pdfDoc;
+    this.font = font;
+    this.boldFont = boldFont;
+    this.currentPage = null;
+    this.currentY = 0;
+    this.pageWidth = 0;
+    this.pageHeight = 0;
+  }
+
+  /**
+   * Initialize new page in landscape orientation
+   */
+  addPage() {
+    this.currentPage = this.pdfDoc.addPage([842, 595]); // A4 Landscape
+    this.pageWidth = 842;
+    this.pageHeight = 595;
+    this.currentY = this.pageHeight - PDF_CONFIG.pageMargin;
+    return this.currentPage;
+  }
+
+  /**
+   * Wrap text to fit within column width with character-level precision
+   */
+  wrapText(text, maxWidth, font = this.font, fontSize = PDF_CONFIG.fontSize) {
+    const str = String(text);
+    if (!str || str.length === 0) return [""];
+    
+    const lines = [];
+    let currentLine = "";
+    
+    for (let i = 0; i < str.length; i++) {
+      const testLine = currentLine + str[i];
+      const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+      
+      if (testWidth <= maxWidth) {
+        currentLine = testLine;
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = str[i];
+      }
+    }
+    
+    if (currentLine) lines.push(currentLine);
+    return lines.length > 0 ? lines : [""];
+  }
+
+  /**
+   * Draw vertical grid lines for table
+   */
+  drawGridLines(yTop, yBottom) {
+    let xPosition = PDF_CONFIG.pageMargin;
+    
+    // Draw vertical lines
+    for (let i = 0; i <= COLUMN_WIDTHS.length; i++) {
+      this.currentPage.drawLine({
+        start: { x: xPosition, y: yTop },
+        end: { x: xPosition, y: yBottom },
+        thickness: 0.3,
+        color: rgb(0.7, 0.7, 0.7),
+      });
+      if (i < COLUMN_WIDTHS.length) {
+        xPosition += COLUMN_WIDTHS[i];
+      }
+    }
+  }
+
+  /**
+   * Draw a single row of data with grid
+   */
+  drawRow(rowData, yPosition, isHeader = false) {
+    const fontSize = isHeader ? PDF_CONFIG.headerFontSize : PDF_CONFIG.fontSize;
+    const cellFont = isHeader ? this.boldFont : this.font;
+    const maxWidth = COLUMN_WIDTHS.map(w => w - PDF_CONFIG.cellPadding * 2);
+
+    // Wrap text for each cell
+    const wrappedCells = rowData.map((cell, columnIndex) => {
+      return this.wrapText(cell, maxWidth[columnIndex], cellFont, fontSize);
+    });
+
+    // Calculate max lines needed
+    const maxLines = Math.max(...wrappedCells.map(lines => lines.length));
+    const rowHeight = maxLines * PDF_CONFIG.lineHeight + PDF_CONFIG.cellPadding * 2;
+
+    const yTop = yPosition;
+    const yBottom = yPosition - rowHeight;
+
+    // Draw background for header
+    if (isHeader) {
+      this.currentPage.drawRectangle({
+        x: PDF_CONFIG.pageMargin,
+        y: yBottom,
+        width: COLUMN_WIDTHS.reduce((a, b) => a + b, 0),
+        height: rowHeight,
+        color: rgb(0.2, 0.4, 0.7),
+      });
+    } else {
+      // Alternating row colors for better readability
+      this.currentPage.drawRectangle({
+        x: PDF_CONFIG.pageMargin,
+        y: yBottom,
+        width: COLUMN_WIDTHS.reduce((a, b) => a + b, 0),
+        height: rowHeight,
+        color: rgb(0.98, 0.98, 0.98),
+      });
+    }
+
+    // Draw grid lines
+    this.drawGridLines(yTop, yBottom);
+
+    // Draw horizontal line at bottom
+    this.currentPage.drawLine({
+      start: { x: PDF_CONFIG.pageMargin, y: yBottom },
+      end: { x: PDF_CONFIG.pageMargin + COLUMN_WIDTHS.reduce((a, b) => a + b, 0), y: yBottom },
+      thickness: 0.3,
+      color: rgb(0.7, 0.7, 0.7),
+    });
+
+    // Draw text in each cell
+    let xPosition = PDF_CONFIG.pageMargin;
+    wrappedCells.forEach((lines, columnIndex) => {
+      let textY = yPosition - PDF_CONFIG.cellPadding - PDF_CONFIG.lineHeight * 0.7;
+      
+      lines.forEach(line => {
+        this.currentPage.drawText(line, {
+          x: xPosition + PDF_CONFIG.cellPadding,
+          y: textY,
+          size: fontSize,
+          font: cellFont,
+          color: isHeader ? rgb(1, 1, 1) : rgb(0.1, 0.1, 0.1),
+        });
+        textY -= PDF_CONFIG.lineHeight;
+      });
+      
+      xPosition += COLUMN_WIDTHS[columnIndex];
+    });
+
+    return rowHeight;
+  }
+
+  /**
+   * Draw table header with styling
+   */
+  drawTableHeader() {
+    const yTop = this.currentY;
+    const headerHeight = this.drawRow(TABLE_HEADERS, this.currentY, true);
+    this.currentY -= headerHeight;
+
+    // Draw top border of table
+    this.currentPage.drawLine({
+      start: { x: PDF_CONFIG.pageMargin, y: yTop },
+      end: { x: PDF_CONFIG.pageMargin + COLUMN_WIDTHS.reduce((a, b) => a + b, 0), y: yTop },
+      thickness: 1,
+      color: rgb(0.2, 0.4, 0.7),
+    });
+
+    this.currentY -= PDF_CONFIG.headerBottomMargin;
+  }
+
+  /**
+   * Draw page title with date
+   */
+  drawTitle(title) {
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    // Title
+    const titleWidth = this.boldFont.widthOfTextAtSize(title, PDF_CONFIG.titleFontSize);
+    const centerX = (this.pageWidth - titleWidth) / 2;
+
+    this.currentPage.drawText(title, {
+      x: centerX,
+      y: this.currentY,
+      size: PDF_CONFIG.titleFontSize,
+      font: this.boldFont,
+      color: rgb(0.2, 0.2, 0.2),
+    });
+
+    // Date subtitle
+    this.currentY -= 12;
+    const dateText = `Generated on ${currentDate}`;
+    const dateWidth = this.font.widthOfTextAtSize(dateText, 8);
+    const dateCenterX = (this.pageWidth - dateWidth) / 2;
+
+    this.currentPage.drawText(dateText, {
+      x: dateCenterX,
+      y: this.currentY,
+      size: 8,
+      font: this.font,
+      color: rgb(0.4, 0.4, 0.4),
+    });
+
+    this.currentY -= PDF_CONFIG.titleBottomMargin;
+  }
+
+  /**
+   * Draw page number
+   */
+  drawPageNumber(pageNum, totalPages) {
+    const pageText = `Page ${pageNum} of ${totalPages}`;
+    const textWidth = this.font.widthOfTextAtSize(pageText, 7);
+    
+    this.currentPage.drawText(pageText, {
+      x: this.pageWidth - PDF_CONFIG.pageMargin - textWidth,
+      y: PDF_CONFIG.pageMargin - 15,
+      size: 7,
+      font: this.font,
+      color: rgb(0.5, 0.5, 0.5),
+    });
+  }
+
+  /**
+   * Calculate estimated height needed for a row
+   */
+  estimateRowHeight(rowData) {
+    const maxWidth = COLUMN_WIDTHS.map(w => w - PDF_CONFIG.cellPadding * 2);
+    const maxLines = Math.max(
+      ...rowData.map((cell, columnIndex) =>
+        this.wrapText(cell, maxWidth[columnIndex]).length
+      )
+    );
+    return maxLines * PDF_CONFIG.lineHeight + PDF_CONFIG.cellPadding * 2;
+  }
+
+  /**
+   * Check if new page is needed
+   */
+  ensureSpace(requiredHeight) {
+    if (this.currentY - requiredHeight < PDF_CONFIG.pageMargin + 30) {
+      this.addPage();
+      this.drawTableHeader();
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Generate complete PDF document
+   */
+  async generate(rows, title = "Payment Report") {
+    // First page
+    this.addPage();
+    this.drawTitle(title);
+    this.drawTableHeader();
+
+    // Draw all rows
+    for (const row of rows) {
+      const estimatedHeight = this.estimateRowHeight(row);
+      this.ensureSpace(estimatedHeight);
+
+      const actualRowHeight = this.drawRow(row, this.currentY);
+      this.currentY -= actualRowHeight + PDF_CONFIG.rowBottomMargin;
+    }
+
+    // Add page numbers to all pages
+    const totalPages = this.pdfDoc.getPageCount();
+    const pages = this.pdfDoc.getPages();
+    pages.forEach((page, index) => {
+      this.currentPage = page;
+      this.drawPageNumber(index + 1, totalPages);
+    });
+
+    return await this.pdfDoc.save();
+  }
+}
+
+/**
+ * Download PDF file
+ */
+const downloadPDF = (pdfBytes, filename) => {
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename.endsWith(".pdf") ? filename : `${filename}.pdf`;
+  link.click();
+
+  URL.revokeObjectURL(url);
+};
+
+/**
+ * Main export function
+ * @param {Array} data - Array of payment data objects
+ * @param {string} filename - Output PDF filename
+ */
+export const exportToPDF = async (data, filename = "report.pdf") => {
+  // Validate input
   if (!Array.isArray(data) || data.length === 0) {
-    console.warn("No data to export.");
+    console.warn("No data provided for PDF export");
     return;
   }
 
-  const headers = [
-    "ID",
-    "Payment Date",
-    "Payment From",
-    "Status",
-    "Final Amount",
-    "Email",
-    "Customer",
-    "Phone",
-    "Transaction ID",
-  ];
+  try {
+    // Prepare data rows
+    const rows = data.map(formatDataRow);
 
-  const rows = data.map((item, index) => {
-    const customer = item.customer || item.member || {};
+    // Create PDF document
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-    return [
-      index + 1,
-      formatDateTime(item.paymentDate),
-      item.paymentFrom ?? "",
-      item.paymentStatus ?? "",
-      item.finalPayment ?? "",
-      customer.emailId ?? "",
-      [customer.firstName, customer.lastName].filter(Boolean).join(" "),
-      [customer.countryCode, customer.phoneNumber].filter(Boolean).join(" "),
-      item.transactionId ?? "",
-    ];
-  });
+    // Generate PDF
+    const generator = new PDFGenerator(pdfDoc, font, boldFont);
+    const pdfBytes = await generator.generate(rows);
 
-  const doc = new jsPDF({ orientation: "portrait", unit: "pt" });
-
-  doc.setFontSize(14);
-  doc.text("Payment Report", 40, 40);
-
-  doc.autoTable({
-    startY: 60,
-    head: [headers],
-    body: rows,
-    styles: {
-      fontSize: 10,
-      cellPadding: 4,
-    },
-    headStyles: {
-      fillColor: [30, 30, 30],
-      textColor: 255,
-    },
-  });
-
-  doc.save(filename.endsWith(".pdf") ? filename : `${filename}.pdf`);
+    // Download
+    downloadPDF(pdfBytes, filename);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    throw error;
+  }
 };

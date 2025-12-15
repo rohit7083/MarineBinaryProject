@@ -1,9 +1,9 @@
-import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill'
-import react from '@vitejs/plugin-react'
-import fs from 'fs'
-import * as path from 'path'
-import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
-import { defineConfig } from 'vite'
+import NodeGlobalsPolyfillPlugin from "@esbuild-plugins/node-globals-polyfill";
+import react from "@vitejs/plugin-react";
+import fs from "fs";
+import * as path from "path";
+import rollupNodePolyFill from "rollup-plugin-node-polyfills";
+import { defineConfig } from "vite";
 
 export default () => {
   return defineConfig({
@@ -11,91 +11,127 @@ export default () => {
     plugins: [react()],
 
     define: {
-      global: 'globalThis'
+      global: "globalThis",
     },
     server: {
       port: 3000,
-      proxy: 'https://pixinvent.com/',
+      proxy: "https://pixinvent.com/",
       cors: {
-        origin: ['https://pixinvent.com/', 'http://localhost:3000'],
-        methods: ['GET', 'PATCH', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-      }
+        origin: ["https://pixinvent.com/", "http://localhost:3000"],
+        methods: ["GET", "PATCH", "PUT", "POST", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+      },
     },
     css: {
       preprocessorOptions: {
         scss: {
-          includePaths: ['node_modules', './src/assets']
-        }
+          includePaths: ["node_modules", "./src/assets"],
+        },
       },
       postcss: {
-        plugins: [require('postcss-rtl')()]
-      }
+        plugins: [require("postcss-rtl")()],
+      },
     },
     resolve: {
-          dedupe: ['react', 'react-dom'],
+      dedupe: ["react", "react-dom"],
       alias: [
-      
         {
           find: /^~.+/,
-          replacement: val => {
-            return val.replace(/^~/, '')
-          }
+          replacement: (val) => {
+            return val.replace(/^~/, "");
+          },
         },
 
-        { find: 'stream', replacement: 'stream-browserify' },
-        { find: 'crypto', replacement: 'crypto-browserify' },
-        { find: '@src', replacement: path.resolve(__dirname, 'src') },
-        { find: '@store', replacement: path.resolve(__dirname, 'src/redux') },
-        { find: '@configs', replacement: path.resolve(__dirname, 'src/configs') },
-        { find: 'url', replacement: 'rollup-plugin-node-polyfills/polyfills/url' },
-        { find: '@styles', replacement: path.resolve(__dirname, 'src/@core/scss') },
-        { find: 'util', replacement: 'rollup-plugin-node-polyfills/polyfills/util' },
-        { find: 'zlib', replacement: 'rollup-plugin-node-polyfills/polyfills/zlib' },
-        { find: '@utils', replacement: path.resolve(__dirname, 'src/utility/Utils') },
-        { find: '@hooks', replacement: path.resolve(__dirname, 'src/utility/hooks') },
-        { find: '@assets', replacement: path.resolve(__dirname, 'src/@core/assets') },
-        { find: '@layouts', replacement: path.resolve(__dirname, 'src/@core/layouts') },
-        { find: 'assert', replacement: 'rollup-plugin-node-polyfills/polyfills/assert' },
+        { find: "stream", replacement: "stream-browserify" },
+        { find: "crypto", replacement: "crypto-browserify" },
+        { find: "@src", replacement: path.resolve(__dirname, "src") },
+        { find: "@store", replacement: path.resolve(__dirname, "src/redux") },
+        {
+          find: "@configs",
+          replacement: path.resolve(__dirname, "src/configs"),
+        },
+        {
+          find: "url",
+          replacement: "rollup-plugin-node-polyfills/polyfills/url",
+        },
+        {
+          find: "@styles",
+          replacement: path.resolve(__dirname, "src/@core/scss"),
+        },
+        {
+          find: "util",
+          replacement: "rollup-plugin-node-polyfills/polyfills/util",
+        },
+        {
+          find: "zlib",
+          replacement: "rollup-plugin-node-polyfills/polyfills/zlib",
+        },
+        {
+          find: "@utils",
+          replacement: path.resolve(__dirname, "src/utility/Utils"),
+        },
+        {
+          find: "@hooks",
+          replacement: path.resolve(__dirname, "src/utility/hooks"),
+        },
+        {
+          find: "@assets",
+          replacement: path.resolve(__dirname, "src/@core/assets"),
+        },
+        {
+          find: "@layouts",
+          replacement: path.resolve(__dirname, "src/@core/layouts"),
+        },
+        {
+          find: "assert",
+          replacement: "rollup-plugin-node-polyfills/polyfills/assert",
+        },
         // { find: 'buffer', replacement: 'rollup-plugin-node-polyfills/polyfills/buffer-es6' },
-        { find: 'process', replacement: 'rollup-plugin-node-polyfills/polyfills/process-es6' },
-        { find: '@components', replacement: path.resolve(__dirname, 'src/@core/components') }
-      ]
+        {
+          find: "process",
+          replacement: "rollup-plugin-node-polyfills/polyfills/process-es6",
+        },
+        {
+          find: "@components",
+          replacement: path.resolve(__dirname, "src/@core/components"),
+        },
+      ],
     },
     esbuild: {
-      loader: 'jsx',
+      loader: "jsx",
       include: /.\/src\/.*\.js?$/,
       exclude: [],
-      jsx: 'automatic'
+      jsx: "automatic",
     },
     optimizeDeps: {
-        include: ['jspdf', 'jspdf-autotable', 'core-js'],
+      include: ["jspdf", "jspdf-autotable", "core-js"],
 
       esbuildOptions: {
         loader: {
-          '.js': 'jsx'
+          ".js": "jsx",
         },
         plugins: [
           NodeGlobalsPolyfillPlugin({
             buffer: false,
-            process: true
+            process: true,
           }),
           {
-            name: 'load-js-files-as-jsx',
+            name: "load-js-files-as-jsx",
             setup(build) {
-              build.onLoad({ filter: /src\\.*\.js$/ }, async args => ({
-                loader: 'jsx',
-                contents: await fs.readFileSync(args.path, 'utf8')
-              }))
-            }
-          }
-        ]
-      }
+              build.onLoad({ filter: /src\\.*\.js$/ }, async (args) => ({
+                loader: "jsx",
+                contents: await fs.readFileSync(args.path, "utf8"),
+              }));
+            },
+          },
+        ],
+      },
     },
     build: {
       rollupOptions: {
-        plugins: [rollupNodePolyFill()]
-      }
-    }
-  })
-}
+        plugins: [rollupNodePolyFill()],
+       
+      },
+    },
+  });
+};
