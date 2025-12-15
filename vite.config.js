@@ -7,7 +7,7 @@ import { defineConfig } from 'vite'
 
 export default () => {
   return defineConfig({
-    base: '/crm/marine-resort/',
+    // base: '/crm/marine-resort/',
     plugins: [react()],
 
     define: {
@@ -69,6 +69,8 @@ export default () => {
       jsx: 'automatic'
     },
     optimizeDeps: {
+        include: ['jspdf', 'jspdf-autotable', 'core-js'],
+
       esbuildOptions: {
         loader: {
           '.js': 'jsx'

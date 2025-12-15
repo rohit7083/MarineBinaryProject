@@ -341,14 +341,14 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
 };
 
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import "jspdf-autotable";
+
 export const exportToPDF = (data, filename = "report.pdf") => {
-  if (!data || !data.length) {
+  if (!Array.isArray(data) || data.length === 0) {
     console.warn("No data to export.");
     return;
   }
 
-  // Table headers
   const headers = [
     "ID",
     "Payment Date",
@@ -361,46 +361,28 @@ export const exportToPDF = (data, filename = "report.pdf") => {
     "Transaction ID",
   ];
 
-  // Table rows
   const rows = data.map((item, index) => {
-    const customerName = item.customer
-      ? [item.customer.firstName, item.customer.lastName]
-          .filter(Boolean)
-          .join(" ")
-      : item.member
-      ? [item.member.firstName, item.member.lastName].filter(Boolean).join(" ")
-      : "";
-
-    const phoneNumber = item.customer
-      ? [item.customer.countryCode, item.customer.phoneNumber]
-          .filter(Boolean)
-          .join(" ")
-      : item.member
-      ? [item.member.countryCode, item.member.phoneNumber]
-          .filter(Boolean)
-          .join(" ")
-      : "";
+    const customer = item.customer || item.member || {};
 
     return [
       index + 1,
       formatDateTime(item.paymentDate),
-      item.paymentFrom || "",
-      item.paymentStatus || "",
+      item.paymentFrom ?? "",
+      item.paymentStatus ?? "",
       item.finalPayment ?? "",
-      item.customer?.emailId || item.member?.emailId || "",
-      customerName,
-      phoneNumber,
-      item.transactionId || "",
+      customer.emailId ?? "",
+      [customer.firstName, customer.lastName].filter(Boolean).join(" "),
+      [customer.countryCode, customer.phoneNumber].filter(Boolean).join(" "),
+      item.transactionId ?? "",
     ];
   });
 
-  // Create PDF
-  const doc = new jsPDF("p", "pt");
+  const doc = new jsPDF({ orientation: "portrait", unit: "pt" });
 
   doc.setFontSize(14);
   doc.text("Payment Report", 40, 40);
 
-  autoTable(doc, {
+  doc.autoTable({
     startY: 60,
     head: [headers],
     body: rows,
