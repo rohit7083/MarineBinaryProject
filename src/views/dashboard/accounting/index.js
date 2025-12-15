@@ -24,7 +24,8 @@ import {
 } from "reactstrap";
 import {
   exportToCSV,
-  exportToExcelHTML
+  exportToExcelHTML,
+  exportToPDF
 } from "../../../utility/exportUtils";
 import PosReport from "./PosReport";
 
@@ -365,9 +366,9 @@ const Index = () => {
                   <DropdownItem onClick={() => exportToCSV(filteredData)}>
                     Export as CSV
                   </DropdownItem>
-                  {/* <DropdownItem onClick={() => exportToPDF(filteredData)}>
+                  <DropdownItem onClick={() => exportToPDF(filteredData)}>
                     Export as PDF
-                  </DropdownItem> */}
+                  </DropdownItem>
 
                   <DropdownItem onClick={() => exportToExcelHTML(filteredData)}>
                     Export as Excel

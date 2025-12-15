@@ -340,79 +340,79 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
   URL.revokeObjectURL(link.href);
 };
 
-// import jsPDF from "jspdf";
-// import autoTable from "jspdf-autotable";
-// export const exportToPDF = (data, filename = "report.pdf") => {
-//   if (!data || !data.length) {
-//     console.warn("No data to export.");
-//     return;
-//   }
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+export const exportToPDF = (data, filename = "report.pdf") => {
+  if (!data || !data.length) {
+    console.warn("No data to export.");
+    return;
+  }
 
-//   // Table headers
-//   const headers = [
-//     "ID",
-//     "Payment Date",
-//     "Payment From",
-//     "Status",
-//     "Final Amount",
-//     "Email",
-//     "Customer",
-//     "Phone",
-//     "Transaction ID",
-//   ];
+  // Table headers
+  const headers = [
+    "ID",
+    "Payment Date",
+    "Payment From",
+    "Status",
+    "Final Amount",
+    "Email",
+    "Customer",
+    "Phone",
+    "Transaction ID",
+  ];
 
-//   // Table rows
-//   const rows = data.map((item, index) => {
-//     const customerName = item.customer
-//       ? [item.customer.firstName, item.customer.lastName]
-//           .filter(Boolean)
-//           .join(" ")
-//       : item.member
-//       ? [item.member.firstName, item.member.lastName].filter(Boolean).join(" ")
-//       : "";
+  // Table rows
+  const rows = data.map((item, index) => {
+    const customerName = item.customer
+      ? [item.customer.firstName, item.customer.lastName]
+          .filter(Boolean)
+          .join(" ")
+      : item.member
+      ? [item.member.firstName, item.member.lastName].filter(Boolean).join(" ")
+      : "";
 
-//     const phoneNumber = item.customer
-//       ? [item.customer.countryCode, item.customer.phoneNumber]
-//           .filter(Boolean)
-//           .join(" ")
-//       : item.member
-//       ? [item.member.countryCode, item.member.phoneNumber]
-//           .filter(Boolean)
-//           .join(" ")
-//       : "";
+    const phoneNumber = item.customer
+      ? [item.customer.countryCode, item.customer.phoneNumber]
+          .filter(Boolean)
+          .join(" ")
+      : item.member
+      ? [item.member.countryCode, item.member.phoneNumber]
+          .filter(Boolean)
+          .join(" ")
+      : "";
 
-//     return [
-//       index + 1,
-//       formatDateTime(item.paymentDate),
-//       item.paymentFrom || "",
-//       item.paymentStatus || "",
-//       item.finalPayment ?? "",
-//       item.customer?.emailId || item.member?.emailId || "",
-//       customerName,
-//       phoneNumber,
-//       item.transactionId || "",
-//     ];
-//   });
+    return [
+      index + 1,
+      formatDateTime(item.paymentDate),
+      item.paymentFrom || "",
+      item.paymentStatus || "",
+      item.finalPayment ?? "",
+      item.customer?.emailId || item.member?.emailId || "",
+      customerName,
+      phoneNumber,
+      item.transactionId || "",
+    ];
+  });
 
-//   // Create PDF
-//   const doc = new jsPDF("p", "pt");
+  // Create PDF
+  const doc = new jsPDF("p", "pt");
 
-//   doc.setFontSize(14);
-//   doc.text("Payment Report", 40, 40);
+  doc.setFontSize(14);
+  doc.text("Payment Report", 40, 40);
 
-//   autoTable(doc, {
-//     startY: 60,
-//     head: [headers],
-//     body: rows,
-//     styles: {
-//       fontSize: 10,
-//       cellPadding: 4,
-//     },
-//     headStyles: {
-//       fillColor: [30, 30, 30],
-//       textColor: 255,
-//     },
-//   });
+  autoTable(doc, {
+    startY: 60,
+    head: [headers],
+    body: rows,
+    styles: {
+      fontSize: 10,
+      cellPadding: 4,
+    },
+    headStyles: {
+      fillColor: [30, 30, 30],
+      textColor: 255,
+    },
+  });
 
-//   doc.save(filename.endsWith(".pdf") ? filename : `${filename}.pdf`);
-// };
+  doc.save(filename.endsWith(".pdf") ? filename : `${filename}.pdf`);
+};
