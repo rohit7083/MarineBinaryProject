@@ -104,7 +104,6 @@ export default () => {
       jsx: "automatic",
     },
     optimizeDeps: {
-      include: ["jspdf", "jspdf-autotable", "core-js"],
 
       esbuildOptions: {
         loader: {
