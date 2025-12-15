@@ -58,7 +58,7 @@ function ShipDetails() {
     overDueChargesForNotice: "",
 
     overDueAmountForAuction: "",
-    overDueChagesForAuction: "",
+    overDueChargesForAuction: "",
   });
 
   const [shipTypeNames, setShipTypeNames] = useState([]);
@@ -70,7 +70,7 @@ function ShipDetails() {
     overDueChargesFor15Days: "",
     overDueChargesFor30Days: "",
     overDueChargesForNotice: "",
-    overDueChagesForAuction: "",
+    overDueChargesForAuction: "",
   });
 
   const uid = location.state?.uid || "";
@@ -108,7 +108,7 @@ function ShipDetails() {
       overDueChargesFor15Days: option?.overDueChargesFor15Days ?? "",
       overDueChargesFor30Days: option?.overDueChargesFor30Days ?? "",
       overDueChargesForNotice: option?.overDueChargesForNotice ?? "",
-      overDueChagesForAuction: option?.overDueChargesForAuction ?? "",
+      overDueChargesForAuction: option?.overDueChargesForAuction ?? "",
     }));
   };
 
@@ -184,6 +184,23 @@ function ShipDetails() {
 
             return orderedDimensions;
           })(),
+
+          overDueAmountFor7Days:
+            parseFloat(userData.overDueAmountFor7Days) || 0,
+          overDueChargesFor7Days: selections.overDueChargesFor7Days,
+          overDueAmountFor15Days:
+            parseFloat(userData.overDueAmountFor15Days) || 0,
+          overDueChargesFor15Days: selections.overDueChargesFor15Days,
+          overDueAmountFor30Days:
+            parseFloat(userData.overDueAmountFor30Days) || 0,
+          overDueChargesFor30Days: selections.overDueChargesFor30Days,
+          overDueAmountForNotice:
+            parseFloat(userData.overDueAmountForNotice) || 0,
+          overDueChargesForNotice: selections.overDueChargesForNotice,
+          overDueAmountForAuction:
+            parseFloat(userData.overDueAmountForAuction) || 0,
+          overDueChargesForAuction: selections.overDueChargesForAuction,
+        
          
         };
 
@@ -319,6 +336,89 @@ function ShipDetails() {
         newErrors.amps = "AMPS must be a number";
       }
     }
+    if (
+      !userData.overDueAmountFor7Days ||
+      isNaN(userData.overDueAmountFor7Days)
+    ) {
+      newErrors.overDueAmountFor7Days = "Please enter a valid number.";
+    } else if (userData.overDueAmountFor7Days <= 0) {
+      newErrors.overDueAmountFor7Days = "Amount must be greater than zero.";
+    } else if (
+      selections.overDueChargesFor7Days === "Percentage" &&
+      userData.overDueAmountFor7Days > 100
+    ) {
+      newErrors.overDueAmountFor7Days =
+        "Percentage amount must be less than or equal to 100.";
+    } else if (!selections.overDueChargesFor7Days) {
+      newErrors.overDueAmountFor7Days = "Please select a type.";
+    }
+
+     if (
+      !userData.overDueAmountFor15Days ||
+      isNaN(userData.overDueAmountFor15Days)
+    ) {
+      newErrors.overDueAmountFor15Days = "Please enter a valid number.";
+    } else if (userData.overDueAmountFor15Days <= 0) {
+      newErrors.overDueAmountFor15Days = "Amount must be greater than zero.";
+    } else if (
+      selections.overDueChargesFor15Days === "Percentage" &&
+      userData.overDueAmountFor15Days > 100
+    ) {
+      newErrors.overDueAmountFor15Days =
+        "Percentage amount must be less than or equal to 100.";
+    } else if (!selections.overDueChargesFor15Days) {
+      newErrors.overDueAmountFor15Days = "Please select a type.";
+    }
+ if (
+      !userData.overDueAmountFor30Days ||
+      isNaN(userData.overDueAmountFor30Days)
+    ) {
+      newErrors.overDueAmountFor30Days = "Please enter a valid number.";
+    } else if (userData.overDueAmountFor30Days <= 0) {
+      newErrors.overDueAmountFor30Days = "Amount must be greater than zero.";
+    } else if (
+      selections.overDueChargesFor30Days === "Percentage" &&
+      userData.overDueAmountFor30Days > 100
+    ) {
+      newErrors.overDueAmountFor30Days =
+        "Percentage amount must be less than or equal to 100.";
+    } else if (!selections.overDueChargesFor30Days) {
+      newErrors.overDueAmountFor30Days = "Please select a type.";
+    }
+
+    if (
+      !userData.overDueAmountForNotice ||
+      isNaN(userData.overDueAmountForNotice)
+    ) {
+      newErrors.overDueAmountForNotice = "Please enter a valid number.";
+    } else if (userData.overDueAmountForNotice <= 0) {
+      newErrors.overDueAmountForNotice = "Amount must be greater than zero.";
+    } else if (
+      selections.overDueChargesForNotice === "Percentage" &&
+      userData.overDueAmountForNotice > 100
+    ) {
+      newErrors.overDueAmountForNotice =
+        "Percentage amount must be less than or equal to 100.";
+    } else if (!selections.overDueChargesForNotice) {
+      newErrors.overDueAmountForNotice = "Please select a type.";
+    }
+
+    if (
+      !userData.overDueAmountForAuction ||
+      isNaN(userData.overDueAmountForAuction)
+    ) {
+      newErrors.overDueAmountForAuction = "Please enter a valid number.";
+    } else if (userData.overDueAmountForAuction <= 0) {
+      newErrors.overDueAmountForAuction = "Amount must be greater than zero.";
+    } else if (
+      selections.overDueChargesForAuction === "Percentage" &&
+      userData.overDueAmountForAuction > 100
+    ) {
+      newErrors.overDueAmountForAuction =
+        "Percentage amount must be less than or equal to 100.";
+    } else if (!selections.overDueChargesForAuction) {
+      newErrors.overDueAmountForAuction = "Please select a type.";
+    }
 
     return newErrors;
   };
@@ -375,7 +475,6 @@ function ShipDetails() {
           } else {
             setView(false);
           }
-
           if (details && details.uid === uid) {
             setUserData({
               slipName: details.slipName,
@@ -386,15 +485,15 @@ function ShipDetails() {
               marketAnnualPrice: details.marketAnnualPrice,
               marketMonthlyPrice: details.marketMonthlyPrice,
               amps: details.amps,
-              overDueAmountFor7Days: details?.category?.overDueAmountFor7Days,
+              overDueAmountFor7Days: details?.overDueAmountFor7Days,
 
-              overDueAmountFor15Days: details?.category?.overDueAmountFor15Days,
+              overDueAmountFor15Days: details?.overDueAmountFor15Days,
 
-              overDueAmountFor30Days: details?.category?.overDueAmountFor30Days,
+              overDueAmountFor30Days: details?.overDueAmountFor30Days,
 
-              overDueAmountForNotice: details?.category?.overDueAmountForNotice,
+              overDueAmountForNotice: details?.overDueAmountForNotice,
 
-              overDueAmountForAuction: details?.category?.overDueAmountForAuction,
+              overDueAmountForAuction: details?.overDueAmountForAuction,
             });
 
             setDimensions(Object.keys(details.dimensions) || []);
@@ -441,7 +540,7 @@ function ShipDetails() {
               overDueChargesFor15Days: details.category?.overDueChargesFor15Days,
               overDueChargesFor30Days: details.category?.overDueChargesFor30Days,
               overDueChargesForNotice: details.category?.overDueChargesForNotice,
-              overDueChagesForAuction: details.category?.overDueChargesForAuction,
+              overDueChargesForAuction: details.category?.overDueChargesForAuction,
             });
           }
         } catch (error) {
@@ -851,7 +950,7 @@ function ShipDetails() {
                   <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
                 </Col>
               </Row>
-              <fieldset disabled={true}>
+              {/* <fieldset disabled={true}> */}
                 <Table responsive className="mt-2">
                   <thead>
                     <tr>
@@ -1154,16 +1253,16 @@ function ShipDetails() {
                             type="radio"
                             disabled={view}
                             checked={
-                              selections.overDueChagesForAuction ===
+                              selections.overDueChargesForAuction ===
                               "Percentage"
                             }
                             onChange={() =>
                               handleSelectTypeChange(
-                                "overDueChagesForAuction",
+                                "overDueChargesForAuction",
                                 "Percentage"
                               )
                             }
-                            name="overDueChagesForAuction"
+                            name="overDueChargesForAuction"
                             id="basic-cb-unchecked"
                             className="me-2"
                           />
@@ -1172,15 +1271,15 @@ function ShipDetails() {
                             type="radio"
                             disabled={view}
                             checked={
-                              selections.overDueChagesForAuction === "Flat"
+                              selections.overDueChargesForAuction === "Flat"
                             }
                             onChange={() =>
                               handleSelectTypeChange(
-                                "overDueChagesForAuction",
+                                "overDueChargesForAuction",
                                 "Flat"
                               )
                             }
-                            name="overDueChagesForAuction"
+                            name="overDueChargesForAuction"
                             id="basic-cb-unchecked"
                             className="me-2"
                           />
@@ -1213,7 +1312,7 @@ function ShipDetails() {
                     </tr>
                   </tbody>
                 </Table>
-              </fieldset>
+              {/* </fieldset> */}
 
               <Row className="mt-3">
                 <Col
