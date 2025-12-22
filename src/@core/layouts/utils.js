@@ -120,3 +120,11 @@ export const canViewMenuItem = (item) => {
   const ability = useContext(AbilityContext);
   return ability.can(item.action, item.resource);
 };
+
+
+export const isMenuLocked = (navigationList)=>{
+
+  const updatedList=navigationList.map(item=>({...item,isLocked:item.children?canViewMenuGroup(item):canViewMenuItem(item)}))
+
+return updatedList
+}

@@ -124,12 +124,14 @@ const DataTableServerSide = () => {
       <Card>
         <CardHeader className="border-bottom">
           <CardTitle tag="h4">Slip Members</CardTitle>
-                  {ability.can("create", "slip management") ?     <Link to="/dashboard/slip_memberform">
-            <Button.Ripple color="primary" size="sm">
-              <Plus size={14} className="me-25" />
-              Add Vessels
-            </Button.Ripple>
-          </Link> : null}
+          {ability.can("create", "slip management") ? (
+            <Link to="/dashboard/slip_memberform">
+              <Button.Ripple color="primary" size="sm">
+                <Plus size={14} className="me-25" />
+                Add Vessels
+              </Button.Ripple>
+            </Link>
+          ) : null}
         </CardHeader>
 
         {/* Filter and Pagination Controls */}

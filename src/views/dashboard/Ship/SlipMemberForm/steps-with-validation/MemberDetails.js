@@ -325,7 +325,6 @@ const PersonalInfo = ({
 
   const onSubmit = async (data) => {
     console.log("data", data);
-
     setErrMsz("");
     setLoading(true);
 
@@ -352,7 +351,7 @@ const PersonalInfo = ({
       slipId: slipIID || sId,
       countryCode: countryCodeValue,
       dialCodeCountry: dialCodeCountry,
-      // nonRevenue: watchRevenue || false,
+      nonRevenue: watchRevenue || false,
     };
 
     delete payload.countryCode;

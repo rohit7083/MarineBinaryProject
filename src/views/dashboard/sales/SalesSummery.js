@@ -86,7 +86,12 @@ const SalesSummery = () => {
       setLoading(true);
       setErrorMsg(null);
       try {
+        const selectedUserStr = localStorage.getItem("selectedBranch");
+        const selectedBranch = JSON.parse(selectedUserStr);
+        let branchUid = selectedBranch.uid;
+
         const res = await useJwt.successPaymentCharts(
+          branchUid,
           dateRange.start,
           dateRange.end
         );

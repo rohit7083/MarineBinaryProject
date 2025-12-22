@@ -1,14 +1,17 @@
 // ** Vertical Menu Components
-import VerticalNavMenuLink from "./VerticalNavMenuLink";
+import { isPageLocked } from "../../../../../auth/utils";
 import VerticalNavMenuGroup from "./VerticalNavMenuGroup";
+import VerticalNavMenuLink from "./VerticalNavMenuLink";
 import VerticalNavMenuSectionHeader from "./VerticalNavMenuSectionHeader";
 
 // ** Utils
 import {
-  canViewMenuItem,
   canViewMenuGroup,
+  canViewMenuItem,
   resolveVerticalNavMenuItemComponent as resolveNavItemComponent,
 } from "@layouts/utils";
+// import { isPageLocked } from "@utils";
+
 
 const VerticalMenuNavItems = (props) => {
   // ** Components Object
@@ -18,19 +21,21 @@ const VerticalMenuNavItems = (props) => {
     VerticalNavMenuSectionHeader,
   };
 
+  
+  
   // ** Render Nav Menu Items
   const RenderNavItems = props.items.map((item, index) => {
     const TagName = Components[resolveNavItemComponent(item)];
     if (item.children) {
       return (
         canViewMenuGroup(item) && (
-          <TagName item={item} index={index} key={item.id} {...props} />
+          <TagName item={item} index={index} key={item.id} {...props} isPageLocked={isPageLocked(item.resource)}/>
         )
       );
     }
     return (
       canViewMenuItem(item) && (
-        <TagName key={item.id || item.header} item={item} {...props} />
+        <TagName key={item.id || item.header} item={item} {...props}  isPageLocked={isPageLocked(item.resource)} />
       )
     );
   });

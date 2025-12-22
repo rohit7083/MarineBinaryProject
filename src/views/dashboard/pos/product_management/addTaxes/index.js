@@ -209,7 +209,6 @@ const DataTableWithButtons = () => {
           //   <span style={{ margin: "0.5rem" }} onClick={() => handleEdit(row)}>
           //     <Edit2 className="font-medium-3 text-body" />
           //   </span>
-
           //   <span
           //     color="danger"
           //     style={{ cursor: "pointer", color: "red" }}
@@ -227,7 +226,7 @@ const DataTableWithButtons = () => {
             >
               <MoreVertical size={15} />
             </DropdownToggle>
-            <DropdownMenu>
+            <DropdownMenu end container="body">
               {ability.can("update", "pos") ? (
                 <DropdownItem onClick={() => handleEdit(row)}>
                   <Edit className="me-50" size={15} />

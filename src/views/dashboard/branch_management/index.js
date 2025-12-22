@@ -1,25 +1,21 @@
-import useJwt from "@src/auth/jwt/useJwt";
-import { AbilityContext } from "@src/utility/context/Can";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
-import { debounce } from "lodash";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+
+import useJwt from "@src/auth/jwt/useJwt";
+import { AbilityContext } from "@src/utility/context/Can";
+import { debounce } from "lodash";
+import { Edit, Plus } from "lucide-react";
 import {
-  ArrowLeft,
   ChevronDown,
-  Edit,
-  MoreVertical,
-  Plus,
-  Trash
+  MoreVertical
 } from "react-feather";
 import ReactPaginate from "react-paginate";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
   CardBody,
-  CardText,
-  CardTitle,
   Col,
   DropdownItem,
   DropdownMenu,
@@ -31,19 +27,18 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import AddCustomer from "./AddCustomer";
 
 const index = () => {
+  const ability = useContext(AbilityContext);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
   const [searchTerm, setSearchTerm] = useState("");
   const [role, setRole] = useState("");
   const [dataUid, setDataUid] = useState(null);
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-  const [row, setRow] = useState(null);
-  const ability = useContext(AbilityContext);
 
   const [tableData, setTableData] = useState({
     count: 0,
@@ -56,9 +51,10 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-      const { data } = await useJwt.getAllCustomer();
+     
+      const { data } = await useJwt.getAllBranch();
       const { content } = data;
-      console.log("getAllEvents", content);
+      console.log("branch", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
@@ -69,8 +65,7 @@ const index = () => {
   }
 
   const handleEdit = (row) => {
-    setShow(true);
-    setRow(row);
+    navigate("/branch/add_branch", { state: { row } });
   };
 
   useEffect(() => {
@@ -89,13 +84,24 @@ const index = () => {
     setSearchTerm(value);
 
     if (value) {
-      const filteredResults = tableData.results.filter(
-        (row) =>
-          row.firstName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.lastName?.toLowerCase().includes(value.toLowerCase()) ||
-          row.emailId?.toString().includes(value) ||
-          row.phoneNumber?.toString().includes(value)
-      );
+      const normalizedValue = value.toString().trim().toLowerCase();
+
+      const filteredResults = tableData.results.filter((row) => {
+        const checkIn = row.checkInDate
+          ? new Date(row.checkInDate).toISOString().split("T")[0] // "2025-11-10"
+          : "";
+        const checkOut = row.checkOutDate
+          ? new Date(row.checkOutDate).toISOString().split("T")[0]
+          : "";
+
+        return (
+          row.city?.toLowerCase().includes(normalizedValue) ||
+          row.email?.toLowerCase().includes(normalizedValue) ||
+          row.branchName?.toString().toLowerCase().includes(normalizedValue) ||
+          row.phoneNumber?.toString().toLowerCase().includes(normalizedValue) 
+        
+        );
+      });
 
       setTableData((prev) => ({
         ...prev,
@@ -114,19 +120,6 @@ const index = () => {
     setRole(value);
   };
 
-  const handlePayment = (row) => {
-    navigate("/search-rooms/previewBooking/roomPayment", { state: { row } });
-  };
-
-  const handleView = (row) => {
-    navigate("/pos/customer-management/view", { state: { row } });
-  };
-
-  const paymentStatusColor = {
-    success: "light-success",
-    error: "light-danger",
-    pending: "light-warning",
-  };
 
   const columns = [
     {
@@ -137,31 +130,31 @@ const index = () => {
     },
 
     {
-      name: "Customer Name",
+      name: "branchName",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.firstName + " " + row.lastName,
+      selector: (row) => row.branchName,
+    },
+    {
+      name: "email",
+      sortable: true,
+      // minWidth: "150px",
+
+      selector: (row) => row.email,
     },
 
     {
-      name: "Email",
+      name: "city",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.emailId,
+      selector: (row) => row.city+ " " +'('+ row.state +')',
     },
 
     {
-      name: "Phone No",
+      name: "phoneNumber",
       sortable: true,
       // minWidth: "150px",
       selector: (row) => row.phoneNumber,
-    },
-
-    {
-      name: "Address",
-      sortable: true,
-      // minWidth: "150px",
-      selector: (row) => row.city + " " + row.state,
     },
 
     {
@@ -189,7 +182,7 @@ const index = () => {
             if (result.value) {
               try {
                 // Call delete API
-                const response = await useJwt.deleteCustomer(uid);
+                const response = await useJwt.DeleteVendorType(uid);
                 if (response?.status === 204) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(
@@ -236,25 +229,18 @@ const index = () => {
               >
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu end container="body">
-                {ability.can("update", "pos") ? (
+              <DropdownMenu  end container="body">
+               
+                
                   <DropdownItem onClick={() => handleEdit(row)}>
                     <Edit className="me-50" size={15} />{" "}
                     <span className="align-middle">Edit</span>
                   </DropdownItem>
-                ) : null}
-                {/* {ability.can("view", "pos") ? (
-                  <DropdownItem onClick={() => handleView(row)}>
-                    <Eye className="me-50" size={15} />{" "}
-                    <span className="align-middle">View</span>
-                  </DropdownItem>
-                ) : null} */}
-                {ability.can("delete", "pos") ? (
-                  <DropdownItem onClick={() => handleDelete(row.uid)}>
+             
+                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
                     <Trash className="me-50" size={15} />{" "}
                     <span className="align-middle">Delete</span>
-                  </DropdownItem>
-                ) : null}
+                  </DropdownItem> */}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>
@@ -303,38 +289,24 @@ const index = () => {
       <Card>
         <CardBody>
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
-            <CardTitle>
-              <CardText>
-                {" "}
-                <ArrowLeft
-                  style={{ cursor: "pointer", transition: "color 0.1s" }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#9289F3")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "#6E6B7B")
-                  }
-                  onClick={() => window.history.back()}
-                />{" "}
-                Customer Management List
-              </CardText>{" "}
-            </CardTitle>
+            <h3 className="">Branch List</h3>
+
             <div className="mx-2">
               <Row
                 className="px-2
                mt-1 "
               >
                 <Col xs="auto">
-                  {ability.can("create", "pos") ? (
+                  <Link to={"/branch/add_branch"}>
                     <Button
-                      onClick={() => setShow(true)}
+                      // color="danger"
                       color="primary"
                       size="sm"
                       className="text-nowrap mb-1"
                     >
-                      <Plus size={14} /> Add Customer
+                      <Plus size={14} /> Add Branch
                     </Button>
-                  ) : null}
+                  </Link>
                 </Col>
               </Row>{" "}
             </div>
@@ -408,12 +380,6 @@ const index = () => {
           )}
         </CardBody>
       </Card>
-      <AddCustomer
-        showModal={show}
-        row={row}
-        onSuccess={() => fetchTableData()}
-        setShow={setShow}
-      />
     </>
   );
 };

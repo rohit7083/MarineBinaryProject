@@ -134,7 +134,6 @@ function ShipDetails() {
   };
 
   const handleSubmit = async (e, data) => {
-    
     setMessage("");
     e.preventDefault();
     console.log("dataform", data);
@@ -200,8 +199,6 @@ function ShipDetails() {
           overDueAmountForAuction:
             parseFloat(userData.overDueAmountForAuction) || 0,
           overDueChargesForAuction: selections.overDueChargesForAuction,
-        
-         
         };
 
         setLoading(true);
@@ -353,7 +350,7 @@ function ShipDetails() {
       newErrors.overDueAmountFor7Days = "Please select a type.";
     }
 
-     if (
+    if (
       !userData.overDueAmountFor15Days ||
       isNaN(userData.overDueAmountFor15Days)
     ) {
@@ -369,7 +366,7 @@ function ShipDetails() {
     } else if (!selections.overDueChargesFor15Days) {
       newErrors.overDueAmountFor15Days = "Please select a type.";
     }
- if (
+    if (
       !userData.overDueAmountFor30Days ||
       isNaN(userData.overDueAmountFor30Days)
     ) {
@@ -425,7 +422,6 @@ function ShipDetails() {
 
   useEffect(() => {
     const fetchData = async () => {
-      
       try {
         const payload = {};
         const response = await useJwt.getslipCatogory(payload);
@@ -466,7 +462,8 @@ function ShipDetails() {
           setFetchLoader(true);
 
           const resp = await useJwt.getslip(uid);
-          const details = resp.data.content;
+          const raw = resp.data.content?.result;
+          const details = Array.isArray(raw) ? raw[0] : raw;
 
           console.log("details", details.isAssigned);
 
@@ -537,10 +534,14 @@ function ShipDetails() {
 
             setSelections({
               overDueChargesFor7Days: details.category?.overDueChargesFor7Days,
-              overDueChargesFor15Days: details.category?.overDueChargesFor15Days,
-              overDueChargesFor30Days: details.category?.overDueChargesFor30Days,
-              overDueChargesForNotice: details.category?.overDueChargesForNotice,
-              overDueChargesForAuction: details.category?.overDueChargesForAuction,
+              overDueChargesFor15Days:
+                details.category?.overDueChargesFor15Days,
+              overDueChargesFor30Days:
+                details.category?.overDueChargesFor30Days,
+              overDueChargesForNotice:
+                details.category?.overDueChargesForNotice,
+              overDueChargesForAuction:
+                details.category?.overDueChargesForAuction,
             });
           }
         } catch (error) {
@@ -951,367 +952,355 @@ function ShipDetails() {
                 </Col>
               </Row>
               {/* <fieldset disabled={true}> */}
-                <Table responsive className="mt-2">
-                  <thead>
-                    <tr>
-                      <th>Charges</th>
-                      <th>Charges Type</th>
+              <Table responsive className="mt-2">
+                <thead>
+                  <tr>
+                    <th>Charges</th>
+                    <th>Charges Type</th>
 
-                      <th>Charges Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <span className="align-middle fw-bold">
-                          7 Days Charges
-                          <span style={{ color: "red" }}>*</span>
-                        </span>
-                      </td>
-                      <td>
-                        <div>
-                          <span className="me-1">Percentage</span>
-                          <Input
-                            type="radio"
-                            name="overDueChargesFor7Days"
-                            value="Percentage"
-                            id="Percentage"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesFor7Days === "Percentage"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesFor7Days",
-                                "Percentage"
-                              )
-                            }
-                            invalid={!!errors.overDueChargesFor7Days}
-                            className="me-2"
-                          />
-                          <span className="me-1">Flat</span>
-                          <Input
-                            type="radio"
-                            className="me-2"
-                            name="overDueChargesFor7Days"
-                            value="Flat"
-                            id="Flat"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesFor7Days === "Flat"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesFor7Days",
-                                "Flat"
-                              )
-                            }
-                            invalid={!!errors.overDueChargesFor7Days}
-                          />
-                        </div>
-                      </td>
-
-                      <td>
+                    <th>Charges Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        7 Days Charges
+                        <span style={{ color: "red" }}>*</span>
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
                         <Input
-                          type="text"
-                          name="overDueAmountFor7Days"
+                          type="radio"
+                          name="overDueChargesFor7Days"
+                          value="Percentage"
+                          id="Percentage"
                           disabled={view}
-                          value={userData.overDueAmountFor7Days || ""}
-                          onChange={(e) => {
-                            let sevenDays = e.target.value; // Use "let" instead of "const"
-                            sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
-
-                            setUserData((prev) => ({
-                              ...prev,
-                              overDueAmountFor7Days: sevenDays,
-                            })); // Fix state update
-                          }}
-                          invalid={!!errors.overDueAmountFor7Days}
-                        />
-                        <FormFeedback>
-                          {errors.overDueAmountFor7Days}
-                        </FormFeedback>{" "}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <span className="align-middle fw-bold">
-                          15 Days Charges{" "}
-                          <span style={{ color: "red" }}>*</span>
-                        </span>
-                      </td>
-                      <td>
-                        <div>
-                          <span className="me-1">Percentage</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesFor15Days ===
+                          checked={
+                            selections.overDueChargesFor7Days === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor7Days",
                               "Percentage"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesFor15Days",
-                                "Percentage"
-                              )
-                            }
-                            name="overDueChargesFor15Days"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                          <span className="me-1">Flat</span>
-                          <Input
-                            type="radio"
-                            checked={
-                              selections.overDueChargesFor15Days === "Flat"
-                            }
-                            disabled={view}
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesFor15Days",
-                                "Flat"
-                              )
-                            }
-                            name="overDueChargesFor15Days "
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <Input
-                          type="text"
-                          disabled={view}
-                          name="overDueAmountFor15Days"
-                          value={userData.overDueAmountFor15Days || ""}
-                          onChange={(e) => {
-                            let fiftinDays = e.target.value;
-                            fiftinDays = fiftinDays.replace(/[^0-9.]/g, "");
-
-                            setUserData((prev) => ({
-                              ...prev,
-                              overDueAmountFor15Days: fiftinDays,
-                            })); // Fix state update
-                          }}
-                          invalid={!!errors.overDueAmountFor15Days}
+                            )
+                          }
+                          invalid={!!errors.overDueChargesFor7Days}
+                          className="me-2"
                         />
-                        <FormFeedback>
-                          {errors.overDueAmountFor15Days}
-                        </FormFeedback>
-                      </td>
-                    </tr>
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          className="me-2"
+                          name="overDueChargesFor7Days"
+                          value="Flat"
+                          id="Flat"
+                          disabled={view}
+                          checked={selections.overDueChargesFor7Days === "Flat"}
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor7Days",
+                              "Flat"
+                            )
+                          }
+                          invalid={!!errors.overDueChargesFor7Days}
+                        />
+                      </div>
+                    </td>
 
-                    <tr>
-                      <td>
-                        <span className="align-middle fw-bold">
-                          30 Days Charges{" "}
-                          <span style={{ color: "red" }}>*</span>
-                        </span>
-                      </td>
-                      <td>
-                        <div>
-                          <span className="me-1">Percentage</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesFor30Days ===
+                    <td>
+                      <Input
+                        type="text"
+                        name="overDueAmountFor7Days"
+                        disabled={view}
+                        value={userData.overDueAmountFor7Days || ""}
+                        onChange={(e) => {
+                          let sevenDays = e.target.value; // Use "let" instead of "const"
+                          sevenDays = sevenDays.replace(/[^0-9.]/g, ""); // Apply replace correctly
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountFor7Days: sevenDays,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountFor7Days}
+                      />
+                      <FormFeedback>
+                        {errors.overDueAmountFor7Days}
+                      </FormFeedback>{" "}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        15 Days Charges <span style={{ color: "red" }}>*</span>
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor15Days === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor15Days",
                               "Percentage"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesFor30Days",
-                                "Percentage"
-                              )
-                            }
-                            name="overDueChargesFor30Days"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                          <span className="me-1">Flat</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesFor30Days === "Flat"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesFor30Days",
-                                "Flat"
-                              )
-                            }
-                            name="overDueChargesFor30Days"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <Input
-                          type="text"
-                          disabled={view}
-                          name="overDueAmountFor30Days"
-                          value={userData.overDueAmountFor30Days || ""}
-                          onChange={(e) => {
-                            let thirty = e.target.value;
-                            thirty = thirty.replace(/[^0-9.]/g, "");
-
-                            setUserData((prev) => ({
-                              ...prev,
-                              overDueAmountFor30Days: thirty,
-                            })); // Fix state update
-                          }}
-                          invalid={!!errors.overDueAmountFor30Days}
+                            )
+                          }
+                          name="overDueChargesFor15Days"
+                          id="basic-cb-unchecked"
+                          className="me-2"
                         />
-                        <FormFeedback>
-                          {errors.overDueAmountFor30Days}
-                        </FormFeedback>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <span className="align-middle fw-bold">
-                          Notice Charges <span style={{ color: "red" }}>*</span>
-                        </span>
-                      </td>
-                      <td>
-                        <div>
-                          <span className="me-1">Percentage</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesForNotice ===
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          checked={
+                            selections.overDueChargesFor15Days === "Flat"
+                          }
+                          disabled={view}
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor15Days",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesFor15Days "
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountFor15Days"
+                        value={userData.overDueAmountFor15Days || ""}
+                        onChange={(e) => {
+                          let fiftinDays = e.target.value;
+                          fiftinDays = fiftinDays.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountFor15Days: fiftinDays,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountFor15Days}
+                      />
+                      <FormFeedback>
+                        {errors.overDueAmountFor15Days}
+                      </FormFeedback>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        30 Days Charges <span style={{ color: "red" }}>*</span>
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor30Days === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor30Days",
                               "Percentage"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesForNotice",
-                                "Percentage"
-                              )
-                            }
-                            name="overDueChargesForNotice"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                          <span className="me-1">Flat</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesForNotice === "Flat"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesForNotice",
-                                "Flat"
-                              )
-                            }
-                            name="overDueChargesForNotice"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <Input
-                          type="text"
-                          disabled={view}
-                          name="overDueAmountForNotice"
-                          value={userData.overDueAmountForNotice || ""}
-                          onChange={(e) => {
-                            let noticeCharge = e.target.value;
-                            noticeCharge = noticeCharge.replace(/[^0-9.]/g, "");
-
-                            setUserData((prev) => ({
-                              ...prev,
-                              overDueAmountForNotice: noticeCharge,
-                            })); // Fix state update
-                          }}
-                          invalid={!!errors.overDueAmountForNotice}
+                            )
+                          }
+                          name="overDueChargesFor30Days"
+                          id="basic-cb-unchecked"
+                          className="me-2"
                         />
-                        <FormFeedback>
-                          {errors.overDueAmountForNotice}
-                        </FormFeedback>
-                      </td>
-                    </tr>
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesFor30Days === "Flat"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesFor30Days",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesFor30Days"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountFor30Days"
+                        value={userData.overDueAmountFor30Days || ""}
+                        onChange={(e) => {
+                          let thirty = e.target.value;
+                          thirty = thirty.replace(/[^0-9.]/g, "");
 
-                    <tr>
-                      <td>
-                        <span className="align-middle fw-bold">
-                          Auction Charges{" "}
-                          <span style={{ color: "red" }}>*</span>
-                        </span>
-                      </td>
-                      <td>
-                        <div>
-                          <span className="me-1">Percentage</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesForAuction ===
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountFor30Days: thirty,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountFor30Days}
+                      />
+                      <FormFeedback>
+                        {errors.overDueAmountFor30Days}
+                      </FormFeedback>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        Notice Charges <span style={{ color: "red" }}>*</span>
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesForNotice === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesForNotice",
                               "Percentage"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesForAuction",
-                                "Percentage"
-                              )
-                            }
-                            name="overDueChargesForAuction"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                          <span className="me-1">Flat</span>
-                          <Input
-                            type="radio"
-                            disabled={view}
-                            checked={
-                              selections.overDueChargesForAuction === "Flat"
-                            }
-                            onChange={() =>
-                              handleSelectTypeChange(
-                                "overDueChargesForAuction",
-                                "Flat"
-                              )
-                            }
-                            name="overDueChargesForAuction"
-                            id="basic-cb-unchecked"
-                            className="me-2"
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <Input
-                          type="text"
-                          disabled={view}
-                          name="overDueAmountForAuction"
-                          value={userData.overDueAmountForAuction || ""}
-                          onChange={(e) => {
-                            let AuctionCharge = e.target.value;
-                            AuctionCharge = AuctionCharge.replace(
-                              /[^0-9.]/g,
-                              ""
-                            );
-
-                            setUserData((prev) => ({
-                              ...prev,
-                              overDueAmountForAuction: AuctionCharge,
-                            })); // Fix state update
-                          }}
-                          invalid={!!errors.overDueAmountForAuction}
+                            )
+                          }
+                          name="overDueChargesForNotice"
+                          id="basic-cb-unchecked"
+                          className="me-2"
                         />
-                        <FormFeedback>
-                          {errors.overDueAmountForAuction}
-                        </FormFeedback>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesForNotice === "Flat"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesForNotice",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesForNotice"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountForNotice"
+                        value={userData.overDueAmountForNotice || ""}
+                        onChange={(e) => {
+                          let noticeCharge = e.target.value;
+                          noticeCharge = noticeCharge.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountForNotice: noticeCharge,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountForNotice}
+                      />
+                      <FormFeedback>
+                        {errors.overDueAmountForNotice}
+                      </FormFeedback>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <span className="align-middle fw-bold">
+                        Auction Charges <span style={{ color: "red" }}>*</span>
+                      </span>
+                    </td>
+                    <td>
+                      <div>
+                        <span className="me-1">Percentage</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesForAuction === "Percentage"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesForAuction",
+                              "Percentage"
+                            )
+                          }
+                          name="overDueChargesForAuction"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                        <span className="me-1">Flat</span>
+                        <Input
+                          type="radio"
+                          disabled={view}
+                          checked={
+                            selections.overDueChargesForAuction === "Flat"
+                          }
+                          onChange={() =>
+                            handleSelectTypeChange(
+                              "overDueChargesForAuction",
+                              "Flat"
+                            )
+                          }
+                          name="overDueChargesForAuction"
+                          id="basic-cb-unchecked"
+                          className="me-2"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <Input
+                        type="text"
+                        disabled={view}
+                        name="overDueAmountForAuction"
+                        value={userData.overDueAmountForAuction || ""}
+                        onChange={(e) => {
+                          let AuctionCharge = e.target.value;
+                          AuctionCharge = AuctionCharge.replace(/[^0-9.]/g, "");
+
+                          setUserData((prev) => ({
+                            ...prev,
+                            overDueAmountForAuction: AuctionCharge,
+                          })); // Fix state update
+                        }}
+                        invalid={!!errors.overDueAmountForAuction}
+                      />
+                      <FormFeedback>
+                        {errors.overDueAmountForAuction}
+                      </FormFeedback>
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
               {/* </fieldset> */}
 
               <Row className="mt-3">

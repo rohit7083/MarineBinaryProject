@@ -117,6 +117,12 @@ function AddVTypes() {
       }
     } catch (error) {
       console.error("API Error:", error);
+       toast.current.show({
+            severity: "error",
+            summary: "Failed",
+            detail: `${error?.response?.data?.content || "Try again"}`,
+            life: 2000,
+          });
     } finally {
       setLoading(false);
     }

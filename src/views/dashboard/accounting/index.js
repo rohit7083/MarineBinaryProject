@@ -104,8 +104,10 @@ const Index = () => {
           startDate: formatDate(dateRange[0]),
           endDate: formatDate(dateRange[1]),
         };
-
-        const res = await useJwt.report(payload.startDate, payload.endDate);
+ const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+        const res = await useJwt.report(branchUid,payload.startDate, payload.endDate);
         const result = res?.data?.content?.result || [];
 
         // Group data by paymentFrom

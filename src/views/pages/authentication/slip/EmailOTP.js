@@ -154,6 +154,7 @@ const TwoStepsBasic = () => {
       const token = userData?.token;
       const otp = encryptAES(data1?.otp.join(""));
       console.log("otp", otp);
+        // {{debugger}}
 
       const res = await useJwt.verifyAccount(token, { otp });
       console.log(res);
@@ -180,7 +181,7 @@ const TwoStepsBasic = () => {
       //   },
       // ]);
       // navigate(getHomeRouteForLoggedInUser("admin"));
-      const abilityList = res.data.profile.permissions.map(
+      const abilityList = res.data.profile.allPermissions.map(
         ({ action, module }) => ({
           action: action.toLowerCase(),
           subject: module,
@@ -200,7 +201,35 @@ const TwoStepsBasic = () => {
       };
       dispatch(handleLogin(data));
       ability.update(ability);
-      window.location = "/crm/marine-resort/dashbord";
+      const uidForbranch = res?.data?.profile?.uid;
+      if (res?.status === 200) {
+        const res = await useJwt.getBranch(uidForbranch);
+        console.log(res);
+        let branchData = res?.data?.branches;
+        if (data?.isSubUser === false) {
+          // if (branchData?.length >= 0) {
+          navigate("/getbranch");
+          window.location.reload();
+          // }
+          //  else {
+          //   navigate("/dashbord");
+          //   window.location.reload();
+          // }
+        } else {
+          if (data.isSubUser !== false) {
+            // if (branchData?.length >= 1) {
+            navigate("/getbranch");
+            window.location.reload();
+            // }
+            // else {
+            //   navigate("/dashbord");
+            //   window.location.reload();
+            // }
+          }
+        }
+      }
+
+      // window.location = "/crm/marine-resort/dashbord";
     } catch (error) {
       console.log({ error });
       if (error.response) {

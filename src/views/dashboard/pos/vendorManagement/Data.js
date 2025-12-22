@@ -8,7 +8,7 @@ import { AbilityContext } from "@src/utility/context/Can";
 import { Edit, MoreVertical, Trash } from "react-feather";
 
 // ** Reactstrap Imports
-import { useContext } from 'react';
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownItem,
@@ -74,7 +74,7 @@ export const serverSideColumns = [
     // minWidth: "150px",
     cell: (row) => {
       const MySwal = withReactContent(Swal);
-  const ability = useContext(AbilityContext);
+      const ability = useContext(AbilityContext);
 
       const handleDelete = async (uid) => {
         return MySwal.fire({
@@ -142,17 +142,19 @@ export const serverSideColumns = [
           >
             <MoreVertical size={15} />
           </DropdownToggle>
-          <DropdownMenu>
-             {ability.can("update", "pos") ? (    <DropdownItem onClick={() => handleEdit(row)}>
-              <Edit className="me-50" size={15} />
-              <span className="align-middle">Edit</span>
-            </DropdownItem>
-             ):null}
-        {ability.can("delete", "pos") ? (     <DropdownItem onClick={() => handleDelete(row.uid)}>
-              <Trash className="me-50" size={15} />
-              <span className="align-middle">Delete</span>
-            </DropdownItem>
-        ):null}
+          <DropdownMenu end container="body">
+            {ability.can("update", "pos") ? (
+              <DropdownItem onClick={() => handleEdit(row)}>
+                <Edit className="me-50" size={15} />
+                <span className="align-middle">Edit</span>
+              </DropdownItem>
+            ) : null}
+            {ability.can("delete", "pos") ? (
+              <DropdownItem onClick={() => handleDelete(row.uid)}>
+                <Trash className="me-50" size={15} />
+                <span className="align-middle">Delete</span>
+              </DropdownItem>
+            ) : null}
           </DropdownMenu>
         </UncontrolledDropdown>
       );

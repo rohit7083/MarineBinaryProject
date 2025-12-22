@@ -28,3 +28,11 @@ export const getHomeRouteForLoggedInUser = (userRole) => {
   if (userRole === "client") return { name: "access-control" };
   return { name: "auth-login" };
 };
+
+export const isPageLocked=(resource)=>{
+  const pagesNameData=JSON.parse(localStorage.getItem("pagesUnlockedNames"))
+
+  if( resource && pagesNameData && pagesNameData[resource])return false
+  else if(resource && pagesNameData&& !pagesNameData[resource])return true
+  else false 
+}

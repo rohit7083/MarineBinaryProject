@@ -45,6 +45,60 @@ export default class JwtService {
             this.jwtConfig.tokenType
           } ${accessToken.slice(1, -1)}`;
         }
+
+        
+        //branch code write here
+        const selectedUserStr = localStorage.getItem("selectedBranch");
+
+        let branchUid = null;
+
+        if (selectedUserStr) {
+          try {
+            const selectedBranch = JSON.parse(selectedUserStr);
+            branchUid = selectedBranch.uid;
+          } catch (err) {
+            console.error("Invalid selectedBranch JSON in localStorage", err);
+          }
+        }
+
+        console.log("branchUid:", branchUid);
+
+        // if (branchUid && ["post", "put", "patch"].includes(config.method)) {
+        //   config.data = {
+        //     ...(config.data || {}),
+        //     branch: {
+        //       uid: branchUid,
+        //     },
+        //   };
+        // }
+
+        if (
+          branchUid &&
+          ["post", "put", "patch"].includes(config.method) &&
+          !config.skipBranch
+        ) {
+          config.data = {
+            ...(config.data || {}),
+            branch: { uid: branchUid },
+          };
+        }
+        if (branchUid && config.method === "delete") {
+          config.data = {
+            branch: {
+              uid: branchUid,
+            },
+          };
+        }
+
+        if (
+          branchUid &&
+          config.method === "get" &&
+          config.appendBranchUid === true
+        ) {
+          config.url = `${config.url.replace(/\/$/, "")}/${branchUid}`;
+          
+        }
+
         return config;
       },
       (error) => Promise.reject(error)
@@ -164,7 +218,9 @@ export default class JwtService {
   // }
 
   getVendor() {
-    return axios.get(this.jwtConfig.getVendor);
+    return axios.get(this.jwtConfig.getVendor, {
+      appendBranchUid: true,
+    });
   }
 
   // ==================== Slip Category
@@ -173,7 +229,9 @@ export default class JwtService {
     return axios.post(this.jwtConfig.slipCategory, ...args);
   }
   getslipCatogory() {
-    return axios.get(this.jwtConfig.slipCategoryGet);
+    return axios.get(this.jwtConfig.slipCategoryGet, {
+      appendBranchUid: true,
+    });
   }
   updateslipCatogory(uid, ...args) {
     return axios.put(`${this.jwtConfig.slipCategory}${uid}`, ...args);
@@ -187,8 +245,10 @@ export default class JwtService {
   postslip(...args) {
     return axios.post(this.jwtConfig.slip, ...args);
   }
-  getslip(id = "") {
-    return axios.get(`${this.jwtConfig.slipGet}${id ? "/" + id : ""}`);
+  getslip() {
+    return axios.get(`${this.jwtConfig.slipGet}`, {
+      appendBranchUid: true,
+    });
   }
 
   updateslip(uid, ...args) {
@@ -228,7 +288,9 @@ export default class JwtService {
   // =================== Payment
 
   createPayment(...args) {
-    return axios.post(this.jwtConfig.createPayment, ...args);
+    return axios.post(this.jwtConfig.createPayment, ...args, {
+      skipBranch: true,
+    });
   }
 
   totalPayment(token, ...args) {
@@ -304,7 +366,9 @@ export default class JwtService {
   }
 
   verifyQr(...args) {
-    return axios.post(this.jwtConfig.verifyQr, ...args);
+    return axios.post(this.jwtConfig.verifyQr, ...args, {
+      skipBranch: true,
+    });
   }
 
   disable() {
@@ -328,7 +392,9 @@ export default class JwtService {
   }
 
   userpermission(params = "") {
-    return axios.get(this.jwtConfig.userpermission + params);
+    return axios.get(this.jwtConfig.userpermission + params, {
+      appendBranchUid: true,
+    });
   }
   permission() {
     return axios.get(this.jwtConfig.permission);
@@ -346,7 +412,9 @@ export default class JwtService {
     return axios.put(`${this.jwtConfig.updateRole}${uid}`, ...args);
   }
   getallSubuser(paramas = "") {
-    return axios.get(`${this.jwtConfig.getallSubuser}${paramas}`);
+    return axios.get(`${this.jwtConfig.getallSubuser}${paramas}`, {
+      appendBranchUid: true,
+    });
   }
 
   updateSubuser(uid, ...args) {
@@ -383,7 +451,9 @@ export default class JwtService {
   }
 
   getAllVendor() {
-    return axios.get(`${this.jwtConfig.getAllVendor}`);
+    return axios.get(`${this.jwtConfig.getAllVendor}`, {
+      appendBranchUid: true,
+    });
   }
   // ===== tax product ====
   productTax(...args) {
@@ -399,7 +469,9 @@ export default class JwtService {
   }
 
   getAlltax() {
-    return axios.get(`${this.jwtConfig.getAlltax}`);
+    return axios.get(`${this.jwtConfig.getAlltax}`, {
+      appendBranchUid: true,
+    });
   }
 
   async verifyOTP(token, ...data) {
@@ -419,7 +491,9 @@ export default class JwtService {
   }
 
   slipDocument(...args) {
-    return axios.post(this.jwtConfig.slipDocument, ...args);
+    return axios.post(this.jwtConfig.slipDocument, ...args, {
+      skipBranch: true,
+    });
   }
 
   getSingleDocuments(slipId) {
@@ -427,19 +501,27 @@ export default class JwtService {
   }
 
   updateDoc(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateDoc}${uid}`, ...args);
+    return axios.put(`${this.jwtConfig.updateDoc}${uid}`, ...args, {
+      skipBranch: true,
+    });
   }
 
   addProductCategory(...args) {
-    return axios.post(this.jwtConfig.addProductCategory, ...args);
+    return axios.post(this.jwtConfig.addProductCategory, ...args, {
+      skipBranch: true,
+    });
   }
 
   getProductCategory() {
-    return axios.get(this.jwtConfig.getProductCategory);
+    return axios.get(this.jwtConfig.getProductCategory, {
+      appendBranchUid: true,
+    });
   }
 
   editProductCategory(uid, ...args) {
-    return axios.put(`${this.jwtConfig.editProductCategory}${uid}`, ...args);
+    return axios.put(`${this.jwtConfig.editProductCategory}${uid}`, ...args, {
+      skipBranch: true,
+    });
   }
 
   deleteProductCategory(uid) {
@@ -447,7 +529,9 @@ export default class JwtService {
   }
 
   addProduct(...args) {
-    return axios.post(this.jwtConfig.addProduct, ...args);
+    return axios.post(this.jwtConfig.addProduct, ...args, {
+      skipBranch: true,
+    });
   }
 
   // create parking pass
@@ -459,7 +543,9 @@ export default class JwtService {
     return axios.put(`${this.jwtConfig.editpass}${uid}`, ...args);
   }
   getAll() {
-    return axios.get(this.jwtConfig.getAll);
+    return axios.get(this.jwtConfig.getAll, {
+      appendBranchUid: true,
+    });
   }
 
   Delete(uid) {
@@ -475,7 +561,9 @@ export default class JwtService {
   }
 
   GetMember() {
-    return axios.get(this.jwtConfig.GetMember);
+    return axios.get(this.jwtConfig.GetMember, {
+      appendBranchUid: true,
+    });
   }
 
   ParkingPayment(...args) {
@@ -491,11 +579,15 @@ export default class JwtService {
   }
 
   getAllEventType() {
-    return axios.get(this.jwtConfig.getAllEventType);
+    return axios.get(this.jwtConfig.getAllEventType, {
+      appendBranchUid: true,
+    });
   }
 
   getAllVenue() {
-    return axios.get(this.jwtConfig.getAllVenue);
+    return axios.get(this.jwtConfig.getAllVenue, {
+      appendBranchUid: true,
+    });
   }
 
   Venue(...args) {
@@ -519,11 +611,15 @@ export default class JwtService {
   }
 
   getAllVendor() {
-    return axios.get(this.jwtConfig.getAllVendor);
+    return axios.get(this.jwtConfig.getAllVendor, {
+      appendBranchUid: true,
+    });
   }
 
   getAllEvents() {
-    return axios.get(this.jwtConfig.getAllEvents);
+    return axios.get(this.jwtConfig.getAllEvents, {
+      appendBranchUid: true,
+    });
   }
 
   createEvent(...args) {
@@ -535,7 +631,9 @@ export default class JwtService {
   }
 
   getAllVendorType() {
-    return axios.get(this.jwtConfig.getAllVendorType);
+    return axios.get(this.jwtConfig.getAllVendorType, {
+      appendBranchUid: true,
+    });
   }
 
   updateVendor(uid, ...args) {
@@ -551,7 +649,9 @@ export default class JwtService {
   }
 
   payment(...args) {
-    return axios.post(this.jwtConfig.payment, ...args);
+    return axios.post(this.jwtConfig.payment, ...args, {
+      skipBranch: true,
+    });
   }
   DeleteEvent(uid) {
     return axios.delete(`${this.jwtConfig.DeleteEvent}${uid}`);
@@ -566,11 +666,15 @@ export default class JwtService {
   }
 
   getAllRoomTypes() {
-    return axios.get(this.jwtConfig.getAllRoomTypes);
+    return axios.get(this.jwtConfig.getAllRoomTypes, {
+      appendBranchUid: true,
+    });
   }
 
-  SearchRoom(...args) {
-    return axios.post(this.jwtConfig.SearchRoom, ...args);
+  SearchRoom(branchUid, ...data) {
+    return axios.post(`${this.jwtConfig.SearchRoom}/${branchUid}`, ...data, {
+      skipBranch: true,
+    });
   }
 
   submitBookedRooms(...args) {
@@ -586,11 +690,15 @@ export default class JwtService {
   }
 
   bookingList() {
-    return axios.get(this.jwtConfig.bookingList);
+    return axios.get(this.jwtConfig.bookingList, {
+      appendBranchUid: true,
+    });
   }
 
   Parentvendor() {
-    return axios.get(this.jwtConfig.Parentvendor);
+    return axios.get(this.jwtConfig.Parentvendor, {
+      appendBranchUid: true,
+    });
   }
 
   UpdateRoomType(uid, ...args) {
@@ -602,7 +710,9 @@ export default class JwtService {
   }
 
   GetAllRooms() {
-    return axios.get(this.jwtConfig.GetAllRooms);
+    return axios.get(this.jwtConfig.GetAllRooms, {
+      appendBranchUid: true,
+    });
   }
 
   UpdateRooms(uid, ...args) {
@@ -621,7 +731,9 @@ export default class JwtService {
   }
 
   UpdateEventAndPayment(...args) {
-    return axios.post(`${this.jwtConfig.UpdateEventAndPayment}`, ...args);
+    return axios.post(`${this.jwtConfig.UpdateEventAndPayment}`, ...args, {
+      skipBranch: true,
+    });
   }
 
   cancleEvent(uid) {
@@ -636,7 +748,9 @@ export default class JwtService {
   }
 
   getAllProduct() {
-    return axios.get(`${this.jwtConfig.getAllProduct}`);
+    return axios.get(`${this.jwtConfig.getAllProduct}`, {
+      appendBranchUid: true,
+    });
   }
 
   deleteProduct(uid) {
@@ -647,12 +761,21 @@ export default class JwtService {
     return axios.put(`${this.jwtConfig.updateProduct}${uid}`, ...args);
   }
   updateProductVariation(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateProductVariation}${uid}`, ...args);
+    return axios.put(
+      `${this.jwtConfig.updateProductVariation}${uid}`,
+      ...args,
+      {
+        skipBranch: true,
+      }
+    );
   }
   updateProductSpecification(uid, ...args) {
     return axios.put(
       `${this.jwtConfig.updateProductSpecification}${uid}`,
-      ...args
+      ...args,
+      {
+        skipBranch: true,
+      }
     );
   }
 
@@ -661,7 +784,9 @@ export default class JwtService {
   }
 
   getAllProduct() {
-    return axios.get(`${this.jwtConfig.getAllProduct}`);
+    return axios.get(`${this.jwtConfig.getAllProduct}`, {
+      appendBranchUid: true,
+    });
   }
 
   getImage(uid) {
@@ -674,7 +799,9 @@ export default class JwtService {
   }
 
   getAllCustomers() {
-    return axios.get(this.jwtConfig.getAllCustomer);
+    return axios.get(this.jwtConfig.getAllCustomer, {
+      appendBranchUid: true,
+    });
   }
 
   getWalkinCustomer() {
@@ -701,7 +828,9 @@ export default class JwtService {
   }
 
   getAllCustomer() {
-    return axios.get(`${this.jwtConfig.getAllCustomer}`);
+    return axios.get(`${this.jwtConfig.getAllCustomer}`, {
+      appendBranchUid: true,
+    });
   }
 
   deleteCustomer(uid) {
@@ -710,7 +839,7 @@ export default class JwtService {
   getImages(uid) {
     return axios.get(`${this.jwtConfig.getImages}${uid}`, {
       responseType: "blob", // 👈 this tells Axios to treat response as binary
-    }); 
+    });
   }
 
   getVariationUid(vuid) {
@@ -734,7 +863,7 @@ export default class JwtService {
 
   existingImages(uid) {
     return axios.get(`${this.jwtConfig.existingImages}${uid}`, {
-      responseType: "blob", // 👈 this tells Axios to treat response as binary
+      responseType: "blob",
     });
   }
 
@@ -756,10 +885,14 @@ export default class JwtService {
 
   // Rent Roll Services
   getViewRentRoll() {
-    return axios.get(this.jwtConfig.viewRentRollEndpoint);
+    return axios.get(this.jwtConfig.viewRentRollEndpoint, {
+      appendBranchUid: true,
+    });
   }
   getInversionRentRoll() {
-    return axios.get(this.jwtConfig.InversionRentRollEndpoint);
+    return axios.get(this.jwtConfig.InversionRentRollEndpoint, {
+      appendBranchUid: true,
+    });
   }
 
   //Virtual Terminal
@@ -772,7 +905,9 @@ export default class JwtService {
 
   // Generate QR Codee
   getAllEventQRCode() {
-    return axios.get(this.jwtConfig.getAllEventQrEndPoint);
+    return axios.get(this.jwtConfig.getAllEventQrEndPoint, {
+      appendBranchUid: true,
+    });
   }
 
   addQrCode(...args) {
@@ -799,7 +934,9 @@ export default class JwtService {
   }
 
   getEventQRPaymentList() {
-    return axios.get(this.jwtConfig.addQrEndPoint);
+    return axios.get(this.jwtConfig.addQrEndPoint ,{
+      appendBranchUid:true,
+    });
   }
 
   downloadReceipt(txnId) {
@@ -808,52 +945,64 @@ export default class JwtService {
     });
   }
 
-  successPaymentCharts(startDate, endDate) {
+  successPaymentCharts(buid,startDate, endDate) {
     return axios.get(
       `${
         this.jwtConfig.sucessPaymentCharts
-      }success-payments?startDate=${encodeURIComponent(
+      }success-payments/${buid}?startDate=${encodeURIComponent(
         startDate
-      )}&endDate=${encodeURIComponent(endDate)}`
+      )}&endDate=${encodeURIComponent(endDate)}`,
+     
     );
   }
 
   daysOfWeek() {
-    return axios.get(this.jwtConfig.daysOfWeek);
+    return axios.get(this.jwtConfig.daysOfWeek, {
+      appendBranchUid: true,
+    });
   }
   salesByhour() {
-    return axios.get(this.jwtConfig.salesByhour);
+    return axios.get(this.jwtConfig.salesByhour, {
+      appendBranchUid: true,
+    });
   }
 
   yearlySales() {
-    return axios.get(this.jwtConfig.yearlySales);
+    return axios.get(this.jwtConfig.yearlySales, {
+      appendBranchUid: true,
+    });
   }
 
-  weeklySales(type) {
-    return axios.get(`${this.jwtConfig.weeklySales}?type=${type}`);
+  weeklySales(buid,type) {
+    return axios.get(`${this.jwtConfig.weeklySales}/${buid}?type=${type}`, );
   }
 
-  dailySales(type) {
-    return axios.get(`${this.jwtConfig.dailySales}?type=${type}`);
+  dailySales(buid,type) {
+    return axios.get(`${this.jwtConfig.dailySales}/${buid}?type=${type}`);
   }
 
-  report(startDate, endDate) {
+  report(buid,startDate, endDate) {
     return axios.get(
-      `${this.jwtConfig.report}?fromDate=${startDate}&toDate=${endDate}`
+      `${this.jwtConfig.report}/${buid}?fromDate=${startDate}&toDate=${endDate}`,
+      
     );
   }
 
   //get Switch Slip
   getSwitchSlip() {
-    return axios.get(this.jwtConfig.slipGet);
+    return axios.get(this.jwtConfig.slipGet, {
+      appendBranchUid: true,
+    });
   }
 
   postSwitchSlip(...args) {
     return axios.post(this.jwtConfig.getSwitchSlipEndPoint, ...args);
   }
 
-  postSwitchSlipById(...args) {
-    return axios.post(this.jwtConfig.getSwitchSlipEndPointById, ...args);
+  postSwitchSlipById(buid, ...args) {
+    return axios.post(`${this.jwtConfig.getSwitchSlipEndPointById}${buid}`, ...args  ,{
+      skipBranch:true,
+    });
   }
 
   //get other Payment in slipmanagement
@@ -862,15 +1011,21 @@ export default class JwtService {
   }
 
   getUserData(LezerId) {
-    return axios.get(`${this.jwtConfig.getUserData}${LezerId}`);
+    return axios.get(`${this.jwtConfig.getUserData}${LezerId}`,{
+      appendBranchUid:true,
+    });
   }
 
   eventDocument(...args) {
-    return axios.post(this.jwtConfig.eventDocument, ...args);
+    return axios.post(this.jwtConfig.eventDocument, ...args, {
+      skipBranch: true,
+    });
   }
 
   eventDocUpdate(uid, ...args) {
-    return axios.put(`${this.jwtConfig.eventDocUpdate}${uid}`, ...args);
+    return axios.put(`${this.jwtConfig.eventDocUpdate}${uid}`, ...args, {
+      skipBranch: true,
+    });
   }
 
   getEventDocument(uid) {
@@ -879,7 +1034,9 @@ export default class JwtService {
     });
   }
   renewContract(...args) {
-    return axios.post(this.jwtConfig.renewContractEndPoint, ...args);
+    return axios.post(this.jwtConfig.renewContractEndPoint, ...args, {
+      skipBranch: true,
+    });
   }
   createWaitingSlip(...args) {
     return axios.post(this.jwtConfig.createWaitingSlip, ...args);
@@ -898,26 +1055,36 @@ export default class JwtService {
   }
 
   getAllWaiting() {
-    return axios.get(this.jwtConfig.getAllWaiting);
+    return axios.get(this.jwtConfig.getAllWaiting, {
+      appendBranchUid: true,
+    });
   }
 
   emailSmsSetting(...args) {
-    return axios.post(this.jwtConfig.emailSmsSetting, ...args);
+    return axios.post(this.jwtConfig.emailSmsSetting, ...args ,{
+      skipBranch:true,
+    });
   }
 
   getSettings() {
-    return axios.get(this.jwtConfig.getSettings);
+    return axios.get(this.jwtConfig.getSettings, {
+      appendBranchUid: true,
+    });
   }
 
   updateSetting(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateSetting}${uid}`, ...args);
+    return axios.put(`${this.jwtConfig.updateSetting}${uid}`, ...args ,{
+      skipBranch:true,
+    });
   }
   getShortcode() {
     return axios.get(this.jwtConfig.getShortcode);
   }
 
   getCalender() {
-    return axios.get(this.jwtConfig.getCalender);
+    return axios.get(this.jwtConfig.getCalender, {
+      appendBranchUid: true,
+    });
   }
 
   createTemaplte(...args) {
@@ -932,48 +1099,60 @@ export default class JwtService {
     return axios.get(this.jwtConfig.getTemplateValues);
   }
 
-
   retriveRoom(uid) {
     return axios.get(`${this.jwtConfig.retriveRoom}${uid}`);
   }
 
-    retriveEvent(uid) {
+  retriveEvent(uid) {
     return axios.get(`${this.jwtConfig.retriveEvent}${uid}`);
   }
 
-    deleteWaiting(uid) {
+  deleteWaiting(uid) {
     return axios.delete(`${this.jwtConfig.deleteWaiting}${uid}`);
   }
-  
- updateTemplate(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateTemplate}${uid}`, ...args);
+
+  updateTemplate(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateTemplate}${uid}`, ...args ,{
+      skipBranch:true,
+    });
   }
 
-   getAllBranch() {
+  getAllBranch() {
     return axios.get(`${this.jwtConfig.getAllBranch}`);
   }
-   updateBranch(uid, ...args) {
+  updateBranch(uid, ...args) {
     return axios.put(`${this.jwtConfig.updateBranch}${uid}`, ...args);
   }
-    createBranch(...args) {
+  createBranch(...args) {
     return axios.post(this.jwtConfig.createBranch, ...args);
   }
 
   // getBranch(uid) {
-  //   return axios.get(`${this.jwtConfig.getBranch}${uid}`);
+  //   return axios.get(`${this.jwtConfig.getBranch}${uid},`,{
+  //     appendBranchUid:true,
+  //   });
   // }
 
-  declinePayment(){
-        return axios.get(`${this.jwtConfig.declinePayment}`);
-
-  }
-   sucessPayment(){
-        return axios.get(`${this.jwtConfig.sucessPayment}`);
-
+  getBranch(uid) {
+    return axios.get(`${this.jwtConfig.getBranch}${uid}`);
   }
 
-    autoPayment(id){
-        return axios.get(`${this.jwtConfig.autoPayment}${id}`);
+  getBranchForuser(uid) {
+    return axios.get(`${this.jwtConfig.getBranch}${uid}`, {
+      skipBranch: true,
+    });
+  }
 
+  declinePayment() {
+    return axios.get(`${this.jwtConfig.declinePayment}`);
+  }
+  sucessPayment() {
+    return axios.get(`${this.jwtConfig.sucessPayment}`);
+  }
+
+  autoPayment(id) {
+    return axios.get(`${this.jwtConfig.autoPayment}${id}`, {
+      appendBranchUid: true,
+    });
   }
 }

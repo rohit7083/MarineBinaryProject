@@ -432,6 +432,13 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     const encrypted = encryptAES(pin);
 
     let formData = new FormData();
+ const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+    formData.append("branch.uid",branchUid);
+
+
+
 
     if (!updateData?.listData?.uid || paymentData?.step === 2) {
       if (allEventData?.eventUid || paymentData?.uid) {

@@ -25,10 +25,25 @@ const initialUser = () => {
   }
 };
 
+
+const initialunLockedPages = () =>{
+  const item=window.localStorage.getItem('pagesUnlockedNames')
+   try {
+    // Parse the JSON string or return an empty object if invalid
+    return item ? JSON.parse(item) : {};
+  } catch (error) {
+    console.error("Error parsing JSON from localStorage:", error);
+    // Clear the invalid data and return an empty object
+    localStorage.removeItem("pagesUnlockedNames");
+    return {};
+  }
+}
+
 export const authSlice = createSlice({
   name: "authentication",
   initialState: {
     userData: initialUser(),
+    unlockedPages: initialunLockedPages(),
   },
   reducers: {
     handleLogin: (state, action) => {
@@ -53,12 +68,17 @@ export const authSlice = createSlice({
       state[config.storageRefreshTokenKeyName] = null;
       // ** Remove user, accessToken & refreshToken from localStorage
       localStorage.removeItem("userData");
+      localStorage.removeItem("selectedBranch");
+
       localStorage.removeItem(config.storageTokenKeyName);
       localStorage.removeItem(config.storageRefreshTokenKeyName);
+    },
+    saveUnlockedPages: (state, action) => {
+      state.unlockedPages = action.payload;
     },
   },
 });
 
-export const { handleLogin, handleLogout } = authSlice.actions;
+export const { handleLogin, handleLogout,saveUnlockedPages } = authSlice.actions;
 
 export default authSlice.reducer;

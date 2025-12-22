@@ -92,7 +92,10 @@ const ApexChart = () => {
       if (!selectedOption) return;
       try {
         setLoad(true);
-        const res = await useJwt.dailySales(selectedOption.value);
+        const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+        const res = await useJwt.dailySales(branchUid,selectedOption.value);
         const data = res?.data?.data || {};
         const todayDate = res?.data?.todayDate;
         const compareDate = res?.data?.compareDate;

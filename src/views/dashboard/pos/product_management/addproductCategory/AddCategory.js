@@ -97,6 +97,12 @@ const MultipleColumnForm = () => {
   const onSubmit = async (data) => {
     setErr("");
     const formData = new FormData();
+    {{debugger}}
+      const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+
+        formData.append("branch.uid",branchUid);
 
     formData.append("name", data.name);
     formData.append("description", data.description);

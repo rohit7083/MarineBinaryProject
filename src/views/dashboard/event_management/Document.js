@@ -85,10 +85,14 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
       .filter((key) => ["IdentityDocument", "Contract"].includes(key))
       .reduce((arr, key) => {
         const { uid, currentFile, existingFile } = data[key];
-
+ const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
         // Case 1: New document (no uid yet, new file selected)
         if (!uid && currentFile) {
           const formData = new FormData();
+              formData.append("branch.uid",branchUid);
+
           formData.append("eventId", eventId);
           formData.append("documentName", key);
           formData.append("documentFile", currentFile);
@@ -98,6 +102,8 @@ const Document = ({ stepper, slipIID, sId, allEventData, listData }) => {
         // Case 2: Existing document replaced with a new file
         if (uid && currentFile) {
           const formData = new FormData();
+              formData.append("branch.uid",branchUid);
+
           formData.append("eventId", eventId);
           formData.append("documentName", key);
           formData.append("documentFile", currentFile);

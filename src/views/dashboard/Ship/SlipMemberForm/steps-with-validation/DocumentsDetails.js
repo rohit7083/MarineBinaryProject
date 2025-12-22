@@ -92,9 +92,12 @@ const FileUploadForm = ({ Parentdocuments, stepper, slipIID, sId }) => {
         delete data[key];
         return obj;
       }
-
+  const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
       const formData = new FormData();
 
+      formData.append("branch.uid", branchUid);
       formData.append("documentName", key);
       formData.append("documentFile", data[key].currentFile);
       formData.append("slipId", slipIID || sId?.id);

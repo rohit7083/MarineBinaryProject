@@ -10,12 +10,12 @@ export default {
   tokenType: "Bearer",
   // ** Admin Endpoint
   slipCategory: "/slipCategory/",
-  slipCategoryGet: "/slipCategory",
+  slipCategoryGet: "/slipCategory/branch",
 
   slip: "/slip/",
-  slipGet: "/slip",
+  slipGet: "/slip/branch",
   sVessel: "/sVessel/",
-  sVesselGet: "/sVessel",
+  sVesselGet: "/sVessel/branch",
   retriveVessel: "/sVessel/",
   sMember: "/sMember/",
 
@@ -49,7 +49,7 @@ export default {
 
   //roles and permissions
   userpermissionPost: "/userpermission/",
-  userpermission: "/userpermission",
+  userpermission: "/userpermission/branch/",
 
   permission: "/permission",
 
@@ -57,13 +57,13 @@ export default {
   updateRole: "/userpermission/",
 
   createUser: "/sub_user/",
-  getallSubuser: "/sub_user",
+  getallSubuser: "/sub_user/branch/getAll",
   deleteSubUser: "/sub_user/",
   updateSubuser: "/sub_user/",
 
   getMemberDetails: "/auth/sPayment/decrypt-token?token=",
 
-  slipAssignmentGet: "/slipAssignmentGet",
+  slipAssignmentGet: "/slipAssignmentGet/branch",
   GenerateOtp: "/sPayment/generate",
   // verifyOTP: "/sPayment/verify/",
 
@@ -82,17 +82,17 @@ export default {
   addVender: "/vendor/",
   editvender: "/vendor/",
   deleteVender: "/vendor/",
-  getAllVendor: "/vendor",
+  getAllVendor: "/vendor/branch",
 
   //pos: Tax
   productTax: "/productTax/",
   updateTax: "/productTax/",
   deleteTax: "/productTax/",
-  getAlltax: "/productTax",
+  getAlltax: "/productTax/branch",
 
   //add Category
   addProductCategory: "/productCategory/",
-  getProductCategory: "/productCategory",
+  getProductCategory: "/productCategory/branch",
   editProductCategory: "/productCategory/",
   deleteProductCategory: `/productCategory/`,
 
@@ -100,14 +100,14 @@ export default {
   addProduct: "/product/",
 
   //get all vendor
-  getVendor: "/vendor",
+  getVendor: "/vendor/branch",
 
   //parking pass add
   addPass: "/parkingPass/",
   editpass: "/parkingPass/",
-  getAll: "/parkingPass",
+  getAll: "/parkingPass/branch",
   Delete: "/parkingPass/",
-  GetMember: "/sMember",
+  GetMember: "/sMember/branch",
   ParkingPayment: "/parkingPaymnet/payment",
 
   guest: "/sMember/guest",
@@ -117,17 +117,17 @@ export default {
   DeleteEtype: "/eventType/",
   EventType: "/eventType/",
   VendorType: "/vendorType/",
-  getAllEventType: "/eventType",
+  getAllEventType: "/eventType/branch",
   Venue: "/venue/",
-  getAllVenue: "venue",
+  getAllVenue: "venue/branch",
   UpdateEventType: "/eventType/",
   updateVenue: "/venue/",
   DeleteVenue: "/venue/",
   DeleteVendorType: "/vendorType/",
-  getAllVendor: "/vendor",
-  getAllVendorType: "/vendorType",
+  getAllVendor: "/vendor/branch",
+  getAllVendorType: "/vendorType/branch",
   updateVendor: "/vendorType/",
-  getAllEvents: "/events",
+  getAllEvents: "/events/branch",
   createEvent: "/events/",
   DeleteEvent: "/events/",
   UpdateEventAndPayment: "/event/complete-payment",
@@ -143,13 +143,13 @@ export default {
 
   CreateRoomType: "/roomType/",
   CreateRoom: "/room/",
-  getAllRoomTypes: "/roomType",
+  getAllRoomTypes: "/roomType/branch",
   SearchRoom: "/room/search",
   PreviewSubmit: "/booking/",
   submitBookedRooms: "/roomSearch/",
-  bookingList: "/booking",
+  bookingList: "/booking/branch",
   bookingPayment: "/booking/payment",
-  GetAllRooms: "/room",
+  GetAllRooms: "/room/branch",
   UpdateRooms: "/room/",
   DeleteRooms: "/room/",
   //room Type Update and delete
@@ -166,7 +166,7 @@ export default {
   cancleRooms: "/events/cancelrooms/",
   //add eextra room
   addExtraRoom: "/events/addrooms/",
-  getAllProduct: "/product",
+  getAllProduct: "/product/branch",
   deleteProduct: "/product/",
   updateProduct: "/product/products/",
   updateProductVariation: "/product/variations/",
@@ -176,7 +176,7 @@ export default {
 
   //Customer
   addNewCustomerEndPoint: "/customer/",
-  getAllCustomer: "/customer",
+  getAllCustomer: "/customer/branch",
   getWalkinCustomer: "/customer/walkInCus",
   qtypos: "/pos/order",
   posProductdis: "/pos/assCustDis",
@@ -186,27 +186,27 @@ export default {
   addCustomer: "/customer/",
   updateCustomer: "/customer/",
   deleteCustomer: "/customer/",
-  getAllCustomer: "/customer",
+  getAllCustomer: "/customer/branch",
 
   //get images of products
   getImages: "/productVariationImage/sImages/file/",
   //rent Roll
-  viewRentRollEndpoint: "/slipRentRoll/rent-roll",
+  viewRentRollEndpoint: "/slipRentRoll/rent-roll/",
   InversionRentRollEndpoint: "slipRentRoll/inverse-rent-roll",
 
   //virtual Terminal
   virtualTerminalEndPoint: "/virtualTerminal",
-  getWalkinCustomerEndPoint: "/customer/walkInCus",
+  getWalkinCustomerEndPoint: "/customer/walkInCus/branch",
 
   //Generate Qr
-  getAllEventQrEndPoint: "/eventQrCode",
+  getAllEventQrEndPoint: "/eventQrCode/branch",
   getVariationUid: "/pos/",
   updatedQty: "/pos/updateQuantity/",
 
-  getAllEventQrEndPoint: "/eventQrCode",
+  getAllEventQrEndPoint: "/eventQrCode/branch",
   getVariationUid: "/pos/",
   updatedQty: "/pos/updateQuantity/",
-  addQrEndPoint: "/eventQrCode",
+  addQrEndPoint: "/eventQrCode/branch",
   decriptQrCodeToeknEndPoint: "/auth/qrCode/decrypt-token?token=",
   qrPaymentEndPoint: "/auth/eventQrCode/",
 
@@ -231,7 +231,7 @@ export default {
 
   // Switch Slip
   getSwitchSlipEndPoint: "/slipSwitch/",
-  getSwitchSlipEndPointById: "/slipSwitch",
+  getSwitchSlipEndPointById: "/slipSwitch/preview/",
   renewContractEndPoint: "/sPayment/renewContract",
   otherPaymentEndPoint: "/sPayment/otherSlip/",
   renewContractEndPoint: "/sPayment/renewContract",
@@ -250,7 +250,7 @@ export default {
   createWaitingSlip: "/waitingMember/",
   updateWaitingSlip: "/waitingMember/",
   deleteWaiting: "/waitingMember/",
-  getAllWaiting: "/waitingMember",
+  getAllWaiting: "/waitingMember/branch",
 
   //offline slip
   offlineSlip: "/slip/offline/",
@@ -279,7 +279,7 @@ export default {
   createBranch: "/branch/",
   updateBranch: "/branch/",
 
-  // getBranch: "/sub_user/branch/",
+  getBranch: "/sub_user/branch/",
 
   declinePayment: "/sPayment/auto-payment/declined",
   sucessPayment: "/sPayment/auto-payment/success",

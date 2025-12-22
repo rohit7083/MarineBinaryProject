@@ -40,22 +40,24 @@ const WizardModern = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+
         setFetchLoader(true);
         const response = await useJwt.getslip(uid);
-        const { content } = response.data;
-        const { vessel, member, payment } = content || slipNameFromDashboard;
+        const raw= response.data?.content?.result;
+        const result =Array.isArray(raw) ? raw[0] : null;
+        const { vessel, member, payment } = result || slipNameFromDashboard;
 
-        console.log("conntent Slip id ", content);
-        setId(content);
+        console.log("result Slip id ", result);
+        setId(result);
         // vessel details
         vessel.slipName = {
           label: vessel.slipName,
-          value: content.id,
-          dimensions: content.dimensions,
+          value: result.id,
+          dimensions: result.dimensions,
         };
         vessel.dimensionVal = {};
 
-        Object.keys(content.dimensions).map(
+        Object.keys(result.dimensions).map(
           (key) => (vessel.dimensionVal[key] = vessel[key])
         );
 

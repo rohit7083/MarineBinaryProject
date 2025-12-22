@@ -224,9 +224,14 @@ function SwitchSlipPaymentForm() {
 
     setIsLoading(true);
 
+
     try {
+ const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+
       // Call switch slip API
-      const response = await useJwt.postSwitchSlipById(payload);
+      const response = await useJwt.postSwitchSlipById(branchUid , payload);
 
       // Validate response
       if (!response || !response.data) {

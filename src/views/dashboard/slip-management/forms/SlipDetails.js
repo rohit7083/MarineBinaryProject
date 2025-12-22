@@ -137,7 +137,7 @@ function SlipDetailsForm({ assigned }) {
     }));
   };
 
- const handleSelectChange = (option) => {
+  const handleSelectChange = (option) => {
     setSelectedCategory(option);
     setDimensions(option?.dimensions || []);
     // PREFILL userData amounts
@@ -232,7 +232,7 @@ function SlipDetailsForm({ assigned }) {
             return orderedDimensions;
           })(),
 
-           overDueAmountFor7Days:
+          overDueAmountFor7Days:
             parseFloat(userData.overDueAmountFor7Days) || 0,
           overDueChargesFor7Days: selections.overDueChargesFor7Days,
           overDueAmountFor15Days:
@@ -247,8 +247,6 @@ function SlipDetailsForm({ assigned }) {
           overDueAmountForAuction:
             parseFloat(userData.overDueAmountForAuction) || 0,
           overDueChargesForAuction: selections.overDueChargesForAuction,
-        
-         
         };
 
         console.log("payload", payload);
@@ -372,7 +370,7 @@ function SlipDetailsForm({ assigned }) {
         newErrors.amps = "AMPS must be a number";
       }
     }
-if (
+    if (
       !userData.overDueAmountFor7Days ||
       isNaN(userData.overDueAmountFor7Days)
     ) {
@@ -389,7 +387,7 @@ if (
       newErrors.overDueAmountFor7Days = "Please select a type.";
     }
 
-     if (
+    if (
       !userData.overDueAmountFor15Days ||
       isNaN(userData.overDueAmountFor15Days)
     ) {
@@ -405,7 +403,7 @@ if (
     } else if (!selections.overDueChargesFor15Days) {
       newErrors.overDueAmountFor15Days = "Please select a type.";
     }
- if (
+    if (
       !userData.overDueAmountFor30Days ||
       isNaN(userData.overDueAmountFor30Days)
     ) {
@@ -455,7 +453,7 @@ if (
     } else if (!selections.overDueChargesForAuction) {
       newErrors.overDueAmountForAuction = "Please select a type.";
     }
-   
+
     return newErrors;
   };
 
@@ -469,20 +467,20 @@ if (
         value: item.uid,
         label: item.shipTypeName,
         dimensions: item.dimensions,
-         overDueChargesFor7Days: item.overDueChargesFor7Days,
-          overDueAmountFor7Days: item.overDueAmountFor7Days,
+        overDueChargesFor7Days: item.overDueChargesFor7Days,
+        overDueAmountFor7Days: item.overDueAmountFor7Days,
 
-          overDueChargesFor15Days: item.overDueChargesFor15Days,
-          overDueAmountFor15Days: item.overDueAmountFor15Days,
+        overDueChargesFor15Days: item.overDueChargesFor15Days,
+        overDueAmountFor15Days: item.overDueAmountFor15Days,
 
-          overDueChargesFor30Days: item.overDueChargesFor30Days,
-          overDueAmountFor30Days: item.overDueAmountFor30Days,
+        overDueChargesFor30Days: item.overDueChargesFor30Days,
+        overDueAmountFor30Days: item.overDueAmountFor30Days,
 
-          overDueChargesForNotice: item.overDueChargesForNotice,
-          overDueAmountForNotice: item.overDueAmountForNotice,
+        overDueChargesForNotice: item.overDueChargesForNotice,
+        overDueAmountForNotice: item.overDueAmountForNotice,
 
-          overDueChargesForAuction: item.overDueChargesForAuction, // YOUR API TYPO
-          overDueAmountForAuction: item.overDueAmountForAuction,
+        overDueChargesForAuction: item.overDueChargesForAuction, // YOUR API TYPO
+        overDueAmountForAuction: item.overDueAmountForAuction,
       }));
 
       setShipTypeNames(options);
@@ -506,9 +504,11 @@ if (
 
       const fetchDetailsForUpdate = async () => {
         try {
-          const resp = await useJwt.getslip(uid);
+                  const resp = await useJwt.getslip(uid);
 
-          const result = resp.data.content;
+          const raw = resp.data.content?.result;
+          const result = Array.isArray(raw) ? raw[0] : raw;
+
           setSelectedSlip(result);
           console.log(result);
           if (result) {
@@ -534,10 +534,10 @@ if (
             setDimensions(Object.keys(result.dimensions) || []);
             setUserData((pre) => ({ ...pre, ...result.dimensions }));
             setSelectedCategory({
-value: result.category.uid,
+              value: result.category.uid,
               label: result.category.shipTypeName,
               dimensions: result.dimensions,
-               overDueChargesFor7Days:
+              overDueChargesFor7Days:
                 result?.category?.overDueChargesFor7Days ?? "",
               overDueAmountFor7Days:
                 result?.category?.overDueAmountFor7Days ?? "",
@@ -565,10 +565,14 @@ value: result.category.uid,
 
             setSelections({
               overDueChargesFor7Days: result?.category?.overDueChargesFor7Days,
-              overDueChargesFor15Days: result?.category?.overDueChargesFor15Days,
-              overDueChargesFor30Days: result?.category?.overDueChargesFor30Days,
-              overDueChargesForNotice: result?.category?.overDueChargesForNotice,
-              overDueChargesForAuction: result?.category?.overDueChargesForAuction,
+              overDueChargesFor15Days:
+                result?.category?.overDueChargesFor15Days,
+              overDueChargesFor30Days:
+                result?.category?.overDueChargesFor30Days,
+              overDueChargesForNotice:
+                result?.category?.overDueChargesForNotice,
+              overDueChargesForAuction:
+                result?.category?.overDueChargesForAuction,
             });
           }
         } catch (error) {
@@ -1025,7 +1029,7 @@ value: result.category.uid,
                 <FormFeedback>{errors.marketMonthlyPrice}</FormFeedback>
               </Col>
             </Row>
- {/* <fieldset disabled={true}> */}
+            {/* <fieldset disabled={true}> */}
             <Row className="mb-1">
               <Label sm="3" style={{ opacity: 1 }} for="marketMonthlyPrice">
                 7 Days Charges
@@ -1392,7 +1396,7 @@ value: result.category.uid,
                 </div>
               </Col>
             </Row>
-{/* </fieldset> */}
+            {/* </fieldset> */}
             <Row>
               <Col className="d-flex mt-2 justify-content-end gap-2">
                 <Button
@@ -1432,4 +1436,3 @@ value: result.category.uid,
 }
 
 export default SlipDetailsForm;
-

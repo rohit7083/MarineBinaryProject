@@ -50,6 +50,11 @@ const Add_Specification = ({
     });
 
     const formData = new FormData();
+     const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+        formData.append("branch.uid",branchUid);
+
     formData.append("name", productData?.name);
     if (productData?.description?.trim()) {
       formData.append("description", productData.description.trim());

@@ -59,7 +59,10 @@ const ApexChartCard = () => {
 
       setLoad(true);
       try {
-        const res = await useJwt.weeklySales(selectedOption.value);
+           const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+        const res = await useJwt.weeklySales(branchUid,selectedOption.value);
         const data = res?.data?.data || {};
         setNextData(res?.data);
         // Extract keys (week ranges)

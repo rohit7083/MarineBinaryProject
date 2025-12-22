@@ -16,6 +16,7 @@ import {
 
 // React Hook Form
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
   const {
@@ -35,7 +36,7 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
 
   const [HeaderError, setHeaderError] = useState(null);
   const [loadinng, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     setHeaderError("");
 
@@ -78,6 +79,7 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
         console.log(updatedRes);
         setShow(false);
         reset();
+        navigate("/dashboard/pos/product_management/addTaxes");
       } catch (error) {
         console.log("Error submitting form", error);
         if (error.response) {

@@ -7,7 +7,13 @@ import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactCountryFlag from "react-country-flag";
 import { Mail, Plus, User } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
@@ -42,8 +48,8 @@ const RoleCards = () => {
   const [EncryptPin, setEncryptPin] = useState([]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
-    const ability = useContext(AbilityContext);
-  
+  const ability = useContext(AbilityContext);
+  const [branchesList, setBranches] = useState([]);
   const {
     reset,
     watch,
@@ -134,12 +140,17 @@ const RoleCards = () => {
       userRoles: {
         uid: data.userRoles,
       },
+
+      branches: watchselectBranch?.map((x) => ({
+        uid: x?.value,
+      })),
     };
 
     // const payload = encryptAES(JSON.stringify(transformedData));
-    // console.log("Transformed Data:", payload);
+    console.log("branchesList:", branchesList);
 
     try {
+      
       setloading(true);
       const res = await useJwt.createUser(transformedData);
       console.log("data is created ", data);
@@ -219,6 +230,23 @@ const RoleCards = () => {
       //  console.log("roles",roles);
 
       setallRoleName(roles);
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const Useruid = userData?.uid;
+
+      if (!Useruid) {
+        console.error("UID not found in userData");
+        return;
+      }
+      const res = await useJwt.getBranchForuser(Useruid);
+      let getBranch = res?.data?.branches;
+
+      console.log("getBranch", getBranch);
+
+      const allBranch = getBranch.map((b) => ({
+        value: b.uid,
+        label: b.branchName,
+      }));
+      setBranches(allBranch);
     } catch (error) {
       console.error(error);
     } finally {
@@ -295,20 +323,26 @@ const RoleCards = () => {
     [countries]
   );
 
+const watchselectBranch=watch("selectBranch");
+console.log("selectBranch",watchselectBranch);
+
+
   return (
     <Fragment>
-       <Row className="px-2 mt-1">
-    {ability.can("create", "user management") ?     <Button
-          color="primary"
-          className="text-nowrap mb-1"
-          size={'sm'}
-          onClick={() => {
-            setModalType("Add New");
-            setShow(true);
-          }}
-        >
-          <Plus size={14} /> Create User
-        </Button> :null}
+      <Row className="px-2 mt-1">
+        {ability.can("create", "user management") ? (
+          <Button
+            color="primary"
+            className="text-nowrap mb-1"
+            size={"sm"}
+            onClick={() => {
+              setModalType("Add New");
+              setShow(true);
+            }}
+          >
+            <Plus size={14} /> Create User
+          </Button>
+        ) : null}
       </Row>
       <Modal
         isOpen={show}
@@ -369,6 +403,36 @@ const RoleCards = () => {
                         field.onChange(
                           selectedOption ? selectedOption.value : null
                         )
+                      }
+                    />
+                  )}
+                />
+              </Col>
+            </Row>
+            <Row className="mb-2">
+              <Label sm="3" for="roleName">
+                Select Branch
+              </Label>
+
+              <Col sm="9">
+                <Controller
+                  name="selectBranch"
+                  control={control}
+                  rules={{
+                    required: "Select at least one branch",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      isMulti
+                      theme={selectThemeColors}
+                      className="react-select"
+                      classNamePrefix="select"
+                      options={branchesList}
+                      isClearable
+                      value={field.value || []}
+                      onChange={(selectedOptions) =>
+                        field.onChange(selectedOptions)
                       }
                     />
                   )}

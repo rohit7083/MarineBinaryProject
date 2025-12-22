@@ -243,10 +243,7 @@ const GenrateOtp = (props) => {
 
   // ** handle Resend OTP
   const handleResendCall = async () => {
-    {
-      {
-      }
-    }
+    
     try {
       if (attempt === 1) {
         const token = await onText();

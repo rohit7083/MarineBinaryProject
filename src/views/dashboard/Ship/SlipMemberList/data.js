@@ -109,7 +109,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
               <MoreVertical size={15} />
             </DropdownToggle>
 
-            <DropdownMenu>
+            <DropdownMenu end container="body">
               {/* View */}
               {ability.can("view", "slip management") ? (
                 <DropdownItem
@@ -130,6 +130,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                   //  disabled={isOffline}
 
                   to="/dashboard/slip_memberform"
+                  
                   state={{
                     stepStatus: row.stepStatus,
                     uid: row.uid,

@@ -1937,7 +1937,7 @@ if (payload?.payment?.finalPayment > 0 ) {
                     <Spinner size="sm" />
                   </>
                 ) : (
-                  "Next Dark"
+                  "Next "
                 )}
               </Button>
             ) : (
@@ -1952,7 +1952,7 @@ if (payload?.payment?.finalPayment > 0 ) {
                     <Spinner size="sm" />
                   </>
                 ) : (
-                  "Next ok"
+                  "Next "
                 )}
               </Button>
             )}

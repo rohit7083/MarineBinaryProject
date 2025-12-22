@@ -88,7 +88,7 @@ export default [
         action: "view",
         resource: "slip management",
       },
-        {
+      {
         id: "Auto payment List",
         title: "Auto payment List ",
         icon: <Circle size={12} />,
@@ -104,9 +104,7 @@ export default [
     icon: (
       <img
         width="22"
-        height="22
-    
-    "
+        height="22"
         className="me-1"
         src="https://img.icons8.com/ios/50/user--v1.png"
         alt="user--v1"
@@ -121,7 +119,7 @@ export default [
     children: [
       {
         id: "Create User",
-        title: "Roles & Permissions",
+        title: "Roles-Permissions",
         icon: <Circle size={12} />,
         navLink: "/dashboard/user_rolls/roles-permissions/roles",
         action: "view",
@@ -144,6 +142,8 @@ export default [
   //   icon: <img width="20" className="me-1" height="20" src="https://img.icons8.com/ios/50/check--v1.png" alt="check--v1"/>,
   //   // navLink: '/dashboard/create-user',
   //   badge: "light-warning",
+  //    action: "view",
+  //       resource: "user management",
   //   // badgeText: '2',
   //   children: [
   //     {
@@ -151,25 +151,33 @@ export default [
   //       title: "Create Invoice",
   //       icon: <Circle size={12} />,
   //       navLink: "/dashboard/invoice_management/invoice",
+  //        action: "view",
+  //       resource: "user management",
   //     },
-  //     {
-  //       id: "Manage Invoice ",
-  //       title: "Manage Invoice",
-  //       icon: <Circle size={12} />,
-  //       navLink: "/dashboard/invoice_management/manageInvoice",
-  //     },
-  //     {
-  //       id: "Invoice Setting",
-  //       title: "Invoice Setting",
-  //       icon: <Circle size={12} />,
-  //       navLink: "/dashboard/invoice_management/invoice_setting",
-  //     },
-  //     {
-  //       id: "Recurring Invoice ",
-  //       title: "Recurring Invoice ",
-  //       icon: <Circle size={12} />,
-  //       // navLink: '/dashboard/invoice_management/'
-  //     },
+  // {
+  //   id: "Manage Invoice ",
+  //   title: "Manage Invoice",
+  //   icon: <Circle size={12} />,
+  //   navLink: "/dashboard/invoice_management/manageInvoice",
+  //    action: "view",
+  //   resource: "user management",
+  // },
+  // {
+  //   id: "Invoice Setting",
+  //   title: "Invoice Setting",
+  //   icon: <Circle size={12} />,
+  //   navLink: "/dashboard/invoice_management/invoice_setting",
+  //    action: "view",
+  //   resource: "user management",
+  // },
+  // {
+  //   id: "Recurring Invoice ",
+  //   title: "Recurring Invoice ",
+  //   icon: <Circle size={12} />,
+  //   // navLink: '/dashboard/invoice_management/'
+  //    action: "view",
+  //   resource: "user management",
+  // },
   //   ],
   // },
 
@@ -233,15 +241,28 @@ export default [
     ],
   },
 
+  // {
+  //   id: "Parking Pass",
+  //   title: "Parking Pass",
+  //   icon: <Square size={12} />,
+  //   navLink: "/parking_pass",
+  //   badge: "light-warning",
+  //   // badgeText: '2',
+  //   action: "view",
+  //   resource: "parking pass",
+  //    isLocked: true ,
+  // },
+
   {
     id: "Parking Pass",
     title: "Parking Pass",
     icon: <Square size={12} />,
     navLink: "/parking_pass",
     badge: "light-warning",
-    // badgeText: '2',
+    isLocked: "🔒",
     action: "view",
     resource: "parking pass",
+    // disabled: true,
   },
   {
     id: "Event Management",
@@ -305,7 +326,7 @@ export default [
     children: [
       {
         id: "Index",
-        title: "Manage Room types",
+        title: "Room types",
         icon: <Circle size={12} />,
         navLink: "/manage_room_types",
         action: "view",
@@ -337,7 +358,7 @@ export default [
 
       {
         id: "bookingListing",
-        title: "Room Booking List",
+        title: "Booking List",
         icon: <Circle size={12} />,
         navLink: "/bookingListing",
         action: "view",
@@ -429,12 +450,6 @@ export default [
     ],
   },
 
-
-
-
-  
-  
-
   {
     id: "Accounting",
     title: "Accounting",
@@ -444,7 +459,6 @@ export default [
     action: "view",
     resource: "accounting",
     children: [
-      
       {
         id: "Reports",
         title: "Reports",
@@ -466,8 +480,8 @@ export default [
         title: "Ledger",
         icon: <Circle size={12} />,
         navLink: "/accounting/Ledger",
-         action: "view",
-        resource: "accounting", 
+        action: "view",
+        resource: "accounting",
       },
       // {
       //   id: "Purchase ",
@@ -525,7 +539,6 @@ export default [
         action: "view",
         resource: "sales",
       },
-     
     ],
   },
 ];

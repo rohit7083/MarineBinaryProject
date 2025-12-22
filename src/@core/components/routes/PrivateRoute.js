@@ -6,9 +6,14 @@ import { Navigate } from "react-router-dom";
 import { AbilityContext } from "@src/utility/context/Can";
 
 // ** Spinner Import
+import { isPageLocked } from "../../../auth/utils";
 import Spinner from "../spinner/Loading-spinner";
 
+
+
 const PrivateRoute = ({ children, route }) => {
+console.clear()
+  console.log(children,route)
   // ** Hooks & Vars
   const ability = useContext(AbilityContext);
   const user = JSON.parse(localStorage.getItem("userData"));
@@ -30,6 +35,9 @@ const PrivateRoute = ({ children, route }) => {
     }
     if (user && restrictedRoute && user.role === "client") {
       return <Navigate to="/access-control" />;
+    }
+    if(isPageLocked(resource)){
+      return <Navigate to="/upgradeModules"/>
     }
     // if (user && !ability.can(action || 'read', resource)) {
     //   return <Navigate to='/misc/not-authorized' replace />

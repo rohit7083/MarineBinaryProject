@@ -87,8 +87,10 @@ const autofillMemberALLDATA =location?.state?.Rowdata;
 
     try {
       setLoading(true);
-
-      const res = await useJwt.SearchRoom(data);
+ const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+      const res = await useJwt.SearchRoom(branchUid,data);
       const AllroomUnits = res?.data?.flatMap(
         (x) =>
           x?.roomUnits?.map(({ roomNumber, uid, available }) => ({

@@ -415,6 +415,11 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
 
       // Create FormData
       const formData = new FormData();
+ const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+
+          formData.append("branch.uid", branchUid);
 
       // Append all payload fields
       for (const key in payload) {

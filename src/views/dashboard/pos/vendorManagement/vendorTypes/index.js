@@ -163,6 +163,14 @@ const index = () => {
                 }
               } catch (error) {
                 console.error("Error deleting item:", error);
+                MySwal.fire({
+                    icon: "error",
+                    title: "Failed",
+                    text: `${error?.response?.data?.content || "vendor not deleted"}`,
+                    customClass: {
+                      confirmButton: "btn btn-success",
+                    },
+                  });
               }
             } else if (result.dismiss === MySwal.DismissReason.cancel) {
               MySwal.fire({

@@ -148,6 +148,8 @@ const Address = ({
     setFile(null);
   };
 
+ 
+
   const renderFilePreview = (file) => {
     if (file && file.type.startsWith("image")) {
       return (
@@ -197,6 +199,10 @@ const Address = ({
       setAvailableMonths(months);
     }
   };
+
+   const watchDiscountAmount=watch('discountAmount');
+  console.log("watchDiscountAmount",watchDiscountAmount);
+  
   useEffect(() => {
     const assignDone = isAssigned?.isAssigned;
 
@@ -314,6 +320,8 @@ const Address = ({
   };
 
   const depositAmount = Number(watch("deposite"));
+    const WatchcalDisAmount = Number(watch("calDisAmount"));
+
   console.log(depositAmount);
 
   useEffect(() => {
@@ -328,13 +336,14 @@ const Address = ({
 
     if (!uid && rentalPrice) {
       setFinalPayment(rentalPrice);
-      setValue("finalPayment", rentalPrice + depositAmount);
+      setValue("finalPayment", rentalPrice + depositAmount - (WatchcalDisAmount || 0) );
     }
-  }, [watch("rentalPrice"), depositAmount]);
+  }, [watch("rentalPrice"), depositAmount ,WatchcalDisAmount]);
 
   //Discount Calculations
 
   const handlePercentageChange = (e) => {
+    
     const percentage = parseFloat(e.target.value);
     if (!isNaN(percentage)) {
       const discountValue = (percentage / 100) * rentalPriceState;
@@ -492,7 +501,9 @@ const Address = ({
     //   console.error("Invalid pin input");
     //   return;
     // }
-
+    const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
     const encrypted = encryptAES(pinArray.join(""));
 
     setErrMsz("");
@@ -504,7 +515,7 @@ const Address = ({
     formData.append("rentalPrice", data.rentalPrice);
     formData.append("finalPayment", data.finalPayment);
     formData.append("deposite", data.deposite);
-
+    formData.append("branch.uid",branchUid);
     formData.append("renewalDate", data.renewalDate);
     formData.append("nextPaymentDate", data.nextPaymentDate);
     formData.append("paymentMode", data.paymentMode);
@@ -568,6 +579,7 @@ const Address = ({
       console.log("Choose differant payment Method ");
     }
     console.log(isAssignedStatus);
+
 
     if (isAssigned?.isAssigned) {
       stepper.next();

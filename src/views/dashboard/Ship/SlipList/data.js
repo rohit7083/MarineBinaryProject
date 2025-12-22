@@ -4,10 +4,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 // ** Third Party Components
-import {
-  Edit2,
-  Trash
-} from "react-feather";
+import { Edit2, Trash } from "react-feather";
 // ** Reactstrap Imports
 import useJwt from "@src/auth/jwt/useJwt";
 import { useContext, useState } from "react";
@@ -103,7 +100,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
       const [data, setData] = useState([]);
 
       const MySwal = withReactContent(Swal);
-  const ability = useContext(AbilityContext);
+      const ability = useContext(AbilityContext);
 
       const handleDelete = async (uid) => {
         return MySwal.fire({
@@ -173,35 +170,34 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 
       return (
         <div className="d-flex">
-        {ability.can("update", "slip management") ?
-           <Link
-            to={`/dashboard/slipcategory`} // Don't pass UID in the path
-            state={{
-              shipTypeName: row.shipTypeName,
-              dimensions: row.dimensions,
-              uid: row.uid,
-            }}
-          >
-            <span
-              style={{ margin: "0.5rem", cursor: "pointer" }}
-              onClick={() => handle(row)}
+          {ability.can("update", "slip management") ? (
+            <Link
+              to={`/dashboard/slipcategory`} // Don't pass UID in the path
+              state={{
+                shipTypeName: row.shipTypeName,
+                dimensions: row.dimensions,
+                uid: row.uid,
+              }}
             >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
-          </Link>
-:null}
-        {ability.can("delete", "slip management") ?
-
-          <Link>
-            <span
-              color="danger"
-              style={{ margin: "0.5rem", cursor: "pointer" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
-          </Link> :null}
-
+              <span
+                style={{ margin: "0.5rem", cursor: "pointer" }}
+                onClick={() => handle(row)}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            </Link>
+          ) : null}
+          {ability.can("delete", "slip management") ? (
+            <Link>
+              <span
+                color="danger"
+                style={{ margin: "0.5rem", cursor: "pointer" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            </Link>
+          ) : null}
         </div>
       );
     },

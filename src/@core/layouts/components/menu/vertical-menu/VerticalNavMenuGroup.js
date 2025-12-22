@@ -7,7 +7,7 @@ import classnames from "classnames";
 import { useTranslation } from "react-i18next";
 
 // ** Reactstrap Imports
-import { Collapse, Badge } from "reactstrap";
+import { Badge, Collapse } from "reactstrap";
 
 // ** Vertical Menu Items Component
 import VerticalNavMenuItems from "./VerticalNavMenuItems";
@@ -27,11 +27,13 @@ const VerticalNavMenuGroup = ({
   setGroupActive,
   currentActiveGroup,
   setCurrentActiveGroup,
+  isPageLocked,
   ...rest
 }) => {
   // ** Hooks
   const { t } = useTranslation();
   const location = useLocation();
+
 
   // ** Current Val
   const currentURL = useLocation().pathname;
@@ -111,6 +113,9 @@ const VerticalNavMenuGroup = ({
     setGroupOpen([]);
   }, [location]);
 
+
+
+
   // ** Returns condition to add open class
   const openClassCondition = (id) => {
     if ((menuCollapsed && menuHover) || menuCollapsed === false) {
@@ -146,7 +151,7 @@ const VerticalNavMenuGroup = ({
       >
         {item.icon}
         <span className="menu-title text-truncate">{t(item.title)}</span>
-
+{isPageLocked?' 🔒':null}
         {item.badge && item.badgeText ? (
           <Badge className="ms-auto me-1" color={item.badge} pill>
             {item.badgeText}

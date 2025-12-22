@@ -107,7 +107,12 @@ const DocumentUploader = ({
     if (!file) return;
 
     const documentUid = getDocumentUid(name);
+     const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
     const formData = new FormData();
+          formData.append("branch.uid", branchUid);
+
     formData.append("slipId", slipId);
     formData.append("documentName", name);
     formData.append("documentFile", file);
