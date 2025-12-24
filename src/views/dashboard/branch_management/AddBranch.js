@@ -24,18 +24,19 @@ import {
 } from "reactstrap";
 import { countries } from "../../dashboard/slip-management/CountryCode";
 
-const defaultValues = {
-  branchName: "mumbai naka Branch",
-  description: "Primary branch for customer operations",
-  address: "123 Marina Street",
-  city: "Mumbai",
-  state: "Maharashtra",
-  country: "India",
-  postalCode: "40001",
+const defaultValues = 
+{
+  branchName: "",
+  description: "",
+  address: "",
+  city: "",
+  state: "",
+  country: "",
+  postalCode: "",
+  phoneNumber: "",
+  email: ""
+}
 
-  phoneNumber: "9876543210",
-  email: "mainbranch@example.com",
-};
 
 // Removes all special characters except spaces
 const cleanText = (value) => value.replace(/[^a-zA-Z0-9\s]/g, "");

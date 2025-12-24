@@ -46,7 +46,6 @@ export default class JwtService {
           } ${accessToken.slice(1, -1)}`;
         }
 
-        
         //branch code write here
         const selectedUserStr = localStorage.getItem("selectedBranch");
 
@@ -96,7 +95,6 @@ export default class JwtService {
           config.appendBranchUid === true
         ) {
           config.url = `${config.url.replace(/\/$/, "")}/${branchUid}`;
-          
         }
 
         return config;
@@ -934,8 +932,8 @@ export default class JwtService {
   }
 
   getEventQRPaymentList() {
-    return axios.get(this.jwtConfig.addQrEndPoint ,{
-      appendBranchUid:true,
+    return axios.get(this.jwtConfig.addQrEndPoint, {
+      appendBranchUid: true,
     });
   }
 
@@ -945,14 +943,13 @@ export default class JwtService {
     });
   }
 
-  successPaymentCharts(buid,startDate, endDate) {
+  successPaymentCharts(buid, startDate, endDate) {
     return axios.get(
       `${
         this.jwtConfig.sucessPaymentCharts
       }success-payments/${buid}?startDate=${encodeURIComponent(
         startDate
-      )}&endDate=${encodeURIComponent(endDate)}`,
-     
+      )}&endDate=${encodeURIComponent(endDate)}`
     );
   }
 
@@ -973,18 +970,17 @@ export default class JwtService {
     });
   }
 
-  weeklySales(buid,type) {
-    return axios.get(`${this.jwtConfig.weeklySales}/${buid}?type=${type}`, );
+  weeklySales(buid, type) {
+    return axios.get(`${this.jwtConfig.weeklySales}/${buid}?type=${type}`);
   }
 
-  dailySales(buid,type) {
+  dailySales(buid, type) {
     return axios.get(`${this.jwtConfig.dailySales}/${buid}?type=${type}`);
   }
 
-  report(buid,startDate, endDate) {
+  report(buid, startDate, endDate) {
     return axios.get(
-      `${this.jwtConfig.report}/${buid}?fromDate=${startDate}&toDate=${endDate}`,
-      
+      `${this.jwtConfig.report}/${buid}?fromDate=${startDate}&toDate=${endDate}`
     );
   }
 
@@ -1000,9 +996,13 @@ export default class JwtService {
   }
 
   postSwitchSlipById(buid, ...args) {
-    return axios.post(`${this.jwtConfig.getSwitchSlipEndPointById}${buid}`, ...args  ,{
-      skipBranch:true,
-    });
+    return axios.post(
+      `${this.jwtConfig.getSwitchSlipEndPointById}${buid}`,
+      ...args,
+      {
+        skipBranch: true,
+      }
+    );
   }
 
   //get other Payment in slipmanagement
@@ -1011,8 +1011,8 @@ export default class JwtService {
   }
 
   getUserData(LezerId) {
-    return axios.get(`${this.jwtConfig.getUserData}${LezerId}`,{
-      appendBranchUid:true,
+    return axios.get(`${this.jwtConfig.getUserData}${LezerId}`, {
+      appendBranchUid: true,
     });
   }
 
@@ -1061,20 +1061,18 @@ export default class JwtService {
   }
 
   emailSmsSetting(...args) {
-    return axios.post(this.jwtConfig.emailSmsSetting, ...args ,{
-      skipBranch:true,
+    return axios.post(this.jwtConfig.emailSmsSetting, ...args, {
+      skipBranch: true,
     });
   }
 
   getSettings() {
-    return axios.get(this.jwtConfig.getSettings, {
-      appendBranchUid: true,
-    });
+    return axios.get(this.jwtConfig.getSettings);
   }
 
   updateSetting(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateSetting}${uid}`, ...args ,{
-      skipBranch:true,
+    return axios.put(`${this.jwtConfig.updateSetting}${uid}`, ...args, {
+      skipBranch: true,
     });
   }
   getShortcode() {
@@ -1112,8 +1110,8 @@ export default class JwtService {
   }
 
   updateTemplate(uid, ...args) {
-    return axios.put(`${this.jwtConfig.updateTemplate}${uid}`, ...args ,{
-      skipBranch:true,
+    return axios.put(`${this.jwtConfig.updateTemplate}${uid}`, ...args, {
+      skipBranch: true,
     });
   }
 
@@ -1154,5 +1152,24 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.autoPayment}${id}`, {
       appendBranchUid: true,
     });
+  }
+
+  upgradePlans(...args) {
+    return axios.post(`${this.jwtConfig.upgradePlans}`, ...args);
+  }
+
+  apiForpaymentPage(...args) {
+    return axios.post(`${this.jwtConfig.apiForpaymentPage}`, ...args);
+  }
+
+  subscriptionPayment(...args) {
+    return axios.post(`${this.jwtConfig.subscriptionPayment}`, ...args);
+  }
+
+    forAUthMobileOtp(token = "", ...args) {
+    return axios.post(this.jwtConfig.forAUthMobileOtp + token, ...args);
+  }
+    withoutAuthEmailOtp(token = "", ...args) {
+    return axios.post(this.jwtConfig.withoutAuthEmailOtp + token, ...args);
   }
 }

@@ -284,4 +284,12 @@ export default {
   declinePayment: "/sPayment/auto-payment/declined",
   sucessPayment: "/sPayment/auto-payment/success",
   autoPayment:'/sPayment/auto-payment/',
+
+  upgradePlans:'/subscription/get/user-subscription',
+  apiForpaymentPage:'/subscription/get/user-account',
+
+  subscriptionPayment:'/subscription/purchase',
+
+  forAUthMobileOtp:'/auth/phpUser/verify_accountForAuth/',
+  withoutAuthEmailOtp:'/auth/phpUser/verify_account/',
 };

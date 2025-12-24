@@ -122,9 +122,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
     // {{ }}
     setIsAssigned(SlipData?.isAssigned);
     setCheckvessel(SlipData?.vessel);
-    setCheckMember(SlipData?.member);
-    console.clear();
-    // console.log("assigne",SlipData?.vessel);
+    setCheckMember(SlipData?.member);    // console.log("assigne",SlipData?.vessel);
   }, [SlipData]);
   const onSubmit = async (data) => {
     setLoading(true);

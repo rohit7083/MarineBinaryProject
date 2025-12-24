@@ -275,6 +275,14 @@ const UpgradeModule = lazy(() =>
   import("../../views/dashboard/upgrade/LockModal")
 );
 
+const SubscriptionPage = lazy(() =>
+  import("../../views/dashboard/upgrade/SubscriptionPage")
+);
+
+const SubscriptionPayment = lazy(() =>
+  import("../../views/dashboard/upgrade/PaymentSubscription")
+);  
+
 export default [
   {
     path: "/marin/slip-management/:uid",
@@ -305,11 +313,11 @@ export default [
  {
     path: "/upgradeModules",
     element: <UpgradeModule />,
-    meta:{
-      layout: "blank",
-      publicRoute: false,
+    // meta:{
+    //   layout: "blank",
+    //   publicRoute: false,
       
-    }
+    // }
   },
   {
     path: "/dashboard/invoice_management/invoice_setting",
@@ -972,5 +980,22 @@ export default [
       resource: "slip management",
       action: "view",
     },
+  },
+
+   {
+    element: <SubscriptionPage />,
+    path: "/upgrade/subscription",
+    // meta: {
+    //   resource: "sales",
+    //   action: "view",
+    // },
+  },
+  {
+    element: <SubscriptionPayment />,
+    path: "/upgrade/subscription/payment",
+    // meta: {
+    //   resource: "sales",
+    //   action: "view",
+    // },
   },
 ];

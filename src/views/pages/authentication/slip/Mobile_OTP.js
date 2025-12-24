@@ -415,6 +415,7 @@ import withReactContent from "sweetalert2-react-content";
 import useJwt from "@src/auth/jwt/useJwt";
 import { AbilityContext } from "@src/utility/context/Can";
 import { handleLogin } from "@store/authentication";
+import { useParams } from "react-router-dom";
 
 import "@styles/react/pages/page-authentication.scss";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
@@ -441,6 +442,7 @@ const TwoStepsBasic = () => {
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendCallLoading, setResendCallLoading] = useState(false);
+const { tok } = useParams();
 
   const userData = location.state?.userData;
   const token = userData?.token;
@@ -536,16 +538,19 @@ const TwoStepsBasic = () => {
 
       const encryptedOtp = encryptAESBase64(otpString);
 
-      // Call mobile OTP verification
-      const verifyRes = await useJwt.mobileOtp(token, { otp: encryptedOtp });
-
+      let verifyRes;
+      if (tok) {
+        verifyRes = await useJwt.withoutAuthEmailOtp(tok, { otp });
+        console.log(verifyRes);
+      } else {
+        verifyRes = await useJwt.mobileOtp(token, { otp: encryptedOtp });
+      }
       if (!verifyRes || verifyRes.status !== 200) {
         // Unexpected format
         setMessage("Failed to verify OTP. Please try again.");
         setLoading(false);
         return;
       }
-
       const profile = verifyRes.data.profile;
       const abilityList = (profile.allPermissions || []).map(
         ({ action, module }) => ({
@@ -576,6 +581,8 @@ const TwoStepsBasic = () => {
         : Promise.resolve({ data: { branches: [] } });
       const branchRes = await branchPromise;
       const branchData = branchRes?.data?.branches || [];
+      const crmId = branchRes?.data?.crmId || "";
+      localStorage.setItem("crmId", crmId);
 
       // Choose navigation based on branch count & role
       const goToGetBranch = branchData.length >= 1;
@@ -725,7 +732,7 @@ const TwoStepsBasic = () => {
                         //   value={field.value || ""}
                         // />
 
-                          <Input
+                        <Input
                           {...field}
                           maxLength="1"
                           className={`auth-input height-50 text-center numeral-mask mx-25 mb-1 ${

@@ -214,25 +214,24 @@ const index = () => {
               Sell
             </Badge> */}
             {/* </span> */}
- {ability.can("update", "room management") ? (
-            <span
-              color="danger"
-              style={{ margin: "1rem", cursor: "pointer", color: "red" }}
-              onClick={() => handleEdit(row)}
-            >
-              <Edit2 className="font-medium-3 text-body" />
-            </span>
- ):null}
-          {ability.can("delete", "room management") ? (   <span
-              color="danger"
-              style={{ cursor: "pointer", color: "red" }}
-              onClick={() => handleDelete(row.uid)}
-            >
-              <Trash className="font-medium-3 text-body" />
-            </span>
-
-
-          ):null}
+            {ability.can("update", "room management") ? (
+              <span
+                color="danger"
+                style={{ margin: "1rem", cursor: "pointer", color: "red" }}
+                onClick={() => handleEdit(row)}
+              >
+                <Edit2 className="font-medium-3 text-body" />
+              </span>
+            ) : null}
+            {ability.can("delete", "room management") ? (
+              <span
+                color="danger"
+                style={{ cursor: "pointer", color: "red" }}
+                onClick={() => handleDelete(row.uid)}
+              >
+                <Trash className="font-medium-3 text-body" />
+              </span>
+            ) : null}
           </>
         );
       },
@@ -287,17 +286,18 @@ const index = () => {
                mt-1 "
               >
                 <Col xs="auto">
-         {ability.can("create", "room management") ? (         <Link to={"/room_details/add_room_details"}>
-                    <Button
-                      // color="danger"
-                      color="primary"
-                      size="sm"
-                      className="text-nowrap mb-1"
-                    >
-                      <Plus size={14} /> Add Room Details
-                    </Button>
-                  </Link>
-         ):null}
+                  {ability.can("create", "room management") ? (
+                    <Link to={"/room_details/add_room_details"}>
+                      <Button
+                        // color="danger"
+                        color="primary"
+                        size="sm"
+                        className="text-nowrap mb-1"
+                      >
+                        <Plus size={14} /> Add Room Details
+                      </Button>
+                    </Link>
+                  ) : null}
                 </Col>
               </Row>{" "}
             </div>

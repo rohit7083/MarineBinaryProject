@@ -157,8 +157,28 @@ const AuthenticationRoutes = [
       // restricted: true
     },
   },
+
+   {
+    path: "/email_Otp/:token",
+    element: <EmailOTP />,
+    meta: {
+      layout: "blank",
+      publicRoute: true,
+      // restricted: true
+    },
+  },
   {
     path: "/mobile_otp",
+    element: <Mobile_OTP />,
+    meta: {
+      layout: "blank",
+      publicRoute: true,
+      restricted: true,
+    },
+  },
+
+   {
+    path: "/mobile_otp/:token",
     element: <Mobile_OTP />,
     meta: {
       layout: "blank",

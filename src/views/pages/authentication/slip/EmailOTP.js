@@ -37,6 +37,7 @@ import { handleLogin } from "@store/authentication";
 import { AbilityContext } from "@src/utility/context/Can";
 import Countdown from "react-countdown";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 // ** Utils
 import { useContext, useState } from "react";
@@ -54,6 +55,7 @@ const TwoStepsBasic = () => {
   const [resendCount, setResendcount] = useState(false);
 
   const [resendcallCount, setResendcallCount] = useState(false);
+const { tok } = useParams();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -153,34 +155,15 @@ const TwoStepsBasic = () => {
 
       const token = userData?.token;
       const otp = encryptAES(data1?.otp.join(""));
-      console.log("otp", otp);
-        // {{debugger}}
+      let res;
+     if (tok) {
+         res = await useJwt.withoutAuthEmailOtp(tok, { otp });
+        console.log(res);
+      }else{
+         res = await useJwt.verifyAccount(token, { otp });
+        console.log(res);
+      }
 
-      const res = await useJwt.verifyAccount(token, { otp });
-      console.log(res);
-      // setAuthStatus(res.data.profile.TwoNf);
-
-      // const data = {
-      //   ...{
-      //     ...res.data.profile,
-      //     ability: [
-      //       {
-      //         action: "manage",
-      //         subject: "all",
-      //       },
-      //     ],
-      //   },
-      //   accessToken: res.data.access,
-      //   refreshToken: res.data.refresh,
-      // };
-      // dispatch(handleLogin(data));
-      // ability.update([
-      //   {
-      //     action: "manage",
-      //     subject: "all",
-      //   },
-      // ]);
-      // navigate(getHomeRouteForLoggedInUser("admin"));
       const abilityList = res.data.profile.allPermissions.map(
         ({ action, module }) => ({
           action: action.toLowerCase(),
@@ -206,6 +189,9 @@ const TwoStepsBasic = () => {
         const res = await useJwt.getBranch(uidForbranch);
         console.log(res);
         let branchData = res?.data?.branches;
+        const crmId = res?.data?.crmId || "";
+      localStorage.setItem("crmId", crmId);
+
         if (data?.isSubUser === false) {
           // if (branchData?.length >= 0) {
           navigate("/getbranch");
