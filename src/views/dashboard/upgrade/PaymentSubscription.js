@@ -64,6 +64,9 @@ const PaymentPage = () => {
   console.log(errors);
 
   const onSubmit = async (data) => {
+    
+    
+    
    if (activeTab === "card") {
     if (!selectedCard) {
       setError("selectedCard", {
@@ -98,8 +101,9 @@ if (walletAmount < payableAmount) {
   //     return;
   //   }
   // }
+   const userData = JSON.parse(localStorage.getItem("userData"));
     const payload = {
-      uid: localStorage.getItem("uid"),
+      uid: userData?.uid || "",//localStorage.getItem("uid"),
       crmId: localStorage.getItem("crmId"),
       paymentMethod: activeTab,
       paymentAmt: selectedPlan.finalAmt || selectedPlan.subscriptionAmt,

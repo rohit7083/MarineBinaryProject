@@ -959,7 +959,7 @@ export default [
     element: <AddBranch />,
     path: "/branch/add_branch",
     meta: {
-      resource: "sales",
+      resource: "branch management",
       action: "view",
     },
   },
@@ -967,7 +967,7 @@ export default [
     element: <BranchIndex />,
     path: "/branch",
     meta: {
-      resource: "sales",
+      resource: "branch management",
       action: "view",
     },
   },

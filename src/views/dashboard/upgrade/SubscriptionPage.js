@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Row } from "reactstrap";
 const PricingCards = () => {
   const location = useLocation();
+  console.log(location);
   
-    const existingCreditCard = location.state?.walletBal?.cardData ;
+  const existingCreditCard = location.state?.walletBal?.cardData ;
 
   const {walletBal} = location.state?.walletBal ;
   const { subscription, addOn } = location.state || {};
