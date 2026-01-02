@@ -47,7 +47,8 @@ export default function BranchSelector() {
         const res = await useJwt.getBranch(uid);
         console.log(res);
         let resData = res?.data?.branches;
-
+        
+         localStorage.setItem("crmId", res?.data?.crmId);
         setBranches(resData);
       } catch (error) {
         console.error(error);
@@ -68,15 +69,16 @@ export default function BranchSelector() {
 
   const handleSelect = async (branch) => {
     console.log("Selected Branch:", branch);
-
+    
     //  saveUnlockedPages
     // Store in localStorage
     if (branch) {
       const userData = getUserData();
-
+      console.log(userData);
+      
       if (userData) {
         const { permissions = [] } = userData;
-
+       
         const pagesUnlockedNames = {};
 
         permissions.forEach((item) => {
@@ -96,7 +98,8 @@ export default function BranchSelector() {
       navigate("/dashbord");
     }
   };
-
+  console.log(localStorage);
+  
   return (
     <div className="min-vh-100" style={{ background: "#7367F0" }}>
       {/* HEADER */}
