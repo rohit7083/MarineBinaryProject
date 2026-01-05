@@ -527,6 +527,8 @@ const { tok } = useParams();
     setLoading(true);
 
     try {
+      {{debugger}}
+
       const otpArray = formData.otp || [];
       const otpString = otpArray.join("").trim();
 
@@ -535,12 +537,11 @@ const { tok } = useParams();
         setLoading(false);
         return;
       }
-
+// const otp = encryptAES(otpData?.otp.join(""));
       const encryptedOtp = encryptAESBase64(otpString);
-
       let verifyRes;
       if (tok) {
-        verifyRes = await useJwt.withoutAuthEmailOtp(tok, { otp });
+        verifyRes = await useJwt.withoutAuthEmailOtp(tok, { otp:encryptedOtp });
         console.log(verifyRes);
       } else {
         verifyRes = await useJwt.mobileOtp(token, { otp: encryptedOtp });

@@ -55,7 +55,6 @@ const TwoStepsBasic = () => {
   const [resendCount, setResendcount] = useState(false);
 
   const [resendcallCount, setResendcallCount] = useState(false);
-  {{debugger}}
 const { tok } = useParams();
 
   const location = useLocation();
