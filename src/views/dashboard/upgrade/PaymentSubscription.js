@@ -117,12 +117,24 @@ const PaymentPage = () => {
 
     try {
       const res = await useJwt.subscriptionPayment(payload);
-      console.log(res);
-
+    if (res?.status === 200) {
       setTimeout(() => {
+
+        try {
+          const userData = JSON.parse(localStorage.getItem("userData"));
+          const userUid = userData?.uid || "";
+          const resPermision = useJwt.getBranch(userUid);
+          console.log(resPermision);
+          
+        } catch (error) {
+          console.log(error);
+          
+        }
         alert("Payment successful! Subscription activated.");
-        // navigate("/upgrade/subscription/payment");
+        navigate("/upgrade/subscription/payment");
+
       }, 2000);
+    }
     } catch (error) {
       console.error("Payment error:", error);
       alert("Payment failed. Please try again.");
