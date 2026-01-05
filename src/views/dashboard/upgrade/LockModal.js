@@ -129,16 +129,19 @@ export default function PosUpgradePage() {
         setLoading(true);
         const crmId = localStorage.getItem("crmId");
         const userData = JSON.parse(localStorage.getItem("userData"));
-        // const userUid = userData?.uid || "";
-        const userUid = "0ecfa123-3694-45fa-8cbb-4f9332bf124c"; //temp
+        const userUid = userData?.uid || "";
+        // const userUid = "0ecfa123-3694-45fa-8cbb-4f9332bf124c"; //temp
         const res = await useJwt.upgradePlans({ crmid: crmId });
+console.log("called upgrade plan api ", res);
+
 
         const paymentPageData = await useJwt.apiForpaymentPage({
           uid: userUid,
         });
+        console.log("paymentPageData called ",paymentPageData);
+        
         if (paymentPageData?.status === 200) {
        
-
           let walletBal = paymentPageData?.data?.content;
           setWalletBal(walletBal);
         }

@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Row } from "reactstrap";
 const PricingCards = () => {
   const location = useLocation();
-  
-    const existingCreditCard = location.state?.walletBal?.cardData ;
 
-  const {walletBal} = location.state?.walletBal ;
+  const existingCreditCard = location.state?.walletBal?.cardData;
+
+  const { walletBal } = location.state?.walletBal || 0;
   const { subscription, addOn } = location.state || {};
   const plans = subscription ?? addOn ?? null;
   const navigate = useNavigate();
@@ -78,11 +78,11 @@ const PricingCards = () => {
 
   //   ];
   const badge = "POPULAR";
-console.log("walletBal",walletBal);
 
   const handleChoosePlan = (plan) => {
-    
-    navigate("/upgrade/subscription/payment", { state: { plan, walletBal ,existingCreditCard } });
+    navigate("/upgrade/subscription/payment", {
+      state: { plan, walletBal, existingCreditCard },
+    });
   };
 
   return (
@@ -133,22 +133,26 @@ console.log("walletBal",walletBal);
                     position: "relative",
                   }}
                 >
-                  {badge && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "-12px",
-                        right: "20px",
-                        backgroundColor: "#0d6efd",
-                        color: "white",
-                        padding: "4px 12px",
-                        borderRadius: "12px",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {badge}
-                    </div>
+                  {index == 1 && (
+                    <>
+                      {badge && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "-12px",
+                            right: "20px",
+                            backgroundColor: "#0d6efd",
+                            color: "white",
+                            padding: "4px 12px",
+                            borderRadius: "12px",
+                            fontSize: "11px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {badge}
+                        </div>
+                      )}
+                    </>
                   )}
 
                   <CardBody className="p-3 pb-0">
@@ -187,7 +191,7 @@ console.log("walletBal",walletBal);
                         fontWeight: "500",
                         padding: "10px",
                       }}
-                      onClick={()=> handleChoosePlan(plan)}
+                      onClick={() => handleChoosePlan(plan)}
                     >
                       Choose Plan
                     </Button>

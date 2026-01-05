@@ -27,7 +27,7 @@ const PaymentPage = () => {
     handleSubmit,
     setError,
     control,
-    unregister ,
+    unregister,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {},
@@ -54,52 +54,54 @@ const PaymentPage = () => {
     }
   }, [existingCreditCard]);
 
- useEffect(() => {
-  if (activeTab === "wallet") {
-    unregister("cvv");
-  }
-}, [activeTab, unregister]);
+  useEffect(() => {
+    if (activeTab === "wallet") {
+      unregister("cvv");
+    }
+  }, [activeTab, unregister]);
 
   console.clear();
   console.log(errors);
 
   const onSubmit = async (data) => {
-   if (activeTab === "card") {
-    if (!selectedCard) {
-      setError("selectedCard", {
+    if (activeTab === "card") {
+      if (!selectedCard) {
+        setError("selectedCard", {
+          type: "manual",
+          message: "Please select a card",
+        });
+        return;
+      }
+    }
+
+    const walletAmount = Number(walletBal);
+    const payableAmount = Number(
+      selectedPlan.finalAmt || selectedPlan.subscriptionAmt
+    );
+
+    if (walletAmount < payableAmount) {
+      setError("wallet", {
         type: "manual",
-        message: "Please select a card",
+        message: "Insufficient wallet balance",
       });
       return;
     }
-  }
 
-  const walletAmount = Number(walletBal);
-const payableAmount = Number(
-  selectedPlan.finalAmt || selectedPlan.subscriptionAmt
-);
-
-if (walletAmount < payableAmount) {
-  setError("wallet", {
-    type: "manual",
-    message: "Insufficient wallet balance",
-  });
-  return;
-}
-
-  // if (activeTab === "wallet") {
-  //   const payableAmount =
-  //     selectedPlan.finalAmt || selectedPlan.subscriptionAmt;
-  //   if (walletBal < payableAmount) {
-  //     setError("wallet", {
-  //       type: "manual",
-  //       message: "Insufficient wallet balance",
-  //     });
-  //     return;
-  //   }
-  // }
+    // if (activeTab === "wallet") {
+    //   const payableAmount =
+    //     selectedPlan.finalAmt || selectedPlan.subscriptionAmt;
+    //   if (walletBal < payableAmount) {
+    //     setError("wallet", {
+    //       type: "manual",
+    //       message: "Insufficient wallet balance",
+    //     });
+    //     return;
+    //   }
+    // }
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userUid = userData?.uid || "";
     const payload = {
-      uid: localStorage.getItem("uid"),
+      uid: userUid,
       crmId: localStorage.getItem("crmId"),
       paymentMethod: activeTab,
       paymentAmt: selectedPlan.finalAmt || selectedPlan.subscriptionAmt,
@@ -349,45 +351,45 @@ if (walletAmount < payableAmount) {
                                   </Col>
                                 );
                               })}
-{activeTab === "card" && (
-<>
-                              <Label>
-                                CVV <span className="text-danger">*</span>{" "}
-                              </Label>
-                              <Controller
-                                name="cvv"
-                                control={control}
-                                rules={{
-                                  required: "CVV is required",
-                                  pattern: {
-                                    value: /^[0-9]{3,4}$/,
-                                    message: "CVV must be 3 or 4 digits",
-                                  },
-                                }}
-                                render={({ field }) => (
-                                  <div>
-                                    <Input
-                                      {...field}
-                                      type="password"
-                                      inputMode="numeric"
-                                      maxLength={4}
-                                      placeholder="CVV"
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          e.target.value.replace(/\D/g, "")
-                                        )
-                                      }
-                                    />
-                                    {errors.cvv && (
-                                      <small style={{ color: "red" }}>
-                                        {errors.cvv.message}
-                                      </small>
+                              {activeTab === "card" && (
+                                <>
+                                  <Label>
+                                    CVV <span className="text-danger">*</span>{" "}
+                                  </Label>
+                                  <Controller
+                                    name="cvv"
+                                    control={control}
+                                    rules={{
+                                      required: "CVV is required",
+                                      pattern: {
+                                        value: /^[0-9]{3,4}$/,
+                                        message: "CVV must be 3 or 4 digits",
+                                      },
+                                    }}
+                                    render={({ field }) => (
+                                      <div>
+                                        <Input
+                                          {...field}
+                                          type="password"
+                                          inputMode="numeric"
+                                          maxLength={4}
+                                          placeholder="CVV"
+                                          onChange={(e) =>
+                                            field.onChange(
+                                              e.target.value.replace(/\D/g, "")
+                                            )
+                                          }
+                                        />
+                                        {errors.cvv && (
+                                          <small style={{ color: "red" }}>
+                                            {errors.cvv.message}
+                                          </small>
+                                        )}
+                                      </div>
                                     )}
-                                  </div>
-                                )}
-                              />
-                              </>
-)}
+                                  />
+                                </>
+                              )}
                             </Row>
                           )}
                         </div>
