@@ -159,7 +159,7 @@ const AuthenticationRoutes = [
   },
 
    {
-    path: "/email_Otp/:token",
+    path: "/email_Otp/:tok",
     element: <EmailOTP />,
     meta: {
       layout: "blank",
@@ -178,7 +178,7 @@ const AuthenticationRoutes = [
   },
 
    {
-    path: "/mobile_otp/:token",
+    path: "/mobile_otp/:tok",
     element: <Mobile_OTP />,
     meta: {
       layout: "blank",
