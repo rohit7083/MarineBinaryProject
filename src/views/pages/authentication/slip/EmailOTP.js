@@ -156,7 +156,6 @@ const { tok } = useParams();
       const token = userData?.token;
       const otp = encryptAES(data1?.otp.join(""));
       let res;
-      {{debugger}}
      if (tok) {
          res = await useJwt.withoutAuthEmailOtp(tok, { otp });
         console.log(res);

@@ -61,30 +61,30 @@
 
 //   // const { uid: token } = useParams();
 //   const token = userData?.token;
-//   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
+// const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
-//   function generateKey(secretKey) {
-//     return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
-//   }
+// function generateKey(secretKey) {
+//   return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
+// }
 
-//   function generateIV() {
-//     return CryptoJS.lib.WordArray.random(16); // 16-byte IV
-//   }
+// function generateIV() {
+//   return CryptoJS.lib.WordArray.random(16); // 16-byte IV
+// }
 
-//   function encryptAES(plainText) {
-//     const key = generateKey(SECRET_KEY);
-//     const iv = generateIV();
+// function encryptAES(plainText) {
+//   const key = generateKey(SECRET_KEY);
+//   const iv = generateIV();
 
-//     const encrypted = CryptoJS.AES.encrypt(plainText, key, {
-//       iv: iv,
-//       mode: CryptoJS.mode.CBC,
-//       padding: CryptoJS.pad.Pkcs7,
-//     });
+//   const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+//     iv: iv,
+//     mode: CryptoJS.mode.CBC,
+//     padding: CryptoJS.pad.Pkcs7,
+//   });
 
-//     const combined = iv.concat(encrypted.ciphertext);
+//   const combined = iv.concat(encrypted.ciphertext);
 
-//     return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
-//   }
+//   return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+// }
 
 //   const handleResendOTP = async (e) => {
 //     e.preventDefault();
@@ -383,13 +383,7 @@
 
 // TwoStepsBasic.jsx
 import CryptoJS from "crypto-js";
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useRef, useState } from "react";
 import { ChevronLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -442,7 +436,7 @@ const TwoStepsBasic = () => {
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [resendCallLoading, setResendCallLoading] = useState(false);
-const { tok } = useParams();
+  const { tok } = useParams();
 
   const userData = location.state?.userData;
   const token = userData?.token;
@@ -463,24 +457,30 @@ const { tok } = useParams();
     Array.from({ length: 6 }).map(() => React.createRef())
   );
 
-  // Memoize AES key so it's computed once per component lifecycle
-  const aesKey = useMemo(() => CryptoJS.SHA256(SECRET_KEY), []);
+  const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
-  // Encrypt function (uses memoized key). Returns Base64 of IV + ciphertext.
-  const encryptAESBase64 = useCallback(
-    (plainText) => {
-      const iv = CryptoJS.lib.WordArray.random(16); // 16 bytes
-      const encrypted = CryptoJS.AES.encrypt(plainText, aesKey, {
-        iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7,
-      });
+  function generateKey(secretKey) {
+    return CryptoJS.SHA256(secretKey); // Ensures full 32-byte key
+  }
 
-      const combined = iv.concat(encrypted.ciphertext);
-      return CryptoJS.enc.Base64.stringify(combined);
-    },
-    [aesKey]
-  );
+  function generateIV() {
+    return CryptoJS.lib.WordArray.random(16); // 16-byte IV
+  }
+
+  function encryptAES(plainText) {
+    const key = generateKey(SECRET_KEY);
+    const iv = generateIV();
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const combined = iv.concat(encrypted.ciphertext);
+
+    return CryptoJS.enc.Base64.stringify(combined); // Send as Base64
+  }
 
   // Resend OTP via SMS
   const handleResendOTP = async (e) => {
@@ -527,21 +527,23 @@ const { tok } = useParams();
     setLoading(true);
 
     try {
-      {{debugger}}
-
       const otpArray = formData.otp || [];
+
       const otpString = otpArray.join("").trim();
+
+      const encryptedOtp = encryptAES(otpString);
 
       if (otpString.length !== 6 || !/^\d{6}$/.test(otpString)) {
         setMessage("Please enter a valid 6-digit OTP.");
         setLoading(false);
         return;
       }
-// const otp = encryptAES(otpData?.otp.join(""));
-      const encryptedOtp = encryptAESBase64(otpString);
+      // const otp = encryptAES(otpData?.otp.join(""));
       let verifyRes;
       if (tok) {
-        verifyRes = await useJwt.withoutAuthEmailOtp(tok, { otp:encryptedOtp });
+        verifyRes = await useJwt.forAUthMobileOtp(tok, {
+          otp: encryptedOtp,
+        });
         console.log(verifyRes);
       } else {
         verifyRes = await useJwt.mobileOtp(token, { otp: encryptedOtp });
