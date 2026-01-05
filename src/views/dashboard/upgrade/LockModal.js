@@ -114,7 +114,8 @@ export default function PosUpgradePage() {
   };
   const location = useLocation();
   console.table(location);
-
+  console.log(localStorage);
+  
   const handleMerchantAcc = () => {
     window.open(
       "https://apply.locktrust.com/",
@@ -127,10 +128,13 @@ export default function PosUpgradePage() {
     const handlePurchase = async () => {
       try {
         setLoading(true);
+        console.log(localStorage.getItem("crmId"));
+        
         const crmId = localStorage.getItem("crmId");
         const userData = JSON.parse(localStorage.getItem("userData"));
         const userUid = userData?.uid || "";
         // const userUid = "0ecfa123-3694-45fa-8cbb-4f9332bf124c"; //temp
+
         const res = await useJwt.upgradePlans({ crmid: crmId });
 console.log("called upgrade plan api ", res);
 

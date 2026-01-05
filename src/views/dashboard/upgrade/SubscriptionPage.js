@@ -4,6 +4,9 @@ import { Button, Card, CardBody, Col, Row } from "reactstrap";
 const PricingCards = () => {
   const location = useLocation();
 
+  console.log(location);
+  
+
   const existingCreditCard = location.state?.walletBal?.cardData;
 
   const { walletBal } = location.state?.walletBal || 0;
