@@ -630,6 +630,10 @@ export default [
   {
     element: <Preview />,
     path: "/preview",
+    meta: {
+      resource: "event management",
+      action: "view",
+    },
   },
 
   {
@@ -809,6 +813,10 @@ export default [
   {
     element: <QrList />,
     path: "/dashboard/qr-code/qr-list",
+     meta: {
+      resource: "qr code generator",
+      action: "view",
+    },
   },
   {
     element: <EventPaymentList />,
@@ -918,6 +926,10 @@ export default [
   {
     element: <EnterWaitingSlipDetails />,
     path: "/slip-management/add_WaitingSlip",
+    meta: {
+      resource: "slip management",
+      action: "view",
+    },
   },
   {
     element: <EmailSMSsetting />,
