@@ -1,9 +1,14 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import { saveUnlockedPages } from "@store/authentication";
 import { Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, CreditCard, Lock } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
-
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -32,6 +37,8 @@ const PaymentPage = () => {
   } = useForm({
     defaultValues: {},
   });
+  const dispatch = useDispatch();
+  const toast = useRef(null);
 
   const location = useLocation();
   const walletBal = location.state?.walletBal;
@@ -117,27 +124,52 @@ const PaymentPage = () => {
 
     try {
       const res = await useJwt.subscriptionPayment(payload);
-    if (res?.status === 200) {
-      setTimeout(() => {
+      if (res?.status === 200) {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const userUid = userData?.uid || "";
+        const resPermision = await useJwt.getBranch(userUid);
+        console.log(resPermision);
+        const upadtedPersmision = {
+          ...userData,
+          permissions: resPermision?.data?.userRoles?.permissions || [],
+        };
+        console.log("upadtedPersmision", upadtedPersmision);
 
-        try {
-          const userData = JSON.parse(localStorage.getItem("userData"));
-          const userUid = userData?.uid || "";
-          const resPermision = useJwt.getBranch(userUid);
-          console.log(resPermision);
-          
-        } catch (error) {
-          console.log(error);
-          
-        }
-        alert("Payment successful! Subscription activated.");
-        navigate("/upgrade/subscription/payment");
+        localStorage.setItem("userData", JSON.stringify(upadtedPersmision));
 
-      }, 2000);
-    }
+        const pagesUnlockedNames = {};
+        resPermision?.data?.userRoles?.permissions.forEach((item) => {
+          if (item?.module) {
+            pagesUnlockedNames[item.module] = true;
+          }
+        });
+
+        localStorage.setItem(
+          "pagesUnlockedNames",
+          JSON.stringify(pagesUnlockedNames)
+        );
+
+        dispatch(saveUnlockedPages(pagesUnlockedNames));
+
+          toast.current?.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Your subscription has been updated successfully.",
+            life: 2000,
+          });
+          setTimeout(() => {
+            
+            navigate("/dashbord");
+          }, 2000);
+      }
     } catch (error) {
       console.error("Payment error:", error);
-      alert("Payment failed. Please try again.");
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Payment failed. Please try again.",
+        life: 2000,
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -196,6 +228,8 @@ const PaymentPage = () => {
 
   return (
     <div style={{ backgroundColor: "#f8f9fa" }}>
+      <Toast ref={toast} />
+
       <Row className="mb-4 justify-content-start">
         <Col xs="12" md="10" lg="8">
           <div className="d-flex align-items-start gap-2 mb-2">
