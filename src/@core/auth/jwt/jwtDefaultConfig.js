@@ -292,4 +292,13 @@ export default {
 
   forAUthMobileOtp:'/auth/phpUser/verify_accountForAuth/',
   withoutAuthEmailOtp:'/auth/phpUser/verify_account/',
+
+  invoiceSettings:'/invoiceSetting/',
+
+  getInvoice: "/invoiceSetting",
+  updateInvoice:"/invoiceSetting/",
+  getLogo:'/invoiceSetting/logo/',
+  getSignature:"/invoiceSetting/signature/",
+  subScriptionCal:"/subscription/calculate",
 };
+ 

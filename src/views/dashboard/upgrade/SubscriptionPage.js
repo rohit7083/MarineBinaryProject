@@ -1,11 +1,15 @@
+import useJwt from "@src/auth/jwt/useJwt";
+import { useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Row } from "reactstrap";
+import CalculateSubscripsion from "./CalculateSubscripsion";
 const PricingCards = () => {
   const location = useLocation();
-
+  const [modal, setModal] = useState(false);
+  const [subscriptionData, setSubscriptionData] = useState(null);
+  const [planData, setPlanData] = useState(null);
   console.log(location);
-  
 
   const existingCreditCard = location.state?.walletBal?.cardData;
 
@@ -14,78 +18,28 @@ const PricingCards = () => {
   const plans = subscription ?? addOn ?? null;
   const navigate = useNavigate();
   console.log(plans?.subscriptionAddedModuleJson);
-  // const plans = subscription?.map((item) => ({
-  //   finalAmt: item.finalAmt,
-  //   subscriptionAddedModule: item.subscriptionAddedModule,
-  //   subscriptionAmt: item.subscriptionAmt,
-  //   subscriptionDescription: item.subscriptionDescription,
-  //   subscriptionModules: item.subscriptionModule,
-  //   subscriptionName: item.subscriptionName,
-  //   timeframe: item.timeframe,
-  // }));
 
-  //   const plans = [
-  // {
-  //   name: "Free",
-  //   price: "0",
-  //   period: "/mo.",
-  //   subtitle: "For individuals",
-  //   buttonText: "Use Tidio for free",
-  //   buttonColor: "outline-primary",
-  //   features: [
-  //     "Up to 50 conversations",
-  //     "Unlimited chat",
-  //     "Unlimited email",
-  //     "Chatbots & live chat",
-  //     "Visitors info",
-  //     "Ticketing",
-  //     "iOS/Android app",
-  //   ],
-  // },
-  // {
-  //   name: "Chatbots",
-  //   price: "39",
-  //   period: "/mo.",
-  //   subtitle: "For entrepreneurs",
-  //   buttonText: "Start Free Trial",
-  //   buttonColor: "primary",
-  //   badge: "MOST POPULAR",
-  //   features: [
-  //     "All the Free Features",
-  //     "Unlimited emails",
-  //     "Unlimited chats/visitors",
-  //     "Lyro Conversational AI",
-  //     "Chatbot templates",
-  //     "Visual chatbot builder",
-  //     "Power integrations",
-  //   ],
-  // },
-  // {
-  //   name: "Communicator",
-  //   price: "15",
-  //   period: "/mo.",
-  //   subtitle: "Per operator",
-  //   buttonText: "Start Free Trial",
-  //   buttonColor: "primary",
-  //   features: [
-  //     "All the Free Features",
-  //     "Live Typing",
-  //     "Viewed Pages",
-  //     "Live Visitors List",
-  //     "Permissions",
-  //     "Departments",
-  //     "Lyro premium",
-  //     "with removable",
-  //   ],
-  // },
-
-  //   ];
   const badge = "POPULAR";
 
-  const handleChoosePlan = (plan) => {
-    navigate("/upgrade/subscription/payment", {
-      state: { plan, walletBal, existingCreditCard },
-    });
+  const handleChoosePlan = async (plan) => {
+    setPlanData(plan);
+    try {
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const userUId = userData?.uid;
+      const crmId = JSON.parse(localStorage.getItem("crmId"));
+
+      const res = await useJwt.subScriptionCal({
+        subscriptionID: plan.id,
+        crmId: crmId,
+        uid: userUId,
+      });
+      setModal(true);
+      setSubscriptionData(res.data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  
   };
 
   return (
@@ -237,6 +191,15 @@ const PricingCards = () => {
             );
           })}
         </Row>
+
+        <CalculateSubscripsion
+          modal={modal}
+          setModal={setModal}
+          subscriptionData={subscriptionData}
+          walletBal={walletBal} 
+          existingCreditCard={existingCreditCard}
+          planData={planData}
+        />
       </>
     </div>
   );

@@ -3,7 +3,7 @@ import jwtDefaultConfig from "./jwtDefaultConfig";
 
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
-// axios.defaults.baseURL = "http://192.168.1.16:8000"; //airtel saga
+// axios.defaults.baseURL = "http://192.168.1.9:8000"; //airtel saga
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -1172,4 +1172,37 @@ export default class JwtService {
     withoutAuthEmailOtp(token = "", ...args) {
     return axios.post(this.jwtConfig.withoutAuthEmailOtp + token, ...args);
   }
+
+  invoiceSettings(...args) {
+    return axios.post(this.jwtConfig.invoiceSettings, ...args,{
+      skipBranch: true,
+    });
+  }
+
+  updateInvoice(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateInvoice}${uid}`, ...args, {
+      skipBranch: true,
+    });
+  }
+
+  getInvoice() {
+    return axios.get(`${this.jwtConfig.getInvoice}`);
+  }
+
+  getLogo(uid) {
+    return axios.get(`${this.jwtConfig.getLogo}${uid}`, {
+      responseType: "blob", // important for binary data
+    });
+  }
+   
+  getSignature(uid) {
+    return axios.get(`${this.jwtConfig.getSignature}${uid}`, {
+      responseType: "blob", // important for binary data
+    });
+  }
+
+  subScriptionCal(...args) {
+    return axios.post(`${this.jwtConfig.subScriptionCal}`, ...args);
+  }
+
 }

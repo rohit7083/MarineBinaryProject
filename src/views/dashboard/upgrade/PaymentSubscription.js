@@ -40,12 +40,14 @@ const PaymentPage = () => {
   const dispatch = useDispatch();
   const toast = useRef(null);
 
+
   const location = useLocation();
   const walletBal = location.state?.walletBal;
+  const subscriptionAmount=location?.state?.subscriptionData?.content?.payable_now || 0;
   const existingCreditCard = location.state?.existingCreditCard;
   const navigate = useNavigate();
-  const { plan } = location.state || {};
-  const selectedPlan = plan;
+  const { planData } = location.state || {};
+  const selectedPlan = planData;
   const [activeTab, setActiveTab] = useState("card");
   const [selectedCard, setSelectedCard] = useState("");
   const [existingCards, setExistingCards] = useState([]);
@@ -462,7 +464,7 @@ const PaymentPage = () => {
                                 Amount to be deducted
                               </span>
                               <h4 className="mb-0">
-                                {selectedPlan.finalAmt ||
+                                {subscriptionAmount ||
                                   selectedPlan.subscriptionAmt}
                               </h4>
                             </div>
@@ -492,7 +494,7 @@ const PaymentPage = () => {
                   >
                     {isProcessing
                       ? "Processing..."
-                      : `Pay ${selectedPlan.subscriptionAmt}`}
+                      : `Pay ${subscriptionAmount}`}
                   </Button>
                 </Form>
               </CardBody>
@@ -523,7 +525,7 @@ const PaymentPage = () => {
 
                 <div className="d-flex justify-content-between mb-2">
                   <span>Subtotal</span>
-                  <span>{selectedPlan.subscriptionAmt}</span>
+                  <span>{subscriptionAmount}</span>
                 </div>
 
                 <div className="d-flex justify-content-between mb-2">
@@ -536,7 +538,7 @@ const PaymentPage = () => {
                 <div className="d-flex justify-content-between mb-3">
                   <span className="fw-bold">Total</span>
                   <span className="fw-bold" style={{ fontSize: "20px" }}>
-                    {selectedPlan.finalAmt || selectedPlan.subscriptionAmt}
+                    {subscriptionAmount || selectedPlan.subscriptionAmt}
                   </span>
                 </div>
 
