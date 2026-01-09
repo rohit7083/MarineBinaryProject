@@ -160,14 +160,14 @@
 
 import { useNavigate } from "react-router-dom";
 import {
-    Badge,
-    Button,
-    Col,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
+  Badge,
+  Button,
+  Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
 } from "reactstrap";
 
 const SubscriptionConfirmModal = ({
@@ -303,7 +303,7 @@ const SubscriptionConfirmModal = ({
           {/* ---------- COMMON DETAILS ---------- */}
           <div className="bg-dark bg-opacity-10 rounded p-3 mb-3">
             <Row className="g-3">
-              {isPlanUpgrade && (
+              {/* {isPlanUpgrade && (
                 <>
                   <Col xs={12}>
                     <div className="d-flex justify-content-between">
@@ -321,7 +321,7 @@ const SubscriptionConfirmModal = ({
                     </div>
                   </Col>
                 </>
-              )}
+              )} */}
 
               <Col xs={12}>
                 <div className="d-flex justify-content-between">
