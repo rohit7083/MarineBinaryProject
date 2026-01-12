@@ -177,6 +177,7 @@ const memberForAutofill = location?.state?.autofillMemberALLDATA?.member;
       };
     }
 
+    
     const payload = {
       roomSearch: {
         uid: state?.searchUid,
@@ -216,6 +217,7 @@ const memberForAutofill = location?.state?.autofillMemberALLDATA?.member;
           finalAmount: finalPayment,
           extraRoomMode: state?.extraRoomMode,
           uidOfEvent: state?.uidOfEvent,
+          memberInfo:clientInfo,
         },
       });
     } catch (error) {

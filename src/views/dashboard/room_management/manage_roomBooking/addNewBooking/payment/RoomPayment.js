@@ -1,16 +1,14 @@
-import CryptoJS from "crypto-js";
-import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight } from "react-feather";
-import { useLocation } from "react-router-dom";
-import Select from "react-select";
-
 import useJwt from "@src/auth/jwt/useJwt";
+import CryptoJS from "crypto-js";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
 import {
   Button,
   Card,
@@ -28,6 +26,7 @@ import {
   UncontrolledAlert,
 } from "reactstrap";
 import Qr_Payment from "../../../../event_management/Qr_Payment";
+import SuccessPayment from "../../../../SuccessPayment";
 // import Qr_Payment from "./Qr_Payment";
 
 function Payment({ stepper }) {
@@ -38,20 +37,23 @@ function Payment({ stepper }) {
   ];
   const navigate = useNavigate();
   const [mode, setMode] = useState("");
+  const [trnxID, setTrnxId] = useState(null);
   const [value, setValuedis] = useState("");
+  const [modal, setModal] = useState(false);
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   console.log("location rrom oayment", location.state);
   const uidOfEvent = location?.state?.uidOfEvent;
   const myData = location?.state?.resAlldata;
   console.log(myData);
-
   const myallData = location?.state?.resAlldata?.alldata;
   const bookedDataForExtra = location?.state?.resAlldata?.preBookingData;
+  const clientData = location?.state?.memberInfo;
   const roomBookingUid = location?.state?.roomUid;
   const { finalAmount } = location?.state;
   //this is for extend date payment
   const ExtendDateData = location?.state?.extendResDate;
+  const memberIdFromListing = location?.state?.row?.member?.id || location?.state?.memberId;
   const { payableAmount } = location?.state?.extendResDate || {};
 
   // for pending payments
@@ -408,6 +410,8 @@ function Payment({ stepper }) {
     return null;
   };
   const onSubmit = async (data) => {
+        
+
     setErrorMsz("");
     setLoading(true);
 
@@ -471,10 +475,13 @@ function Payment({ stepper }) {
     // Payment common details
     formData.append("payment.finalPayment", data?.PfinalAmount);
     formData.append("payment.paymentMode", data?.paymentMode?.value);
+    const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
+    formData.append("branch.uid", branchUid);
 
     // Payment mode-specific details
     const paymentModeLabel = watch("paymentMode")?.label;
-
     if (paymentModeLabel === "Credit Card") {
       formData.append("payment.cardNumber", data.cardNumber);
       formData.append("payment.cardType", data.cardType);
@@ -488,7 +495,11 @@ function Payment({ stepper }) {
         data?.cardSwipeTransactionId
       );
     } else if (paymentModeLabel === "Cash") {
-      formData.append("events.pin", encrypted);
+      if (location?.state?.extraRoomMode == "addExtraRoom") {
+        formData.append("events.pin", encrypted);
+      } else {
+        formData.append("roomBooking.pin", encrypted);
+      }
     } else if (paymentModeLabel === "Cheque21") {
       if (!file) {
         alert("Please select a file first.");
@@ -512,13 +523,14 @@ function Payment({ stepper }) {
 
     try {
       let res;
-      // {{ }}
+   
+      
       if (location?.state?.extraRoomMode) {
         res = await useJwt.addExtraRoom(uidOfEvent, formData);
       } else {
         res = await useJwt.bookingPayment(formData);
       }
-
+      setTrnxId(res?.data?.transaction_id);
       const { qr_code_base64 } = res?.data;
       setQr(qr_code_base64);
       if (qr_code_base64) {
@@ -547,16 +559,23 @@ function Payment({ stepper }) {
 
         if (!qr_code_base64) {
           if (res?.data?.status === "success") {
-            toast.current.show({
-              severity: "success",
-              summary: "Successfully",
-              detail: "Payment Completed Successfully.",
-              life: 2000,
-            });
+            // toast.current.show({
+            //   severity: "success",
+            //   summary: "Successfully",
+            //   detail: "Payment Completed Successfully.",
+            //   life: 2000,
+            // });
 
-            setTimeout(() => {
-              navigate("/bookingListing");
-            }, 1999);
+            setModal(true);
+
+
+            // if (modal === false) {
+            //   navigate('/bookingListing');
+            // }
+
+            // setTimeout(() => {
+            //   navigate("/bookingListing");
+            // }, 1999);
           }
         }
       } else {
@@ -1970,38 +1989,47 @@ function Payment({ stepper }) {
                         </>
                       )}
                     </li> */}
-
-                    {!payableAmount && (
+                    {handleAdvance && (
                       <>
-                        <li
-                          className="price-detail"
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          <div className="details-title">Advance Amount</div>
-                          <div className="detail-amt">
-                            <strong>
-                              $ {handleAdvance ? handleAdvance : "0"}
-                            </strong>
-                          </div>
-                        </li>
+                        {!payableAmount && (
+                          <>
+                            <li
+                              className="price-detail"
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginBottom: "8px",
+                              }}
+                            >
+                              <div className="details-title">
+                                Advance Amount
+                              </div>
+                              <div className="detail-amt">
+                                <strong>
+                                  $ {handleAdvance ? handleAdvance : "0"}
+                                </strong>
+                              </div>
+                            </li>
 
-                        <li
-                          className="price-detail"
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          <div className="details-title">Remaining Amount</div>
-                          <div className="detail-amt">
-                            <strong>${handleRemaining ?? 0}</strong>
-                          </div>
-                        </li>
+                            {handleRemaining && (
+                              <li
+                                className="price-detail"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  marginBottom: "8px",
+                                }}
+                              >
+                                <div className="details-title">
+                                  Remaining Amount
+                                </div>
+                                <div className="detail-amt">
+                                  <strong>${handleRemaining ?? 0}</strong>
+                                </div>
+                              </li>
+                            )}
+                          </>
+                        )}
                       </>
                     )}
                   </ul>
@@ -2037,6 +2065,14 @@ function Payment({ stepper }) {
             />
           </>
         )}
+
+        <SuccessPayment
+          setModal={setModal}
+          modal={modal}
+          roomPayment={CurrentAmount}
+          memberID={clientData?.id || memberIdFromListing }
+          transactionId={trnxID}
+        />
       </Form>
     </>
   );

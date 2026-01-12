@@ -1,253 +1,9 @@
-// import { useState } from "react";
-// import { useSelector } from "react-redux";
-// import {
-//     Button,
-//     Card,
-//     CardBody,
-//     Col,
-//     Modal,
-//     ModalBody,
-//     ModalFooter,
-//     ModalHeader,
-//     Row,
-//     Table,
-// } from "reactstrap";
-
-// const PaymentReceiptModal = () => {
-//   const [showModal, setShowModal] = useState(false);
-//   const { billing, items, selectedCustomerDetails } = useSelector(
-//     (store) => store.cartSlice
-//   );
-//   console.clear();
-//   console.log(billing);
-//   console.log(items);
-
-//   const mappedItems = items.map((item) => ({
-//     description: `${item.productName} - ${item.attributes
-//       .map((a) => `${a.attributeName}: ${a.value}`)
-//       .join(", ")}`,
-//     quantity: item.qty,
-//     price: item.finalAmount,
-//   }));
-
-//   const receiptData = {
-//     receiptNo: "RCP-2025-00142",
-//     date: new Date().toLocaleDateString("en-US", {
-//       year: "numeric",
-//       month: "short",
-//       day: "numeric",
-//     }),
-//     customerName: `${selectedCustomerDetails.label}`,
-//     customerEmail: `${selectedCustomerDetails.emailId}`,
-//     paymentMethod: "Credit Card (**** 4532)",
-//     transactionId: "TXN-8956423178",
-//     items: mappedItems,
-//     subtotal: `${billing?.subtotal}`,
-//     tax: 0.0,
-//     total: `${billing?.total}`,
-//   };
-
-//   const toggle = () => setShowModal(!showModal);
-
-//   const handlePrint = () => window.print();
-
-//   const handleDownload = () => {
-//     const content = `
-// PAYMENT RECEIPT
-// -------------------------------------
-// Receipt No: ${receiptData.receiptNo}
-// Date: ${receiptData.date}
-
-// Customer: ${receiptData.customerName}
-// Email: ${receiptData.customerEmail}
-
-// Payment: ${receiptData.paymentMethod}
-// Transaction: ${receiptData.transactionId}
-
-// Items
-// -------------------------------------
-// ${receiptData.items
-//   .map(
-//     (item) =>
-//       `${item.description} x${item.quantity} - $${(
-//         item.price * item.quantity
-//       ).toFixed(2)}`
-//   )
-//   .join("\n")}
-// Subtotal: $${Number(receiptData.subtotal || 0)}
-// Tax: $${Number(receiptData.tax || 0)}
-// TOTAL: $${Number(receiptData.total || 0)}
-
-// -------------------------------------
-// Thank you for your business!
-//     `;
-//     const blob = new Blob([content], { type: "text/plain" });
-//     const url = window.URL.createObjectURL(blob);
-//     const link = document.createElement("a");
-//     link.href = url;
-//     link.download = `receipt-${receiptData.receiptNo}.txt`;
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//     window.URL.revokeObjectURL(url);
-//   };
-
-//   return (
-//     <div className="container mt-3">
-//       <Button color="primary" size="sm" onClick={toggle}>
-//         View Receipt
-//       </Button>
-
-//       <Modal isOpen={showModal} toggle={toggle} size="sm" centered>
-//         <ModalHeader toggle={toggle} className="bg-success text-white py-2">
-//           <span className="d-flex align-items-center small">
-//             <svg
-//               width="16"
-//               height="16"
-//               fill="currentColor"
-//               className="me-1"
-//               viewBox="0 0 16 16"
-//             >
-//               <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
-//             </svg>
-//             Payment Receipt
-//           </span>
-//         </ModalHeader>
-
-//         <ModalBody
-//           className="p-2"
-//           id="receipt-content"
-//           style={{ maxHeight: "70vh", overflowY: "auto" }}
-//         >
-//           <div className="text-center mb-2">
-//             <h6 className="text-success mb-0 small">Payment Successful!</h6>
-//             <small className="text-muted">Transaction completed</small>
-//           </div>
-
-//           <Card className="bg-light mb-2">
-//             <CardBody className="p-1">
-//               <Row className="g-1">
-//                 <Col xs="6">
-//                   <small className="text-muted d-block">Receipt No.</small>
-//                   <strong className="small">{receiptData.receiptNo}</strong>
-//                 </Col>
-//                 <Col xs="6" className="text-end">
-//                   <small className="text-muted d-block">Date</small>
-//                   <strong className="small">{receiptData.date}</strong>
-//                 </Col>
-//               </Row>
-//             </CardBody>
-//           </Card>
-
-//           <div className="mb-2 small">
-//             <div className="mb-1">
-//               <span className="text-muted">Name: </span>
-//               <strong>{receiptData.customerName}</strong>
-//             </div>
-//             <div>
-//               <span className="text-muted">Email: </span>
-//               <strong>{receiptData.customerEmail}</strong>
-//             </div>
-//           </div>
-
-//           <div className="mb-2 small">
-//             <div className="mb-1">
-//               <span className="text-muted">Payment: </span>
-//               <strong>{receiptData.paymentMethod}</strong>
-//             </div>
-//             <div>
-//               <span className="text-muted">Transaction: </span>
-//               <strong>{receiptData.transactionId}</strong>
-//             </div>
-//           </div>
-
-//           <Table size="sm" borderless className="mb-1 small">
-//             <thead>
-//               <tr className="border-bottom">
-//                 <th className="text-muted">Description</th>
-//                 <th className="text-muted text-center">Qty</th>
-//                 <th className="text-muted text-end">Amount</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {receiptData.items.map((item, index) => (
-//                 <tr key={index}>
-//                   <td>{item.description}</td>
-//                   <td className="text-center">{item.quantity}</td>
-//                   <td className="text-end">
-//                     ${(item.price * item.quantity).toFixed(2)}
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </Table>
-
-//           <div className="border-top pt-1 small">
-//             <div className="d-flex justify-content-between mb-1">
-//               <span className="text-muted">Subtotal</span>
-//               <span>${receiptData.subtotal}</span>
-//             </div>
-//             <div className="d-flex justify-content-between mb-1">
-//               <span className="text-muted">Tax</span>
-//               <span>${receiptData.tax}</span>
-//             </div>
-//             <div className="d-flex justify-content-between border-top pt-1">
-//               <strong>Total</strong>
-//               <strong className="text-success">${receiptData.total}</strong>
-//             </div>
-//           </div>
-
-//           <div className="text-center mt-2 p-2 bg-light rounded small">
-//             Thank you for your business!
-//           </div>
-//         </ModalBody>
-
-//         <ModalFooter className="bg-light p-1">
-//           <Button color="secondary" size="sm" outline onClick={toggle}>
-//             Close
-//           </Button>
-//           <Button color="info" size="sm" onClick={handleDownload}>
-//             Download
-//           </Button>
-//           <Button color="success" size="sm" onClick={handlePrint}>
-//             Print
-//           </Button>
-//         </ModalFooter>
-//       </Modal>
-
-//       <style>{`
-
-// @media print {
-//   body * { display: none; } /* hide everything */
-//   #receipt-content {
-//     display: block; /* show receipt */
-//     position: relative;
-//     top: 0;
-//     left: 0;
-//     width: 80mm; /* thermal printer width */
-//     font-family: monospace;
-//     font-size: 12px;
-//     line-height: 1.2;
-//   }
-//   #receipt-content table {
-//     width: 100%;
-//     border-collapse: collapse;
-//   }
-//   #receipt-content th, #receipt-content td {
-//     padding: 2px 0;
-//   }
-// }
-
-//       `}</style>
-//     </div>
-//   );
-// };
-
-// export default PaymentReceiptModal;
 import useJwt from "@src/auth/jwt/useJwt";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import SyncLoader from "react-spinners/SyncLoader";
 
+import { Mail } from "lucide-react";
 import { useSelector } from "react-redux";
 import {
   Button,
@@ -259,6 +15,7 @@ import {
   ModalFooter,
   ModalHeader,
   Row,
+  Spinner,
   Table,
 } from "reactstrap";
 
@@ -266,15 +23,44 @@ const PaymentReceiptModal = ({
   showModal,
   txnId,
   setShowModal,
+  customerId,
   discountData,
+  memberId,
 }) => {
   const [downLoader, setDownloader] = useState(false);
   const { billing, items, selectedCustomerDetails } = useSelector(
     (store) => store.cartSlice
   );
-
+  
   console.log(discountData);
+  const [invoiceLoading, setInvoiceLoading] = useState(false);
+  
+   const payload = {
+    transactionId: txnId,
+    ...(customerId && { customerId }),
+    ...(memberId && { memberId }),
+  };
+  const handleSendEmail = async () => {
+    // Simulate sending email
 
+    try {
+      setInvoiceLoading(true);
+      const res = await useJwt.sendInvoiceToMail(payload);
+
+      console.log(res);
+      if (res?.status == 200) {
+        toast.success("Invoice successfully sent to your email.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error?.response?.data?.content ||
+          "Something went wrong, please try again later."
+      );
+    } finally {
+      setInvoiceLoading(false);
+    }
+  };
   const mappedItems = items.map((item) => ({
     description: `${item.productName} - ${item.attributes
       .map((a) => `${a.attributeName}: ${a.value}`)
@@ -497,6 +283,21 @@ const PaymentReceiptModal = ({
           </Button>
           <Button color="success" size="sm" onClick={handlePrint}>
             Print
+          </Button>
+          <Button
+            disabled={invoiceLoading}
+            color="primary"
+            size="sm"
+            onClick={handleSendEmail}
+          >
+            <Mail size={16} className="me-1" />
+            {invoiceLoading ? (
+              <>
+                Sending... <Spinner size="sm" />
+              </>
+            ) : (
+              "Send Invoice to Email"
+            )}
           </Button>
         </ModalFooter>
       </Modal>

@@ -53,6 +53,8 @@ const SearchCustomerModal = ({
         name: `${c.firstName} ${c.lastName}`,
         emailId: c?.emailId,
         type: "member",
+        slipUid:c.uid,
+        ...c,
       }))
     : [];
 
@@ -81,6 +83,7 @@ const SearchCustomerModal = ({
           details: item.member,
           ...item,
           type: "member",
+          memUid:item.member?.uid,
         }));
 
       setMemberName(memberName);
@@ -106,6 +109,8 @@ const SearchCustomerModal = ({
     phoneNumber: `${x.member?.countryCode} ${x.member?.phoneNumber}`,
     emailId: x.member?.emailId,
     type: "slipMember",
+    slipUid: x?.uid,
+    id:x?.id
   }));
 
   return (

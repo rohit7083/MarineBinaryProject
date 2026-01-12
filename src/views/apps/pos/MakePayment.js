@@ -35,7 +35,6 @@ const PaymentSummary = () => {
   const [txnId, setTxnId] = useState({});
   const [paymentLoader, setPaymentLoader] = useState(false);
   const toast = useRef(null);
-
   const [discountData, setDiscountData] = useState();
   const {
     control,
@@ -164,9 +163,18 @@ const PaymentSummary = () => {
         isDiscountApply: false,
         totalAmount: billing?.total,
         subtotal: billing?.total,
-        customerUid:
-          selectedCustomerDetails.value || selectedCustomerDetails?.uid,
       };
+      if (
+        selectedCustomerDetails?.uid &&
+        selectedCustomerDetails?.type !== "member"
+      ) {
+        payload.customerUid = selectedCustomerDetails.uid;
+      } else if (selectedCustomerDetails?.memUid) {
+        payload.memberUid = selectedCustomerDetails?.memUid;
+      } else if (selectedCustomerDetails?.slipUid) {
+        payload.slipUid = selectedCustomerDetails?.slipUid;
+      }
+
       try {
         setPaymentLoader(true);
 
@@ -185,6 +193,11 @@ const PaymentSummary = () => {
 
     formData.append("posOrder.uid", disCountUid || discountData?.disCountUid);
     formData.append("payment.paymentMode", data.paymentMode.value);
+    const selectedBranch = localStorage.getItem("selectedBranch");
+
+    const branchUid = selectedBranch ? JSON.parse(selectedBranch).uid : null;
+
+    formData.append("branch.uid", branchUid);
 
     const finalPayment =
       Number(discountData?.calculatedDiscount) > 0
@@ -217,6 +230,7 @@ const PaymentSummary = () => {
           detail: "Your transaction was completed successfully.",
           life: 2000,
         });
+
         setShowModal(true);
       } else {
         toast.current.show({
@@ -628,7 +642,7 @@ const PaymentSummary = () => {
                 Loading.. <Spinner size="sm" />
               </>
             ) : (
-              "            Complete Payment"
+              "Complete Payment"
             )}
           </Button>
         </form>
@@ -639,7 +653,44 @@ const PaymentSummary = () => {
         txnId={txnId}
         showModal={showModal}
         discountData={discountData}
+        customerId={
+          selectedCustomerDetails?.uid &&
+          selectedCustomerDetails?.type !== "member"
+            ? selectedCustomerDetails?.id
+            : null
+        }
+        posPayment={
+          discountData?.calculatedDiscount > 0
+            ? (
+                Number(billing?.total) -
+                Number(discountData?.calculatedDiscount)
+              ).toFixed(2)
+            : Number(billing?.total).toFixed(2)
+        }
+        memberId={
+          selectedCustomerDetails?.memUid || selectedCustomerDetails?.slipUid
+            ? selectedCustomerDetails?.id
+            : null
+        }
       />
+
+      {/* <SuccessPayment
+        modal={modal}
+        setModal={setModal}
+        transactionId={txnId}
+        posPayment={
+          discountData?.calculatedDiscount > 0
+            ? (
+                Number(billing?.total) -
+                Number(discountData?.calculatedDiscount)
+              ).toFixed(2)
+            : Number(billing?.total).toFixed(2)
+        }
+        customerId={
+          selectedCustomerDetails?.value || selectedCustomerDetails?.uid
+        }
+        memberID={null}
+      /> */}
     </Card>
   );
 };

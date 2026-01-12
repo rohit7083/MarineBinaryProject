@@ -1,20 +1,23 @@
+import useJwt from "@src/auth/jwt/useJwt";
+import { Toast } from "primereact/toast";
+import { Controller, useForm } from "react-hook-form";
 import {
+  Button,
   Card,
+  CardBody,
   CardHeader,
   CardTitle,
-  CardBody,
   Col,
-  Input,
   Form,
-  Button,
+  Input,
   Label,
   Row,
-  CardText,
+  Spinner,
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
 
-import { useState } from "react";
-import { FormGroup } from "reactstrap";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft } from "react-feather";
+import { useNavigate } from "react-router-dom";
 const HorizontalForm = () => {
   const {
     control,
@@ -27,59 +30,203 @@ const HorizontalForm = () => {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      invoiceID: "Sequent",
-      currency: "USD",
-      InvoiceNotes: "",
-      IBANCode: "",
-      InvoicePrefix: "",
-      WalletID: "",
-      InvoiceTerms: "",
+      invoiceIdType: "",
+      currency: "",
+      invoicePrefix: "",
+
       invoiceSignature: null,
-      profilePicture: null,
+      invoiceLogo: null,
     },
   });
+  const toast = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [resData, setResData] = useState(null);
+  const [getLoading, setgetLoading] = useState(false);
 
-  const onSubmit = (data) => {
-    const payload = {
-      data,
-      ...files,
+  const [imgSignature, setImgSignature] = useState("");
+  const [imgLogo, setImgLogo] = useState("");
+  const [previews, setPreviews] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchInvoiceSettings = async () => {
+      try {
+        setgetLoading(true);
+        const res = await useJwt.getInvoice();
+
+        console.log(res);
+
+        if (res.status === 200 && res.data) {
+          const resData = res.data?.content?.result[0];
+          setResData(resData);
+          setValue("invoiceIdType", resData.invoiceIdType);
+          setValue("currency", resData.currency);
+          setValue("invoicePrefix", resData.invoicePrefix);
+          setValue("invoiceNote", resData.invoiceNote);
+          setValue(
+            "invoiceTermsAndConditions",
+            resData.invoiceTermsAndConditions
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching invoice settings:", error);
+      } finally {
+        setgetLoading(false);
+      }
     };
+
+    fetchInvoiceSettings();
+  }, []);
+
+  // useEffect(() => {
+  //   const loadFiles = async () => {
+  //     try {
+  //       const resLogo = await useJwt.getLogo(resData.uid);
+  //       console.log(resLogo);
+
+  //       const resSignature = await useJwt.getSignature(resData.uid);
+  //       console.log(resSignature);
+  //       setImgSignature(URL.createObjectURL(resSignature?.data));
+  //       // setFiles(resSignature?.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   if (resData?.uid) {
+  //     loadFiles();
+  //   }
+  // }, [resData?.uid]);
+  useEffect(() => {
+    const loadFiles = async () => {
+      try {
+        const sigRes = await useJwt.getSignature(resData.uid);
+        const logoRes = await useJwt.getLogo(resData.uid);
+
+        if (sigRes?.data) {
+          const sigFile = new File([sigRes.data], "invoice-signature.png", {
+            type: sigRes.data.type || "image/png",
+          });
+
+          setFiles((f) => ({ ...f, invoiceSignature: sigFile }));
+          setValue("invoiceSignature", sigFile);
+
+          setPreviews((p) => ({
+            ...p,
+            invoiceSignature: URL.createObjectURL(sigFile),
+          }));
+        }
+
+        if (logoRes?.data) {
+          const logoFile = new File([logoRes.data], "invoice-logo.png", {
+            type: logoRes.data.type || "image/png",
+          });
+
+          setFiles((f) => ({ ...f, invoiceLogo: logoFile }));
+          setValue("invoiceLogo", logoFile);
+
+          setPreviews((p) => ({
+            ...p,
+            invoiceLogo: URL.createObjectURL(logoFile),
+          }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (resData?.uid) loadFiles();
+  }, [resData?.uid]);
+
+  console.log("signature", imgSignature);
+
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("invoiceNote", data.invoiceNote);
+    formData.append("invoiceIdType", data.invoiceIdType);
+    formData.append("currency", data.currency);
+    formData.append("invoicePrefix", data.invoicePrefix);
+    formData.append(
+      "invoiceTermsAndConditions",
+      data.invoiceTermsAndConditions
+    );
+    formData.append("invoiceSignature", files.invoiceSignature);
+    formData.append("invoiceLogo", files.invoiceLogo);
+
+    try {
+      setLoading(true);
+
+      if (resData && resData.id) {
+        const updateRes = await useJwt.updateInvoice(resData?.uid, formData);
+        if (updateRes.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Invoice Settings Updated successfully",
+            life: 2000,
+          });
+          return;
+        }
+      } else {
+        const res = await useJwt.invoiceSettings(formData);
+        if (res.status === 200) {
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Invoice Settings Created successfully",
+            life: 2000,
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail:
+            error.response.data.content || "Failed to create Invoice Settings",
+          life: 2000,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+
+  console.log();
 
   const [files, setFiles] = useState({});
 
-  // Dynamic file change handler
-  const handleFileChange = (e, fieldName) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFiles((prevFiles) => ({
-        ...prevFiles,
-        [fieldName]: selectedFile,
-      }));
-    }
+  const handleFileChange = (e, fieldName, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setFiles((prev) => ({ ...prev, [fieldName]: file }));
+    setPreviews((prev) => ({ ...prev, [fieldName]: previewUrl }));
+
+    field.onChange(file);
   };
 
   // Remove file for a specific field
   const handleRemoveFile = (fieldName) => {
-    setFiles((prevFiles) => ({
-      ...prevFiles,
-      [fieldName]: null,
-    }));
+    setFiles((prev) => ({ ...prev, [fieldName]: null }));
+    setPreviews((prev) => ({ ...prev, [fieldName]: null }));
+    setValue(fieldName, null, { shouldValidate: true });
   };
 
-  // Render file preview
-  const renderFilePreview = (file) => {
-    if (file && file.type.startsWith("image")) {
-      return (
-        <img
-          className="rounded mt-2"
-          alt={file.name}
-          src={URL.createObjectURL(file)}
-          height="100"
-        />
-      );
-    }
-    return null;
+  const renderFilePreview = (previewUrl) => {
+    if (!previewUrl) return null;
+
+    return (
+      <img
+        src={previewUrl}
+        alt="preview"
+        height="100"
+        className="rounded mt-2"
+      />
+    );
   };
 
   const renderFileSize = (size) => {
@@ -93,22 +240,46 @@ const HorizontalForm = () => {
     return null;
   };
 
+  if (getLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: "300px" }}
+      >
+        <Spinner color={"primary"} />
+      </div>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle tag="h4">Invoice Settings</CardTitle>
+        <CardTitle tag="h4">
+          {" "}
+          <ArrowLeft
+            style={{
+              cursor: "pointer",
+              transition: "color 0.1s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#9289F3")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6E6B7B")}
+            onClick={() => navigate(-1)}
+          />{" "}
+          Invoice Settings{" "}
+        </CardTitle>
       </CardHeader>
+      <Toast ref={toast} />
 
       <CardBody>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row className="mb-1">
-            <Label sm="3" for="invoiceID">
-              Invoice ID
+            <Label sm="3" for="invoiceIdType">
+              Invoice ID <span style={{ color: "red" }}>*</span>
             </Label>
             <Col sm="9">
               <Controller
                 control={control}
-                name="invoiceID"
+                name="invoiceIdType"
                 rules={{ required: "Invoice ID is required" }}
                 render={({ field }) => (
                   <div className="demo-inline-spacing">
@@ -116,12 +287,12 @@ const HorizontalForm = () => {
                       <Input
                         type="radio"
                         id="sequent"
-                        value="Sequent"
-                        checked={field.value === "Sequent"}
-                        onChange={() => field.onChange("Sequent")}
+                        value="Sequence"
+                        checked={field.value === "Sequence"}
+                        onChange={() => field.onChange("Sequence")}
                       />
                       <Label className="form-check-label" for="sequent">
-                        Sequent
+                        Sequence
                       </Label>
                     </div>
                     <div className="form-check">
@@ -139,68 +310,19 @@ const HorizontalForm = () => {
                   </div>
                 )}
               />
-              {errors.invoiceID && (
-                <p className="text-danger">{errors.invoiceID.message}</p>
+              {errors.invoiceIdType && (
+                <p className="text-danger mb-0">
+                  <small className="text-danger">
+                    {errors.invoiceIdType.message}
+                  </small>
+                </p>
               )}
             </Col>
           </Row>
 
-          <Row className="mb-1">
-            <Label sm="3" for="InvoiceNotes">
-              Invoice Notes
-            </Label>
-            <Col sm="9">
-              <Controller
-                control={control}
-                name="InvoiceNotes"
-                rules={{ required: "Invoice Notes are required" }}
-                render={({ field }) => (
-                  <Input
-                    type="text"
-                    id="InvoiceNotes"
-                    placeholder="Invoice Notes"
-                    {...field}
-                  />
-                )}
-              />
-              {errors.InvoiceNotes && (
-                <p className="text-danger">{errors.InvoiceNotes.message}</p>
-              )}
-            </Col>
-          </Row>
-
-          <Row className="mb-1">
-            <Label sm="3" for="IBANCode">
-              IBAN Code
-            </Label>
-            <Col sm="9">
-              <Controller
-                control={control}
-                name="IBANCode"
-                rules={{
-                  required: "IBAN Code is required",
-                  pattern: {
-                    value: /^[A-Z0-9]+$/,
-                    message: "Invalid IBAN Code format",
-                  },
-                }}
-                render={({ field }) => (
-                  <Input
-                    type="text"
-                    id="IBANCode"
-                    placeholder="IBAN Code"
-                    {...field}
-                  />
-                )}
-              />
-              {errors.IBANCode && (
-                <p className="text-danger">{errors.IBANCode.message}</p>
-              )}
-            </Col>
-          </Row>
           <Row className="mb-1">
             <Label sm="3" for="currency">
-              Payment Settings
+              Currency <span style={{ color: "red" }}>*</span>
             </Label>
             <Col sm="9">
               <Controller
@@ -247,93 +369,110 @@ const HorizontalForm = () => {
                   </div>
                 )}
               />
+
+              {errors.currency && (
+                <p className="text-danger mb-0">
+                  <small className="text-danger">
+                    {errors.currency.message}
+                  </small>
+                </p>
+              )}
             </Col>
           </Row>
 
+          {/* Invoice Prefix */}
           <Row className="mb-1">
-            <Label sm="3" for="InvoicePrefix">
-              Invoice Prefix
+            <Label sm="3">
+              Invoice Prefix <span style={{ color: "red" }}>*</span>
             </Label>
             <Col sm="9">
               <Controller
-                name="InvoicePrefix"
+                name="invoicePrefix"
                 control={control}
                 rules={{
                   required: "Invoice Prefix is required",
-                  min: {
-                    value: 0,
-                    message: "Invoice Prefix cannot be negative",
-                  },
-                }}
-                render={({ field }) => (
-                  <Input
-                    type="number"
-                    id="InvoicePrefix"
-                    placeholder="Invoice Prefix"
-                    {...field}
-                  />
-                )}
-              />
-              {errors.InvoicePrefix && (
-                <p className="text-danger">{errors.InvoicePrefix.message}</p>
-              )}
-            </Col>
-          </Row>
-
-          <Row className="mb-1">
-            <Label sm="3" for="WalletID">
-              Wallet ID
-            </Label>
-            <Col sm="9">
-              <Controller
-                control={control}
-                name="WalletID"
-                rules={{
-                  required: "Wallet ID is required",
-                  minLength: {
-                    value: 6,
-                    message: "Wallet ID must be at least 6 characters",
+                  pattern: {
+                    value: /^[A-Za-z]+$/,
+                    message: "Only letters allowed",
                   },
                 }}
                 render={({ field }) => (
                   <Input
                     {...field}
-                    type="password"
-                    id="WalletID"
-                    placeholder="Wallet ID"
+                    onKeyPress={(e) => {
+                      if (!/[A-Za-z]/.test(e.key)) e.preventDefault();
+                    }}
                   />
                 )}
               />
-              {errors.WalletID && (
-                <p className="text-danger">{errors.WalletID.message}</p>
-              )}
+              <small className="text-danger">
+                {errors.invoicePrefix?.message}
+              </small>
             </Col>
           </Row>
 
           <Row className="mb-1">
-            <Label sm="3" for="invoiceTerms">
-              Invoice Terms & Conditions
+            <Label sm="3">
+              Invoice Note <span style={{ color: "red" }}>*</span>
             </Label>
             <Col sm="9">
               <Controller
+                name="invoiceNote"
                 control={control}
-                name="invoiceTerms"
                 rules={{
-                  required: "Terms & Conditions are required",
+                  required: "Terms are required",
+                  pattern: {
+                    value: /^[A-Za-z0-9\s.,'-]+$/,
+                    message: "Invalid characters used",
+                  },
                 }}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="textarea"
-                    id="invoiceTerms"
                     rows="3"
-                    placeholder="Terms & Conditions"
+                    onKeyPress={(e) => {
+                      if (!/[A-Za-z0-9]/.test(e.key)) e.preventDefault();
+                    }}
                   />
                 )}
               />
-              {errors.invoiceTerms && (
-                <p className="text-danger">{errors.invoiceTerms.message}</p>
-              )}
+              <small className="text-danger">
+                {errors.invoiceNote?.message}
+              </small>
+            </Col>
+          </Row>
+
+          {/* Terms */}
+          <Row className="mb-1">
+            <Label sm="3">
+              Terms & Conditions <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Col sm="9">
+              <Controller
+                name="invoiceTermsAndConditions"
+                control={control}
+                rules={{
+                  required: "Terms are required",
+                  pattern: {
+                    value: /^[A-Za-z0-9\s.,'-]+$/,
+                    message: "Invalid characters used",
+                  },
+                }}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="textarea"
+                    rows="3"
+                    onKeyPress={(e) => {
+                      if (!/[A-Za-z0-9]/.test(e.key)) e.preventDefault();
+                    }}
+                  />
+                )}
+              />
+              <small className="text-danger">
+                {errors.invoiceTermsAndConditions?.message}
+              </small>
             </Col>
           </Row>
 
@@ -345,28 +484,32 @@ const HorizontalForm = () => {
               <Controller
                 control={control}
                 name="invoiceSignature"
-                // rules={{
-                //   required: "Invoice Signature is required",
-                // }}
+                rules={{
+                  required: !resData?.uid && "Invoice Signature is required",
+                }}
                 render={({ field }) => (
                   <Input
                     type="file"
                     id="invoiceSignature"
                     accept="image/*"
-                    onChange={(e) => handleFileChange(e, "invoiceSignature")}
+                    onChange={(e) =>
+                      handleFileChange(e, "invoiceSignature", field)
+                    }
                   />
                 )}
               />
-              {/* {errors.invoiceSignature && (
-            <p className="text-danger">{errors.invoiceSignature.message}</p>
-          )} */}
+              {errors.invoiceSignature && (
+                <p className="text-danger mb-0">
+                  <small className="text-danger">
+                    {errors.invoiceSignature.message}
+                  </small>
+                </p>
+              )}
 
-              {files.invoiceSignature && (
+              {previews.invoiceSignature && (
                 <div className="mt-2 border rounded p-2">
-                  <h6>File Details:</h6>
-                  <p>Name: {files.invoiceSignature.name}</p>
-                  <p>Size: {renderFileSize(files.invoiceSignature.size)}</p>
-                  {renderFilePreview(files.invoiceSignature)}
+                  <h6>Preview:</h6>
+                  {renderFilePreview(previews.invoiceSignature)}
                   <div className="d-flex justify-content-end mt-2">
                     <Button
                       color="danger"
@@ -382,40 +525,41 @@ const HorizontalForm = () => {
           </Row>
 
           <Row className="mb-1">
-            <Label sm="3" for="profilePicture">
-              Profile Picture <span style={{ color: "red" }}>*</span>
+            <Label sm="3" for="invoiceLogo">
+              Invoice Logo <span style={{ color: "red" }}>*</span>
             </Label>
             <Col sm="9">
               <Controller
                 control={control}
-                name="profilePicture"
-                // rules={{
-                //   required: "Profile Picture is required",
-                // }}
+                name="invoiceLogo"
+                rules={{
+                  required: !resData?.uid && "Invoice Logo is required",
+                }}
                 render={({ field }) => (
                   <Input
                     type="file"
-                    id="profilePicture"
+                    id="invoiceLogo"
                     accept="image/*"
-                    onChange={(e) => handleFileChange(e, "profilePicture")}
+                    onChange={(e) => handleFileChange(e, "invoiceLogo", field)}
                   />
                 )}
               />
-              {/* {errors.profilePicture && (
-            <p className="text-danger">{errors.profilePicture.message}</p>
-          )} */}
-
-              {files.profilePicture && (
+              {errors.invoiceLogo && (
+                <p className="text-danger mb-0">
+                  <small className="text-danger">
+                    {errors.invoiceLogo.message}
+                  </small>
+                </p>
+              )}
+              {previews.invoiceLogo && (
                 <div className="mt-2 border rounded p-2">
-                  <h6>File Details:</h6>
-                  <p>Name: {files.profilePicture.name}</p>
-                  <p>Size: {renderFileSize(files.profilePicture.size)}</p>
-                  {renderFilePreview(files.profilePicture)}
+                  <h6>Preview:</h6>
+                  {renderFilePreview(previews.invoiceLogo)}
                   <div className="d-flex justify-content-end mt-2">
                     <Button
                       color="danger"
                       outline
-                      onClick={() => handleRemoveFile("profilePicture")}
+                      onClick={() => handleRemoveFile("invoiceLogo")}
                     >
                       Remove File
                     </Button>
@@ -427,11 +571,40 @@ const HorizontalForm = () => {
 
           <Row>
             <Col className="d-flex" md={{ size: 9, offset: 3 }}>
-              <Button className="me-1" color="primary" type="submit">
-                Submit
+              <Button
+                className="me-1"
+                disabled={loading}
+                color="primary"
+                type="submit"
+              >
+                {loading ? (
+                  <>
+                    loading.. <Spinner color="white" size="sm" />
+                  </>
+                ) : (
+                  <>{resData?.uid ? "Update" : "Submit"}</>
+                )}
               </Button>
 
-              <Button outline color="secondary" type="reset">
+              <Button
+                outline
+                color="secondary"
+                type="button"
+                // onClick={() => reset()}
+
+                onClick={() => {
+                  reset({
+                    invoiceNote: "",
+                    invoiceTermsAndConditions: "",
+                    invoiceIdType: "",
+                    currency: "",
+                    invoicePrefix: "",
+                    invoiceSignature: null,
+                    invoiceLogo: null,
+                  });
+                  setFiles({});
+                }}
+              >
                 Reset
               </Button>
             </Col>

@@ -33,6 +33,7 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import SuccessPayment from "../../../../dashboard/SuccessPayment";
 import GenrateOtp from "./GenrateOtp";
 import QrCodePayment from "./QrCodePayment";
 
@@ -129,7 +130,8 @@ const Address = ({
   const [errMsz, setErrMsz] = useState("");
   const [otpVerify, setotpVerify] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  const [modal, setModal] = useState(false);
+  const [transactionId, setTransactionID] = useState(null);
   const [discountTypedStatus, setdiscountTypedStatus] = useState("Percentage");
 
   const [cvv, setCvv] = useState("");
@@ -147,8 +149,6 @@ const Address = ({
   const handleRemoveFile = () => {
     setFile(null);
   };
-
- 
 
   const renderFilePreview = (file) => {
     if (file && file.type.startsWith("image")) {
@@ -200,9 +200,9 @@ const Address = ({
     }
   };
 
-   const watchDiscountAmount=watch('discountAmount');
-  console.log("watchDiscountAmount",watchDiscountAmount);
-  
+  const watchDiscountAmount = watch("discountAmount");
+  console.log("watchDiscountAmount", watchDiscountAmount);
+
   useEffect(() => {
     const assignDone = isAssigned?.isAssigned;
 
@@ -320,7 +320,7 @@ const Address = ({
   };
 
   const depositAmount = Number(watch("deposite"));
-    const WatchcalDisAmount = Number(watch("calDisAmount"));
+  const WatchcalDisAmount = Number(watch("calDisAmount"));
 
   console.log(depositAmount);
 
@@ -336,14 +336,16 @@ const Address = ({
 
     if (!uid && rentalPrice) {
       setFinalPayment(rentalPrice);
-      setValue("finalPayment", rentalPrice + depositAmount - (WatchcalDisAmount || 0) );
+      setValue(
+        "finalPayment",
+        rentalPrice + depositAmount - (WatchcalDisAmount || 0)
+      );
     }
-  }, [watch("rentalPrice"), depositAmount ,WatchcalDisAmount]);
+  }, [watch("rentalPrice"), depositAmount, WatchcalDisAmount]);
 
   //Discount Calculations
 
   const handlePercentageChange = (e) => {
-    
     const percentage = parseFloat(e.target.value);
     if (!isNaN(percentage)) {
       const discountValue = (percentage / 100) * rentalPriceState;
@@ -501,6 +503,7 @@ const Address = ({
     //   console.error("Invalid pin input");
     //   return;
     // }
+
     const selectedUserStr = localStorage.getItem("selectedBranch");
     const selectedBranch = JSON.parse(selectedUserStr);
     let branchUid = selectedBranch.uid;
@@ -515,7 +518,7 @@ const Address = ({
     formData.append("rentalPrice", data.rentalPrice);
     formData.append("finalPayment", data.finalPayment);
     formData.append("deposite", data.deposite);
-    formData.append("branch.uid",branchUid);
+    formData.append("branch.uid", branchUid);
     formData.append("renewalDate", data.renewalDate);
     formData.append("nextPaymentDate", data.nextPaymentDate);
     formData.append("paymentMode", data.paymentMode);
@@ -580,7 +583,6 @@ const Address = ({
     }
     console.log(isAssignedStatus);
 
-
     if (isAssigned?.isAssigned) {
       stepper.next();
     } else {
@@ -590,9 +592,9 @@ const Address = ({
       ) {
         try {
           setLoading(true);
-
           const response = await useJwt.createPayment(formData);
-
+          console.log(response);
+          setTransactionID(response?.data?.transaction_id);
           const { qr_code_base64 } = response?.data;
           setQr(qr_code_base64);
           if (qr_code_base64) {
@@ -605,26 +607,27 @@ const Address = ({
               paymentMode !== "QR Code" &&
               paymentMode !== "Credit Card"
             ) {
-              toast.current.show({
-                severity: "success",
-                summary: "Successfully",
-                detail: "Payment completed successfully.",
-                life: 2000,
-              });
+              // toast.current.show({
+              //   severity: "success",
+              //   summary: "Successfully",
+              //   detail: "Payment completed successfully.",
+              //   life: 2000,
+              // });
 
+              setModal(true);
               setTimeout(() => {
                 stepper.next();
               }, 2000);
             } else {
               if (paymentMode === "Credit Card") {
                 if (response?.data?.status === "success") {
-                  toast.current.show({
-                    severity: "success",
-                    summary: " Successfully",
-                    detail: "Payment completed successfully.",
-                    life: 2000,
-                  });
-
+                  // toast.current.show({
+                  //   severity: "success",
+                  //   summary: " Successfully",
+                  //   detail: "Payment completed successfully.",
+                  //   life: 2000,
+                  // });
+                  setModal(true);
                   setTimeout(() => {
                     stepper.next();
                   }, 2000);
@@ -680,6 +683,9 @@ const Address = ({
       }
     }
   };
+
+  const finalPaymentForModal = watch("finalPayment");
+  console.log("finalPaymentForModal", finalPaymentForModal);
 
   if (fetchLoader)
     return (
@@ -2428,6 +2434,13 @@ const Address = ({
           </div>
         </>
       </Form>
+      <SuccessPayment
+        setModal={setModal}
+        modal={modal}
+        slipPayment={finalPaymentForModal}
+        memberID={memberID || mId}
+        transactionId={transactionId}
+      />
     </Fragment>
   );
 };

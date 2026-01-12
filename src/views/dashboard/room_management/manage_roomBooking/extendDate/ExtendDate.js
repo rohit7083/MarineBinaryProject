@@ -41,7 +41,6 @@ function ExtendDate({ viewData }) {
       });
     }
   }, [viewData?.checkInDate]);
-
   const uid = viewData?.uid;
   const onSubmit = async (data) => {
     console.log("Form Data Submitted:", data);
@@ -51,7 +50,10 @@ function ExtendDate({ viewData }) {
     };
     setLoading(true);
     try {
-      const res = await useJwt.ExtendDate(uid, payload);
+      const selectedUserStr = localStorage.getItem("selectedBranch");
+      const selectedBranch = JSON.parse(selectedUserStr);
+      let branchUid = selectedBranch.uid;
+      const res = await useJwt.ExtendDate(uid, branchUid, payload);
       console.log(res);
 
       setExtendResponseData(res?.data);
@@ -67,6 +69,7 @@ function ExtendDate({ viewData }) {
         navigate("/search-rooms/previewBooking/roomPayment", {
           state: {
             extendResDate: res?.data,
+            memberId:viewData?.member?.id,
           },
         });
       }

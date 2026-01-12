@@ -300,7 +300,7 @@ export default function Payment() {
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(-1)}
                   />{" "}
-                  Payment Information
+                  Payment Information 89898
                 </CardTitle>
               </CardHeader>
               <CardBody>

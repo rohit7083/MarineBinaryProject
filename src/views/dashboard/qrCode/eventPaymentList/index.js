@@ -54,8 +54,8 @@ function Index() {
   const [selectedQRCode, setSelectedQRCode] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
   const toast = useRef(null);
+
 
   // ** Get Payment Mode Display Text
   const getPaymentModeText = (paymentMode) => {
@@ -121,6 +121,7 @@ function Index() {
         return;
       }
 
+     
       // Create a new window for PDF generation
       const printWindow = window.open("", "", "width=800,height=600");
 
@@ -906,11 +907,12 @@ function Index() {
           )}
         </ModalBody>
         <ModalFooter>
+           
           <Button color="primary" onClick={downloadQRCode}>
             Download Receipt
           </Button>
           <Button color="secondary" onClick={toggleViewQRModal}>
-            Close
+            Close4
           </Button>
         </ModalFooter>
       </Modal>

@@ -36,6 +36,8 @@ const CustomerSearch = () => {
       label: `${c.firstName} ${c.lastName} (${c?.phoneNumber})`,
       // phoneNumber: c?.phoneNumber,
       emailId: c?.emailId,
+      id:c?.id,
+      ...c,
     })) || [];
 
   useEffect(() => {
@@ -71,10 +73,10 @@ const CustomerSearch = () => {
     }
   };
 
-  // useEffect(()=>{
-
-  //   console.log("selectedCustomer",selectedCustomer);
-  // },[selectedCustomer])
+  useEffect(()=>{
+console.clear();
+    console.log("selectedCustomer",selectedCustomer);
+  },[selectedCustomer])
 
   return (
     <>

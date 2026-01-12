@@ -300,5 +300,6 @@ export default {
   getLogo:'/invoiceSetting/logo/',
   getSignature:"/invoiceSetting/signature/",
   subScriptionCal:"/subscription/calculate",
+  sendInvoiceToMail:"/sendInvoice/send",
 };
  

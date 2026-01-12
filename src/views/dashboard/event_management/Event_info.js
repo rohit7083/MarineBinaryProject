@@ -403,7 +403,9 @@ const EventForm = ({
 
     // Prefer logging after state update using useEffect
     console.log("calculated:", { adv, final, diff });
-
+const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedBranch = JSON.parse(selectedUserStr);
+    let branchUid = selectedBranch.uid;
     const eventUpdatePayload = {
       "event.uid": listData?.uid,
       "event.eventName": data?.eventName,
@@ -422,6 +424,7 @@ const EventForm = ({
       "event.eventType.uid": data?.eventType?.value,
       "event.member.uid": data?.selectedMember?.value,
       'event.calculatedTax': watchcalculatedTax,
+      'branch.uid':branchUid,
 
       "payment.finalPayment":
         typeof data?.payment?.finalPayment === "number"

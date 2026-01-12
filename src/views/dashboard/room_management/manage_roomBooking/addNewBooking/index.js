@@ -57,7 +57,6 @@ const autofillMemberALLDATA =location?.state?.Rowdata;
   const [allRooms, setAllrooms] = useState([]);
   const checkInDate = watch("checkInDate");
   const checkOutDate = watch("checkOutDate");
-
   useEffect(() => {
     if (uid && rowData) {
       reset({

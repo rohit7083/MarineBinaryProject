@@ -684,7 +684,9 @@ export default class JwtService {
   }
 
   bookingPayment(...args) {
-    return axios.post(this.jwtConfig.bookingPayment, ...args);
+    return axios.post(this.jwtConfig.bookingPayment, ...args , {
+      skipBranch:true,
+    });
   }
 
   bookingList() {
@@ -721,8 +723,8 @@ export default class JwtService {
     return axios.delete(`${this.jwtConfig.DeleteRooms}${uid}`);
   }
 
-  ExtendDate(uid, ...args) {
-    return axios.post(`${this.jwtConfig.ExtendDate}${uid}`, ...args);
+  ExtendDate(uid,branchUid, ...args) {
+    return axios.post(`${this.jwtConfig.ExtendDate}${uid}/${branchUid}`, ...args);
   }
   ExtendDataUpdate(...args) {
     return axios.post(`${this.jwtConfig.ExtendDataUpdate}`, ...args);
@@ -738,7 +740,9 @@ export default class JwtService {
     return axios.post(`${this.jwtConfig.cancleEvent}${uid}`);
   }
   addExtraRoom(uid, ...args) {
-    return axios.post(`${this.jwtConfig.addExtraRoom}${uid}`, ...args);
+    return axios.post(`${this.jwtConfig.addExtraRoom}${uid}`, ...args ,{
+      skipBranch:true,
+    });
   }
 
   cancleRooms(uid, ...args) {
@@ -814,7 +818,9 @@ export default class JwtService {
   }
 
   posPayment(...args) {
-    return axios.post(this.jwtConfig.posPayment, ...args);
+    return axios.post(this.jwtConfig.posPayment, ...args,{
+      skipBranch:true,
+    });
   }
 
   addCustomer(...args) {
@@ -841,7 +847,10 @@ export default class JwtService {
   }
 
   getVariationUid(vuid) {
-    return axios.get(`${this.jwtConfig.getVariationUid}${vuid}`);
+    return axios.get(`${this.jwtConfig.getVariationUid}${vuid}/branch/`,{
+      appendBranchUid: true,
+
+    } );
   }
 
   deleteCartProduct(uid, vuid) {
@@ -1166,15 +1175,15 @@ export default class JwtService {
     return axios.post(`${this.jwtConfig.subscriptionPayment}`, ...args);
   }
 
-    forAUthMobileOtp(token = "", ...args) {
+  forAUthMobileOtp(token = "", ...args) {
     return axios.post(this.jwtConfig.forAUthMobileOtp + token, ...args);
   }
-    withoutAuthEmailOtp(token = "", ...args) {
+  withoutAuthEmailOtp(token = "", ...args) {
     return axios.post(this.jwtConfig.withoutAuthEmailOtp + token, ...args);
   }
 
   invoiceSettings(...args) {
-    return axios.post(this.jwtConfig.invoiceSettings, ...args,{
+    return axios.post(this.jwtConfig.invoiceSettings, ...args, {
       skipBranch: true,
     });
   }
@@ -1194,7 +1203,7 @@ export default class JwtService {
       responseType: "blob", // important for binary data
     });
   }
-   
+
   getSignature(uid) {
     return axios.get(`${this.jwtConfig.getSignature}${uid}`, {
       responseType: "blob", // important for binary data
@@ -1204,5 +1213,7 @@ export default class JwtService {
   subScriptionCal(...args) {
     return axios.post(`${this.jwtConfig.subScriptionCal}`, ...args);
   }
-
+  sendInvoiceToMail(...args) {
+    return axios.post(`${this.jwtConfig.sendInvoiceToMail}`, ...args);
+  }
 }

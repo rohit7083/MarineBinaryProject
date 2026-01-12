@@ -35,9 +35,12 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import SingleCheck from "../../../assets/images/SingleCheck.json";
+import SuccessPayment from "../../dashboard/SuccessPayment";
 import GenerateDiscountOtp from "./GenerateDiscountOtp";
 import Qr_Payment from "./Qr_Payment";
 function Payment({ stepper, allEventData, updateData, paymentData }) {
+  let memberId =
+    updateData?.listData?.Rowdata?.member?.id || allEventData?.memberId;
 
   const {
     remainingAmount,
@@ -49,9 +52,11 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     { value: "MoneyGrams", label: "MoneyGrams" },
     { value: "Other", label: "Other" },
   ];
-  const [mode, setMode] = useState(""); // "flat" or "percentage"
+  const [mode, setMode] = useState("");
   const [value, setValuedis] = useState("");
   const [loading, setLoading] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [transactionID, setTransactionId] = useState(null);
   const AccountType = [
     { value: "8", label: "Personal Checking Account" },
     { value: "9", label: "Personal Saving Account" },
@@ -68,16 +73,17 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     { value: "8", label: "QR Code" },
   ];
 
-
   const AmtDiffernce =
-    updateData?.data?.finalPayble - (updateData?.listData?.Rowdata?.advancePaymentAmout || updateData?.listData?.Rowdata?.totalAmount);
+    updateData?.data?.finalPayble -
+    (updateData?.listData?.Rowdata?.advancePaymentAmout ||
+      updateData?.listData?.Rowdata?.totalAmount);
   console.log("AmtDiffernce", AmtDiffernce);
 
   let finalAmtRemain;
 
   const remainingAmt = updateData?.listData?.Rowdata?.remainingAmount || 0;
   const uid = updateData?.listData?.uid;
-  
+
   if (remainingAmt >= 0 && uid) {
     finalAmtRemain = Number(remainingAmt) + Number(AmtDiffernce);
   } else {
@@ -424,27 +430,25 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   const PayMode = watch("paymentMode");
 
   const onSubmit = async (data) => {
-    console.log("from the paymentdata",data);
-    
+    console.log("from the paymentdata", data);
     setErrorMsz("");
     const otpArray = data.otp || [];
     const pin = otpArray?.join("");
     const encrypted = encryptAES(pin);
-
     let formData = new FormData();
- const selectedUserStr = localStorage.getItem("selectedBranch");
+    const selectedUserStr = localStorage.getItem("selectedBranch");
     const selectedBranch = JSON.parse(selectedUserStr);
     let branchUid = selectedBranch.uid;
-    formData.append("branch.uid",branchUid);
-
-
-
+    formData.append("branch.uid", branchUid);
 
     if (!updateData?.listData?.uid || paymentData?.step === 2) {
       if (allEventData?.eventUid || paymentData?.uid) {
         formData.append("event.uid", allEventData.eventUid || paymentData?.uid);
       }
-                    formData.append("event.calculatedTax", updateData?.data?.calculatedTax || 0);
+      formData.append(
+        "event.calculatedTax",
+        updateData?.data?.calculatedTax || 0
+      );
 
       if (data?.advancePayment !== undefined) {
         formData.append("event.isAdvancesPaymnet", data.advancePayment);
@@ -478,15 +482,18 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     }
 
     if (updateData?.listData?.uid && paymentData?.step !== 2) {
-              formData.append("event.calculatedTax", updateData?.data?.calculatedTax || 0);
+      formData.append(
+        "event.calculatedTax",
+        updateData?.data?.calculatedTax || 0
+      );
 
-       if (data?.advance !== undefined) {
+      if (data?.advance !== undefined) {
         formData.append("event.advancePaymentAmout", data.advance);
       }
-       if (data?.advancePayment !== undefined) {
+      if (data?.advancePayment !== undefined) {
         formData.append("event.isAdvancesPaymnet", data.advancePayment);
       }
-       if (data?.advancePayment && data?.remainingPayment !== undefined) {
+      if (data?.advancePayment && data?.remainingPayment !== undefined) {
         formData.append("event.remainingAmount", data.remainingPayment);
       }
       formData.append("event.uid", updateData?.listData?.uid);
@@ -513,17 +520,18 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       );
       formData.append("event.amount", updateData?.data?.totalAmount);
       formData.append("event.isExtraStaff", updateData?.data?.isExtraStaff);
-     if ((updateData?.data?.extraNoOfStaff) != null) {
-      
-       formData.append("event.extraNoOfStaff", updateData?.data?.extraNoOfStaff);
-     } 
-          if ((updateData?.data?.extraNoOfStaffAmount) != null) {
-
-      formData.append(
-        "event.extraNoOfStaffAmount",
-        updateData?.data?.extraNoOfStaffAmount
-      );
-    }
+      if (updateData?.data?.extraNoOfStaff != null) {
+        formData.append(
+          "event.extraNoOfStaff",
+          updateData?.data?.extraNoOfStaff
+        );
+      }
+      if (updateData?.data?.extraNoOfStaffAmount != null) {
+        formData.append(
+          "event.extraNoOfStaffAmount",
+          updateData?.data?.extraNoOfStaffAmount
+        );
+      }
       formData.append("event.totalAmount", updateData?.data?.finalPayble);
       formData.append(
         "event.isRecurringEvent",
@@ -538,7 +546,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         "event.member.uid",
         updateData?.data?.selectedMember?.value
       );
-    
+
       // formData.append("payment.finalPayment", AmtDiffernce);
     }
 
@@ -613,21 +621,30 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           console.log("Choose a valid payment method");
       }
     }
-
     if (AmtDiffernce > 0 && updateData?.listData?.uid) {
       try {
         setLoading(true);
         const updateRes = await useJwt.UpdateEventAndPayment(formData);
         if (updateRes) {
-          setModal(true);
-          setTimeout(() => {
-            setModal(false);
-            stepper.next();
-          }, 4000);
+          const transactionID = updateRes?.data?.transaction_id;
+          setTransactionId(transactionID);
+          setSuccessModal(true);
+          // setTimeout(() => {
+          //   setShowModal(false);
+          //   stepper.next();
+          // }, 4000);
         }
         console.log(updateData);
       } catch (error) {
         console.log(error);
+        toast.current.show({
+          severity: "error",
+          summary: "Payment Failed",
+          detail:
+            error?.response?.data?.content ||
+            "Something went wrong while processing your payment. Please try again.",
+          life: 3000,
+        });
       } finally {
         setLoading(false);
       }
@@ -637,16 +654,16 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       try {
         setLoading(true);
         const res = await useJwt.payment(formData);
+        let transactionID = res?.data?.transaction_id;
+        setTransactionId(transactionID);
+        console.log(res);
+
         const { qr_code_base64 } = res?.data;
         setQr(qr_code_base64);
         if (qr_code_base64) {
           setShowQrModal(true);
         }
         if (res?.data?.status === "success") {
-          {
-            {
-            }
-          }
           if (PayMode?.value == 7) {
             MySwal.fire({
               title: "Payment Link Sent Successfully",
@@ -658,11 +675,11 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
               buttonsStyling: false,
             });
           } else {
-            setModal(true);
-            setTimeout(() => {
-              setModal(false);
-              stepper.next();
-            }, 4000);
+            setSuccessModal(true);
+            // setTimeout(() => {
+            //   setSuccessModal(false);
+            //   stepper.next();
+            // }, 4000);
           }
         } else {
           toast.current.show({
@@ -845,125 +862,131 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
             <Row>
               {/* {
               paymentData?.edit === "event" ?( */}
-                <>
-                  <Col check className="mb-2">
-                    <Label check>
-                      <Controller
-                        name="advancePayment"
-                        control={control}
-                        render={({ field }) => (
-                          <Input {...field} type="checkbox" />
-                        )}
-                      />{" "}
-                      Advance Payment
-                    </Label>
-                  </Col>
-
-                  {advancePayment && (
-                    <>
-                      <Col md="12" className="mb-1">
-                        <Label for="">Advance Payment</Label>
-                        <Controller
-                          name="advance"
-                          control={control}
-                          rules={{
-                            required: "Advance payment is required",
-                            ...(AmtDiffernce > 0
-                              ? {
-                                  min: {
-                                    value: 0,
-                                    message: (
-                                      <>
-                                        Advance payment must be at least{" "}
-                                        <span style={{ fontWeight: "bold" }}>
-                                          ${AmtDiffernce || 0}
-                                        </span>
-                                      </>
-                                    ),
-                                  },
-                                }
-                              : {
-                                  min: {
-                                    value: 0,
-                                    message:
-                                      "Advance payment cannot be less than 0",
-                                  },
-                                }),
-                          }}
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              defaultValue="1"
-                              id="advance"
-                              placeholder="Enter advance amount"
-                              invalid={!!errors.advance}
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors.advance && (
-                          <FormFeedback>{errors.advance.message}</FormFeedback>
-                        )}
-                      </Col>
-                      <Col md="12" className="mb-1">
-                        <Label for="advancePayment">Remaining Payment</Label>
-                        <Controller
-                          name="remainingPayment"
-                          control={control}
-                          defaultValue="0"
-                          rules={{
-                            required: "Remaining payment is required",
-                            min: 0,
-                          }}
-                          render={({ field }) => (
-                            <Input
-                              type="number"
-                              id="remainingPayment"
-                              placeholder="Enter Remaining amount"
-                              disabled={true}
-                              invalid={!!errors.advancePayment}
-                              {...field}
-                            />
-                          )}
-                        />
-                        {errors.advancePayment && (
-                          <FormFeedback>
-                            {errors.advancePayment.message}
-                          </FormFeedback>
-                        )}
-                      </Col>
-                    </>
-                  )}
-
-                  <Col md="12" className="mb-1">
-                    <Label for="finalInvoice">Currently Amount Payable</Label>
+              <>
+                <Col check className="mb-2">
+                  <Label check>
                     <Controller
-                      name="PfinalAmount"
+                      name="advancePayment"
                       control={control}
-                      rules={{
-                        required: "Final amount is required",
-                        min: {
-                          value: 0,
-                          message: "Amount cannot be negative",
-                        },
-                      }}
                       render={({ field }) => (
-                        <Input
-                          type="number"
-                          id="PfinalAmount"
-                          disabled={true}
-                          placeholder="Your Currently Amount Payable Here"
-                          invalid={!!errors.PfinalAmount}
-                          {...field}
-                        />
+                        <Input {...field} type="checkbox" />
                       )}
-                    />
-                    {errors.finaPfinalAmountlAmount && (
-                      <FormFeedback>{errors.PfinalAmount.message}</FormFeedback>
+                    />{" "}
+                    Advance Payment
+                  </Label>
+                </Col>
+
+                {advancePayment && (
+                  <>
+                    <Col md="12" className="mb-1">
+                      <Label for="">Advance Payment</Label>
+                      <Controller
+                        name="advance"
+                        control={control}
+                        rules={{
+                          required: "Advance payment is required",
+                          ...(AmtDiffernce > 0
+                            ? {
+                                min: {
+                                  value: 0,
+                                  message: (
+                                    <>
+                                      Advance payment must be at least{" "}
+                                      <span style={{ fontWeight: "bold" }}>
+                                        ${AmtDiffernce || 0}
+                                      </span>
+                                    </>
+                                  ),
+                                },
+                              }
+                            : {
+                                min: {
+                                  value: 0,
+                                  message:
+                                    "Advance payment cannot be less than 0",
+                                },
+                              }),
+                        }}
+                        render={({ field }) => (
+                          <Input
+                            type="text"
+                            defaultValue="1"
+                            id="advance"
+                            placeholder="Enter advance amount"
+                            invalid={!!errors.advance}
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "" || Number(value) >= 0) {
+                                field.onChange(value);
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                      {errors.advance && (
+                        <FormFeedback>{errors.advance.message}</FormFeedback>
+                      )}
+                    </Col>
+                    <Col md="12" className="mb-1">
+                      <Label for="advancePayment">Remaining Payment</Label>
+                      <Controller
+                        name="remainingPayment"
+                        control={control}
+                        defaultValue="0"
+                        rules={{
+                          required: "Remaining payment is required",
+                          min: 0,
+                        }}
+                        render={({ field }) => (
+                          <Input
+                            type="number"
+                            id="remainingPayment"
+                            placeholder="Enter Remaining amount"
+                            disabled={true}
+                            invalid={!!errors.advancePayment}
+                            {...field}
+                          />
+                        )}
+                      />
+                      {errors.advancePayment && (
+                        <FormFeedback>
+                          {errors.advancePayment.message}
+                        </FormFeedback>
+                      )}
+                    </Col>
+                  </>
+                )}
+
+                <Col md="12" className="mb-1">
+                  <Label for="finalInvoice">Currently Amount Payable</Label>
+                  <Controller
+                    name="PfinalAmount"
+                    control={control}
+                    rules={{
+                      required: "Final amount is required",
+                      min: {
+                        value: 0,
+                        message: "Amount cannot be negative",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Input
+                        type="number"
+                        id="PfinalAmount"
+                        disabled={true}
+                        placeholder="Your Currently Amount Payable Here"
+                        invalid={!!errors.PfinalAmount}
+                        {...field}
+                      />
                     )}
-                  </Col>
-                </>
-               {/* ) : null}  */}
+                  />
+                  {errors.finaPfinalAmountlAmount && (
+                    <FormFeedback>{errors.PfinalAmount.message}</FormFeedback>
+                  )}
+                </Col>
+              </>
+              {/* ) : null}  */}
 
               <Col md="12" className="mb-1">
                 <Label className="form-label" for="hf-picker">
@@ -1928,7 +1951,9 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       <div className="details-title"> Amount</div>
                       <div className="detail-amt">
                         <strong>
-                          $ {handleFinal - allEventData?.calculatedTax || watch('finalAmount')}
+                          ${" "}
+                          {handleFinal - allEventData?.calculatedTax ||
+                            watch("finalAmount")}
                         </strong>
                       </div>
                     </li>
@@ -1981,39 +2006,37 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       )}
                     </li>
 
-                 
-                      <>
-                        <li
-                          className="price-detail"
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          <div className="details-title">Advance Amount</div>
-                          <div className="detail-amt">
-                            <strong>
-                              $ {handleAdvance ? handleAdvance : "0"}
-                            </strong>
-                          </div>
-                        </li>
+                    <>
+                      <li
+                        className="price-detail"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <div className="details-title">Advance Amount</div>
+                        <div className="detail-amt">
+                          <strong>
+                            $ {handleAdvance ? handleAdvance : "0"}
+                          </strong>
+                        </div>
+                      </li>
 
-                        <li
-                          className="price-detail"
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          <div className="details-title">Remaining Amount</div>
-                          <div className="detail-amt">
-                            <strong>$ {handleRemaining || "0"} </strong>
-                          </div>
-                        </li>
-                      </>
-                  
+                      <li
+                        className="price-detail"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <div className="details-title">Remaining Amount</div>
+                        <div className="detail-amt">
+                          <strong>$ {handleRemaining || "0"} </strong>
+                        </div>
+                      </li>
+                    </>
                   </ul>
 
                   <hr />
@@ -2046,6 +2069,14 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
             qr={qr}
           />
         )}
+
+        <SuccessPayment
+          modal={successModal}
+          setModal={setSuccessModal}
+          memberID={memberId}
+          transactionId={transactionID}
+          eventPayment={CurrentAmount}
+        />
       </Form>
     </>
   );

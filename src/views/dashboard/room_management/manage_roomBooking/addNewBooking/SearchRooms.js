@@ -326,7 +326,11 @@ const SearchRooms = ({
               </Button>
             </Col>
           </Fragment>
-        ) : null}
+        ) : <Col className="text-center text-muted fs-1 fw-semibold mt-5">
+Rooms are currently not available..</Col>
+
+
+}
       </Row>
     </Form>
   );

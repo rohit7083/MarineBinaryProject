@@ -129,6 +129,15 @@ const VariantListModal = ({ isOpen, prDetails, toggle, isUpdate = false }) => {
       items: sentToApiList,
     });
 
+    const selectedBranch = localStorage.getItem("selectedBranch");
+    const branchUid = selectedBranch ? JSON.parse(selectedBranch).uid : null;
+
+    const payload = {
+      branch: {
+        uid: branchUid,
+      },
+    };
+
     const response = await useJwt.getVariationUid(res.data.uid);
 
     const hash = new Map();
@@ -185,7 +194,6 @@ const VariantListModal = ({ isOpen, prDetails, toggle, isUpdate = false }) => {
   const onSubmit = async (data) => {
     try {
       setvariationLoad(true);
-
       const { postList, updateData } = data.variations.reduce(
         (acc, items) => {
           if (
