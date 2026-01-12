@@ -35,15 +35,15 @@ const CreateCustomerModal = ({
     reset,
   } = useForm({
     defaultValues: {
-      firstName: "John",
-      lastName: "Doe",
-      phoneNumber: "9876543210",
-      emailId: "john.doe@example.com",
-      address: "123 Main Street",
-      city: "New York",
-      state: "NY",
-      country: "US",
-      pinCode: "10001",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      emailId: "",
+      address: "",
+      city: "",
+      state: "",
+      country: "",
+      pinCode: "",
     },
   });
 
