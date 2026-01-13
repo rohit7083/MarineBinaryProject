@@ -8,17 +8,17 @@ import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormGroup,
-  Input,
-  Label,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 function AddEventTypes() {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ function AddEventTypes() {
         // 🔹 Update event type
         try {
           const res = await useJwt.UpdateEventType(uid, data);
-          console.log("Updated:", res);
+           ("Updated:", res);
 
           if (res.status === 200) {
             toast.current.show({
@@ -77,7 +77,7 @@ function AddEventTypes() {
         // 🔹 Create event type
         try {
           const createRes = await useJwt.EventType(data);
-          console.log("Created:", createRes);
+           ("Created:", createRes);
 
           if (createRes?.status === 201) {
             toast.current.show({

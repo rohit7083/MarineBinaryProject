@@ -12,17 +12,17 @@ import { useLocation } from "react-router-dom";
 import useJwt from "@src/auth/jwt/useJwt";
 import { ArrowLeft } from "react-feather";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 function CreateVenue() {
@@ -71,13 +71,13 @@ function CreateVenue() {
   // const onSubmit = async (data) => {
   //       seterrMsz("");
 
-  //   console.log("Form data:", data);
+  //    ("Form data:", data);
   //   try {
   //     setLoading(true);
 
   //     if (!uid) {
   //       const res = await useJwt.Venue(data); // <-- update to your actual API call
-  //       console.log("API Response:", res);
+  //        ("API Response:", res);
   //       if (res.status === 200) {
   //         toast.current.show({
   //           severity: "success",
@@ -102,7 +102,7 @@ function CreateVenue() {
   //           navigate("/VenueList");
   //         }, 2000);
   //       }
-  //       console.log("Created:", res);
+  //        ("Created:", res);
   //     }
   //   } catch (error) {
   //     console.error("API Error:", error);
@@ -121,7 +121,7 @@ function CreateVenue() {
 
   const onSubmit = async (data) => {
     seterrMsz("");
-    console.log("Form data:", data);
+     ("Form data:", data);
 
     try {
       setLoading(true);
@@ -158,7 +158,7 @@ function CreateVenue() {
         }
       }
 
-      console.log("API Response:", res);
+       ("API Response:", res);
     } catch (error) {
       console.error("API Error:", error);
       if (error.response && error.response.data) {

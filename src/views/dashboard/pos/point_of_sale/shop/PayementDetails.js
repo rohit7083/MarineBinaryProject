@@ -7,18 +7,18 @@ import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 import CartSummery from "../CartSummery";
 import DiscountModal from "./DiscountModal";
@@ -26,7 +26,7 @@ import DiscountModal from "./DiscountModal";
 const getVariationUids = async (uids) => {
   try {
     const response = await useJwt.getVariationUid(uids);
-    console.log("Variation UIDs:", response);
+     ("Variation UIDs:", response);
     return response;
   } catch (error) {
     console.error("Error fetching variation UIDs:", error);
@@ -117,7 +117,7 @@ export default function Payment() {
         setPosUid(res?.data?.uid);
       }
     } catch (error) {
-      console.log(error);
+       (error);
     }
   };
 

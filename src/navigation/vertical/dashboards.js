@@ -10,6 +10,8 @@ import {
 import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
 export default [
+
+  
   // {
   //   id: 'dashboards',
   //   title: 'Dashboards',
@@ -41,7 +43,7 @@ export default [
     resource: "dashboard",
   },
   {
-    id: "Slip",
+    id: "slip",
     title: "Slip Management",
     icon: <FileText size={12} />,
     navLink: "/Ship",
@@ -184,7 +186,7 @@ export default [
   },
 
   {
-    id: "POS",
+    id: "pos",
     title: "POS",
     icon: (
       <img
@@ -256,7 +258,7 @@ export default [
   // },
 
   {
-    id: "Parking Pass",
+    id: "parkingpass",
     title: "Parking Pass",
     icon: <Square size={12} />,
     navLink: "/parking_pass",
@@ -267,7 +269,7 @@ export default [
     // disabled: true,
   },
   {
-    id: "Event Management",
+    id: "event",
     title: "Event Management",
     icon: <Calendar size={12} />,
     navLink: "/event_index",
@@ -317,7 +319,7 @@ export default [
   },
 
   {
-    id: "Room Management",
+    id: "roombooking",
     title: "Room Management",
     icon: <HomeIcon size={12} />,
     navLink: "/room_management",
@@ -397,7 +399,7 @@ export default [
   },
 
   {
-    id: "Generate QR Code",
+    id: "qrcode",
     title: "Generate QR Code",
     icon: <QrCode size={12} />,
     navLink: "/qr-code",
@@ -525,7 +527,7 @@ export default [
   },
 
   {
-    id: "BranchManagement",
+    id: "branch",
     title: "Manage Branch",
     icon: <GitBranch size={12} />,
     navLink: "/branch",

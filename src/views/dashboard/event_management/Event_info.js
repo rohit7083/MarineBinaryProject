@@ -14,23 +14,23 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Select, { components } from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormFeedback,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 import successAnimation from "../../../assets/images/celebrate.json";
 import successAnimations from "../../../assets/images/Congratulations.json";
@@ -163,7 +163,7 @@ const EventForm = ({
   }, [selectedMember]);
 
   useEffect(() => {
-    console.log("listData", listData);
+     ("listData", listData);
 
     if (listData?.Rowdata) {
       const {
@@ -308,7 +308,7 @@ const EventForm = ({
   const onSubmit = async (data) => {
  
     seterrMsz("");
-    console.log("event OnSubmit Data", data);
+     ("event OnSubmit Data", data);
     const isOtherVenue = data?.venue?.value === "other";
     const isOtherEventType = data?.eventType?.value === "other";
 
@@ -384,7 +384,7 @@ const EventForm = ({
       if (isNaN(value)) return acc;
       return acc + value;
     }, 0);
-    console.log(totalPaidAmount);
+     (totalPaidAmount);
     // Determine user action
     if (totalPaidAmount >= final) {
       diff = final - totalPaidAmount;
@@ -396,13 +396,13 @@ const EventForm = ({
       diff = 0;
     } else {
       diff = 0;
-      console.log("not happend anything ");
+       ("not happend anything ");
     }
     // Update state correctly
     setAmtDiffer(diff);
 
     // Prefer logging after state update using useEffect
-    console.log("calculated:", { adv, final, diff });
+     ("calculated:", { adv, final, diff });
 const selectedUserStr = localStorage.getItem("selectedBranch");
     const selectedBranch = JSON.parse(selectedUserStr);
     let branchUid = selectedBranch.uid;
@@ -432,7 +432,7 @@ const selectedUserStr = localStorage.getItem("selectedBranch");
           : diff,
       // "event.isAdvancesPaymnet":;
     };
-    console.log("eventUpdatePayload", eventUpdatePayload);
+     ("eventUpdatePayload", eventUpdatePayload);
 
     const formData = new FormData();
     displayVendors?.forEach((v, idx) => {
@@ -620,10 +620,10 @@ if (payload?.payment?.finalPayment > 0 ) {
   useEffect(() => {
     if (eventRooms?.roomSearchUid) {
       const currentFinal = watch("totalAmount");
-      console.log("currentFinal", currentFinal);
+       ("currentFinal", currentFinal);
 
       setValue("totalAmount", currentFinal + baseAmountRef.current);
-      console.log(currentFinal + baseAmountRef.current);
+       (currentFinal + baseAmountRef.current);
     }
   }, [setValue, eventRooms?.roomSearchUid]);
 
@@ -673,7 +673,7 @@ if (payload?.payment?.finalPayment > 0 ) {
       ? eventRooms?.bookedRoom
       : roomData;
 
-  // console.log("displayRooms",displayRooms);
+  //  ("displayRooms",displayRooms);
 
   const handleOk = () => {
     // toggle();

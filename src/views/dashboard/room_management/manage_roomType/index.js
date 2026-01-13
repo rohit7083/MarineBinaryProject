@@ -37,7 +37,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.getAllRoomTypes();
       const { content } = data;
-      console.log("getAllEvents", content);
+       ("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

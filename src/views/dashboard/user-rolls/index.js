@@ -1,7 +1,4 @@
-import React, { useEffect } from "react";
 import Table from "./Table";
-import useJwt from "@src/auth/jwt/useJwt";
-import { permisionTableList } from "../user_rolls/roles-permissions/roles/fakedb";
 
 const index = ({ data }) => {
   // const [tableData, setTableData] = React.useState({
@@ -14,7 +11,7 @@ const index = ({ data }) => {
   //     try {
   //       const { data } = await useJwt.userpermission();
   //       const next = data.content.next;
-  //       console.log(next);
+  //        (next);
 
   //       const { content } = data;
 

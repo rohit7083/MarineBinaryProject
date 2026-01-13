@@ -4,14 +4,14 @@ import { FormFeedback, Spinner, UncontrolledAlert } from "reactstrap";
 
 // Reactstrap
 import {
-  Button,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
+    Button,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
 } from "reactstrap";
 
 // React Hook Form
@@ -53,7 +53,7 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
         setShow(false);
         reset();
       } catch (error) {
-        console.log("Error submitting form", error);
+         ("Error submitting form", error);
         if (error.response) {
           const errorKeys = error?.response?.data?.content;
 
@@ -76,12 +76,12 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
         setLoading(true);
 
         const updatedRes = await useJwt.updateTax(uid, payload);
-        console.log(updatedRes);
+         (updatedRes);
         setShow(false);
         reset();
         navigate("/dashboard/pos/product_management/addTaxes");
       } catch (error) {
-        console.log("Error submitting form", error);
+         ("Error submitting form", error);
         if (error.response) {
           const errorKeys = error?.response?.data?.content;
           setHeaderError(errorKeys);

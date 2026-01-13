@@ -10,16 +10,16 @@ import Select from "react-select";
 import useJwt from "@src/auth/jwt/useJwt";
 import { ArrowLeft } from "react-feather";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormGroup,
-  Input,
-  Label,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
 } from "reactstrap";
 
 function AddVTypes() {
@@ -56,11 +56,11 @@ function AddVTypes() {
           value: x.uid,
         }));
 
-        console.log(list);
+         (list);
 
         setPlist(list);
       } catch (error) {
-        console.log(error);
+         (error);
       }
     };
 
@@ -87,7 +87,7 @@ function AddVTypes() {
       setLoading(true);
       if (uid) {
         const res = await useJwt.updateVendor(uid, payload);
-        console.log("Updated:", res);
+         ("Updated:", res);
 
         if (res.status === 200) {
           toast.current.show({
@@ -113,7 +113,7 @@ function AddVTypes() {
             navigate("/pos/vendor_typeList");
           }, 2000);
         }
-        console.log("Created:", res);
+         ("Created:", res);
       }
     } catch (error) {
       console.error("API Error:", error);

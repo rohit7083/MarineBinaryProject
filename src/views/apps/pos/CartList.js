@@ -59,7 +59,6 @@ const CartList = () => {
       //  vrId
       toast.success("Deleted successfully");
     } catch (error) {
-      console.log(error);
       toast.error(error?.response?.data?.content);
     } finally {
       setDeleteload(false);

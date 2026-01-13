@@ -76,7 +76,7 @@
 //             navigate('/')
 //           }
 //         })
-//         .catch(err => console.log(err))
+//         .catch(err =>  (err))
 //     } else {
 //       for (const key in data) {
 //         if (data[key].length === 0) {
@@ -323,7 +323,7 @@
 //       firstName && lastName && emailId && mobileNumber && password && countryCode && terms
 //     ) {
 //       // Log the form data to the console after successful submission
-//       console.log("Form Data: ", data);
+//        ("Form Data: ", data);
 
 //       useJwt
 //         .register({ username: firstName, email: emailId, password, phone: mobileNumber, countryCode })
@@ -347,7 +347,7 @@
 //             navigate("/");
 //           }
 //         })
-//         .catch((err) => console.log(err));
+//         .catch((err) =>  (err));
 //     } else {
 //       for (const key in data) {
 //         if (!data[key] && key !== "terms") {
@@ -575,30 +575,29 @@ import { Link, useNavigate } from "react-router-dom";
 
 // ** Custom Hooks
 import { useSkin } from "@hooks/useSkin";
-import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Store & Actions
-import { useDispatch } from "react-redux";
 import { handleLogin } from "@store/authentication";
+import { useDispatch } from "react-redux";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  CardTitle,
-  CardText,
-  Label,
-  Button,
-  Form,
-  Input,
-  FormFeedback,
-  InputGroup,
+    Button,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    InputGroup,
+    Label,
+    Row,
 } from "reactstrap";
 
 // ** Third Party Components
-import { useForm, Controller } from "react-hook-form";
-import Select from "react-select";
 import axios from "axios";
+import { Controller, useForm } from "react-hook-form";
+import Select from "react-select";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
@@ -633,7 +632,7 @@ const Register = () => {
   } = useForm({ defaultValues });
 
   const onSubmit = (data) => {
-    console.log("Form submitted with data:", data); // Check the form data
+     ("Form submitted with data:", data); // Check the form data
 
     const {
       firstName,
@@ -664,12 +663,12 @@ const Register = () => {
         countryCode,
       };
 
-      console.log("Payload sent to API:", payload); // Log the payload being sent to the backend
+       ("Payload sent to API:", payload); // Log the payload being sent to the backend
 
       axios
         .post("http://192.168.29.190:8001/auth/user/create", payload)
         .then((response) => {
-          console.log("API response:", response); // Check the API response
+           ("API response:", response); // Check the API response
           if (response.data.success) {
             const { user, accessToken } = response.data;
             const loginData = { ...user, accessToken };

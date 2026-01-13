@@ -76,7 +76,6 @@ const CalendarComponent = () => {
 
 
 
-  console.log(store)
   // ** Fetch Events On Mount
   useEffect(() => {
     dispatch(fetchEvents(store.selectedCalendars));

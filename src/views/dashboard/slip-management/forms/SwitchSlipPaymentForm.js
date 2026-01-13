@@ -3,14 +3,14 @@ import SwitchSlipForm from "./slip_rental/SwitchSlipForm";
 
 import { useEffect, useRef, useState } from "react";
 import {
-  Button,
-  Col,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Col,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 // ** PrimeReact
@@ -45,7 +45,7 @@ function SwitchSlipPaymentForm() {
   // Fetch slips on mount
   useEffect(() => {
     const fetchSlipData = async () => {
-      console.log("from PDN", frompaidIn);
+       ("from PDN", frompaidIn);
 
       setIsAnnual(frompaidIn);
 
@@ -67,7 +67,7 @@ function SwitchSlipPaymentForm() {
         );
 
         setSlips(filteredSlips);
-        console.log("Fetched Slips:", response.data.content);
+         ("Fetched Slips:", response.data.content);
       } catch (error) {
         console.error("Error fetching data:", error);
 
@@ -118,7 +118,7 @@ function SwitchSlipPaymentForm() {
         life: 3000,
       });
     }
-    console.log("Initial Slip:", slip);
+     ("Initial Slip:", slip);
   }, [slip]);
 
   // Handle dropdown selection
@@ -277,7 +277,7 @@ function SwitchSlipPaymentForm() {
       // Handle monthly slip switching
       if (selectedSlip.paidIn === "Monthly") {
         try {
-          console.log("Processing monthly switch slip...", response.data);
+           ("Processing monthly switch slip...", response.data);
 
           // Validate monthly data
           if (!response.data?.fromSlip || !response.data?.toSlip) {
@@ -301,7 +301,7 @@ function SwitchSlipPaymentForm() {
             toAmount: response?.data?.toSlip?.amount || 0,
           };
 
-          console.log("Payload to Send for monthly:", monthlyPayloadData);
+           ("Payload to Send for monthly:", monthlyPayloadData);
 
           const monthlyResponse = await useJwt.postSwitchSlip(
             monthlyPayloadData
@@ -332,7 +332,7 @@ function SwitchSlipPaymentForm() {
             }, 3000);
           }
 
-          console.log("*****monthly Response", monthlyResponse);
+           ("*****monthly Response", monthlyResponse);
 
           // toast.current.show({
           //   severity: "success",
@@ -446,7 +446,7 @@ function SwitchSlipPaymentForm() {
       setIsLoading(false);
     }
 
-    console.log("Final Payload to Send:", payload);
+     ("Final Payload to Send:", payload);
   };
 
   const handleCancel = () => {
@@ -464,7 +464,7 @@ function SwitchSlipPaymentForm() {
       ...payload,
     };
 
-    console.log("Payload in useEffect:", SendingPayload);
+     ("Payload in useEffect:", SendingPayload);
   }, [payload]);
 
   // Show error if no slip data is available

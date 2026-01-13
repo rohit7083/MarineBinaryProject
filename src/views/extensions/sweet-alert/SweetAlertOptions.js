@@ -1,5 +1,5 @@
 // ** Reactstrap Imports
-import { Card, CardHeader, CardBody, CardTitle, Button } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, CardTitle } from "reactstrap";
 
 // ** Third Party Components
 import Swal from "sweetalert2";
@@ -43,7 +43,7 @@ const SweetAlertOptions = () => {
       },
     }).then(function (result) {
       if (result.dismiss === Swal.DismissReason.timer) {
-        console.log("I was closed by the timer");
+         ("I was closed by the timer");
       }
     });
   };

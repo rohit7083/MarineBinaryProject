@@ -3,16 +3,16 @@ import { Toast } from "primereact/toast";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 const defaultValues = {
@@ -46,7 +46,7 @@ const AddNewAddress = ({ showModal, row, setShow, onSuccess }) => {
   }, [row, reset]);
 
   const onSubmit = async (data) => {
-    console.log("data", data);
+     ("data", data);
 
     try {
       setLoading(true);
@@ -66,7 +66,7 @@ const AddNewAddress = ({ showModal, row, setShow, onSuccess }) => {
         if (onSuccess) onSuccess();
       } else {
         const response = await useJwt.addCustomer(data);
-        console.log("✅ Customer Added:", response.data);
+         ("✅ Customer Added:", response.data);
 
         // show success toast
         toast.current.show({

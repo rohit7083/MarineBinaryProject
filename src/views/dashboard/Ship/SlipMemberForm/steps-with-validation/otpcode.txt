@@ -79,7 +79,7 @@ const GenrateOtp = ({
       setTime(100);
     } catch (error) {
       console.error("Error generating OTP:handleResendOTP ", error);
-      console.log("Failed to generate OTP. Please try again.");
+       ("Failed to generate OTP. Please try again.");
     } finally {
       setOtpLoader(false);
     }
@@ -90,7 +90,7 @@ const GenrateOtp = ({
 
     try {
       if (!accessTokenotp) {
-        console.log("Access token is missing. Please regenerate OTP.");
+         ("Access token is missing. Please regenerate OTP.");
         return;
       }
 
@@ -100,14 +100,14 @@ const GenrateOtp = ({
       setLoader(true);
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
       setVerify(true);
-      console.log(response);
+       (response);
       setShow(false);
       setotpVerify(true);
-      console.log("OTP Verified Successfully!");
+       ("OTP Verified Successfully!");
       // setButtonEnabled(true);
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      console.log("Failed to verify OTP. Please try again.");
+       ("Failed to verify OTP. Please try again.");
 
       if (error.response && error.response.data) {
         const { content } = error.response.data;
@@ -149,13 +149,13 @@ const GenrateOtp = ({
         // setCountdownEndTime(Date.now() + 40000);
         // setResendcount(true);
       }
-      console.log("resentOTP", res.status);
+       ("resentOTP", res.status);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     }
   };
 
-  console.log("render")
+   ("render")
   return (
     <Fragment>
       {verify || fetchDiscountFields ? (
@@ -237,7 +237,7 @@ const GenrateOtp = ({
                         autoFocus={index === 0}
                         onChange={(e) => {
                           const value = e.target.value;
-                          console.log("Value", value);
+                           ("Value", value);
 
                           // Update the value in the form
                           field.onChange(e);
@@ -296,7 +296,7 @@ const GenrateOtp = ({
                     key={key}
                     date={Date.now() + 40000}
                     renderer={({ minutes, seconds, completed }) => {
-                      console.log(minutes,seconds, completed);
+                       (minutes,seconds, completed);
                       if (completed) {
                         if (!alreadyUpdatedRef.current) {
                           alreadyUpdatedRef.current = true;

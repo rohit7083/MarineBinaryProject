@@ -183,7 +183,6 @@ const PaymentSummary = () => {
           disCountUid = discountRes?.data?.uid;
         }
       } catch (error) {
-        console.log(error);
       }
     }
 
@@ -242,7 +241,6 @@ const PaymentSummary = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       if (error.response) {
         toast.current.show({
           severity: "error",

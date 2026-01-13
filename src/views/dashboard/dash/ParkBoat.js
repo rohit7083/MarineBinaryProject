@@ -2,19 +2,19 @@ import { useState } from "react";
 import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import {
-  Badge,
-  Card,
-  CardBody,
-  CardText,
-  Col,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Row,
-  Spinner,
+    Badge,
+    Card,
+    CardBody,
+    CardText,
+    Col,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Pagination,
+    PaginationItem,
+    PaginationLink,
+    Row,
+    Spinner,
 } from "reactstrap";
 import AddBoat from "../../../../src/assets/images/addBoat.png";
 import BoatNew from "../../../../src/assets/images/updatedboat2.png";
@@ -53,7 +53,7 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
       },
     });
 
-    console.log(boat);
+     (boat);
   };
 
   const handleSearchChange = (e) => {

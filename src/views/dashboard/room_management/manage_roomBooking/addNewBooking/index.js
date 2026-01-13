@@ -15,17 +15,17 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import Flatpickr from "react-flatpickr";
 // Reactstrap components for layout and form controls.
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
 } from "reactstrap";
 // Custom JWT hook for API calls.
 import useJwt from "@src/auth/jwt/useJwt";
@@ -82,7 +82,7 @@ const autofillMemberALLDATA =location?.state?.Rowdata;
   }, [checkInDate, checkOutDate, setValue]);
 
   const onSubmit = async (data) => {
-    console.log("data", data);
+     ("data", data);
 
     try {
       setLoading(true);

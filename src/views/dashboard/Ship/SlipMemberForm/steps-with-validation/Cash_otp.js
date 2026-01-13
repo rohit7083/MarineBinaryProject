@@ -1,32 +1,26 @@
-import React, { useEffect, useState, Fragment } from "react";
 import useJwt from "@src/auth/jwt/useJwt";
-import { Send } from "react-feather";
-import { Link } from "react-router-dom";
+import React, { Fragment, useEffect, useState } from "react";
 import Countdown from "react-countdown";
+import { Send } from "react-feather";
 import { Spinner, UncontrolledAlert } from "reactstrap";
 import WatchNew from "../../../../../../src/assets/images/updatedWatchnew.jpg";
 
+import { Controller, useForm } from "react-hook-form";
 import {
-  Row,
-  Col,
-  Modal,
-  Label,
-  Input,
-  Button,
-  ModalBody,
-  ModalHeader,
-  InputGroup,
-  FormFeedback,
-  CardTitle,
-  Card,
-  CardBody,
-  CardText,
-  Form,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    Input,
+    Label,
+    Modal
 } from "reactstrap";
-import { useForm, Controller, set } from "react-hook-form";
 
-import { Alert } from "reactstrap";
 import { ThumbsUp } from "react-feather";
+import { Alert } from "reactstrap";
 const Cash_otp = ({
   setotpVerify,
   memberId,
@@ -66,14 +60,14 @@ const Cash_otp = ({
       }
 
       const token = response?.data?.content;
-      console.log("response from cash otp", response);
+       ("response from cash otp", response);
 
       setAccessTokenOtp(token);
       setShowModal(true);
       setTime(100);
     } catch (error) {
       console.error("Error generating OTP:", error);
-      console.log("Failed to generate OTP. Please try again.");
+       ("Failed to generate OTP. Please try again.");
 
       if (error.response) {
         console.error("Error verifying OTP:", error);
@@ -90,7 +84,7 @@ const Cash_otp = ({
 
     try {
       if (!accessTokenotp) {
-        console.log("Access token is missing. Please regenerate OTP.");
+         ("Access token is missing. Please regenerate OTP.");
         return;
       }
 
@@ -162,9 +156,9 @@ const Cash_otp = ({
 
         // setResendcount(true);
       }
-      console.log("resentOTP", res.status);
+       ("resentOTP", res.status);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       //   setTimeout(() => {
       //     setResendcount(false);
@@ -181,9 +175,9 @@ const Cash_otp = ({
 
         setResendcallCount(true);
       }
-      console.log("resentCall", res);
+       ("resentCall", res);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       // setTimeout(() => {
       //   setResendcallLoading(false);

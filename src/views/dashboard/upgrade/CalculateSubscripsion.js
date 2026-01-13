@@ -29,7 +29,7 @@
 
 //   const handleConfirm = () => {
 //     // Add your purchase confirmation logic here
-//     console.log("Purchase confirmed");
+//      ("Purchase confirmed");
 //     setModal(false);
 //   };
 
@@ -160,14 +160,14 @@
 
 import { useNavigate } from "react-router-dom";
 import {
-  Badge,
-  Button,
-  Col,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
+    Badge,
+    Button,
+    Col,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
 } from "reactstrap";
 
 const SubscriptionConfirmModal = ({

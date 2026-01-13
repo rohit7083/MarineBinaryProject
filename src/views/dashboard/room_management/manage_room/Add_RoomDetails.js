@@ -11,20 +11,20 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 function AddVTypes() {
   const {
@@ -127,7 +127,7 @@ function AddVTypes() {
   };
 
   useEffect(() => {
-    console.log({ noOfRooms });
+     ({ noOfRooms });
   }, [noOfRooms]);
 
   return (

@@ -10,18 +10,18 @@ import { Toast } from "primereact/toast";
 import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Table,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Table,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -122,7 +122,7 @@ function ShipDetails() {
     // If it's a switch input (Electric or Water), update boolean state
 
     if (type === "checkbox") {
-      console.log(`${name} ${checked}`);
+       (`${name} ${checked}`);
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
       setUserData((prev) => ({ ...prev, [name]: value }));
@@ -136,7 +136,7 @@ function ShipDetails() {
   const handleSubmit = async (e, data) => {
     setMessage("");
     e.preventDefault();
-    console.log("dataform", data);
+     ("dataform", data);
 
     const validationErrors = validate();
     setErrors(validationErrors);
@@ -246,7 +246,7 @@ function ShipDetails() {
         setLoading(false);
       }
     } else {
-      console.log("Validation failed. Please fix the errors.");
+       ("Validation failed. Please fix the errors.");
     }
   };
 
@@ -447,14 +447,14 @@ function ShipDetails() {
         }));
 
         setShipTypeNames(options);
-        console.log(options);
+         (options);
       } catch (error) {
         console.error("Error fetching category:", error);
         const { response } = error;
         const { data, status } = response;
       }
 
-      console.log("Category", selectedCategory);
+       ("Category", selectedCategory);
     };
     if (uid) {
       const fetchDetailsForUpdate = async () => {
@@ -465,7 +465,7 @@ function ShipDetails() {
           const raw = resp.data.content?.result;
           const details = Array.isArray(raw) ? raw[0] : raw;
 
-          console.log("details", details.isAssigned);
+           ("details", details.isAssigned);
 
           if (details?.isAssigned === true) {
             setView(true);
@@ -526,9 +526,9 @@ function ShipDetails() {
                 details?.category?.overDueAmountForAuction ?? "",
             });
 
-            console.log("details", details);
+             ("details", details);
 
-            console.log("selectedCategory", {
+             ("selectedCategory", {
               dimensions: details.dimensions,
             });
 

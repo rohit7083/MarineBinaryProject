@@ -1,101 +1,3 @@
-// import { Lock } from "react-feather";
-// import { useLocation } from "react-router-dom";
-// import {
-//     Badge,
-//     Button,
-//     Card,
-//     CardBody,
-//     Col,
-//     Container,
-//     Row
-// } from "reactstrap";
-
-// export default function PosUpgradePage() {
-
-//     const location=useLocation()
-//     console.table(location)
-//   return (
-//     <Container className="py-5">
-//       <Row className="justify-content-center">
-//         <Col lg="9" xl="8">
-//           <Card className="pos-upgrade-card shadow-lg border-0">
-//             <CardBody className="p-5 text-center">
-//               {/* Header */}
-//               <div className="mb-4">
-//                 <Lock size={42} className="text-warning mb-2" />
-//                 <h1 className="fw-bold">
-//                   POS Access Requires Upgrade
-//                 </h1>
-//                 <Badge color="danger" pill className="mt-2">
-//                   Locked Feature
-//                 </Badge>
-//               </div>
-
-//               {/* Subtitle */}
-//               <p className="text-danger fst-italic fs-5 mb-4">
-//                 This feature isn’t included in your current plan.
-//               </p>
-
-//               {/* Description */}
-//               <p className="text-muted mb-4">
-//                 Apply for a <strong>Lock Trust Merchant Account</strong> and
-//                 upgrade your <strong>MarinaOne subscription</strong> to unlock
-//                 POS and streamline your front-desk operations.
-//               </p>
-
-//               {/* Feature list */}
-//               <Row className="justify-content-center mb-5">
-//                 <Col md="10">
-//                   <ul className="text-start feature-list">
-//                     <li>Process in-person transactions with ease</li>
-//                     <li>Track inventory in real time</li>
-//                     <li>Sync product, tax, and vendor data automatically</li>
-//                     <li>Generate receipts and manage payments in one hub</li>
-//                     <li>Connect sales activity directly to your Client Hub</li>
-//                   </ul>
-//                 </Col>
-//               </Row>
-
-//               {/* CTA */}
-//               <h5 className="fw-semibold mb-4">Choose your path</h5>
-
-//               <Row className="g-3 justify-content-center">
-//                 <Col sm="6" md="4">
-//                   <Button
-//                     color="warning"
-//                     className="w-100 cta-btn"
-//                   >
-//                     Apply for Merchant Account
-//                   </Button>
-//                 </Col>
-
-//                 <Col sm="6" md="4">
-//                   <Button
-//                     color="secondary"
-//                     outline
-//                     className="w-100 cta-btn"
-//                   >
-//                     Purchase Add-On
-//                   </Button>
-//                 </Col>
-
-//                 <Col sm="6" md="4">
-//                   <Button
-//                     color="success"
-//                     className="w-100 cta-btn"
-//                   >
-//                     Upgrade Now
-//                   </Button>
-//                 </Col>
-//               </Row>
-//             </CardBody>
-//           </Card>
-//         </Col>
-//       </Row>
-//     </Container>
-//   );
-// }
-
 import useJwt from "@src/auth/jwt/useJwt";
 import { useLocation } from "react-router-dom";
 
@@ -108,14 +10,15 @@ export default function PosUpgradePage() {
   const [subscription, setSubscription] = useState([]);
   const [loading, setLoading] = useState(false);
   const [walletBal, setWalletBal] = useState(null);
+  const [dynamicMessage,setDyanamicMsz]=useState([]);
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/dashbord");
   };
   const location = useLocation();
   console.table(location);
-  console.log(localStorage);
-  
+   (localStorage);
+
   const handleMerchantAcc = () => {
     window.open(
       "https://apply.locktrust.com/",
@@ -128,28 +31,25 @@ export default function PosUpgradePage() {
     const handlePurchase = async () => {
       try {
         setLoading(true);
-        console.log(localStorage.getItem("crmId"));
-        
+         (localStorage.getItem("crmId"));
+
         const crmId = localStorage.getItem("crmId");
         const userData = JSON.parse(localStorage.getItem("userData"));
         const userUid = userData?.uid || "";
-        // const userUid = "0ecfa123-3694-45fa-8cbb-4f9332bf124c"; //temp
 
         const res = await useJwt.upgradePlans({ crmid: crmId });
-console.log("called upgrade plan api ", res);
-
+         ("called upgrade plan api ", res);
 
         const paymentPageData = await useJwt.apiForpaymentPage({
           uid: userUid,
         });
-        console.log("paymentPageData called ",paymentPageData);
-        
+         ("paymentPageData called ", paymentPageData);
+
         if (paymentPageData?.status === 200) {
-       
           let walletBal = paymentPageData?.data?.content;
           setWalletBal(walletBal);
         }
-        console.log(paymentPageData?.data?.walletBal);
+         (paymentPageData?.data?.walletBal);
 
         const addOndata = res.data?.content?.filter(
           (item) => item?.is_addon === "1"
@@ -169,6 +69,22 @@ console.log("called upgrade plan api ", res);
     handlePurchase();
   }, []);
 
+  useEffect(() => {
+    const handleInfo = async () => {
+      try {
+        const parentMenuId = localStorage.getItem("parentMenuId");
+         (parentMenuId);
+        const res = await useJwt.getDyanimicInfoOFSubscription(parentMenuId);
+        setDyanamicMsz(res?.data?.['0']?.messages);
+
+         (res);
+      } catch (error) {
+         (error);
+      }
+    };
+    handleInfo();
+  }, []);
+
   const handleUpgrade = () => {
     navigate("/upgrade/subscription", { state: { subscription, walletBal } });
   };
@@ -176,6 +92,17 @@ console.log("called upgrade plan api ", res);
   const handlePurchaseAddon = () => {
     navigate("/upgrade/subscription", { state: { addOn, walletBal } });
   };
+
+  const messages =
+  dynamicMessage && dynamicMessage.length > 0
+    ? dynamicMessage
+    : [
+        "Core business operations",
+        "Real-time data updates",
+        "Centralized system management",
+        "Secure transactions & records",
+        "Integrated client experience",
+      ];
 
   return (
     // <Container className="">
@@ -257,17 +184,8 @@ console.log("called upgrade plan api ", res);
 
                     <h6 className="fw-semibold mb-2">What You'll Get:</h6>
                     <Row className="g-2 mb-2">
-                      {[
-                        "Core business operations",
-
-                        "Real-time data updates",
-
-                        "Centralized system management",
-
-                        "Secure transactions & records",
-
-                        "Integrated client experience",
-                      ].map((feature, idx) => (
+                      {
+                     messages.map((feature, idx) => (
                         <Col md="6" key={idx}>
                           <div className="d-flex align-items-start">
                             <CheckCircle

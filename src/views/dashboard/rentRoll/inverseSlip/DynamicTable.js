@@ -10,16 +10,16 @@ import Summery from "../viewSlip/Summery";
 
 // ** Reactstrap Imports
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 // ** Auth
@@ -450,7 +450,7 @@ const DynamicTable = () => {
       // Write and download file
       XLSX.writeFile(wb, filename);
 
-      console.log("Excel file exported successfully!");
+       ("Excel file exported successfully!");
     } catch (error) {
       console.error("Error exporting to Excel:", error);
       alert("Error occurred while exporting to Excel. Please try again.");
@@ -464,7 +464,7 @@ const DynamicTable = () => {
     try {
       setLoading(true);
       const response = await useJwt.getInversionRentRoll();
-      console.log("API Response:", response);
+       ("API Response:", response);
       setSummerydata(response?.data || {});
 
       if (response?.data?.slips && response.data.slips.length > 0) {
@@ -486,7 +486,7 @@ const DynamicTable = () => {
         const months = Array.from(allPaymentMonths);
         setPaymentMonths(months);
 
-        console.log("Payment Months:", months);
+         ("Payment Months:", months);
 
         // Process slips to calculate amounts
         const processedSlips = slips.map((slip) => {

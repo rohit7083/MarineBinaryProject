@@ -7,13 +7,13 @@ import Swal from "sweetalert2";
 
 import useJwt from "@src/auth/jwt/useJwt";
 import {
-  Badge,
-  Button,
-  Col,
-  Form,
-  Label,
-  Row,
-  UncontrolledAlert,
+    Badge,
+    Button,
+    Col,
+    Form,
+    Label,
+    Row,
+    UncontrolledAlert,
 } from "reactstrap";
 
 const filesName = ["IdentityDocument", "Contract", "Registration", "Insurance"];
@@ -155,7 +155,7 @@ const FileUploadForm = ({ Parentdocuments, stepper, slipIID, sId }) => {
     } catch (error) {
       console.error(error);
       const errMsz = error.response.data?.content;
-      console.log(errMsz);
+       (errMsz);
 
       if (errMsz) {
         setErrmsz(errMsz);
@@ -377,7 +377,7 @@ export default FileUploadForm;
       const response = await useJwt.slipDocument(formData); // Send FormData directly
   
       toast.success("Files uploaded successfully!");
-      console.log("API Response:", response.data);
+       ("API Response:", response.data);
     } catch (error) {
       toast.error("An error occurred while uploading files.");
       console.error("Error:", error);

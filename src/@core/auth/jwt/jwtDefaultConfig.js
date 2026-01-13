@@ -13,6 +13,7 @@ export default {
   slipCategoryGet: "/slipCategory/branch",
 
   slip: "/slip/",
+  retriveSingleSlip:'/slip',
   slipGet: "/slip/branch",
   sVessel: "/sVessel/",
   sVesselGet: "/sVessel/branch",
@@ -301,5 +302,7 @@ export default {
   getSignature:"/invoiceSetting/signature/",
   subScriptionCal:"/subscription/calculate",
   sendInvoiceToMail:"/sendInvoice/send",
+
+  getDyanimicInfoOFSubscription:"/auth/subscription/",
 };
  

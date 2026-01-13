@@ -5,24 +5,24 @@ import DataTable from "react-data-table-component";
 import useJwt from "@src/auth/jwt/useJwt";
 import { debounce } from "lodash";
 import {
-  Calendar,
-  ChevronDown,
-  DollarSign,
-  Eye,
-  MoreVertical,
+    Calendar,
+    ChevronDown,
+    DollarSign,
+    Eye,
+    MoreVertical,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-  Badge,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Badge,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Row,
+    Spinner,
+    UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -49,7 +49,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.bookingList();
       const { content } = data;
-      console.log("getAllEvents", content);
+       ("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

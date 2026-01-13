@@ -5,18 +5,18 @@ import { Link } from "react-router-dom";
 import { ChevronLeft } from "react-feather";
 
 // ** React Hook Form
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // ** Reactstrap Imports
 import {
-  Card,
-  Input,
-  CardBody,
-  CardTitle,
-  CardText,
-  Form,
-  Label,
-  Button,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Form,
+    Input,
+    Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -36,7 +36,7 @@ const ResetPasswordBasic = () => {
   const newPassword = watch("newPassword");
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
+     ("Form Data:", data);
   };
 
   return (

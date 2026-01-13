@@ -19,13 +19,13 @@ import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Input,
-  Label,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Input,
+    Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -119,9 +119,9 @@ const ResetPasswordBasic = () => {
 
         setResendcount(true);
       }
-      console.log("resentOTP", res.status);
+       ("resentOTP", res.status);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     }
   };
 
@@ -136,9 +136,9 @@ const ResetPasswordBasic = () => {
 
         setResendcallCount(true);
       }
-      console.log("resentCall", res);
+       ("resentCall", res);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       // setTimeout(() => {
       //   setResendcallLoading(false);
@@ -151,7 +151,7 @@ const ResetPasswordBasic = () => {
       const otpRes = await useJwt.sendOtp(token);
     } catch (error) {
       console.error(error);
-      console.log("failed to get otp");
+       ("failed to get otp");
     }
   };
 
@@ -180,7 +180,7 @@ const ResetPasswordBasic = () => {
 
     setAttempt(0);
     setCountdownEndTime(0);
-    console.log("Form Data:", data);
+     ("Form Data:", data);
     // const otpString = data.otp.join("");
     // const otp = parseInt(otpString, 10);
 
@@ -252,8 +252,8 @@ const ResetPasswordBasic = () => {
   }, [handlePass, handleOtp, handleConfirm]);
 
   useEffect(() => {
-    console.log("render");
-    console.log({ attempt });
+     ("render");
+     ({ attempt });
   }, [attempt]);
 
   if (expireTokenLoader) {
@@ -354,7 +354,7 @@ const ResetPasswordBasic = () => {
                           autoFocus={index === 0}
                           onChange={(e) => {
                             const value = e.target.value;
-                            console.log("Value", value);
+                             ("Value", value);
 
                             // Update the value in the form
                             field.onChange(e);

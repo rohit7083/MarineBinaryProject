@@ -6,17 +6,17 @@ import Cleave from "cleave.js/react";
 import { useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  InputGroup,
-  Label,
-  Row,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    InputGroup,
+    Label,
+    Row,
 } from "reactstrap";
 
 // ** Auth
@@ -131,7 +131,7 @@ const ExistingCustomer = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log("Form data:", data);
+     ("Form data:", data);
 
     // Get current customer data
     const currentCustomer = getCurrentCustomer();
@@ -281,7 +281,7 @@ const ExistingCustomer = () => {
         return;
       }
 
-      console.log("API Payload:", payload);
+       ("API Payload:", payload);
       setIsProcessing(true);
       const response = await useJwt.NewCustomerInTerminal(payload);
 

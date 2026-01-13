@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Button,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 //import jwt
@@ -189,9 +189,9 @@ function SwitchSlipForm({ payer, ammountTobePaid, payloadsent, responseData }) {
           payment: {},
         };
 
-        console.log("Cash Payload:", payload);
+         ("Cash Payload:", payload);
         const response = await useJwt.postSwitchSlip(payload);
-        console.log("Cash Response:", response);
+         ("Cash Response:", response);
         setTimeout(() => {
           navigate("/dashboard/slipmember_list");
         }, [2000]);
@@ -240,9 +240,9 @@ function SwitchSlipForm({ payer, ammountTobePaid, payloadsent, responseData }) {
           },
         };
 
-        console.log("Credit Card Payload:", payload);
+         ("Credit Card Payload:", payload);
         const response = await useJwt.postSwitchSlip(payload);
-        console.log("Credit Card Response:", response);
+         ("Credit Card Response:", response);
         setTimeout(() => {
           navigate("/dashboard/slipmember_list");
         }, [2000]);

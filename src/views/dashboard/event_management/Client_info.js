@@ -2,15 +2,15 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { Fragment } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormGroup,
-  Input,
-  Label,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormGroup,
+    Input,
+    Label,
 } from "reactstrap";
 
 function AddEventTypes() {
@@ -23,7 +23,7 @@ function AddEventTypes() {
   const onSubmit = async (data) => {
     try {
       const res = await useJwt.VendorType(data);
-      console.log(res);
+       (res);
     } catch (error) {
       console.error(error);
     }

@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Check, Copy } from "react-feather";
 import BeatLoader from "react-spinners/BeatLoader";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Table,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Table,
 } from "reactstrap";
 
 const ShortcodeTable = ({ shortcodes, setShortcodes }) => {
@@ -26,7 +26,7 @@ const ShortcodeTable = ({ shortcodes, setShortcodes }) => {
         }));
 
         setShortcodes(codeData);
-        console.log(res);
+         (res);
       } catch (error) {
         console.error("Error fetching shortcodes:", error);
       } finally {

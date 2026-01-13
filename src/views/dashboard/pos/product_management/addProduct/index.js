@@ -14,7 +14,7 @@ const AddProductIndex = () => {
   const [productData, setProductData] = useState({});
 
   useEffect(() => {
-    console.log("product Data from index", productData);
+     ("product Data from index", productData);
   }, [productData]);
   const location = useLocation();
   const UpdateData = location?.state?.row;

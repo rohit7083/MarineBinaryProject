@@ -52,9 +52,10 @@ export default function InvoiceModal({
       navigate("/event_index");
     } else if (posPayment) {
       navigate("/dashboard/pos/point_of_sale/shop/PayementDetails");
-    } else if (slipPayment) {
-      navigate("/dashboard/slipmember_list");
-    }
+    } 
+    // else if (slipPayment) {
+    //   navigate("/dashboard/slipmember_list");
+    // }
   };
 
   const payload = {
@@ -68,7 +69,6 @@ export default function InvoiceModal({
       setLoading(true);
       const res = await useJwt.sendInvoiceToMail(payload);
 
-      console.log(res);
       if (res?.status == 200) {
         toast.success("Invoice successfully sent to your email.");
         setModal(false);
@@ -84,7 +84,7 @@ export default function InvoiceModal({
         }
       }
     } catch (error) {
-      console.log(error);
+       (error);
       toast.error(
         error?.response?.data?.content ||
           "Something went wrong, please try again later."

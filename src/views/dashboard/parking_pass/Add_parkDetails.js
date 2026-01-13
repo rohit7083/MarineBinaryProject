@@ -1,16 +1,16 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import React, { Fragment, useEffect, useState } from "react";
 import {
-  Button,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 import { Controller, useForm } from "react-hook-form";
@@ -52,7 +52,7 @@ const AddCardExample = ({ show, mode, setShow, resetTableData, uid, row }) => {
         setShow(false);
         reset();
       } catch (error) {
-        console.log("Error submitting form", error);
+         ("Error submitting form", error);
         if (error.response) {
           const errorKeys = error?.response?.data?.content;
 
@@ -75,14 +75,14 @@ const AddCardExample = ({ show, mode, setShow, resetTableData, uid, row }) => {
         setLoading(true);
 
         const updatedRes = await useJwt.editpass(uid, payload);
-        console.log(updatedRes);
+         (updatedRes);
 
         resetTableData?.();
 
         setShow(false);
         reset();
       } catch (error) {
-        console.log("Error submitting form", error);
+         ("Error submitting form", error);
         if (error.response) {
           const errorKeys = error?.response?.data?.content;
           setHeaderError(errorKeys);

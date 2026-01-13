@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import {
-  Card,
-  CardBody,
-  Row,
-  Col,
-  Input,
-  Form,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  InputGroup,
-  Label,
-} from "reactstrap";
-import Cleave from "cleave.js/react";
 import classnames from "classnames";
+import Cleave from "cleave.js/react";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+    Button,
+    Card,
+    CardBody,
+    Col,
+    Form,
+    Input,
+    InputGroup,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+} from "reactstrap";
 
-import { Check, Plus, Watch, X } from "react-feather";
+import { Check, Plus, X } from "react-feather";
 import Select from "react-select";
 
 const CustomLabel = ({ htmlFor }) => {
@@ -74,7 +74,7 @@ const MultipleColumnForm = () => {
   const recurringInvoice = watch("recurringInvoice", false);
   const selectedPaymentMode = watch("paymentMode");
 
-  // console.log(addCard);
+  //  (addCard);
 
   return (
     <Card>

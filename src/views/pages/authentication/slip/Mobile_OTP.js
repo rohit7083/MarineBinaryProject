@@ -92,13 +92,13 @@
 //       setResendLoading(true);
 
 //       const res = await useJwt.resend_Otp(token);
-//       console.log("resentOTP", res);
+//        ("resentOTP", res);
 //       toast.success("OTP sent successfully", {
 //         position: "top-center",
 //         autoClose: 5000,
 //       });
 //     } catch (error) {
-//       console.log(error.response);
+//        (error.response);
 //     } finally {
 //       setResendLoading(false);
 //     }
@@ -110,13 +110,13 @@
 //       setResendLoading2(true);
 
 //       const callRes = await useJwt.resend_OtpCall(token);
-//       console.log("resentCall", callRes);
+//        ("resentCall", callRes);
 //       toast.success("Call Verification Send Sucessfully", {
 //         position: "top-center",
 //         autoClose: 5000,
 //       });
 //     } catch (error) {
-//       console.log(error.response);
+//        (error.response);
 //     } finally {
 //       setResendLoading2(false);
 //     }
@@ -159,7 +159,7 @@
 //       const uidForbranch = res?.data?.profile?.uid;
 //       if (res?.status === 200) {
 //         const res = await useJwt.getBranch(uidForbranch);
-//         console.log(res);
+//          (res);
 //         let branchData = res?.data?.branches;
 
 //         if (data?.role === "admin") {
@@ -185,7 +185,7 @@
 
 //       // window.location = "/getbranch";
 //     } catch (error) {
-//       console.log({ error });
+//        ({ error });
 //       if (error.response) {
 //         const { status, data } = error.response;
 //         const errorMessage = data.message;
@@ -390,18 +390,18 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -544,7 +544,7 @@ const TwoStepsBasic = () => {
         verifyRes = await useJwt.forAUthMobileOtp(tok, {
           otp: encryptedOtp,
         });
-        console.log(verifyRes);
+         (verifyRes);
       } else {
         verifyRes = await useJwt.mobileOtp(token, { otp: encryptedOtp });
       }

@@ -135,7 +135,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
 
   //   
 
-  //   console.log('API Response:', response.data);
+  //    ('API Response:', response.data);
   //   // } else {
   //   // toast.error('Failed to upload files.');
   //   // console.error('API Error:', response.statusText);
@@ -151,7 +151,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
       try {
     const response = await useJwt.getSingleDocuments(slipIID);
     const doc = response.data;
-    console.log("Documents", doc);
+     ("Documents", doc);
 
         setDocuments(response.data); // Assuming API returns an array of documents
       }
@@ -187,7 +187,7 @@ const FileUploadForm = ({ stepper, slipIID }) => {
         updatedDataList.map((formData) => useJwt.slipDocument(formData))
       );
 
-      console.log(results);
+       (results);
     } catch (error) {
        console.error(error);
     } finally {
@@ -368,7 +368,7 @@ export default FileUploadForm;
       const response = await useJwt.slipDocument(formData); // Send FormData directly
   
       toast.success("Files uploaded successfully!");
-      console.log("API Response:", response.data);
+       ("API Response:", response.data);
     } catch (error) {
       toast.error("An error occurred while uploading files.");
       console.error("Error:", error);

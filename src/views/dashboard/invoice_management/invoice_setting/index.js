@@ -54,7 +54,7 @@ const HorizontalForm = () => {
         setgetLoading(true);
         const res = await useJwt.getInvoice();
 
-        console.log(res);
+         (res);
 
         if (res.status === 200 && res.data) {
           const resData = res.data?.content?.result[0];
@@ -82,14 +82,14 @@ const HorizontalForm = () => {
   //   const loadFiles = async () => {
   //     try {
   //       const resLogo = await useJwt.getLogo(resData.uid);
-  //       console.log(resLogo);
+  //        (resLogo);
 
   //       const resSignature = await useJwt.getSignature(resData.uid);
-  //       console.log(resSignature);
+  //        (resSignature);
   //       setImgSignature(URL.createObjectURL(resSignature?.data));
   //       // setFiles(resSignature?.data);
   //     } catch (error) {
-  //       console.log(error);
+  //        (error);
   //     }
   //   };
   //   if (resData?.uid) {
@@ -137,7 +137,7 @@ const HorizontalForm = () => {
     if (resData?.uid) loadFiles();
   }, [resData?.uid]);
 
-  console.log("signature", imgSignature);
+   ("signature", imgSignature);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -178,7 +178,7 @@ const HorizontalForm = () => {
         }
       }
     } catch (error) {
-      console.log(error);
+       (error);
       if (error.response && error.response.data) {
         toast.current.show({
           severity: "error",
@@ -193,7 +193,6 @@ const HorizontalForm = () => {
     }
   };
 
-  console.log();
 
   const [files, setFiles] = useState({});
 

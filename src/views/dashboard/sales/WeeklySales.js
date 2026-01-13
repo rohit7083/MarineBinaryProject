@@ -2,12 +2,12 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Tooltip,
+    BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    Tooltip,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
@@ -26,10 +26,10 @@ const WeeklySales = () => {
       try {
         setLoading(true);
         const res = await useJwt.daysOfWeek();
-        console.log(res);
+         (res);
         setWeekData(res);
       } catch (error) {
-        console.log(error);
+         (error);
       } finally {
         setLoading(false);
       }

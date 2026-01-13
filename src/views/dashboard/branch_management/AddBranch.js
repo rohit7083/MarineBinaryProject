@@ -53,7 +53,6 @@ export default function BranchForm({ isFirst }) {
   const navigate = useNavigate();
   const location = useLocation();
   const branchData = location?.state?.row;
-  console.log("setIsFirst", isFirst);
 
   useEffect(() => {
     if (branchData?.uid) {
@@ -91,7 +90,6 @@ export default function BranchForm({ isFirst }) {
   );
 
   const onSubmit = async (data) => {
-    console.log("FORM DATA:", data);
     const payload = {
       ...data,
       countryCode: data.countryCode?.dial_code || "",
@@ -131,7 +129,6 @@ export default function BranchForm({ isFirst }) {
         setTimeout(() => navigate("/branch"), 2000);
       }
     } catch (error) {
-      console.log(error);
 
       const content = error?.response?.data?.content;
 

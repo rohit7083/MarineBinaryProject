@@ -5,18 +5,18 @@ import { Send } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { BeatLoader } from "react-spinners";
 import {
-  Button,
-  Col,
-  FormFeedback,
-  Input,
-  InputGroup,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Col,
+    FormFeedback,
+    Input,
+    InputGroup,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import WatchNew from "../../../../assets/images/updatedWatchnew.jpg";
 
@@ -65,7 +65,7 @@ const GenrateOtp = ({
       setTime(100);
     } catch (error) {
       console.error("Error generating OTP:", error);
-      console.log("Failed to generate OTP. Please try again.");
+       ("Failed to generate OTP. Please try again.");
     } finally {
       setOtpLoader(false);
     }
@@ -77,7 +77,7 @@ const GenrateOtp = ({
 
     try {
       if (!accessTokenotp) {
-        console.log("Access token is missing. Please regenerate OTP.");
+         ("Access token is missing. Please regenerate OTP.");
         return;
       }
 
@@ -85,14 +85,14 @@ const GenrateOtp = ({
       setLoader(true);
       const response = await useJwt.verifyOTP(accessTokenotp, payload);
       setVerify(true);
-      console.log(response);
+       (response);
       setShow(false);
       setotpVerify(true);
-      console.log("OTP Verified Successfully!");
+       ("OTP Verified Successfully!");
       // setButtonEnabled(true);
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      console.log("Failed to verify OTP. Please try again.");
+       ("Failed to verify OTP. Please try again.");
 
       if (error.response && error.response.data) {
         const { content } = error.response.data;

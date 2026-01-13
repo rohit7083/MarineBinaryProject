@@ -5,15 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  Alert,
-  Button,
-  Col,
-  Input,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
+    Alert,
+    Button,
+    Col,
+    Input,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 // ** Third Party Components
 import "cleave.js/dist/addons/cleave-phone.us";
@@ -82,7 +82,7 @@ const DefaultAlert = () => {
         console.error("Error parsing JSON:", error);
       }
     } else {
-      console.log("No userdata found in localStorage");
+       ("No userdata found in localStorage");
     }
   }, []);
 
@@ -285,7 +285,7 @@ const AppAuthComponent = ({
         const errorMessage = data.error;
         setMessage(errorMessage);
       }
-      console.log({ error });
+       ({ error });
     } finally {
       setLoading(false); // Set loading to false after API call is complete
     }

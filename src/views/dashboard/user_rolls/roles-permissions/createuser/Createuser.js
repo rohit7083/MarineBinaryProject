@@ -8,11 +8,11 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
 import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
+    Fragment,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
 } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { Mail, Plus, User } from "react-feather";
@@ -21,22 +21,22 @@ import "react-phone-input-2/lib/bootstrap.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-  Button,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  ListGroupItem,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Label,
+    ListGroupItem,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 import Swal from "sweetalert2";
@@ -147,16 +147,16 @@ const RoleCards = () => {
     };
 
     // const payload = encryptAES(JSON.stringify(transformedData));
-    console.log("branchesList:", branchesList);
+     ("branchesList:", branchesList);
 
     try {
       
       setloading(true);
       const res = await useJwt.createUser(transformedData);
-      console.log("data is created ", data);
-      console.log(res);
+       ("data is created ", data);
+       (res);
 
-      console.log(res);
+       (res);
       if (res.status === 201) {
         // MySwal.fire({
         //   title: "Successfully Created",
@@ -227,7 +227,7 @@ const RoleCards = () => {
         value: role.uid,
         label: role.roleName,
       }));
-      //  console.log("roles",roles);
+      //   ("roles",roles);
 
       setallRoleName(roles);
       const userData = JSON.parse(localStorage.getItem("userData"));
@@ -240,7 +240,7 @@ const RoleCards = () => {
       const res = await useJwt.getBranchForuser(Useruid);
       let getBranch = res?.data?.branches;
 
-      console.log("getBranch", getBranch);
+       ("getBranch", getBranch);
 
       const allBranch = getBranch.map((b) => ({
         value: b.uid,
@@ -291,7 +291,7 @@ const RoleCards = () => {
 
   const handleChange = (e) => {
     const newPwd = e.target.value;
-    console.log(newPwd);
+     (newPwd);
 
     setPassword(newPwd);
     validatePassword(newPwd);
@@ -324,7 +324,7 @@ const RoleCards = () => {
   );
 
 const watchselectBranch=watch("selectBranch");
-console.log("selectBranch",watchselectBranch);
+ ("selectBranch",watchselectBranch);
 
 
   return (

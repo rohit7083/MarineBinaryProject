@@ -5,16 +5,16 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 
 import {
-  Button,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 const DiscountModal = ({
@@ -110,20 +110,20 @@ const DiscountModal = ({
       // slipUid: "ceb2f8d9-3c01-4eac-968d-a011c6748278",
     };
 
-    console.log("Form Submit Data:", formData);
+     ("Form Submit Data:", formData);
     // onSubmit(formData);
 
     try {
       setLoading(true);
       const res = await useJwt.posProductdis(formData);
-      console.log(res);
+       (res);
       if (res?.data?.code === 200) {
         setPosUid(res?.data?.uid);
         toggleModal();
         setVerifyDiscount(true);
       }
     } catch (error) {
-      console.log(error);
+       (error);
     } finally {
       setLoading(false);
     }

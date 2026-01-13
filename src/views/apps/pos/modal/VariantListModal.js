@@ -93,7 +93,7 @@ const VariantListModal = ({ isOpen, prDetails, toggle, isUpdate = false }) => {
             })
           );
         } catch (error) {
-          console.log(error);
+           (error);
         } finally {
           setImageLoader(false);
         }
@@ -221,7 +221,7 @@ const VariantListModal = ({ isOpen, prDetails, toggle, isUpdate = false }) => {
       }
       toggle();
     } catch (error) {
-      console.log(error);
+       (error);
     } finally {
       setvariationLoad(false);
     }

@@ -4,16 +4,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
@@ -145,7 +145,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
     (x, _) => x?.value === categoryWatch
   );
   const category = Array.isArray(catObject) ? catObject[0] : catObject;
-  console.log(category);
+   (category);
 
   const trueAttributes = category?.attributeKeys
     ?.map((label, i) =>
@@ -159,7 +159,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
     )
     .filter(Boolean);
 
-  console.log(trueAttributes);
+   (trueAttributes);
 
   const watchCategory = watch("category");
   const watchTaxes = watch("taxes");
@@ -220,7 +220,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             });
           }
         } catch (error) {
-          console.log(error);
+           (error);
           if (error.response) {
             const errMsz =
               error?.response?.data?.content ||

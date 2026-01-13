@@ -2,17 +2,17 @@ import useJwt from "@src/auth/jwt/useJwt";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  Col,
-  FormFeedback,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Table,
-  UncontrolledAlert,
+    Button,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -71,12 +71,12 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         });
       }
     });
-    console.log("Submitted Data:", data);
+     ("Submitted Data:", data);
 
     try {
       if (uid) {
         const res = await useJwt.updateRole(uid, data);
-        console.log(" updated role res:", res);
+         (" updated role res:", res);
 
         if (res.status === 200) {
           setTableData((prevData) =>
@@ -122,7 +122,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
         const { status, detail } = error.response.data;
         const errorMessage = detail;
         setMessage(errorMessage);
-        // console.log("errorMessage",errorMessage);
+        //  ("errorMessage",errorMessage);
 
         switch (status) {
           case 400:

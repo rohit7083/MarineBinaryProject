@@ -6,18 +6,18 @@ import { ArrowLeft, Plus, Trash2, X } from "react-feather";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 const ProductAdd_Table = ({
@@ -53,13 +53,13 @@ const ProductAdd_Table = ({
   const fetchImage = async (uid) => {
     try {
       const res = await useJwt.getImage(uid);
-      // console.log("image get", res);
+      //  ("image get", res);
     } catch (error) {
-      console.log(error);
+       (error);
     }
   };
 
-  console.log("productData", productData);
+   ("productData", productData);
 
   useEffect(() => {
     if (UpdateData) {
@@ -111,7 +111,7 @@ const ProductAdd_Table = ({
 
   let payload;
   const onSubmit = async (data) => {
-    // console.log("data from variation", data);
+    //  ("data from variation", data);
     payload = data.variations.map((vData) => {
       vData.attributes = productData?.findCategoryData?.attributeKeys.map(
         (key) => {
@@ -130,7 +130,7 @@ const ProductAdd_Table = ({
       };
     });
 
-    // console.log(payload);
+    //  (payload);
     if (UpdateData) {
       try {
 
@@ -164,7 +164,7 @@ const ProductAdd_Table = ({
           });
         }
       } catch (error) {
-        console.log(error);
+         (error);
         if (error.response) {
           const errMsz =
             error?.response?.data?.content ||

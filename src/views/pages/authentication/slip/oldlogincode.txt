@@ -109,7 +109,7 @@ try {
   const response=axios.get("https://api.ipify.org/?format=json:")
   .then((response) => {
     setIP(response.data);
-    console.log(response.data);
+     (response.data);
     
   })
   .catch((error) => {
@@ -131,11 +131,11 @@ try {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationEnabled(true);
-        // console.log(position);
+        //  (position);
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const location = `${latitude},${longitude}`;
-        console.log(location);
+         (location);
         setLocation(location);
         setMessage("");
       },
@@ -157,7 +157,7 @@ try {
     data.location = location;
 data.ip=ip;
     if (Object.values(data).every((field) => field.length > 0)) {
-      // console.log("Submitted Data:", data);
+      //  ("Submitted Data:", data);
       setLoading(true); // Set loading to true before API call
 
       try {
@@ -168,10 +168,10 @@ data.ip=ip;
           password: data.password,
         });
 
-        console.log("API Response Full:", res);
-        console.log("API Response Content:", res.data?.content);
+         ("API Response Full:", res);
+         ("API Response Content:", res.data?.content);
         const authStatus = res.data.content.TwoNf;
-        console.log("data", data);
+         ("data", data);
 
         if (authStatus === "false" || authStatus === false) {
           navigate("/EmailOTP", { state: { userData: res.data?.content } });
@@ -190,7 +190,7 @@ data.ip=ip;
           const errorMessage = data.content.message;
           setLoginAttempt(LoginAttempt);
           setMessage(errorMessage);
-          console.log("failed");
+           ("failed");
 
           if (LoginAttempt > 3) {
             return MySwal.fire({
@@ -539,7 +539,7 @@ export default Login;
 //             message: err.response.data.error
 //           })
 //         )
-//         console.log("Data", data);
+//          ("Data", data);
 
 //     } else {
 //       for (const key in data) {
@@ -838,7 +838,7 @@ const Login = () => {
         .get("https://api.ipify.org/?format=json:")
         .then((response) => {
           setIP(response.data);
-          console.log(response.data);
+           (response.data);
         })
         .catch((error) => {
           console.error("Error fetching IP address:", error);
@@ -856,11 +856,11 @@ const Login = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setLocationEnabled(true);
-        // console.log(position);
+        //  (position);
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const location = `${latitude},${longitude}`;
-        console.log(location);
+         (location);
         setLocation(location);
         setMessage("");
       },
@@ -883,7 +883,7 @@ const Login = () => {
     data.ip = ip;
     data.isPassword=isPassword;
     if (Object.values(data).every((field) => field.length > 0)) {
-      // console.log("Submitted Data:", data);
+      //  ("Submitted Data:", data);
       setLoading(true);
       const payload = {
         ip: ip,
@@ -904,10 +904,10 @@ const Login = () => {
         const res = await useJwt.login(payload);
         
 
-        console.log("API Response Full:", res);
-        console.log("API Response Content:", res.data?.content);
+         ("API Response Full:", res);
+         ("API Response Content:", res.data?.content);
         // const authStatus = res.data.content.TwoNf;
-        console.log("data", data);
+         ("data", data);
 
         // if (authStatus === "false" || authStatus === false) {
         //   navigate("/EmailOTP", { state: { userData: res.data?.content } });
@@ -926,7 +926,7 @@ const Login = () => {
           const errorMessage = data.content.message;
           setLoginAttempt(LoginAttempt);
           setMessage(errorMessage);
-          console.log("failed");
+           ("failed");
 
           if (LoginAttempt > 3) {
             return MySwal.fire({

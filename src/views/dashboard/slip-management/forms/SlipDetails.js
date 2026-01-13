@@ -5,19 +5,19 @@ import { Toast } from "primereact/toast";
 import { useContext, useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  Tooltip,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    Tooltip,
 } from "reactstrap";
 
 import useJwt from "@src/auth/jwt/useJwt";
@@ -196,7 +196,7 @@ function SlipDetailsForm({ assigned }) {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Form submitted successfully:", { selections, userData });
+       ("Form submitted successfully:", { selections, userData });
       try {
         const payload = {
           slipName: userData.slipName,
@@ -249,7 +249,7 @@ function SlipDetailsForm({ assigned }) {
           overDueChargesForAuction: selections.overDueChargesForAuction,
         };
 
-        console.log("payload", payload);
+         ("payload", payload);
         setLoading(true);
 
         if (uid) {
@@ -302,7 +302,7 @@ function SlipDetailsForm({ assigned }) {
         setLoading(false);
       }
     } else {
-      console.log("Validation failed. Please fix the errors.");
+       ("Validation failed. Please fix the errors.");
     }
   };
 
@@ -461,7 +461,7 @@ function SlipDetailsForm({ assigned }) {
     try {
       const payload = {};
       const response = await useJwt.getslipCatogory(payload);
-      console.log(response);
+       (response);
 
       const options = response?.data?.content?.result.map((item) => ({
         value: item.uid,
@@ -489,11 +489,11 @@ function SlipDetailsForm({ assigned }) {
       const { response } = error;
       const { data, status } = response;
       if (status == 400) {
-        console.log(data.content);
+         (data.content);
       }
     }
 
-    console.log("Category", selectedCategory);
+     ("Category", selectedCategory);
   };
 
   useEffect(() => {
@@ -510,7 +510,7 @@ function SlipDetailsForm({ assigned }) {
           const result = Array.isArray(raw) ? raw[0] : raw;
 
           setSelectedSlip(result);
-          console.log(result);
+           (result);
           if (result) {
             if (result && result.uid === uid) {
               setUserData({

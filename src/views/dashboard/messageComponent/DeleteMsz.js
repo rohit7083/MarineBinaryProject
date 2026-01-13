@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { useState } from "react";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 function ConfirmDialogExample() {
   const [modal, setModal] = useState(false);
@@ -9,13 +9,13 @@ function ConfirmDialogExample() {
   const handleAccept = () => {
     // Your accept logic here
     toggle();
-    console.log("Accepted");
+     ("Accepted");
   };
 
   const handleReject = () => {
     // Your reject logic here
     toggle();
-    console.log("Rejected");
+     ("Rejected");
   };
 
   return (

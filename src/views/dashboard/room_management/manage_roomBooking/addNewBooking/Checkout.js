@@ -13,19 +13,19 @@ import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other 
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Form,
-  Input,
-  Label,
-  Offcanvas,
-  OffcanvasBody,
-  OffcanvasHeader,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Col,
+    Form,
+    Input,
+    Label,
+    Offcanvas,
+    OffcanvasBody,
+    OffcanvasHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 // **React Form Hook
 import { Controller, useForm } from "react-hook-form";
@@ -94,7 +94,7 @@ const Checkout = () => {
   // ** Hook
   const location = useLocation();
   const state = location.state;
-  console.log("location firstr ", location);
+   ("location firstr ", location);
 const memberForAutofill = location?.state?.autofillMemberALLDATA?.member;
   const deta = state?.alldata;
   // ** Function to toggle Offcanvas
@@ -203,7 +203,7 @@ const memberForAutofill = location?.state?.autofillMemberALLDATA?.member;
       setload(true);
 
       const res = await useJwt.PreviewSubmit(payload);
-      console.log(res);
+       (res);
       toast.current.show({
         severity: "success",
         summary: "Successfully",
@@ -223,12 +223,12 @@ const memberForAutofill = location?.state?.autofillMemberALLDATA?.member;
     } catch (error) {
       console.error(error);
       if (error.response) {
-        console.log("Error data", error.response.data);
-        console.log("Error status", error.response.status);
-        console.log("Error headers", error.response.headers);
+         ("Error data", error.response.data);
+         ("Error status", error.response.status);
+         ("Error headers", error.response.headers);
 
         setErr(error.response.data.content);
-        console.log(err);
+         (err);
         toast.current.show({
           severity: "error",
           summary: "Failed",

@@ -22,7 +22,7 @@ const TabsCentered = () => {
   const uid = location?.state?.uid;
   const allData = location?.state?.slipData;
   const [active, setActive] = useState("1");
-  console.log(location);
+   (location);
 
   useEffect(() => {
     if (allData) setSlipData(allData);

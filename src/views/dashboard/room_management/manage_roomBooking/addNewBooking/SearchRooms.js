@@ -58,7 +58,7 @@ const SearchRooms = ({
   });
 
   const [bookedRoom, setBookRooms] = useState({});
-  console.log("bookedRoom", bookedRoom);
+   ("bookedRoom", bookedRoom);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const toast = useRef(null);
 
@@ -168,7 +168,7 @@ const SearchRooms = ({
         console.error(error);
       }
     } else {
-      console.log("select room first ");
+       ("select room first ");
       toast.current.show({
         severity: "error",
         summary: "Error",
@@ -183,7 +183,7 @@ const SearchRooms = ({
     results: [],
   });
 
-  // console.log("roomlst", roomsList);
+  //  ("roomlst", roomsList);
 
   useEffect(() => {
     if (roomsList) {
@@ -195,7 +195,7 @@ const SearchRooms = ({
   }, [roomsList]);
 
   const debouncedFilter = debounce((value) => handleFilter(value), 300);
-  // console.log(roomsList);
+  //  (roomsList);
 
   const handleFilter = (value) => {
     if (value) {

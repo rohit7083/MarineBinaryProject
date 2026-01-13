@@ -8,18 +8,18 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import Flatpickr from "react-flatpickr";
 // ** Reactstrap Imports
 import {
-  Button,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
+    Button,
+    Col,
+    Form,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 // ** Third Party Components
@@ -113,7 +113,7 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
   }
 
   const onSubmit = async (data) => {
-    console.log("Form data received:", data);
+     ("Form data received:", data);
 
     try {
       // Raw values from RHF
@@ -129,13 +129,13 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
         })
       );
 
-      console.log("Serialized values:", serialized);
+       ("Serialized values:", serialized);
 
       // Get payment mode
       const paymentModeValue = serialized.paymentMode?.value || "";
       const paymentModeLabel = serialized.paymentMode?.label || "";
 
-      console.log("Payment Mode:", paymentModeLabel, paymentModeValue);
+       ("Payment Mode:", paymentModeLabel, paymentModeValue);
 
       // Base payload - common fields for all payment modes
       const basePayload = {
@@ -182,7 +182,7 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
       // Add payment-mode-specific fields based on selection
       switch (paymentModeLabel) {
         case "Cash":
-          console.log("Processing Cash payment...");
+           ("Processing Cash payment...");
 
           // Validate PIN
           const pinArray = serialized.pin || [];
@@ -204,11 +204,11 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
             ...payload,
             pin: encryptedPin,
           };
-          console.log("Cash payload prepared");
+           ("Cash payload prepared");
           break;
 
         case "Credit Card":
-          console.log("Processing Credit Card payment...");
+           ("Processing Credit Card payment...");
 
           // Validate Credit Card fields
           if (
@@ -243,11 +243,11 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
             country: serialized.country || "",
             pinCode: serialized.pinCode || "",
           };
-          console.log("Credit Card payload prepared");
+           ("Credit Card payload prepared");
           break;
 
         case "Card Swipe":
-          console.log("Processing Card Swipe payment...");
+           ("Processing Card Swipe payment...");
 
           if (!serialized.cardSwipeTransactionId) {
             setError("cardSwipeTransactionId", {
@@ -262,11 +262,11 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
             ...payload,
             cardSwipeTransactionId: serialized.cardSwipeTransactionId || "",
           };
-          console.log("Card Swipe payload prepared");
+           ("Card Swipe payload prepared");
           break;
 
         case "Cheque21":
-          console.log("Processing Cheque21 payment...");
+           ("Processing Cheque21 payment...");
 
           // Validate that file is uploaded for Cheque21
           const chequeImageFile = rawValues.checkImage;
@@ -302,11 +302,11 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
             chequeNumber: serialized.chequeNumber || "",
             documentUid: serialized.documentUid || "",
           };
-          console.log("Cheque21 payload prepared, file:", chequeImageFile.name);
+           ("Cheque21 payload prepared, file:", chequeImageFile.name);
           break;
 
         case "ChequeACH":
-          console.log("Processing ChequeACH payment...");
+           ("Processing ChequeACH payment...");
 
           if (
             !serialized.accountType?.value ||
@@ -328,11 +328,11 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
             routingNumber: serialized.routingNumber || "",
             accountNumber: serialized.accountNumber || "",
           };
-          console.log("ChequeACH payload prepared");
+           ("ChequeACH payload prepared");
           break;
 
         case "Money Order":
-          console.log("Processing Money Order payment...");
+           ("Processing Money Order payment...");
 
           // Validate company name
           if (!serialized.companyName?.value) {
@@ -349,7 +349,7 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
             companyName: serialized.companyName?.value || "",
           };
 
-          console.log("Company selected:", serialized.companyName?.label);
+           ("Company selected:", serialized.companyName?.label);
 
           // Add MTCN or Other company details based on company selection
           if (serialized.companyName?.label === "Other") {
@@ -373,7 +373,7 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
 
             payload.otherCompanyName = serialized.otherCompanyName || "";
             payload.otherTransactionId = serialized.otherTransactionId || "";
-            console.log("Money Order (Other) payload prepared:", {
+             ("Money Order (Other) payload prepared:", {
               otherCompanyName: payload.otherCompanyName,
               otherTransactionId: payload.otherTransactionId,
             });
@@ -388,7 +388,7 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
               return;
             }
             payload.mtcn = serialized.mtcn || "";
-            console.log(
+             (
               "Money Order (Standard) payload prepared, MTCN:",
               payload.mtcn
             );
@@ -396,12 +396,12 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
           break;
 
         case "Payment Link":
-          console.log("Processing Payment Link...");
+           ("Processing Payment Link...");
           // Add any specific fields for Payment Link if needed
           break;
 
         case "QR Code":
-          console.log("Processing QR Code...");
+           ("Processing QR Code...");
           // Add any specific fields for QR Code if needed
           break;
 
@@ -411,7 +411,7 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
           return;
       }
 
-      console.log("Final payload before FormData:", payload);
+       ("Final payload before FormData:", payload);
 
       // Create FormData
       const formData = new FormData();
@@ -429,32 +429,32 @@ const EditUserExample = ({ setShow, show, customerData, slip }) => {
           payload[key] !== ""
         ) {
           formData.append(key, payload[key]);
-          console.log(`Appended to FormData: ${key} = ${payload[key]}`);
+           (`Appended to FormData: ${key} = ${payload[key]}`);
         }
       }
 
       // ✅ Append file separately for Cheque21
       if (paymentModeLabel === "Cheque21" && rawValues.checkImage) {
         formData.append("chequeImage", rawValues.checkImage);
-        console.log("Cheque image file appended:", rawValues.checkImage.name);
+         ("Cheque image file appended:", rawValues.checkImage.name);
       }
 
       // ✅ Append contract file if exists
       if (rawValues.fiazan) {
         formData.append("contractFile", rawValues.fiazan);
-        console.log("Contract file appended:", rawValues.fiazan.name);
+         ("Contract file appended:", rawValues.fiazan.name);
       }
 
-      console.log("=== FormData Contents ===");
+       ("=== FormData Contents ===");
       for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
+         (`${key}:`, value);
       }
       setLoader(true);
       // ** Hit API
-      console.log("🚀 Calling API with FormData...");
+       ("🚀 Calling API with FormData...");
       const response = await useJwt.renewContract(formData);
 
-      console.log("✅ API Response:", response);
+       ("✅ API Response:", response);
 
       if (response?.data?.status === "success") {
         toast.current.show({

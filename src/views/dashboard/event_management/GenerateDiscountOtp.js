@@ -6,21 +6,21 @@ import { Send, ThumbsUp } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Alert,
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  Modal,
-  Spinner,
-  UncontrolledAlert,
+    Alert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Label,
+    Modal,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import WatchNew from "../../../../src/assets/images/updatedWatchnew.jpg";
 
@@ -176,7 +176,7 @@ const Cash_otp = ({
         setResendVisible(false);
       }
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     }
   };
 
@@ -191,7 +191,7 @@ const Cash_otp = ({
         setCallVisible(false);
       }
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     }
   };
 

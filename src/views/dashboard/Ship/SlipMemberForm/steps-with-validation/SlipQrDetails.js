@@ -1,45 +1,34 @@
-import { useForm, Controller, set } from "react-hook-form";
+import useJwt from "@src/auth/jwt/useJwt";
+import CryptoJS from "crypto-js";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
-import useJwt from "@src/auth/jwt/useJwt";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import CryptoJS from "crypto-js";
+import withReactContent from "sweetalert2-react-content";
 
+import React, { useEffect, useState } from "react";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
-  Button,
-  Row,
-  Col,
-  Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
-  FormFeedback,
-  Spinner,
-  UncontrolledAlert,
-} from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
-import {
-  Home,
-  Check,
-  X,
-  Briefcase,
-  CreditCard,
-  CheckSquare,
-  Watch,
+    CheckSquare,
+    CreditCard
 } from "react-feather";
-import { data } from "jquery";
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
+import {
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert
+} from "reactstrap";
 
 const CardPayment = () => {
   const {
@@ -82,7 +71,7 @@ const CardPayment = () => {
     try {
       setLoading(true);
       const res = await useJwt.getMemberDetails(decryptedToken);
-      console.log("res", res);
+       ("res", res);
       setMemberDetails(res?.data);
     } catch (error) {
       console.error("error", error);
@@ -217,7 +206,7 @@ const CardPayment = () => {
     try {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
-      console.log(res);
+       (res);
       if (res.status === 200) {
         return MySwal.fire({
           title: "  Success",
@@ -234,9 +223,9 @@ const CardPayment = () => {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        console.log("Error data", error.response.data);
-        console.log("Error status", error.response.status);
-        console.log("Error headers", error.response.headers);
+         ("Error data", error.response.data);
+         ("Error status", error.response.status);
+         ("Error headers", error.response.headers);
         setErr(error.response.data.content);
       }
     } finally {

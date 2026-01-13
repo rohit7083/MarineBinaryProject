@@ -7,18 +7,18 @@ import { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-  Alert,
-  Button,
-  Col,
-  FormFeedback,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Table,
-  UncontrolledTooltip,
+    Alert,
+    Button,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Table,
+    UncontrolledTooltip,
 } from "reactstrap";
 
 // ** Third Party Components
@@ -38,9 +38,9 @@ import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Utils
 import {
-  extractUIDFromPermissionList,
-  handleUpdatePermissionList,
-  structurePermissionList,
+    extractUIDFromPermissionList,
+    handleUpdatePermissionList,
+    structurePermissionList,
 } from "../utils";
 
 const AddRoles = (props) => {
@@ -98,7 +98,7 @@ const AddRoles = (props) => {
 
       if (data.uid) {
         const updateRes = await useJwt.updateRole(data.uid, updatedData);
-        console.log(`Update Role Response`, {
+         (`Update Role Response`, {
           updateRes,
         });
         if (updateRes.status === 200) {
@@ -120,7 +120,7 @@ const AddRoles = (props) => {
         const { content, message } = response?.data;
         handleError(response?.status, content || message);
       } else {
-        console.log(`Error OTP Submit ❌`, {
+         (`Error OTP Submit ❌`, {
           error,
         });
       }

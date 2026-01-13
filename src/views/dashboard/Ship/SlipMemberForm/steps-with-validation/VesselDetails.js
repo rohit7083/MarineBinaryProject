@@ -9,14 +9,14 @@ import Select from "react-select";
 
 import { ArrowLeft, ArrowRight } from "react-feather";
 import {
-  Button,
-  Col,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -32,6 +32,7 @@ const AccountDetails = ({
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
+ ("formData",formData);
 
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});

@@ -11,20 +11,20 @@ import CryptoJS from "crypto-js";
 import React, { useEffect, useRef, useState } from "react";
 import { CheckSquare, CreditCard } from "react-feather";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 import "primeicons/primeicons.css";
@@ -249,7 +249,7 @@ const Payment_section = ({ FinalAmountRes }) => {
         accountType: data?.accountType,
       };
     } else {
-      console.log("NA");
+       ("NA");
     }
 
     const { allocation } = payload;
@@ -257,7 +257,7 @@ const Payment_section = ({ FinalAmountRes }) => {
 
     try {
       setLoadPayment(true);
-      console.log("this is payload", payload);
+       ("this is payload", payload);
 
       const res = await useJwt.ParkingPayment({ allocation, payment: payload });
       // if (selectedOption === "card") {

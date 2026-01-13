@@ -27,7 +27,6 @@ import { useNavigate } from "react-router-dom";
 
 // ** Sweet Alert
 const MySwal = withReactContent(Swal);
-
 const PersonalInfo = ({
   stepper,
   slipIID,
@@ -42,7 +41,7 @@ const PersonalInfo = ({
   isRevenu,
   setIsAssignedStatus,
 }) => {
-  console.log("waitingSlipData", waitingSlipData);
+   ("waitingSlipData", waitingSlipData);
   const toast = useRef(null);
   const {
     firstName,
@@ -296,7 +295,7 @@ const PersonalInfo = ({
     setSelectedFullName(option);
 
     if (option?.details) {
-      console.log("Selected Member Details:", option.details);
+       ("Selected Member Details:", option.details);
     }
     setSelectedDetails(option.details);
 
@@ -324,7 +323,7 @@ const PersonalInfo = ({
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
+     ("data", data);
     setErrMsz("");
     setLoading(true);
 
@@ -366,7 +365,7 @@ const PersonalInfo = ({
       if (payload.createdBy) {
         const res = await useJwt.UpdateMember(formData.uid, payload);
         memberId = res?.data?.id;
-        console.log(memberId);
+         (memberId);
 
         if (res.status === 200) {
           toast.current.show({
@@ -386,9 +385,9 @@ const PersonalInfo = ({
         }
       } else {
         const res = await useJwt.postsMember(payload);
-        console.log("this is creating res", res);
+         ("this is creating res", res);
         memberId = res?.data?.id;
-        console.log("memberid ", memberId);
+         ("memberid ", memberId);
 
         if (res.status === 201) {
           toast.current.show({
@@ -407,7 +406,7 @@ const PersonalInfo = ({
 
           if (waitingSlipData?.id) {
             const deleteRes = await useJwt.deleteWaiting(waitingSlipData.uid);
-            console.log(deleteRes);
+             (deleteRes);
           }
         }
       }
@@ -424,23 +423,43 @@ const PersonalInfo = ({
 
   const fetchData = async () => {
     setErrMsz("");
+
     try {
       const response = await useJwt.getslip();
+      // const options = response.data.content.result
+      //   .filter(
+      //     (item) =>
+      //       item.member && (item.member.firstName || item.member.lastName)
+      //   )
+      //   .map((item) => ({
+      //     value: item.member?.uid,
+      //     label: `${item.member?.firstName || ""} ${
+      //       item.member?.lastName || ""
+      //     }`.trim(),
+      //     details: item.member,
+      //   }));
 
-      const options = response.data.content.result
-        .filter(
-          (item) =>
-            item.member && (item.member.firstName || item.member.lastName)
-        )
-        .map((item) => ({
-          value: item.member?.uid,
-          label: `${item.member?.firstName || ""} ${
-            item.member?.lastName || ""
-          }`.trim(),
-          details: item.member,
-        }));
-
-      console.log("Filtered response:", response);
+      const options = [
+        ...new Map(
+          response.data.content.result
+            .filter(
+              (item) =>
+                item.member &&
+                item.member.uid &&
+                (item.member.firstName || item.member.lastName)
+            )
+            .map((item) => [
+              item.member.uid,
+              {
+                value: item.member.uid,
+                label: `${item.member.firstName || ""} ${
+                  item.member.lastName || ""
+                }`.trim(),
+                details: item.member,
+              },
+            ])
+        ).values(),
+      ];
 
       setFullname(options);
     } catch (error) {
@@ -487,7 +506,7 @@ const PersonalInfo = ({
         />
       </div>
     );
-  console.log("error", errors);
+   ("error", errors);
 
   const avoidSpecialChar = (e, field) => {
     const value = e.target.value.replace(/[^a-zA-Z0-9\s,-]/g, "");
@@ -516,7 +535,7 @@ const PersonalInfo = ({
   }));
 
   const watchRevenue = watch("nonRevenue");
-  console.log(watchRevenue);
+   (watchRevenue);
 
   return (
     <Fragment>
@@ -578,18 +597,18 @@ const PersonalInfo = ({
               render={({ field }) => {
                 const disabled = isAssigned && !isRevenu;
                 // let disabled;
-                
-                console.log("checkk statuts", isAssigned, isRevenu);
+
+                 ("checkk statuts", isAssigned, isRevenu);
 
                 // if (isAssigned === true && isRevenu === true) {
                 //   disabled = false;
-                //   console.log("che", false);
+                //    ("che", false);
                 // } else if (isAssigned === true && isRevenu === false) {
                 //   disabled = true;
-                //   console.log("che", true);
+                //    ("che", true);
                 // } else if (isAssigned === false && isRevenu === false) {
                 //   disabled = false;
-                //   console.log("che", false);
+                //    ("che", false);
                 // } else {
                 //   disabled = false;
                 // }
@@ -639,7 +658,7 @@ const PersonalInfo = ({
                       className="mb-0"
                       style={{ cursor: disabled ? "not-allowed" : "pointer" }}
                     >
-                      Is Revenue
+                      Is Non-Revenue
                     </Label>
                   </div>
                 );

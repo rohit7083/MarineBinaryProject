@@ -7,7 +7,7 @@ import { Card, CardBody, CardText, CardTitle, Col, Row } from "reactstrap";
 // ** Main Component
 const CheckoutInfo = ({ propsData }) => {
   // ** Props
-  console.log("CheckoutInfo Props:", propsData);
+   ("CheckoutInfo Props:", propsData);
 
   const { preBookingData, alldata, searchId, searchUid } = propsData || {};
 
@@ -208,3 +208,4 @@ const ClientInfo = ({ selectedMember, clientInfo, setClientInfo }) => {
 };
 
 export { CheckoutInfo, ClientInfo };
+

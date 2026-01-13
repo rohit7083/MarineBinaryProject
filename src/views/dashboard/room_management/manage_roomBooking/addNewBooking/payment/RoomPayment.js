@@ -10,20 +10,20 @@ import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Qr_Payment from "../../../../event_management/Qr_Payment";
 import SuccessPayment from "../../../../SuccessPayment";
@@ -42,10 +42,10 @@ function Payment({ stepper }) {
   const [modal, setModal] = useState(false);
   const location = useLocation();
   const [loading, setLoading] = useState(false);
-  console.log("location rrom oayment", location.state);
+   ("location rrom oayment", location.state);
   const uidOfEvent = location?.state?.uidOfEvent;
   const myData = location?.state?.resAlldata;
-  console.log(myData);
+   (myData);
   const myallData = location?.state?.resAlldata?.alldata;
   const bookedDataForExtra = location?.state?.resAlldata?.preBookingData;
   const clientData = location?.state?.memberInfo;
@@ -61,7 +61,7 @@ function Payment({ stepper }) {
   const { checkInDate, checkOutDate, remainingAmount, paymentStatus } =
     pendingPayment;
 
-  console.log("ExtendDateData", pendingPayment);
+   ("ExtendDateData", pendingPayment);
   const today = new Date().toISOString().split("T")[0];
   const AccountType = [
     { value: "8", label: "Personal Checking Account" },
@@ -433,7 +433,7 @@ function Payment({ stepper }) {
       bookingUid = roomBookingUid;
     }
 
-    // console.log("extra data ",extraData);
+    //  ("extra data ",extraData);
     if (location?.state?.extraRoomMode) {
       formData.append(`roomBookings[${0}].roomSearch.uid`, myData?.searchUid);
 
@@ -518,7 +518,7 @@ function Payment({ stepper }) {
       formData.append("payment.accountNumber", data.accountNumber);
       formData.append("payment.accountType", data.accountType?.value);
     } else {
-      console.log("Choose a different payment method.");
+       ("Choose a different payment method.");
     }
 
     try {
@@ -550,9 +550,9 @@ function Payment({ stepper }) {
           if (res?.status) {
             try {
               const res = await useJwt.ExtendDataUpdate(payload);
-              console.log("ExtendDataUpdate", res);
+               ("ExtendDataUpdate", res);
             } catch (error) {
-              console.log("ExtendDataUpdate", error);
+               ("ExtendDataUpdate", error);
             }
           }
         }

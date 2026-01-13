@@ -1,38 +1,25 @@
-import { useForm, Controller } from "react-hook-form";
+import useJwt from "@src/auth/jwt/useJwt";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
-import useJwt from "@src/auth/jwt/useJwt";
+import { Controller, useForm } from "react-hook-form";
 
+import { useEffect, useState } from "react";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Form,
-  Label,
-  Input,
-  Button,
-  Row,
-  Col,
-  Container,
-  InputGroup,
-  InputGroupText,
-  FormGroup,
-} from "reactstrap";
-import React, { Fragment, useEffect, useState } from "react";
-import {
-  Home,
-  Check,
-  X,
-  Briefcase,
-  CreditCard,
-  CheckSquare,
-  Watch,
+    CheckSquare,
+    CreditCard
 } from "react-feather";
-import { data } from "jquery";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
+import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    Input,
+    Label,
+    Row
+} from "reactstrap";
 function CardPayment() {
   const {
     control,
@@ -51,7 +38,7 @@ function CardPayment() {
     try {
       setLoading(true);
       const res = await useJwt.getMemberDetails(token);
-      console.log("res", res);
+       ("res", res);
       setMemberDetails(res?.data);
     } catch (error) {
       console.error("error", error);
@@ -131,7 +118,7 @@ function CardPayment() {
 
   const selectedOption = watch("paymentMethod");
 
-  console.log("selectedOption ", selectedOption);
+   ("selectedOption ", selectedOption);
 
   const onSubmit = (data) => {};
   return (

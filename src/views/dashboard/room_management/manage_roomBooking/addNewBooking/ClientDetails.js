@@ -1,44 +1,32 @@
-import { Fragment, useState, useEffect, useRef } from "react";
-import RoomViewClient from "./RoomViewClient";
-import { Toast } from "primereact/toast";
-import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
 import Sidebar from "@components/sidebar";
-import Repeater from "@components/repeater";
-import { countries } from "../../../slip-management/CountryCode";
 import useJwt from "@src/auth/jwt/useJwt";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { countries } from "../../../slip-management/CountryCode";
+import RoomViewClient from "./RoomViewClient";
 
-import axios from "axios";
-import Flatpickr from "react-flatpickr";
-import { SlideDown } from "react-slidedown";
-import { X, Plus, Hash } from "react-feather";
+import { Check, Plus, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 import Select, { components } from "react-select";
-import { Check } from "react-feather";
-import { useForm, Controller, set } from "react-hook-form";
 
 import { selectThemeColors } from "@utils";
 import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Label,
-  Button,
-  CardBody,
-  CardText,
-  InputGroup,
-  InputGroupText,
-  CardTitle,
-  FormFeedback,
+    Button,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Row
 } from "reactstrap";
 // ** Styles
 import "react-slidedown/lib/slidedown.css";
 
-import "@styles/react/libs/react-select/_react-select.scss";
-import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "@styles/base/pages/app-invoice.scss";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
+import "@styles/react/libs/react-select/_react-select.scss";
 
 import ReactCountryFlag from "react-country-flag";
 // import ViewPass from "./ViewPass";
@@ -189,7 +177,7 @@ const ClientDetails = ({
       country: data?.country,
       postalCode: data?.postalCode,
     };
-    console.log("data", payload);
+     ("data", payload);
     setMemberAppendData(payload);
 
     toast.current.show({
@@ -284,7 +272,7 @@ const ClientDetails = ({
       >
         <form
           onSubmit={handleSubmit(onSubmit, (errors) =>
-            console.log("Errors", errors)
+             ("Errors", errors)
           )}
         >
           <Row>

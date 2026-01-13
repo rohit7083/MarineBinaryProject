@@ -1,21 +1,21 @@
 // ** React Imports
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
+import dashboards from "../../navigation/vertical/dashboards";
 // ** Store & Actions
-import { useSelector, useDispatch } from "react-redux";
 import {
-  handleMenuCollapsed,
   handleContentWidth,
+  handleMenuCollapsed,
   handleMenuHidden,
 } from "@store/layout";
+import { useDispatch, useSelector } from "react-redux";
 
 // ** Third Party Components
 import classnames from "classnames";
 import { ArrowUp } from "react-feather";
 
 // ** Reactstrap Imports
-import { Navbar, Button } from "reactstrap";
+import { Button, Navbar } from "reactstrap";
 
 // ** Configs
 import themeConfig from "@configs/themeConfig";
@@ -25,16 +25,16 @@ import themeConfig from "@configs/themeConfig";
 import Customizer from "@components/customizer";
 import ScrollToTop from "@components/scrolltop";
 import FooterComponent from "./components/footer";
-import NavbarComponent from "./components/navbar";
 import SidebarComponent from "./components/menu/vertical-menu";
+import NavbarComponent from "./components/navbar";
 
 // ** Custom Hooks
+import { useFooterType } from "@hooks/useFooterType";
+import { useLayout } from "@hooks/useLayout";
+import { useNavbarColor } from "@hooks/useNavbarColor";
+import { useNavbarType } from "@hooks/useNavbarType";
 import { useRTL } from "@hooks/useRTL";
 import { useSkin } from "@hooks/useSkin";
-import { useLayout } from "@hooks/useLayout";
-import { useNavbarType } from "@hooks/useNavbarType";
-import { useFooterType } from "@hooks/useFooterType";
-import { useNavbarColor } from "@hooks/useNavbarColor";
 
 // ** Styles
 import "@styles/base/core/menu/menu-types/vertical-menu.scss";
@@ -101,6 +101,49 @@ const VerticalLayout = (props) => {
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
+
+  const findMenuByPath = (menu, path) => {
+    for (const item of menu) {
+      // check parent
+      if (item.navLink === path) {
+        return { id: item.id, parent: null };
+      }
+
+      // check children
+      if (item.children) {
+        for (const child of item.children) {
+          if (child.navLink === path) {
+            return { id: child.id, parent: item.id };
+          }
+        }
+      }
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const match = findMenuByPath(dashboards, location.pathname);
+
+    if (match) {
+      localStorage.setItem("menuId", match.id);
+
+      if (
+        match.parent == "qrcode" ||
+        match.parent == "roombooking" ||
+        match.parent == "event" ||
+        match.parent == "pos" ||
+        match.parent == "slip" || 
+        match.parent == "branch"
+
+      ) {
+        localStorage.setItem("parentMenuId", match.parent);
+      } else if (match.id == "parkingpass") {
+        localStorage.setItem("parentMenuId", match.id);
+      } else {
+        localStorage.removeItem("parentMenuId");
+      }
+    }
+  }, [location.pathname]);
 
   // ** Vars
   const footerClasses = {

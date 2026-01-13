@@ -6,20 +6,20 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -127,7 +127,7 @@ const MultipleColumnForm = () => {
         setLoading(true);
 
         const res = await useJwt.addProductCategory(formData);
-        console.log(res);
+         (res);
 
         if (res?.status === 201) {
           toast.current.show({
@@ -163,7 +163,7 @@ const MultipleColumnForm = () => {
         setLoading(true);
 
         const res = await useJwt.editProductCategory(fetchData?.uid, formData);
-        console.log(res);
+         (res);
         if (res?.status === 200) {
           toast.current.show({
             severity: "success",

@@ -14,7 +14,7 @@ const CompanyTable = () => {
     e.preventDefault(); // Prevents page refresh
     setData([...data, { id: Date.now() }]); // Unique id for key
   };
-console.log(data);
+ (data);
 
   // Function to remove a row
   const removeField = (id) => {

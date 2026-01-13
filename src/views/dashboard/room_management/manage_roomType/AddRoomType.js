@@ -8,18 +8,18 @@ import { ArrowLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 function AddVTypes() {
@@ -57,7 +57,7 @@ function AddVTypes() {
       setLoading(true);
       if (uid) {
         const res = await useJwt.UpdateRoomType(uid, data);
-        console.log("Updated:", res);
+         ("Updated:", res);
         if (res.status === 200) {
           toast.current.show({
             severity: "success",
@@ -82,7 +82,7 @@ function AddVTypes() {
             navigate("/manage_room_types");
           }, 2000);
         }
-        console.log("Created:", res);
+         ("Created:", res);
       }
     } catch (error) {
       console.error("API Error:", error);

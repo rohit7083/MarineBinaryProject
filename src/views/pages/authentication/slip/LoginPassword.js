@@ -20,14 +20,14 @@ import React from "react";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import {
-  Button,
-  CardText,
-  CardTitle,
-  Col,
-  FormFeedback,
-  Label,
-  Row,
-  UncontrolledAlert,
+    Button,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    Label,
+    Row,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -129,7 +129,7 @@ const Login = () => {
   // };
 
   // const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
-  // console.log(hashedPassword);
+  //  (hashedPassword);
 
   const onSubmit = async (data) => {
     if (Object.values(data).every((field) => field.length > 0)) {

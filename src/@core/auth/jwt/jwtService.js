@@ -60,7 +60,6 @@ export default class JwtService {
           }
         }
 
-        console.log("branchUid:", branchUid);
 
         // if (branchUid && ["post", "put", "patch"].includes(config.method)) {
         //   config.data = {
@@ -159,7 +158,7 @@ export default class JwtService {
       localStorage.setItem("locationEnabled", "true");
       return location;
     } catch (error) {
-      console.log({ jwtServiceError: error });
+      
       localStorage.setItem("locationEnabled", "false");
 
       // Handle permission denied
@@ -240,6 +239,11 @@ export default class JwtService {
 
   // ===================== Slip Details
 
+  retriveSlip(uid) {
+    return axios.get(`${this.jwtConfig.retriveSingleSlip}/${uid}/`,{
+      appendBranchUid:true,
+    });
+  }
   postslip(...args) {
     return axios.post(this.jwtConfig.slip, ...args);
   }
@@ -684,8 +688,8 @@ export default class JwtService {
   }
 
   bookingPayment(...args) {
-    return axios.post(this.jwtConfig.bookingPayment, ...args , {
-      skipBranch:true,
+    return axios.post(this.jwtConfig.bookingPayment, ...args, {
+      skipBranch: true,
     });
   }
 
@@ -723,8 +727,11 @@ export default class JwtService {
     return axios.delete(`${this.jwtConfig.DeleteRooms}${uid}`);
   }
 
-  ExtendDate(uid,branchUid, ...args) {
-    return axios.post(`${this.jwtConfig.ExtendDate}${uid}/${branchUid}`, ...args);
+  ExtendDate(uid, branchUid, ...args) {
+    return axios.post(
+      `${this.jwtConfig.ExtendDate}${uid}/${branchUid}`,
+      ...args
+    );
   }
   ExtendDataUpdate(...args) {
     return axios.post(`${this.jwtConfig.ExtendDataUpdate}`, ...args);
@@ -740,8 +747,8 @@ export default class JwtService {
     return axios.post(`${this.jwtConfig.cancleEvent}${uid}`);
   }
   addExtraRoom(uid, ...args) {
-    return axios.post(`${this.jwtConfig.addExtraRoom}${uid}`, ...args ,{
-      skipBranch:true,
+    return axios.post(`${this.jwtConfig.addExtraRoom}${uid}`, ...args, {
+      skipBranch: true,
     });
   }
 
@@ -818,8 +825,8 @@ export default class JwtService {
   }
 
   posPayment(...args) {
-    return axios.post(this.jwtConfig.posPayment, ...args,{
-      skipBranch:true,
+    return axios.post(this.jwtConfig.posPayment, ...args, {
+      skipBranch: true,
     });
   }
 
@@ -847,10 +854,9 @@ export default class JwtService {
   }
 
   getVariationUid(vuid) {
-    return axios.get(`${this.jwtConfig.getVariationUid}${vuid}/branch/`,{
+    return axios.get(`${this.jwtConfig.getVariationUid}${vuid}/branch/`, {
       appendBranchUid: true,
-
-    } );
+    });
   }
 
   deleteCartProduct(uid, vuid) {
@@ -1215,5 +1221,11 @@ export default class JwtService {
   }
   sendInvoiceToMail(...args) {
     return axios.post(`${this.jwtConfig.sendInvoiceToMail}`, ...args);
+  }
+
+  getDyanimicInfoOFSubscription(moduleName) {
+    return axios.get(
+      `${this.jwtConfig.getDyanimicInfoOFSubscription}${moduleName}`
+    );
   }
 }

@@ -81,7 +81,7 @@ const FileUploadForm = ({ SlipData, stepper, slipIID, sId }) => {
         formData.append("slipId", SlipData.id);
         formData.append("documentName", docName);
         formData.append("DocumentFile", file);
-        console.log(file);
+         (file);
 
         // Check if a document with this name already exists
         const existingDoc = SlipData?.documents?.find(
@@ -92,11 +92,11 @@ const FileUploadForm = ({ SlipData, stepper, slipIID, sId }) => {
           if (existingDoc && existingDoc?.uid) {
             // ✅ Update existing document
             await useJwt.updateDocuments(existingDoc.uid, formData);
-            console.log(`✅ Updated document: ${docName}`);
+             (`✅ Updated document: ${docName}`);
           } else {
             // 🆕 Create new document
             await useJwt.slipDocument(formData);
-            console.log(`🆕 Created new document: ${docName}`);
+             (`🆕 Created new document: ${docName}`);
           }
         } catch (err) {
           console.error(`❌ Error processing ${docName}:`, err);

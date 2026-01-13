@@ -3,14 +3,14 @@ import { Mail, MapPin, Phone, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Col,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
+    Button,
+    Col,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 import AddBranch from "../../../dashboard/branch_management/AddBranch";
@@ -45,7 +45,7 @@ export default function BranchSelector() {
         }
 
         const res = await useJwt.getBranch(uid);
-        console.log(res);
+         (res);
         let resData = res?.data?.branches;
         
          localStorage.setItem("crmId", res?.data?.crmId);
@@ -68,13 +68,13 @@ export default function BranchSelector() {
   );
 
   const handleSelect = async (branch) => {
-    console.log("Selected Branch:", branch);
+     ("Selected Branch:", branch);
     
     //  saveUnlockedPages
     // Store in localStorage
     if (branch) {
       const userData = getUserData();
-      console.log(userData);
+       (userData);
       
       if (userData) {
         const { permissions = [] } = userData;
@@ -98,7 +98,7 @@ export default function BranchSelector() {
       navigate("/dashbord");
     }
   };
-  console.log(localStorage);
+   (localStorage);
   
   return (
     <div className="min-vh-100" style={{ background: "#7367F0" }}>

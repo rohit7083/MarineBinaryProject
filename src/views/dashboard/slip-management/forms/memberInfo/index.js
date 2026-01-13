@@ -13,18 +13,18 @@ import * as yup from "yup";
 import ReactCountryFlag from "react-country-flag";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Tooltip,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Tooltip,
 } from "reactstrap";
 import { countries } from "../../../slip-management/CountryCode";
 
@@ -122,7 +122,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
     // {{ }}
     setIsAssigned(SlipData?.isAssigned);
     setCheckvessel(SlipData?.vessel);
-    setCheckMember(SlipData?.member);    // console.log("assigne",SlipData?.vessel);
+    setCheckMember(SlipData?.member);    //  ("assigne",SlipData?.vessel);
   }, [SlipData]);
   const onSubmit = async (data) => {
     setLoading(true);
@@ -185,7 +185,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       if (error.response && error.response.data) {
         const { status } = error.response;
         const { content } = error.response.data;
-        console.log(content);
+         (content);
 
         switch (status) {
           case 400:
@@ -255,7 +255,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
 
   const handleEditBtn = () => {
     SetView(false);
-    console.log("now i can view anything");
+     ("now i can view anything");
   };
 
   const handleRenwalContract = () => {

@@ -51,8 +51,8 @@
 //     // { value: "virtualTerminal", label: "Virtual Terminal", icon: "💻" },
 //   ];
 
-//   console.log(reportType);
-//   console.log("filteredData", filteredData);
+//    (reportType);
+//    ("filteredData", filteredData);
 
 //   // Fetch API data based on date range
 //   useEffect(() => {
@@ -61,7 +61,7 @@
 //         setLoading(true);
 //         const res = await useJwt.autoPayment(reportType?.value || 2);
 //         const result = res?.data?.content?.result || [];
-//         console.log("result", result);
+//          ("result", result);
 //         setFilteredData(result);
 //       } catch (err) {
 //         console.error("Error fetching report:", err);
@@ -293,23 +293,23 @@ import { Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Download } from "react-feather";
 import {
-  Badge,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Spinner,
+    Badge,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Spinner,
 } from "reactstrap";
 import {
-  exportToCSV,
-  exportToExcelHTML,
+    exportToCSV,
+    exportToExcelHTML,
 } from "../../../../utility/exportUtils";
 import Autopay from "./Autopay";
 

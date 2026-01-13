@@ -6,17 +6,17 @@ import withReactContent from "sweetalert2-react-content";
 
 import { useEffect, useState } from "react";
 import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardText,
-  CardTitle,
-  Col,
-  Input,
-  Row,
-  Table,
+    Badge,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+    Col,
+    Input,
+    Row,
+    Table,
 } from "reactstrap";
 
 import { Trash2 } from "react-feather";
@@ -48,7 +48,7 @@ const Checkout = () => {
     try {
       setLoading(true);
       const res = await useJwt.getMemberDetails(token);
-      console.log("res", res);
+       ("res", res);
       // const eventId=res?.data?.eventId;
 
       setMemberDetails(res?.data);
@@ -69,7 +69,7 @@ const Checkout = () => {
     try {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
-      console.log(res);
+       (res);
       if (res.status === 200) {
         return MySwal.fire({
           title: "  Success",
@@ -86,9 +86,9 @@ const Checkout = () => {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        console.log("Error data", error.response.data);
-        console.log("Error status", error.response.status);
-        console.log("Error headers", error.response.headers);
+         ("Error data", error.response.data);
+         ("Error status", error.response.status);
+         ("Error headers", error.response.headers);
         setErr(error.response.data.content);
       }
     } finally {

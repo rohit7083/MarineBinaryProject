@@ -67,7 +67,7 @@ export const extractUIDFromPermissionList = (data) => {
     }, [])
     .flat();
 
-  console.log({ permission });
+   ({ permission });
   return {
     roleName,
 
@@ -106,7 +106,7 @@ export const handleUpdatePermissionList = (
   // {{ }}
 
   return updatedList;
-  // console.log({ permissionIdsUpdated, permissionList });
+  //  ({ permissionIdsUpdated, permissionList });
 };
 
 // **

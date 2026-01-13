@@ -15,19 +15,19 @@ import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
 // ** Reactstrap Imports
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 // ** Auth
@@ -209,7 +209,7 @@ function Index() {
   };
 
   const handleEdit = (row) => {
-    console.log("Editing: ", row);
+     ("Editing: ", row);
     setSelectedQRCode(row);
     setIsEditMode(true);
     setAddQRModal(true);

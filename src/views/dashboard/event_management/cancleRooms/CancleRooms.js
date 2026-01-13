@@ -4,19 +4,19 @@ import React, { useEffect, useState } from "react";
 import { Trash } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  CardText,
-  CardTitle,
-  Col,
-  Input,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    CardText,
+    CardTitle,
+    Col,
+    Input,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 import successAnimation from "../../../../assets/images/celebrate.json";
 import successAnimations from "../../../../assets/images/Congratulations.json";
@@ -26,8 +26,8 @@ function CancelRooms({ show, setShow, datarow }) {
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [refundModal, setRefundModal] = useState(false);
-  console.log("selectedData", selectedData);
-  console.log("datarow", datarow);
+   ("selectedData", selectedData);
+   ("datarow", datarow);
   const [errorMessage, setErrorMsz] = useState("");
   const toggle = () => setRefundModal(!refundModal);
   const [roomDataForCancleFiltered, setRoomDataForCancleFiltered] = useState(
@@ -55,7 +55,7 @@ function CancelRooms({ show, setShow, datarow }) {
   }, [datarow]);
 
   const singleRooms = watch("room");
-  console.log("singleRooms", singleRooms);
+   ("singleRooms", singleRooms);
 
   // useEffect(() => {
   //   {{ }}
@@ -106,7 +106,7 @@ function CancelRooms({ show, setShow, datarow }) {
 
       try {
         const res = await useJwt.cancleRooms(datarow?.uid, payload);
-        console.log(res);
+         (res);
         if (res?.data?.refundIssued === true) {
           setRoomDataForCancleFiltered((prev) =>
             prev.filter(
@@ -121,7 +121,7 @@ function CancelRooms({ show, setShow, datarow }) {
           setSelectedData([]);
         }
       } catch (error) {
-        console.log(error);
+         (error);
         const errMsz =
           error?.response?.data?.content ||
           "An error occurred while processing your request.";
@@ -297,14 +297,14 @@ function CancelRooms({ show, setShow, datarow }) {
                                     const checked = e.target.checked;
                                     field.onChange(checked);
                                     if (checked) {
-                                      console.log(
+                                       (
                                         "Row Selected Room Number:",
                                         x.roomNumber
                                       );
 
                                       setSelectedData((prev) => [...prev, x]);
                                     } else {
-                                      console.log(
+                                       (
                                         "Row Unselected Room Number:",
                                         x.roomNumber
                                       );

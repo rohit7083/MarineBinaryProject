@@ -9,7 +9,7 @@ const PricingCards = () => {
   const [modal, setModal] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState(null);
   const [planData, setPlanData] = useState(null);
-  console.log(location);
+   (location);
 
   const existingCreditCard = location.state?.walletBal?.cardData;
 
@@ -17,7 +17,7 @@ const PricingCards = () => {
   const { subscription, addOn } = location.state || {};
   const plans = subscription ?? addOn ?? null;
   const navigate = useNavigate();
-  console.log(plans?.subscriptionAddedModuleJson);
+   (plans?.subscriptionAddedModuleJson);
 
   const badge = "POPULAR";
 
@@ -35,9 +35,9 @@ const PricingCards = () => {
       });
       setModal(true);
       setSubscriptionData(res.data);
-      console.log(res);
+       (res);
     } catch (error) {
-      console.log(error);
+       (error);
     }
   
   };

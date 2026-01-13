@@ -51,7 +51,6 @@ const NonPosTableData = () => {
       setLoading(true);
       const { data } = await useJwt.bookingList();
       const { content } = data;
-      console.log("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

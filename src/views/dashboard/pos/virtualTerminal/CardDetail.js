@@ -3,30 +3,28 @@ import { Fragment, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-  Button,
-  Row,
-  Col,
-  Label,
-  Input,
-  FormFeedback,
-  InputGroup,
-  InputGroupText,
+    Col,
+    FormFeedback,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Label,
+    Row
 } from "reactstrap";
 
 // ** Third Party Components
 import Cleave from "cleave.js/react";
-import { useForm, Controller } from "react-hook-form";
-import { Check, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 
 // ** Card Images
-import jcbCC from "@src/assets/images/icons/payments/jcb-cc.png";
-import uatpCC from "@src/assets/images/icons/payments/uatp-cc.png";
-import visaCC from "@src/assets/images/icons/payments/visa-cc.png";
 import amexCC from "@src/assets/images/icons/payments/amex-cc.png";
 import dinersCC from "@src/assets/images/icons/payments/diners-cc.png";
-import maestroCC from "@src/assets/images/icons/payments/maestro-cc.png";
 import discoverCC from "@src/assets/images/icons/payments/discover-cc.png";
+import jcbCC from "@src/assets/images/icons/payments/jcb-cc.png";
+import maestroCC from "@src/assets/images/icons/payments/maestro-cc.png";
 import mastercardCC from "@src/assets/images/icons/payments/mastercard-cc.png";
+import uatpCC from "@src/assets/images/icons/payments/uatp-cc.png";
+import visaCC from "@src/assets/images/icons/payments/visa-cc.png";
 
 const cardsObj = {
   jcb: jcbCC,
@@ -56,7 +54,7 @@ const AddCardForm = () => {
 
   const onSubmit = (data) => {
     if (data.cardNumber && data.cardNumber.length > 0) {
-      console.log("Card Data:", data);
+       ("Card Data:", data);
       reset();
       setCardType("");
     } else {

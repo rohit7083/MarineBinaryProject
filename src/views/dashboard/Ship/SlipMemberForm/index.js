@@ -16,7 +16,6 @@ import { CreditCard, File, FileText, User } from "react-feather";
 const WizardModern = () => {
   // ** RefselectedSlipname
   const ref = useRef(null);
-
   const [stepper, setStepper] = useState(null);
   const [slipIID, setSlipIID] = useState("");
   const [memberID, setMemberID] = useState(null);
@@ -34,55 +33,56 @@ const WizardModern = () => {
   const waitingSlipData = location?.state?.row;
   const slipNameFromDashboard = location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;
-  const isAssigned = location.state?.isAssigned ;
-  const isRevenu=location.state?.isRevenu ;
+  const isAssigned = location.state?.isAssigned;
+  const isRevenu = location.state?.isRevenu;
   const [isAssignedStatus, setIsAssignedStatus] = useState(isAssigned);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         setFetchLoader(true);
-        const response = await useJwt.getslip(uid);
-        const raw= response.data?.content?.result;
-        const result =Array.isArray(raw) ? raw[0] : null;
-        const { vessel, member, payment } = result || slipNameFromDashboard;
+       
+        const response = await useJwt.retriveSlip(uid);
+        const raw = response.data?.content;
 
-        console.log("result Slip id ", result);
-        setId(result);
+        // const result = Array.isArray(raw) ? raw[0] : null;
+        const { vessel, member, payment } = raw || slipNameFromDashboard;
+
+        setId(raw);
         // vessel details
         vessel.slipName = {
           label: vessel.slipName,
-          value: result.id,
-          dimensions: result.dimensions,
+          value: raw.id,
+          dimensions: raw.dimensions,
         };
         vessel.dimensionVal = {};
 
-        Object.keys(result.dimensions).map(
+        Object.keys(raw.dimensions).map(
           (key) => (vessel.dimensionVal[key] = vessel[key])
         );
 
         setFormData({
           vessel: { ...vessel },
           member,
-          payment: payment ? { ...payment   } : {},
+          payment: payment ? { ...payment } : {},
           documents: document ? { ...document } : {},
         });
       } catch (error) {
-        console.log("Error fetching slip details:", error);
+         ("Error fetching slip details:", error);
       } finally {
         setFetchLoader(false);
       }
     };
 
     if (uid) fetchData();
-  }, [uid,isAssignedStatus]);
+  }, [uid, isAssignedStatus]);
 
   useEffect(() => {
-    console.log(formData);
-    console.log("memeber id from index", memberID);
+     (formData);
+     ("memeber id from index", memberID);
   }, [formData]);
 
-  console.log("sui", sId);
+   ("sui", sId);
 
   const steps = [
     {
@@ -119,7 +119,7 @@ const WizardModern = () => {
           slipIID={slipIID}
           setMemberID={setMemberID}
           memberID={memberID}
-           waitingSlipData={waitingSlipData}
+          waitingSlipData={waitingSlipData}
           fetchLoader={fetchLoader}
           sId={sId?.id}
           setIsAssignedStatus={setIsAssignedStatus}
@@ -173,8 +173,7 @@ const WizardModern = () => {
         ref={ref}
         steps={steps}
         options={{
-          linear: false
-          ,
+          linear: false,
         }}
         instance={(el) => setStepper(el)}
       />

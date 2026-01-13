@@ -3,25 +3,25 @@ import { Fragment, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Card,
-  Label,
-  Input,
-  Modal,
   Button,
+  Card,
   CardBody,
-  CardTitle,
-  ModalBody,
   CardHeader,
-  ModalHeader,
+  CardTitle,
+  Col,
   FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
 } from "reactstrap";
 
 // ** Third Party Components
+import { Briefcase, Check, Home, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { Home, Check, X, Briefcase } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
 
 // ** Utils
 import { selectThemeColors } from "@utils";
@@ -235,7 +235,6 @@ const BillingAddress = () => {
                 name="firstName"
                 control={control}
                 render={({ field }) => {
-                  console.log(field);
                   return (
                     <Input
                       placeholder="John"

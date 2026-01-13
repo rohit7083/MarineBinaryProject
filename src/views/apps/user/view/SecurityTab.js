@@ -4,43 +4,43 @@ import { Link } from "react-router-dom";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Table,
   Alert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
   Input,
   Modal,
-  Button,
-  CardBody,
-  CardTitle,
   ModalBody,
-  CardHeader,
   ModalHeader,
-  FormFeedback,
+  Row,
+  Table,
 } from "reactstrap";
 
 // ** Custom Components
 import InputPasswordToggle from "@components/input-password-toggle";
 
 // ** Third Party Components
-import * as yup from "yup";
-import Cleave from "cleave.js/react";
-import "cleave.js/dist/addons/cleave-phone.us";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller } from "react-hook-form";
+import "cleave.js/dist/addons/cleave-phone.us";
+import Cleave from "cleave.js/react";
 import {
-  Edit,
-  Trash,
-  Settings,
-  MessageSquare,
   ChevronRight,
+  Edit,
+  MessageSquare,
+  Settings,
+  Trash,
 } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 
 // ** Images
-import qrCode from "@src/assets/images/icons/qrcode.png";
 import chromeLogo from "@src/assets/images/icons/google-chrome.png";
+import qrCode from "@src/assets/images/icons/qrcode.png";
 
 const SignupSchema = yup.object().shape({
   password: yup.string().min(8).required(),
@@ -184,7 +184,6 @@ const SecurityTab = () => {
 
   const onSubmit = (data) => {
     trigger();
-    // console.log(data)
   };
   const handleContinue = () => {
     setShow(false);

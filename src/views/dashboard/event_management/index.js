@@ -5,31 +5,31 @@ import { debounce } from "lodash";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import {
-  Calendar,
-  ChevronDown,
-  DollarSign,
-  Edit,
-  MoreVertical,
-  Plus,
-  PlusCircle,
-  Trash,
-  Trash2,
+    Calendar,
+    ChevronDown,
+    DollarSign,
+    Edit,
+    MoreVertical,
+    Plus,
+    PlusCircle,
+    Trash,
+    Trash2,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Badge,
+    Button,
+    Card,
+    CardBody,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Row,
+    Spinner,
+    UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -61,7 +61,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.getAllEvents();
       const { content } = data;
-      console.log("getAllEvents", content);
+       ("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

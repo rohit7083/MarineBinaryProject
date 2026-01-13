@@ -1,9 +1,9 @@
 // ** Third Party Components
 import { Doughnut } from "react-chartjs-2";
-import { Monitor, Tablet, ArrowDown, ArrowUp } from "react-feather";
+import { ArrowDown, ArrowUp, Monitor, Tablet } from "react-feather";
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody } from "reactstrap";
+import { Card, CardBody, CardHeader, CardTitle } from "reactstrap";
 
 const ChartjsRadarChart = ({
   tooltipShadow,
@@ -25,7 +25,6 @@ const ChartjsRadarChart = ({
       tooltips: {
         callbacks: {
           label(context) {
-            console.log(context);
             let label = context.label || "";
             if (label) {
               label += "Ronak: ";

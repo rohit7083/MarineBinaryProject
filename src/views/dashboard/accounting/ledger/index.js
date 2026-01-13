@@ -29,7 +29,6 @@ const UserView = () => {
     setLoader(true);
     try {
       const res = await useJwt.GetMember();
-      console.log(res);
       const extractUser = res?.data?.content?.result?.map((x) => {
         return {
           label: `${x?.firstName} ${x?.lastName}`,
@@ -46,7 +45,7 @@ const UserView = () => {
 
       setMembers(extractUser);
     } catch (error) {
-      console.log(error);
+       (error);
     } finally {
       setLoader(false);
     }
@@ -63,7 +62,7 @@ const UserView = () => {
       const res = await useJwt.getUserData(selectedMembers?.value);
       setUserDataById(res?.data?.paymentList);
     } catch (error) {
-      console.log(error);
+       (error);
     } finally {
       setUserDataLoader(false);
     }

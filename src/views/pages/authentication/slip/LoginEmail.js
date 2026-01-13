@@ -22,15 +22,15 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import "@styles/react/pages/page-authentication.scss";
 import {
-  Button,
-  CardText,
-  CardTitle,
-  Col,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  UncontrolledAlert,
+    Button,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -373,7 +373,7 @@ export default Login;
 //             message: err.response.data.error
 //           })
 //         )
-//         console.log("Data", data);
+//          ("Data", data);
 
 //     } else {
 //       for (const key in data) {

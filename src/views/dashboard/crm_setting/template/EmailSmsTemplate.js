@@ -19,7 +19,7 @@ const TemplateManager = () => {
   const location = useLocation();
 
   const editTemplate = location?.state?.row;
-  console.log(editTemplate);
+   (editTemplate);
 
   const {
     handleSubmit,
@@ -47,7 +47,7 @@ const TemplateManager = () => {
       const plainEmailBody = htmlToPlainText(editTemplate.emailBody);
 
       // For debugging (optional)
-      console.log("Converted Email Body:", plainEmailBody);
+       ("Converted Email Body:", plainEmailBody);
 
       // Reset form with converted values
       reset({
@@ -85,7 +85,7 @@ const TemplateManager = () => {
 
   const onSubmit = async (data) => {
   
-    console.log(data);
+     (data);
 
     const emailStatus = data.emailTemplate.status;
     const smsStatus = data.smsTemplate.status;
@@ -131,14 +131,14 @@ const TemplateManager = () => {
       payload.smsStatus = false;
     }
 
-    console.log("Final Payload:", payload);
+     ("Final Payload:", payload);
 
     try {
       setLoading(true);
 
       if (editTemplate?.uid) {
         const response = await useJwt.updateTemplate(editTemplate?.uid, payload);
-        console.log(response);
+         (response);
         toast.current.show({
           severity: "success",
           summary: "Template Updated",
@@ -150,7 +150,7 @@ const TemplateManager = () => {
         }, 1999);
       } else {
         const response = await useJwt.createTemaplte(payload);
-        console.log(response);
+         (response);
         toast.current.show({
           severity: "success",
           summary: "Template Added",
@@ -249,7 +249,7 @@ const TemplateManager = () => {
     const fetchValuesofTemplate = async () => {
       try {
         const res = await useJwt.getTemplateValues();
-        console.log(res);
+         (res);
 
         if (res?.data?.content?.result?.length === 0) {
           toast.current.show({
@@ -277,7 +277,7 @@ const TemplateManager = () => {
         setValue("smsTemplate.sentFrom", resData[0]?.smsSentFrom);
         setValue("smsTemplate.phoneNumber", resData[0]?.smsPhoneNumber);
       } catch (error) {
-        console.log(error);
+         (error);
       }
     };
     fetchValuesofTemplate();
@@ -1084,8 +1084,8 @@ export default TemplateManager;
 //   };
 
 //   const onSubmit = async (data) => {
-//     // Simple debug breakpoint removed; keep console logs
-//     console.log("Form submit data:", data);
+//     // Simple debug breakpoint removed; keep  s
+//      ("Form submit data:", data);
 
 //     const emailStatus = data.emailTemplate.status;
 //     const smsStatus = data.smsTemplate.status;
@@ -1139,12 +1139,12 @@ export default TemplateManager;
 //       payload.smsStatus = false;
 //     }
 
-//     console.log("Payload:", payload);
+//      ("Payload:", payload);
 //     setLoading(true);
 //     try {
 //       if (editTemplate?.uid) {
 //         const response = await useJwt.updateTemplate(editTemplate.uid, payload);
-//         console.log("update response:", response);
+//          ("update response:", response);
 //         toast.current.show({
 //           severity: "success",
 //           summary: "Template Updated",
@@ -1154,7 +1154,7 @@ export default TemplateManager;
 //         setTimeout(() => navigate("/crm/template/index"), 1400);
 //       } else {
 //         const response = await useJwt.createTemaplte(payload);
-//         console.log("create response:", response);
+//          ("create response:", response);
 //         toast.current.show({
 //           severity: "success",
 //           summary: "Template Added",

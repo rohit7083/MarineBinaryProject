@@ -22,19 +22,19 @@ import * as XLSX from "xlsx";
 
 // ** Reactstrap Imports
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 // ** Auth
@@ -520,7 +520,7 @@ function Index() {
         });
       });
 
-      console.log("the data is ready", transformedData);
+       ("the data is ready", transformedData);
 
       let filtered = transformedData;
 
@@ -630,7 +630,7 @@ function Index() {
   };
 
   const handleViewDetails = (row) => {
-    console.log("Selected QR Code:", row);
+     ("Selected QR Code:", row);
     setSelectedQRCode(row);
     setViewQRModal(true);
   };

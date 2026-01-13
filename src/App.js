@@ -40,7 +40,7 @@ const App = () => {
           }
         );
       } catch (error) {
-        console.log({ appErrorLocation: error });
+         ({ appErrorLocation: error });
         showLocationAlert();
       }
     };

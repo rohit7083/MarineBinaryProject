@@ -21,13 +21,13 @@ import withReactContent from "sweetalert2-react-content";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Input,
-  Label,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Input,
+    Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -78,9 +78,9 @@ const CreateNewPass = () => {
 
         setResendcount(true);
       }
-      console.log("resentOTP", res.status);
+       ("resentOTP", res.status);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       //   setTimeout(() => {
       //     setResendcount(false);
@@ -97,9 +97,9 @@ const CreateNewPass = () => {
 
         setResendcallCount(true);
       }
-      console.log("resentCall", res);
+       ("resentCall", res);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       // setTimeout(() => {
       //   setResendcallLoading(false);
@@ -186,7 +186,7 @@ const CreateNewPass = () => {
     setAttempt(0);
     setErrorMsz("");
 
-    console.log("Form Data:", data);
+     ("Form Data:", data);
     const otpString = data.otp.join("");
     const otp = parseInt(otpString, 10);
 
@@ -199,7 +199,7 @@ const CreateNewPass = () => {
         confirmPassword: encryptedPasss?.confirmPassword,
       });
 
-      console.log(res);
+       (res);
       if (res.status == 200 || res.status == 201) {
         toast.current.show({
           severity: "success",
@@ -220,7 +220,7 @@ const CreateNewPass = () => {
         const otpAttempt = data.otpAttempts;
         const code = data?.code;
 
-        console.log("errormsx", errorMessage);
+         ("errormsx", errorMessage);
         setErrorMsz(errorMessage);
 
         setAttempt(otpAttempt);

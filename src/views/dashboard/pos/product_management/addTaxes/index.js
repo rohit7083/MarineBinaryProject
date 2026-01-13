@@ -14,30 +14,30 @@ import AddTax from "./AddTax";
 // ** Third Party Components
 import DataTable from "react-data-table-component";
 import {
-  ArrowLeft,
-  ChevronDown,
-  Edit,
-  MoreVertical,
-  Plus,
-  Trash,
+    ArrowLeft,
+    ChevronDown,
+    Edit,
+    MoreVertical,
+    Plus,
+    Trash,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 
 // ** Reactstrap Imports
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledDropdown,
 } from "reactstrap";
 import NavItems from "../NavItems";
 
@@ -102,9 +102,9 @@ const DataTableWithButtons = () => {
       setLoading(true);
       const res = await useJwt.getAlltax();
       setData(res?.data?.content?.result);
-      console.log(res);
+       (res);
     } catch (error) {
-      console.log("error in Vendar data ", error);
+       ("error in Vendar data ", error);
     } finally {
       setLoading(false);
     }

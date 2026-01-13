@@ -3,18 +3,18 @@ import BeatLoader from "react-spinners/BeatLoader";
 // ** Reactstrap Imports
 import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Input,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
+    Alert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Input,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
 } from "reactstrap";
 
 // ** Third Party Components
@@ -57,9 +57,9 @@ const AppAuthComponent = ({
         setIsAuthenticated(true);
         toggle();
       }
-      console.log(resverify.status);
+       (resverify.status);
 
-      console.log(resverify);
+       (resverify);
     } catch (error) {
       if (error.response) {
         const { status, data } = error.response;
@@ -97,7 +97,7 @@ const AppAuthComponent = ({
             setMessage(errorMessage);
         }
       }
-      console.log({ error });
+       ({ error });
     }
   };
 
@@ -188,7 +188,7 @@ const AuthenticationExample = () => {
   const handleContinue = async () => {
     try {
       const res = await useJwt.generate();
-      console.log(res);
+       (res);
 
       if (res && res.data) {
         setQrCode(res.data);
@@ -196,7 +196,7 @@ const AuthenticationExample = () => {
       setShow(false);
       setShowDetailModal(true);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
 
       console.error("Error generating QR code:", error);
       alert("Failed to generate QR code.");

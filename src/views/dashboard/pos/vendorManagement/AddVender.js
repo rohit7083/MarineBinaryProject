@@ -13,17 +13,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import { countries } from "../../slip-management/CountryCode";
 import NavItems from "../product_management/NavItems";
@@ -84,14 +84,14 @@ const MultipleColumnForm = () => {
       dialCodeCountry: data.countryCode?.code || "",
       vendorType: SelectedVendor,
     };
-    console.log("data", data);
+     ("data", data);
 
     if (!vendorData) {
       try {
         setLoading(true);
 
         const res = await useJwt.addVender(payload);
-        console.log("Response from API", res);
+         ("Response from API", res);
         if (res?.data?.code === 201) {
           toast.current.show({
             severity: "success",
@@ -106,7 +106,7 @@ const MultipleColumnForm = () => {
           }, 2000); // same as toast life
         }
       } catch (error) {
-        console.log("Error submitting form", error);
+         ("Error submitting form", error);
         if (error.response && error.response.data) {
           const { status, content } = error.response.data;
 
@@ -122,7 +122,7 @@ const MultipleColumnForm = () => {
       try {
         setLoading(true);
         const updatedRes = await useJwt.editvender(vendorData?.uid, payload);
-        console.log(updatedRes);
+         (updatedRes);
         toast.current.show({
           severity: "success",
           summary: " Successfully",
@@ -133,7 +133,7 @@ const MultipleColumnForm = () => {
           navigate("/pos/VendorManage");
         }, 2000);
       } catch (error) {
-        console.log("Error submitting form", error);
+         ("Error submitting form", error);
         if (error.response && error.response.data) {
           const { status, content } = error.response.data;
 
@@ -194,7 +194,7 @@ const MultipleColumnForm = () => {
       setLoadingReset(true);
 
       const res = await useJwt.getAllVendorType();
-      console.log("Vendor Type Data", res);
+       ("Vendor Type Data", res);
 
       const vendorTypeOptions = res?.data?.content?.result?.map((type) => ({
         value: type.uid,

@@ -16,7 +16,7 @@ const ViewDocuments = ({ slipData }) => {
   });
 
   const [uidForDocuments, setUidForDocument] = useState([]);
-  console.log("slipdata", slipData);
+   ("slipdata", slipData);
   const [fetchLoader, setFethchLoader] = useState(false);
   const toast = useRef(null);
 
@@ -71,7 +71,7 @@ const ViewDocuments = ({ slipData }) => {
         return acc;
       }, {});
       console.clear();
-      console.log(formattedResults);
+       (formattedResults);
       const defaultValue = Object.keys(formattedResults).map((key) =>
         handleChangeDocument(key, formattedResults[key])
       );
@@ -136,7 +136,7 @@ export default ViewDocuments;
 //   });
 
 //   const [uidForDocuments, setUidForDocument] = useState([]);
-//   console.log("slipdata", slipData);
+//    ("slipdata", slipData);
 //   const [fetchLoader, setFethchLoader] = useState(false);
 //   const toast = useRef(null);
 

@@ -67,7 +67,6 @@ const CustomerSearch = () => {
         setSelectedCustomer(walkinData);
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setWalkinLoading(false);
     }
@@ -75,7 +74,6 @@ const CustomerSearch = () => {
 
   useEffect(()=>{
 console.clear();
-    console.log("selectedCustomer",selectedCustomer);
   },[selectedCustomer])
 
   return (

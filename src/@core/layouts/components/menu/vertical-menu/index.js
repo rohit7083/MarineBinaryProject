@@ -14,7 +14,6 @@ const Sidebar = (props) => {
   const { menuCollapsed, menu, skin, menuData } = props;
 
 
-  //console.log({ menuCollapsed, menu, skin, menuData })
 
   // ** States
   const [groupOpen, setGroupOpen] = useState([]);

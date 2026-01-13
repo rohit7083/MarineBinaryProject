@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { ArrowLeft } from "react-feather";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
-  FaCreditCard,
-  FaLink,
-  FaMoneyBillAlt,
-  FaQrcode,
-  FaRegCheckCircle,
+    FaCreditCard,
+    FaLink,
+    FaMoneyBillAlt,
+    FaQrcode,
+    FaRegCheckCircle,
 } from "react-icons/fa";
 import { MdOutlineSwipe } from "react-icons/md";
 import { useLocation } from "react-router-dom";
@@ -17,7 +17,7 @@ import ExtendDate from "../../manage_roomBooking/extendDate/ExtendDate";
 const View = () => {
   const location = useLocation();
   const viewData = location?.state?.row || location?.state?.info;
-  console.log("viewdata", viewData);
+   ("viewdata", viewData);
 
   /*
   const [roomTypeData, setRoomTypeData] = useState([]);
@@ -57,7 +57,7 @@ const View = () => {
     name: "roomUnit",
   });
 
-  console.log("roomunits", roomUnits);
+   ("roomunits", roomUnits);
 
   useEffect(() => {
     if (viewData) {

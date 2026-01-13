@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Button,
-  Col,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
+    Button,
+    Col,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
 } from "reactstrap";
 
 const SearchCustomerModal = ({
@@ -59,7 +59,7 @@ const SearchCustomerModal = ({
     : [];
 
   useEffect(() => {
-    console.log("selectedCustomer", selectedCustomer);
+     ("selectedCustomer", selectedCustomer);
   }, [watch("customerNumber"), options]);
 
   const fetchData = async () => {

@@ -12,7 +12,6 @@ function Index() {
   ];
 
   const [reportType, setReportType] = useState(null);
-  console.log(reportType);
 
   return (
     <Card>

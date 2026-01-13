@@ -18,14 +18,14 @@
   //       (res) => res?.data?.content?.items?.map((item) => item?.uid) || []
   //     );
 
-  //     console.log("Variation UIDs:", variationUids);
+  //      ("Variation UIDs:", variationUids);
   //     setVariations(variationUids);
   //   } catch (error) {
   //     console.error("Error fetching variations:", error);
   //   }
   //   try {
   //     setLoading(true);
-  //     console.log("changedItems", changedItems);
+  //      ("changedItems", changedItems);
 
   //     // 1. For each changed item, get actual UID from variation API
   //     const uidPromises = changedItems.map(async (item) => {
@@ -116,14 +116,14 @@
   //       (res) => res?.data?.content?.items?.map((item) => item?.uid) || []
   //     );
 
-  //     console.log("Variation UIDs:", variationUids);
+  //      ("Variation UIDs:", variationUids);
   //     setVariations(variationUids);
   //   } catch (error) {
   //     console.error("Error fetching variations:", error);
   //   }
   //   try {
   //     setLoading(true);
-  //     console.log("changedItems", changedItems);
+  //      ("changedItems", changedItems);
 
   //     // 1. For each changed item, get actual UID from variation API
   //     const uidPromises = changedItems.map(async (item) => {

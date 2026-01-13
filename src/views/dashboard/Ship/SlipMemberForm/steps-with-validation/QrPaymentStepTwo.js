@@ -11,19 +11,19 @@ import { CheckSquare, CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import TokenExpire from "../../../../pages/authentication/slip/TokenExpire";
 
@@ -68,8 +68,8 @@ const CardPayment = () => {
     try {
       setLoading(true);
       const res = await useJwt.getMemberDetails(token);
-      console.log("res", res);
-      console.log("res?.data", res?.data?.status);
+       ("res", res);
+       ("res?.data", res?.data?.status);
 
       if (res?.data?.status === "false") {
         setIsValidLink(true);
@@ -180,7 +180,7 @@ const CardPayment = () => {
 
   const selectedOption = watch("paymentMethod");
 
-  console.log("selectedOption ", selectedOption);
+   ("selectedOption ", selectedOption);
 
   const onSubmit = async (data) => {
     setErr("");
@@ -255,7 +255,7 @@ const CardPayment = () => {
     try {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
-      console.log(res);
+       (res);
 
       if (res?.data?.status === "success") {
         return MySwal.fire({
@@ -283,7 +283,7 @@ const CardPayment = () => {
     } catch (error) {
       console.error(error);
       if (error.response) {
-        console.log("Error data", error.response);
+         ("Error data", error.response);
 
         setErr(error.response.data.content);
       }

@@ -5,29 +5,29 @@ import { debounce } from "lodash";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import {
-  ArrowLeft,
-  ChevronDown,
-  Edit,
-  MoreVertical,
-  Plus,
-  Trash
+    ArrowLeft,
+    ChevronDown,
+    Edit,
+    MoreVertical,
+    Plus,
+    Trash
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Row,
+    Spinner,
+    UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -58,7 +58,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.getAllCustomer();
       const { content } = data;
-      console.log("getAllEvents", content);
+       ("getAllEvents", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

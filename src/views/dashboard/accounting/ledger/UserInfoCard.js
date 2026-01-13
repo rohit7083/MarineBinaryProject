@@ -1,7 +1,6 @@
 import { CardTitle, Spinner } from "reactstrap";
 
 function UserInfoCard({ selectedMembers, loader }) {
-  console.log("loader", loader);
 
   return (
     <div className="card">

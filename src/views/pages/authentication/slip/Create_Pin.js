@@ -104,9 +104,9 @@ const Create_Pin = () => {
 
         setResendcount(true);
       }
-      console.log("resentOTP", res.status);
+       ("resentOTP", res.status);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     }
   };
 
@@ -121,9 +121,9 @@ const Create_Pin = () => {
 
         setResendcallCount(true);
       }
-      console.log("resentCall", res);
+       ("resentCall", res);
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       // setTimeout(() => {
       //   setResendcallLoading(false);
@@ -136,7 +136,7 @@ const Create_Pin = () => {
       const otpRes = await useJwt.sendOtp(token);
     } catch (error) {
       console.error(error);
-      console.log("failed to get otp");
+       ("failed to get otp");
     }
   };
 
@@ -165,7 +165,7 @@ const Create_Pin = () => {
 
     setAttempt(0);
     setCountdownEndTime(0);
-    console.log("Form Data:", data);
+     ("Form Data:", data);
     // const otpString = data.otp.join("");
     // const otp = parseInt(otpString, 10);
 
@@ -237,8 +237,8 @@ const Create_Pin = () => {
   }, [handlePass, handleOtp, handleConfirm]);
 
   useEffect(() => {
-    console.log("render");
-    console.log({ attempt });
+     ("render");
+     ({ attempt });
   }, [attempt]);
 
   //   if (expireTokenLoader) {
@@ -401,7 +401,7 @@ const Create_Pin = () => {
                           autoFocus={index === 0}
                           onChange={(e) => {
                             const value = e.target.value;
-                            console.log("Value", value);
+                             ("Value", value);
 
                             // Update the value in the form
                             field.onChange(e);
@@ -469,7 +469,7 @@ const Create_Pin = () => {
                           autoFocus={index === 0}
                           onChange={(e) => {
                             const value = e.target.value;
-                            console.log("Value", value);
+                             ("Value", value);
 
                             // Update the value in the form
                             field.onChange(e);

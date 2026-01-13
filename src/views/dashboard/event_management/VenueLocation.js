@@ -1,16 +1,11 @@
-import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Button,
-  Card,
-  CardBody,
-  Row,
-  Col,
+    Button,
+    Form,
+    FormGroup,
+    Input,
+    Label
 } from "reactstrap";
-import { useForm, Controller } from "react-hook-form";
 
 const VenueForm = () => {
   const {
@@ -31,7 +26,7 @@ const VenueForm = () => {
   const indoorOutdoor = watch("indoorOutdoor");
 
   const onSubmit = (data) => {
-    console.log("Venue Data:", data);
+     ("Venue Data:", data);
   };
 
   return (

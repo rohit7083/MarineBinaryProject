@@ -5,18 +5,18 @@ import { useNavigate } from "react-router-dom";
 
 // ** Reactstrap Imports
 import {
-  Alert,
-  Button,
-  Col,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
+    Alert,
+    Button,
+    Col,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
 } from "reactstrap";
 
 // ** Auth
@@ -48,7 +48,7 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
   // ** Populate form for edit mode - FIXED
   useEffect(() => {
     if (isEditMode && editData) {
-      console.log("Edit Data:", editData); // Debug log
+       ("Edit Data:", editData); // Debug log
 
       setFormData({
         eventName: editData.eventName || "",
@@ -271,7 +271,7 @@ const AddQRCodeModal = ({ isOpen, toggle, onSubmit, editData, isEditMode }) => {
           : null;
       }
 
-      console.log("Submitting API Data:", apiData); // Debug log
+       ("Submitting API Data:", apiData); // Debug log
 
       await onSubmit(apiData);
       if (!isEditMode) resetForm();

@@ -10,19 +10,19 @@ import { CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Container,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 import TokenExpire from "../../../pages/authentication/slip/TokenExpire";
@@ -53,7 +53,7 @@ const CardPayment = () => {
     try {
       setLoading(true);
       const res = await useJwt.decodeQrToken(token);
-      console.log("the Qr code type : ", res.data.qrCodeType);
+       ("the Qr code type : ", res.data.qrCodeType);
       setQrCodeType(res.data.qrCodeType);
 
       if (res?.data?.status === "false") {
@@ -64,7 +64,7 @@ const CardPayment = () => {
 
       setMemberDetails(res?.data);
     } catch (error) {
-      console.log("the response error", error.response.data.content);
+       ("the response error", error.response.data.content);
       if (
         error.response.data.content ===
         "The maximum number of people has already been reached."
@@ -201,13 +201,13 @@ const CardPayment = () => {
       };
     }
 
-    console.log("Final Payload:", payload);
+     ("Final Payload:", payload);
 
     try {
       setLoadPayment(true);
 
       const res = await useJwt.payQrCodePayment(token, payload);
-      console.log(res);
+       (res);
       if (res.data.status === "error") {
         return MySwal.fire({
           title: "Failed",
@@ -222,9 +222,9 @@ const CardPayment = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+       (error);
       if (error.response) {
-        console.log("Error data", error.response);
+         ("Error data", error.response);
         setErr(error.response.data.content);
       }
     } finally {

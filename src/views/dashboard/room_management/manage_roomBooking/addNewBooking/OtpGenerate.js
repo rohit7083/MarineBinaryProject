@@ -5,20 +5,20 @@ import Countdown from "react-countdown";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Alert,
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  Modal,
-  Spinner,
-  UncontrolledAlert,
+    Alert,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Label,
+    Modal,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import WatchNew from "../../../../../../src/assets/images/updatedWatchnew.jpg";
 
@@ -43,7 +43,7 @@ const OtpGenerate = ({
   const [errorMessage, setErrorMsz] = useState("");
   const [otpStage, setOtpStage] = useState(0); // 0: initial countdown, 1: Resend, 2: Call Us
   const [isCounting, setIsCounting] = useState(true); // countdown active
-  console.log("clientInfo", clientInfo);
+   ("clientInfo", clientInfo);
 
   const discountTypeOptions = [
     { label: "Flat ($)", value: "Flat" },

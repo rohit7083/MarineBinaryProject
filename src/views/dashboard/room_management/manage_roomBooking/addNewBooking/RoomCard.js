@@ -11,13 +11,13 @@ import { Controller } from "react-hook-form";
 
 // ** Reactstrap
 import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  FormGroup,
-  Input,
-  Label,
+    Badge,
+    Button,
+    Card,
+    CardBody,
+    FormGroup,
+    Input,
+    Label,
 } from "reactstrap";
 
 // ** Styles
@@ -47,7 +47,7 @@ const RoomCard = (props) => {
 
   const isBooked = watch(`roomUnit.${index}.fields.isBooked`);
 
-  // console.log(fieldsDetail);
+  //  (fieldsDetail);
 
   const calculateTotal = (amount, tax) => {
     if (!tax || tax === 0) return amount;
@@ -146,9 +146,9 @@ const RoomCard = (props) => {
     watch(`roomUnit.${index}.fields.isBooked`),
     noOfPeople,
   ]);
-  // console.log(watch(`roomUnit.${index}.fields.serviceType`))
+  //  (watch(`roomUnit.${index}.fields.serviceType`))
   //  ()
-  // console.log(fieldsDetail)
+  //  (fieldsDetail)
 
   function handleShowPrice(type) {
     if (isDisabled) {

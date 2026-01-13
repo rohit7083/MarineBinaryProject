@@ -3,17 +3,17 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 // ** Reactstrap Imports
 import CryptoJS from "crypto-js";
 import {
-  Alert,
-  Button,
-  Col,
-  Form,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Alert,
+    Button,
+    Col,
+    Form,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 
 // ** Third Party Imports
@@ -256,7 +256,7 @@ const GenrateOtp = (props) => {
         alert("You have reached the maximum number of attempts.");
       }
     } catch (error) {
-      console.log("Error in Resend OTP:", error);
+       ("Error in Resend OTP:", error);
     }
   };
 
@@ -271,7 +271,7 @@ const GenrateOtp = (props) => {
 
     try {
       if (!accessTokenotp) {
-        console.log("Access token is missing. Please regenerate OTP.");
+         ("Access token is missing. Please regenerate OTP.");
         return;
       }
       const rowotp = data.otpInput.join("");
@@ -283,13 +283,13 @@ const GenrateOtp = (props) => {
         otp: encrypted,
       });
       setVerify(true);
-      console.log(response);
+       (response);
       setShow(false);
       setotpVerify(true);
-      console.log("OTP Verified Successfully!");
+       ("OTP Verified Successfully!");
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      console.log("Failed to verify OTP. Please try again.");
+       ("Failed to verify OTP. Please try again.");
 
       if (error.response && error.response.data) {
         const { content } = error.response.data;
@@ -320,7 +320,7 @@ const GenrateOtp = (props) => {
       setShow(true);
     } catch (error) {
       console.error("Error generating OTP:handleResendOTP ", error);
-      console.log("Failed to generate OTP. Please try again.");
+       ("Failed to generate OTP. Please try again.");
     } finally {
       setOtpLoader(false);
     }

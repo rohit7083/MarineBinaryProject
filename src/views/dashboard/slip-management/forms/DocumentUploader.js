@@ -8,14 +8,14 @@ import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { DownloadCloud, Eye, FileText, Upload, X } from "react-feather";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  ListGroup,
-  ListGroupItem,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Col,
+    ListGroup,
+    ListGroupItem,
+    Spinner,
 } from "reactstrap";
 
 const DocumentUploader = ({
@@ -124,7 +124,7 @@ const DocumentUploader = ({
         // Update existing document
         setUploadLoader(true);
         const response = await useJwt.updateDocuments(documentUid, formData);
-        console.log(`Document [${name}] updated successfully:`, response);
+         (`Document [${name}] updated successfully:`, response);
         if (response?.status === 200) {
           toast.current.show({
             severity: "success",
@@ -137,7 +137,7 @@ const DocumentUploader = ({
         setUploadLoader(true);
         // Create new document
         const response = await useJwt.slipDocument(formData);
-        console.log(`New document [${name}] created successfully:`, response);
+         (`New document [${name}] created successfully:`, response);
         if (response?.status === 201) {
           toast.current.show({
             severity: "success",

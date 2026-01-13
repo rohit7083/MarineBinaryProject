@@ -48,7 +48,7 @@
 //     : 0;
 
 //   const onSubmit = (data) => {
-//     console.log("Booking Data:", {
+//      ("Booking Data:", {
 //       ...data,
 //       totalPrice,
 //       roomNumber: room.roomNumber,
@@ -264,7 +264,7 @@ const RoomCard = ({ allRooms, index }) => {
   const [perNightValues, setPerNightValue] = useState({});
   const [bookedRooms, setBookedRooms] = useState([]);
   const [peopleCount, setPeopleCount] = useState(null);
-  console.log("perNightValues", perNightValues);
+   ("perNightValues", perNightValues);
 
   const [isBooked, setIsbook] = useState([]);
 
@@ -302,7 +302,7 @@ const RoomCard = ({ allRooms, index }) => {
         },
       ]);
     }
-    console.log("Booked Rooms:", bookedRooms);
+     ("Booked Rooms:", bookedRooms);
   };
 
   const [tableData, setTableData] = useState({
@@ -374,15 +374,15 @@ const RoomCard = ({ allRooms, index }) => {
 
   const onSubmit = (data) => {
     // {{ }}
-    //  console.log("Form Data:", data);
-    //   console.log("Booked Rooms:", bookedRooms);
+    //   ("Form Data:", data);
+    //    ("Booked Rooms:", bookedRooms);
     //   const selections = tableData.results.map((room, index) => ({
     //   roomLabel: room.label,
     //   selectedService: data.serviceType?.[index],
     //   extraPeople: data.ExtraPeople?.[index] || false,
     //   extraPeopleCount: data.extraPeopleCount?.[index] || 0
     // }));
-    // console.log("Selections per room:", selections);
+    //  ("Selections per room:", selections);
   };
 
   return (
@@ -662,7 +662,7 @@ const RoomCard = ({ allRooms, index }) => {
                                   upHandler={<Plus />}
                                   downHandler={<Minus />}
                                   onChange={(number) => {
-                                    console.log(number);
+                                     (number);
                                     field.onChange(number);
                                     handlePeopleCount(index, number);
                                   }}

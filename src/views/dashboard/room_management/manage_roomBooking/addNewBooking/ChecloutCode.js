@@ -6,16 +6,16 @@ import withReactContent from "sweetalert2-react-content";
 
 import { useEffect, useState } from "react";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardText,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row,
 } from "reactstrap";
 
 import { ArrowLeft } from "react-feather";
@@ -64,7 +64,7 @@ const Checkout = () => {
     try {
       setLoading(true);
       const res = await useJwt.getMemberDetails(token);
-      console.log("res", res);
+       ("res", res);
       // const eventId=res?.data?.eventId;
 
       setMemberDetails(res?.data);
@@ -110,13 +110,13 @@ const Checkout = () => {
     try {
       setLoadPayment(true);
       const res = await useJwt.PreviewSubmit(payload);
-      console.log(res);
+       (res);
     } catch (error) {
       console.error(error);
       if (error.response) {
-        console.log("Error data", error.response.data);
-        console.log("Error status", error.response.status);
-        console.log("Error headers", error.response.headers);
+         ("Error data", error.response.data);
+         ("Error status", error.response.status);
+         ("Error headers", error.response.headers);
         setErr(error.response.data.content);
       }
     } finally {

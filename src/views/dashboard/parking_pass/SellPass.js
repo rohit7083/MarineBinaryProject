@@ -16,18 +16,18 @@ import Select from "react-select";
 import { SlideDown } from "react-slidedown";
 import "react-slidedown/lib/slidedown.css";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 import { countries } from "../../dashboard/slip-management/CountryCode";
 import Payment_section from "./park_Payment/Payment_section";
@@ -165,7 +165,7 @@ const SellPass = () => {
         totalAmount,
       };
 
-      console.log("Final Payload:", payload);
+       ("Final Payload:", payload);
 
       try {
         setLoading(true);
@@ -181,7 +181,7 @@ const SellPass = () => {
             life: 2000,
           });
         }
-        console.log("API Response:", res);
+         ("API Response:", res);
       } catch (error) {
         console.error("API Error:", error);
         if (error.response) {

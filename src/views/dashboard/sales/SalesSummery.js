@@ -12,18 +12,18 @@ import { Calendar } from "react-feather";
 import Flatpickr from "react-flatpickr";
 
 import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+    CartesianGrid,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
 } from "recharts";
 
 // ** Custom Tooltip
 const CustomTooltip = ({ active, payload }) => {
-  console.log(payload);
+   (payload);
 
   if (active && payload && payload.length) {
     return (

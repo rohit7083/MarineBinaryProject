@@ -9,16 +9,16 @@ import * as XLSX from "xlsx";
 
 // ** Reactstrap Imports
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 // ** Auth
 import useJwt from "@src/auth/jwt/useJwt";
@@ -484,7 +484,7 @@ const DynamicTable = () => {
       // Write and download file
       XLSX.writeFile(wb, filename);
 
-      console.log("Excel file exported successfully!");
+       ("Excel file exported successfully!");
     } catch (error) {
       console.error("Error exporting to Excel:", error);
       alert("Error occurred while exporting to Excel. Please try again.");
@@ -498,7 +498,7 @@ const DynamicTable = () => {
     try {
       setLoading(true);
       const response = await useJwt.getViewRentRoll();
-      console.log("API Response:", response);
+       ("API Response:", response);
       setSummerydata(response?.data || {});
       if (response?.data?.slips && response.data.slips.length > 0) {
         const slips = response.data.slips;
@@ -522,7 +522,7 @@ const DynamicTable = () => {
         const months = sortedMonths.reverse(); // Reverse to show latest month first
         setPaymentMonths(months);
 
-        console.log("Payment Months (Latest First):", months);
+         ("Payment Months (Latest First):", months);
 
         // Process slips to calculate amounts
         const processedSlips = slips.map((slip) => {

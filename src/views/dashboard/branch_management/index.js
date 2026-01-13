@@ -7,23 +7,23 @@ import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { Edit, Plus } from "lucide-react";
 import {
-  ChevronDown,
-  MoreVertical
+    ChevronDown,
+    MoreVertical
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Button,
+    Card,
+    CardBody,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Row,
+    Spinner,
+    UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -54,7 +54,7 @@ const index = () => {
      
       const { data } = await useJwt.getAllBranch();
       const { content } = data;
-      console.log("branch", content);
+       ("branch", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

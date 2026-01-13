@@ -29,7 +29,7 @@ const CreateUserForm = (props) => {
   // ** Props
   const { onClose } = props;
 
-  console.log("CreateUserForm Props:", props);
+   ("CreateUserForm Props:", props);
 
   // ** State
   const [open, setOpen] = useState(true);
@@ -99,7 +99,7 @@ const CreateUserForm = (props) => {
     <div>
       <form
         onSubmit={handleSubmit(onSubmit, (errors) =>
-          console.log("Errors", errors)
+           ("Errors", errors)
         )}
       >
         <Row>

@@ -30,14 +30,14 @@ const VerifyEmailBasic = () => {
 
   // Submit handler
   const onSubmit = async (data) => {
-    // console.log("Submitted Data: ", data);
+    //  ("Submitted Data: ", data);
     setLoading(true); // Set loading to true before API call
 
     try {
       const res = await useJwt.sendEmail(data);
-      console.log(res);
+       (res);
 
-      // console.log(res.status);
+      //  (res.status);
       setResToken(res.data.token);
 
       if (res.status === 200) {
@@ -57,7 +57,7 @@ const VerifyEmailBasic = () => {
         }, 2000);
       }
     } catch (error) {
-      // console.log(error.response);
+      //  (error.response);
 
       if (error.response) {
         const { status, data } = error.response;

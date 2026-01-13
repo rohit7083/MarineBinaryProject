@@ -14,15 +14,15 @@ import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
 
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -97,7 +97,7 @@ const DataTableWithButtons = () => {
         const res = await useJwt.getAllVendor();
         setData(res.data.content.result);
       } catch (error) {
-        console.log("error in Vendar data ", error);
+         ("error in Vendar data ", error);
       } finally {
         setLoading(false);
       }

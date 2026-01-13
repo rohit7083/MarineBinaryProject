@@ -22,7 +22,6 @@ function HeaderCard({ members, setSelectedMembers }) {
   });
 
   const memberNamewatch = watch("memberName");
-  console.log(memberNamewatch);
   setSelectedMembers(memberNamewatch);
   return (
     <div>

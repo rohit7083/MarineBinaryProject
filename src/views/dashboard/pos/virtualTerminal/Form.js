@@ -5,17 +5,17 @@ import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  InputGroup,
-  Label,
-  Row,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    InputGroup,
+    Label,
+    Row,
 } from "reactstrap";
 
 // ** Auth
@@ -273,7 +273,7 @@ const MultipleColumnForm = () => {
 
     // Transform data to API format
     const apiData = transformDataForAPI(data);
-    console.log("API Data:", apiData);
+     ("API Data:", apiData);
 
     // Send to API
     sendToAPI(apiData);

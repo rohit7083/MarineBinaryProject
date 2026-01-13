@@ -63,7 +63,7 @@
 
 //   const location = useLocation();
 //   const uid = location.state?.uid || "";
-//   console.log("uid", uid);
+//    ("uid", uid);
 
 //   useEffect(() => {
 //     if (uid) {
@@ -739,19 +739,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Form,
-  Input,
-  Label,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Form,
+    Input,
+    Label,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 
 import { Controller, useForm } from "react-hook-form";

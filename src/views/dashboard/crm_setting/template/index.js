@@ -37,7 +37,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.getAllTemplate();
       const { content } = data;
-      console.log("getAllTemplate", content);
+       ("getAllTemplate", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

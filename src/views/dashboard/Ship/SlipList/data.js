@@ -60,7 +60,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
   //     selector: (row) =>{
   //       // {{ }}
   //       const checkStatus=row.isInUse;
-  // console.log(row);
+  //  (row);
 
   //       return (
   //         <div className="d-flex justify-content-center">
@@ -129,7 +129,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                 });
                 // setData((prevData) => {
                 //   const newData = prevData.filter((item) => item.uid !== uid);
-                //   console.log("Updated Data:", newData);
+                //    ("Updated Data:", newData);
                 //   return newData;
                 // });
 
@@ -163,9 +163,9 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
       };
 
       const handle = async () => {
-        console.log(row.shipTypeName);
-        console.log(row.dimensions);
-        console.log("Passing to Link:", row.shipTypeName, row.dimensions);
+         (row.shipTypeName);
+         (row.dimensions);
+         ("Passing to Link:", row.shipTypeName, row.dimensions);
       };
 
       return (

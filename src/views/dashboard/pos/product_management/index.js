@@ -10,18 +10,18 @@ import { ChevronDown, Edit, MoreVertical, Package, Trash } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  Row,
-  Spinner,
-  UncontrolledDropdown,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    Input,
+    Row,
+    Spinner,
+    UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -84,7 +84,7 @@ const index = () => {
     navigate("/dashboard/pos/product_management/addProduct_index", {
       state: { row },
     });
-    console.log("row", row);
+     ("row", row);
   };
 
   useEffect(() => {
@@ -138,7 +138,7 @@ const index = () => {
 
   const handleStocks = (row) => {
     navigate("/dashboard/pos/product_management/AddStocks", { state: { row } });
-    console.log(row);
+     (row);
   };
 
   const columns = [
@@ -449,7 +449,7 @@ export default index;
 //     navigate("/dashboard/pos/product_management/addProduct_index", {
 //       state: { row },
 //     });
-//     console.log("row",row);
+//      ("row",row);
 //   };
 
 //   useEffect(() => {
@@ -503,7 +503,7 @@ export default index;
 
 //   const handleStocks = (row) => {
 //     navigate("/dashboard/pos/product_management/AddStocks", { state: { row } });
-//     console.log(row);
+//      (row);
 //   };
 //   const columns = [
 //     {

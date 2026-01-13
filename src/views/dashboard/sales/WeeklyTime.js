@@ -2,13 +2,13 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import "@styles/react/libs/flatpickr/flatpickr.scss";
 import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Tooltip,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    LineElement,
+    PointElement,
+    Tooltip,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -41,10 +41,10 @@ const HourlySales = () => {
       try {
         setLoading(true);
         const res = await useJwt.salesByhour();
-        console.log(res);
+         (res);
         setTimeData(res);
       } catch (error) {
-        console.log(error);
+         (error);
       } finally {
         setLoading(false);
       }

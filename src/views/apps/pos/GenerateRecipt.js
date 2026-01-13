@@ -32,7 +32,6 @@ const PaymentReceiptModal = ({
     (store) => store.cartSlice
   );
   
-  console.log(discountData);
   const [invoiceLoading, setInvoiceLoading] = useState(false);
   
    const payload = {
@@ -47,12 +46,10 @@ const PaymentReceiptModal = ({
       setInvoiceLoading(true);
       const res = await useJwt.sendInvoiceToMail(payload);
 
-      console.log(res);
       if (res?.status == 200) {
         toast.success("Invoice successfully sent to your email.");
       }
     } catch (error) {
-      console.log(error);
       toast.error(
         error?.response?.data?.content ||
           "Something went wrong, please try again later."
@@ -98,7 +95,6 @@ const PaymentReceiptModal = ({
 
       // Call the API
       const res = await useJwt.downloadReceipt(txnId); // make sure the function name is correct
-      console.log(res);
 
       // Convert raw PDF text into binary
       const pdfText = res.data;

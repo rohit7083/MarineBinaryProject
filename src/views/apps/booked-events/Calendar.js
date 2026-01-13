@@ -37,7 +37,6 @@ const Calendar = (props) => {
     selectEvent,
     updateEvent,
   } = props;
-  console.log("store", store);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedEventData, setSelectedEventData] = useState(null);
   const toggleModal = () => setModalOpen(!modalOpen);
@@ -195,12 +194,11 @@ const Calendar = (props) => {
     eventClick({ event: clickedEvent }) {
       dispatch(selectEvent(clickedEvent));
       handleAddEventSidebar();
-      console.log("clickedEvent", clickedEvent?._def);
       setClickedEvent(clickedEvent); // store event to trigger useEffect
     },
 
     // eventClick({ event }) {
-    //   console.log('Event clicked:', event);
+    //    ('Event clicked:', event);
 
     //   dispatch(selectEvent(event));
     //   handleAddEventSidebar();
@@ -221,7 +219,6 @@ const Calendar = (props) => {
       ev.end = info.date;
       dispatch(selectEvent(ev));
       handleAddEventSidebar();
-      console.log("cllick on date ");
     },
 
     ref: calendarRef,
@@ -251,7 +248,6 @@ const Calendar = (props) => {
           navigate("/PaymentHistory", { state: { info } });
         }
 
-        console.log(selectedEventData);
       } catch (error) {
         console.error(error);
         if (error.response) {

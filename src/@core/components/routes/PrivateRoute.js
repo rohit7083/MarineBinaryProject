@@ -12,7 +12,6 @@ import Spinner from "../spinner/Loading-spinner";
 
 
 const PrivateRoute = ({ children, route }) => {
-  //console.log(children,route)
   // ** Hooks & Vars
   
   const ability = useContext(AbilityContext);

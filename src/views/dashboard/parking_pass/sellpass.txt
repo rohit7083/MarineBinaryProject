@@ -89,13 +89,13 @@ const SellPass = () => {
     try {
       const res = await useJwt.getAll();
       const resData = res?.data?.content?.result;
-      console.log(resData);
+       (resData);
       const parkingName = resData?.map((x) => ({
         label: x.parkingName,
         value: x.uid,
         ParkingAmount: x.parkingAmount,
       }));
-      console.log(parkingName?.ParkingAmount);
+       (parkingName?.ParkingAmount);
       setparkingName(parkingName);
     } catch (error) {
        console.error(error);
@@ -166,7 +166,7 @@ const SellPass = () => {
 
   const existingMemberData = watch("selectedMember");
   const pname = watch(`fields[${i}].parking_name`);
-  console.log(pname);
+   (pname);
   
   const qty = watch("quantity");
 
@@ -235,12 +235,12 @@ const payload = {
 };
 
 
-    console.log("data",payload);
+     ("data",payload);
 
     try {
       const res = await useJwt.memberpark(payload);
-      console.log(res);
-      console.log("Sucessfully");
+       (res);
+       ("Sucessfully");
     } catch (error) {
        console.error(error);
     }

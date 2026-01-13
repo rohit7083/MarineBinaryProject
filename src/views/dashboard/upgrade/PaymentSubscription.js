@@ -11,19 +11,19 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Form,
-  Input,
-  Label,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  TabContent,
-  TabPane,
+    Button,
+    Card,
+    CardBody,
+    Col,
+    Form,
+    Input,
+    Label,
+    Nav,
+    NavItem,
+    NavLink,
+    Row,
+    TabContent,
+    TabPane,
 } from "reactstrap";
 
 const PaymentPage = () => {
@@ -54,7 +54,7 @@ const PaymentPage = () => {
   const [isLoadingCards, setIsLoadingCards] = useState(false);
 
   const [isProcessing, setIsProcessing] = useState(false);
-  console.log("activeTab", activeTab);
+   ("activeTab", activeTab);
 
   useEffect(() => {
     if (existingCreditCard?.length > 0) {
@@ -70,7 +70,7 @@ const PaymentPage = () => {
   }, [activeTab, unregister]);
 
   console.clear();
-  console.log(errors);
+   (errors);
 
   const onSubmit = async (data) => {
     if (activeTab === "card") {
@@ -121,7 +121,7 @@ const PaymentPage = () => {
       payload.cardID = selectedCard;
       payload.cardcvv = data.cvv;
     }
-    console.log("payload", payload);
+     ("payload", payload);
     setIsProcessing(true);
 
     try {
@@ -130,12 +130,12 @@ const PaymentPage = () => {
         const userData = JSON.parse(localStorage.getItem("userData"));
         const userUid = userData?.uid || "";
         const resPermision = await useJwt.getBranch(userUid);
-        console.log(resPermision);
+         (resPermision);
         const upadtedPersmision = {
           ...userData,
           permissions: resPermision?.data?.userRoles?.permissions || [],
         };
-        console.log("upadtedPersmision", upadtedPersmision);
+         ("upadtedPersmision", upadtedPersmision);
 
         localStorage.setItem("userData", JSON.stringify(upadtedPersmision));
 

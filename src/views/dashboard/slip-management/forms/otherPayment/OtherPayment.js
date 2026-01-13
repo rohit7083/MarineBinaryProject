@@ -15,20 +15,20 @@ import { Toast } from "primereact/toast";
 
 // ** Reactstrap Imports
 import {
-  Badge,
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
+    Badge,
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
 } from "reactstrap";
 
 // ** Auth
@@ -312,7 +312,7 @@ const memberId=SlipData?.member?.id;
   // ** Handle View Details
   const handleViewDetails = (row) => {
     
-    console.log("Selected Payment:", row);
+     ("Selected Payment:", row);
     setSelectedPayment(row);
     setViewModal(true);
   };
@@ -385,11 +385,11 @@ const memberId=SlipData?.member?.id;
 
         setFormatedData(formattedData);
         setFilteredData(formattedData);
-        console.log("Formatted data:", formattedData);
-        console.log("Payment response:", response);
+         ("Formatted data:", formattedData);
+         ("Payment response:", response);
          }
       } catch (error) {
-        console.log("Error fetching payment data:", error);
+         ("Error fetching payment data:", error);
         toast.current?.show({
           severity: "error",
           summary: "Fetch Error",

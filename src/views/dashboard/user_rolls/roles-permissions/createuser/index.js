@@ -1,14 +1,10 @@
-import { Fragment } from "react";
-import React from "react";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
+import { Fragment } from "react";
 import Table from "./Table";
 // import RoleCards from './RoleCards'
 import Createuser from "./Createuser";
 
-import { useEffect } from "react";
-import useJwt from "@src/auth/jwt/useJwt";
 import { Card, CardBody } from "reactstrap";
-import { Plus } from "react-feather";
 const Roles = ({ data }) => {
   // const [allRoleName, setallRoleName] = React.useState([]);
   // const [tableData, setTableData] = React.useState({
@@ -27,7 +23,7 @@ const Roles = ({ data }) => {
   //     try {
   //       const { data } = await useJwt.getallSubuser();
   //       const { content } = data;
-  //       console.log("content", content);
+  //        ("content", content);
 
   //       setTableData({ count: content.count, results: content.result });
   //       // setallRoleName("roles",content.result.map((role) => role.roleName));

@@ -5,11 +5,11 @@ import { useContext, useState } from "react";
 import { Edit2, Eye, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import {
-  Badge,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
+    Badge,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle,
+    UncontrolledDropdown,
 } from "reactstrap";
 import { CompactModal, SuccessModal } from "../../CompactModal"; // ** Reactstrap Imports
 // ** Vars
@@ -136,6 +136,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                     uid: row.uid,
                     isAssigned: row.isAssigned,
                     isRevenu: row.nonRevenue,
+                    allData:row,
                   }}
                 >
                   <Edit2 className="me-50" size={15} />
@@ -173,7 +174,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
         setPendingValue(newStatus);
         setConfirmModal(true);
       };
-      console.log(isOffline);
+       (isOffline);
 
       const handleConfirm = async () => {
         try {

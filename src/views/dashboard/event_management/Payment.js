@@ -12,25 +12,25 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -77,7 +77,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     updateData?.data?.finalPayble -
     (updateData?.listData?.Rowdata?.advancePaymentAmout ||
       updateData?.listData?.Rowdata?.totalAmount);
-  console.log("AmtDiffernce", AmtDiffernce);
+   ("AmtDiffernce", AmtDiffernce);
 
   let finalAmtRemain;
 
@@ -430,7 +430,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   const PayMode = watch("paymentMode");
 
   const onSubmit = async (data) => {
-    console.log("from the paymentdata", data);
+     ("from the paymentdata", data);
     setErrorMsz("");
     const otpArray = data.otp || [];
     const pin = otpArray?.join("");
@@ -618,7 +618,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           break;
 
         default:
-          console.log("Choose a valid payment method");
+           ("Choose a valid payment method");
       }
     }
     if (AmtDiffernce > 0 && updateData?.listData?.uid) {
@@ -634,9 +634,9 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           //   stepper.next();
           // }, 4000);
         }
-        console.log(updateData);
+         (updateData);
       } catch (error) {
-        console.log(error);
+         (error);
         toast.current.show({
           severity: "error",
           summary: "Payment Failed",
@@ -656,7 +656,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         const res = await useJwt.payment(formData);
         let transactionID = res?.data?.transaction_id;
         setTransactionId(transactionID);
-        console.log(res);
+         (res);
 
         const { qr_code_base64 } = res?.data;
         setQr(qr_code_base64);

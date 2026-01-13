@@ -5,34 +5,30 @@ import { Link } from "react-router-dom";
 import { useSkin } from "@hooks/useSkin";
 
 // ** Icons Imports
-import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 
 // ** Custom Components
-import InputPasswordToggle from "@components/input-password-toggle";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  CardTitle,
-  CardText,
-  Form,
-  Label,
-  Input,
-  Button,
-  FormFeedback,
+    Button,
+    CardText,
+    CardTitle,
+    Col,
+    FormFeedback,
+    Input,
+    Label,
+    Row
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Illustrations Imports
-import illustrationsLight from "@src/assets/images/pages/register-v2.svg";
 import illustrationsDark from "@src/assets/images/pages/register-v2-dark.svg";
+import illustrationsLight from "@src/assets/images/pages/register-v2.svg";
 
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 const RegisterCover = () => {
   const MySwal = withReactContent(Swal);
 
@@ -48,7 +44,7 @@ const RegisterCover = () => {
 
   const onSubmit = async (data) => {
     if (Object.keys(errors).length === 0) {
-      console.log("Submitted data", data);
+       ("Submitted data", data);
 
       try {
         // await useJwt.postsVessel(payload);
@@ -74,7 +70,7 @@ const RegisterCover = () => {
         });
       }
     } else {
-      console.log("Form has errors");
+       ("Form has errors");
     }
   };
 

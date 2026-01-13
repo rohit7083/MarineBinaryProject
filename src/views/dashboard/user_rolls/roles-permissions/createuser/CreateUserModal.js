@@ -8,22 +8,22 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  CardTitle,
-  Col,
-  Form,
-  FormFeedback,
-  Input,
-  InputGroup,
-  InputGroupText,
-  Label,
-  ListGroupItem,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    CardTitle,
+    Col,
+    Form,
+    FormFeedback,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Label,
+    ListGroupItem,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import { countries } from "../../../slip-management/CountryCode";
@@ -160,13 +160,13 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         uid: data.userRoles,
       },
     };
-    console.log("Transformed Data:", transformedData);
+     ("Transformed Data:", transformedData);
 
     try {
       if (uid) {
         setLoading(true);
         const res = await useJwt.updateSubuser(uid, transformedData);
-        console.log("Add role res:", res);
+         ("Add role res:", res);
         // MySwal.fire({
         //   title: "Successfully Updated",
         //   text: "User Updated Successfully",
@@ -194,8 +194,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       } else {
         setLoading(true);
         const res2 = await useJwt.createUser(transformedData);
-        console.log("updated res:", res2);
-        console.log("data is created", data);
+         ("updated res:", res2);
+         ("data is created", data);
 
         MySwal.fire({
           title: "Successfully Added",
@@ -233,7 +233,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
           value: role.uid,
           label: role.roleName,
         }));
-        //  console.log("roles",roles);
+        //   ("roles",roles);
 
         setallRoleName(roles);
       } catch (error) {
@@ -295,7 +295,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
 
   useEffect(() => {
     setShow(propShow);
-    console.log(row);
+     (row);
   }, [propShow]);
 
   const countryOptions = React.useMemo(
@@ -317,7 +317,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       })),
     [countries]
   );
-  console.log(row);
+   (row);
 
   return (
     <Fragment>

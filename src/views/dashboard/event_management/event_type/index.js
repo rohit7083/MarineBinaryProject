@@ -35,7 +35,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.getAllEventType();
       const { content } = data;
-      console.log("content2", content);
+       ("content2", content);
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {

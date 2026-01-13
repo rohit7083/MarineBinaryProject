@@ -6,19 +6,19 @@ import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 
 import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    UncontrolledAlert,
 } from "reactstrap";
 import ProductHeader from "./ProductsHeader";
 
@@ -96,7 +96,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
   const fetchCustomers = async () => {
     try {
       const res = await useJwt.getAllCustomers();
-      console.log("fetching data from the user table ", res);
+       ("fetching data from the user table ", res);
 
       if (res?.data && res?.data?.content && res?.data?.content?.result) {
         const customersData = res?.data?.content?.result || [];
@@ -128,13 +128,13 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
       pinCode: data.pinCode,
     };
 
-    console.log("📤 Final Payload:", payload);
-    console.log("🔗 API Call Starting...");
+     ("📤 Final Payload:", payload);
+     ("🔗 API Call Starting...");
 
     try {
       setLoading(true);
       const res = await useJwt.CreateNewCustomer(payload);
-      console.log("✅ Customer added successfully:", res);
+       ("✅ Customer added successfully:", res);
 
       setShowModal(false);
       modalReset({
@@ -182,7 +182,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
   const handleCustomerSelect = (selectedOption, fieldType) => {
     if (selectedOption && selectedOption.customerData) {
       const customer = selectedOption.customerData;
-      console.log(`Selected customer by ${fieldType}:`, customer);
+       (`Selected customer by ${fieldType}:`, customer);
     }
   };
 
@@ -194,7 +194,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
     if (selectedOption) {
       const number = selectedOption.label;
       setSelectedNumber(number);
-      console.log("Selected Mobile Number:", number);
+       ("Selected Mobile Number:", number);
     } else {
       setSelectedNumber("");
     }
@@ -217,7 +217,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
         }));
 
       setFilteredPhoneOptions(filteredPhones);
-      console.log("Filtered phone options:", filteredPhones);
+       ("Filtered phone options:", filteredPhones);
     } else {
       setSelectedName("");
       setFilteredPhoneOptions([]);
@@ -291,7 +291,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
     try {
       setWalkinLoading(true);
       const res = await useJwt.getWalkinCustomer();
-      console.log(res);
+       (res);
 
       const walkinData = res?.data || null;
       if (walkinData) {
@@ -299,7 +299,7 @@ function Header({ selectedCustomer, setSelectedCustomer }) {
       }
       setCustomers([]);
     } catch (error) {
-      console.log(error);
+       (error);
     } finally {
       setWalkinLoading(false);
     }

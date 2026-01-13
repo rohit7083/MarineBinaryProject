@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Card, CardBody, Row, Col, Button } from "reactstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button, Card, CardBody, Col, Row } from "reactstrap";
 
 // const defaultDummyData = {
 //   eventName: "Corporate Gala",
@@ -45,7 +44,7 @@ import { Card, CardBody, Row, Col, Button } from "reactstrap";
 // };
 
 const EventPreview = ({ stepper, allEventData }) => {
-  console.log("eventData", allEventData);
+   ("eventData", allEventData);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,7 +55,7 @@ const EventPreview = ({ stepper, allEventData }) => {
   });
 
   const onSubmit = (data) => {
-    console.log("Final Submission:", data);
+     ("Final Submission:", data);
     // Proceed with submission/payment
   };
 
@@ -67,7 +66,7 @@ const EventPreview = ({ stepper, allEventData }) => {
   //     const res=await useJwt.api();
   //     log("Response from API:", res);
   //   } catch (error) {
-  //     console.log("Error in handlePreview:", error);
+  //      ("Error in handlePreview:", error);
 
   //   }
 

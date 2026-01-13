@@ -149,7 +149,7 @@ const index = () => {
       minWidth: "150px",
       cell: (row) => {
         const [data, setData] = useState([]);
-        console.log("row action", row);
+         ("row action", row);
 
         const MySwal = withReactContent(Swal);
 

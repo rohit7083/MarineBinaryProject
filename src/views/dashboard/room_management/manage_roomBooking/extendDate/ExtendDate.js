@@ -9,16 +9,16 @@ import Flatpickr from "react-flatpickr";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Spinner,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Col,
+    FormFeedback,
+    FormGroup,
+    Input,
+    Label,
+    Spinner,
 } from "reactstrap";
 function ExtendDate({ viewData }) {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ function ExtendDate({ viewData }) {
   }, [viewData?.checkInDate]);
   const uid = viewData?.uid;
   const onSubmit = async (data) => {
-    console.log("Form Data Submitted:", data);
+     ("Form Data Submitted:", data);
     const payload = {
       newCheckOutDate: data?.checkOutDate,
       extraPeople: data?.extraPeople || null,
@@ -54,7 +54,7 @@ function ExtendDate({ viewData }) {
       const selectedBranch = JSON.parse(selectedUserStr);
       let branchUid = selectedBranch.uid;
       const res = await useJwt.ExtendDate(uid, branchUid, payload);
-      console.log(res);
+       (res);
 
       setExtendResponseData(res?.data);
 
@@ -74,7 +74,7 @@ function ExtendDate({ viewData }) {
         });
       }
     } catch (error) {
-      console.log(error);
+       (error);
       setError(error?.response?.data?.content);
       toast.current.show({
         severity: "error",

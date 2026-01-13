@@ -11,16 +11,16 @@ import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 // ** Reactstrap Imports
 import useJwt from "@src/auth/jwt/useJwt";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  Col,
-  Form,
-  Input,
-  Label,
-  Row,
+    Button,
+    Card,
+    CardBody,
+    CardText,
+    CardTitle,
+    Col,
+    Form,
+    Input,
+    Label,
+    Row,
 } from "reactstrap";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
@@ -71,7 +71,7 @@ const { tok } = useParams();
   } = useForm();
   const token = userData?.token;
 
-  // console.log({ token });
+  //  ({ token });
 
   const SECRET_KEY = "zMWH89JA7Nix4HM+ij3sF6KO3ZumDInh/SQKutvhuO8=";
 
@@ -99,7 +99,7 @@ const { tok } = useParams();
   }
 
   const handleOtp = watch("otp");
-  // console.log(handleOtp);
+  //  (handleOtp);
 
   const handleResendOTP = async (e) => {
     e.preventDefault();
@@ -112,13 +112,13 @@ const { tok } = useParams();
 
         setResendcount(true);
       }
-      console.log("resentOTP", res);
+       ("resentOTP", res);
       toast.success("OTP sent successfully", {
         position: "top-center",
         autoClose: 5000,
       });
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       setResendLoading(false);
     }
@@ -135,13 +135,13 @@ const { tok } = useParams();
 
         setResendcallCount(true);
       }
-      console.log("resentCall", callRes);
+       ("resentCall", callRes);
       toast.success("Call Verification Send Sucessfully", {
         position: "top-center",
         autoClose: 5000,
       });
     } catch (error) {
-      console.log(error.response);
+       (error.response);
     } finally {
       setResendLoading2(false);
     }
@@ -158,10 +158,10 @@ const { tok } = useParams();
       let res;
      if (tok) {
          res = await useJwt.withoutAuthEmailOtp(tok, { otp });
-        console.log(res);
+         (res);
       }else{
          res = await useJwt.verifyAccount(token, { otp });
-        console.log(res);
+         (res);
       }
 
       const abilityList = res.data.profile.allPermissions.map(
@@ -187,7 +187,7 @@ const { tok } = useParams();
       const uidForbranch = res?.data?.profile?.uid;
       if (res?.status === 200) {
         const res = await useJwt.getBranch(uidForbranch);
-        console.log(res);
+         (res);
         let branchData = res?.data?.branches;
         const crmId = res?.data?.crmId || "";
       localStorage.setItem("crmId", crmId);
@@ -217,7 +217,7 @@ const { tok } = useParams();
 
       // window.location = "/crm/marine-resort/dashbord";
     } catch (error) {
-      console.log({ error });
+       ({ error });
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = error.response.data.content;

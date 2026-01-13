@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
-  FaCreditCard,
-  FaLink,
-  FaMoneyBillAlt,
-  FaQrcode,
-  FaRegCheckCircle,
+    FaCreditCard,
+    FaLink,
+    FaMoneyBillAlt,
+    FaQrcode,
+    FaRegCheckCircle,
 } from "react-icons/fa";
 import { MdOutlineSwipe } from "react-icons/md";
 import { useLocation } from "react-router-dom";
@@ -24,10 +24,10 @@ const PaymentHistory = ({ stepper, updateData }) => {
     control,
     name: "roomUnit",
   });
-  console.log("room roomDataa  roomDataa", roomDataa);
+   ("room roomDataa  roomDataa", roomDataa);
   const paymentHistoryData =
     location?.state?.Rowdata || location?.state?.info?.content ||location?.state?.info;
-  console.log("paymenthostory data ", paymentHistoryData);
+   ("paymenthostory data ", paymentHistoryData);
   const {
     lastName,
     firstName,
@@ -44,7 +44,7 @@ const PaymentHistory = ({ stepper, updateData }) => {
   useEffect(() => {
     const roomSearchUnit =
       paymentHistoryData?.roomBookings?.[0]?.roomSearch?.roomSearchUnit || [];
-    console.log("roomSearchUnit", roomSearchUnit);
+     ("roomSearchUnit", roomSearchUnit);
 
     const roomData = roomSearchUnit.map((unit) => ({
       id: unit?.id,
@@ -75,7 +75,7 @@ const PaymentHistory = ({ stepper, updateData }) => {
         noOfExtraPeople: unit.noOfExtraPeople,
       },
     }));
-    console.log("roomData", roomData);
+     ("roomData", roomData);
 
     reset({ roomUnit: roomData });
 
@@ -139,7 +139,7 @@ const PaymentHistory = ({ stepper, updateData }) => {
 
   //     taxValue: unit?.roomUnit?.roomType?.taxValue,
   //   }));
-  // console.log(formatted);
+  //  (formatted);
 
   //   reset({ roomUnit: formatted });
   //   setRoomData(formatted);

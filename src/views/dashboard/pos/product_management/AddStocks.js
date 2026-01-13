@@ -5,21 +5,21 @@ import { Controller, useForm } from "react-hook-form";
 import "react-phone-input-2/lib/bootstrap.css";
 import { useLocation } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  Row,
-  Spinner,
-  Table,
-  UncontrolledAlert,
+    Button,
+    Card,
+    CardBody,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Row,
+    Spinner,
+    Table,
+    UncontrolledAlert,
 } from "reactstrap";
 import NavItems from "./NavItems";
 
@@ -37,7 +37,7 @@ const MultipleColumnForm = () => {
 
   const location = useLocation();
   const { state } = location;
-  console.log(state);
+   (state);
   const [activeIndex, setActiveIndex] = useState(null);
   const [loadingIndex, setLoadingIndex] = useState(null);
   const [err, setErr] = useState("");
@@ -76,7 +76,7 @@ const MultipleColumnForm = () => {
           return updated;
         });
       }, 5000);
-      console.log("Stock added successfully:", res);
+       ("Stock added successfully:", res);
       setValue(`variations.${index}.stockQty`, "");
     } catch (err) {
       console.error("Error adding stock:", err);

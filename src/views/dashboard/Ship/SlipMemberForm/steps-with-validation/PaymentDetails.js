@@ -57,7 +57,7 @@ const Address = ({
     { value: "Annual", label: "Annual" },
   ];
   const toast = useRef(null);
-  console.log("formdata", formData);
+   ("formdata", formData);
 
   const CompanyOptions = [
     { value: "WesternUnion", label: "WesternUnion" },
@@ -201,7 +201,7 @@ const Address = ({
   };
 
   const watchDiscountAmount = watch("discountAmount");
-  console.log("watchDiscountAmount", watchDiscountAmount);
+   ("watchDiscountAmount", watchDiscountAmount);
 
   useEffect(() => {
     const assignDone = isAssigned?.isAssigned;
@@ -216,7 +216,7 @@ const Address = ({
   const { slipuid } = useParams();
 
   useEffect(() => {
-    console.log({ errors });
+     ({ errors });
   }, [errors]);
 
   const detectedCardType = (number) => {
@@ -256,15 +256,15 @@ const Address = ({
   const fetchMarketPrices = async () => {
     try {
       const response = await useJwt.getslip();
-      console.log(response);
+       (response);
 
       const result = response.data.content.result.find(
         (item) => item.id === (slipIID ?? sId)
       );
-      console.log(sId);
+       (sId);
 
       if (!result) {
-        console.log("Not Found Slip Charges");
+         ("Not Found Slip Charges");
         return;
       }
 
@@ -275,7 +275,7 @@ const Address = ({
         marketMonthlyPrice === undefined ||
         id === undefined
       ) {
-        console.log("Invalid slip charge data");
+         ("Invalid slip charge data");
         return;
       }
 
@@ -322,7 +322,7 @@ const Address = ({
   const depositAmount = Number(watch("deposite"));
   const WatchcalDisAmount = Number(watch("calDisAmount"));
 
-  console.log(depositAmount);
+   (depositAmount);
 
   useEffect(() => {
     const rentalPrice = getValues("rentalPrice");
@@ -442,6 +442,7 @@ const Address = ({
   }, [mId, memberID]);
 
   useEffect(() => {
+    
     if (Object.keys(formData)?.length) {
       const data = { ...formData }["0"];
       let pmVal =
@@ -579,9 +580,9 @@ const Address = ({
         formData.append("otherTransactionId", data.otherTransactionId);
       }
     } else {
-      console.log("Choose differant payment Method ");
+       ("Choose differant payment Method ");
     }
-    console.log(isAssignedStatus);
+     (isAssignedStatus);
 
     if (isAssigned?.isAssigned) {
       stepper.next();
@@ -593,7 +594,7 @@ const Address = ({
         try {
           setLoading(true);
           const response = await useJwt.createPayment(formData);
-          console.log(response);
+           (response);
           setTransactionID(response?.data?.transaction_id);
           const { qr_code_base64 } = response?.data;
           setQr(qr_code_base64);
@@ -685,7 +686,7 @@ const Address = ({
   };
 
   const finalPaymentForModal = watch("finalPayment");
-  console.log("finalPaymentForModal", finalPaymentForModal);
+   ("finalPaymentForModal", finalPaymentForModal);
 
   if (fetchLoader)
     return (

@@ -9,15 +9,15 @@ import { ChevronDown, Plus } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  Col,
-  Input,
-  Label,
-  Row,
-  Spinner,
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    Col,
+    Input,
+    Label,
+    Row,
+    Spinner,
 } from "reactstrap";
 import { serverSideColumns } from "../../../dashboard/Ship/SlipList/data";
 
@@ -36,10 +36,10 @@ const DataTableServerSide = () => {
       setLoading(true);
       try {
         const { data } = await useJwt.getslipCatogory();
-        console.log("API Response:", data); // Log here
+         ("API Response:", data); // Log here
 
         const result = data?.content?.result || []; // Adjust depending on structure
-        console.log("Parsed Result:", result); // Log here
+         ("Parsed Result:", result); // Log here
 
         setData(result);
         setFilteredData(result);
@@ -112,7 +112,7 @@ const DataTableServerSide = () => {
   // Paginate filtered data
   const paginatedData = () => {
     const filtered = filteredData.filter((item) => item); // filter here
-    console.log("fiter", filtered);
+     ("fiter", filtered);
 
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
