@@ -25,7 +25,7 @@ import {
 
 // ** Default Avatar Image
 import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
-import { MailCheck, Settings2 } from "lucide-react";
+import { Settings2 } from "lucide-react";
 
 const UserDropdown = () => {
   // ** Store Vars
@@ -76,10 +76,10 @@ const UserDropdown = () => {
           <span className='align-middle'>Profile</span>
         </DropdownItem> */}
        
-        <DropdownItem tag={Link} to="/apps/email">
+        {/* <DropdownItem tag={Link} to="/apps/email">
           <MailCheck size={14} className="me-75" />
           <span className="align-middle">Inbox</span>
-        </DropdownItem>
+        </DropdownItem> */}
         {/* <DropdownItem tag={Link} to="/pages/security">
           <Mail size={14} className="me-75" />
           <span className="align-middle">Security</span>

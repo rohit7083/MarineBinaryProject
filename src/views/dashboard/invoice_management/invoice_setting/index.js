@@ -99,7 +99,6 @@ const HorizontalForm = () => {
   useEffect(() => {
     const loadFiles = async () => {
       try {
-        
         const sigRes = await useJwt.getSignature(resData.uid);
         const logoRes = await useJwt.invoivegetLogo(resData.uid);
 
@@ -174,7 +173,6 @@ const HorizontalForm = () => {
             detail: "Invoice Settings Updated successfully",
             life: 2000,
           });
-          
 
           setTimeout(() => {
             navigate("/dashbord");
@@ -231,7 +229,6 @@ const HorizontalForm = () => {
     setPreviews((prev) => ({ ...prev, [fieldName]: null }));
     setValue(fieldName, null, { shouldValidate: true });
   };
-
 
   const renderFilePreview = (previewUrl) => {
     if (!previewUrl) return null;
@@ -409,10 +406,9 @@ const HorizontalForm = () => {
                 rules={{
                   required: "Invoice Prefix is required",
                   pattern: {
-                    value:
-                      /^[A-Za-z0-9 !@#$%^&*()_\-+=\[\]{};:'",.<>\/?\\|`~]*$/,
+                    value: /^[A-Za-z .-]*$/,
                     message:
-                      "Only letters, numbers, spaces, and special characters allowed",
+                      "Only letters, spaces, hyphen (-), and dot (.) are allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -422,7 +418,7 @@ const HorizontalForm = () => {
                       if (e.key.length > 1) return;
 
                       if (
-                        !/^[a-zA-Z\s!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]$/.test(
+                        !/^[A-Za-z .-]$/.test(
                           e.key
                         )
                       ) {
