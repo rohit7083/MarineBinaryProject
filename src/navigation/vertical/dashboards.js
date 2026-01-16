@@ -526,6 +526,18 @@ export default [
     ],
   },
 
+  //   {
+  //   id: "manualEmail",
+  //   title: "Manual  Email",
+  //   icon: <Square size={12} />,
+  //   navLink: "/manual_email",
+  //   badge: "light-warning",
+  //   isLocked: "🔒",
+  //   action: "view",
+  //   resource: "slip management",
+  //   // disabled: true,
+  // },
+
   {
     id: "branch",
     title: "Manage Branch",

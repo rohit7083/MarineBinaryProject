@@ -41,7 +41,16 @@ const Dashboardcreateuser = lazy(() =>
   import("../../views/dashboard/user_rolls/roles-permissions/createuser")
 );
 const ParkBoat = lazy(() => import("../../views/dashboard/dash/ParkBoat"));
+// const ManualEmail=lazy(() => import("../../views/dashboard/manualEmail"));
 const DashboardRoutes = [
+  //  {
+  //   path: "/manual_email",
+  //   element: <ManualEmail />,
+  //     meta:{
+  //     resource:'slip management',
+  //     action:'view'
+  //   },
+  // },
   {
     path: "/dashboard/user_rolls/roles-permissions/roles/Role_modal",
     element: <DashboardRoleModal />,

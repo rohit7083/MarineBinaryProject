@@ -9,7 +9,7 @@ import { Spinner } from "reactstrap";
 
 // ** Third Party Components
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
@@ -22,15 +22,15 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import "@styles/react/pages/page-authentication.scss";
 import {
-    Button,
-    CardText,
-    CardTitle,
-    Col,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    UncontrolledAlert,
+  Button,
+  CardText,
+  CardTitle,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -59,6 +59,9 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [location, setLocation] = useState(null);
   const [ip, setIP] = useState(null);
+  const companyDetails = useSelector(store=>store.auth.companyDetails)
+  const appName=companyDetails? companyDetails?.companyShortName:""
+  const companyLogo = useSelector((store) => store.auth.companyLogo);
 
   const {
     control,
@@ -155,8 +158,8 @@ const Login = () => {
             className="brand-text text-primary mt-2"
             style={{ fontWeight: "bold" }}
           >
-            MarinaOne
-          </h2>
+          MarinaOne
+                    </h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">

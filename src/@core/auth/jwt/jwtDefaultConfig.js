@@ -298,11 +298,18 @@ export default {
 
   getInvoice: "/invoiceSetting",
   updateInvoice:"/invoiceSetting/",
-  getLogo:'/invoiceSetting/logo/',
+  invoivegetLogo:'/invoiceSetting/logo/',
   getSignature:"/invoiceSetting/signature/",
   subScriptionCal:"/subscription/calculate",
   sendInvoiceToMail:"/sendInvoice/send",
 
   getDyanimicInfoOFSubscription:"/auth/subscription/",
+  createSetting:"/generalSetting/",
+  getSettings:"/generalSetting",
+
+  updateGeneralsetting:"/generalSetting/",
+  createMannualEmail:"/manualEmail/",
+  getLogoAndName:"/generalSetting/",
+  getLogo:"/generalSetting/file/",
 };
- 
+  

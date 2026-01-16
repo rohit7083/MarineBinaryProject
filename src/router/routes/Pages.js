@@ -5,6 +5,7 @@ const Faq = lazy(() => import("../../views/pages/faq"));
 const ApiKey = lazy(() => import("../../views/pages/api-key"));
 const Profile = lazy(() => import("../../views/pages/profile"));
 const Pricing = lazy(() => import("../../views/pages/pricing"));
+const Settings = lazy(() => import("../../views/pages/settings"));
 const License = lazy(() => import("../../views/pages/license"));
 const Error = lazy(() => import("../../views/pages/misc/Error"));
 const BlogList = lazy(() => import("../../views/pages/blog/list"));
@@ -13,6 +14,7 @@ const BlogDetails = lazy(() => import("../../views/pages/blog/details"));
 const ComingSoon = lazy(() => import("../../views/pages/misc/ComingSoon"));
 const ModalExamples = lazy(() => import("../../views/pages/modal-examples"));
 const Maintenance = lazy(() => import("../../views/pages/misc/Maintenance"));
+
 const AccountSettings = lazy(() =>
   import("../../views/pages/account-settings")
 );
@@ -30,6 +32,11 @@ const KBCategoryQuestion = lazy(() =>
 );
 const Security = lazy(() => import("../../views/pages/security"));
 const PagesRoutes = [
+  {
+    path: "/pages/setting",
+    element: <Settings />,
+  },
+
   {
     path: "/pages/profile",
     element: <Profile />,
@@ -102,6 +109,7 @@ const PagesRoutes = [
       layout: "blank",
     },
   },
+
   {
     path: "/misc/not-authorized",
     element: <NotAuthorized />,

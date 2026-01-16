@@ -1,8 +1,8 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-axios.defaults.baseURL = "https://locktrustdev.com:8443";
-// axios.defaults.baseURL = "http://192.168.29.190:8000"; // locktrust jio 5g
+// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+axios.defaults.baseURL = "http:///192.168.29.190:8000"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.9:8000"; //airtel saga
 
 import Swal from "sweetalert2";
@@ -59,7 +59,6 @@ export default class JwtService {
             console.error("Invalid selectedBranch JSON in localStorage", err);
           }
         }
-
 
         // if (branchUid && ["post", "put", "patch"].includes(config.method)) {
         //   config.data = {
@@ -158,7 +157,6 @@ export default class JwtService {
       localStorage.setItem("locationEnabled", "true");
       return location;
     } catch (error) {
-      
       localStorage.setItem("locationEnabled", "false");
 
       // Handle permission denied
@@ -240,8 +238,8 @@ export default class JwtService {
   // ===================== Slip Details
 
   retriveSlip(uid) {
-    return axios.get(`${this.jwtConfig.retriveSingleSlip}/${uid}/`,{
-      appendBranchUid:true,
+    return axios.get(`${this.jwtConfig.retriveSingleSlip}/${uid}/`, {
+      appendBranchUid: true,
     });
   }
   postslip(...args) {
@@ -1204,8 +1202,8 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.getInvoice}`);
   }
 
-  getLogo(uid) {
-    return axios.get(`${this.jwtConfig.getLogo}${uid}`, {
+  invoivegetLogo(uid) {
+    return axios.get(`${this.jwtConfig.invoivegetLogo}${uid}`, {
       responseType: "blob", // important for binary data
     });
   }
@@ -1222,6 +1220,35 @@ export default class JwtService {
   sendInvoiceToMail(...args) {
     return axios.post(`${this.jwtConfig.sendInvoiceToMail}`, ...args);
   }
+
+  createSetting(...args) {
+    return axios.post(`${this.jwtConfig.createSetting}`, ...args, {
+      skipBranch: true,
+    });
+  }
+  getSettings() {
+    return axios.get(`${this.jwtConfig.getSettings}`);
+  }
+
+   updateGeneralsetting(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateGeneralsetting}${uid}`, ...args, {
+      skipBranch: true,
+    });
+  }
+
+   createMannualEmail(...args) {
+    return axios.post(`${this.jwtConfig.createMannualEmail}`, ...args);
+  }
+
+    getLogoAndName(userUid) {
+    return axios.get(`${this.jwtConfig.getLogoAndName}${userUid}/`);
+  }
+   getLogo(logoUId) {
+    return axios.get(`${this.jwtConfig.getLogo}${logoUId}`, {
+      responseType: "blob", // important for binary data
+    });
+  }
+
 
   getDyanimicInfoOFSubscription(moduleName) {
     return axios.get(

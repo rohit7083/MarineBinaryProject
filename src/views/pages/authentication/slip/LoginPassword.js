@@ -10,7 +10,7 @@ import { ListGroupItem, Spinner } from "reactstrap";
 // ** Third Party Components
 import CryptoJS from "crypto-js";
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // ** Context
 import InputPasswordToggle from "@components/input-password-toggle";
 import { AbilityContext } from "@src/utility/context/Can";
@@ -20,14 +20,14 @@ import React from "react";
 import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import illustrationsLight from "@src/assets/images/pages/login-v2.svg";
 import {
-    Button,
-    CardText,
-    CardTitle,
-    Col,
-    FormFeedback,
-    Label,
-    Row,
-    UncontrolledAlert,
+  Button,
+  CardText,
+  CardTitle,
+  Col,
+  FormFeedback,
+  Label,
+  Row,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -59,6 +59,7 @@ const Login = () => {
   const [isPassword, setIspassword] = useState(false);
   const location = useLocation();
   const [encryptedPasss, setEncrypt] = useState(null);
+  const companyLogo = useSelector((store) => store.auth.companyLogo);
 
   const loginToken = location.state;
   const {
@@ -71,6 +72,8 @@ const Login = () => {
     defaultValues,
   });
   const toast = useRef(null);
+ const companyDetails = useSelector(store=>store.auth.companyDetails)
+  const appName=companyDetails? companyDetails?.companyShortName:""
 
   const [password, setPassword] = useState("");
   const [requirements, setRequirements] = useState({
@@ -265,7 +268,7 @@ const Login = () => {
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
           <img
-            src={MARinLogo}
+            src={  MARinLogo}
             alt="Longcove Marina Logo"
             style={{
               height: "5rem",

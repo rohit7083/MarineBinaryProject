@@ -11,19 +11,19 @@ import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    Col,
-    Form,
-    Input,
-    Label,
-    Nav,
-    NavItem,
-    NavLink,
-    Row,
-    TabContent,
-    TabPane,
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Form,
+  Input,
+  Label,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  TabContent,
+  TabPane,
 } from "reactstrap";
 
 const PaymentPage = () => {
@@ -54,7 +54,6 @@ const PaymentPage = () => {
   const [isLoadingCards, setIsLoadingCards] = useState(false);
 
   const [isProcessing, setIsProcessing] = useState(false);
-   ("activeTab", activeTab);
 
   useEffect(() => {
     if (existingCreditCard?.length > 0) {

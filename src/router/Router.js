@@ -45,7 +45,9 @@ const Router = () => {
   const getHomeRoute = () => {
     const user = getUserData();
     if (user) {
-      return getHomeRouteForLoggedInUser(user.role);
+      return getHomeRouteForLoggedInUser(
+        user.isSubUser === false ? "" : user.role
+      );
     } else {
       return "/login";
     }
@@ -60,9 +62,8 @@ const Router = () => {
     {
       path: "/login",
       element: <BlankLayout />,
-      
+
       children: [{ path: "/login", element: <LoginEmail /> }],
-      
     },
     {
       path: "/login_password",

@@ -5,6 +5,7 @@ import { paginateArray } from "../utils";
 
 // Avatars Imports
 import avatar1 from "@src/assets/images/avatars/1.png";
+import avatar10 from "@src/assets/images/avatars/10.png";
 import avatar2 from "@src/assets/images/avatars/2.png";
 import avatar3 from "@src/assets/images/avatars/3.png";
 import avatar4 from "@src/assets/images/avatars/4.png";
@@ -13,7 +14,6 @@ import avatar6 from "@src/assets/images/avatars/6.png";
 import avatar7 from "@src/assets/images/avatars/7.png";
 import avatar8 from "@src/assets/images/avatars/8.png";
 import avatar9 from "@src/assets/images/avatars/9.png";
-import avatar10 from "@src/assets/images/avatars/10.png";
 
 const data = {
   users: [
@@ -781,7 +781,7 @@ mock.onGet("/api/users/list/data").reply((config) => {
       (user.email.toLowerCase().includes(queryLowered) ||
         user.fullName.toLowerCase().includes(queryLowered) ||
         user.billing.toLowerCase().includes(queryLowered)) &&
-      user.role === (role || user.role) &&
+      user.role === (role || user.isSubUser === false ? "" : user.role) &&
       user.currentPlan === (currentPlan || user.currentPlan) &&
       user.status === (status || user.status)
   );

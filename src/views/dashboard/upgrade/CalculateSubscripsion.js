@@ -1,173 +1,19 @@
-// import {
-//     Badge,
-//     Button,
-//     Col,
-//     Modal,
-//     ModalBody,
-//     ModalFooter,
-//     ModalHeader,
-//     Row,
-// } from "reactstrap";
-
-// const SubscriptionConfirmModal = ({ modal, setModal }) => {
-//   // Sample data from your API response
-//   const subscriptionData = {
-//     status: true,
-//     content: {
-//       type: "PLAN_UPGRADE",
-//       old_plan_price: "309",
-//       new_plan_price: "299.00",
-//       old_per_day: 10.3,
-//       new_per_day: 9.97,
-//       days_remaining: 30,
-//       payable_now: 0,
-//       next_month_price: "299.00",
-//     },
-//   };
-
-//   const toggle = () => setModal(!modal);
-
-//   const handleConfirm = () => {
-//     // Add your purchase confirmation logic here
-//      ("Purchase confirmed");
-//     setModal(false);
-//   };
-
-//   const { content } = subscriptionData;
-//   const savings = (
-//     parseFloat(content.old_plan_price) - parseFloat(content.new_plan_price)
-//   ).toFixed(2);
-//   const dailySavings = (content.old_per_day - content.new_per_day).toFixed(2);
-
-//   return (
-//     <div className="p-4">
-//       <Button color="primary" onClick={toggle}>
-//         Open Subscription Modal
-//       </Button>
-
-//       <Modal isOpen={modal} toggle={toggle} centered size="md">
-//         <ModalHeader toggle={toggle} className="border-0 pb-0">
-//           <div className="d-flex align-items-center">
-//             <span className="me-2">Confirm Plan Upgrade</span>
-//             <Badge color="success" pill>
-//               Save ${savings}/month
-//             </Badge>
-//           </div>
-//         </ModalHeader>
-
-//         <ModalBody className="px-4 py-3">
-//           <div className="mb-4">
-//             <h5 className="text-muted mb-3">Plan Comparison</h5>
-
-//             <Row className="g-3">
-//               <Col md={6}>
-//                 <div className="border rounded p-3 bg-dark bg-opacity-10 border-dark">
-//                   <div className="text-muted small mb-1">Current Plan</div>
-//                   <div className="h4 mb-1">${content.old_plan_price}/mo</div>
-//                   <div className="text-muted small">
-//                     ${content.old_per_day.toFixed(2)}/day
-//                   </div>
-//                 </div>
-//               </Col>
-
-//               <Col md={6}>
-//                 <div className="border rounded p-3 bg-success bg-opacity-10 border-success">
-//                   <div className="text-success small mb-1 fw-semibold">
-//                     New Plan
-//                   </div>
-//                   <div className="h4 mb-1 text-success">
-//                     ${content.new_plan_price}/mo
-//                   </div>
-//                   <div className="text-success small">
-//                     ${content.new_per_day.toFixed(2)}/day
-//                   </div>
-//                 </div>
-//               </Col>
-//             </Row>
-//           </div>
-
-//           <div className="bg-dark bg-opacity-10 rounded p-3 mb-2">
-//             <Row className="g-3">
-//               <Col xs={12}>
-//                 <div className="d-flex justify-content-between align-items-center">
-//                   <span className="text-muted">Monthly Savings:</span>
-//                   <span className="fw-bold text-success">-${savings}</span>
-//                 </div>
-//               </Col>
-//               <Col xs={12}>
-//                 <div className="d-flex justify-content-between align-items-center">
-//                   <span className="text-muted">Daily Savings:</span>
-//                   <span className="fw-bold text-success">-${dailySavings}</span>
-//                 </div>
-//               </Col>
-//               <Col xs={12}>
-//                 <div className="d-flex justify-content-between align-items-center">
-//                   <span className="text-muted">
-//                     Days Remaining in Current Period:
-//                   </span>
-//                   <span className="fw-bold">{content.days_remaining} days</span>
-//                 </div>
-//               </Col>
-//             </Row>
-//           </div>
-
-//           <div className="border-top border-bottom py-1 mb-1">
-//             <Row>
-//               <Col xs={12} className="mb-1">
-//                 <div className="d-flex justify-content-between align-items-center">
-//                   <span className="fw-semibold">Amount Due Today:</span>
-//                   <span className="h5 mb-0 text-success">
-//                     ${content.payable_now.toFixed(2)}
-//                   </span>
-//                 </div>
-//                 {content.payable_now === 0 && (
-//                   <small className="text-muted d-block mt-1">
-//                     No charge today. Your upgrade will take effect immediately.
-//                   </small>
-//                 )}
-//               </Col>
-//             </Row>
-//           </div>
-
-//           <div className="p-2 alert alert-warning mb-0">
-//             <small>
-//               <strong>Next Billing:</strong> Your next charge will be{" "}
-//               <strong className="text-dark">
-//                 {" "}
-//                 ${content.next_month_price}{" "}
-//               </strong>{" "}
-//               on your next billing date.
-//             </small>
-//           </div>
-//         </ModalBody>
-
-//         <ModalFooter className="border-0 pt-0">
-//           <Button color="secondary" outline onClick={toggle}>
-//             Cancel
-//           </Button>
-//           {content.payable_now > 0 && (
-//             <Button color="success" onClick={handleConfirm} className="px-4">
-//               Confirm Upgrade
-//             </Button>
-//           )}
-//         </ModalFooter>
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default SubscriptionConfirmModal;
-
+import useJwt from "@src/auth/jwt/useJwt";
+import "primeicons/primeicons.css";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
+import { Toast } from "primereact/toast";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-    Badge,
-    Button,
-    Col,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
+  Button,
+  Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
 } from "reactstrap";
 
 const SubscriptionConfirmModal = ({
@@ -178,35 +24,53 @@ const SubscriptionConfirmModal = ({
   existingCreditCard,
   planData,
 }) => {
-  // 🔁 Simulated API response (replace with real API data)
-  //   const subscriptionData = {
-  //     status: true,
-  //     content: {
-  //       type: "PLAN_UPGRADE",
-  //       // type: "ADDON_PRORATED",
-
-  //       // PLAN_UPGRADE fields
-  //       old_plan_price: "309",
-  //       new_plan_price: "299.00",
-  //       old_per_day: 10.3,
-  //       new_per_day: 9.97,
-
-  //       // ADDON_PRORATED fields
-  //       // addon_price: "10.00",
-  //       // per_day_amount: 0.33,
-
-  //       days_remaining: 30,
-  //       payable_now: 0,
-  //       next_month_price: "299.00",
-  //     },
-  //   };
+  console.log(modal);
   const navigate = useNavigate();
+  const toast = useRef(null);
+  const [loading, setLoading] = useState(false);
   const toggle = () => setModal(!modal);
-  const handleConfirm = () => {
-    setModal(false);
-    navigate("/upgrade/subscription/payment", {
-      state: { planData,subscriptionData, walletBal, existingCreditCard },
-    });
+  const handleConfirm = async () => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userUid = userData?.uid || "";
+
+    const payload = {
+      uid: userUid,
+      crmId: localStorage.getItem("crmId"),
+      paymentMethod: "wallet",
+      paymentAmt: 0,
+      subscriptionID: planData.id,
+    };
+
+    if (content?.isDowngrade === 1) {
+      try {
+        setLoading(true);
+        const res = await useJwt.subscriptionPayment(payload);
+        
+        toast.current?.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Success",
+          life: 2000,
+        });
+        setTimeout(() => {
+          navigate("/dashbord");
+        }, 2000);
+      } catch (error) {
+        toast.current?.show({
+          severity: "error",
+          summary: "Failed",
+          detail: "Error",
+          life: 2000,
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setModal(false);
+      navigate("/upgrade/subscription/payment", {
+        state: { planData, subscriptionData, walletBal, existingCreditCard },
+      });
+    }
   };
 
   if (!subscriptionData?.status || !subscriptionData?.content) return null;
@@ -230,6 +94,8 @@ const SubscriptionConfirmModal = ({
     <div className="p-4">
       <Modal isOpen={modal} toggle={toggle} centered size="md">
         {/* ================= HEADER ================= */}
+        <Toast ref={toast} />
+
         <ModalHeader toggle={toggle} className="border-0 pb-0">
           <div className="d-flex align-items-center">
             <span className="me-2">
@@ -237,12 +103,6 @@ const SubscriptionConfirmModal = ({
                 ? "Confirm Plan Upgrade"
                 : "Confirm Add-on Purchase"}
             </span>
-
-            {isPlanUpgrade && (
-              <Badge color="success" pill>
-                Save ${savings}/month
-              </Badge>
-            )}
           </div>
         </ModalHeader>
 
@@ -301,7 +161,7 @@ const SubscriptionConfirmModal = ({
           )}
 
           {/* ---------- COMMON DETAILS ---------- */}
-          <div className="bg-dark bg-opacity-10 rounded p-3 mb-3">
+          <div className="bg-dark bg-opacity-10 rounded p-2 mb-3">
             <Row className="g-3">
               {/* {isPlanUpgrade && (
                 <>
@@ -362,9 +222,29 @@ const SubscriptionConfirmModal = ({
           <Button color="secondary" outline onClick={toggle}>
             Cancel
           </Button>
+
           {content.payable_now > 0 && (
-            <Button color="success" onClick={handleConfirm} className="px-4">
-              ${content.payable_now}
+            <Button
+              color="success"
+              onClick={handleConfirm}
+              disabled={loading}
+              className="px-4"
+            >
+              {content?.isDowngrade == 1 ? (
+                <>
+                  {" "}
+                  {loading ? (
+                    <>
+                      Loading...
+                      <Spinner size={"sm"} />{" "}
+                    </>
+                  ) : (
+                    "Submit"
+                  )}{" "}
+                </>
+              ) : (
+                <> Pay ${content.payable_now}</>
+              )}
             </Button>
           )}
         </ModalFooter>

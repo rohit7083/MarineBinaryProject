@@ -10,6 +10,7 @@ import themeConfig from "@configs/themeConfig";
 
 // ** Utils
 import { getHomeRouteForLoggedInUser, getUserData } from "@utils";
+import { useSelector } from "react-redux";
 
 const VerticalMenuHeader = (props) => {
   // ** Props
@@ -23,6 +24,9 @@ const VerticalMenuHeader = (props) => {
 
   // ** Vars
   const user = getUserData();
+  const companyDetails = useSelector((store) => store.auth.companyDetails);
+  const companyLogo = useSelector((store) => store.auth.companyLogo);
+  const appName = companyDetails ? companyDetails?.companyShortName : "";
 
   // ** Reset open group
   useEffect(() => {
@@ -62,7 +66,9 @@ const VerticalMenuHeader = (props) => {
           >
             <span className="brand-logo">
               <img
-                src={themeConfig.app.appLogoImage}
+                // src={companyLogo ? companyLogo :themeConfig.app.appLogoImage}
+                src={companyLogo}
+              
                 style={{
                   height: themeConfig.app.appLogoSize.height,
                   width: themeConfig.app.appLogoSize.width,
@@ -73,10 +79,10 @@ const VerticalMenuHeader = (props) => {
             <h2
               className="brand-text mb-0"
               style={{
-                marginLeft: "-17px",
+                marginLeft: "-10px",
               }}
             >
-              {themeConfig.app.appName}
+              {appName ? appName : themeConfig.app.appName}
             </h2>
           </NavLink>
         </li>

@@ -387,21 +387,21 @@ import React, { useContext, useRef, useState } from "react";
 import { ChevronLeft } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardText,
-    CardTitle,
-    Col,
-    Form,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Col,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -437,6 +437,7 @@ const TwoStepsBasic = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendCallLoading, setResendCallLoading] = useState(false);
   const { tok } = useParams();
+  const companyLogo = useSelector((store) => store.auth.companyLogo);
 
   const userData = location.state?.userData;
   const token = userData?.token;
@@ -451,6 +452,10 @@ const TwoStepsBasic = () => {
   } = useForm({
     defaultValues: { otp: Array(6).fill("") },
   });
+
+   const companyDetails = useSelector(store=>store.auth.companyDetails)
+    const appName=companyDetails? companyDetails?.companyShortName:""
+  
 
   // Refs for OTP inputs to manage focus without DOM queries
   const inputRefs = useRef(
@@ -591,7 +596,7 @@ const TwoStepsBasic = () => {
       const goToGetBranch = branchData.length >= 1;
       const destination = goToGetBranch ? "/getbranch" : "/dashbord";
 
-      navigate(destination);
+      navigate(destination,{replace:true});
       // do NOT reload — keep SPA state intact
     } catch (error) {
       console.error("OTP submit error:", error);
@@ -671,7 +676,7 @@ const TwoStepsBasic = () => {
                 }}
               />
               <h2 className="text-primary mt-1" style={{ fontWeight: "bold" }}>
-                MarinaOne
+              MarinaOne
               </h2>
             </Link>
 

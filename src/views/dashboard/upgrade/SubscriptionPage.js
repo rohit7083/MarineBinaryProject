@@ -2,14 +2,14 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Card, CardBody, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Row, Spinner } from "reactstrap";
 import CalculateSubscripsion from "./CalculateSubscripsion";
 const PricingCards = () => {
   const location = useLocation();
   const [modal, setModal] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState(null);
   const [planData, setPlanData] = useState(null);
-   (location);
+  const [loadingPlanId, setLoadingPlanId] = useState(null);
 
   const existingCreditCard = location.state?.walletBal?.cardData;
 
@@ -17,11 +17,12 @@ const PricingCards = () => {
   const { subscription, addOn } = location.state || {};
   const plans = subscription ?? addOn ?? null;
   const navigate = useNavigate();
-   (plans?.subscriptionAddedModuleJson);
+  plans?.subscriptionAddedModuleJson;
 
   const badge = "POPULAR";
 
   const handleChoosePlan = async (plan) => {
+    setLoadingPlanId(plan.id);
     setPlanData(plan);
     try {
       const userData = JSON.parse(localStorage.getItem("userData"));
@@ -35,11 +36,12 @@ const PricingCards = () => {
       });
       setModal(true);
       setSubscriptionData(res.data);
-       (res);
+      
     } catch (error) {
-       (error);
+      error;
+    } finally {
+      setLoadingPlanId(null);
     }
-  
   };
 
   return (
@@ -143,6 +145,7 @@ const PricingCards = () => {
                       color="primary"
                       block
                       className="mb-4"
+                      disabled={loadingPlanId === plan.id}
                       style={{
                         borderRadius: "6px",
                         fontWeight: "500",
@@ -150,7 +153,16 @@ const PricingCards = () => {
                       }}
                       onClick={() => handleChoosePlan(plan)}
                     >
-                      Choose Plan
+                      {loadingPlanId === plan.id ? (
+                        <>
+                          Loading.. <Spinner color="white" size="sm" />
+                        </>
+                      ) : (
+                        "Choose Plan"
+                      )}
+                      {/* //   {loader ? <> Loading.. <Spinner color={'white'} size='sm'/> </>: */}
+
+                      {/* //  " Choose Plan"} */}
                     </Button>
 
                     <div
@@ -196,7 +208,7 @@ const PricingCards = () => {
           modal={modal}
           setModal={setModal}
           subscriptionData={subscriptionData}
-          walletBal={walletBal} 
+          walletBal={walletBal}
           existingCreditCard={existingCreditCard}
           planData={planData}
         />

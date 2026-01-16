@@ -1,26 +1,26 @@
 // ** React Imports
 import React from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
-
 // ** Reactstrap Imports
 import useJwt from "@src/auth/jwt/useJwt";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardText,
-    CardTitle,
-    Col,
-    Form,
-    Input,
-    Label,
-    Row,
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Col,
+  Form,
+  Input,
+  Label,
+  Row,
 } from "reactstrap";
 // ** Styles
 import "@styles/react/pages/page-authentication.scss";
@@ -43,6 +43,10 @@ import { useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 
 const TwoStepsBasic = () => {
+  const companyDetails = useSelector((store) => store.auth.companyDetails);
+  const appName = companyDetails ? companyDetails?.companyShortName : "";
+  const companyLogo = useSelector((store) => store.auth.companyLogo);
+
   const [attempt, setAttempt] = useState(0);
 
   const MySwal = withReactContent(Swal);
@@ -55,7 +59,7 @@ const TwoStepsBasic = () => {
   const [resendCount, setResendcount] = useState(false);
 
   const [resendcallCount, setResendcallCount] = useState(false);
-const { tok } = useParams();
+  const { tok } = useParams();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -112,13 +116,13 @@ const { tok } = useParams();
 
         setResendcount(true);
       }
-       ("resentOTP", res);
+      "resentOTP", res;
       toast.success("OTP sent successfully", {
         position: "top-center",
         autoClose: 5000,
       });
     } catch (error) {
-       (error.response);
+      error.response;
     } finally {
       setResendLoading(false);
     }
@@ -135,13 +139,13 @@ const { tok } = useParams();
 
         setResendcallCount(true);
       }
-       ("resentCall", callRes);
+      "resentCall", callRes;
       toast.success("Call Verification Send Sucessfully", {
         position: "top-center",
         autoClose: 5000,
       });
     } catch (error) {
-       (error.response);
+      error.response;
     } finally {
       setResendLoading2(false);
     }
@@ -156,12 +160,12 @@ const { tok } = useParams();
       const token = userData?.token;
       const otp = encryptAES(data1?.otp.join(""));
       let res;
-     if (tok) {
-         res = await useJwt.withoutAuthEmailOtp(tok, { otp });
-         (res);
-      }else{
-         res = await useJwt.verifyAccount(token, { otp });
-         (res);
+      if (tok) {
+        res = await useJwt.withoutAuthEmailOtp(tok, { otp });
+        res;
+      } else {
+        res = await useJwt.verifyAccount(token, { otp });
+        res;
       }
 
       const abilityList = res.data.profile.allPermissions.map(
@@ -187,10 +191,10 @@ const { tok } = useParams();
       const uidForbranch = res?.data?.profile?.uid;
       if (res?.status === 200) {
         const res = await useJwt.getBranch(uidForbranch);
-         (res);
+        res;
         let branchData = res?.data?.branches;
         const crmId = res?.data?.crmId || "";
-      localStorage.setItem("crmId", crmId);
+        localStorage.setItem("crmId", crmId);
 
         if (data?.isSubUser === false) {
           // if (branchData?.length >= 0) {
@@ -217,7 +221,7 @@ const { tok } = useParams();
 
       // window.location = "/crm/marine-resort/dashbord";
     } catch (error) {
-       ({ error });
+      ({ error });
       if (error.response) {
         const { status, data } = error.response;
         const errorMessage = error.response.data.content;
@@ -268,7 +272,7 @@ const { tok } = useParams();
               className="mb-2 d-flex flex-row  align-items-center justify-content-center text-decoration-none"
             >
               <img
-                src={MARinLogo}
+                src= {  MARinLogo}
                 alt=" Marina Logo"
                 style={{
                   height: "5rem",

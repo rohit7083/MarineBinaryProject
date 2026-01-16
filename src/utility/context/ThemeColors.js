@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState, createContext } from "react";
+import { createContext, useEffect, useState } from "react";
 
 // ** Create Context
 const ThemeColors = createContext();
@@ -7,6 +7,7 @@ const ThemeColors = createContext();
 const ThemeContext = ({ children }) => {
   // ** State
   const [colors, setColors] = useState({});
+  const [brandName,setBrandName]=useState({});
 
   //** ComponentDidMount
   useEffect(() => {
@@ -46,7 +47,6 @@ const ThemeContext = ({ children }) => {
           main: getHex("--bs-dark"),
         },
       };
-
       setColors({ ...obj });
     }
   }, []);

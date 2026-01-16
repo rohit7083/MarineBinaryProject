@@ -13,7 +13,11 @@ const PublicRoute = ({ children, route }) => {
     const restrictedRoute = route.meta && route.meta.restricted;
 
     if (user && restrictedRoute) {
-      return <Navigate to={getHomeRouteForLoggedInUser(user.role||'admin ')} />;
+      debugger;
+      return <Navigate to={getHomeRouteForLoggedInUser(
+       
+        user.isSubUser === false ? "" : user.role
+      )} />;
     }
   }
 
@@ -22,26 +26,3 @@ const PublicRoute = ({ children, route }) => {
 
 export default PublicRoute;
 
-
-// // ** React Imports
-// import { Suspense } from "react";
-// import { Navigate } from "react-router-dom";
-
-// // ** Utils
-// import { getHomeRouteForLoggedInUser, getUserData } from "@utils";
-
-// const PublicRoute = ({ children, route }) => {
-//   if (route) {
-//     const user = getUserData();
-
-//     const restrictedRoute = route.meta && route.meta.restricted;
-
-//     if (user && restrictedRoute) {
-//       return <Navigate to={getHomeRouteForLoggedInUser(user.role)} />;
-//     }
-//   }
-
-//   return <Suspense fallback={null}>{children}</Suspense>;
-// };
-
-// export default PublicRoute;

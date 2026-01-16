@@ -7,15 +7,15 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 // ** Reactstrap Imports
 import {
-  X,
+  Clock,
+  Image,
   Mail,
   PhoneCall,
-  Clock,
-  Tag,
-  Star,
-  Image,
-  Trash,
   Slash,
+  Star,
+  Tag,
+  Trash,
+  X,
 } from "react-feather";
 
 const UserProfileSidebar = (props) => {

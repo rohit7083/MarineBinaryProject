@@ -25,6 +25,30 @@ const initialUser = () => {
   }
 };
 
+const initialLogo=()=>{
+  const item=window.localStorage.getItem('comapnyLogo')
+  try{
+    return item ? JSON.parse(item) : {};
+  }catch(error){
+    console.error("Error parsing JSON from localStorage:", error);
+    // Clear the invalid data and return an empty object
+    localStorage.removeItem("comapnyLogo");
+    return {};
+  }
+}
+
+
+const initialCompanyDetails=()=>{
+  const item=window.localStorage.getItem('companyDetails')
+  try{
+    return item ? JSON.parse(item) : {};
+  }catch(error){
+    console.error("Error parsing JSON from localStorage:", error);
+    // Clear the invalid data and return an empty object
+    localStorage.removeItem("companyDetails");
+    return {};
+  }
+}
 
 const initialunLockedPages = () =>{
   const item=window.localStorage.getItem('pagesUnlockedNames')
@@ -43,6 +67,8 @@ export const authSlice = createSlice({
   name: "authentication",
   initialState: {
     userData: initialUser(),
+    companyLogo:initialLogo(),
+        companyDetails:initialCompanyDetails(),
     unlockedPages: initialunLockedPages(),
   },
   reducers: {
@@ -62,6 +88,27 @@ export const authSlice = createSlice({
         JSON.stringify(action.payload.refreshToken)
       );
     },
+    handleStoreCompany:(state,action)=>{
+      state.companyDetails=action.payload
+      localStorage.setItem("companyDetails", JSON.stringify(action.payload));
+    },
+
+    handleStoreLogo:(state, action)=>{
+      state.companyLogo=action.payload
+      localStorage.setItem("comapnyLogo", JSON.stringify(action.payload));
+
+    },
+
+     handleClearCompany:(state,action)=>{
+      state.companyDetails={}
+      localStorage.removeItem("companyDetails", JSON.stringify(action.payload));
+    },
+
+      handleClearLogo:(state,action)=>{
+      state.companyLogo={}
+      localStorage.removeItem("comapnyLogo", JSON.stringify(action.payload));
+    },
+
     handleLogout: (state) => {
       state.userData = {};
       state[config.storageTokenKeyName] = null;
@@ -69,6 +116,8 @@ export const authSlice = createSlice({
       // ** Remove user, accessToken & refreshToken from localStorage
       localStorage.removeItem("userData");
       localStorage.removeItem("selectedBranch");
+      localStorage.removeItem("companyDetails");
+      localStorage.removeItem("comapnyLogo");
 
       localStorage.removeItem(config.storageTokenKeyName);
       localStorage.removeItem(config.storageRefreshTokenKeyName);
@@ -79,6 +128,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { handleLogin, handleLogout,saveUnlockedPages } = authSlice.actions;
+export const { handleLogin, handleLogout,saveUnlockedPages ,handleStoreCompany , handleStoreLogo} = authSlice.actions;
 
 export default authSlice.reducer;

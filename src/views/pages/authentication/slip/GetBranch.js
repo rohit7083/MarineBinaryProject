@@ -1,26 +1,29 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import { Mail, MapPin, Phone, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Col,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-    Spinner,
+  Button,
+  Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
 } from "reactstrap";
-import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 import AddBranch from "../../../dashboard/branch_management/AddBranch";
-
 // ** Utils
 import { getUserData } from "@utils";
 
 // ** Store & Actions
 import { saveUnlockedPages } from "@store/authentication";
 import { useDispatch } from "react-redux";
+import {
+  handleStoreCompany,
+  handleStoreLogo,
+} from "../../../../redux/authentication";
 
 export default function BranchSelector() {
   const [search, setSearch] = useState("");
@@ -29,8 +32,11 @@ export default function BranchSelector() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   // const [isFirst,setIsFirst]=useState(false);
-
+  const [userUidLocal, setUserUidLocal] = useState(null);
+  const [logoNameInfo, setLogoNameInfo] = useState(null);
+  const [imgPath, setImagpath] = useState(null);
   const dispatch = useDispatch();
+  const companyLogo = useSelector((store) => store.auth.companyLogo);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,17 +44,17 @@ export default function BranchSelector() {
         setLoading(true);
         const userData = JSON.parse(localStorage.getItem("userData"));
         const uid = userData?.uid;
-
+        setUserUidLocal(uid);
         if (!uid) {
           console.error("UID not found in userData");
           return;
         }
 
         const res = await useJwt.getBranch(uid);
-         (res);
+        res;
         let resData = res?.data?.branches;
-        
-         localStorage.setItem("crmId", res?.data?.crmId);
+
+        localStorage.setItem("crmId", res?.data?.crmId);
         setBranches(resData);
       } catch (error) {
         console.error(error);
@@ -68,17 +74,17 @@ export default function BranchSelector() {
   );
 
   const handleSelect = async (branch) => {
-     ("Selected Branch:", branch);
-    
+    "Selected Branch:", branch;
+
     //  saveUnlockedPages
     // Store in localStorage
     if (branch) {
       const userData = getUserData();
-       (userData);
-      
+      userData;
+
       if (userData) {
         const { permissions = [] } = userData;
-       
+
         const pagesUnlockedNames = {};
 
         permissions.forEach((item) => {
@@ -95,11 +101,123 @@ export default function BranchSelector() {
         dispatch(saveUnlockedPages(pagesUnlockedNames));
       }
       localStorage.setItem("selectedBranch", JSON.stringify(branch));
-      navigate("/dashbord");
+      navigate("/dashbord", {
+        state: {
+          logoNameInfo: logoNameInfo,
+        },
+      });
+    }
+  }; 
+
+  useEffect(() => {
+    const handleGetlogoAndName = async () => {
+      try {
+        const res = await useJwt.getLogoAndName(userUidLocal);
+        console.log(res);
+        setLogoNameInfo(res?.data?.content);
+        dispatch(handleStoreCompany(res?.data?.content));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handleGetlogoAndName();
+  }, [userUidLocal]);
+
+  // useEffect(() => {
+  //   const handlegetLogo = async () => {
+  //     try {
+  //       debugger;
+  //       if (logoNameInfo) {
+  //         const logoRes = await useJwt.getLogo(logoNameInfo?.uid);
+  //         const imageUrl = URL.createObjectURL(logoRes.data);
+
+  //         setImagpath(imageUrl);
+
+  // function blobToBase64(blob) {
+  //   return new Promise((resolve) => {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => resolve(reader.result);
+  //     reader.readAsDataURL(blob);
+  //   });
+  // }
+
+  //         const base64 = await blobToBase64(logoRes?.data);
+
+  //         dispatch(handleStoreLogo(base64));
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   handlegetLogo();
+  // }, [logoNameInfo]);
+
+
+  function blobToBase64(blob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+}
+  // useEffect(() => {
+  //   if (!logoNameInfo?.uid) return;
+
+  //   let objectUrl;
+
+  //   const handleGetLogo = async () => {
+  //     try {
+  //       debugger;
+  //       const logoRes = await useJwt.getLogo(logoNameInfo.uid);
+  //       const blob = logoRes.data;
+
+  //       objectUrl = URL.createObjectURL(blob);
+  //       setImagpath(objectUrl);
+       
+  //       const base64 = await blobToBase64(blob);
+  //       dispatch(handleStoreLogo(base64));
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+
+  //   handleGetLogo();
+
+  //   return () => {
+  //     if (objectUrl) URL.revokeObjectURL(objectUrl);
+  //   };
+  // }, [logoNameInfo?.uid]);
+
+useEffect(() => {
+  if (!logoNameInfo?.uid) return;
+
+  let objectUrl;
+  let cancelled = false;
+
+  const handleGetLogo = async () => {
+    try {
+      const logoRes = await useJwt.getLogo(logoNameInfo.uid);
+      if (cancelled) return;
+
+      const blob = logoRes.data;
+      objectUrl = URL.createObjectURL(blob);
+      setImagpath(objectUrl);
+      const base64 = await blobToBase64(blob);
+      dispatch(handleStoreLogo(base64));
+    } catch (err) {
+      if (!cancelled) console.error(err);
     }
   };
-   (localStorage);
-  
+
+  handleGetLogo();
+
+  return () => {
+    cancelled = true;
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+  };
+}, [logoNameInfo?.uid]);
+
+
   return (
     <div className="min-vh-100" style={{ background: "#7367F0" }}>
       {/* HEADER */}
@@ -111,7 +229,7 @@ export default function BranchSelector() {
             onClick={(e) => e.preventDefault()}
           >
             <img
-              src={MARinLogo}
+              src={companyLogo}
               alt="Logo"
               style={{
                 height: "5rem",
@@ -125,7 +243,7 @@ export default function BranchSelector() {
             className="brand-text text-primary"
             style={{ fontWeight: "bold" }}
           >
-            MarinaOne
+            {logoNameInfo?.companyShortName}
           </h2>
         </div>
       </div>

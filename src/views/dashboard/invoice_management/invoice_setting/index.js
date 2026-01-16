@@ -54,7 +54,7 @@ const HorizontalForm = () => {
         setgetLoading(true);
         const res = await useJwt.getInvoice();
 
-         (res);
+        res;
 
         if (res.status === 200 && res.data) {
           const resData = res.data?.content?.result[0];
@@ -99,8 +99,9 @@ const HorizontalForm = () => {
   useEffect(() => {
     const loadFiles = async () => {
       try {
+        
         const sigRes = await useJwt.getSignature(resData.uid);
-        const logoRes = await useJwt.getLogo(resData.uid);
+        const logoRes = await useJwt.invoivegetLogo(resData.uid);
 
         if (sigRes?.data) {
           const sigFile = new File([sigRes.data], "invoice-signature.png", {
@@ -137,9 +138,18 @@ const HorizontalForm = () => {
     if (resData?.uid) loadFiles();
   }, [resData?.uid]);
 
-   ("signature", imgSignature);
+  "signature", imgSignature;
 
   const onSubmit = async (data) => {
+    if (!data.invoiceSignature || !data.invoiceLogo) {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Invoice Signature and Logo are required",
+        life: 2000,
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("invoiceNote", data.invoiceNote);
     formData.append("invoiceIdType", data.invoiceIdType);
@@ -164,7 +174,11 @@ const HorizontalForm = () => {
             detail: "Invoice Settings Updated successfully",
             life: 2000,
           });
-          return;
+          
+
+          setTimeout(() => {
+            navigate("/dashbord");
+          }, 2000);
         }
       } else {
         const res = await useJwt.invoiceSettings(formData);
@@ -175,10 +189,14 @@ const HorizontalForm = () => {
             detail: "Invoice Settings Created successfully",
             life: 2000,
           });
+
+          setTimeout(() => {
+            navigate("/dashbord");
+          }, 2000);
         }
       }
     } catch (error) {
-       (error);
+      error;
       if (error.response && error.response.data) {
         toast.current.show({
           severity: "error",
@@ -192,7 +210,6 @@ const HorizontalForm = () => {
       setLoading(false);
     }
   };
-
 
   const [files, setFiles] = useState({});
 
@@ -214,6 +231,7 @@ const HorizontalForm = () => {
     setPreviews((prev) => ({ ...prev, [fieldName]: null }));
     setValue(fieldName, null, { shouldValidate: true });
   };
+
 
   const renderFilePreview = (previewUrl) => {
     if (!previewUrl) return null;
@@ -391,15 +409,25 @@ const HorizontalForm = () => {
                 rules={{
                   required: "Invoice Prefix is required",
                   pattern: {
-                    value: /^[A-Za-z]+$/,
-                    message: "Only letters allowed",
+                    value:
+                      /^[A-Za-z0-9 !@#$%^&*()_\-+=\[\]{};:'",.<>\/?\\|`~]*$/,
+                    message:
+                      "Only letters, numbers, spaces, and special characters allowed",
                   },
                 }}
                 render={({ field }) => (
                   <Input
                     {...field}
-                    onKeyPress={(e) => {
-                      if (!/[A-Za-z]/.test(e.key)) e.preventDefault();
+                    onKeyDown={(e) => {
+                      if (e.key.length > 1) return;
+
+                      if (
+                        !/^[a-zA-Z\s!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]$/.test(
+                          e.key
+                        )
+                      ) {
+                        e.preventDefault();
+                      }
                     }}
                   />
                 )}
@@ -419,10 +447,12 @@ const HorizontalForm = () => {
                 name="invoiceNote"
                 control={control}
                 rules={{
-                  required: "Terms are required",
+                  required: "Invoice Note is required",
                   pattern: {
-                    value: /^[A-Za-z0-9\s.,'-]+$/,
-                    message: "Invalid characters used",
+                    value:
+                      /^[A-Za-z0-9 !@#$%^&*()_\-+=\[\]{};:'",.<>\/?\\|`~]*$/,
+                    message:
+                      "Only letters, numbers, spaces, and special characters allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -430,8 +460,16 @@ const HorizontalForm = () => {
                     {...field}
                     type="textarea"
                     rows="3"
-                    onKeyPress={(e) => {
-                      if (!/[A-Za-z0-9]/.test(e.key)) e.preventDefault();
+                    onKeyDown={(e) => {
+                      if (e.key.length > 1) return;
+
+                      if (
+                        !/^[a-zA-Z\s!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]$/.test(
+                          e.key
+                        )
+                      ) {
+                        e.preventDefault();
+                      }
                     }}
                   />
                 )}
@@ -452,10 +490,12 @@ const HorizontalForm = () => {
                 name="invoiceTermsAndConditions"
                 control={control}
                 rules={{
-                  required: "Terms are required",
+                  required: "Invoice Terms And Condition is required",
                   pattern: {
-                    value: /^[A-Za-z0-9\s.,'-]+$/,
-                    message: "Invalid characters used",
+                    value:
+                      /^[A-Za-z0-9 !@#$%^&*()_\-+=\[\]{};:'",.<>\/?\\|`~]*$/,
+                    message:
+                      "Only letters, numbers, spaces, and special characters allowed",
                   },
                 }}
                 render={({ field }) => (
@@ -463,8 +503,16 @@ const HorizontalForm = () => {
                     {...field}
                     type="textarea"
                     rows="3"
-                    onKeyPress={(e) => {
-                      if (!/[A-Za-z0-9]/.test(e.key)) e.preventDefault();
+                    onKeyDown={(e) => {
+                      if (e.key.length > 1) return;
+
+                      if (
+                        !/^[a-zA-Z\s!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]$/.test(
+                          e.key
+                        )
+                      ) {
+                        e.preventDefault();
+                      }
                     }}
                   />
                 )}
@@ -484,7 +532,12 @@ const HorizontalForm = () => {
                 control={control}
                 name="invoiceSignature"
                 rules={{
-                  required: !resData?.uid && "Invoice Signature is required",
+                  validate: (file) => {
+                    if (resData?.uid && file === null) return true;
+                    return (
+                      file instanceof File || "Invoice Signature is required"
+                    );
+                  },
                 }}
                 render={({ field }) => (
                   <Input
@@ -498,11 +551,9 @@ const HorizontalForm = () => {
                 )}
               />
               {errors.invoiceSignature && (
-                <p className="text-danger mb-0">
-                  <small className="text-danger">
-                    {errors.invoiceSignature.message}
-                  </small>
-                </p>
+                <small className="text-danger">
+                  {errors.invoiceSignature.message}
+                </small>
               )}
 
               {previews.invoiceSignature && (
@@ -532,7 +583,12 @@ const HorizontalForm = () => {
                 control={control}
                 name="invoiceLogo"
                 rules={{
-                  required: !resData?.uid && "Invoice Logo is required",
+                  validate: (file) => {
+                    if (resData?.uid && !file) return true; // allow existing image on update
+                    return (
+                      file instanceof File || "Invoice Signature is required"
+                    );
+                  },
                 }}
                 render={({ field }) => (
                   <Input
@@ -544,12 +600,11 @@ const HorizontalForm = () => {
                 )}
               />
               {errors.invoiceLogo && (
-                <p className="text-danger mb-0">
-                  <small className="text-danger">
-                    {errors.invoiceLogo.message}
-                  </small>
-                </p>
+                <small className="text-danger">
+                  {errors.invoiceLogo.message}
+                </small>
               )}
+
               {previews.invoiceLogo && (
                 <div className="mt-2 border rounded p-2">
                   <h6>Preview:</h6>

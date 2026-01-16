@@ -1,27 +1,27 @@
 // ** React Imports
-import { useState, Fragment } from "react";
+import { Fragment, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Card,
-  Form,
-  CardBody,
-  Button,
   Badge,
-  Modal,
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Form,
   Input,
   Label,
+  Modal,
   ModalBody,
   ModalHeader,
+  Row,
 } from "reactstrap";
 
 // ** Third Party Components
-import Swal from "sweetalert2";
+import { Briefcase, Check, X } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
-import { Check, Briefcase, X } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
+import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 // ** Custom Components
@@ -46,7 +46,6 @@ const statusColors = {
   pending: "light-warning",
   inactive: "light-secondary",
 };
-
 const statusOptions = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
