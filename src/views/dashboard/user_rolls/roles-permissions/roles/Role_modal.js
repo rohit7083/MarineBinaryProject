@@ -2,17 +2,17 @@ import useJwt from "@src/auth/jwt/useJwt";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-    Button,
-    Col,
-    FormFeedback,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row,
-    Table,
-    UncontrolledAlert,
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Table,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -268,7 +268,7 @@ function RoleModal({ show: propShow, row, uid, ...props }) {
             )}
           </Col>
           <Col xs={12}>
-            <h4 className="mt-2 pt-50">Role Permissions </h4>
+            <h4 className="mt-2 pt-50">Role Permissions 5</h4>
             <Table className="table-flush-spacing" responsive>
               <tbody>
                 {/* <tr>

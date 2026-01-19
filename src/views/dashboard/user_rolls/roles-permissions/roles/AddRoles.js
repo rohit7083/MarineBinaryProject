@@ -7,18 +7,18 @@ import { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Reactstrap Imports
 import {
-    Alert,
-    Button,
-    Col,
-    FormFeedback,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row,
-    Table,
-    UncontrolledTooltip,
+  Alert,
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Table,
+  UncontrolledTooltip,
 } from "reactstrap";
 
 // ** Third Party Components
@@ -38,9 +38,9 @@ import useJwt from "@src/auth/jwt/useJwt";
 
 // ** Utils
 import {
-    extractUIDFromPermissionList,
-    handleUpdatePermissionList,
-    structurePermissionList,
+  extractUIDFromPermissionList,
+  handleUpdatePermissionList,
+  structurePermissionList,
 } from "../utils";
 
 const AddRoles = (props) => {
@@ -253,7 +253,7 @@ const AddRoles = (props) => {
               </Col>
 
               <Col xs={12}>
-                <h4 className="mt-2 pt-50">Role Permissions</h4>
+                <h4 className="mt-2 pt-50">Role Permissions 5</h4>
                 <Table className="table-flush-spacing" responsive>
                   <tbody>
                     <tr>

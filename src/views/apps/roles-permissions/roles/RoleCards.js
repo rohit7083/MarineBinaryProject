@@ -4,24 +4,23 @@ import { Link } from "react-router-dom";
 
 // ** Reactstrap Imports
 import {
-  Row,
-  Col,
-  Card,
-  Label,
-  Input,
-  Table,
-  Modal,
   Button,
+  Card,
   CardBody,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Modal,
   ModalBody,
   ModalHeader,
-  FormFeedback,
-  UncontrolledTooltip,
+  Row,
+  Table
 } from "reactstrap";
 
 // ** Third Party Components
-import { Copy, Info } from "react-feather";
-import { useForm, Controller } from "react-hook-form";
+import { Copy } from "react-feather";
+import { Controller, useForm } from "react-hook-form";
 
 // ** Custom Components
 import AvatarGroup from "@components/avatar-group";
@@ -31,6 +30,9 @@ import illustration from "@src/assets/images/illustration/faq-illustrations.svg"
 
 // ** Avatars
 import avatar1 from "@src/assets/images/avatars/1.png";
+import avatar10 from "@src/assets/images/avatars/10.png";
+import avatar11 from "@src/assets/images/avatars/11.png";
+import avatar12 from "@src/assets/images/avatars/12.png";
 import avatar2 from "@src/assets/images/avatars/2.png";
 import avatar3 from "@src/assets/images/avatars/3.png";
 import avatar4 from "@src/assets/images/avatars/4.png";
@@ -39,9 +41,6 @@ import avatar6 from "@src/assets/images/avatars/6.png";
 import avatar7 from "@src/assets/images/avatars/7.png";
 import avatar8 from "@src/assets/images/avatars/8.png";
 import avatar9 from "@src/assets/images/avatars/9.png";
-import avatar10 from "@src/assets/images/avatars/10.png";
-import avatar11 from "@src/assets/images/avatars/11.png";
-import avatar12 from "@src/assets/images/avatars/12.png";
 
 // ** Vars
 const data = [
@@ -353,7 +352,7 @@ const RoleCards = () => {
               )}
             </Col>
             <Col xs={12}>
-              <h4 className="mt-2 pt-50">Role Permissions</h4>
+              <h4 className="mt-2 pt-50">Role Permissions 5</h4>
               <Table className="table-flush-spacing" responsive>
                 <tbody>
                   {/* <tr>

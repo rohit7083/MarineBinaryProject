@@ -13,7 +13,7 @@ const PublicRoute = ({ children, route }) => {
     const restrictedRoute = route.meta && route.meta.restricted;
 
     if (user && restrictedRoute) {
-      debugger;
+      
       return <Navigate to={getHomeRouteForLoggedInUser(
        
         user.isSubUser === false ? "" : user.role

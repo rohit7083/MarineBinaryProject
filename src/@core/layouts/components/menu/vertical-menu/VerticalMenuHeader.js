@@ -7,7 +7,6 @@ import { Circle, Disc, X } from "react-feather";
 
 // ** Config
 import themeConfig from "@configs/themeConfig";
-
 // ** Utils
 import { getHomeRouteForLoggedInUser, getUserData } from "@utils";
 import { useSelector } from "react-redux";
@@ -56,6 +55,11 @@ const VerticalMenuHeader = (props) => {
     }
   };
 
+  // debugger;
+  const logoSrc =
+    typeof companyLogo === "string" && companyLogo.trim().length > 0
+      ? companyLogo
+      : themeConfig.app.appLogoImage;
   return (
     <div className="navbar-header">
       <ul className="nav navbar-nav flex-row">
@@ -66,14 +70,13 @@ const VerticalMenuHeader = (props) => {
           >
             <span className="brand-logo">
               <img
-                // src={companyLogo ? companyLogo :themeConfig.app.appLogoImage}
-                src={companyLogo}
-              
+                // src={companyLogo.length >0 ? companyLogo :themeConfig.app.appLogoImage}
+                src={logoSrc}
                 style={{
                   height: themeConfig.app.appLogoSize.height,
                   width: themeConfig.app.appLogoSize.width,
                 }}
-                alt="logo"
+                alt={"LOgo"}
               />
             </span>
             <h2

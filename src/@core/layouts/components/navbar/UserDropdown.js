@@ -24,8 +24,8 @@ import {
 } from "reactstrap";
 
 // ** Default Avatar Image
-import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
 import { Settings2 } from "lucide-react";
+import defaultAvatar from "../../../../assets/images/avatars/profileImge.jpg";
 
 const UserDropdown = () => {
   // ** Store Vars
@@ -57,7 +57,9 @@ const UserDropdown = () => {
             {(userData && userData["firstName"]) || "John Doe"}
           </span>
           <span className="user-status ">
-            {(userData && userData.roleName) || "Admin"}
+
+            {/* {(userData?.(userData && userData.roleName) || "Admin"} */}
+            {(userData?.isSubUser === true ? userData.roleName :"")}
           </span>
         </div>
         <Avatar img={userAvatar} imgHeight="40" imgWidth="40" status="online" />

@@ -225,7 +225,7 @@ export const convertArrayOfObjectsToCSV = (data, selectedFields) => {
 
         return `"${safeVal}"`;
       })
-      .join(",")
+      .join(","),
   );
 
   return [headers.join(","), ...rows].join("\n");
@@ -261,6 +261,8 @@ export const exportToCSV = (data, filename = "report.csv") => {
 
 // --- Excel HTML Export (downloads as .xls) ---
 export const exportToExcelHTML = (data, filename = "report.xls") => {
+  console.log("data", data);
+
   if (!data || !data.length) {
     console.warn("No data to export.");
     return;
@@ -280,24 +282,34 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
 
   const rows = data
     .map((item, index) => {
-      const customerName = item.customer
-        ? [item.customer.firstName, item.customer.lastName]
-            .filter(Boolean)
-            .join(" ")
-        : item.member
-        ? [item.member.firstName, item.member.lastName]
-            .filter(Boolean)
-            .join(" ")
+      // const customerName =/ item.customer != null
+      //   ? [item.customer.firstName, item.customer.lastName]
+      //       .filter(Boolean)
+      //       .join(" ")
+      //   :
+      //   ? [item.member.firstName, item.member.lastName]
+      //       .filter(Boolean)
+      //       .join(" ")
+      //   : "";
+
+      // const phoneNumber = item.customer
+      //   ? [item.customer.countryCode, item.customer.phoneNumber]
+      //       .filter(Boolean)
+      //       .join(" ")
+      //   : item.member
+      //   ? [item.member.countryCode, item.member.phoneNumber]
+      //       .filter(Boolean)
+      //       .join(" ")
+      //   : "";
+
+      const source = item.customer ?? item.member;
+
+      const customerName = source
+        ? [source.firstName, source.lastName].filter(Boolean).join(" ")
         : "";
 
-      const phoneNumber = item.customer
-        ? [item.customer.countryCode, item.customer.phoneNumber]
-            .filter(Boolean)
-            .join(" ")
-        : item.member
-        ? [item.member.countryCode, item.member.phoneNumber]
-            .filter(Boolean)
-            .join(" ")
+      const phoneNumber = source
+        ? [source.countryCode, source.phoneNumber].filter(Boolean).join(" ")
         : "";
 
       return `
@@ -308,7 +320,7 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
           <td>${escapeHTML(item.paymentStatus || "")}</td>
           <td>${escapeHTML(item.finalPayment ?? "")}</td>
           <td>${escapeHTML(
-            item.customer?.emailId || item.member?.emailId || ""
+            item.customer?.emailId || item.member?.emailId || "",
           )}</td>
           <td>${escapeHTML(customerName)}</td>
           <td>${escapeHTML(phoneNumber)}</td>
@@ -339,7 +351,6 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
   document.body.removeChild(link);
   URL.revokeObjectURL(link.href);
 };
-
 
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
@@ -380,7 +391,7 @@ const TABLE_HEADERS = [
  */
 const formatDataRow = (item, index) => {
   const customer = item.customer || item.member || {};
-  
+
   return [
     String(index + 1),
     formatDateTime(item.paymentDate),
@@ -425,14 +436,14 @@ class PDFGenerator {
   wrapText(text, maxWidth, font = this.font, fontSize = PDF_CONFIG.fontSize) {
     const str = String(text);
     if (!str || str.length === 0) return [""];
-    
+
     const lines = [];
     let currentLine = "";
-    
+
     for (let i = 0; i < str.length; i++) {
       const testLine = currentLine + str[i];
       const testWidth = font.widthOfTextAtSize(testLine, fontSize);
-      
+
       if (testWidth <= maxWidth) {
         currentLine = testLine;
       } else {
@@ -440,7 +451,7 @@ class PDFGenerator {
         currentLine = str[i];
       }
     }
-    
+
     if (currentLine) lines.push(currentLine);
     return lines.length > 0 ? lines : [""];
   }
@@ -450,7 +461,7 @@ class PDFGenerator {
    */
   drawGridLines(yTop, yBottom) {
     let xPosition = PDF_CONFIG.pageMargin;
-    
+
     // Draw vertical lines
     for (let i = 0; i <= COLUMN_WIDTHS.length; i++) {
       this.currentPage.drawLine({
@@ -471,7 +482,7 @@ class PDFGenerator {
   drawRow(rowData, yPosition, isHeader = false) {
     const fontSize = isHeader ? PDF_CONFIG.headerFontSize : PDF_CONFIG.fontSize;
     const cellFont = isHeader ? this.boldFont : this.font;
-    const maxWidth = COLUMN_WIDTHS.map(w => w - PDF_CONFIG.cellPadding * 2);
+    const maxWidth = COLUMN_WIDTHS.map((w) => w - PDF_CONFIG.cellPadding * 2);
 
     // Wrap text for each cell
     const wrappedCells = rowData.map((cell, columnIndex) => {
@@ -479,8 +490,9 @@ class PDFGenerator {
     });
 
     // Calculate max lines needed
-    const maxLines = Math.max(...wrappedCells.map(lines => lines.length));
-    const rowHeight = maxLines * PDF_CONFIG.lineHeight + PDF_CONFIG.cellPadding * 2;
+    const maxLines = Math.max(...wrappedCells.map((lines) => lines.length));
+    const rowHeight =
+      maxLines * PDF_CONFIG.lineHeight + PDF_CONFIG.cellPadding * 2;
 
     const yTop = yPosition;
     const yBottom = yPosition - rowHeight;
@@ -511,7 +523,10 @@ class PDFGenerator {
     // Draw horizontal line at bottom
     this.currentPage.drawLine({
       start: { x: PDF_CONFIG.pageMargin, y: yBottom },
-      end: { x: PDF_CONFIG.pageMargin + COLUMN_WIDTHS.reduce((a, b) => a + b, 0), y: yBottom },
+      end: {
+        x: PDF_CONFIG.pageMargin + COLUMN_WIDTHS.reduce((a, b) => a + b, 0),
+        y: yBottom,
+      },
       thickness: 0.3,
       color: rgb(0.7, 0.7, 0.7),
     });
@@ -519,9 +534,10 @@ class PDFGenerator {
     // Draw text in each cell
     let xPosition = PDF_CONFIG.pageMargin;
     wrappedCells.forEach((lines, columnIndex) => {
-      let textY = yPosition - PDF_CONFIG.cellPadding - PDF_CONFIG.lineHeight * 0.7;
-      
-      lines.forEach(line => {
+      let textY =
+        yPosition - PDF_CONFIG.cellPadding - PDF_CONFIG.lineHeight * 0.7;
+
+      lines.forEach((line) => {
         this.currentPage.drawText(line, {
           x: xPosition + PDF_CONFIG.cellPadding,
           y: textY,
@@ -531,7 +547,7 @@ class PDFGenerator {
         });
         textY -= PDF_CONFIG.lineHeight;
       });
-      
+
       xPosition += COLUMN_WIDTHS[columnIndex];
     });
 
@@ -549,7 +565,10 @@ class PDFGenerator {
     // Draw top border of table
     this.currentPage.drawLine({
       start: { x: PDF_CONFIG.pageMargin, y: yTop },
-      end: { x: PDF_CONFIG.pageMargin + COLUMN_WIDTHS.reduce((a, b) => a + b, 0), y: yTop },
+      end: {
+        x: PDF_CONFIG.pageMargin + COLUMN_WIDTHS.reduce((a, b) => a + b, 0),
+        y: yTop,
+      },
       thickness: 1,
       color: rgb(0.2, 0.4, 0.7),
     });
@@ -561,14 +580,17 @@ class PDFGenerator {
    * Draw page title with date
    */
   drawTitle(title) {
-    const currentDate = new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
 
     // Title
-    const titleWidth = this.boldFont.widthOfTextAtSize(title, PDF_CONFIG.titleFontSize);
+    const titleWidth = this.boldFont.widthOfTextAtSize(
+      title,
+      PDF_CONFIG.titleFontSize,
+    );
     const centerX = (this.pageWidth - titleWidth) / 2;
 
     this.currentPage.drawText(title, {
@@ -602,7 +624,7 @@ class PDFGenerator {
   drawPageNumber(pageNum, totalPages) {
     const pageText = `Page ${pageNum} of ${totalPages}`;
     const textWidth = this.font.widthOfTextAtSize(pageText, 7);
-    
+
     this.currentPage.drawText(pageText, {
       x: this.pageWidth - PDF_CONFIG.pageMargin - textWidth,
       y: PDF_CONFIG.pageMargin - 15,
@@ -616,11 +638,12 @@ class PDFGenerator {
    * Calculate estimated height needed for a row
    */
   estimateRowHeight(rowData) {
-    const maxWidth = COLUMN_WIDTHS.map(w => w - PDF_CONFIG.cellPadding * 2);
+    const maxWidth = COLUMN_WIDTHS.map((w) => w - PDF_CONFIG.cellPadding * 2);
     const maxLines = Math.max(
-      ...rowData.map((cell, columnIndex) =>
-        this.wrapText(cell, maxWidth[columnIndex]).length
-      )
+      ...rowData.map(
+        (cell, columnIndex) =>
+          this.wrapText(cell, maxWidth[columnIndex]).length,
+      ),
     );
     return maxLines * PDF_CONFIG.lineHeight + PDF_CONFIG.cellPadding * 2;
   }

@@ -55,7 +55,7 @@ const VesselForm = () => {
         code: country.code,
         dial_code: country.dial_code,
       })),
-    [countries]
+    [countries],
   );
   useEffect(() => {
     if (WaitUId && WaitingData) {
@@ -247,7 +247,7 @@ const VesselForm = () => {
                   "vesselRegistrationNumber",
                   "Registration Number",
                   "Enter registration number",
-                  { required: "Registration number is required" }
+                  { required: "Registration number is required" },
                 )}
                 {textInput("length", "Length (m)", "Enter length")}
                 {textInput("width", "Width (m)", "Enter width")}
@@ -276,9 +276,8 @@ const VesselForm = () => {
                     rules={{
                       required: "Email is required",
                       pattern: {
-                        value: /^[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z]{2,}$/,
-                        message:
-                          "Enter a valid email (letters, numbers, '@' and '.' only)",
+                        value: /^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+                        message: "Enter a valid email address",
                       },
                     }}
                     render={({ field }) => (
@@ -290,10 +289,11 @@ const VesselForm = () => {
                           placeholder="Enter email"
                           invalid={!!errors.emailId}
                           onChange={(e) => {
-                            let value = e.target.value.replace(
-                              /[^A-Za-z0-9@.]/g,
-                              ""
+                            const value = e.target.value.replace(
+                              /[^A-Za-z0-9._@-]/g,
+                              "",
                             );
+
                             field.onChange(value); // update form state properly
                           }}
                         />
@@ -321,7 +321,7 @@ const VesselForm = () => {
                               countryOptions.find(
                                 (opt) =>
                                   opt.value === field.value?.value ||
-                                  opt.value === field.value
+                                  opt.value === field.value,
                               ) || null
                             }
                             onChange={(option) => field.onChange(option)}
@@ -353,7 +353,7 @@ const VesselForm = () => {
                               onChange={(e) => {
                                 let value = e.target.value.replace(
                                   /[^0-9]/g,
-                                  ""
+                                  "",
                                 );
                                 if (value.length > 13)
                                   value = value.slice(0, 13); // max 13 digits
@@ -401,7 +401,7 @@ const VesselForm = () => {
                           onChange={(e) => {
                             const value = e.target.value.replace(
                               /[^A-Za-z0-9\s,.-]/g,
-                              ""
+                              "",
                             );
                             field.onChange(value);
                           }}

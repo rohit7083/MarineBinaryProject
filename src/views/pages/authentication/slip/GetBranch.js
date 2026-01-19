@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 import AddBranch from "../../../dashboard/branch_management/AddBranch";
 // ** Utils
+import themeConfig from "@configs/themeConfig";
 import { getUserData } from "@utils";
 
 // ** Store & Actions
@@ -24,7 +25,6 @@ import {
   handleStoreCompany,
   handleStoreLogo,
 } from "../../../../redux/authentication";
-
 export default function BranchSelector() {
   const [search, setSearch] = useState("");
   const [branches, setBranches] = useState([]);
@@ -217,6 +217,10 @@ useEffect(() => {
   };
 }, [logoNameInfo?.uid]);
 
+const logoSrc =
+  typeof companyLogo === "string" && companyLogo.trim().length > 0
+    ? companyLogo
+    : themeConfig.app.appLogoImage;
 
   return (
     <div className="min-vh-100" style={{ background: "#7367F0" }}>
@@ -229,7 +233,7 @@ useEffect(() => {
             onClick={(e) => e.preventDefault()}
           >
             <img
-              src={companyLogo}
+              src={logoSrc}
               alt="Logo"
               style={{
                 height: "5rem",

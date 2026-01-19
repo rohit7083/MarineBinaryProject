@@ -20,7 +20,7 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { handleStoreLogo } from '../../../redux/authentication';
+import { handleStoreLogo } from "../../../redux/authentication";
 export default function CompanySettings() {
   // const []=useState(false);
   const toast = useRef(null);
@@ -33,16 +33,16 @@ export default function CompanySettings() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      //   companyName: "Marina company",
-      //   companyShortName: "MARINA",
-      //   companyEmail: "info@marina.com",
-      //   companyPhone: "9876543210",
-      //   companyLogo: null,
-      //   address: "MG Road",
-      //   city: "Mumbai",
-      //   state: "MH",
-      //   country: "India",
-      //   postalCode: "40001",
+        // companyName: "",
+        // companyShortName: "",
+        // companyEmail: "",
+        // companyPhone: "",
+        // companyLogo: "",
+        // address: "",
+        // city: "",
+        // state: "",
+        // country: "",
+        // postalCode: "",
     },
   });
   const dispatch = useDispatch();
@@ -51,6 +51,8 @@ export default function CompanySettings() {
   const [saveMessage, setSaveMessage] = useState(null);
   const [retriveAllData, setRetriveData] = useState(null);
   const [resetLoading, setResetLoading] = useState(false);
+  const [isLogoChanged, setIsLogoChanged] = useState(false);
+
   useEffect(() => {
     const handleGetSettings = async () => {
       try {
@@ -71,15 +73,119 @@ export default function CompanySettings() {
       reset(retriveAllData);
     }
   }, [retriveAllData]);
+  //   const onSubmit = async (data) => {
+  //     setSaveMessage(null);
+  //     console.log(data);
+  // debugger;
+  //     const formDataToSend = new FormData();
+  //     formDataToSend.append("companyName", data.companyName);
+  //     formDataToSend.append("companyShortName", data.companyShortName);
+  //     formDataToSend.append("companyPhone", data.companyPhone);
+  //     // formDataToSend.append("companyLogo", data.companyLogo );
+  //     if (isLogoChanged && data.companyLogo instanceof File) {
+  //   formDataToSend.append("companyLogo", data.companyLogo);
+  // }
+
+  //     formDataToSend.append("address", data.address);
+  //     formDataToSend.append("companyEmail", data.companyEmail);
+  //     formDataToSend.append("city", data.city);
+  //     formDataToSend.append("state", data.state);
+  //     formDataToSend.append("country", data.country);
+  //     formDataToSend.append("postalCode", data.postalCode);
+
+  //     try {
+  //       let successFlag = 0;
+  //       if (retriveAllData) {
+  //         const updateRes = await useJwt.updateGeneralsetting(
+  //           retriveAllData?.uid,
+  //           formDataToSend,
+  //         );
+  //         console.log(updateRes);
+  //         if (updateRes?.status === 200) {
+  //           successFlag = 200;
+  //           toast.current.show({
+  //             severity: "success",
+  //             summary: "Success",
+  //             detail: "General settings Updated successfully.",
+  //             life: 2000,
+  //           });
+  //           setTimeout(() => {
+  //             navigate("/dashbord");
+  //           }, 2000);
+  //         }
+  //       } else {
+  //         const res = await useJwt.createSetting(formDataToSend);
+  //         console.log(res);
+  //         if (res?.status === 201) {
+  //           successFlag = 201;
+  //           toast.current.show({
+  //             severity: "success",
+  //             summary: "Success",
+  //             detail: "General settings created successfully.",
+  //             life: 2000,
+  //           });
+  //           setTimeout(() => {
+  //             navigate("/dashbord");
+  //           }, 2000);
+  //         }
+  //       }
+
+  //       if (successFlag == 200 || successFlag == 201) {
+  //         const companyDetails = JSON.parse(
+  //           localStorage.getItem("companyDetails"),
+  //         );
+  //         const uid = companyDetails?.uid;
+
+  //         function blobToBase64(blob) {
+  //           return new Promise((resolve) => {
+  //             const reader = new FileReader();
+  //             reader.onloadend = () => resolve(reader.result);
+  //             reader.readAsDataURL(blob);
+  //           });
+  //         }
+  //         if (!uid) return;
+
+  //         let objectUrl;
+  //         let cancelled = false;
+
+  //         try {
+  //           const logoRes = await useJwt.getLogo(uid);
+  //           if (cancelled) return;
+  //           const blob = logoRes.data;
+  //           objectUrl = URL.createObjectURL(blob);
+  //           const base64 = await blobToBase64(blob);
+  //           dispatch(handleStoreLogo(base64));
+  //         } catch (err) {
+  //           if (!cancelled) console.error(err);
+  //         }
+  //       }
+
+  //       return () => {
+  //         cancelled = true;
+  //         if (objectUrl) URL.revokeObjectURL(objectUrl);
+  //       };
+  //     } catch (error) {
+  //       console.log(error);
+  //       if (error?.response) {
+  //         const content = error?.response?.data?.content;
+
+  //         toast.current.show({
+  //           severity: "error",
+  //           summary: "Failed",
+  //           detail: content || "Failed to create general settings.",
+  //           life: 3000,
+  //         });
+  //       }
+  //     }
+  //   };
+
   const onSubmit = async (data) => {
     setSaveMessage(null);
-    console.log(data);
 
     const formDataToSend = new FormData();
     formDataToSend.append("companyName", data.companyName);
     formDataToSend.append("companyShortName", data.companyShortName);
     formDataToSend.append("companyPhone", data.companyPhone);
-    formDataToSend.append("companyLogo", data.companyLogo);
     formDataToSend.append("address", data.address);
     formDataToSend.append("companyEmail", data.companyEmail);
     formDataToSend.append("city", data.city);
@@ -89,27 +195,56 @@ export default function CompanySettings() {
 
     try {
       let successFlag = 0;
+
+      const companyDetails = JSON.parse(localStorage.getItem("companyDetails"));
+      const uid = companyDetails?.uid;
+
+      // =========================
+      // LOGO HANDLING (CRITICAL)
+      // =========================
+
       if (retriveAllData) {
+        // UPDATE CASE
+
+        if (isLogoChanged && data.companyLogo instanceof File) {
+          // User selected NEW logo
+          formDataToSend.append("companyLogo", data.companyLogo);
+        } else {
+          // User did NOT change logo → resend existing logo (backend workaround)
+          const logoRes = await useJwt.getLogo(uid);
+          const blob = logoRes.data;
+
+          const file = new File([blob], "company-logo.png", {
+            type: blob.type,
+          });
+
+          formDataToSend.append("companyLogo", file);
+        }
+
         const updateRes = await useJwt.updateGeneralsetting(
-          retriveAllData?.uid,
-          formDataToSend
+          retriveAllData.uid,
+          formDataToSend,
         );
-        console.log(updateRes);
+
         if (updateRes?.status === 200) {
           successFlag = 200;
           toast.current.show({
             severity: "success",
             summary: "Success",
-            detail: "General settings Updated successfully.",
+            detail: "General settings updated successfully.",
             life: 2000,
           });
-          setTimeout(() => {
-            navigate("/dashbord");
-          }, 2000);
+
+          setTimeout(() => navigate("/dashbord"), 2000);
         }
       } else {
+        // CREATE CASE (logo is mandatory)
+        if (data.companyLogo instanceof File) {
+          formDataToSend.append("companyLogo", data.companyLogo);
+        }
+
         const res = await useJwt.createSetting(formDataToSend);
-        console.log(res);
+
         if (res?.status === 201) {
           successFlag = 201;
           toast.current.show({
@@ -118,58 +253,40 @@ export default function CompanySettings() {
             detail: "General settings created successfully.",
             life: 2000,
           });
-          setTimeout(() => {
-            navigate("/dashbord");
-          }, 2000);
+
+          setTimeout(() => navigate("/dashbord"), 2000);
         }
       }
 
-      if (successFlag == 200 || successFlag == 201) {
-       
-          const companyDetails = JSON.parse(localStorage.getItem("companyDetails"));
-        const uid = companyDetails?.uid;
+      // =========================
+      // STORE LOGO IN REDUX
+      // =========================
 
-        function blobToBase64(blob) {
-          return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-          });
-        }
+      if (successFlag === 200 || successFlag === 201) {
         if (!uid) return;
 
-        let objectUrl;
-        let cancelled = false;
+        const logoRes = await useJwt.getLogo(uid);
+        const blob = logoRes.data;
 
-        try {
-          const logoRes = await useJwt.getLogo(uid);
-          if (cancelled) return;
-
-          const blob = logoRes.data;
-          objectUrl = URL.createObjectURL(blob);
-          const base64 = await blobToBase64(blob);
-          dispatch(handleStoreLogo(base64));
-        } catch (err) {
-          if (!cancelled) console.error(err);
-        }
-      }
-
-      return () => {
-        cancelled = true;
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
-      };
-    } catch (error) {
-      console.log(error);
-      if (error?.response) {
-        const content = error?.response?.data?.content;
-
-        toast.current.show({
-          severity: "error",
-          summary: "Failed",
-          detail: content || "Failed to create general settings.",
-          life: 3000,
+        const base64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
         });
+
+        dispatch(handleStoreLogo(base64));
       }
+    } catch (error) {
+      console.error(error);
+
+      const content = error?.response?.data?.content;
+
+      toast.current.show({
+        severity: "error",
+        summary: "Failed",
+        detail: content || "Failed to save general settings.",
+        life: 3000,
+      });
     }
   };
 
@@ -332,17 +449,30 @@ export default function CompanySettings() {
                     name="companyLogo"
                     control={control}
                     rules={{
-                      required: "Company logo is required",
+                      required: !retriveAllData && "Company logo is required",
                     }}
                     render={({ field }) => (
                       <Input
                         type="file"
                         accept="image/*"
+                        // onChange={(e) => {
+                        //   const file = e.target.files[0];
+                        //   field.onChange(file);
+
+                        //   if (file) {
+                        //     const reader = new FileReader();
+                        //     reader.onloadend = () =>
+                        //       setLogoPreview(reader.result);
+                        //     reader.readAsDataURL(file);
+                        //   }
+                        // }}
+
                         onChange={(e) => {
                           const file = e.target.files[0];
                           field.onChange(file);
 
                           if (file) {
+                            setIsLogoChanged(true); // 🔥 key line
                             const reader = new FileReader();
                             reader.onloadend = () =>
                               setLogoPreview(reader.result);

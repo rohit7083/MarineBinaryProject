@@ -64,6 +64,7 @@ const AddRoles = ({ props, refreshTable }) => {
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+  console.log("permissionList", permissionList);
 
   // ** Hooks
   const {
@@ -174,21 +175,6 @@ const AddRoles = ({ props, refreshTable }) => {
         const res = await useJwt.permission();
         const { result } = res?.data.content;
 
-        // let data = structurePermissionList(result);
-
-        // if (data && Object.keys(data).length) {
-        //   const { permissionIds, roleName, uid } = data;
-
-        //   const updatedList = handleUpdatePermissionList(permissionIds, {
-        //     ...data,
-        //   });
-        //   setPermissionList({ ...updatedList });
-        //   reset({
-        //     roleName,
-        //     ...updatedList,
-        //     uid,
-        //   });
-        // }
         let data = structurePermissionList(result);
 
         if (data && Object.keys(data).length) {
@@ -200,7 +186,7 @@ const AddRoles = ({ props, refreshTable }) => {
 
           // === FORCE DASHBOARD VIEW DEFAULT SELECTED + DISABLED ===
           const dashboardKey = Object.keys(updatedList).find(
-            (key) => key.toLowerCase() === "dashboard"
+            (key) => key.toLowerCase() === "dashboard",
           );
 
           if (dashboardKey && updatedList[dashboardKey][1]) {
@@ -208,7 +194,24 @@ const AddRoles = ({ props, refreshTable }) => {
             updatedList[dashboardKey][1].disabled = true; // mark as disabled
           }
 
-          setPermissionList({ ...updatedList });
+          const userDataRaw = localStorage.getItem("userData");
+          const userData = userDataRaw ? JSON.parse(userDataRaw) : null;
+
+          const isSubUser = userData?.isSubUser;
+
+          const withoutUserManagement = Object.fromEntries(
+            Object.entries(updatedList).filter(
+              ([key]) => key !== "user management",
+            ),
+          );
+
+          if (isSubUser === true) {
+            setPermissionList(withoutUserManagement);
+          } else {
+            setPermissionList({ ...updatedList });
+          }
+
+          
 
           reset({
             roleName,
@@ -225,6 +228,8 @@ const AddRoles = ({ props, refreshTable }) => {
       }
     })();
   }, [props, fetchTrigger]);
+
+            console.log("permissionList",permissionList);
 
   const onReset = () => {
     toggle();
@@ -375,26 +380,26 @@ const AddRoles = ({ props, refreshTable }) => {
                                     if (checked && index !== 1) {
                                       setValue(
                                         `${category}.1.isSelected`,
-                                        true
+                                        true,
                                       );
                                     }
 
                                     // If VIEW is being unchecked → block it if others active
                                     if (!checked && index === 1) {
                                       const c = watch(
-                                        `${category}.0.isSelected`
+                                        `${category}.0.isSelected`,
                                       );
                                       const u = watch(
-                                        `${category}.2.isSelected`
+                                        `${category}.2.isSelected`,
                                       );
                                       const d = watch(
-                                        `${category}.3.isSelected`
+                                        `${category}.3.isSelected`,
                                       );
 
                                       if (c || u || d) {
                                         setValue(
                                           `${category}.1.isSelected`,
-                                          true
+                                          true,
                                         );
                                       }
                                     }
