@@ -461,7 +461,7 @@ const TemplateManager = () => {
 
                   {/* Sender Fields */}
                   <Row>
-                    <Col md={6} className="mb-1">
+                    {/* <Col md={6} className="mb-1">
                       <label className="form-label">
                         Email Sent From - Name
                         {emailTemplate?.status && (
@@ -502,9 +502,9 @@ const TemplateManager = () => {
                           {errors.emailTemplate.senderName.message}
                         </div>
                       )}
-                    </Col>
+                    </Col> */}
 
-                    <Col md={6} className="mb-1">
+                    <Col md={12} className="mb-1">
                       <label className="form-label">
                         Email Sent From - Email
                         {emailTemplate?.status && (
@@ -649,7 +649,7 @@ const TemplateManager = () => {
 
                 <div className="card-body">
                   <Row className="mb-1 mt-1">
-                    <Col md={6}>
+                    {/* <Col md={6}>
                       <label className="form-label">
                         SMS Sent From{" "}
                         {smsTemplate?.status && (
@@ -697,8 +697,8 @@ const TemplateManager = () => {
                           {errors.smsTemplate.sentFrom.message}
                         </div>
                       )}
-                    </Col>
-                    <Col md={6}>
+                    </Col> */}
+                    <Col md={12}>
                       <label className="form-label">
                         SMS Sent From (Phone Number)
                         {smsTemplate?.status && (

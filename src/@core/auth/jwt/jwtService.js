@@ -1226,8 +1226,8 @@ export default class JwtService {
       skipBranch: true,
     });
   }
-  getSettings() {
-    return axios.get(`${this.jwtConfig.getSettings}`);
+  getGeneralSettings() {
+    return axios.get(`${this.jwtConfig.getGeneralSettings}`);
   }
 
    updateGeneralsetting(uid, ...args) {

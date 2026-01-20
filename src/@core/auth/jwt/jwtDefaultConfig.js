@@ -305,7 +305,7 @@ export default {
 
   getDyanimicInfoOFSubscription:"/auth/subscription/",
   createSetting:"/generalSetting/",
-  getSettings:"/generalSetting",
+  getGeneralSettings:"/generalSetting",
 
   updateGeneralsetting:"/generalSetting/",
   createMannualEmail:"/manualEmail/",

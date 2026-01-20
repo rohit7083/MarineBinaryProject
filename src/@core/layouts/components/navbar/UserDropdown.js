@@ -25,7 +25,8 @@ import {
 
 // ** Default Avatar Image
 import { Settings2 } from "lucide-react";
-import defaultAvatar from "../../../../assets/images/avatars/profileImge.jpg";
+// import defaultAvatar from "../../../../assets/icons/profileIcon.png";
+import defaultAvatar from "../../../../assets/icons/image.png";
 
 const UserDropdown = () => {
   // ** Store Vars

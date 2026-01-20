@@ -33,16 +33,16 @@ export default function CompanySettings() {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-        // companyName: "",
-        // companyShortName: "",
-        // companyEmail: "",
-        // companyPhone: "",
-        // companyLogo: "",
-        // address: "",
-        // city: "",
-        // state: "",
-        // country: "",
-        // postalCode: "",
+      // companyName: "",
+      // companyShortName: "",
+      // companyEmail: "",
+      // companyPhone: "",
+      // companyLogo: "",
+      // address: "",
+      // city: "",
+      // state: "",
+      // country: "",
+      // postalCode: "",
     },
   });
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ export default function CompanySettings() {
     const handleGetSettings = async () => {
       try {
         setResetLoading(true);
-        const res = await useJwt.getSettings();
+        const res = await useJwt.getGeneralSettings();
         setRetriveData(res?.data?.content?.result[0]);
       } catch (error) {
         console.log(error);
@@ -291,6 +291,8 @@ export default function CompanySettings() {
   };
 
   const onlyLetters = (value) => value.replace(/[^a-zA-Z\s]/g, "");
+const addressSanitizer = (value = "") =>
+  value.replace(/[^a-zA-Z0-9\s,.\-/#']/g, "");
 
   const onlyLettersNoSpace = (value) => value.replace(/[^a-zA-Z]/g, "");
 
@@ -515,7 +517,7 @@ export default function CompanySettings() {
                       <Input
                         {...field}
                         onChange={(e) =>
-                          field.onChange(onlyLetters(e.target.value))
+                          field.onChange(addressSanitizer(e.target.value))
                         }
                       />
                     )}

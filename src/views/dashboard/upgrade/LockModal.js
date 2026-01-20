@@ -10,20 +10,19 @@ export default function PosUpgradePage() {
   const [subscription, setSubscription] = useState([]);
   const [loading, setLoading] = useState(false);
   const [walletBal, setWalletBal] = useState(null);
-  const [dynamicMessage,setDyanamicMsz]=useState([]);
+  const [dynamicMessage, setDyanamicMsz] = useState([]);
+  // const [isSubUser, setIsSubUser] = useState(null);
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/dashbord");
   };
   const location = useLocation();
-  console.table(location);
-   (localStorage);
 
   const handleMerchantAcc = () => {
     window.open(
       "https://apply.locktrust.com/",
       "_blank",
-      "noopener,noreferrer"
+      "noopener,noreferrer",
     );
   };
 
@@ -31,32 +30,38 @@ export default function PosUpgradePage() {
     const handlePurchase = async () => {
       try {
         setLoading(true);
-         (localStorage.getItem("crmId"));
+        localStorage.getItem("crmId");
 
         const crmId = localStorage.getItem("crmId");
         const userData = JSON.parse(localStorage.getItem("userData"));
         const userUid = userData?.uid || "";
 
+        // setIsSubUser(isSubUser);
         const res = await useJwt.upgradePlans({ crmid: crmId });
-         ("called upgrade plan api ", res);
 
         const paymentPageData = await useJwt.apiForpaymentPage({
           uid: userUid,
         });
-         ("paymentPageData called ", paymentPageData);
 
         if (paymentPageData?.status === 200) {
           let walletBal = paymentPageData?.data?.content;
           setWalletBal(walletBal);
         }
-         (paymentPageData?.data?.walletBal);
 
         const addOndata = res.data?.content?.filter(
-          (item) => item?.is_addon === "1"
+          (item) => item?.is_addon === "1",
         );
-        setAddOn(addOndata);
+
+        const subscriptionId = localStorage.getItem("subscriptionId");
+        const addOnfilterData = addOndata.filter(
+          (item) =>
+            subscriptionId.includes(item.subscriptionId) ||
+            item.subscriptionId === 0,
+        );
+
+        setAddOn(addOnfilterData);
         const SubscriptionData = res.data?.content?.filter(
-          (item) => item?.is_addon === "0"
+          (item) => item?.is_addon === "0",
         );
 
         setSubscription(SubscriptionData);
@@ -73,13 +78,13 @@ export default function PosUpgradePage() {
     const handleInfo = async () => {
       try {
         const parentMenuId = localStorage.getItem("parentMenuId");
-         (parentMenuId);
+        parentMenuId;
         const res = await useJwt.getDyanimicInfoOFSubscription(parentMenuId);
-        setDyanamicMsz(res?.data?.['0']?.messages);
+        setDyanamicMsz(res?.data?.["0"]?.messages);
 
-         (res);
+        res;
       } catch (error) {
-         (error);
+        error;
       }
     };
     handleInfo();
@@ -93,16 +98,31 @@ export default function PosUpgradePage() {
     navigate("/upgrade/subscription", { state: { addOn, walletBal } });
   };
 
+  const [isSubUser, setIsSubUser] = useState(false);
+
+  useEffect(() => {
+    let userData = null;
+
+    try {
+      userData = JSON.parse(localStorage.getItem("userData"));
+    } catch {
+      userData = null;
+    }
+
+    setIsSubUser(userData?.isSubUser ?? false);
+    // setIsSubUser(true);
+  }, []);
+
   const messages =
-  dynamicMessage && dynamicMessage.length > 0
-    ? dynamicMessage
-    : [
-        "Core business operations",
-        "Real-time data updates",
-        "Centralized system management",
-        "Secure transactions & records",
-        "Integrated client experience",
-      ];
+    dynamicMessage && dynamicMessage.length > 0
+      ? dynamicMessage
+      : [
+          "Core business operations",
+          "Real-time data updates",
+          "Centralized system management",
+          "Secure transactions & records",
+          "Integrated client experience",
+        ];
 
   return (
     // <Container className="">
@@ -152,10 +172,14 @@ export default function PosUpgradePage() {
                     </div>
                     <h3 className="fw-bold mb-2">Upgrade System</h3>
                     <Badge color="danger" className="mb-2">
-                      Requires Upgrade
+                      {isSubUser === false
+                        ? " Requires Upgrade"
+                        : "Access Denied"}
                     </Badge>
                     <p className="text-muted small">
-                      Unlock advanced tools for your business
+                      {isSubUser === false
+                        ? "Unlock advanced tools for your business"
+                        : "  You don’t have access to this feature. Please contact your administrator to request access or upgrade your   permissions."}
                     </p>
                   </CardBody>
                 </Card>
@@ -166,13 +190,24 @@ export default function PosUpgradePage() {
                   <CardBody className="p-3">
                     <h4 className="fw-bold mb-2 ">Access Requirements</h4>
 
-                    <div className="alert alert-danger mb-2 p-2">
-                      <strong>🔒 Feature Locked</strong>
-                      <p className="mb-0 small mt-2">
-                        This feature isn’t included in your current plan.
-                        Upgrade to unlock it.{" "}
-                      </p>
-                    </div>
+                    {isSubUser === false ? (
+                      <div className="alert alert-danger mb-2 p-2">
+                        <strong>🔒 Feature Locked</strong>
+                        <p className="mb-0 small mt-2">
+                          This feature isn’t included in your current plan.
+                          Upgrade to unlock it.{" "}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="alert alert-danger mb-2 p-2">
+                        <strong>🚫 Access Denied</strong>
+                        <p className="mb-0 small mt-2">
+                          You don’t have access to this feature. Please contact
+                          your administrator to request access or upgrade your
+                          permissions.
+                        </p>
+                      </div>
+                    )}
 
                     <p className="mb-2">
                       Before you can continue, make sure you have:
@@ -184,8 +219,7 @@ export default function PosUpgradePage() {
 
                     <h6 className="fw-semibold mb-2">What You'll Get:</h6>
                     <Row className="g-2 mb-2">
-                      {
-                     messages.map((feature, idx) => (
+                      {messages.map((feature, idx) => (
                         <Col md="6" key={idx}>
                           <div className="d-flex align-items-start">
                             <CheckCircle
@@ -197,37 +231,38 @@ export default function PosUpgradePage() {
                         </Col>
                       ))}
                     </Row>
-
-                    <Row className="g-2">
-                      <Col sm="12">
-                        <Button
-                          color="primary"
-                          onClick={handleMerchantAcc}
-                          className="w-100 fw-semibold"
-                        >
-                          Apply for Merchant Account
-                        </Button>
-                      </Col>
-                      <Col sm="6">
-                        <Button
-                          color="secondary"
-                          onClick={handlePurchaseAddon}
-                          outline
-                          className="w-100"
-                        >
-                          Purchase Add-On
-                        </Button>
-                      </Col>
-                      <Col sm="6">
-                        <Button
-                          color="success"
-                          onClick={handleUpgrade}
-                          className="w-100"
-                        >
-                          Upgrade Subscription
-                        </Button>
-                      </Col>
-                    </Row>
+                    {isSubUser === false && (
+                      <Row className="g-2">
+                        <Col sm="12">
+                          <Button
+                            color="primary"
+                            onClick={handleMerchantAcc}
+                            className="w-100 fw-semibold"
+                          >
+                            Apply for Merchant Account
+                          </Button>
+                        </Col>
+                        <Col sm="6">
+                          <Button
+                            color="secondary"
+                            onClick={handlePurchaseAddon}
+                            outline
+                            className="w-100"
+                          >
+                            Purchase Add-On
+                          </Button>
+                        </Col>
+                        <Col sm="6">
+                          <Button
+                            color="success"
+                            onClick={handleUpgrade}
+                            className="w-100"
+                          >
+                            Upgrade Subscription
+                          </Button>
+                        </Col>
+                      </Row>
+                    )}
                   </CardBody>
                 </Card>
               </Col>

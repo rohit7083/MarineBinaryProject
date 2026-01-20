@@ -49,9 +49,8 @@ export default function BranchSelector() {
           console.error("UID not found in userData");
           return;
         }
-
         const res = await useJwt.getBranch(uid);
-        res;
+        localStorage.setItem("subscriptionId", JSON.stringify(res?.data?.subscriptionIds));
         let resData = res?.data?.branches;
 
         localStorage.setItem("crmId", res?.data?.crmId);

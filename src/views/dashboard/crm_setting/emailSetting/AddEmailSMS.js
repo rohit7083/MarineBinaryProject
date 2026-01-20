@@ -105,7 +105,7 @@ const SiteSettingsForm = () => {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Row>
             {/* Site Name */}
-            <Col md={6} className="mb-1">
+            {/* <Col md={6} className="mb-1">
               <Label for="siteName">Site Name</Label>
               <Controller
                 name="siteName"
@@ -132,7 +132,7 @@ const SiteSettingsForm = () => {
               {errors.siteName && (
                 <span className="text-danger">{errors.siteName.message}</span>
               )}
-            </Col>
+            </Col> */}
 
             {/* Email */}
             <Col md={6} className="mb-1">
