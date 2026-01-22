@@ -10,6 +10,7 @@ function index() {
   const [waitingCount, setWaitingCount] = useState(0);
   const [checkEmptySlip, setEmptySlip] = useState({ empty: 0, occupied: 0 });
   const [isOfflineCount, setIsOfflineCount] = useState(0);
+  const [onclickName, setClick] = useState(null);
 
   const getAllBoats = async () => {
     setLoading(true);
@@ -18,6 +19,7 @@ function index() {
       const isOffline = res?.data?.content?.result.filter((offline) => {
         return offline.isOffline === true;
       });
+console.log("isOffline",isOffline);
 
       setIsOfflineCount(isOffline?.length);
 
@@ -25,10 +27,13 @@ function index() {
 
       const empty = res?.data?.content?.result.filter(
         (boat) => !boat.isAssigned
-      ).length;
+      );
       const occupied = res?.data?.content?.result.filter(
         (boat) => boat.isAssigned
       ).length;
+
+      console.log("empty", empty);
+      
 
       setEmptySlip({ empty, occupied });
 
@@ -48,18 +53,22 @@ function index() {
   return (
     <>
       <Authenticate isAssigne={allBoatData.isAssigned} />
-      <Index
+      <Index 
         waitingCount={waitingCount}
         count={allBoatData.length}
-        emptySlip={checkEmptySlip.empty}
+        emptySlip={checkEmptySlip?.empty?.length || 0}
         occupied={checkEmptySlip.occupied}
         isOfflineCount={isOfflineCount}
+        setClick={setClick}
       />
       <ParkBoat
         allBoatData={allBoatData}
         loading={loading}
         setLoading={setLoading}
         setAllBoatData={setAllBoatData}
+        checkEmptySlip={checkEmptySlip}
+        onclickName={onclickName}
+        
       />
     </>
   );

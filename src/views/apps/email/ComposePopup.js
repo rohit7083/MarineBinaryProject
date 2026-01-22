@@ -1,96 +1,113 @@
-// ** React Imports
-import { useState } from "react";
+// ** React Hook Form
+import useJwt from "@src/auth/jwt/useJwt";
+import { Toast } from "primereact/toast";
+import { Controller, useForm } from "react-hook-form";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
-
+import { convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
 // ** Third Party Components
 import { Editor } from "react-draft-wysiwyg";
-import Select, { components } from "react-select";
-import {
-  Minus,
-  X,
-  Maximize2,
-  Paperclip,
-  MoreVertical,
-  Trash,
-} from "react-feather";
+import { Paperclip, Trash, X } from "react-feather";
+import { components } from "react-select";
 
 // ** Reactstrap Imports
 import {
-  Form,
-  Label,
-  Input,
-  Modal,
   Button,
+  Form,
+  Input,
+  Label,
+  Modal,
   ModalBody,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
   UncontrolledButtonDropdown,
 } from "reactstrap";
 
 // ** Utils
-import { selectThemeColors } from "@utils";
 
-// ** User Avatars
-import img1 from "@src/assets/images/portrait/small/avatar-s-3.jpg";
-import img2 from "@src/assets/images/portrait/small/avatar-s-1.jpg";
-import img3 from "@src/assets/images/portrait/small/avatar-s-4.jpg";
-import img4 from "@src/assets/images/portrait/small/avatar-s-6.jpg";
-import img5 from "@src/assets/images/portrait/small/avatar-s-2.jpg";
-import img6 from "@src/assets/images/portrait/small/avatar-s-11.jpg";
+// ** Images
 
 // ** Styles
 import "@styles/react/libs/editor/editor.scss";
 import "@styles/react/libs/react-select/_react-select.scss";
+import { useRef } from "react";
 
-const ComposePopup = (props) => {
-  // ** Props & Custom Hooks
-  const { composeOpen, toggleCompose } = props;
+const ComposePopup = ({
+  composeOpen,
+  toggleCompose,
+  fetchMail,
+  setLoading,
+  loading,
+}) => {
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      to: [],
+      subject: "",
+      message: "",
+    },
+  });
 
-  // ** States
-  const [ccOpen, setCCOpen] = useState(false);
-  const [bccOpen, setBCCOpen] = useState(false);
+  // const selectOptions = [
+  //   { value: "pheobe", label: "Pheobe Buffay", img: img1 },
+  //   { value: "chandler", label: "Chandler Bing", img: img2 },
+  //   { value: "ross", label: "Ross Geller", img: img3 },
+  //   { value: "monica", label: "Monica Geller", img: img4 },
+  //   { value: "joey", label: "Joey Tribbiani", img: img5 },
+  //   { value: "rachel", label: "Rachel Green", img: img6 }
+  // ];
+  const toast = useRef(null);
 
-  // ** User Select Options & Components
-  const selectOptions = [
-    { value: "pheobe", label: "Pheobe Buffay", img: img1 },
-    { value: "chandler", label: "Chandler Bing", img: img2 },
-    { value: "ross", label: "Ross Geller", img: img3 },
-    { value: "monica", label: "Monica Geller", img: img4 },
-    { value: "joey", label: "Joey Tribbiani", img: img5 },
-    { value: "Rachel", label: "Rachel Green", img: img6 },
-  ];
+  const SelectOption = ({ data, ...props }) => (
+    <components.Option {...props}>
+      <div className="d-flex align-items-center">
+        <Avatar size="sm" img={data.img} className="me-50" />
+        {data.label}
+      </div>
+    </components.Option>
+  );
 
-  const SelectComponent = ({ data, ...props }) => {
-    return (
-      <components.Option {...props}>
-        <div className="d-flex flex-wrap align-items-center">
-          <Avatar className="my-0 me-50" size="sm" img={data.img} />
-          {data.label}
-        </div>
-      </components.Option>
+  const onSubmit = async (data) => {
+    const htmlBody = draftToHtml(
+      convertToRaw(data.message.getCurrentContent()),
     );
-  };
+    const payload = {
+      toEmail: data.to,
+      subject: data.subject,
+      body: htmlBody,
+    };
 
-  // ** CC Toggle Function
-  const toggleCC = (e) => {
-    e.preventDefault();
-    setCCOpen(!ccOpen);
-  };
+    try {
+      setLoading(true);
+      const res = await useJwt.createMannualEmail(payload);
+      console.log(res);
+      if (res?.status === 201) {
+        fetchMail();
+        toast.current.show({
+          severity: "success",
+          summary: "Email Sent",
+          detail: "Your email has been sent successfully.",
+          life: 2000,
+        });
 
-  // ** BCC Toggle Function
-  const toggleBCC = (e) => {
-    e.preventDefault();
-    setBCCOpen(!bccOpen);
-  };
-
-  // ** Toggles Compose POPUP
-  const togglePopUp = (e) => {
-    e.preventDefault();
-    toggleCompose();
+        setTimeout(() => {
+          toggleCompose();
+          reset();
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Email Failed",
+        detail: `${
+          error?.response?.data?.content ||
+          "Failed to send email. Please try again."
+        }`,
+        life: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -110,187 +127,103 @@ const ComposePopup = (props) => {
       <div className="modal-header">
         <h5 className="modal-title">Compose Mail</h5>
         <div className="modal-actions">
-          <a href="/" className="text-body me-75" onClick={togglePopUp}>
+          {/* <a href="/" onClick={(e) => e.preventDefault()}>
             <Minus size={14} />
           </a>
+          <a href="/" onClick={(e) => e.preventDefault()}>
+            <Maximize2 size={14} />
+          </a> */}
           <a
             href="/"
-            className="text-body me-75"
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleCompose();
+            }}
           >
-            <Maximize2 size={14} />
-          </a>
-          <a href="/" className="text-body" onClick={togglePopUp}>
             <X size={14} />
           </a>
         </div>
       </div>
+      <Toast ref={toast} />
+
       <ModalBody className="flex-grow-1 p-0">
-        <Form className="compose-form" onSubmit={(e) => e.preventDefault()}>
+        <Form className="compose-form" onSubmit={handleSubmit(onSubmit)}>
+          {/* TO */}
           <div className="compose-mail-form-field">
-            <Label for="email-to" className="form-label">
-              To:
-            </Label>
+            <Label className="form-label">To:</Label>
             <div className="flex-grow-1">
-              <Select
-                isMulti
-                id="email-to"
-                isClearable={false}
-                theme={selectThemeColors}
-                options={selectOptions}
-                className="react-select select-borderless"
-                classNamePrefix="select"
-                components={{ Option: SelectComponent }}
+              <Controller
+                name="to"
+                control={control}
+                render={({ field }) => (
+                  // <Select
+                  //   {...field}
+                  //   isMulti
+                  //   isClearable={false}
+                  //   theme={selectThemeColors}
+                  //   options={selectOptions}
+                  //   className="react-select select-borderless"
+                  //   classNamePrefix="select"
+                  //   components={{ Option: SelectOption }}
+                  // />
+                  <Input {...field} placeholder="to" />
+                )}
               />
             </div>
-            <div>
-              <a
-                href="/"
-                className="toggle-cc text-body me-1"
-                onClick={toggleCC}
-              >
-                Cc
-              </a>
-              <a href="/" className="toggle-cc text-body" onClick={toggleBCC}>
-                Bcc
-              </a>
-            </div>
           </div>
-          {ccOpen === true ? (
-            <div className="compose-mail-form-field cc-wrapper">
-              <Label for="email-cc" className="form-label">
-                Cc:
-              </Label>
-              <div className="flex-grow-1">
-                <Select
-                  isMulti
-                  id="email-cc"
-                  isClearable={false}
-                  theme={selectThemeColors}
-                  options={selectOptions}
-                  className="react-select select-borderless"
-                  classNamePrefix="select"
-                  components={{ Option: SelectComponent }}
-                />
-              </div>
-              <div>
-                <a href="/" className="toggle-cc text-body" onClick={toggleCC}>
-                  <X size={14} />
-                </a>
-              </div>
-            </div>
-          ) : null}
-          {bccOpen === true ? (
-            <div className="compose-mail-form-field cc-wrapper">
-              <Label for="email-bcc" className="form-label">
-                Bcc:
-              </Label>
-              <div className="flex-grow-1">
-                <Select
-                  isMulti
-                  id="email-bcc"
-                  isClearable={false}
-                  theme={selectThemeColors}
-                  options={selectOptions}
-                  className="react-select select-borderless"
-                  classNamePrefix="select"
-                  components={{ Option: SelectComponent }}
-                />
-              </div>
-              <div>
-                <a href="/" className="toggle-cc text-body" onClick={toggleBCC}>
-                  <X size={14} />
-                </a>
-              </div>
-            </div>
-          ) : null}
+
+          {/* SUBJECT */}
           <div className="compose-mail-form-field">
-            <Label for="email-subject" className="form-label">
-              Subject:
-            </Label>
-            <Input id="email-subject" placeholder="Subject" />
-          </div>
-          <div id="message-editor">
-            <Editor
-              placeholder="Message"
-              toolbarClassName="rounded-0"
-              wrapperClassName="toolbar-bottom"
-              editorClassName="rounded-0 border-0"
-              toolbar={{
-                options: ["inline", "textAlign"],
-                inline: {
-                  inDropdown: false,
-                  options: ["bold", "italic", "underline", "strikethrough"],
-                },
-              }}
+            <Label className="form-label">Subject:</Label>
+            <Controller
+              name="subject"
+              control={control}
+              render={({ field }) => <Input {...field} placeholder="Subject" />}
             />
           </div>
+
+          {/* MESSAGE */}
+          <div id="message-editor">
+            <Controller
+              name="message"
+              control={control}
+              render={({ field }) => (
+                <Editor
+                  editorState={field.value}
+                  onEditorStateChange={field.onChange}
+                  placeholder="Message"
+                  toolbarClassName="rounded-0"
+                  wrapperClassName="toolbar-bottom"
+                  editorClassName="rounded-0 border-0"
+                  toolbar={{
+                    options: ["inline", "textAlign"],
+                    inline: {
+                      options: ["bold", "italic", "underline", "strikethrough"],
+                    },
+                  }}
+                />
+              )}
+            />
+          </div>
+
+          {/* FOOTER */}
           <div className="compose-footer-wrapper">
             <div className="btn-wrapper d-flex align-items-center">
               <UncontrolledButtonDropdown direction="up" className="me-1">
-                <Button color="primary" onClick={toggleCompose}>
-                  Send
+                <Button color="primary" disabled={loading} type="submit">
+                  {loading ? "Sending..." : "Send"}
                 </Button>
-                <DropdownToggle
-                  className="dropdown-toggle-split"
-                  color="primary"
-                  caret
-                ></DropdownToggle>
-                <DropdownMenu end>
-                  <DropdownItem href="/" tag="a" onClick={togglePopUp}>
-                    Schedule Send
-                  </DropdownItem>
-                </DropdownMenu>
               </UncontrolledButtonDropdown>
+
               <div className="email-attachement">
                 <Label className="mb-0" for="attach-email-item">
                   <Paperclip className="cursor-pointer ms-50" size={18} />
-                  <input
-                    type="file"
-                    name="attach-email-item"
-                    id="attach-email-item"
-                    hidden
-                  />
+                  <input type="file" id="attach-email-item" hidden />
                 </Label>
               </div>
             </div>
+
             <div className="footer-action d-flex align-items-center">
-              <UncontrolledDropdown className="me-50" direction="up">
-                <DropdownToggle tag="span">
-                  <MoreVertical className="cursor-pointer" size={18} />
-                </DropdownToggle>
-                <DropdownMenu end>
-                  <DropdownItem
-                    href="/"
-                    tag="a"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Add Label
-                  </DropdownItem>
-                  <DropdownItem
-                    href="/"
-                    tag="a"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Plain text mode
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem
-                    href="/"
-                    tag="a"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Print
-                  </DropdownItem>
-                  <DropdownItem
-                    href="/"
-                    tag="a"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Check Spelling
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
               <Trash
                 className="cursor-pointer"
                 size={18}

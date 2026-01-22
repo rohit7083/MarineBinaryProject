@@ -2,44 +2,61 @@ import { useState } from "react";
 import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
 import {
-    Badge,
-    Card,
-    CardBody,
-    CardText,
-    Col,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Pagination,
-    PaginationItem,
-    PaginationLink,
-    Row,
-    Spinner,
+  Badge,
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Col,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Row,
+  Spinner,
 } from "reactstrap";
 import AddBoat from "../../../../src/assets/images/addBoat.png";
 import BoatNew from "../../../../src/assets/images/updatedboat2.png";
 
-function ParkBoat({ allBoatData, loading, setLoading }) {
+function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 16;
 
-  const filteredBoatData = allBoatData.filter(
+  let allTypeData = allBoatData;
+  if (onclickName === "all") {
+    allTypeData = allBoatData;
+  }
+  if (onclickName === "empty") {
+    allTypeData = allBoatData.filter((boat) => !boat.isAssigned);
+  }
+  if (onclickName === "occupied") {
+    allTypeData = allBoatData.filter((boat) => boat.isAssigned);
+  }
+  if (onclickName === "offline") {
+    allTypeData = allBoatData.filter((boat) => boat.isOffline);
+  }
+
+  const filteredBoatData = allTypeData?.filter(
     (boat) =>
       boat?.category?.shipTypeName
         ?.toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       boat.slipName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      boat?.member?.firstName?.toLowerCase().includes(searchQuery.toLowerCase())
+      boat?.member?.firstName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()),
   );
 
   const totalPages = Math.ceil(filteredBoatData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = filteredBoatData.slice(
     startIndex,
-    startIndex + itemsPerPage
+    startIndex + itemsPerPage,
   );
 
   const handleView = () => {
@@ -50,10 +67,9 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
     navigate("/dashboard/slip_memberform", {
       state: {
         formDataFromDashboard: boat,
+        from: "dashboard",
       },
     });
-
-     (boat);
   };
 
   const handleSearchChange = (e) => {
@@ -125,17 +141,50 @@ function ParkBoat({ allBoatData, loading, setLoading }) {
       ) : (
         <>
           <CardBody>
-            <InputGroup className="input-group-merge mb-2">
-              <InputGroupText>
-                <Search size={14} />
-              </InputGroupText>
-              <Input
-                onChange={handleSearchChange}
-                placeholder="search Amount, Slips, category etc."
-              />
-            </InputGroup>
-
             <Row>
+              {/* <Col sm="12" className="mt-2  mb-2 d-flex justify-content-center">
+  <CardTitle tag="h1" className="mb-3 text-center">
+    {onclickName?.trim()
+      ? `${onclickName.toUpperCase()} SLIPS`
+      : "Total Slips"}
+  </CardTitle>
+</Col> */}
+
+              <Col sm="12" className="mt-2 mb-3 d-flex justify-content-center">
+                <div
+                  className="px-4 py-1 rounded"
+                  style={{
+                    background: "#f4f3ff",
+                    borderBottom: "3px solid #7367f0",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    minWidth: "100%",
+                  }}
+                >
+                  <CardTitle
+                    tag="h2"
+                    className="mb-0 text-center fw-bold"
+                    style={{
+                      letterSpacing: "1px",
+                      color: "#7367f0",
+                    }}
+                  >
+                    {onclickName?.trim()
+                      ? `${onclickName.toUpperCase()} SLIPS`
+                      : "TOTAL SLIPS"}
+                  </CardTitle>
+                </div>
+              </Col>
+
+              <InputGroup className="input-group-merge mb-2">
+                <InputGroupText>
+                  <Search size={14} />
+                </InputGroupText>
+                <Input
+                  onChange={handleSearchChange}
+                  placeholder="search Amount, Slips, category etc."
+                />
+              </InputGroup>
+
               {currentItems && currentItems.length > 0 ? (
                 <>
                   {currentItems.map((boat, index) => (

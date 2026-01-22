@@ -1243,6 +1243,10 @@ export default class JwtService {
     getLogoAndName(userUid) {
     return axios.get(`${this.jwtConfig.getLogoAndName}${userUid}/`);
   }
+  getMails() {
+    return axios.get(`${this.jwtConfig.getMails}`);
+  }
+  
    getLogo(logoUId) {
     return axios.get(`${this.jwtConfig.getLogo}${logoUId}`, {
       responseType: "blob", // important for binary data

@@ -5,7 +5,7 @@ import {
   HomeIcon,
   QrCode,
   Settings,
-  UserRoundSearch,
+  UserRoundSearch
 } from "lucide-react";
 import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
@@ -529,7 +529,7 @@ export default [
   //   {
   //   id: "manualEmail",
   //   title: "Manual  Email",
-  //   icon: <Square size={12} />,
+  //   icon: <Inbox size={12} />,
   //   navLink: "/manual_email",
   //   badge: "light-warning",
   //   isLocked: "🔒",

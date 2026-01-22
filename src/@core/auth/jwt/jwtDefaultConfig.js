@@ -311,5 +311,6 @@ export default {
   createMannualEmail:"/manualEmail/",
   getLogoAndName:"/generalSetting/",
   getLogo:"/generalSetting/file/",
+  getMails:"/manualEmail",
 };
   

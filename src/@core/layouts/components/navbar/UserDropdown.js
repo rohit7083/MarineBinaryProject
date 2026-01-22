@@ -81,7 +81,7 @@ const UserDropdown = () => {
        
         {/* <DropdownItem tag={Link} to="/apps/email">
           <MailCheck size={14} className="me-75" />
-          <span className="align-middle">Inbox</span>
+          <span className="align-middle">Manual Email</span>
         </DropdownItem> */}
         {/* <DropdownItem tag={Link} to="/pages/security">
           <Mail size={14} className="me-75" />

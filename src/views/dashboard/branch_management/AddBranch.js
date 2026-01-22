@@ -24,8 +24,7 @@ import {
 } from "reactstrap";
 import { countries } from "../../dashboard/slip-management/CountryCode";
 
-const defaultValues = 
-{
+const defaultValues = {
   branchName: "",
   description: "",
   address: "",
@@ -34,13 +33,24 @@ const defaultValues =
   country: "",
   postalCode: "",
   phoneNumber: "",
-  email: ""
-}
-
+  email: "",
+};
 
 // Removes all special characters except spaces
 const cleanText = (value) => value.replace(/[^a-zA-Z0-9\s]/g, "");
+// ===== Sanitizers =====
+const sanitizeAlphaNumericSpace = (value = "") =>
+  value.replace(/[^a-zA-Z0-9\s]/g, "");
 
+const sanitizeAlphaSpace = (value = "") => value.replace(/[^a-zA-Z\s]/g, "");
+const sanitizeDescription = (value = "") =>
+  value.replace(/[^a-zA-Z0-9\s.,\-()']/g, "");
+
+const sanitizeNumeric = (value = "") => value.replace(/[^0-9]/g, "");
+
+const sanitizeEmail = (value = "") => value.replace(/[^a-zA-Z0-9@._-]/g, "");
+const sanitizeAddress = (value = "") =>
+  value.replace(/[^a-zA-Z0-9\s,.\-/#]/g, "");
 export default function BranchForm({ isFirst }) {
   const {
     control,
@@ -86,7 +96,7 @@ export default function BranchForm({ isFirst }) {
         code: country.code,
         dial_code: country.dial_code,
       })),
-    [countries]
+    [countries],
   );
 
   const onSubmit = async (data) => {
@@ -129,7 +139,6 @@ export default function BranchForm({ isFirst }) {
         setTimeout(() => navigate("/branch"), 2000);
       }
     } catch (error) {
-
       const content = error?.response?.data?.content;
 
       const message =
@@ -177,21 +186,76 @@ export default function BranchForm({ isFirst }) {
         >
           <div style={{ padding: "16px" }}>
             {/* Branch Name */}
-            <Col className="mb-1">
-              <Label>Branch Name</Label>
-              <Controller
-                name="branchName"
-                control={control}
-                render={({ field }) => (
-                  <Input
+            <Row>
+              <Col md="6" className="mb-1">
+                {" "}
+                <Label>Company Name</Label>
+                <Controller
+                  name="companyName"
+                  control={control}
+                  rules={{
+                    required: "Company name is required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9\s]+$/,
+                      message: "Special characters are not allowed",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
                     {...field}
                     type="text"
-                    onChange={(e) => field.onChange(cleanText(e.target.value))}
-                  />
+                    placeholder="Enter Company Name"
+                      onChange={(e) =>
+                        field.onChange(
+                          sanitizeAlphaNumericSpace(e.target.value),
+                        )
+                      }
+                    />
+                  )}
+                />
+                {errors.companyName && (
+                  <small className="text-danger">
+                    {errors.companyName.message}
+                  </small>
                 )}
-              />
-            </Col>
-
+              </Col>
+              <Col md="6" className="mb-1">
+                {" "}
+                <Label>Branch Name</Label>
+                <Controller
+                  name="branchName"
+                  control={control}
+                  rules={{
+                    required: "Branch name is required",
+                    minLength: {
+                      value: 3,
+                      message: "Minimum 3 characters required",
+                    },
+                    pattern: {
+                      value: /^[a-zA-Z0-9\s]+$/,
+                      message: "Special characters are not allowed",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                    {...field}
+                    type="text"
+                    placeholder="Enter Branch Name"
+                      onChange={(e) =>
+                        field.onChange(
+                          sanitizeAlphaNumericSpace(e.target.value),
+                        )
+                      }
+                    />
+                  )}
+                />
+                {errors.branchName && (
+                  <small className="text-danger">
+                    {errors.branchName.message}
+                  </small>
+                )}
+              </Col>
+            </Row>
             <Row>
               <Col md="6" className="mb-1">
                 <Label>Country Code</Label>
@@ -224,18 +288,40 @@ export default function BranchForm({ isFirst }) {
                   <Controller
                     name="phoneNumber"
                     control={control}
+                    rules={{
+                      required: "Phone number is required",
+                      minLength: {
+                        value: 7,
+                        message: "Phone number is too short",
+                      },
+                      maxLength: {
+                        value: 13,
+                        message: "Phone number is too long",
+                      },
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: "Only numbers are allowed",
+                      },
+                    }}
                     render={({ field }) => (
                       <Input
-                        {...field}
-                        type="text"
-                        maxLength={13} // UI-level restriction
-                        onChange={(e) => {
-                          const cleaned = e.target.value.replace(/[^0-9]/g, "");
-                          field.onChange(cleaned.slice(0, 13)); // hard limit
-                        }}
+                      {...field}
+                      type="text"
+                      placeholder="Enter Phone Number"
+                      maxLength={13} // UI-level restriction
+                        onChange={(e) =>
+                          field.onChange(
+                            sanitizeNumeric(e.target.value).slice(0, 13),
+                          )
+                        }
                       />
                     )}
                   />
+                  {errors.phoneNumber && (
+                    <small className="text-danger">
+                      {errors.phoneNumber.message}
+                    </small>
+                  )}
                 </Col>
               </Col>
             </Row>
@@ -245,19 +331,28 @@ export default function BranchForm({ isFirst }) {
               <Controller
                 name="email"
                 control={control}
+                rules={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email address",
+                  },
+                }}
                 render={({ field }) => (
                   <Input
-                    {...field}
-                    type="email"
+                  {...field}
+                  type="email"
+                  placeholder="Enter Email"
                     // allow email characters only
                     onChange={(e) =>
-                      field.onChange(
-                        e.target.value.replace(/[^a-zA-Z0-9@._-]/g, "")
-                      )
+                      field.onChange(sanitizeEmail(e.target.value))
                     }
                   />
                 )}
               />
+              {errors.email && (
+                <small className="text-danger">{errors.email.message}</small>
+              )}
             </Col>
 
             {/* Description */}
@@ -265,16 +360,35 @@ export default function BranchForm({ isFirst }) {
               <Label>Description</Label>
               <Controller
                 name="description"
+                rules={{
+                  maxLength: {
+                    value: 500,
+                    message: "Description cannot exceed 500 characters",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9\s.,\-()']*$/,
+                    message:
+                    "Only letters, numbers, spaces and basic punctuation are allowed",
+                  },
+                }}
                 control={control}
                 render={({ field }) => (
                   <Input
-                    {...field}
-                    type="textarea"
+                  {...field}
+                  type="textarea"
+                  placeholder="Enter Description"
                     rows="2"
-                    onChange={(e) => field.onChange(cleanText(e.target.value))}
+                    onChange={(e) =>
+                      field.onChange(sanitizeDescription(e.target.value))
+                    }
                   />
                 )}
               />
+              {errors.description && (
+                <small className="text-danger">
+                  {errors.description.message}
+                </small>
+              )}
             </Col>
 
             {/* Address */}
@@ -283,14 +397,37 @@ export default function BranchForm({ isFirst }) {
               <Controller
                 name="address"
                 control={control}
+                rules={{
+                  required: "Address is required",
+                  minLength: {
+                    value: 5,
+                    message: "Address is too short",
+                  },
+                  maxLength: {
+                    value: 200,
+                    message: "Address is too long",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9\s,.\-/#]+$/,
+                    message:
+                      "Only letters, numbers, spaces, and , . - / # are allowed",
+                  },
+                }}
                 render={({ field }) => (
                   <Input
                     {...field}
                     type="text"
-                    onChange={(e) => field.onChange(cleanText(e.target.value))}
+                                        placeholder="Enter Address"
+
+                    onChange={(e) =>
+                      field.onChange(sanitizeAddress(e.target.value))
+                    }
                   />
                 )}
               />
+              {errors.address && (
+                <small className="text-danger">{errors.address.message}</small>
+              )}
             </Col>
 
             <Row>
@@ -300,16 +437,27 @@ export default function BranchForm({ isFirst }) {
                   <Controller
                     name="city"
                     control={control}
+                    rules={{
+                      required: "City is required",
+                      pattern: {
+                        value: /^[a-zA-Z\s]+$/,
+                        message: "Only letters are allowed",
+                      },
+                    }}
                     render={({ field }) => (
                       <Input
-                        {...field}
-                        type="text"
+                      {...field}
+                      type="text"
+                      placeholder="Enter City"
                         onChange={(e) =>
-                          field.onChange(cleanText(e.target.value))
+                          field.onChange(sanitizeAlphaSpace(e.target.value))
                         }
                       />
                     )}
                   />
+                  {errors.city && (
+                    <small className="text-danger">{errors.city.message}</small>
+                  )}
                 </Col>
               </Col>
 
@@ -319,16 +467,29 @@ export default function BranchForm({ isFirst }) {
                   <Controller
                     name="state"
                     control={control}
+                    rules={{
+                      required: "State is required",
+                      pattern: {
+                        value: /^[a-zA-Z\s]+$/,
+                        message: "Only letters are allowed",
+                      },
+                    }}
                     render={({ field }) => (
                       <Input
-                        {...field}
-                        type="text"
+                      {...field}
+                      type="text"
+                      placeholder="Enter State"
                         onChange={(e) =>
-                          field.onChange(cleanText(e.target.value))
+                          field.onChange(sanitizeAlphaSpace(e.target.value))
                         }
                       />
                     )}
                   />
+                  {errors.state && (
+                    <small className="text-danger">
+                      {errors.state.message}
+                    </small>
+                  )}
                 </Col>
               </Col>
 
@@ -337,16 +498,29 @@ export default function BranchForm({ isFirst }) {
                 <Controller
                   name="country"
                   control={control}
+                  rules={{
+                    required: "Country is required",
+                    pattern: {
+                      value: /^[a-zA-Z\s]+$/,
+                      message: "Only letters are allowed",
+                    },
+                  }}
                   render={({ field }) => (
                     <Input
-                      {...field}
-                      type="text"
+                    {...field}
+                    type="text"
+                    placeholder="Enter Country"
                       onChange={(e) =>
-                        field.onChange(cleanText(e.target.value))
+                        field.onChange(sanitizeAlphaSpace(e.target.value))
                       }
                     />
                   )}
                 />
+                {errors.country && (
+                  <small className="text-danger">
+                    {errors.country.message}
+                  </small>
+                )}
               </Col>
 
               {/* <Row> */}
@@ -355,11 +529,19 @@ export default function BranchForm({ isFirst }) {
                   <Label>Postal Code</Label>
                   <Controller
                     name="postalCode"
+                    rules={{
+                      required: "Postal code is required",
+                      minLength: {
+                        value: 5,
+                        message: "Postal code must be 5 digits",
+                      },
+                    }}
                     control={control}
                     render={({ field }) => (
                       <Input
-                        {...field}
-                        type="text"
+                      {...field}
+                      type="text"
+                      placeholder="Enter Postal Code"
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, ""); // allow digits only
                           field.onChange(value.slice(0, 5)); // hard cap at 5 max
@@ -367,6 +549,11 @@ export default function BranchForm({ isFirst }) {
                       />
                     )}
                   />
+                  {errors.postalCode && (
+                    <small className="text-danger">
+                      {errors.postalCode.message}
+                    </small>
+                  )}
                 </Col>
               </Col>
             </Row>

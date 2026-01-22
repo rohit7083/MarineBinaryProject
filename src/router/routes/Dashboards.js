@@ -1,32 +1,32 @@
 import { lazy } from "react";
 
 const DashboardAnalytics = lazy(() =>
-  import("../../views/dashboard/analytics")
+  import("../../views/dashboard/analytics"),
 );
 const DashboardEcommerce = lazy(() =>
-  import("../../views/dashboard/ecommerce")
+  import("../../views/dashboard/ecommerce"),
 );
 const DashboardSlipCategory = lazy(() =>
-  import("../../views/dashboard/Ship/SlipCategory")
+  import("../../views/dashboard/Ship/SlipCategory"),
 );
 const DashboardShip = lazy(() =>
-  import("../../views/dashboard/Ship/SlipCategory")
+  import("../../views/dashboard/Ship/SlipCategory"),
 );
 const DashboardSlipDetails = lazy(() =>
-  import("../../views/dashboard/Ship/SlipDetails")
+  import("../../views/dashboard/Ship/SlipDetails"),
 );
 
 const DashboardSlipList = lazy(() =>
-  import("../../views/dashboard/Ship/SlipList")
+  import("../../views/dashboard/Ship/SlipList"),
 );
 const DashboardSlipDetailList = lazy(() =>
-  import("../../views/dashboard/Ship/SlipDetailList")
+  import("../../views/dashboard/Ship/SlipDetailList"),
 );
 const DashboardSlipMemberForm = lazy(() =>
-  import("../../views/dashboard/Ship/SlipMemberForm")
+  import("../../views/dashboard/Ship/SlipMemberForm"),
 );
 const DashboardSlipMemberList = lazy(() =>
-  import("../../views/dashboard/Ship/SlipMemberList")
+  import("../../views/dashboard/Ship/SlipMemberList"),
 );
 // const DashboardRegisteruser= lazy(()=> import('../../views/dashboard/Ship/UserAuth/Registeruser'))
 // const DashboardforgetPass= lazy(()=> import('../../views/dashboard/Ship/UserAuth/forgetPass'))
@@ -35,22 +35,22 @@ const DashboardSlipMemberList = lazy(() =>
 const Dashboarddash = lazy(() => import("../../views/dashboard/dash"));
 const Dashboardroles = lazy(() => import("../../views/dashboard/user-rolls"));
 const DashboardRoleModal = lazy(() =>
-  import("../../views/dashboard/user_rolls/roles-permissions/roles/Role_modal")
+  import("../../views/dashboard/user_rolls/roles-permissions/roles/Role_modal"),
 );
 const Dashboardcreateuser = lazy(() =>
-  import("../../views/dashboard/user_rolls/roles-permissions/createuser")
+  import("../../views/dashboard/user_rolls/roles-permissions/createuser"),
 );
 const ParkBoat = lazy(() => import("../../views/dashboard/dash/ParkBoat"));
-// const ManualEmail=lazy(() => import("../../views/dashboard/manualEmail"));
+const ManualEmail = lazy(() => import("../../views/apps/email/index"));
 const DashboardRoutes = [
-  //  {
-  //   path: "/manual_email",
-  //   element: <ManualEmail />,
-  //     meta:{
-  //     resource:'slip management',
-  //     action:'view'
-  //   },
-  // },
+  {
+    path: "/manual_email",
+    element: <ManualEmail />,
+    meta: {
+      resource: "slip management",
+      action: "view",
+    },
+  },
   {
     path: "/dashboard/user_rolls/roles-permissions/roles/Role_modal",
     element: <DashboardRoleModal />,
@@ -76,82 +76,82 @@ const DashboardRoutes = [
   {
     path: "/dashboard/slip",
     element: <DashboardShip />,
-     meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "/dashboard/slipcategory/:uid",
     element: <DashboardSlipCategory />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "/dashboard/slipcategory",
     element: <DashboardSlipCategory />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
-  }, 
+  },
   {
     path: "/dashboard/slip-details",
     element: <DashboardSlipDetails />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "/dashboard/slip-details/:uid",
     element: <DashboardSlipDetails />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "slip_Management/sliplist",
     element: <DashboardSlipList />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "/dashboard/slipdetail_list",
     element: <DashboardSlipDetailList />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "/dashboard/slip_memberform",
     element: <DashboardSlipMemberForm />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   {
     path: "/dashboard/slip_memberform/:uid",
     element: <DashboardSlipMemberForm />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
 
   {
     path: "/dashboard/slipmember_list",
     element: <DashboardSlipMemberList />,
-      meta:{
-      resource:'slip management',
-      action:'view'
+    meta: {
+      resource: "slip management",
+      action: "view",
     },
   },
   // {
@@ -167,10 +167,10 @@ const DashboardRoutes = [
   {
     path: "/dashbord",
     element: <Dashboarddash />,
-    meta:{
-      resource:'dashboard',
-      action:'view'
-    }
+    meta: {
+      resource: "dashboard",
+      action: "view",
+    },
   },
 
   // {

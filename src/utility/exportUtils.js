@@ -1,155 +1,3 @@
-// // exportUtils.js
-
-// // Safely get nested value from object by path like "member.firstName"
-// const getValue = (obj, path) => {
-//   return path
-//     .split(".")
-//     .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : ""), obj);
-// };
-
-// export const convertArrayOfObjectsToCSV = (data, selectedFields) => {
-//   if (!data || !data.length) return null;
-
-//   const headers = Object.keys(selectedFields);
-
-//   const rows = data.map((item, index) =>
-//     headers
-//       .map((header) => {
-//         const path = selectedFields[header];
-
-//         // handle custom fields that aren't just a path
-//         if (path === "__index") return index + 1; // 1-based index
-
-//         const val = getValue(item, path);
-//         const safeVal = String(val ?? "").replace(/"/g, '""'); // escape quotes
-//         return `"${safeVal}"`;
-//       })
-//       .join(",")
-//   );
-
-//   return [headers.join(","), ...rows].join("\n");
-// };
-
-// export const exportToCSV = (data, filename = "report.csv") => {
-//   // Map your CSV headers to object paths
-//   const selectedFields = {
-//     ID: "__index", // special marker to handle numbering
-//     "Report Type": "paymentFrom",
-//     "Customer Name": "customer.firstName", // or "member.firstName" depending on structure
-//     "Email ID": "customer.emailId", // fallback handled by your backend ideally
-//     "Phone Number": "customer.phoneNumber",
-//     "Payment Date": "paymentDate",
-//     "Payment TransactionID": "transactionId",
-//     "Payment Status": "paymentStatus",
-//     "Final Amount": "finalPayment",
-//   };
-
-//   const csv = convertArrayOfObjectsToCSV(data, selectedFields);
-//   if (!csv) return;
-
-//   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-//   const url = URL.createObjectURL(blob);
-
-//   const link = document.createElement("a");
-//   link.href = url;
-//   link.download = filename;
-//   document.body.appendChild(link);
-//   link.click();
-//   document.body.removeChild(link);
-//   URL.revokeObjectURL(url);
-// };
-
-// export const exportToExcelHTML = (data, filename = "report.xls") => {
-//   if (!data || !data.length) {
-//     console.warn("No data to export.");
-//     return;
-//   }
-
-//   const headers = [
-//     "ID",
-//     "Payment Date",
-//     "Payment From",
-//     "Status",
-//     "Final Amount",
-//     "Email",
-//     "Customer",
-//     "Phone",
-//     "Transaction ID",
-//   ];
-
-//   const rows = data
-//     .map((item, index) => {
-//       const customerName = item.customer
-//         ? [item.customer.firstName, item.customer.lastName]
-//             .filter(Boolean)
-//             .join(" ")
-//         : item.member
-//         ? [item.member.firstName, item.member.lastName]
-//             .filter(Boolean)
-//             .join(" ")
-//         : "";
-
-//       const phoneNumber = item.customer
-//         ? [item.customer.countryCode, item.customer.phoneNumber]
-//             .filter(Boolean)
-//             .join(" ")
-//         : item.member
-//         ? [item.member.countryCode, item.member.phoneNumber]
-//             .filter(Boolean)
-//             .join(" ")
-//         : "";
-
-//       return `
-//         <tr>
-//           <td>${index + 1}</td>
-//           <td>${
-//             item.paymentDate
-//               ? (() => {
-//                   const d = new Date(item.paymentDate);
-//                   const year = d.getFullYear();
-//                   const month = String(d.getMonth() + 1).padStart(2, "0");
-//                   const day = String(d.getDate()).padStart(2, "0");
-
-//                   let hours = d.getHours();
-//                   const minutes = String(d.getMinutes()).padStart(2, "0");
-//                   const ampm = hours >= 12 ? "PM" : "AM";
-//                   hours = hours % 12 || 12;
-
-//                   return `${year}-${month}-${day} ${hours}:${minutes} ${ampm}`;
-//                 })()
-//               : ""
-//           }</td>
-//           <td>${item.paymentFrom || ""}</td>
-//           <td>${item.paymentStatus || ""}</td>
-//           <td>${item.finalPayment ?? ""}</td>
-//           <td>${item.customer?.emailId || item.member?.emailId || ""}</td>
-//           <td>${customerName}</td>
-//           <td>${phoneNumber}</td>
-//           <td>${item.transactionId || ""}</td>
-//         </tr>
-//       `;
-//     })
-//     .join("");
-
-//   const htmlTable = `
-//     <table border="1">
-//       <thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
-//       <tbody>${rows}</tbody>
-//     </table>
-//   `;
-
-//   const blob = new Blob([htmlTable], {
-//     type: "application/vnd.ms-excel;charset=utf-8;",
-//   });
-
-//   const link = document.createElement("a");
-//   link.href = URL.createObjectURL(blob);
-//   link.download = filename.endsWith(".xls") ? filename : `${filename}.xls`;
-//   document.body.appendChild(link);
-//   link.click();
-//   document.body.removeChild(link);
-// };
-
 // ======================= exportUtils.js =======================
 
 // --- Safe nested value getter ---
@@ -233,21 +81,39 @@ export const convertArrayOfObjectsToCSV = (data, selectedFields) => {
 
 // --- CSV Export (downloads as .csv) ---
 export const exportToCSV = (data, filename = "report.csv") => {
-  const selectedFields = {
-    ID: "__index",
-    "Report Type": "paymentFrom",
-    "Customer Name": "customer.firstName",
-    "Email ID": "customer.emailId",
-    "Phone Number": "customer.phoneNumber",
-    "Payment Date": "paymentDate",
-    "Payment TransactionID": "transactionId",
-    "Payment Status": "paymentStatus",
-    "Final Amount": "finalPayment",
-  };
+const customerNamePath = data?.customer?.firstName
+  ? "customer.firstName"
+  : "member.firstName";
+
+const customerLastName = data?.customer?.firstName
+  ? "customer.lastName"
+  : "member.lastName";
+
+const forEmail = data?.customer?.emailId
+  ? "customer.emailId"
+  : "member.emailId";
+
+
+  const mobileNumber = data?.customer?.phoneNumber
+  ? "customer.phoneNumber"
+  : "member.phoneNumber";
+
+const selectedFields = {
+  ID: "__index",
+  "Report Type": "paymentFrom",
+      "Customer Name": customerNamePath,
+  "Customer Last Name": customerLastName,
+  "Email ID": forEmail,
+  "Phone Number": mobileNumber,
+  "Payment Date": "paymentDate",
+  "Payment TransactionID": "transactionId",
+  "Payment Status": "paymentStatus",
+  "Final Amount": "finalPayment",
+};
+
 
   const csv = convertArrayOfObjectsToCSV(data, selectedFields);
   if (!csv) return;
-
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -302,7 +168,12 @@ export const exportToExcelHTML = (data, filename = "report.xls") => {
       //       .join(" ")
       //   : "";
 
-      const source = item.customer ?? item.member;
+      // const source = item?.customer ?? item?.member;
+
+      const hasCustomerData =
+        item.customer && Object.keys(item.customer).length > 0;
+
+      const source = hasCustomerData ? item.customer : item.member;
 
       const customerName = source
         ? [source.firstName, source.lastName].filter(Boolean).join(" ")

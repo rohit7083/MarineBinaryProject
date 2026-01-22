@@ -5,11 +5,11 @@ import { useContext, useState } from "react";
 import { Edit2, Eye, MoreVertical } from "react-feather";
 import { Link } from "react-router-dom";
 import {
-    Badge,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    UncontrolledDropdown,
+  Badge,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown,
 } from "reactstrap";
 import { CompactModal, SuccessModal } from "../../CompactModal"; // ** Reactstrap Imports
 // ** Vars
@@ -137,6 +137,7 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
                     isAssigned: row.isAssigned,
                     isRevenu: row.nonRevenue,
                     allData:row,
+                    from:"list",
                   }}
                 >
                   <Edit2 className="me-50" size={15} />
@@ -199,8 +200,23 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
         setPendingValue(null);
       };
 
+const nextPaymentDate = new Date(row?.nextPaymentDate);
+nextPaymentDate.setDate(nextPaymentDate.getDate() + 45);
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+;
+
+let isDueSoon = false;
+      if (row?.isAssigned) {
+        if (nextPaymentDate <= today) {
+          isDueSoon = true;
+        }
+      }
+
       return (
         <>
+        {isDueSoon ?(
+          <>
           <div className="d-flex justify-content-center align-items-center">
             <div className="form-switch">
               <input
@@ -220,7 +236,6 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
             </Badge>
           </div>
 
-          {/* Confirmation Modal */}
           <CompactModal
             isOpen={confirmModal}
             uid={row.uid}
@@ -228,6 +243,8 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
             onConfirm={handleConfirm}
             isOffline={isOffline}
           />
+          </>
+          ):"None"}
         </>
       );
     },

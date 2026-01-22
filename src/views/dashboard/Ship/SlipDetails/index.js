@@ -10,18 +10,18 @@ import { Toast } from "primereact/toast";
 import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    Table,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Table,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -898,7 +898,7 @@ function ShipDetails() {
               </Row>
               <Row className="mb-1">
                 <Label sm="3" for="marketAnnualPrice">
-                  Market Annual Price
+                   Annual Price
                   <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Col sm="9">
@@ -926,7 +926,7 @@ function ShipDetails() {
 
               <Row className="mb-1">
                 <Label sm="3" for="marketMonthlyPrice">
-                  Market Monthly Price
+                   Monthly Price
                   <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Col sm="9">

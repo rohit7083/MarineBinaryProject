@@ -203,60 +203,62 @@ export default function CompanySettings() {
       // LOGO HANDLING (CRITICAL)
       // =========================
 
-      if (retriveAllData) {
-        // UPDATE CASE
+      // if (retriveAllData) {
+      // UPDATE CASE
 
-        if (isLogoChanged && data.companyLogo instanceof File) {
-          // User selected NEW logo
-          formDataToSend.append("companyLogo", data.companyLogo);
-        } else {
-          // User did NOT change logo → resend existing logo (backend workaround)
-          const logoRes = await useJwt.getLogo(uid);
-          const blob = logoRes.data;
-
-          const file = new File([blob], "company-logo.png", {
-            type: blob.type,
-          });
-
-          formDataToSend.append("companyLogo", file);
-        }
-
-        const updateRes = await useJwt.updateGeneralsetting(
-          retriveAllData.uid,
-          formDataToSend,
-        );
-
-        if (updateRes?.status === 200) {
-          successFlag = 200;
-          toast.current.show({
-            severity: "success",
-            summary: "Success",
-            detail: "General settings updated successfully.",
-            life: 2000,
-          });
-
-          setTimeout(() => navigate("/dashbord"), 2000);
-        }
+      if (isLogoChanged && data.companyLogo instanceof File) {
+        // User selected NEW logo
+        formDataToSend.append("companyLogo", data.companyLogo);
       } else {
-        // CREATE CASE (logo is mandatory)
-        if (data.companyLogo instanceof File) {
-          formDataToSend.append("companyLogo", data.companyLogo);
-        }
+        // User did NOT change logo → resend existing logo (backend workaround)
+        const logoRes = await useJwt.getLogo(uid);
+        const blob = logoRes.data;
 
-        const res = await useJwt.createSetting(formDataToSend);
+        const file = new File([blob], "company-logo.png", {
+          type: blob.type,
+        });
 
-        if (res?.status === 201) {
-          successFlag = 201;
-          toast.current.show({
-            severity: "success",
-            summary: "Success",
-            detail: "General settings created successfully.",
-            life: 2000,
-          });
-
-          setTimeout(() => navigate("/dashbord"), 2000);
-        }
+        formDataToSend.append("companyLogo", file);
       }
+
+      const updateRes = await useJwt.updateGeneralsetting(
+        retriveAllData.uid,
+        formDataToSend,
+      );
+
+      if (updateRes?.status === 200) {
+        successFlag = 200;
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "General settings updated successfully.",
+          life: 2000,
+        });
+
+        setTimeout(() => navigate("/dashbord"), 2000);
+      }
+      // }
+
+      // else {
+      //   // CREATE CASE (logo is mandatory)
+      //   if (data.companyLogo instanceof File) {
+      //     formDataToSend.append("companyLogo", data.companyLogo);
+      //   }
+
+      //   const res = await useJwt.createSetting(formDataToSend);
+
+      //   if (res?.status === 201) {
+      //     successFlag = 201;
+      //     toast.current.show({
+      //       severity: "success",
+      //       summary: "Success",
+      //       detail: "General settings created successfully.",
+      //       life: 2000,
+      //     });
+
+      //     setTimeout(() => navigate("/dashbord"), 2000);
+      //   }
+      // }
 
       // =========================
       // STORE LOGO IN REDUX
@@ -291,8 +293,8 @@ export default function CompanySettings() {
   };
 
   const onlyLetters = (value) => value.replace(/[^a-zA-Z\s]/g, "");
-const addressSanitizer = (value = "") =>
-  value.replace(/[^a-zA-Z0-9\s,.\-/#']/g, "");
+  const addressSanitizer = (value = "") =>
+    value.replace(/[^a-zA-Z0-9\s,.\-/#']/g, "");
 
   const onlyLettersNoSpace = (value) => value.replace(/[^a-zA-Z]/g, "");
 

@@ -17,7 +17,7 @@ import {
 } from "react-feather";
 // ** Reactstrap Imports
 import useJwt from "@src/auth/jwt/useJwt";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Badge,
@@ -26,6 +26,7 @@ import {
   DropdownToggle,
   UncontrolledDropdown
 } from "reactstrap";
+import { CompactModal } from "../../CompactModal";
 // ** Vars
 const states = [
   "success",
@@ -207,6 +208,81 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
   //     );
   //   },
   // },
+
+{
+    name: "Offline Status",
+    minWidth: "180px",
+    sortable: true,
+    cell: (row) => {
+      const [isOffline, setIsOffline] = useState(row.isOffline);
+      const [confirmModal, setConfirmModal] = useState(false);
+      const [pendingValue, setPendingValue] = useState(null);
+
+      const handleToggleClick = (e) => {
+        // open confirmation modal first, don't switch immediately
+        const newStatus = e.target.checked;
+        setPendingValue(newStatus);
+        setConfirmModal(true);
+      };
+       (isOffline);
+
+      const handleConfirm = async () => {
+        try {
+          // Execute API call
+          const response = await useJwt.offlineSlip(row.uid);
+
+          if (response.status === 204) {
+            setIsOffline(pendingValue);
+          } else {
+            console.warn("Unexpected API response:", response);
+          }
+        } catch (error) {
+          console.error("Error updating offline status:", error);
+        } finally {
+          setConfirmModal(false);
+          setPendingValue(null);
+        }
+      };
+
+      const handleCancel = () => {
+        setConfirmModal(false);
+        setPendingValue(null);
+      };
+
+      return (
+        <>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="form-switch">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                checked={isOffline}
+                onChange={handleToggleClick}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            <Badge
+              color={isOffline ? "light-danger" : "light-success"}
+              pill
+              className="ms-1 text-dark"
+            >
+              {isOffline ? "Offline" : "Online"}
+            </Badge>
+          </div>
+
+          {/* Confirmation Modal */}
+          <CompactModal
+            isOpen={confirmModal}
+            uid={row.uid}
+            onCancel={handleCancel}
+            onConfirm={handleConfirm}
+            isOffline={isOffline}
+          />
+        </>
+      );
+    },
+  },
+
   {
     sortable: true,
     name: "Slip Name",

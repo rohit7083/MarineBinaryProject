@@ -9,14 +9,14 @@ import Select from "react-select";
 
 import { ArrowLeft, ArrowRight } from "react-feather";
 import {
-    Button,
-    Col,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Col,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -29,10 +29,10 @@ const AccountDetails = ({
   fetchLoader,
   slipNameFromDashboard,
   waitingSlipData,
+  dataFrom,
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
- ("formData",formData);
 
   const [slipNames, setSlipNames] = useState([]);
   const [dimensions, setDimensions] = useState({});
@@ -70,7 +70,8 @@ const AccountDetails = ({
   }
   useEffect(() => {
     if (waitingSlipData) {
-      reset({vesselName: waitingSlipData.vesselName,
+      reset({
+        vesselName: waitingSlipData.vesselName,
         vesselRegistrationNumber: waitingSlipData.vesselRegistrationNumber,
       });
     }
@@ -99,12 +100,11 @@ const AccountDetails = ({
 
   const onSubmit = async (data) => {
     seterrMsz("");
-
     const finaleData = {};
     const { dimensions } = data.slipName;
 
     Object.keys(dimensions).map(
-      (key) => (finaleData[key] = data.dimensionVal[key])
+      (key) => (finaleData[key] = data.dimensionVal[key]),
     );
     delete data.dimensionVal;
     finaleData.slipId = data.slipName.value;
@@ -115,8 +115,13 @@ const AccountDetails = ({
     finaleData.uid = data.uid ? data.uid : "";
 
     try {
-      // {{ }}
-      if (slipId) {
+
+      if (
+        (slipId && dataFrom === "list") ||
+        (slipId &&
+          dataFrom === "dashboard" &&
+          slipNameFromDashboard?.vessel != null)
+      ) {
         setLoading(true);
         const updateRes = await useJwt.updateVessel(finaleData.uid, finaleData);
 
@@ -332,7 +337,7 @@ const AccountDetails = ({
                   onChange={(e) => {
                     const sanitizedValue = e.target.value.replace(
                       /[^a-zA-Z0-9\s]/g,
-                      ""
+                      "",
                     );
                     onChange(sanitizedValue);
                   }}
@@ -369,7 +374,7 @@ const AccountDetails = ({
                   onChange={(e) => {
                     const sanitizedNumber = e.target.value.replace(
                       /[^a-zA-Z0-9]/g,
-                      ""
+                      "",
                     );
                     onChange(sanitizedNumber);
                   }}

@@ -30,13 +30,13 @@ const WizardModern = () => {
   // ** Hooks
   // const { uid } = useParams();
   const location = useLocation();
+  const dataFrom = location?.state?.from;
   const waitingSlipData = location?.state?.row;
   const slipNameFromDashboard = location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;
   const isAssigned = location.state?.isAssigned;
   const isRevenu = location.state?.isRevenu;
   const [isAssignedStatus, setIsAssignedStatus] = useState(isAssigned);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -100,6 +100,7 @@ const WizardModern = () => {
           slipId={uid}
           setSlipIID={setSlipIID}
           fetchLoader={fetchLoader}
+          dataFrom={dataFrom}
         />
       ),
     },

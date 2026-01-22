@@ -3,11 +3,11 @@ import { Link, useParams } from "react-router-dom";
 
 // ** Third Party Components
 import classnames from "classnames";
+import { ArrowLeft, Mail } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Mail, Send, Edit2, Star, Info, Trash } from "react-feather";
 
 // ** Reactstrap Imports
-import { Button, ListGroup, ListGroupItem, Badge } from "reactstrap";
+import { Button, CardTitle, ListGroup, ListGroupItem } from "reactstrap";
 
 const Sidebar = (props) => {
   // ** Props
@@ -26,10 +26,11 @@ const Sidebar = (props) => {
   const params = useParams();
 
   // ** Functions To Handle Folder, Label & Compose
-  const handleFolder = (folder) => {
+  const handleFolder = (e) => {
+    e.preventDefault();
     setOpenMail(false);
-    dispatch(getMails({ ...store.params, folder }));
-    dispatch(resetSelectedMail());
+    // dispatch(getMails({ ...store.params, folder }));
+    // dispatch(resetSelectedMail());
   };
 
   const handleLabel = (label) => {
@@ -65,6 +66,24 @@ const Sidebar = (props) => {
         <div className="sidebar-content email-app-sidebar">
           <div className="email-app-menu">
             <div className="form-group-compose text-center compose-btn">
+              <CardTitle tag="h4" className="mb-2">
+                <ArrowLeft
+                  style={{
+                    cursor: "pointer",
+                    marginRight: "10px",
+                    transition: "color 0.1s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#9289F3")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "#6E6B7B")
+                  }
+                  onClick={() => window.history.back()}
+                />{" "}
+                Manual Email
+              </CardTitle>
+
               <Button
                 className="compose-email"
                 color="primary"
@@ -82,7 +101,7 @@ const Sidebar = (props) => {
                 <ListGroupItem
                   tag={Link}
                   to="/apps/email/inbox"
-                  onClick={() => handleFolder("inbox")}
+                  onClick={() => handleFolder()}
                   action
                   active={
                     !Object.keys(params).length || handleActiveItem("inbox")
@@ -90,13 +109,13 @@ const Sidebar = (props) => {
                 >
                   <Mail size={18} className="me-75" />
                   <span className="align-middle">Inbox</span>
-                  {store.emailsMeta.inbox ? (
+                  {/* {store.emailsMeta.inbox ? (
                     <Badge className="float-end" color="light-primary" pill>
                       {store.emailsMeta.inbox}
                     </Badge>
-                  ) : null}
+                  ) : null} */}
                 </ListGroupItem>
-                <ListGroupItem
+                {/* <ListGroupItem
                   tag={Link}
                   to="/apps/email/sent"
                   onClick={() => handleFolder("sent")}
@@ -105,8 +124,8 @@ const Sidebar = (props) => {
                 >
                   <Send size={18} className="me-75" />
                   <span className="align-middle">Sent</span>
-                </ListGroupItem>
-                <ListGroupItem
+                </ListGroupItem> */}
+                {/* <ListGroupItem
                   tag={Link}
                   to="/apps/email/draft"
                   onClick={() => handleFolder("draft")}
@@ -199,6 +218,7 @@ const Sidebar = (props) => {
                   <span className="bullet bullet-sm bullet-danger me-1"></span>
                   Private
                 </ListGroupItem>
+             */}{" "}
               </ListGroup>
             </PerfectScrollbar>
           </div>

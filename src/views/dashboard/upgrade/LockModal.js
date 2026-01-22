@@ -35,7 +35,6 @@ export default function PosUpgradePage() {
         const crmId = localStorage.getItem("crmId");
         const userData = JSON.parse(localStorage.getItem("userData"));
         const userUid = userData?.uid || "";
-
         // setIsSubUser(isSubUser);
         const res = await useJwt.upgradePlans({ crmid: crmId });
 
@@ -144,7 +143,7 @@ export default function PosUpgradePage() {
               <Button
                 color="primary"
                 outline
-                className="mb-2 d-flex align-items-center"
+                className=" d-flex align-items-center"
                 onClick={handleGoBack}
                 size="sm"
               >
@@ -179,7 +178,7 @@ export default function PosUpgradePage() {
                     <p className="text-muted small">
                       {isSubUser === false
                         ? "Unlock advanced tools for your business"
-                        : "  You don’t have access to this feature. Please contact your administrator to request access or upgrade your   permissions."}
+                        : "  You don’t have access to this feature. Please contact your administrator to request access "}
                     </p>
                   </CardBody>
                 </Card>
@@ -203,12 +202,12 @@ export default function PosUpgradePage() {
                         <strong>🚫 Access Denied</strong>
                         <p className="mb-0 small mt-2">
                           You don’t have access to this feature. Please contact
-                          your administrator to request access or upgrade your
-                          permissions.
+                          your administrator to request access 
                         </p>
                       </div>
                     )}
-
+ {isSubUser === false && (
+  <>
                     <p className="mb-2">
                       Before you can continue, make sure you have:
                     </p>
@@ -231,7 +230,7 @@ export default function PosUpgradePage() {
                         </Col>
                       ))}
                     </Row>
-                    {isSubUser === false && (
+                   
                       <Row className="g-2">
                         <Col sm="12">
                           <Button
@@ -262,6 +261,7 @@ export default function PosUpgradePage() {
                           </Button>
                         </Col>
                       </Row>
+                      </>
                     )}
                   </CardBody>
                 </Card>
