@@ -5,19 +5,19 @@ import { Toast } from "primereact/toast";
 import { useContext, useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    Tooltip,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  Tooltip,
 } from "reactstrap";
 
 import useJwt from "@src/auth/jwt/useJwt";
@@ -976,7 +976,7 @@ function SlipDetailsForm({ assigned }) {
             </Row>
             <Row className="mb-1">
               <Label sm="3" for="marketAnnualPrice">
-                Market Annual Price
+                 Annual Price
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Col sm="9">
@@ -1004,7 +1004,7 @@ function SlipDetailsForm({ assigned }) {
 
             <Row className="mb-1">
               <Label sm="3" for="marketMonthlyPrice">
-                Market Monthly Price
+                 Monthly Price
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Col sm="9">
