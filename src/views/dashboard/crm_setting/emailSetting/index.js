@@ -9,17 +9,17 @@ import { ChevronDown, Edit2, MoreVertical, Settings } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    Col,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input,
-    Row,
-    Spinner,
-    UncontrolledDropdown,
+  Button,
+  Card,
+  CardBody,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -121,11 +121,11 @@ const index = () => {
       selector: (row, index) => index + 1,
     },
 
-    {
-      name: "siteName",
-      sortable: true,
-      selector: (row) => row.siteName,
-    },
+    // {
+    //   name: "siteName",
+    //   sortable: true,
+    //   selector: (row) => row.siteName,
+    // },
 
     {
       name: "email",
