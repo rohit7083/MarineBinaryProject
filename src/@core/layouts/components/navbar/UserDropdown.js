@@ -13,7 +13,7 @@ import { handleLogout } from "@store/authentication";
 import { useDispatch } from "react-redux";
 
 // ** Third Party Components
-import { GitBranch, Power } from "react-feather";
+import { GitBranch, Power, Settings } from "react-feather";
 
 // ** Reactstrap Imports
 import {
@@ -96,10 +96,10 @@ const UserDropdown = () => {
           <span className='align-middle'>Chats</span>
         </DropdownItem>*/}
         <DropdownItem divider />
-        {/* <DropdownItem tag={Link} to='/pages/account-settings'>
+        <DropdownItem tag={Link} to='/pages/account-settings'>
           <Settings size={14} className='me-75' />
           <span className='align-middle'>Settings</span>
-        </DropdownItem> */}
+        </DropdownItem>
         {/* <DropdownItem tag={Link} to='/pages/pricing'>
           <CreditCard size={14} className='me-75' />
           <span className='align-middle'>Pricing</span>

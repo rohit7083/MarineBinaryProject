@@ -1253,6 +1253,9 @@ export default class JwtService {
     });
   }
 
+     getSlipCount(...args) {
+    return axios.post(`${this.jwtConfig.getSlipCount}`, ...args);
+  }
 
   getDyanimicInfoOFSubscription(moduleName) {
     return axios.get(

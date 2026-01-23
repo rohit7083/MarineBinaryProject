@@ -129,7 +129,7 @@ const PaymentPage = () => {
         const userData = JSON.parse(localStorage.getItem("userData"));
         const userUid = userData?.uid || "";
         const resPermision = await useJwt.getBranch(userUid);
-         (resPermision);
+        
         const upadtedPersmision = {
           ...userData,
           permissions: resPermision?.data?.userRoles?.permissions || [],
@@ -137,7 +137,7 @@ const PaymentPage = () => {
          ("upadtedPersmision", upadtedPersmision);
 
         localStorage.setItem("userData", JSON.stringify(upadtedPersmision));
-
+        localStorage.setItem("subscriptionId", resPermision?.data?.subscriptionIds);
         const pagesUnlockedNames = {};
         resPermision?.data?.userRoles?.permissions.forEach((item) => {
           if (item?.module) {

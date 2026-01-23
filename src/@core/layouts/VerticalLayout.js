@@ -133,13 +133,16 @@ const VerticalLayout = (props) => {
         match.parent == "event" ||
         match.parent == "pos" ||
         match.parent == "slip" || 
-        match.parent == "branch"
+        match.parent == "branch" 
 
       ) {
         localStorage.setItem("parentMenuId", match.parent);
       } else if (match.id == "parkingpass") {
         localStorage.setItem("parentMenuId", match.id);
-      } else {
+      } else if (match.id == "branch") {
+        localStorage.setItem("parentMenuId", match.id);
+      }
+      else {
         localStorage.removeItem("parentMenuId");
       }
     }

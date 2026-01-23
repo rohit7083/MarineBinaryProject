@@ -1,20 +1,17 @@
 // ** React Imports
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // ** Third Party Components
 import axios from "axios";
 
 // ** Reactstrap Imports
-import { Row, Col, TabContent, TabPane } from "reactstrap";
+import { Col, Row, TabContent, TabPane } from "reactstrap";
 
 // ** Demo Components
-import Tabs from "./Tabs";
 import Breadcrumbs from "@components/breadcrumbs";
-import BillingTabContent from "./BillingTabContent";
 import AccountTabContent from "./AccountTabContent";
 import SecurityTabContent from "./SecurityTabContent";
-import ConnectionsTabContent from "./ConnectionsTabContent";
-import NotificationsTabContent from "./NotificationsTabContent";
+import Tabs from "./Tabs";
 
 // ** Styles
 import "@styles/react/libs/flatpickr/flatpickr.scss";
@@ -30,10 +27,12 @@ const AccountSettings = () => {
   };
 
   useEffect(() => {
+    
     axios
       .get("/account-setting/data")
       .then((response) => setData(response.data));
   }, []);
+console.log(data);
 
   return (
     <Fragment>
@@ -57,7 +56,7 @@ const AccountSettings = () => {
               <TabPane tabId="2">
                 <SecurityTabContent />
               </TabPane>
-              <TabPane tabId="3">
+              {/* <TabPane tabId="3">
                 <BillingTabContent />
               </TabPane>
               <TabPane tabId="4">
@@ -65,7 +64,7 @@ const AccountSettings = () => {
               </TabPane>
               <TabPane tabId="5">
                 <ConnectionsTabContent />
-              </TabPane>
+              </TabPane> */}
             </TabContent>
           </Col>
         </Row>

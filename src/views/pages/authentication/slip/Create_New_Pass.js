@@ -21,13 +21,13 @@ import withReactContent from "sweetalert2-react-content";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 import {
-    Button,
-    Card,
-    CardBody,
-    CardText,
-    CardTitle,
-    Input,
-    Label,
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Input,
+  Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -178,15 +178,12 @@ const CreateNewPass = () => {
   }, [handleOtp, onchnagePass, confirmPassword, previousPassword]);
 
   const onSubmit = async (data) => {
-    {
-      {
-      }
-    }
+
     setCountdownEndTime(0);
     setAttempt(0);
     setErrorMsz("");
 
-     ("Form Data:", data);
+     
     const otpString = data.otp.join("");
     const otp = parseInt(otpString, 10);
 

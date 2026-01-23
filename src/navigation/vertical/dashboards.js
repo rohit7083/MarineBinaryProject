@@ -551,7 +551,7 @@ export default [
         id: "addbranch",
         title: "Add Branch",
         icon: <Circle size={12} />,
-        navLink: "/branch/add_branch",
+        navLink: "/branch",
         action: "view",
         resource: "branch management",
       },

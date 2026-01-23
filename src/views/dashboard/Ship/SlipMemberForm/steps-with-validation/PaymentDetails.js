@@ -2267,7 +2267,7 @@ const Address = ({
                         <Input
                           type="text"
                           placeholder="Enter mtcn Number "
-                          // invalid={!!errors.cardSwipeTransactionId}
+                          invalid={!!errors.mtcn}
                           {...field}
                           // readOnly={statusThree()}
 
@@ -2284,7 +2284,9 @@ const Address = ({
                       )}
                     />
                     {errors.mtcn && (
-                      <FormFeedback>{errors.mtcn.message}</FormFeedback>
+                      <FormFeedback>
+                        {errors.mtcn.message}
+                      </FormFeedback>
                     )}
                   </Col>
                 )}

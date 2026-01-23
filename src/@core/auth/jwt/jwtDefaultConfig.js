@@ -312,5 +312,8 @@ export default {
   getLogoAndName:"/generalSetting/",
   getLogo:"/generalSetting/file/",
   getMails:"/manualEmail",
+
+  getSlipCount:"/subscription/getSlipCount",
+  
 };
   

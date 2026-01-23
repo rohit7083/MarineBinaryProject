@@ -12,6 +12,7 @@ export default function PosUpgradePage() {
   const [walletBal, setWalletBal] = useState(null);
   const [dynamicMessage, setDyanamicMsz] = useState([]);
   // const [isSubUser, setIsSubUser] = useState(null);
+  // debugger;
   const navigate = useNavigate();
   const handleGoBack = () => {
     navigate("/dashbord");
@@ -77,7 +78,7 @@ export default function PosUpgradePage() {
     const handleInfo = async () => {
       try {
         const parentMenuId = localStorage.getItem("parentMenuId");
-        parentMenuId;
+        
         const res = await useJwt.getDyanimicInfoOFSubscription(parentMenuId);
         setDyanamicMsz(res?.data?.["0"]?.messages);
 
@@ -202,65 +203,68 @@ export default function PosUpgradePage() {
                         <strong>🚫 Access Denied</strong>
                         <p className="mb-0 small mt-2">
                           You don’t have access to this feature. Please contact
-                          your administrator to request access 
+                          your administrator to request access
                         </p>
                       </div>
                     )}
- {isSubUser === false && (
-  <>
-                    <p className="mb-2">
-                      Before you can continue, make sure you have:
-                    </p>
-                    <ul className="mb-2">
-                      <li>Lock Trust Merchant Account</li>
-                      <li>MarinaOne Premium Subscription</li>
-                    </ul>
+                    {isSubUser === false && (
+                      <>
+                        <p className="mb-2">
+                          Before you can continue, make sure you have:
+                        </p>
+                        <ul className="mb-2">
+                          <li>Lock Trust Merchant Account</li>
+                          <li>MarinaOne Premium Subscription</li>
+                        </ul>
 
-                    <h6 className="fw-semibold mb-2">What You'll Get:</h6>
-                    <Row className="g-2 mb-2">
-                      {messages.map((feature, idx) => (
-                        <Col md="6" key={idx}>
-                          <div className="d-flex align-items-start">
-                            <CheckCircle
-                              size={16}
-                              className="text-success me-2 mt-0 flex-shrink-0"
-                            />
-                            <span className="small">{feature}</span>
-                          </div>
-                        </Col>
-                      ))}
-                    </Row>
-                   
-                      <Row className="g-2">
-                        <Col sm="12">
-                          <Button
-                            color="primary"
-                            onClick={handleMerchantAcc}
-                            className="w-100 fw-semibold"
-                          >
-                            Apply for Merchant Account
-                          </Button>
-                        </Col>
-                        <Col sm="6">
-                          <Button
-                            color="secondary"
-                            onClick={handlePurchaseAddon}
-                            outline
-                            className="w-100"
-                          >
-                            Purchase Add-On
-                          </Button>
-                        </Col>
-                        <Col sm="6">
-                          <Button
-                            color="success"
-                            onClick={handleUpgrade}
-                            className="w-100"
-                          >
-                            Upgrade Subscription
-                          </Button>
-                        </Col>
-                      </Row>
+                        <h6 className="fw-semibold mb-2">What You'll Get:</h6>
+                        <Row className="g-2 mb-2">
+                          {messages.map((feature, idx) => (
+                            <Col md="6" key={idx}>
+                              <div className="d-flex align-items-start">
+                                <CheckCircle
+                                  size={16}
+                                  className="text-success me-2 mt-0 flex-shrink-0"
+                                />
+                                <span className="small">{feature}</span>
+                              </div>
+                            </Col>
+                          ))}
+                        </Row>
+
+                        <Row className="g-2">
+                          <Col sm="12">
+                            <Button
+                              color="primary"
+                              onClick={handleMerchantAcc}
+                              className="w-100 fw-semibold"
+                            >
+                              Apply for Merchant Account
+                            </Button>
+                          </Col>
+                          <Col sm={localStorage.getItem('parentMenuId') !== 'branch' ? "6" : "12" }>
+                            <Button
+                              color="secondary"
+                              onClick={handlePurchaseAddon}
+                              outline
+                              className="w-100"
+                            >
+                              Purchase Add-On
+                            </Button>
+                          </Col>
+                     
+                     {localStorage.getItem('parentMenuId') !== 'branch' &&   (
+                          <Col sm="6">
+                            <Button
+                              color="success"
+                              onClick={handleUpgrade}
+                              className="w-100"
+                            >
+                              Upgrade Subscription
+                            </Button>
+                          </Col>
+                     )}
+                        </Row>
                       </>
                     )}
                   </CardBody>

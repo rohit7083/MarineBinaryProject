@@ -4,6 +4,7 @@ import { ArrowLeft } from "react-feather";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Card, CardBody, Col, Row, Spinner } from "reactstrap";
 import CalculateSubscripsion from "./CalculateSubscripsion";
+import ErrorMessage from "./ErrorMessage";
 const PricingCards = () => {
   const location = useLocation();
   const [modal, setModal] = useState(false);
@@ -12,37 +13,81 @@ const PricingCards = () => {
   const [loadingPlanId, setLoadingPlanId] = useState(null);
 
   const existingCreditCard = location.state?.walletBal?.cardData;
+  const [countApiError, setCountApiError] = useState(null);
+  const [modal2, setModal2] = useState(false);
 
   const { walletBal } = location.state?.walletBal || 0;
   const { subscription, addOn } = location.state || {};
   const plans = subscription ?? addOn ?? null;
   const navigate = useNavigate();
-  plans?.subscriptionAddedModuleJson;
 
   const badge = "POPULAR";
+  const subID = localStorage.getItem("subscriptionId");
 
   const handleChoosePlan = async (plan) => {
     setLoadingPlanId(plan.id);
     setPlanData(plan);
-    try {
-      const userData = JSON.parse(localStorage.getItem("userData"));
-      const userUId = userData?.uid;
-      const crmId = JSON.parse(localStorage.getItem("crmId"));
+    let slipCountPostData = null;
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userUId = userData?.uid;
+    const crmId = JSON.parse(localStorage.getItem("crmId"));
 
-      const res = await useJwt.subScriptionCal({
-        subscriptionID: plan.id,
-        crmId: crmId,
-        uid: userUId,
-      });
-      setModal(true);
-      setSubscriptionData(res.data);
-      
+    if (plans?.some((x) => x.is_addon === 0)) {
+      try {
+        slipCountPostData = await useJwt.getSlipCount({
+          subscriptionID: plan?.id,
+        });
+
+        console.log(slipCountPostData);
+      } catch (error) {
+        console.error("Error fetching slip count:", error);
+        if (error?.response) {
+          setModal2(true);
+          setCountApiError(
+            error.response.data?.content || "An error occurred.",
+          );
+        }
+      }
+    } else {
+      try {
+        const res = await useJwt.subScriptionCal({
+          subscriptionID: plan.id,
+          crmId: crmId,
+          uid: userUId,
+        });
+        setModal(true);
+        setSubscriptionData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    try {
+      if (slipCountPostData?.status == 200) {
+        const res = await useJwt.subScriptionCal({
+          subscriptionID: plan.id,
+          crmId: crmId,
+          uid: userUId,
+        });
+        setModal(true);
+        setSubscriptionData(res.data);
+      }
     } catch (error) {
-      error;
+      console.error("Error choosing plan:", error);
     } finally {
       setLoadingPlanId(null);
     }
   };
+
+  //   useEffect(() => {
+  //   const isCurrent = plans?.some(
+  //     (plan) =>
+  //       plan?.is_addon === 0 &&
+  //       subID?.includes(Number(plan.id))
+  //   );
+
+  //   setCurrentPlanStatus(Boolean(isCurrent));
+  // }, [plans, subID]);
 
   return (
     <div
@@ -81,6 +126,7 @@ const PricingCards = () => {
               : plan?.addonModuleJson?.length
               ? plan.addonModuleJson
               : [];
+            // const isCurrentPlan = subID?.includes(plan.id);
 
             return (
               <Col key={index} lg={4} md={6} className="mb-2">
@@ -140,12 +186,13 @@ const PricingCards = () => {
                         }}
                       />
                     </div>
-
                     <Button
-                      color="primary"
+                      color={subID?.includes(plan.id) ? "secondary" : "primary"}
                       block
                       className="mb-4"
-                      disabled={loadingPlanId === plan.id}
+                      disabled={
+                        loadingPlanId === plan.id || subID?.includes(plan.id)
+                      }
                       style={{
                         borderRadius: "6px",
                         fontWeight: "500",
@@ -155,14 +202,13 @@ const PricingCards = () => {
                     >
                       {loadingPlanId === plan.id ? (
                         <>
-                          Loading.. <Spinner color="white" size="sm" />
+                          Loading... <Spinner color="white" size="sm" />
                         </>
+                      ) : subID?.includes(plan.id) ? (
+                        "Current active plan "
                       ) : (
                         "Choose Plan"
                       )}
-                      {/* //   {loader ? <> Loading.. <Spinner color={'white'} size='sm'/> </>: */}
-
-                      {/* //  " Choose Plan"} */}
                     </Button>
 
                     <div
@@ -211,6 +257,12 @@ const PricingCards = () => {
           walletBal={walletBal}
           existingCreditCard={existingCreditCard}
           planData={planData}
+        />
+
+        <ErrorMessage
+          countApiError={countApiError}
+          setModal2={setModal2}
+          modal2={modal2}
         />
       </>
     </div>
