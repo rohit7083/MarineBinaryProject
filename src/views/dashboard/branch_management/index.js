@@ -7,23 +7,24 @@ import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { Edit, Plus } from "lucide-react";
 import {
-    ChevronDown,
-    MoreVertical
+  ChevronDown,
+  MoreVertical,
+  Shield
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardBody,
-    Col,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input,
-    Row,
-    Spinner,
-    UncontrolledDropdown,
+  Button,
+  Card,
+  CardBody,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -291,9 +292,9 @@ const index = () => {
           <div className="d-flex justify-content-between align-items-center flex-wrap ">
             <h3 className="">Branch List</h3>
 
-            <div className="mx-2">
+            <div className="">
               <Row
-                className="px-2
+                className="
                mt-1 "
               >
                 <Col xs="auto">
@@ -302,9 +303,20 @@ const index = () => {
                       // color="danger"
                       color="primary"
                       size="sm"
-                      className="text-nowrap mb-1"
+                      className="text-nowrap me-1 mb-1"
                     >
                       <Plus size={14} /> Add Branch
+                    </Button>
+                  </Link>
+                  <Link to={"/upgradeModules"}>
+                    <Button
+                      // color="danger"
+                      color="primary"
+                      size="sm"
+                      className="text-nowrap mx-0 mb-1"
+                    >
+                      
+                      <Shield size={14} /> Upgrade
                     </Button>
                   </Link>
                 </Col>

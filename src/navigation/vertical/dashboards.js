@@ -540,7 +540,7 @@ export default [
 
   {
     id: "branch",
-    title: "Manage Branch",
+    title: "Branch Management",
     icon: <GitBranch size={12} />,
     navLink: "/branch",
     badge: "light-warning",
