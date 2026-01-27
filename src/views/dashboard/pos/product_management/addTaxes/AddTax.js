@@ -4,14 +4,14 @@ import { FormFeedback, Spinner, UncontrolledAlert } from "reactstrap";
 
 // Reactstrap
 import {
-    Button,
-    Col,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row,
+  Button,
+  Col,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
 } from "reactstrap";
 
 // React Hook Form
@@ -252,7 +252,7 @@ const AddCardExample = ({ show, setShow, uid, row, resetTable }) => {
                     invalid={!!errors.taxValue}
                     onChange={(e) => {
                       // Allow only numeric characters
-                      const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                      const onlyNumbers = e.target.value.replace(/[^0-9.]/g, "");
                       field.onChange(onlyNumbers);
                     }}
                   />

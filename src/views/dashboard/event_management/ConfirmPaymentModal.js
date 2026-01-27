@@ -36,7 +36,7 @@ function PaymentConfirmModal({
         </p>
 
         <strong style={{ fontSize: "1.1rem" }}>
-          Final Amount: ₹{finalValuesPayment}
+          Final Amount: ${finalValuesPayment}
         </strong>
       </ModalBody>
 

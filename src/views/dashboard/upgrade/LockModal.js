@@ -78,7 +78,7 @@ export default function PosUpgradePage() {
     const handleInfo = async () => {
       try {
         const parentMenuId = localStorage.getItem("parentMenuId");
-        
+
         const res = await useJwt.getDyanimicInfoOFSubscription(parentMenuId);
         setDyanamicMsz(res?.data?.["0"]?.messages);
 
@@ -242,7 +242,13 @@ export default function PosUpgradePage() {
                               Apply for Merchant Account
                             </Button>
                           </Col>
-                          <Col sm={localStorage.getItem('parentMenuId') !== 'branch' ? "6" : "12" }>
+                          <Col
+                            sm={
+                              localStorage.getItem("parentMenuId") !== "branch"
+                                ? "6"
+                                : "12"
+                            }
+                          >
                             <Button
                               color="secondary"
                               onClick={handlePurchaseAddon}
@@ -252,18 +258,19 @@ export default function PosUpgradePage() {
                               Purchase Add-On
                             </Button>
                           </Col>
-                     
-                     {localStorage.getItem('parentMenuId') !== 'branch' &&   (
-                          <Col sm="6">
-                            <Button
-                              color="success"
-                              onClick={handleUpgrade}
-                              className="w-100"
-                            >
-                              Upgrade Subscription
-                            </Button>
-                          </Col>
-                     )}
+
+                          {localStorage.getItem("parentMenuId") !==
+                            "branch" && (
+                            <Col sm="6">
+                              <Button
+                                color="success"
+                                onClick={handleUpgrade}
+                                className="w-100"
+                              >
+                                Upgrade Subscription
+                              </Button>
+                            </Col>
+                          )}
                         </Row>
                       </>
                     )}

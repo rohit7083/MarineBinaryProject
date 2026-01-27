@@ -29,12 +29,12 @@ const PaymentReceiptModal = ({
 }) => {
   const [downLoader, setDownloader] = useState(false);
   const { billing, items, selectedCustomerDetails } = useSelector(
-    (store) => store.cartSlice
+    (store) => store.cartSlice,
   );
-  
+
   const [invoiceLoading, setInvoiceLoading] = useState(false);
-  
-   const payload = {
+
+  const payload = {
     transactionId: txnId,
     ...(customerId && { customerId }),
     ...(memberId && { memberId }),
@@ -52,7 +52,7 @@ const PaymentReceiptModal = ({
     } catch (error) {
       toast.error(
         error?.response?.data?.content ||
-          "Something went wrong, please try again later."
+          "Something went wrong, please try again later.",
       );
     } finally {
       setInvoiceLoading(false);
@@ -113,6 +113,9 @@ const PaymentReceiptModal = ({
 
       // Cleanup
       link.parentNode.removeChild(link);
+
+      
+    
     } catch (error) {
       console.error("Error downloading receipt:", error);
     } finally {

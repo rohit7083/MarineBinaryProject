@@ -231,6 +231,7 @@ const PaymentSummary = () => {
         });
 
         setShowModal(true);
+      
       } else {
         toast.current.show({
           severity: "error",

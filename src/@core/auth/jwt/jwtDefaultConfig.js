@@ -207,7 +207,7 @@ export default {
   getAllEventQrEndPoint: "/eventQrCode/branch",
   getVariationUid: "/pos/",
   updatedQty: "/pos/updateQuantity/",
-  addQrEndPoint: "/eventQrCode/branch",
+  addQrEndPoint: "/eventQrCode",
   decriptQrCodeToeknEndPoint: "/auth/qrCode/decrypt-token?token=",
   qrPaymentEndPoint: "/auth/eventQrCode/",
 
@@ -314,6 +314,7 @@ export default {
   getMails:"/manualEmail",
 
   getSlipCount:"/subscription/getSlipCount",
+  
   
 };
   

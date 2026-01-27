@@ -187,11 +187,11 @@ const PricingCards = () => {
                       />
                     </div>
                     <Button
-                      color={subID?.includes(plan.id) ? "secondary" : "primary"}
+                      color={plan.is_addon == 0 && subID?.includes(plan.id) ? "secondary" : "primary"}
                       block
                       className="mb-4"
                       disabled={
-                        loadingPlanId === plan.id || subID?.includes(plan.id)
+                        loadingPlanId === plan.id || (plan.is_addon == 0 && subID?.includes(plan.id))
                       }
                       style={{
                         borderRadius: "6px",
@@ -204,7 +204,7 @@ const PricingCards = () => {
                         <>
                           Loading... <Spinner color="white" size="sm" />
                         </>
-                      ) : subID?.includes(plan.id) ? (
+                      ) : plan.is_addon == 0 && subID?.includes(plan.id) ? (
                         "Current active plan "
                       ) : (
                         "Choose Plan"
