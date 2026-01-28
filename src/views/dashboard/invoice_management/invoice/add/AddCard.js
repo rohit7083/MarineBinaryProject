@@ -14,7 +14,7 @@ import {
 
 const moduleOptions = [
   { value: "slip-management", label: "Slip Management", path: "/dashboard/slip_memberform" },
-  { value: "pos", label: "POS", path: "/dashboard/pos/point_of_sale/shop/PayementDetails" },
+  // { value: "pos", label: "POS", path: "/dashboard/pos/point_of_sale/shop/PayementDetails" },
   { value: "room-management", label: "Room Management", path: "/addNew_room_booking" },
   { value: "event-management", label: "Event Management", path: "/CreateEvent" },
 ];

@@ -5,7 +5,7 @@ const MarinaStatistics = ({ summeryData }) => {
 
   const {
     annual = 0,
-    grandTotal = null,
+    grandTotal = 0,
     monthly = 0,
     occupancyRate = 0,
     occupied = 0,
@@ -15,18 +15,23 @@ const MarinaStatistics = ({ summeryData }) => {
     actualRevenueCollected = 0,
     paidSlips = 0,
     potentialFullRevenue = 0,
+    // deposite=0,
   } = summeryData;
+
+const { deposite = 0 } = summeryData?.slips?.[0] || {};
 
   const revenueTableData = [
     {
       label: "Total Revenue",
-value: (
-  <strong>
-    ${grandTotal != null
-      ? grandTotal.toFixed(2)
-      : actualRevenueCollected?.toFixed(2)}
-  </strong>
-),
+      value: (
+        <strong>
+          $
+          {/* {grandTotal != null
+            ? grandTotal.toFixed(2)
+            : */}{" "}
+          {actualRevenueCollected?.toFixed(2)}
+        </strong>
+      ),
     },
     { label: "Annual Payers", value: annual },
     { label: "Monthly Payers", value: monthly },
@@ -41,29 +46,21 @@ value: (
   ];
 
   const slipInformationData = [
+    { label: "Grand Total", value: grandTotal },
+    {
+      label: "Total Deposit",
+      value: deposite,
+    },
+    // { label: "", value: totalslip },
+
     { label: "Total Slips", value: totalslip },
     { label: "Occupied Slips (Physical)", value: occupied },
     { label: "Paid Slips (Financial)", value: paidSlips },
     { label: "Vacant Slips", value: vacantSlips },
-    { label: "Actual Revenue Collected", value: actualRevenueCollected },
+    { label: "Actual Revenue Collected", value: grandTotal },
     { label: "Occupancy Rate (Physical)", value: vacantSlips },
     { label: "Occupancy Rate (Financial)", value: financialOccupancyRate },
   ];
-
-  // const metrics = {
-  //   totalSlips: 120,
-  //   occupiedSlips: 92,
-  //   paidSlips: 85,
-  //   vacantSlips: 28,
-
-  //   actualRevenue: 184500,
-  //   potentialRevenue: 240000,
-  //   rentGap: 55500,
-  //   potentialDeposits: 42000,
-
-  //   physicalOccupancy: 76.7,
-  //   financialOccupancy: 70.8,
-  // };
 
   return (
     <div className="p-0">

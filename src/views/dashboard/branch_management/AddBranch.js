@@ -36,6 +36,7 @@ const defaultValues = {
   email: "",
 };
 
+
 // Removes all special characters except spaces
 const cleanText = (value) => value.replace(/[^a-zA-Z0-9\s]/g, "");
 // ===== Sanitizers =====
@@ -63,7 +64,8 @@ export default function BranchForm({ isFirst }) {
   const navigate = useNavigate();
   const location = useLocation();
   const branchData = location?.state?.row;
-
+  const [hideCompnayName,setHideCompanyName ]=useState(false);   
+  
   useEffect(() => {
     if (branchData?.uid) {
       const backendCode = branchData?.dialCountry;
@@ -159,6 +161,23 @@ export default function BranchForm({ isFirst }) {
     }
   };
 
+
+useEffect(() => {
+  const stored = localStorage.getItem("selectedBranch");
+  if (!stored) return;
+
+  try {
+    const { companyName = "" } = JSON.parse(stored);
+
+    reset({ companyName });
+    setHideCompanyName(Boolean(companyName));
+  } catch (error) {
+    console.error("Invalid selectedBranch in localStorage", error);
+  }
+}, [reset, setHideCompanyName]);
+
+
+
   return (
     <Card style={{ border: "1px solid #ddd" }}>
       <Toast ref={toast} />
@@ -204,6 +223,7 @@ export default function BranchForm({ isFirst }) {
                     <Input
                     {...field}
                     type="text"
+                    disabled={hideCompnayName}
                     placeholder="Enter Company Name"
                       onChange={(e) =>
                         field.onChange(

@@ -33,6 +33,19 @@ const PaymentReceiptModal = ({
   );
 
   const [invoiceLoading, setInvoiceLoading] = useState(false);
+const companyDetails= localStorage.getItem("companyDetails");
+const  selectedBranch=localStorage.getItem("selectedBranch");
+
+const selectBranchRaw = selectedBranch
+  ? JSON.parse(selectedBranch)
+  : null;
+
+const companyDetailsRoq = companyDetails
+  ? JSON.parse(companyDetails)
+  : null;
+
+const companyName=companyDetailsRoq?.companyName || selectBranchRaw?.companyName || "";
+const companyAddress=companyDetailsRoq?.address || selectedBranch?.address || "";
 
   const payload = {
     transactionId: txnId,
@@ -155,14 +168,10 @@ const PaymentReceiptModal = ({
         >
           <div className="text-center mb-2">
             <h6 style={{ fontSize: "16pt", margin: 0, fontWeight: "bold" }}>
-              LongCove
+              {companyName}
             </h6>
             <div className="small text-muted">
-              14629 Rainbarrel Road
-              <br />
-              Charlotte, NC 28278, USA
-              <br />
-              +1 (704) 588-1467
+              {companyAddress}
             </div>
 
             <div className="mt-2">

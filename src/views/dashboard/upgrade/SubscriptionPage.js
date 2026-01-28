@@ -127,7 +127,20 @@ const PricingCards = () => {
               ? plan.addonModuleJson
               : [];
             // const isCurrentPlan = subID?.includes(plan.id);
-
+            let status;
+            if (plan.is_addon == 0 && subID?.includes(plan.id)) {
+              status = true;
+            } else if (
+              plan.is_addon == 1 &&
+              subID?.includes(plan.id) &&
+              plan?.subscriptionId == 0
+            ) {
+              status = true;
+            } else if (loadingPlanId === plan.id) {
+              status = true;
+            } else {
+              status = false;
+            }
             return (
               <Col key={index} lg={4} md={6} className="mb-2">
                 <Card
@@ -187,12 +200,26 @@ const PricingCards = () => {
                       />
                     </div>
                     <Button
-                      color={plan.is_addon == 0 && subID?.includes(plan.id) ? "secondary" : "primary"}
+                      color={
+                        (plan.is_addon == 0 && subID?.includes(plan.id)) ||
+                        (plan.is_addon == 1 &&
+                          subID?.includes(plan.id) &&
+                          plan?.subscriptionId == 0)
+                          ? "secondary"
+                          : "primary"
+                      }
                       block
                       className="mb-4"
-                      disabled={
-                        loadingPlanId === plan.id || (plan.is_addon == 0 && subID?.includes(plan.id))
-                      }
+                      // disabled={
+                      //   loadingPlanId === plan.id ||
+                      //   (plan.is_addon == 0 && subID?.includes(plan.id)) ||
+                      //   (plan.is_addon == 1 &&
+                      //     subID?.includes(plan.id) &&
+                      //     plan?.subscriptionId == 0)
+                      // }
+
+disabled={status}
+
                       style={{
                         borderRadius: "6px",
                         fontWeight: "500",

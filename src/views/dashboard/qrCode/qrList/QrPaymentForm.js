@@ -10,19 +10,19 @@ import { CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Container,
-    Form,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Container,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 import TokenExpire from "../../../pages/authentication/slip/TokenExpire";
@@ -1155,7 +1155,12 @@ const CardPayment = () => {
                         >
                           I authorize Locktrust to initiate single
                           ACH/electronic debit[s] to my account in the amount of
-                          $ 50 USD from on 2025-02-26
+                          $ {memberDetail?.amount || 0} USD from on {" "} 
+                          {new Date().toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
                         </Label>
                       </div>
                     </li>
