@@ -30,7 +30,7 @@ const MarinaStatistics = ({ summeryData }) => {
     },
     { label: "Annual Payers", value: annual },
     { label: "Monthly Payers", value: monthly },
-    { label: "Total Deposite Held", value: deposite },
+    { label: "Total Deposit Held", value: deposite },
   ];
 
   const occupancyTableData = [
@@ -47,7 +47,7 @@ const MarinaStatistics = ({ summeryData }) => {
     //   value: deposite,
     // },
     // { label: "", value: totalslip },
-    { label: "Actual Revenue Collected", value: totalRevenueFromSummery },
+    { label: "Actual Revenue Collected", value: actualRevenueCollected },
 
     // { label: "Total Slips", value: totalslip },
     { label: "Occupied Slips (Physical)", value: occupied },
