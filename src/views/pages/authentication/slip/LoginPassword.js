@@ -72,8 +72,6 @@ const Login = () => {
     defaultValues,
   });
   const toast = useRef(null);
- const companyDetails = useSelector(store=>store.auth.companyDetails)
-  const appName=companyDetails? companyDetails?.companyShortName:""
 
   const [password, setPassword] = useState("");
   const [requirements, setRequirements] = useState({

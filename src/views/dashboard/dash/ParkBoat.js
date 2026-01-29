@@ -1,3 +1,737 @@
+// import { useState } from "react";
+// import { Search } from "react-feather";
+// import { useNavigate } from "react-router-dom";
+// import {
+//   Badge,
+//   Card,
+//   CardBody,
+//   CardText,
+//   CardTitle,
+//   Col,
+//   Input,
+//   InputGroup,
+//   InputGroupText,
+//   Pagination,
+//   PaginationItem,
+//   PaginationLink,
+//   Row,
+//   Spinner,
+// } from "reactstrap";
+// import AddBoat from "../../../../src/assets/images/addBoat.png";
+// import BoatNew from "../../../../src/assets/images/updatedboat2.png";
+
+// function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
+//   const navigate = useNavigate();
+
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const itemsPerPage = 16;
+
+//   let allTypeData = allBoatData;
+//   if (onclickName === "all") {
+//     allTypeData = allBoatData;
+//   }
+//   if (onclickName === "empty") {
+//     allTypeData = allBoatData.filter((boat) => !boat.isAssigned);
+//   }
+//   if (onclickName === "occupied") {
+//     allTypeData = allBoatData.filter((boat) => boat.isAssigned);
+//   }
+//   if (onclickName === "offline") {
+//     allTypeData = allBoatData.filter((boat) => boat.isOffline);
+//   }
+
+//   const filteredBoatData = allTypeData?.filter(
+//     (boat) =>
+//       boat?.category?.shipTypeName
+//         ?.toLowerCase()
+//         .includes(searchQuery.toLowerCase()) ||
+//       boat.slipName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//       boat?.member?.firstName
+//         ?.toLowerCase()
+//         .includes(searchQuery.toLowerCase()),
+//   );
+
+//   const totalPages = Math.ceil(filteredBoatData.length / itemsPerPage);
+//   const startIndex = (currentPage - 1) * itemsPerPage;
+//   const currentItems = filteredBoatData.slice(
+//     startIndex,
+//     startIndex + itemsPerPage,
+//   );
+
+//   const handleView = () => {
+//     navigate("/marin/slip-management");
+//   };
+
+//   const handleAdd = (boat) => {
+//     navigate("/dashboard/slip_memberform", {
+//       state: {
+//         formDataFromDashboard: boat,
+//         from: "dashboard",
+//       },
+//     });
+//   };
+
+//   const handleSearchChange = (e) => {
+//     setSearchQuery(e.target.value);
+//     setCurrentPage(1); // reset to page 1 on search
+//   };
+
+//   const handlePageChange = (page) => {
+//     if (page >= 1 && page <= totalPages) {
+//       setCurrentPage(page);
+//     }
+//   };
+
+//   const renderPagination = () => {
+//     const pageNumbers = [];
+//     const visiblePages = 5;
+//     let startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
+//     let endPage = startPage + visiblePages - 1;
+
+//     if (endPage > totalPages) {
+//       endPage = totalPages;
+//       startPage = Math.max(1, endPage - visiblePages + 1);
+//     }
+
+//     for (let i = startPage; i <= endPage; i++) {
+//       pageNumbers.push(i);
+//     }
+
+//     return (
+//       <Pagination className="d-flex justify-content-end mt-3">
+//         <PaginationItem disabled={currentPage === 1}>
+//           <PaginationLink first onClick={() => handlePageChange(1)} />
+//         </PaginationItem>
+//         <PaginationItem disabled={currentPage === 1}>
+//           <PaginationLink
+//             previous
+//             onClick={() => handlePageChange(currentPage - 1)}
+//           />
+//         </PaginationItem>
+//         {pageNumbers.map((page) => (
+//           <PaginationItem key={page} active={page === currentPage}>
+//             <PaginationLink onClick={() => handlePageChange(page)}>
+//               {page}
+//             </PaginationLink>
+//           </PaginationItem>
+//         ))}
+//         <PaginationItem disabled={currentPage === totalPages}>
+//           <PaginationLink
+//             next
+//             onClick={() => handlePageChange(currentPage + 1)}
+//           />
+//         </PaginationItem>
+//         <PaginationItem disabled={currentPage === totalPages}>
+//           <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+//         </PaginationItem>
+//       </Pagination>
+//     );
+//   };
+
+//   return (
+//     <div className="mt-3">
+//       {loading ? (
+//         <div style={{ textAlign: "center", marginTop: "2rem" }}>
+//           <Spinner
+//             style={{ width: "5rem", height: "5rem", color: "blue" }}
+//             type="border"
+//           />
+//         </div>
+//       ) : (
+//         <>
+//           <CardBody>
+//             <Row>
+//               {/* <Col sm="12" className="mt-2  mb-2 d-flex justify-content-center">
+//   <CardTitle tag="h1" className="mb-3 text-center">
+//     {onclickName?.trim()
+//       ? `${onclickName.toUpperCase()} SLIPS`
+//       : "Total Slips"}
+//   </CardTitle>
+// </Col> */}
+
+//               <Col sm="12" className="mt-2 mb-3 d-flex justify-content-center">
+//                 <div
+//                   className="px-4 py-1 rounded"
+//                   style={{
+//                     background: "#f4f3ff",
+//                     borderBottom: "3px solid #7367f0",
+//                     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+//                     minWidth: "100%",
+//                   }}
+//                 >
+//                   <CardTitle
+//                     tag="h2"
+//                     className="mb-0 text-center fw-bold"
+//                     style={{
+//                       letterSpacing: "1px",
+//                       color: "#7367f0",
+//                     }}
+//                   >
+//                     {onclickName?.trim()
+//                       ? `${onclickName.toUpperCase()} SLIPS`
+//                       : "TOTAL SLIPS"}
+//                   </CardTitle>
+//                 </div>
+//               </Col>
+
+//               <InputGroup className="input-group-merge mb-2">
+//                 <InputGroupText>
+//                   <Search size={14} />
+//                 </InputGroupText>
+//                 <Input
+//                   onChange={handleSearchChange}
+//                   placeholder="search Amount, Slips, category etc."
+//                 />
+//               </InputGroup>
+
+//               {currentItems && currentItems.length > 0 ? (
+//                 <>
+//                   {currentItems.map((boat, index) => (
+//                     <Col
+//                       key={index}
+//                       xl="4"
+//                       lg="4"
+//                       md="4"
+//                       sm="12"
+//                       className="mb-4"
+//                     >
+//                       <Card
+//                         style={{}}
+//                         className="h-100 shadow rounded hover-card boat-card"
+//                       >
+//                         <CardBody>
+//                           <div className="d-flex justify-content-between align-items-start mb-2">
+//                             <h5 className="text-primary mb-0">
+//                               # {index + startIndex + 1}
+//                             </h5>
+//                             <Badge color="dark" pill>
+//                               L - {boat?.dimensions?.length || 0}
+//                             </Badge>
+//                             <Badge color="primary" pill>
+//                               W - {boat?.dimensions?.width || 0}
+//                             </Badge>
+//                             <Badge color="warning" pill>
+//                               H - {boat?.dimensions?.height || 0}
+//                             </Badge>
+//                           </div>
+
+//                           <div className="mb-2">
+//                             <CardText className="mb-1">
+//                               <strong>Type:</strong>{" "}
+//                               {boat?.category?.shipTypeName}
+//                             </CardText>
+//                             <CardText>
+//                               <strong>Slip Name:</strong> {boat.slipName}
+//                             </CardText>
+
+//                             {boat?.isAssigned && (
+//                               <>
+//                                 <CardText>
+//                                   <strong>Member Name:</strong>{" "}
+//                                   {(boat?.member?.firstName || "") +
+//                                     " " +
+//                                     (boat?.member?.lastName || "")}
+//                                 </CardText>
+//                                 <CardText>
+//                                   <strong>Amount :</strong> {boat?.finalPayment}
+//                                 </CardText>
+//                               </>
+//                             )}
+//                           </div>
+
+//                           <div className="text-center">
+//                             <div
+//                               style={{
+//                                 width: "170px",
+//                                 height: "150px",
+//                                 display: "flex",
+//                                 alignItems: "center",
+//                                 justifyContent: "center",
+//                                 margin: "auto",
+//                               }}
+//                             >
+//                               {boat?.isAssigned ? (
+//                                 <img
+//                                   src={BoatNew}
+//                                   className="boat-enter-float"
+//                                   alt="Boat"
+//                                   style={{
+//                                     width: "170px",
+//                                     height: "auto",
+//                                     cursor: "pointer",
+//                                   }}
+//                                   onClick={handleView}
+//                                 />
+//                               ) : (
+//                                 <img
+//                                   width="64"
+//                                   height="64"
+//                                   className="addimg"
+//                                   onClick={(e) => handleAdd(boat)}
+//                                   style={{
+//                                     cursor: "pointer",
+//                                   }}
+//                                   src={AddBoat}
+//                                   alt="add"
+//                                 />
+//                               )}
+//                             </div>
+//                           </div>
+//                         </CardBody>
+//                       </Card>
+//                     </Col>
+//                   ))}
+//                 </>
+//               ) : (
+//                 <>
+//                   <Col sm="12">
+//                     <div className="text-center mt-4">
+//                       <h5>No data found</h5>
+//                     </div>
+//                   </Col>
+//                 </>
+//               )}
+//             </Row>
+
+//             {renderPagination()}
+//           </CardBody>
+//         </>
+//       )}
+
+//       <style>
+//         {`
+//       .hover-card:hover {
+//         transform: scale(1.03);
+//         transition: 0.3s ease-in-out;
+//         border: 2px solid rgb(19, 19, 18);
+//       }
+
+//       .boat-card {
+//         background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(37, 155, 179));
+//         border-radius: 20px 20px 60px 60px;
+//         position: relative;
+//         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+//         overflow: hidden;
+//         border: 1px solid #b2ebf2;
+//       }
+
+//       .boat-card::after {
+//         content: '';
+//         position: absolute;
+//         bottom: -12px;
+//         left: 10%;
+//         width: 80%;
+//         height: 40px;
+//         background: #8d6e63;
+//         border-radius: 10px;
+//         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+//       }
+
+//       .boat-card::before {
+//         content: '';
+//         position: absolute;
+//         bottom: -25px;
+//         left: 20%;
+//         width: 60%;
+//         height: 15px;
+//         background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
+//         opacity: 0.6;
+//       }
+
+//       @keyframes enterFromTop {
+//         0% { transform: translateY(-100px); opacity: 0; }
+//         100% { transform: translateY(0); opacity: 1; }
+//       }
+
+//       @keyframes floatSideToSide {
+//         0% { transform: translateY(0) translateX(0); }
+//         50% { transform: translateY(0) translateX(8px); }
+//         100% { transform: translateY(0) translateX(0); }
+//       }
+
+//       .boat-enter-float {
+//         animation:
+//           enterFromTop 0.8s ease-out forwards,
+//           floatSideToSide 3s ease-in-out infinite;
+//         animation-delay: 0s, 0.8s;
+//       }
+//     `}
+//       </style>
+//     </div>
+//   );
+// }
+
+// export default ParkBoat;
+
+// import { useState } from "react";
+// import { Search } from "react-feather";
+// import { useNavigate } from "react-router-dom";
+// import {
+//   Badge,
+//   Card,
+//   CardBody,
+//   CardText,
+//   CardTitle,
+//   Col,
+//   Input,
+//   InputGroup,
+//   InputGroupText,
+//   Pagination,
+//   PaginationItem,
+//   PaginationLink,
+//   Row,
+//   Spinner,
+// } from "reactstrap";
+// import AddBoat from "../../../../src/assets/images/addBoat.png";
+// import BoatNew from "../../../../src/assets/images/updatedboat2.png";
+
+// function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
+//   const navigate = useNavigate();
+
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const itemsPerPage = 16;
+
+//   let allTypeData = allBoatData;
+//   if (onclickName === "all") {
+//     allTypeData = allBoatData;
+//   }
+//   if (onclickName === "empty") {
+//     allTypeData = allBoatData.filter((boat) => !boat.isAssigned);
+//   }
+//   if (onclickName === "occupied") {
+//     allTypeData = allBoatData.filter((boat) => boat.isAssigned);
+//   }
+//   if (onclickName === "offline") {
+//     allTypeData = allBoatData.filter((boat) => boat.isOffline);
+//   }
+
+//   const filteredBoatData = allTypeData?.filter(
+//     (boat) =>
+//       boat?.category?.shipTypeName
+//         ?.toLowerCase()
+//         .includes(searchQuery.toLowerCase()) ||
+//       boat.slipName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//       boat?.member?.firstName
+//         ?.toLowerCase()
+//         .includes(searchQuery.toLowerCase()),
+//   );
+
+//   const totalPages = Math.ceil(filteredBoatData.length / itemsPerPage);
+//   const startIndex = (currentPage - 1) * itemsPerPage;
+//   const currentItems = filteredBoatData.slice(
+//     startIndex,
+//     startIndex + itemsPerPage,
+//   );
+
+//   const handleView = () => {
+//     navigate("/marin/slip-management");
+//   };
+
+//   const handleAdd = (boat) => {
+//     navigate("/dashboard/slip_memberform", {
+//       state: {
+//         formDataFromDashboard: boat,
+//         from: "dashboard",
+//       },
+//     });
+//   };
+
+//   const handleSearchChange = (e) => {
+//     setSearchQuery(e.target.value);
+//     setCurrentPage(1); // reset to page 1 on search
+//   };
+
+//   const handlePageChange = (page) => {
+//     if (page >= 1 && page <= totalPages) {
+//       setCurrentPage(page);
+//     }
+//   };
+
+//   const renderPagination = () => {
+//     const pageNumbers = [];
+//     const visiblePages = 5;
+//     let startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
+//     let endPage = startPage + visiblePages - 1;
+
+//     if (endPage > totalPages) {
+//       endPage = totalPages;
+//       startPage = Math.max(1, endPage - visiblePages + 1);
+//     }
+
+//     for (let i = startPage; i <= endPage; i++) {
+//       pageNumbers.push(i);
+//     }
+
+//     return (
+//       <Pagination className="d-flex justify-content-end mt-3">
+//         <PaginationItem disabled={currentPage === 1}>
+//           <PaginationLink first onClick={() => handlePageChange(1)} />
+//         </PaginationItem>
+//         <PaginationItem disabled={currentPage === 1}>
+//           <PaginationLink
+//             previous
+//             onClick={() => handlePageChange(currentPage - 1)}
+//           />
+//         </PaginationItem>
+//         {pageNumbers.map((page) => (
+//           <PaginationItem key={page} active={page === currentPage}>
+//             <PaginationLink onClick={() => handlePageChange(page)}>
+//               {page}
+//             </PaginationLink>
+//           </PaginationItem>
+//         ))}
+//         <PaginationItem disabled={currentPage === totalPages}>
+//           <PaginationLink
+//             next
+//             onClick={() => handlePageChange(currentPage + 1)}
+//           />
+//         </PaginationItem>
+//         <PaginationItem disabled={currentPage === totalPages}>
+//           <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+//         </PaginationItem>
+//       </Pagination>
+//     );
+//   };
+
+//   return (
+//     <div className="mt-3">
+//       {loading ? (
+//         <div style={{ textAlign: "center", marginTop: "2rem" }}>
+//           <Spinner
+//             style={{ width: "5rem", height: "5rem", color: "blue" }}
+//             type="border"
+//           />
+//         </div>
+//       ) : (
+//         <>
+//           <CardBody>
+//             <Row>
+//               {/* <Col sm="12" className="mt-2  mb-2 d-flex justify-content-center">
+//   <CardTitle tag="h1" className="mb-3 text-center">
+//     {onclickName?.trim()
+//       ? `${onclickName.toUpperCase()} SLIPS`
+//       : "Total Slips"}
+//   </CardTitle>
+// </Col> */}
+
+//               <Col sm="12" className="mt-2 mb-3 d-flex justify-content-center">
+//                 <div
+//                   className="px-4 py-1 rounded"
+//                   style={{
+//                     background: "#f4f3ff",
+//                     borderBottom: "3px solid #7367f0",
+//                     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+//                     minWidth: "100%",
+//                   }}
+//                 >
+//                   <CardTitle
+//                     tag="h2"
+//                     className="mb-0 text-center fw-bold"
+//                     style={{
+//                       letterSpacing: "1px",
+//                       color: "#7367f0",
+//                     }}
+//                   >
+//                     {onclickName?.trim()
+//                       ? `${onclickName.toUpperCase()} SLIPS`
+//                       : "TOTAL SLIPS"}
+//                   </CardTitle>
+//                 </div>
+//               </Col>
+
+//               <InputGroup className="input-group-merge mb-2">
+//                 <InputGroupText>
+//                   <Search size={14} />
+//                 </InputGroupText>
+//                 <Input
+//                   onChange={handleSearchChange}
+//                   placeholder="search Amount, Slips, category etc."
+//                 />
+//               </InputGroup>
+
+//               {currentItems && currentItems.length > 0 ? (
+//                 <>
+//                   {currentItems.map((boat, index) => (
+//                     <Col
+//                       key={index}
+//                       xl="4"
+//                       lg="4"
+//                       md="4"
+//                       sm="12"
+//                       className="mb-4"
+//                     >
+//                       <Card
+//                         style={{}}
+//                         className="h-100 shadow rounded hover-card boat-card"
+//                       >
+//                         <CardBody>
+//                           <div className="d-flex justify-content-between align-items-start mb-2">
+//                             <h5 className="text-primary mb-0">
+//                               # {index + startIndex + 1}
+//                             </h5>
+//                             <Badge color="dark" pill>
+//                               L - {boat?.dimensions?.length || 0}
+//                             </Badge>
+//                             <Badge color="primary" pill>
+//                               W - {boat?.dimensions?.width || 0}
+//                             </Badge>
+//                             <Badge color="warning" pill>
+//                               H - {boat?.dimensions?.height || 0}
+//                             </Badge>
+//                           </div>
+
+//                           <div className="mb-2">
+//                             <CardText className="mb-1">
+//                               <strong>Type:</strong>{" "}
+//                               {boat?.category?.shipTypeName}
+//                             </CardText>
+//                             <CardText>
+//                               <strong>Slip Name:</strong> {boat.slipName}
+//                             </CardText>
+
+//                             {boat?.isAssigned && (
+//                               <>
+//                                 <CardText>
+//                                   <strong>Member Name:</strong>{" "}
+//                                   {(boat?.member?.firstName || "") +
+//                                     " " +
+//                                     (boat?.member?.lastName || "")}
+//                                 </CardText>
+//                                 <CardText>
+//                                   <strong>Amount :</strong> {boat?.finalPayment}
+//                                 </CardText>
+//                               </>
+//                             )}
+//                           </div>
+
+//                           <div className="text-center">
+//                             <div
+//                               style={{
+//                                 width: "170px",
+//                                 height: "150px",
+//                                 display: "flex",
+//                                 alignItems: "center",
+//                                 justifyContent: "center",
+//                                 margin: "auto",
+//                               }}
+//                             >
+//                               {boat?.isAssigned ? (
+//                                 <img
+//                                   src={BoatNew}
+//                                   className="boat-enter-float"
+//                                   alt="Boat"
+//                                   style={{
+//                                     width: "170px",
+//                                     height: "auto",
+//                                     cursor: "pointer",
+//                                   }}
+//                                   onClick={handleView}
+//                                 />
+//                               ) : (
+//                                 <img
+//                                   width="64"
+//                                   height="64"
+//                                   className="addimg"
+//                                   onClick={(e) => handleAdd(boat)}
+//                                   style={{
+//                                     cursor: "pointer",
+//                                   }}
+//                                   src={AddBoat}
+//                                   alt="add"
+//                                 />
+//                               )}
+//                             </div>
+//                           </div>
+//                         </CardBody>
+//                       </Card>
+//                     </Col>
+//                   ))}
+//                 </>
+//               ) : (
+//                 <>
+//                   <Col sm="12">
+//                     <div className="text-center mt-4">
+//                       <h5>No data found</h5>
+//                     </div>
+//                   </Col>
+//                 </>
+//               )}
+//             </Row>
+
+//             {renderPagination()}
+//           </CardBody>
+//         </>
+//       )}
+
+//       <style>
+//         {`
+//       .hover-card:hover {
+//         transform: scale(1.03);
+//         transition: 0.3s ease-in-out;
+//         border: 2px solid rgb(19, 19, 18);
+//       }
+
+//       .boat-card {
+//         background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(37, 155, 179));
+//         border-radius: 20px 20px 60px 60px;
+//         position: relative;
+//         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+//         overflow: hidden;
+//         border: 1px solid #b2ebf2;
+//       }
+
+//       .boat-card::after {
+//         content: '';
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         width: 100%;
+//         height: 100%;
+//         border: 15px solid #8d6e63;
+//         border-bottom: none;
+//         border-radius: 20px 20px 0 0;
+//         pointer-events: none;
+//         box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+//       }
+
+//       .boat-card::before {
+//         content: '';
+//         position: absolute;
+//         bottom: -25px;
+//         left: 20%;
+//         width: 60%;
+//         height: 15px;
+//         background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
+//         opacity: 0.6;
+//       }
+
+//       @keyframes enterFromTop {
+//         0% { transform: translateY(-100px); opacity: 0; }
+//         100% { transform: translateY(0); opacity: 1; }
+//       }
+
+//       @keyframes floatSideToSide {
+//         0% { transform: translateY(0) translateX(0); }
+//         50% { transform: translateY(0) translateX(8px); }
+//         100% { transform: translateY(0) translateX(0); }
+//       }
+
+//       .boat-enter-float {
+//         animation:
+//           enterFromTop 0.8s ease-out forwards,
+//           floatSideToSide 3s ease-in-out infinite;
+//         animation-delay: 0s, 0.8s;
+//       }
+//     `}
+//       </style>
+//     </div>
+//   );
+// }
+
+// export default ParkBoat;
+
 import { useState } from "react";
 import { Search } from "react-feather";
 import { useNavigate } from "react-router-dom";
@@ -200,6 +934,7 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
                         style={{}}
                         className="h-100 shadow rounded hover-card boat-card"
                       >
+                        <div className="right-wood"></div>
                         <CardBody>
                           <div className="d-flex justify-content-between align-items-start mb-2">
                             <h5 className="text-primary mb-0">
@@ -260,6 +995,7 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
                                     width: "170px",
                                     height: "auto",
                                     cursor: "pointer",
+                                    marginTop: "41px",
                                   }}
                                   onClick={handleView}
                                 />
@@ -271,6 +1007,7 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
                                   onClick={(e) => handleAdd(boat)}
                                   style={{
                                     cursor: "pointer",
+                                    marginTop: "12rem",
                                   }}
                                   src={AddBoat}
                                   alt="add"
@@ -319,30 +1056,52 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
       .boat-card::after {
         content: '';
         position: absolute;
-        bottom: -12px;
-        left: 10%;
-        width: 80%;
-        height: 40px;
+        top: 206px;
+        left: 0;
+        width: 100%;
+        height: 30px;
         background: #8d6e63;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        z-index: 1;
       }
 
       .boat-card::before {
         content: '';
         position: absolute;
-        bottom: -25px;
-        left: 20%;
-        width: 60%;
-        height: 15px;
-        background: radial-gradient(circle, rgb(36, 84, 90) 20%, transparent 80%);
-        opacity: 0.6;
+        top: 210px;
+        left: 0;
+        width: 40px;
+        height: calc(100% - 230px);
+        background: #8d6e63;
+        pointer-events: none;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+        z-index: 1;
       }
+      
+      .boat-card .right-wood {
+        content: '';
+        position: absolute;
+        top: 210px;
+        right: 0;
+        width: 40px;
+        height: calc(100% - 230px);
+        background: #8d6e63;
+        pointer-events: none;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+        z-index: 1;
+      }
+@keyframes enterFromBottom {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
-      @keyframes enterFromTop {
-        0% { transform: translateY(-100px); opacity: 0; }
-        100% { transform: translateY(0); opacity: 1; }
-      }
 
       @keyframes floatSideToSide {
         0% { transform: translateY(0) translateX(0); }
@@ -350,12 +1109,15 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
         100% { transform: translateY(0) translateX(0); }
       }
 
-      .boat-enter-float {
-        animation:
-          enterFromTop 0.8s ease-out forwards,
-          floatSideToSide 3s ease-in-out infinite;
-        animation-delay: 0s, 0.8s;
-      }
+    
+
+.boat-enter-float {
+  animation:
+    enterFromBottom 2.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards,
+    floatSideToSide 4s ease-in-out infinite;
+  animation-delay: 0s, 2.2s;
+}
+
     `}
       </style>
     </div>
@@ -363,3 +1125,14 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
 }
 
 export default ParkBoat;
+
+// .boat-enter-float {
+//       animation:
+//         enterFromTop 0.8s ease-out forwards,
+//         floatSideToSide 3s ease-in-out infinite;
+//       animation-delay: 0s, 0.8s;
+//     }
+// @keyframes enterFromTop {
+//   0% { transform: translateY(-100px); opacity: 0; }
+//   100% { transform: translateY(0); opacity: 1; }
+// }

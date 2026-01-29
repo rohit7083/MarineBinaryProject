@@ -6,20 +6,20 @@ import DataTable from "react-data-table-component";
 import { ChevronDown } from "react-feather";
 import ReactPaginate from "react-paginate";
 import * as XLSX from "xlsx";
-import Summery from "../viewSlip/Summery";
+import Summery from "../inverseSlip/SummeryInverse";
 
 // ** Reactstrap Imports
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Input,
-    Label,
-    Row,
-    Spinner,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Input,
+  Label,
+  Row,
+  Spinner,
 } from "reactstrap";
 
 // ** Auth

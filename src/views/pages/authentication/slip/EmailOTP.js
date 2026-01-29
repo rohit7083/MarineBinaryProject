@@ -1,7 +1,6 @@
 // ** React Imports
 import React from "react";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { UncontrolledAlert } from "reactstrap";
 import Swal from "sweetalert2";
@@ -43,9 +42,7 @@ import { useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 
 const TwoStepsBasic = () => {
-  const companyDetails = useSelector((store) => store.auth.companyDetails);
-  const appName = companyDetails ? companyDetails?.companyShortName : "";
-  const companyLogo = useSelector((store) => store.auth.companyLogo);
+ 
 
   const [attempt, setAttempt] = useState(0);
 

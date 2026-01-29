@@ -9,7 +9,7 @@ import { Spinner } from "reactstrap";
 
 // ** Third Party Components
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 // ** Context
 import { AbilityContext } from "@src/utility/context/Can";
@@ -59,9 +59,7 @@ const Login = () => {
   const [show, setShow] = useState(false);
   const [location, setLocation] = useState(null);
   const [ip, setIP] = useState(null);
-  const companyDetails = useSelector(store=>store.auth.companyDetails)
-  const appName=companyDetails? companyDetails?.companyShortName:""
-  const companyLogo = useSelector((store) => store.auth.companyLogo);
+ 
 
   const {
     control,

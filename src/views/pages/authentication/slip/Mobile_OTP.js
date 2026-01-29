@@ -453,8 +453,6 @@ const TwoStepsBasic = () => {
     defaultValues: { otp: Array(6).fill("") },
   });
 
-   const companyDetails = useSelector(store=>store.auth.companyDetails)
-    const appName=companyDetails? companyDetails?.companyShortName:""
   
 
   // Refs for OTP inputs to manage focus without DOM queries
