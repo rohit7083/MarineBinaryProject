@@ -1952,11 +1952,14 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     >
                       <div className="details-title"> Amount</div>
                       <div className="detail-amt">
-                        <strong>
-                          ${" "}
-                          {handleFinal - allEventData?.calculatedTax ||
-                            watch("finalAmount")}
-                        </strong>
+                       <strong>
+  $
+  {Number(
+    (handleFinal - allEventData?.calculatedTax ??
+      watch("finalAmount"))
+  ).toFixed(2)}
+</strong>
+
                       </div>
                     </li>
 

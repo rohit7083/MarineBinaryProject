@@ -50,7 +50,10 @@ export default function BranchSelector() {
           return;
         }
         const res = await useJwt.getBranch(uid);
-        localStorage.setItem("subscriptionId", JSON.stringify(res?.data?.subscriptionIds));
+        localStorage.setItem(
+          "subscriptionId",
+          JSON.stringify(res?.data?.subscriptionIds),
+        );
         let resData = res?.data?.branches;
 
         localStorage.setItem("crmId", res?.data?.crmId);
@@ -69,14 +72,13 @@ export default function BranchSelector() {
   const filtered = branches?.filter(
     (b) =>
       b.branchName.toLowerCase().includes(search.toLowerCase()) ||
-      b.city.toLowerCase().includes(search.toLowerCase())
+      b.city.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleSelect = async (branch) => {
     "Selected Branch:", branch;
 
-    //  saveUnlockedPages
-    // Store in localStorage
+    
     if (branch) {
       const userData = getUserData();
       userData;
@@ -94,7 +96,7 @@ export default function BranchSelector() {
 
         localStorage.setItem(
           "pagesUnlockedNames",
-          JSON.stringify(pagesUnlockedNames)
+          JSON.stringify(pagesUnlockedNames),
         );
 
         dispatch(saveUnlockedPages(pagesUnlockedNames));
@@ -106,7 +108,7 @@ export default function BranchSelector() {
         },
       });
     }
-  }; 
+  };
 
   useEffect(() => {
     const handleGetlogoAndName = async () => {
@@ -120,7 +122,7 @@ export default function BranchSelector() {
       }
     };
     handleGetlogoAndName();
-  }, [userUidLocal]);
+  }, [userUidLocal ,branches]);
 
   // useEffect(() => {
   //   const handlegetLogo = async () => {
@@ -151,14 +153,13 @@ export default function BranchSelector() {
   //   handlegetLogo();
   // }, [logoNameInfo]);
 
-
   function blobToBase64(blob) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
-}
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  }
   // useEffect(() => {
   //   if (!logoNameInfo?.uid) return;
 
@@ -172,7 +173,7 @@ export default function BranchSelector() {
 
   //       objectUrl = URL.createObjectURL(blob);
   //       setImagpath(objectUrl);
-       
+
   //       const base64 = await blobToBase64(blob);
   //       dispatch(handleStoreLogo(base64));
   //     } catch (err) {
@@ -187,39 +188,39 @@ export default function BranchSelector() {
   //   };
   // }, [logoNameInfo?.uid]);
 
-useEffect(() => {
-  if (!logoNameInfo?.uid) return;
+  useEffect(() => {
+    if (!logoNameInfo?.uid) return;
 
-  let objectUrl;
-  let cancelled = false;
+    let objectUrl;
+    let cancelled = false;
 
-  const handleGetLogo = async () => {
-    try {
-      const logoRes = await useJwt.getLogo(logoNameInfo.uid);
-      if (cancelled) return;
+    const handleGetLogo = async () => {
+      try {
+        const logoRes = await useJwt.getLogo(logoNameInfo.uid);
+        if (cancelled) return;
 
-      const blob = logoRes.data;
-      objectUrl = URL.createObjectURL(blob);
-      setImagpath(objectUrl);
-      const base64 = await blobToBase64(blob);
-      dispatch(handleStoreLogo(base64));
-    } catch (err) {
-      if (!cancelled) console.error(err);
-    }
-  };
+        const blob = logoRes.data;
+        objectUrl = URL.createObjectURL(blob);
+        setImagpath(objectUrl);
+        const base64 = await blobToBase64(blob);
+        dispatch(handleStoreLogo(base64));
+      } catch (err) {
+        if (!cancelled) console.error(err);
+      }
+    };
 
-  handleGetLogo();
+    handleGetLogo();
 
-  return () => {
-    cancelled = true;
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
-  };
-}, [logoNameInfo?.uid]);
+    return () => {
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [logoNameInfo?.uid]);
 
-const logoSrc =
-  typeof companyLogo === "string" && companyLogo.trim().length > 0
-    ? companyLogo
-    : themeConfig.app.appLogoImage;
+  const logoSrc =
+    typeof companyLogo === "string" && companyLogo.trim().length > 0
+      ? companyLogo
+      : themeConfig.app.appLogoImage;
 
   return (
     <div className="min-vh-100" style={{ background: "#7367F0" }}>

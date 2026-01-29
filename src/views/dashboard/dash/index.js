@@ -19,21 +19,20 @@ function index() {
       const isOffline = res?.data?.content?.result.filter((offline) => {
         return offline.isOffline === true;
       });
-console.log("isOffline",isOffline);
+      console.log("isOffline", isOffline);
 
       setIsOfflineCount(isOffline?.length);
 
       setAllBoatData(res?.data?.content?.result || []);
 
       const empty = res?.data?.content?.result.filter(
-        (boat) => !boat.isAssigned
+        (boat) => !boat.isAssigned,
       );
       const occupied = res?.data?.content?.result.filter(
-        (boat) => boat.isAssigned
+        (boat) => boat.isAssigned,
       ).length;
 
       console.log("empty", empty);
-      
 
       setEmptySlip({ empty, occupied });
 
@@ -53,7 +52,7 @@ console.log("isOffline",isOffline);
   return (
     <>
       <Authenticate isAssigne={allBoatData.isAssigned} />
-      <Index 
+      <Index
         waitingCount={waitingCount}
         count={allBoatData.length}
         emptySlip={checkEmptySlip?.empty?.length || 0}
@@ -68,7 +67,6 @@ console.log("isOffline",isOffline);
         setAllBoatData={setAllBoatData}
         checkEmptySlip={checkEmptySlip}
         onclickName={onclickName}
-        
       />
     </>
   );

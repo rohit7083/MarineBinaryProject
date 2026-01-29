@@ -30,7 +30,7 @@ const MarinaStatistics = ({ summeryData }) => {
     },
     { label: "Annual Payers", value: annual },
     { label: "Monthly Payers", value: monthly },
-    { label: "Total Occupied (Annual + Monthly)", value: annual + monthly },
+    { label: "Total Deposite Held", value: deposite },
   ];
 
   const occupancyTableData = [
@@ -41,20 +41,20 @@ const MarinaStatistics = ({ summeryData }) => {
   ];
 
   const slipInformationData = [
-    { label: "Grand Total", value: actualRevenueCollected },
-    {
-      label: "Total Deposit",
-      value: deposite,
-    },
+    // { label: "Grand Total", value: actualRevenueCollected },
+    // {
+    //   label: "Total Deposit",
+    //   value: deposite,
+    // },
     // { label: "", value: totalslip },
+    { label: "Actual Revenue Collected", value: totalRevenueFromSummery },
 
-    { label: "Total Slips", value: totalslip },
+    // { label: "Total Slips", value: totalslip },
     { label: "Occupied Slips (Physical)", value: occupied },
     { label: "Paid Slips (Financial)", value: paidSlips },
-    { label: "Vacant Slips", value: vacantSlips },
-    { label: "Actual Revenue Collected", value: totalRevenue },
-    { label: "Occupancy Rate (Physical)", value: vacantSlips },
-    { label: "Occupancy Rate (Financial)", value: financialOccupancyRate },
+    // { label: "Vacant Slips", value: vacantSlips },
+    // { label: "Occupancy Rate (Physical)", value: vacantSlips },
+    // { label: "Occupancy Rate (Financial)", value: financialOccupancyRate },
   ];
 
   return (

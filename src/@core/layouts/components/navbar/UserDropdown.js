@@ -74,6 +74,10 @@ const UserDropdown = () => {
           <Settings2 size={14} className="me-75" />
           <span className="align-middle">Settings</span>
         </DropdownItem>
+          {/* <DropdownItem tag={Link} to="/pages/paymentSetting">
+          <Settings size={14} className="me-75" />
+          <span className="align-middle">Payment Settings</span>
+        </DropdownItem> */}
         {/* <DropdownItem tag={Link} to='/pages/profile'>
           <User size={14} className='me-75' />
           <span className='align-middle'>Profile</span>

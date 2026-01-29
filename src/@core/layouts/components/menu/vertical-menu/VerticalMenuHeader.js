@@ -25,7 +25,9 @@ const VerticalMenuHeader = (props) => {
   const user = getUserData();
   const companyDetails = useSelector((store) => store.auth.companyDetails);
   const companyLogo = useSelector((store) => store.auth.companyLogo);
-  const appName = companyDetails ? companyDetails?.companyShortName : "";
+
+    const appName = companyDetails ? companyDetails?.companyShortName : "";
+
 
   // ** Reset open group
   useEffect(() => {
@@ -55,7 +57,7 @@ const VerticalMenuHeader = (props) => {
     }
   };
 
-  // debugger;
+  
   const logoSrc =
     typeof companyLogo === "string" && companyLogo.trim().length > 0
       ? companyLogo

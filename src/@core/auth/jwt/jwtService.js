@@ -1,6 +1,9 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
+
+// axios.defaults.baseURL = "http://192.168.1.9:8000"; // locktrust
+
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000/"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.9:8000"; //airtel saga
@@ -1110,12 +1113,19 @@ export default class JwtService {
     return axios.get(this.jwtConfig.getTemplateValues);
   }
 
-  retriveRoom(uid) {
-    return axios.get(`${this.jwtConfig.retriveRoom}${uid}`);
+  retriveRoom(uid, ...args) {
+    console.log(args);
+    
+    return axios.get(`${this.jwtConfig.retriveRoom}${uid}`,{
+      appendBranchUid:true,
+    });
   }
 
   retriveEvent(uid) {
-    return axios.get(`${this.jwtConfig.retriveEvent}${uid}`);
+    return axios.get(`${this.jwtConfig.retriveEvent}${uid}`,{
+      appendBranchUid:true,
+
+    });
   }
 
   deleteWaiting(uid) {

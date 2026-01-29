@@ -163,6 +163,11 @@ const Calendar = (props) => {
     },
   ];
 
+  const selectedBranch=localStorage.getItem('selectedBranch');
+const branchUid = selectedBranch
+  ? JSON.parse(selectedBranch).uid
+  : null;
+  
   const calendarOptions = {
     events: store.events.length ? store.events : [],
 
