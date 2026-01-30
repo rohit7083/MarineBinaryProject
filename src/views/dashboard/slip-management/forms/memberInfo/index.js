@@ -13,25 +13,25 @@ import * as yup from "yup";
 import ReactCountryFlag from "react-country-flag";
 import Select from "react-select";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    Tooltip,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Tooltip,
 } from "reactstrap";
 import { countries } from "../../../slip-management/CountryCode";
 
 import { useNavigate } from "react-router-dom";
 import RenewalContract from "../memberInfo/RenewalContract";
 
-const PersonalInfo = ({ fetchLoader, SlipData }) => {
+const PersonalInfo = ({ fetchLoader, SlipData ,dataFromDashboard ,fromData }) => {
   const MySwal = withReactContent(Swal);
   const [checkvesel, setCheckvessel] = useState(null);
   const [checkMember, setCheckMember] = useState(null);
@@ -141,8 +141,7 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       secondaryEmail,
       secondaryPhoneNumber,
     } = data;
-    {
-    }
+   
     const payload = {
       firstName,
       lastName,
@@ -158,6 +157,8 @@ const PersonalInfo = ({ fetchLoader, SlipData }) => {
       secondaryEmail,
       secondaryPhoneNumber,
       slipId: SlipData.id,
+      nonRevenue:
+        SlipData.nonRevenue,
     };
     let memberId;
     try {

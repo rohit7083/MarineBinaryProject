@@ -5,31 +5,31 @@ import { debounce } from "lodash";
 import { useContext, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import {
-    Calendar,
-    ChevronDown,
-    DollarSign,
-    Edit,
-    MoreVertical,
-    Plus,
-    PlusCircle,
-    Trash,
-    Trash2,
+  Calendar,
+  ChevronDown,
+  DollarSign,
+  Edit,
+  MoreVertical,
+  Plus,
+  PlusCircle,
+  Trash,
+  Trash2,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    Col,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input,
-    Row,
-    Spinner,
-    UncontrolledDropdown,
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  Col,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Row,
+  Spinner,
+  UncontrolledDropdown,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -44,7 +44,6 @@ const index = () => {
   const [datarow, setDatarow] = useState(null);
   const [show, setShow] = useState(false);
   const ability = useContext(AbilityContext);
-
   const navigate = useNavigate();
 
   const [tableData, setTableData] = useState({
@@ -227,7 +226,7 @@ const index = () => {
       name: "Remaining Amt",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.remainingAmount,
+      selector: (row) => row.remainingAmount?.toFixed(2),
     },
 
     {

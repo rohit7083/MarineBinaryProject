@@ -1,43 +1,66 @@
 import useJwt from "@src/auth/jwt/useJwt";
 import Lottie from "lottie-react";
-import React, { useEffect, useState } from "react";
+import { Toast } from "primereact/toast";
+import React, { useEffect, useRef, useState } from "react";
 import { Trash } from "react-feather";
 import { Controller, useForm } from "react-hook-form";
 import {
-    Button,
-    CardText,
-    CardTitle,
-    Col,
-    Input,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-    Spinner,
-    Table,
-    UncontrolledAlert,
+  Button,
+  CardText,
+  CardTitle,
+  Col,
+  Input,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
+  Table,
+  UncontrolledAlert,
 } from "reactstrap";
 import successAnimation from "../../../../assets/images/celebrate.json";
 import successAnimations from "../../../../assets/images/Congratulations.json";
 
-function CancelRooms({ show, setShow, datarow }) {
+function CancelRooms({ show, setShow, datarow, dataFrom }) {
   const { handleSubmit, register, watch, setValue, control } = useForm();
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [refundModal, setRefundModal] = useState(false);
-   ("selectedData", selectedData);
-   ("datarow", datarow);
+  console.log("selectedData", selectedData);
   const [errorMessage, setErrorMsz] = useState("");
   const toggle = () => setRefundModal(!refundModal);
   const [roomDataForCancleFiltered, setRoomDataForCancleFiltered] = useState(
-    []
+    [],
   );
+  const toast = useRef(null);
 
+  console.log("roomDataForCancleFiltered", roomDataForCancleFiltered);
+
+  const normalizeToArray = (value) => {
+    if (Array.isArray(value)) return value;
+    if (value) return [value];
+    return [];
+  };
+
+  const getRoomUnits = (x) => {
+    if (Array.isArray(x?.roomSearch?.roomSearchUnit)) {
+      return x.roomSearch.roomSearchUnit;
+    }
+
+    if (Array.isArray(x?.roomSearchUnit)) {
+      return x.roomSearchUnit;
+    }
+
+    return [];
+  };
   useEffect(() => {
-    let roomDataForCancle = datarow?.roomBookings?.flatMap(
+    const sourceRooms = normalizeToArray(
+      datarow?.roomBookings ?? datarow?.roomSearch,
+    );
+    let roomDataForCancle = sourceRooms.flatMap(
       (x) =>
-        x?.roomSearch?.roomSearchUnit?.map((room) => ({
+        getRoomUnits(x).map((room) => ({
           uid: x?.uid,
           roomNumber: room?.roomUnit?.roomNumber,
           roomTypeName: room?.roomUnit?.roomType?.roomTypeName,
@@ -46,16 +69,16 @@ function CancelRooms({ show, setShow, datarow }) {
             serviceType: room?.serviceType,
             amount: room?.amount,
           },
-        })) || []
+        })) || [],
     );
     let filterData = roomDataForCancle?.filter(
-      (room) => room?.available === false
+      (room) => room?.available === false,
     );
     setRoomDataForCancleFiltered(filterData);
   }, [datarow]);
 
   const singleRooms = watch("room");
-   ("singleRooms", singleRooms);
+  "singleRooms", singleRooms;
 
   // useEffect(() => {
   //   {{ }}
@@ -84,7 +107,7 @@ function CancelRooms({ show, setShow, datarow }) {
     const uid = booking?.uid;
     const allRoomsForUid =
       booking?.roomSearch?.roomSearchUnit?.map(
-        (r) => r?.roomUnit?.roomNumber
+        (r) => r?.roomUnit?.roomNumber,
       ) || [];
 
     if (
@@ -99,29 +122,66 @@ function CancelRooms({ show, setShow, datarow }) {
   const payload = {
     cancellationRequests,
   };
+
+  const roomNo = selectedData?.map((x) => {
+    return x?.roomNumber;
+  });
+
+  let isSelected;
+
+  if (roomDataForCancleFiltered?.length === selectedData?.length) {
+    isSelected = true;
+  } else {
+    isSelected = false;
+  }
+
+  const roomPayload = {
+    isAllSelected: isSelected,
+    roomNumbers: roomNo,
+  };
+  const selectedBranchRaw = localStorage.getItem("selectedBranch");
+  const selectedBranch = selectedBranchRaw
+    ? JSON.parse(selectedBranchRaw)
+    : null;
+
+  const buid = selectedBranch?.uid;
   const onSubmit = async (data) => {
     setErrorMsz("");
     if (cancellationRequests.length > 0) {
       setLoading(true);
-
+      let res;
       try {
-        const res = await useJwt.cancleRooms(datarow?.uid, payload);
-         (res);
+        if (dataFrom == "room") {
+          res = await useJwt.roomCancle(datarow?.uid, buid, roomPayload);
+        } else {
+          res = await useJwt.cancleRooms(datarow?.uid, payload);
+        }
+
         if (res?.data?.refundIssued === true) {
           setRoomDataForCancleFiltered((prev) =>
             prev.filter(
               (r) =>
                 !selectedData.some(
-                  (s) => s.uid === r.uid && s.roomNumber === r.roomNumber
-                )
-            )
+                  (s) => s.uid === r.uid && s.roomNumber === r.roomNumber,
+                ),
+            ),
           );
           setRefundModal(true);
           setShow(false);
           setSelectedData([]);
+        } else {
+          setShow(false);
+          setSelectedData([]);
+
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Room cancellation completed successfully.",
+            life: 2000,
+          });
         }
       } catch (error) {
-         (error);
+        error;
         const errMsz =
           error?.response?.data?.content ||
           "An error occurred while processing your request.";
@@ -148,6 +208,8 @@ function CancelRooms({ show, setShow, datarow }) {
 
   return (
     <>
+      <Toast ref={toast} />
+
       <Modal isOpen={refundModal} toggle={toggle} centered size="sm">
         <ModalHeader
           toggle={toggle}
@@ -240,7 +302,10 @@ function CancelRooms({ show, setShow, datarow }) {
           )}
         </Col>
         <ModalBody className="px-sm-2 mx-50 pb-5">
-          <h1 className="text-center mb-1">Room Cancellation for Event</h1>
+          <h1 className="text-center mb-1">
+            Room Cancellation for{" "}
+            {dataFrom === "room" ? "Room Management " : "Event "}
+          </h1>
           <Row
             tag="form"
             // className="gy-1 gx-2 mt-75"
@@ -297,21 +362,16 @@ function CancelRooms({ show, setShow, datarow }) {
                                     const checked = e.target.checked;
                                     field.onChange(checked);
                                     if (checked) {
-                                       (
-                                        "Row Selected Room Number:",
-                                        x.roomNumber
-                                      );
+                                      "Row Selected Room Number:", x.roomNumber;
 
                                       setSelectedData((prev) => [...prev, x]);
                                     } else {
-                                       (
-                                        "Row Unselected Room Number:",
-                                        x.roomNumber
-                                      );
+                                      "Row Unselected Room Number:",
+                                        x.roomNumber;
                                       setSelectedData((prev) => [
                                         ...prev.filter(
                                           (item) =>
-                                            item.roomNumber !== x.roomNumber
+                                            item.roomNumber !== x.roomNumber,
                                         ),
                                       ]);
                                     }

@@ -11,6 +11,7 @@ import {
   DollarSign,
   Eye,
   MoreVertical,
+  Trash,
 } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
@@ -29,9 +30,10 @@ import {
 } from "reactstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import CancleRooms from "../../event_management/cancleRooms/CancleRooms";
 
 const index = () => {
-    const ability = useContext(AbilityContext);
+  const ability = useContext(AbilityContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -55,7 +57,7 @@ const index = () => {
       setLoading(true);
       const { data } = await useJwt.bookingList();
       const { content } = data;
-       ("getAllEvents", content);
+      "getAllEvents", content;
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
@@ -131,6 +133,20 @@ const index = () => {
     error: "light-danger",
     pending: "light-warning",
   };
+
+
+  
+  const handleRoomCancle = (row) => {
+    // navigate("/addNew_room_booking", {
+    //   state: {
+    //     Rowdata: row,
+    //     uidOfEvent: row.uid,
+    //   },
+    // });
+    setDatarow(row);
+    setShow(true);
+  };
+
 
   const columns = [
     {
@@ -219,60 +235,70 @@ const index = () => {
         const [data, setData] = useState([]);
 
         const MySwal = withReactContent(Swal);
+       
+        const roomNo = row?.roomSearch?.roomSearchUnit?.map((x) => {
+          return x?.roomUnit?.roomNumber;
+        });
 
-        const handleDelete = async (uid) => {
-          // Show confirmation modal
-          return MySwal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            customClass: {
-              confirmButton: "btn btn-primary",
-              cancelButton: "btn btn-danger ms-1",
-            },
-            buttonsStyling: false,
-          }).then(async function (result) {
-            if (result.value) {
-              try {
-                // Call delete API
-                const response = await useJwt.DeleteVendorType(uid);
-                if (response?.status === 204) {
-                  setTableData((prevData) => {
-                    const newData = prevData.results.filter(
-                      (item) => item.uid !== uid
-                    );
-                    return {
-                      ...prevData,
-                      results: newData,
-                      count: prevData.count - 1, // Adjust the count if needed
-                    };
-                  });
-                  MySwal.fire({
-                    icon: "success",
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    customClass: {
-                      confirmButton: "btn btn-success",
-                    },
-                  });
-                }
-              } catch (error) {
-                console.error("Error deleting item:", error);
-              }
-            } else if (result.dismiss === MySwal.DismissReason.cancel) {
-              MySwal.fire({
-                title: "Cancelled",
-                text: "Your imaginary file is safe :)",
-                icon: "error",
-                customClass: {
-                  confirmButton: "btn btn-success",
-                },
-              });
-            }
-          });
-        };
+        
+
+        // const handleDelete = async (uid) => {
+        //   // Show confirmation modal
+        //   return MySwal.fire({
+        //     title: "Are you sure?",
+        //     text: "You won't be able to revert this!",
+        //     icon: "warning",
+        //     showCancelButton: true,
+        //     confirmButtonText: "Yes, delete it!",
+        //     customClass: {
+        //       confirmButton: "btn btn-primary",
+        //       cancelButton: "btn btn-danger ms-1",
+        //     },
+        //     buttonsStyling: false,
+        //   }).then(async function (result) {
+        //     if (result.value) {
+        //       try {
+        //         const payload = {
+        //           isAllSelected: false,
+        //           roomNumbers: [101],
+        //         };
+        //         // Call delete API
+        //         const response = await useJwt.cancleRooms(uid, payload);
+        //         if (response?.status === 204) {
+        //           setTableData((prevData) => {
+        //             const newData = prevData.results.filter(
+        //               (item) => item.uid !== uid,
+        //             );
+        //             return {
+        //               ...prevData,
+        //               results: newData,
+        //               count: prevData.count - 1, // Adjust the count if needed
+        //             };
+        //           });
+        //           MySwal.fire({
+        //             icon: "success",
+        //             title: "Deleted!",
+        //             text: "Your file has been deleted.",
+        //             customClass: {
+        //               confirmButton: "btn btn-success",
+        //             },
+        //           });
+        //         }
+        //       } catch (error) {
+        //         console.error("Error deleting item:", error);
+        //       }
+        //     } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        //       MySwal.fire({
+        //         title: "Cancelled",
+        //         text: "Your imaginary file is safe :)",
+        //         icon: "error",
+        //         customClass: {
+        //           confirmButton: "btn btn-success",
+        //         },
+        //       });
+        //     }
+        //   });
+        // };
         return (
           <>
             <UncontrolledDropdown>
@@ -311,10 +337,13 @@ const index = () => {
                     <span className="align-middle">View</span>
                   </DropdownItem>
                 ) : null}
-                {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
+
+                {ability.can("create", "room management") ? (
+                  <DropdownItem onClick={() => handleRoomCancle(row)}>
                     <Trash className="me-50" size={15} />{" "}
-                    <span className="align-middle">Delete</span>
-                  </DropdownItem> */}
+                    <span className="align-middle">Cancel Room</span>
+                  </DropdownItem>
+                ) : null}
               </DropdownMenu>
             </UncontrolledDropdown>
           </>
@@ -452,6 +481,8 @@ const index = () => {
               />
             </div>
           )}
+ <CancleRooms dataFrom={'room'} datarow={datarow} setShow={setShow} show={show} />
+
         </CardBody>
       </Card>
     </>

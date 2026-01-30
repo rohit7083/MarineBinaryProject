@@ -9,16 +9,16 @@ import * as XLSX from "xlsx";
 
 // ** Reactstrap Imports
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Input,
-    Label,
-    Row,
-    Spinner,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Input,
+  Label,
+  Row,
+  Spinner,
 } from "reactstrap";
 // ** Auth
 import useJwt from "@src/auth/jwt/useJwt";
@@ -63,6 +63,17 @@ const DynamicTable = () => {
     ),
   };
 
+  const memberNameColumn = {
+    sortable: true,
+    name: "Member Name",
+    minWidth: "225px",
+    selector: (row) => row.memberName,
+    cell: (row) => (
+      <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
+        {row.memberName || "-"}
+      </div>
+    ),
+  };
   const slipTypeColumn = {
     sortable: true,
     name: "Slip Type",
@@ -75,14 +86,15 @@ const DynamicTable = () => {
     ),
   };
 
-  const memberNameColumn = {
+
+    const LeaserTypeColumn = {
     sortable: true,
-    name: "Member Name",
+    name: "Lease Type",
     minWidth: "225px",
-    selector: (row) => row.memberName,
+    selector: (row) => row.paidIn,
     cell: (row) => (
-      <div className={row.isMonthTotalRow ? "fw-bold border-top" : "fw-bold"}>
-        {row.memberName || "-"}
+      <div className={row.paidIn ? "fw-bold border-top" : "fw-bold"}>
+        {row.paidIn || "-"}
       </div>
     ),
   };
@@ -109,17 +121,7 @@ const DynamicTable = () => {
       </div>
     ),
   };
-  const LeaserTypeColumn = {
-    sortable: true,
-    name: "Lease Type",
-    minWidth: "225px",
-    selector: (row) => row.paidIn,
-    cell: (row) => (
-      <div className={row.paidIn ? "fw-bold border-top" : "fw-bold"}>
-        {row.paidIn || "-"}
-      </div>
-    ),
-  };
+
 
   const rentalPriceColumn = {
     sortable: true,
@@ -156,12 +158,25 @@ const DynamicTable = () => {
   };
   const depositeColumn = {
     sortable: true,
-    name: "Deposite",
+    name: "Deposit",
     minWidth: "225px",
     selector: (row) => row.deposite,
     cell: (row) => (
       <div className={row.deposite ? "fw-bold border-top" : "fw-bold"}>
         {row.deposite || "-"}
+      </div>
+    ),
+  };
+
+
+    const discountColumn = {
+    sortable: true,
+    name: "Discount",
+    minWidth: "225px",
+    selector: (row) => row.discountAmount,
+    cell: (row) => (
+      <div className={row.discountAmount ? "fw-bold border-top" : "fw-bold"}>
+        {row.discountAmount || "-"}
       </div>
     ),
   };
@@ -399,7 +414,10 @@ const DynamicTable = () => {
           return searchFields.some(
             (field) =>
               field &&
-              field.toString().toLowerCase().includes(searchValue.toLowerCase())
+              field
+                .toString()
+                .toLowerCase()
+                .includes(searchValue.toLowerCase()),
           );
         });
       }
@@ -484,7 +502,7 @@ const DynamicTable = () => {
       // Write and download file
       XLSX.writeFile(wb, filename);
 
-       ("Excel file exported successfully!");
+      ("Excel file exported successfully!");
     } catch (error) {
       console.error("Error exporting to Excel:", error);
       alert("Error occurred while exporting to Excel. Please try again.");
@@ -498,7 +516,7 @@ const DynamicTable = () => {
     try {
       setLoading(true);
       const response = await useJwt.getViewRentRoll();
-       ("API Response:", response);
+      "API Response:", response;
       setSummerydata(response?.data || {});
       if (response?.data?.slips && response.data.slips.length > 0) {
         const slips = response.data.slips;
@@ -517,12 +535,12 @@ const DynamicTable = () => {
 
         // Convert Set to Array, sort chronologically, then reverse for latest first
         const sortedMonths = sortMonthsChronologically(
-          Array.from(allPaymentMonths)
+          Array.from(allPaymentMonths),
         );
         const months = sortedMonths.reverse(); // Reverse to show latest month first
         setPaymentMonths(months);
 
-         ("Payment Months (Latest First):", months);
+        "Payment Months (Latest First):", months;
 
         // Process slips to calculate amounts
         const processedSlips = slips.map((slip) => {
@@ -583,16 +601,16 @@ const DynamicTable = () => {
         const finalColumns = [
           indexColumn,
           staticColumn,
-          slipTypeColumn,
           memberNameColumn,
+          LeaserTypeColumn,
+          slipTypeColumn,
           LeasrStartColumn,
           leaserEndColumn,
-
           rentalPriceColumn,
+          discountColumn,
           marketRentalColumn,
           rentGapColumn,
           depositeColumn,
-          LeaserTypeColumn,
           ...dynamicColumns,
           totalPaidColumn,
           expectedAmountColumn,
@@ -608,6 +626,8 @@ const DynamicTable = () => {
           indexColumn,
           staticColumn,
           slipTypeColumn,
+          LeaserTypeColumn,
+          discountColumn,
           memberNameColumn,
           LeasrStartColumn,
           leaserEndColumn,
@@ -616,7 +636,6 @@ const DynamicTable = () => {
           marketRentalColumn,
           rentGapColumn,
           depositeColumn,
-          LeaserTypeColumn,
           totalPaidColumn,
           expectedAmountColumn,
           pendingAmountColumn,
@@ -633,6 +652,8 @@ const DynamicTable = () => {
         indexColumn,
         staticColumn,
         slipTypeColumn,
+        LeaserTypeColumn,
+        discountColumn,
         memberNameColumn,
         LeasrStartColumn,
         leaserEndColumn,
@@ -641,7 +662,6 @@ const DynamicTable = () => {
         marketRentalColumn,
         rentGapColumn,
         depositeColumn,
-        LeaserTypeColumn,
         totalPaidColumn,
         expectedAmountColumn,
         pendingAmountColumn,
@@ -676,7 +696,7 @@ const DynamicTable = () => {
         return searchFields.some(
           (field) =>
             field &&
-            field.toString().toLowerCase().includes(searchValue.toLowerCase())
+            field.toString().toLowerCase().includes(searchValue.toLowerCase()),
         );
       });
     }

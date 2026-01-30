@@ -29,11 +29,10 @@ import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
-function SlipDetailsForm({ assigned }) {
+function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
   let navigate = useNavigate();
   const [loadinng, setLoading] = useState(false);
   const toast = useRef(null);
-
   const location = useLocation();
   const uid = location.state?.uid || "";
 
@@ -189,6 +188,81 @@ function SlipDetailsForm({ assigned }) {
     }
   };
 
+  useEffect(() => {
+    if (fromData == "dashboard" && dataFromDashboard) {
+      setUserData({
+        slipName: dataFromDashboard?.slipName || "",
+        electric: dataFromDashboard?.electric || false,
+        water: dataFromDashboard?.water || false,
+        addOn: dataFromDashboard?.addOn || "",
+        marketRent: dataFromDashboard?.marketRent || "",
+        marketAnnualPrice: dataFromDashboard?.marketAnnualPrice || "",
+        marketMonthlyPrice: dataFromDashboard?.marketMonthlyPrice || "",
+        amps: dataFromDashboard?.amps || "",
+        overDueAmountFor7Days: dataFromDashboard?.overDueAmountFor7Days || "",
+        overDueChargesFor7Days: dataFromDashboard?.overDueChargesFor7Days || "",
+        overDueAmountFor15Days: dataFromDashboard?.overDueAmountFor15Days || "",
+        overDueChargesFor15Days:
+          dataFromDashboard?.overDueChargesFor15Days || "",
+        overDueAmountFor30Days: dataFromDashboard?.overDueAmountFor30Days || "",
+        overDueChargesFor30Days:
+          dataFromDashboard?.overDueChargesFor30Days || "",
+        overDueAmountForNotice: dataFromDashboard?.overDueAmountForNotice || "",
+        overDueChargesForNotice:
+          dataFromDashboard?.overDueChargesForNotice || "",
+        overDueAmountForAuction:
+          dataFromDashboard?.overDueAmountForAuction || "",
+        overDueChargesForAuction:
+          dataFromDashboard?.overDueChargesForAuction || "",
+      });
+
+      setDimensions(Object.keys(dataFromDashboard.dimensions) || []);
+      setUserData((pre) => ({ ...pre, ...dataFromDashboard.dimensions }));
+      setSelectedCategory({
+        value: dataFromDashboard.category.uid,
+        label: dataFromDashboard.category.shipTypeName,
+        dimensions: dataFromDashboard.dimensions,
+        overDueChargesFor7Days:
+          dataFromDashboard?.category?.overDueChargesFor7Days ?? "",
+        overDueAmountFor7Days:
+          dataFromDashboard?.category?.overDueAmountFor7Days ?? "",
+
+        overDueChargesFor15Days:
+          dataFromDashboard?.category?.overDueChargesFor15Days ?? "",
+        overDueAmountFor15Days:
+          dataFromDashboard?.category?.overDueAmountFor15Days ?? "",
+
+        overDueChargesFor30Days:
+          dataFromDashboard?.category?.overDueChargesFor30Days ?? "",
+        overDueAmountFor30Days:
+          dataFromDashboard?.category?.overDueAmountFor30Days ?? "",
+
+        overDueChargesForNotice:
+          dataFromDashboard?.category?.overDueChargesForNotice ?? "",
+        overDueAmountForNotice:
+          dataFromDashboard?.category?.overDueAmountForNotice ?? "",
+
+        overDueChargesForAuction:
+          dataFromDashboard?.category?.overDueChargesForAuction ?? "",
+        overDueAmountForAuction:
+          dataFromDashboard?.category?.overDueAmountForAuction ?? "",
+      });
+
+      setSelections({
+        overDueChargesFor7Days:
+          dataFromDashboard?.category?.overDueChargesFor7Days,
+        overDueChargesFor15Days:
+          dataFromDashboard?.category?.overDueChargesFor15Days,
+        overDueChargesFor30Days:
+          dataFromDashboard?.category?.overDueChargesFor30Days,
+        overDueChargesForNotice:
+          dataFromDashboard?.category?.overDueChargesForNotice,
+        overDueChargesForAuction:
+          dataFromDashboard?.category?.overDueChargesForAuction,
+      });
+    }
+  }, [dataFromDashboard]);
+
   const handleSubmit = async (e, data) => {
     e.preventDefault();
 
@@ -196,7 +270,7 @@ function SlipDetailsForm({ assigned }) {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-       ("Form submitted successfully:", { selections, userData });
+      "Form submitted successfully:", { selections, userData };
       try {
         const payload = {
           slipName: userData.slipName,
@@ -249,11 +323,12 @@ function SlipDetailsForm({ assigned }) {
           overDueChargesForAuction: selections.overDueChargesForAuction,
         };
 
-         ("payload", payload);
+        "payload", payload;
         setLoading(true);
 
-        if (uid) {
-          const updateRes = await useJwt.updateslip(uid, payload);
+        if (uid || (fromData === "dashboard" && dataFromDashboard?.uid)) {
+          const putUid=uid ? uid :dataFromDashboard?.uid;
+          const updateRes = await useJwt.updateslip(putUid, payload);
 
           if (updateRes.status === 200) {
             toast.current.show({
@@ -302,7 +377,7 @@ function SlipDetailsForm({ assigned }) {
         setLoading(false);
       }
     } else {
-       ("Validation failed. Please fix the errors.");
+      ("Validation failed. Please fix the errors.");
     }
   };
 
@@ -318,7 +393,7 @@ function SlipDetailsForm({ assigned }) {
       newErrors.slipName = "Slip Name should contain only letters and numbers";
     } else {
       const isDuplicate = slipNames.some(
-        (name) => name === userData.slipName && name !== currentSlipName
+        (name) => name === userData.slipName && name !== currentSlipName,
       );
 
       if (!uid && isDuplicate) {
@@ -461,7 +536,7 @@ function SlipDetailsForm({ assigned }) {
     try {
       const payload = {};
       const response = await useJwt.getslipCatogory(payload);
-       (response);
+      response;
 
       const options = response?.data?.content?.result.map((item) => ({
         value: item.uid,
@@ -489,11 +564,11 @@ function SlipDetailsForm({ assigned }) {
       const { response } = error;
       const { data, status } = response;
       if (status == 400) {
-         (data.content);
+        data.content;
       }
     }
 
-     ("Category", selectedCategory);
+    "Category", selectedCategory;
   };
 
   useEffect(() => {
@@ -501,16 +576,15 @@ function SlipDetailsForm({ assigned }) {
 
     if (uid) {
       setFetchLoader(true);
-
       const fetchDetailsForUpdate = async () => {
         try {
-                  const resp = await useJwt.getslip(uid);
+          const resp = await useJwt.getslip(uid);
 
           const raw = resp.data.content?.result;
           const result = Array.isArray(raw) ? raw[0] : raw;
 
           setSelectedSlip(result);
-           (result);
+          result;
           if (result) {
             if (result && result.uid === uid) {
               setUserData({
@@ -805,7 +879,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={(e) => {
                       let validatedDimension = e.target.value.replace(
                         /[^0-9.]/g,
-                        ""
+                        "",
                       );
                       setUserData((prev) => ({
                         ...prev,
@@ -976,7 +1050,7 @@ function SlipDetailsForm({ assigned }) {
             </Row>
             <Row className="mb-1">
               <Label sm="3" for="marketAnnualPrice">
-                 Annual Price
+                Annual Price
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Col sm="9">
@@ -1004,7 +1078,7 @@ function SlipDetailsForm({ assigned }) {
 
             <Row className="mb-1">
               <Label sm="3" for="marketMonthlyPrice">
-                 Monthly Price
+                Monthly Price
                 <span style={{ color: "red" }}>*</span>
               </Label>
               <Col sm="9">
@@ -1048,7 +1122,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={() =>
                       handleSelectTypeChange(
                         "overDueChargesFor7Days",
-                        "Percentage"
+                        "Percentage",
                       )
                     }
                     invalid={!!errors.overDueChargesFor7Days}
@@ -1067,7 +1141,7 @@ function SlipDetailsForm({ assigned }) {
                     style={{ opacity: 1 }}
                     name="overDueChargesFor7Days"
                     value="Flat"
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     id="Flat"
                     checked={selections.overDueChargesFor7Days === "Flat"}
                     onChange={() =>
@@ -1122,7 +1196,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={() =>
                       handleSelectTypeChange(
                         "overDueChargesFor15Days",
-                        "Percentage"
+                        "Percentage",
                       )
                     }
                     name="overDueChargesFor15Days"
@@ -1140,7 +1214,7 @@ function SlipDetailsForm({ assigned }) {
                   <Input
                     type="radio"
                     style={{ opacity: 1 }}
-                    disabled={View}
+                    disabled={assigned ? true : View}
                     checked={selections.overDueChargesFor15Days === "Flat"}
                     onChange={() =>
                       handleSelectTypeChange("overDueChargesFor15Days", "Flat")
@@ -1195,7 +1269,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={() =>
                       handleSelectTypeChange(
                         "overDueChargesFor30Days",
-                        "Percentage"
+                        "Percentage",
                       )
                     }
                     name="overDueChargesFor30Days"
@@ -1268,7 +1342,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={() =>
                       handleSelectTypeChange(
                         "overDueChargesForNotice",
-                        "Percentage"
+                        "Percentage",
                       )
                     }
                     name="overDueChargesForNotice"
@@ -1341,7 +1415,7 @@ function SlipDetailsForm({ assigned }) {
                     onChange={() =>
                       handleSelectTypeChange(
                         "overDueChargesForAuction",
-                        "Percentage"
+                        "Percentage",
                       )
                     }
                     name="overDueChargesForAuction"

@@ -2038,7 +2038,9 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       >
                         <div className="details-title">Remaining Amount</div>
                         <div className="detail-amt">
-                          <strong>$ {handleRemaining || "0"} </strong>
+<strong>
+  ${Number.isFinite(handleRemaining) ? handleRemaining.toFixed(2) : "0.00"}
+</strong>
                         </div>
                       </li>
                     </>

@@ -793,8 +793,11 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
     startIndex + itemsPerPage,
   );
 
-  const handleView = () => {
-    navigate("/marin/slip-management");
+  const handleView = (boat) => {
+    navigate("/marin/slip-management",{
+      state: { boatDetails: boat , from:"dashboard" },
+
+    });
   };
 
   const handleAdd = (boat) => {
@@ -997,7 +1000,7 @@ function ParkBoat({ allBoatData, loading, setLoading, onclickName }) {
                                     cursor: "pointer",
                                     marginTop: "41px",
                                   }}
-                                  onClick={handleView}
+                                  onClick={(e)=>handleView(boat)}
                                 />
                               ) : (
                                 <img

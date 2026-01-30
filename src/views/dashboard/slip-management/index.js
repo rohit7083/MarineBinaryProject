@@ -17,12 +17,18 @@ const TabsCentered = () => {
     vessel: {},
     payment: {},
   });
+
+  
   const [fetchLoader, setFetchLoader] = useState(false);
   const location = useLocation();
   const uid = location?.state?.uid;
-  const allData = location?.state?.slipData;
+  const dataFromDashboard = location?.state?.boatDetails;
+  const allData = location?.state?.slipData || dataFromDashboard;
   const [active, setActive] = useState("1");
-   (location);
+  
+
+  const fromData = location?.state?.from;
+  console.log("dataFromDashboard", dataFromDashboard);
 
   useEffect(() => {
     if (allData) setSlipData(allData);
@@ -100,13 +106,20 @@ const TabsCentered = () => {
         <TabPane tabId="1">
           <SlipDetails
             fetchLoader={fetchLoader}
-            // assigned={SlipData.isAssigned}
+            assigned={SlipData.isAssigned || dataFromDashboard?.isAssigned}
+            dataFromDashboard={dataFromDashboard}
+            fromData={fromData}
           />
         </TabPane>
 
         <TabPane tabId="2">
           {/* <MemberInfo  */}
-          <MemberIndex SlipData={SlipData} fetchLoader={fetchLoader} />
+          <MemberIndex
+            SlipData={SlipData}
+            fetchLoader={fetchLoader}
+            fromData={fromData}
+            dataFromDashboard={dataFromDashboard}
+          />
         </TabPane>
 
         <TabPane tabId="3">
@@ -114,7 +127,7 @@ const TabsCentered = () => {
         </TabPane>
 
         <TabPane tabId="4">
-          <OtherPayment  SlipData={SlipData}/>
+          <OtherPayment SlipData={SlipData} />
         </TabPane>
         <TabPane tabId="5">
           <ViewDocuments slipData={SlipData} />

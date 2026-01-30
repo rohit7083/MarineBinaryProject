@@ -1,4 +1,8 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import {
+  handleStoreCompany,
+  handleStoreLogo,
+} from "@src/redux/authentication.js";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
@@ -20,7 +24,6 @@ import {
   Row,
   Spinner,
 } from "reactstrap";
-import { handleStoreLogo } from "../../../redux/authentication";
 export default function CompanySettings() {
   // const []=useState(false);
   const toast = useRef(null);
@@ -56,9 +59,14 @@ export default function CompanySettings() {
   useEffect(() => {
     const handleGetSettings = async () => {
       try {
+        // debugger;
         setResetLoading(true);
         const res = await useJwt.getGeneralSettings();
         setRetriveData(res?.data?.content?.result[0]);
+        // localStorage.setItem(
+        //   "companyDetails",
+        //   JSON.stringify(res?.data?.content?.result[0])
+        // )
       } catch (error) {
         console.log(error);
       } finally {
@@ -73,115 +81,9 @@ export default function CompanySettings() {
       reset(retriveAllData);
     }
   }, [retriveAllData]);
-  //   const onSubmit = async (data) => {
-  //     setSaveMessage(null);
-  //     console.log(data);
-  // debugger;
-  //     const formDataToSend = new FormData();
-  //     formDataToSend.append("companyName", data.companyName);
-  //     formDataToSend.append("companyShortName", data.companyShortName);
-  //     formDataToSend.append("companyPhone", data.companyPhone);
-  //     // formDataToSend.append("companyLogo", data.companyLogo );
-  //     if (isLogoChanged && data.companyLogo instanceof File) {
-  //   formDataToSend.append("companyLogo", data.companyLogo);
-  // }
-
-  //     formDataToSend.append("address", data.address);
-  //     formDataToSend.append("companyEmail", data.companyEmail);
-  //     formDataToSend.append("city", data.city);
-  //     formDataToSend.append("state", data.state);
-  //     formDataToSend.append("country", data.country);
-  //     formDataToSend.append("postalCode", data.postalCode);
-
-  //     try {
-  //       let successFlag = 0;
-  //       if (retriveAllData) {
-  //         const updateRes = await useJwt.updateGeneralsetting(
-  //           retriveAllData?.uid,
-  //           formDataToSend,
-  //         );
-  //         console.log(updateRes);
-  //         if (updateRes?.status === 200) {
-  //           successFlag = 200;
-  //           toast.current.show({
-  //             severity: "success",
-  //             summary: "Success",
-  //             detail: "General settings Updated successfully.",
-  //             life: 2000,
-  //           });
-  //           setTimeout(() => {
-  //             navigate("/dashbord");
-  //           }, 2000);
-  //         }
-  //       } else {
-  //         const res = await useJwt.createSetting(formDataToSend);
-  //         console.log(res);
-  //         if (res?.status === 201) {
-  //           successFlag = 201;
-  //           toast.current.show({
-  //             severity: "success",
-  //             summary: "Success",
-  //             detail: "General settings created successfully.",
-  //             life: 2000,
-  //           });
-  //           setTimeout(() => {
-  //             navigate("/dashbord");
-  //           }, 2000);
-  //         }
-  //       }
-
-  //       if (successFlag == 200 || successFlag == 201) {
-  //         const companyDetails = JSON.parse(
-  //           localStorage.getItem("companyDetails"),
-  //         );
-  //         const uid = companyDetails?.uid;
-
-  //         function blobToBase64(blob) {
-  //           return new Promise((resolve) => {
-  //             const reader = new FileReader();
-  //             reader.onloadend = () => resolve(reader.result);
-  //             reader.readAsDataURL(blob);
-  //           });
-  //         }
-  //         if (!uid) return;
-
-  //         let objectUrl;
-  //         let cancelled = false;
-
-  //         try {
-  //           const logoRes = await useJwt.getLogo(uid);
-  //           if (cancelled) return;
-  //           const blob = logoRes.data;
-  //           objectUrl = URL.createObjectURL(blob);
-  //           const base64 = await blobToBase64(blob);
-  //           dispatch(handleStoreLogo(base64));
-  //         } catch (err) {
-  //           if (!cancelled) console.error(err);
-  //         }
-  //       }
-
-  //       return () => {
-  //         cancelled = true;
-  //         if (objectUrl) URL.revokeObjectURL(objectUrl);
-  //       };
-  //     } catch (error) {
-  //       console.log(error);
-  //       if (error?.response) {
-  //         const content = error?.response?.data?.content;
-
-  //         toast.current.show({
-  //           severity: "error",
-  //           summary: "Failed",
-  //           detail: content || "Failed to create general settings.",
-  //           life: 3000,
-  //         });
-  //       }
-  //     }
-  //   };
 
   const onSubmit = async (data) => {
     setSaveMessage(null);
-
     const formDataToSend = new FormData();
     formDataToSend.append("companyName", data.companyName);
     formDataToSend.append("companyShortName", data.companyShortName);
@@ -195,13 +97,8 @@ export default function CompanySettings() {
 
     try {
       let successFlag = 0;
-
       const companyDetails = JSON.parse(localStorage.getItem("companyDetails"));
       const uid = companyDetails?.uid;
-
-      // =========================
-      // LOGO HANDLING (CRITICAL)
-      // =========================
 
       // if (retriveAllData) {
       // UPDATE CASE
@@ -220,11 +117,31 @@ export default function CompanySettings() {
 
         formDataToSend.append("companyLogo", file);
       }
+      let updateRes;
+      if (retriveAllData?.uid) {
+        updateRes = await useJwt.updateGeneralsetting(
+          retriveAllData.uid,
+          formDataToSend,
+        );
+      } else {
+        if (data.companyLogo instanceof File) {
+          formDataToSend.append("companyLogo", data.companyLogo);
+        }
 
-      const updateRes = await useJwt.updateGeneralsetting(
-        retriveAllData.uid,
-        formDataToSend,
-      );
+        const res = await useJwt.createSetting(formDataToSend);
+
+        if (res?.status === 201) {
+          successFlag = 201;
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "General settings created successfully.",
+            life: 2000,
+          });
+
+          setTimeout(() => navigate("/dashbord"), 2000);
+        }
+      }
 
       if (updateRes?.status === 200) {
         successFlag = 200;
@@ -266,6 +183,21 @@ export default function CompanySettings() {
 
       if (successFlag === 200 || successFlag === 201) {
         if (!uid) return;
+        dispatch(
+          handleStoreCompany({
+            uid: companyDetails?.uid, // ← force it
+            ...companyDetails,
+            companyName: data.companyName,
+            companyShortName: data.companyShortName,
+            companyPhone: data.companyPhone,
+            address: data.address,
+            companyEmail: data.companyEmail,
+            city: data.city,
+            state: data.state,
+            country: data.country,
+            postalCode: data.postalCode,
+          }),
+        );
 
         const logoRes = await useJwt.getLogo(uid);
         const blob = logoRes.data;
@@ -454,6 +386,12 @@ export default function CompanySettings() {
                     control={control}
                     rules={{
                       required: !retriveAllData && "Company logo is required",
+
+                      // ✅ ADD THIS
+                      validate: (file) =>
+                        !file ||
+                        file.size <= 150 * 1024 ||
+                        "Image size must be 150KB or less",
                     }}
                     render={({ field }) => (
                       <Input
@@ -476,7 +414,11 @@ export default function CompanySettings() {
                           field.onChange(file);
 
                           if (file) {
-                            setIsLogoChanged(true); // 🔥 key line
+                            if (file.size > 150 * 1024) {
+                              setLogoPreview(null);
+                              return;
+                            }
+                            setIsLogoChanged(true);
                             const reader = new FileReader();
                             reader.onloadend = () =>
                               setLogoPreview(reader.result);
