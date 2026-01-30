@@ -314,6 +314,8 @@ export default {
   getMails:"/manualEmail",
 
   getSlipCount:"/subscription/getSlipCount",
+
+  roomCancle:"/booking/cancel/",
   
   
 };

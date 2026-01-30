@@ -1,7 +1,6 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-
 // axios.defaults.baseURL = "http://192.168.1.9:8000"; // locktrust
 
 axios.defaults.baseURL = "https://locktrustdev.com:8443";
@@ -100,7 +99,7 @@ export default class JwtService {
 
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // ** Add request/response interceptor
@@ -137,7 +136,7 @@ export default class JwtService {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -185,7 +184,7 @@ export default class JwtService {
   }
   onAccessTokenFetched(accessToken) {
     this.subscribers = this.subscribers.filter((callback) =>
-      callback(accessToken)
+      callback(accessToken),
     );
   }
 
@@ -481,13 +480,13 @@ export default class JwtService {
     try {
       const response = await axios.post(
         `${this.jwtConfig.verifyOTP}${token}`,
-        ...data
+        ...data,
       );
       return response.data;
     } catch (error) {
       console.error(
         "OTP Verification Failed:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
       throw error;
     }
@@ -731,7 +730,7 @@ export default class JwtService {
   ExtendDate(uid, branchUid, ...args) {
     return axios.post(
       `${this.jwtConfig.ExtendDate}${uid}/${branchUid}`,
-      ...args
+      ...args,
     );
   }
   ExtendDataUpdate(...args) {
@@ -776,7 +775,7 @@ export default class JwtService {
       ...args,
       {
         skipBranch: true,
-      }
+      },
     );
   }
   updateProductSpecification(uid, ...args) {
@@ -785,7 +784,7 @@ export default class JwtService {
       ...args,
       {
         skipBranch: true,
-      }
+      },
     );
   }
 
@@ -862,7 +861,7 @@ export default class JwtService {
 
   deleteCartProduct(uid, vuid) {
     return axios.delete(
-      `${this.jwtConfig.deleteCartProduct}${uid}/items/${vuid}`
+      `${this.jwtConfig.deleteCartProduct}${uid}/items/${vuid}`,
     );
   }
   updatedQty(params) {
@@ -939,7 +938,7 @@ export default class JwtService {
   decodeQrToken(token, ...args) {
     return axios.get(
       `${this.jwtConfig.decriptQrCodeToeknEndPoint}${token}`,
-      ...args
+      ...args,
     );
   }
 
@@ -964,8 +963,8 @@ export default class JwtService {
       `${
         this.jwtConfig.sucessPaymentCharts
       }success-payments/${buid}?startDate=${encodeURIComponent(
-        startDate
-      )}&endDate=${encodeURIComponent(endDate)}`
+        startDate,
+      )}&endDate=${encodeURIComponent(endDate)}`,
     );
   }
 
@@ -996,7 +995,7 @@ export default class JwtService {
 
   report(buid, startDate, endDate) {
     return axios.get(
-      `${this.jwtConfig.report}/${buid}?fromDate=${startDate}&toDate=${endDate}`
+      `${this.jwtConfig.report}/${buid}?fromDate=${startDate}&toDate=${endDate}`,
     );
   }
 
@@ -1017,7 +1016,7 @@ export default class JwtService {
       ...args,
       {
         skipBranch: true,
-      }
+      },
     );
   }
 
@@ -1115,16 +1114,15 @@ export default class JwtService {
 
   retriveRoom(uid, ...args) {
     console.log(args);
-    
-    return axios.get(`${this.jwtConfig.retriveRoom}${uid}`,{
-      appendBranchUid:true,
+
+    return axios.get(`${this.jwtConfig.retriveRoom}${uid}`, {
+      appendBranchUid: true,
     });
   }
 
   retriveEvent(uid) {
-    return axios.get(`${this.jwtConfig.retriveEvent}${uid}`,{
-      appendBranchUid:true,
-
+    return axios.get(`${this.jwtConfig.retriveEvent}${uid}`, {
+      appendBranchUid: true,
     });
   }
 
@@ -1240,36 +1238,40 @@ export default class JwtService {
     return axios.get(`${this.jwtConfig.getGeneralSettings}`);
   }
 
-   updateGeneralsetting(uid, ...args) {
+  updateGeneralsetting(uid, ...args) {
     return axios.put(`${this.jwtConfig.updateGeneralsetting}${uid}`, ...args, {
       skipBranch: true,
     });
   }
 
-   createMannualEmail(...args) {
+  createMannualEmail(...args) {
     return axios.post(`${this.jwtConfig.createMannualEmail}`, ...args);
   }
 
-    getLogoAndName(userUid) {
+  getLogoAndName(userUid) {
     return axios.get(`${this.jwtConfig.getLogoAndName}${userUid}/`);
   }
   getMails() {
     return axios.get(`${this.jwtConfig.getMails}`);
   }
-  
-   getLogo(logoUId) {
+
+  getLogo(logoUId) {
     return axios.get(`${this.jwtConfig.getLogo}${logoUId}`, {
       responseType: "blob", // important for binary data
     });
   }
 
-     getSlipCount(...args) {
+  getSlipCount(...args) {
     return axios.post(`${this.jwtConfig.getSlipCount}`, ...args);
   }
-
+  roomCancle(uid, buid, ...args) {
+    return axios.post(`${this.jwtConfig.roomCancle}${uid}/${buid}`, ...args, {
+      skipBranch: true,
+    });
+  }
   getDyanimicInfoOFSubscription(moduleName) {
     return axios.get(
-      `${this.jwtConfig.getDyanimicInfoOFSubscription}${moduleName}`
+      `${this.jwtConfig.getDyanimicInfoOFSubscription}${moduleName}`,
     );
   }
 }
