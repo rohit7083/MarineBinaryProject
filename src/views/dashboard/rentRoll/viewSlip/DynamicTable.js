@@ -86,8 +86,7 @@ const DynamicTable = () => {
     ),
   };
 
-
-    const LeaserTypeColumn = {
+  const LeaserTypeColumn = {
     sortable: true,
     name: "Lease Type",
     minWidth: "225px",
@@ -121,7 +120,6 @@ const DynamicTable = () => {
       </div>
     ),
   };
-
 
   const rentalPriceColumn = {
     sortable: true,
@@ -168,8 +166,7 @@ const DynamicTable = () => {
     ),
   };
 
-
-    const discountColumn = {
+  const discountColumn = {
     sortable: true,
     name: "Discount",
     minWidth: "225px",
@@ -683,10 +680,12 @@ const DynamicTable = () => {
     if (searchValue) {
       filteredData = filteredData.filter((item) => {
         if (item.isMonthTotalRow) return false;
-
         const searchFields = [
           item.slipName,
-          item.full_name,
+          item.memberName,
+          item.paidIn,
+          item.slipType,
+
           item.totalPaid?.toString(),
           item.expectedAmount?.toString(),
           item.pendingAmount?.toString(),
