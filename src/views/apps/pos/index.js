@@ -8,13 +8,13 @@ import SearchBar from "./SearchBar";
 import { useDispatch, useSelector } from "react-redux";
 
 // ** Actions
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchProducts } from "./store";
 
 const index = () => {
   const dispatch = useDispatch();
   const { items, loading, error } = useSelector((state) => state.productSlice);
-
+const [resetAll,setResetAll]=useState(false);
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);

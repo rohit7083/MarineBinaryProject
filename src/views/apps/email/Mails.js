@@ -347,7 +347,6 @@ const Mails = ({
     important: "warning",
     private: "danger",
   };
-  console.log(mails);
   const renderMails = () => {
     if (!mails?.length) {
       return (

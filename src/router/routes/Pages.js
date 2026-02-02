@@ -6,6 +6,8 @@ const ApiKey = lazy(() => import("../../views/pages/api-key"));
 const Profile = lazy(() => import("../../views/pages/profile"));
 const Pricing = lazy(() => import("../../views/pages/pricing"));
 const Settings = lazy(() => import("../../views/pages/settings"));
+const PaymentSetting = lazy(() => import("../../views/pages/paymentSetting"));
+
 const License = lazy(() => import("../../views/pages/license"));
 const Error = lazy(() => import("../../views/pages/misc/Error"));
 const BlogList = lazy(() => import("../../views/pages/blog/list"));
@@ -35,6 +37,11 @@ const PagesRoutes = [
   {
     path: "/pages/setting",
     element: <Settings />,
+  },
+
+  {
+    path: "/pages/paymentSetting",
+    element: <PaymentSetting />,
   },
 
   {

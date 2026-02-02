@@ -79,7 +79,6 @@ const ComposePopup = ({
     try {
       setLoading(true);
       const res = await useJwt.createMannualEmail(payload);
-      console.log(res);
       if (res?.status === 201) {
         fetchMail();
         toast.current.show({

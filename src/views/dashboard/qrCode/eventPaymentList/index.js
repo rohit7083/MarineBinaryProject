@@ -22,19 +22,19 @@ import * as XLSX from "xlsx";
 
 // ** Reactstrap Imports
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    Input,
-    Label,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
-    Spinner,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+  Spinner,
 } from "reactstrap";
 
 // ** Auth
@@ -481,7 +481,7 @@ function Index() {
   const fetchData = async (page = 1, perPage = rowsPerPage, q = "") => {
     try {
       setLoading(true);
-      const response = await useJwt.getEventQRPaymentList();
+      const response = await useJwt.getAllEventQRCode();
       const result = response?.data?.content?.result || [];
 
       // Flatten the data since each event can have multiple payments

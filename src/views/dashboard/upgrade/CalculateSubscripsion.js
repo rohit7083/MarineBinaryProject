@@ -24,7 +24,6 @@ const SubscriptionConfirmModal = ({
   existingCreditCard,
   planData,
 }) => {
-  console.log(modal);
   const navigate = useNavigate();
   const toast = useRef(null);
   const [loading, setLoading] = useState(false);

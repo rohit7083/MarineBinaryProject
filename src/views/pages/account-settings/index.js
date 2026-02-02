@@ -32,7 +32,6 @@ const AccountSettings = () => {
       .get("/account-setting/data")
       .then((response) => setData(response.data));
   }, []);
-console.log(data);
 
   return (
     <Fragment>

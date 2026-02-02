@@ -8,14 +8,14 @@ import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { DownloadCloud, Eye, FileText, Upload, X } from "react-feather";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardTitle,
-    Col,
-    ListGroup,
-    ListGroupItem,
-    Spinner,
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  ListGroup,
+  ListGroupItem,
+  Spinner,
 } from "reactstrap";
 
 const DocumentUploader = ({
@@ -117,7 +117,6 @@ const DocumentUploader = ({
     formData.append("documentName", name);
     formData.append("documentFile", file);
     for (let [key, value] of formData.entries()) {
-      console.table(key, value);
     }
     try {
       if (documentUid) {

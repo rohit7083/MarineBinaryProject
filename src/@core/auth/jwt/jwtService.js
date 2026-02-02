@@ -1113,7 +1113,6 @@ export default class JwtService {
   }
 
   retriveRoom(uid, ...args) {
-    console.log(args);
 
     return axios.get(`${this.jwtConfig.retriveRoom}${uid}`, {
       appendBranchUid: true,

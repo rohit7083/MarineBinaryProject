@@ -38,7 +38,6 @@ const PricingCards = () => {
           subscriptionID: plan?.id,
         });
 
-        console.log(slipCountPostData);
       } catch (error) {
         console.error("Error fetching slip count:", error);
         if (error?.response) {

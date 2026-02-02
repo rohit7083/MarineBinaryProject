@@ -114,7 +114,6 @@ export default function BranchSelector() {
     const handleGetlogoAndName = async () => {
       try {
         const res = await useJwt.getLogoAndName(userUidLocal);
-        console.log(res);
         setLogoNameInfo(res?.data?.content);
         dispatch(handleStoreCompany(res?.data?.content));
       } catch (error) {

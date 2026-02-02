@@ -43,7 +43,6 @@ const Index = () => {
   const [allData, setAllData] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-console.log("filteredData",filteredData);
 
   const reportOptions = [
     { value: "all", label: "All Reports", icon: "📑" },

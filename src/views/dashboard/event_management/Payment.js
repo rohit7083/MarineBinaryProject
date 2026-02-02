@@ -41,7 +41,6 @@ import Qr_Payment from "./Qr_Payment";
 function Payment({ stepper, allEventData, updateData, paymentData }) {
   let memberId =
     updateData?.listData?.Rowdata?.member?.id || allEventData?.memberId;
-
   const {
     remainingAmount,
     totalAmount,
@@ -77,7 +76,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     updateData?.data?.finalPayble -
     (updateData?.listData?.Rowdata?.advancePaymentAmout ||
       updateData?.listData?.Rowdata?.totalAmount);
-   ("AmtDiffernce", AmtDiffernce);
+  "AmtDiffernce", AmtDiffernce;
 
   let finalAmtRemain;
 
@@ -136,7 +135,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     if (selectedYearValue === currentYear) {
       const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
       const filteredMonths = months.filter(
-        (month) => month.value >= currentMonth
+        (month) => month.value >= currentMonth,
       );
       setAvailableMonths(filteredMonths);
     } else {
@@ -153,20 +152,26 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     if (
       updateData?.listData?.Rowdata?.remainingAmount >= 0 &&
       updateData?.listData?.uid &&
-      paymentData?.step !== 2
+      paymentData?.step !== 2 &&
+      paymentData?.step != undefined
     ) {
       setValue("finalAmount", AmtDiffernce);
+    } else if (
+      paymentData?.edit == "event" &&
+      paymentData?.Rowdata?.remainingAmount
+    ) {
+      setValue("finalAmount", paymentData?.Rowdata?.remainingAmount);
     } else if (paymentData?.step === 2) {
       setValue(
         "finalAmount",
-        Number(paymentData?.Rowdata?.remainingAmount || 0)
+        Number(paymentData?.Rowdata?.remainingAmount || 0),
       );
     } else {
       if (allEventData?.totalAmount) {
         setValue("finalAmount", allEventData?.totalAmount);
       }
     }
-  }, [allEventData, updateData, setValue, AmtDiffernce]);
+  }, [allEventData, updateData, setValue, AmtDiffernce, paymentData]);
   const MySwal = withReactContent(Swal);
 
   const [showQrModal, setShowQrModal] = useState(false);
@@ -430,7 +435,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
   const PayMode = watch("paymentMode");
 
   const onSubmit = async (data) => {
-     ("from the paymentdata", data);
+    "from the paymentdata", data;
     setErrorMsz("");
     const otpArray = data.otp || [];
     const pin = otpArray?.join("");
@@ -447,7 +452,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       }
       formData.append(
         "event.calculatedTax",
-        updateData?.data?.calculatedTax || 0
+        updateData?.data?.calculatedTax || 0,
       );
 
       if (data?.advancePayment !== undefined) {
@@ -474,7 +479,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
             formData.append("event.discountType", mode);
             formData.append(
               "event.discountedFinalAmount",
-              mode === "Percentage" ? discountPercentage : discountAmt
+              mode === "Percentage" ? discountPercentage : discountAmt,
             );
           }
         }
@@ -484,7 +489,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
     if (updateData?.listData?.uid && paymentData?.step !== 2) {
       formData.append(
         "event.calculatedTax",
-        updateData?.data?.calculatedTax || 0
+        updateData?.data?.calculatedTax || 0,
       );
 
       if (data?.advance !== undefined) {
@@ -500,51 +505,51 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
       formData.append("event.eventName", updateData?.data?.eventName);
       formData.append(
         "event.eventDescription",
-        updateData?.data?.eventDescription
+        updateData?.data?.eventDescription,
       );
       formData.append(
         "event.eventStartDate",
-        formatDate(updateData?.data?.startDateTime, "YYYY-MM-DD")
+        formatDate(updateData?.data?.startDateTime, "YYYY-MM-DD"),
       );
       formData.append(
         "event.eventEndDate",
-        formatDate(updateData?.data?.startDateTime, "YYYY-MM-DD")
+        formatDate(updateData?.data?.startDateTime, "YYYY-MM-DD"),
       );
       formData.append(
         "event.eventStartTime",
-        formatDate(updateData?.data.startDateTime, "HH:mm")
+        formatDate(updateData?.data.startDateTime, "HH:mm"),
       );
       formData.append(
         "event.eventEndTime",
-        formatDate(updateData?.data.endDateTime, "HH:mm")
+        formatDate(updateData?.data.endDateTime, "HH:mm"),
       );
       formData.append("event.amount", updateData?.data?.totalAmount);
       formData.append("event.isExtraStaff", updateData?.data?.isExtraStaff);
       if (updateData?.data?.extraNoOfStaff != null) {
         formData.append(
           "event.extraNoOfStaff",
-          updateData?.data?.extraNoOfStaff
+          updateData?.data?.extraNoOfStaff,
         );
       }
       if (updateData?.data?.extraNoOfStaffAmount != null) {
         formData.append(
           "event.extraNoOfStaffAmount",
-          updateData?.data?.extraNoOfStaffAmount
+          updateData?.data?.extraNoOfStaffAmount,
         );
       }
       formData.append("event.totalAmount", updateData?.data?.finalPayble);
       formData.append(
         "event.isRecurringEvent",
-        updateData?.data?.isRecurringEvent
+        updateData?.data?.isRecurringEvent,
       );
       formData.append("event.venue.uid", updateData?.data?.venue?.value);
       formData.append(
         "event.eventType.uid",
-        updateData?.data?.eventType?.value
+        updateData?.data?.eventType?.value,
       );
       formData.append(
         "event.member.uid",
-        updateData?.data?.selectedMember?.value
+        updateData?.data?.selectedMember?.value,
       );
 
       // formData.append("payment.finalPayment", AmtDiffernce);
@@ -575,7 +580,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           if (data.cardSwipeTransactionId) {
             formData.append(
               "payment.cardSwipeTransactionId",
-              data.cardSwipeTransactionId
+              data.cardSwipeTransactionId,
             );
           }
           break;
@@ -618,7 +623,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           break;
 
         default:
-           ("Choose a valid payment method");
+          "Choose a valid payment method";
       }
     }
     if (AmtDiffernce > 0 && updateData?.listData?.uid) {
@@ -634,9 +639,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
           //   stepper.next();
           // }, 4000);
         }
-         
       } catch (error) {
-         (error);
+        error;
         toast.current.show({
           severity: "error",
           summary: "Payment Failed",
@@ -656,16 +660,15 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
         const res = await useJwt.payment(formData);
         let transactionID = res?.data?.transaction_id;
         setTransactionId(transactionID);
-         (res);
+        res;
 
         const { qr_code_base64 } = res?.data;
         setQr(qr_code_base64);
         if (qr_code_base64) {
           setShowQrModal(true);
         }
-        
+
         if (res?.data?.status === "success") {
-        
           if (PayMode?.value == 7) {
             MySwal.fire({
               title: "Payment Link Sent Successfully",
@@ -676,7 +679,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
               },
               buttonsStyling: false,
             });
-          } else if(PayMode?.value != 8) {
+          } else if (PayMode?.value != 8) {
             setSuccessModal(true);
             // setTimeout(() => {
             //   setSuccessModal(false);
@@ -1067,7 +1070,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                                 // If value is entered, focus on the next input
                                 if (value && index < 5) {
                                   const nextInput = document.getElementById(
-                                    `otp-input-${index + 1}`
+                                    `otp-input-${index + 1}`,
                                   );
                                   if (nextInput) {
                                     nextInput.focus();
@@ -1082,7 +1085,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                                   index > 0
                                 ) {
                                   const prevInput = document.getElementById(
-                                    `otp-input-${index - 1}`
+                                    `otp-input-${index - 1}`,
                                   );
                                   if (prevInput) {
                                     prevInput.focus();
@@ -1189,7 +1192,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           isClearable
                           // Set the selected value
                           value={years.find(
-                            (option) => option.value === field.value
+                            (option) => option.value === field.value,
                           )}
                           onChange={(selectedOption) => {
                             field.onChange(selectedOption?.value || "");
@@ -1229,7 +1232,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           classNamePrefix="select"
                           isClearable
                           value={availableMonths.find(
-                            (option) => option.value === field.value
+                            (option) => option.value === field.value,
                           )}
                           // Extract the `value` on change
                           onChange={(selectedOption) =>
@@ -1268,7 +1271,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           onChange={(e) => {
                             const numericValue = e.target.value.replace(
                               /\D/g,
-                              ""
+                              "",
                             );
                             if (numericValue.length <= getCvvLength(cardType)) {
                               field.onChange(numericValue);
@@ -1301,7 +1304,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                             const onlyAlphabetsAndSpace =
                               e.target.value.replace(
                                 /[^a-zA-Z\s]/g, // allows A-Z, a-z, and spaces
-                                ""
+                                "",
                               );
                             field.onChange(onlyAlphabetsAndSpace);
                           }}
@@ -1347,7 +1350,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                             const onlyAlphabetsAndSpace =
                               e.target.value.replace(
                                 /[^a-zA-Z\s]/g, // allows A-Z, a-z, and spaces
-                                ""
+                                "",
                               );
                             field.onChange(onlyAlphabetsAndSpace);
                           }}
@@ -1383,7 +1386,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                             const onlyAlphabetsAndSpace =
                               e.target.value.replace(
                                 /[^a-zA-Z\s]/g, // allows A-Z, a-z, and spaces
-                                ""
+                                "",
                               );
                             field.onChange(onlyAlphabetsAndSpace);
                           }}
@@ -1659,7 +1662,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           onChange={(e) => {
                             const onlyAlphabets = e.target.value.replace(
                               /[^a-zA-Z]/g,
-                              ""
+                              "",
                             );
                             field.onChange(onlyAlphabets);
                           }}
@@ -1705,7 +1708,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           onChange={(e) => {
                             const onlyAlphabets = e.target.value.replace(
                               /[^a-zA-Z]/g,
-                              ""
+                              "",
                             );
                             field.onChange(onlyAlphabets);
                           }}
@@ -1860,7 +1863,7 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                             // Allow only letters and numbers
                             const alphanumericValue = e.target.value.replace(
                               /[^a-zA-Z0-9]/g,
-                              ""
+                              "",
                             );
                             field.onChange(alphanumericValue);
                           }}
@@ -1942,6 +1945,9 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     className="list-unstyled price-details"
                     style={{ padding: 0 }}
                   >
+              
+              {paymentData?.edit !=  "event" && paymentData?.step != 2 && (
+                <>
                     <li
                       className="price-detail"
                       style={{
@@ -1952,14 +1958,14 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     >
                       <div className="details-title"> Amount</div>
                       <div className="detail-amt">
-                       <strong>
-  $
-  {Number(
-    (handleFinal - allEventData?.calculatedTax ??
-      watch("finalAmount"))
-  ).toFixed(2)}
-</strong>
-
+                        {/* <strong> */}$
+                        {Number(
+                          allEventData?.amount
+                            ? allEventData?.amount
+                            : handleFinal - allEventData?.calculatedTax ??
+                                watch("finalAmount"),
+                        ).toFixed(2)}
+                        {/* </strong> */}
                       </div>
                     </li>
 
@@ -1972,11 +1978,13 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                     >
                       <div className="details-title">Tax</div>
                       <div className="detail-amt">
-                        <strong>+ ${allEventData?.calculatedTax || 0} </strong>{" "}
+                        {/* <strong> */}+ ${allEventData?.calculatedTax || 0}
+                        {/* </strong>{" "} */}
                         <hr />
                       </div>
                     </li>
-
+                    </>
+)}
                     <li
                       className="price-detail "
                       style={{
@@ -2004,8 +2012,8 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                           <div className="detail-amt discount-amt text-danger">
                             {isDiscount ? isDiscount : "0"}{" "}
                             {mode === "Percentage"
-                              ? `-$ ${discountPercentage.toFixed(2)}`
-                              : `-$ ${discountAmt}`}
+                              ? `-$ ${discountPercentage.toFixed(2) || 0}`
+                              : `-$ ${discountAmt || 0}`}
                           </div>
                         </>
                       )}
@@ -2038,9 +2046,12 @@ function Payment({ stepper, allEventData, updateData, paymentData }) {
                       >
                         <div className="details-title">Remaining Amount</div>
                         <div className="detail-amt">
-<strong>
-  ${Number.isFinite(handleRemaining) ? handleRemaining.toFixed(2) : "0.00"}
-</strong>
+                          <strong>
+                            $
+                            {Number.isFinite(handleRemaining)
+                              ? handleRemaining.toFixed(2)
+                              : "0.00"}
+                          </strong>
                         </div>
                       </li>
                     </>

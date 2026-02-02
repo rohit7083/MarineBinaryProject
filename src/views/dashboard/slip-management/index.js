@@ -28,7 +28,6 @@ const TabsCentered = () => {
   
 
   const fromData = location?.state?.from;
-  console.log("dataFromDashboard", dataFromDashboard);
 
   useEffect(() => {
     if (allData) setSlipData(allData);

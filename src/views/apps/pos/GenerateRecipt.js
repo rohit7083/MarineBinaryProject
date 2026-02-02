@@ -5,6 +5,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 
 import { Mail } from "lucide-react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -19,7 +20,7 @@ import {
   Table,
 } from "reactstrap";
 
-const PaymentReceiptModal = ({
+const  PaymentReceiptModal = ({
   showModal,
   txnId,
   setShowModal,
@@ -32,6 +33,7 @@ const PaymentReceiptModal = ({
     (store) => store.cartSlice,
   );
 
+  const navigate=useNavigate();
   const [invoiceLoading, setInvoiceLoading] = useState(false);
 const companyDetails= localStorage.getItem("companyDetails");
 const  selectedBranch=localStorage.getItem("selectedBranch");
@@ -98,7 +100,9 @@ const companyAddress=companyDetailsRoq?.address || selectedBranch?.address || ""
     total: `${billing?.total}`,
   };
 
-  const toggle = () => setShowModal(!showModal);
+  const toggle = () =>{ setShowModal(!showModal)
+   
+  };
 
   const handlePrint = () => window.print();
 
@@ -287,7 +291,7 @@ const companyAddress=companyDetailsRoq?.address || selectedBranch?.address || ""
             disabled={downLoader}
             onClick={handleDownload}
           >
-            {downLoader ? <SyncLoader size={10} /> : "Download"}
+            {downLoader ? <SyncLoader size={8} /> : "Download"}
           </Button>
           <Button color="success" size="sm" onClick={handlePrint}>
             Print

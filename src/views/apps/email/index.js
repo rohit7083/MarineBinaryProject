@@ -141,7 +141,6 @@ const EmailApp = () => {
   const fetchMail = async () => {
     try {
       const res = await useJwt.getMails();
-      console.log(res);
       setMail(res.data?.content?.result || []);
     } catch (err) {
       console.error("Failed to load mail", err);

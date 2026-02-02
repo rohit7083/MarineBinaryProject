@@ -127,7 +127,6 @@ const selectedFields = {
 
 // --- Excel HTML Export (downloads as .xls) ---
 export const exportToExcelHTML = (data, filename = "report.xls") => {
-  console.log("data", data);
 
   if (!data || !data.length) {
     console.warn("No data to export.");

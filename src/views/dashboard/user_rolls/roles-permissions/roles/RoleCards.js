@@ -64,7 +64,6 @@ const AddRoles = ({ props, refreshTable }) => {
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
-  console.log("permissionList", permissionList);
 
   // ** Hooks
   const {
@@ -229,7 +228,6 @@ const AddRoles = ({ props, refreshTable }) => {
     })();
   }, [props, fetchTrigger]);
 
-            console.log("permissionList",permissionList);
 
   const onReset = () => {
     toggle();

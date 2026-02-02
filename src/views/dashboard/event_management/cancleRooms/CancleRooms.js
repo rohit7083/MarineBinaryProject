@@ -27,7 +27,6 @@ function CancelRooms({ show, setShow, datarow, dataFrom }) {
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [refundModal, setRefundModal] = useState(false);
-  console.log("selectedData", selectedData);
   const [errorMessage, setErrorMsz] = useState("");
   const toggle = () => setRefundModal(!refundModal);
   const [roomDataForCancleFiltered, setRoomDataForCancleFiltered] = useState(
@@ -35,7 +34,6 @@ function CancelRooms({ show, setShow, datarow, dataFrom }) {
   );
   const toast = useRef(null);
 
-  console.log("roomDataForCancleFiltered", roomDataForCancleFiltered);
 
   const normalizeToArray = (value) => {
     if (Array.isArray(value)) return value;

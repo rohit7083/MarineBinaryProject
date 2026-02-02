@@ -5,17 +5,17 @@ import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    InputGroup,
-    Label,
-    Row,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  InputGroup,
+  Label,
+  Row,
 } from "reactstrap";
 
 // ** Auth
@@ -187,7 +187,6 @@ const MultipleColumnForm = () => {
   // Function to send data to API
   // Function to send data to API
   const sendToAPI = async (apiData) => {
-    console.table(apiData);
     try {
       setIsLoading(true);
 
@@ -269,7 +268,6 @@ const MultipleColumnForm = () => {
   };
 
   const onSubmit = (data) => {
-    console.table(data);
 
     // Transform data to API format
     const apiData = transformDataForAPI(data);

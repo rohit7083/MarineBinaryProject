@@ -19,7 +19,6 @@ function index() {
       const isOffline = res?.data?.content?.result.filter((offline) => {
         return offline.isOffline === true;
       });
-      console.log("isOffline", isOffline);
 
       setIsOfflineCount(isOffline?.length);
 
@@ -32,7 +31,6 @@ function index() {
         (boat) => boat.isAssigned,
       ).length;
 
-      console.log("empty", empty);
 
       setEmptySlip({ empty, occupied });
 
