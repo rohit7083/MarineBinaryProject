@@ -316,7 +316,7 @@ export default {
   getSlipCount:"/subscription/getSlipCount",
 
   roomCancle:"/booking/cancel/",
-  
-  
+  updateProfile:"/sub_user/profile/"
+
 };
   

@@ -330,12 +330,12 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
     //minWidth: "150px",
     selector: (row) => (row.water ? "Yes" : "No"),
   },
-  {
-    sortable: true,
-    name: "AMPS",
-    //minWidth: "150px",
-    selector: (row) => row.amps,
-  },
+  // {
+  //   sortable: true,
+  //   name: "AMPS",
+  //   //minWidth: "150px",
+  //   selector: (row) => row.amps,
+  // },
   {
     sortable: true,
     name: " Add-on",
@@ -429,17 +429,22 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
 
           {/* Edit Button */}
            {ability.can("update", "slip management") ? (
-          <Link
+         
+         <Link
+
             style={{ margin: "0.5rem" }}
             to={`/dashboard/slip-details`}
-            state={{ uid: row.uid }}
+            state={{ uid: row.uid , allData:row }}
           >
+            
             <span>
               <Edit2 className="font-medium-3 text-body" />
             </span>
           </Link>
           
            ): null}
+          {console.log(row)
+          }
           {ability.can("delete", "slip management") ? (
             <Link style={{ margin: "0.5rem" }}>
               {" "}

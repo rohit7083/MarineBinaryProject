@@ -5,13 +5,11 @@ import {
   HomeIcon,
   QrCode,
   Settings,
-  UserRoundSearch
+  UserRoundSearch,
 } from "lucide-react";
 import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
 export default [
-
-  
   // {
   //   id: 'dashboards',
   //   title: 'Dashboards',
@@ -142,46 +140,53 @@ export default [
   {
     id: "Invoice Management",
     title: "Invoice Management",
-    icon: <img width="20" className="me-1" height="20" src="https://img.icons8.com/ios/50/check--v1.png" alt="check--v1"/>,
+    icon: (
+      <img
+        width="20"
+        className="me-1"
+        height="20"
+        src="https://img.icons8.com/ios/50/check--v1.png"
+        alt="check--v1"
+      />
+    ),
     // navLink: '/dashboard/create-user',
     badge: "light-warning",
-     action: "view",
-        resource: "user management",
+    action: "view",
+    resource: "user management",
     // badgeText: '2',
     children: [
-    
-  // {
-  //   id: "Manage Invoice ",
-  //   title: "Manage Invoice",
-  //   icon: <Circle size={12} />,
-  //   navLink: "/dashboard/invoice_management/manageInvoice",
-  //    action: "view",
-  //   resource: "user management",
-  // },
-  {
-    id: "Invoice Setting",
-    title: "Invoice Setting",
-    icon: <Circle size={12} />,
-    navLink: "/dashboard/invoice_management/invoice_setting",
-     action: "view",
-    resource: "user management",
-  },
-    {
+      // {
+      //   id: "Manage Invoice ",
+      //   title: "Manage Invoice",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/invoice_management/manageInvoice",
+      //    action: "view",
+      //   resource: "user management",
+      // },
+      {
+        id: "Invoice Setting",
+        title: "Invoice Setting",
+        icon: <Circle size={12} />,
+        navLink: "/dashboard/invoice_management/invoice_setting",
+        action: "view",
+        resource: "user management",
+      },
+      {
         id: "Invoice",
         title: "Generate Invoice",
         icon: <Circle size={12} />,
         navLink: "/dashboard/invoice_management/invoice/add",
-         action: "view",
+        action: "view",
         resource: "user management",
       },
-  // {
-  //   id: "Recurring Invoice ",
-  //   title: "Recurring Invoice ",
-  //   icon: <Circle size={12} />,
-  //   // navLink: '/dashboard/invoice_management/'
-  //    action: "view",
-  //   resource: "user management",
-  // },
+      // {
+      //   id: "Recurring Invoice ",
+      //   title: "Recurring Invoice ",
+      //   icon: <Circle size={12} />,
+      //   // navLink: '/dashboard/invoice_management/'
+      //    action: "view",
+      //   resource: "user management",
+      // },
     ],
   },
 
@@ -387,15 +392,28 @@ export default [
         action: "view",
         resource: "rent roll",
       },
-      {
-        id: "Inverse Slip",
-        title: "Inverse Rent Roll",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/rentroll/inverse_slip",
-        action: "view",
-        resource: "rent roll",
-      },
+      // {
+      //   id: "Inverse Slip",
+      //   title: "Inverse Rent Roll",
+      //   icon: <Circle size={12} />,
+      //   navLink: "/dashboard/rentroll/inverse_slip",
+      //   action: "view",
+      //   resource: "rent roll",
+      // },
     ],
+  },
+
+  {
+    id: "Inverse Slip",
+    title: "Inverse Rent Roll",
+    icon: <Circle size={12} />,
+    navLink: "/dashboard/rentroll/inverse_slip",
+    action: "view",
+    resource: "inverse rent roll",
+    badge: "light-warning",
+    // isLocked: "🔒",
+
+    // disabled: true,
   },
 
   {
@@ -479,14 +497,7 @@ export default [
         action: "view",
         resource: "accounting",
       },
-      {
-        id: "Ledger",
-        title: "Ledger",
-        icon: <Circle size={12} />,
-        navLink: "/accounting/Ledger",
-        action: "view",
-        resource: "accounting",
-      },
+      
       // {
       //   id: "Purchase ",
       //   title: "Purchase ",
@@ -497,6 +508,16 @@ export default [
       // },
     ],
   },
+
+
+  {
+        id: "Ledger",
+        title: "Ledger",
+        icon: <Circle size={12} />,
+        navLink: "/accounting/Ledger",
+        action: "view",
+        resource: "ledger",
+      },
 
   {
     id: "CRM Setting",

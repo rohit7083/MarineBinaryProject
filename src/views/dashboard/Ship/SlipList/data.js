@@ -92,6 +92,12 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
         : "N/A",
   },
 
+   {
+    sortable: true,
+    name: "Market Rent",
+    minWidth: "50px",
+    selector: (row) => row.marketRent,
+  },
   {
     name: "Actions",
     sortable: true,

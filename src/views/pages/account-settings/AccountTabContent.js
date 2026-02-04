@@ -1,135 +1,51 @@
 // ** React Imports
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 // ** Third Party Components
-import Select from "react-select";
-import Cleave from "cleave.js/react";
-import { useForm, Controller } from "react-hook-form";
+import useJwt from "@src/auth/jwt/useJwt";
 import "cleave.js/dist/addons/cleave-phone.us";
-
-// ** Reactstrap Imports
+import Cleave from "cleave.js/react";
+import { Toast } from "primereact/toast";
+import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import {
-  Row,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
   Col,
   Form,
-  Card,
+  FormFeedback,
   Input,
   Label,
-  Button,
-  CardBody,
-  CardTitle,
-  CardHeader,
-  FormFeedback,
+  Row,
+  Spinner,
 } from "reactstrap";
 
 // ** Utils
-import { selectThemeColors } from "@utils";
-
-// ** Demo Components
-import DeleteAccount from "./DeleteAccount";
-
-const countryOptions = [
-  { value: "uk", label: "UK" },
-  { value: "usa", label: "USA" },
-  { value: "france", label: "France" },
-  { value: "russia", label: "Russia" },
-  { value: "canada", label: "Canada" },
-];
-
-const languageOptions = [
-  { value: "english", label: "English" },
-  { value: "spanish", label: "Spanish" },
-  { value: "french", label: "French" },
-  { value: "german", label: "German" },
-  { value: "dutch", label: "Dutch" },
-];
-
-const currencyOptions = [
-  { value: "usd", label: "USD" },
-  { value: "euro", label: "Euro" },
-  { value: "pound", label: "Pound" },
-  { value: "bitcoin", label: "Bitcoin" },
-];
-
-const timeZoneOptions = [
-  {
-    value: "(GMT-12:00) International Date Line West",
-    label: "(GMT-12:00) International Date Line West",
-  },
-  {
-    value: "(GMT-11:00) Midway Island, Samoa",
-    label: "(GMT-11:00) Midway Island, Samoa",
-  },
-  { value: "(GMT-10:00) Hawaii", label: "(GMT-10:00) Hawaii" },
-  { value: "(GMT-09:00) Alaska", label: "(GMT-09:00) Alaska" },
-  {
-    value: "(GMT-08:00) Pacific Time (US & Canada)",
-    label: "(GMT-08:00) Pacific Time (US & Canada)",
-  },
-  {
-    value: "(GMT-08:00) Tijuana, Baja California",
-    label: "(GMT-08:00) Tijuana, Baja California",
-  },
-  { value: "(GMT-07:00) Arizona", label: "(GMT-07:00) Arizona" },
-  {
-    value: "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-    label: "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-  },
-  {
-    value: "(GMT-07:00) Mountain Time (US & Canada)",
-    label: "(GMT-07:00) Mountain Time (US & Canada)",
-  },
-  {
-    value: "(GMT-06:00) Central America",
-    label: "(GMT-06:00) Central America",
-  },
-  {
-    value: "(GMT-06:00) Central Time (US & Canada)",
-    label: "(GMT-06:00) Central Time (US & Canada)",
-  },
-  {
-    value: "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
-    label: "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
-  },
-  { value: "(GMT-06:00) Saskatchewan", label: "(GMT-06:00) Saskatchewan" },
-  {
-    value: "(GMT-05:00) Bogota, Lima, Quito, Rio Branco",
-    label: "(GMT-05:00) Bogota, Lima, Quito, Rio Branco",
-  },
-  {
-    value: "(GMT-05:00) Eastern Time (US & Canada)",
-    label: "(GMT-05:00) Eastern Time (US & Canada)",
-  },
-  { value: "(GMT-05:00) Indiana (East)", label: "(GMT-05:00) Indiana (East)" },
-  {
-    value: "(GMT-04:00) Atlantic Time (Canada)",
-    label: "(GMT-04:00) Atlantic Time (Canada)",
-  },
-  {
-    value: "(GMT-04:00) Caracas, La Paz",
-    label: "(GMT-04:00) Caracas, La Paz",
-  },
-  { value: "(GMT-04:00) Manaus", label: "(GMT-04:00) Manaus" },
-  { value: "(GMT-04:00) Santiago", label: "(GMT-04:00) Santiago" },
-  { value: "(GMT-03:30) Newfoundland", label: "(GMT-03:30) Newfoundland" },
-];
 
 const AccountTabs = ({ data }) => {
-  // ** Hooks
-  const defaultValues = {
-    lastName: "",
-    firstName: data.fullName.split(" ")[0],
-  };
   const {
     control,
-    setError,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      avatar: null,
+    },
+  });
 
   // ** States
   const [avatar, setAvatar] = useState(data.avatar ? data.avatar : "");
-
+  const toast = useRef(null);
+  const navigate=useNavigate();
+  const [loading, setLoading] = useState(false);
   const onChange = (e) => {
     const reader = new FileReader(),
       files = e.target.files;
@@ -139,241 +55,267 @@ const AccountTabs = ({ data }) => {
     reader.readAsDataURL(files[0]);
   };
 
-  const onSubmit = (data) => {
-    if (Object.values(data).every((field) => field.length > 0)) {
-      return null;
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: "manual",
-          });
-        }
+  const onSubmit = async (onSubmitData) => {
+    console.log("Submitted Data:", onSubmitData);
+    setLoading(true);
+  
+    const formData = new FormData();
+    formData.append("firstName", onSubmitData?.firstName);
+    formData.append("lastName", onSubmitData?.lastName);
+    formData.append("emailId", onSubmitData?.email);
+    formData.append("mobileNumber", onSubmitData?.phone);
+
+    try {
+      const res = await useJwt.updateProfile(data?.uid, formData);
+      console.log(res);
+      if (res?.status == 201) {
+        const updatedData = {
+          ...data,
+          firstName: onSubmitData?.firstName,
+          lastName: onSubmitData?.lastName,
+        };
+
+        localStorage.setItem("userData", JSON.stringify(updatedData));
+        toast.current.show({
+          severity: "success",
+          summary: " Successful",
+          detail: "Profile Details Updated Successfully",
+          life: 2000,
+        });
+        setTimeout(() => {
+          navigate("/dashbord");
+          // window.location.reload();
+        }, 2000);
       }
+    } catch (error) {
+      console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Failed",
+        detail: `${error?.response?.content}`,
+        life: 3000,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
+  const sanitizeName = (value) => value.replace(/[^a-zA-Z\s'-]/g, "");
+  const sanitizeEmail = (value) =>
+    value.replace(/[^a-zA-Z0-9@._-]/g, "").toLowerCase();
+  const sanitizePhone = (value) => value.replace(/\D/g, "");
+  const sanitizeGeneric = (value) => value.replace(/[<>]/g, ""); // basic XSS prevention
+
+  useEffect(() => {
+    if (data) {
+      reset({
+        firstName: data.firstName || "",
+        lastName: data.lastName || "",
+        email: data.emailId || "",
+        phone: data.mobileNum || "",
+      });
+    }
+  }, [data]);
+
+  const handleAvatarPreview = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => setAvatar(reader.result);
+    reader.readAsDataURL(file);
+  };
+
   const handleImgReset = () => {
-    setAvatar("@src/assets/images/avatars/avatar-blank.png");
+    setAvatar(defaultAvatar);
   };
 
   return (
     <Fragment>
       <Card>
+        <Toast ref={toast} />
+
         <CardHeader className="border-bottom">
-          <CardTitle tag="h4">Profile Details</CardTitle>
+          <CardTitle tag="h4">Profile Details </CardTitle>
         </CardHeader>
         <CardBody className="py-2 my-25">
-          <div className="d-flex">
-            <div className="me-25">
-              <img
-                className="rounded me-50"
-                src={avatar}
-                alt="Generic placeholder image"
-                height="100"
-                width="100"
-              />
-            </div>
-            <div className="d-flex align-items-end mt-75 ms-1">
-              <div>
-                <Button
-                  tag={Label}
-                  className="mb-75 me-75"
-                  size="sm"
-                  color="primary"
-                >
-                  Upload
-                  <Input
-                    type="file"
-                    onChange={onChange}
-                    hidden
-                    accept="image/*"
-                  />
-                </Button>
-                <Button
-                  className="mb-75"
-                  color="secondary"
-                  size="sm"
-                  outline
-                  onClick={handleImgReset}
-                >
-                  Reset
-                </Button>
-                <p className="mb-0">
-                  Allowed JPG, GIF or PNG. Max size of 800kB
-                </p>
-              </div>
-            </div>
-          </div>
-          <Form className="mt-2 pt-50" onSubmit={handleSubmit(onSubmit)}>
+          {/* //upload profile  */}
+          <Form onSubmit={handleSubmit(onSubmit)}>
             <Row>
+              <div className="d-flex">
+                {/* <div className="me-25">
+    <img
+      className="rounded me-50"
+      src={avatar}
+      alt="Avatar"
+      height="100"
+      width="100"
+    />
+  </div> */}
+
+                {/* <div className="d-flex align-items-end mt-75 ms-1">
+    <div>
+      <Controller
+        name="avatar"
+        control={control}
+        render={({ field: { onChange } }) => (
+          <Button
+            tag={Label}
+            className="mb-75 me-75"
+            size="sm"
+            color="primary"
+          >
+            Upload
+            <Input
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0]
+                if (!file) return
+
+                onChange(file)       // RHF value
+                handleAvatarPreview(file) // your preview logic
+              }}
+            />
+          </Button>
+        )}
+      />
+
+      <Button
+        className="mb-75"
+        color="secondary"
+        size="sm"
+        outline
+        onClick={() => {
+          setValue('avatar', null)
+          handleImgReset()
+        }}
+      >
+        Reset
+      </Button>
+
+      <p className="mb-0">
+        Allowed JPG, GIF or PNG. Max size of 800kB
+      </p>
+    </div>
+  </div> */}
+              </div>
+
+              {/* First Name */}
               <Col sm="6" className="mb-1">
-                <Label className="form-label" for="firstName">
-                  First Name
-                </Label>
+                <Label for="firstName">First Name</Label>
                 <Controller
                   name="firstName"
                   control={control}
+                  rules={{ required: "First name is required" }}
                   render={({ field }) => (
                     <Input
-                      id="firstName"
-                      placeholder="John"
-                      invalid={errors.firstName && true}
                       {...field}
+                      value={field.value || ""}
+                      invalid={!!errors.firstName}
+                      onChange={(e) =>
+                        field.onChange(sanitizeName(e.target.value))
+                      }
                     />
                   )}
                 />
-                {errors && errors.firstName && (
-                  <FormFeedback>Please enter a valid First Name</FormFeedback>
-                )}
+
+                <FormFeedback>{errors.firstName?.message}</FormFeedback>
               </Col>
+
+              {/* Last Name */}
               <Col sm="6" className="mb-1">
-                <Label className="form-label" for="lastName">
-                  Last Name
-                </Label>
+                <Label for="lastName">Last Name</Label>
                 <Controller
                   name="lastName"
                   control={control}
+                  rules={{ required: "Last name is required" }}
                   render={({ field }) => (
                     <Input
-                      id="lastName"
-                      placeholder="Doe"
-                      invalid={errors.lastName && true}
                       {...field}
+                      value={field.value || ""}
+                      invalid={!!errors.lastName}
+                      onChange={(e) =>
+                        field.onChange(sanitizeName(e.target.value))
+                      }
                     />
                   )}
                 />
-                {errors.lastName && (
-                  <FormFeedback>Please enter a valid Last Name</FormFeedback>
-                )}
+
+                <FormFeedback>{errors.lastName?.message}</FormFeedback>
               </Col>
+
+              {/* Email */}
               <Col sm="6" className="mb-1">
-                <Label className="form-label" for="emailInput">
-                  E-mail
-                </Label>
-                <Input
-                  id="emailInput"
-                  type="email"
+                <Label for="email">Email</Label>
+                <Controller
                   name="email"
-                  placeholder="Email"
-                  defaultValue={data.email}
+                  control={control}
+                  rules={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^\S+@\S+$/i,
+                      message: "Invalid email address",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      type="email"
+                      {...field}
+                      disabled={true}
+                      value={field.value || ""}
+                      invalid={!!errors.email}
+                      onChange={(e) =>
+                        field.onChange(sanitizeEmail(e.target.value))
+                      }
+                    />
+                  )}
                 />
+
+                <FormFeedback>{errors.email?.message}</FormFeedback>
               </Col>
+
+              {/* Phone Number (Cleave) */}
               <Col sm="6" className="mb-1">
-                <Label className="form-label" for="company">
-                  Company
-                </Label>
-                <Input
-                  defaultValue={data.company}
-                  id="company"
-                  name="company"
-                  placeholder="Company Name"
+                <Label for="phone">Phone Number</Label>
+                <Controller
+                  name="phone"
+                  control={control}
+                  rules={{ required: "Phone number is required" }}
+                  render={({ field }) => (
+                    <Cleave
+                      {...field}
+                      disabled={true}
+                      value={field.value || ""}
+                      className={`form-control ${
+                        errors.phone ? "is-invalid" : ""
+                      }`}
+                      options={{ phone: true, phoneRegionCode: "US" }}
+                      onChange={(e) =>
+                        field.onChange(sanitizePhone(e.target.value))
+                      }
+                    />
+                  )}
                 />
+
+                <FormFeedback>{errors.phone?.message}</FormFeedback>
               </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="phNumber">
-                  Phone Number
-                </Label>
-                <Cleave
-                  id="phNumber"
-                  name="phNumber"
-                  className="form-control"
-                  placeholder="1 234 567 8900"
-                  options={{ phone: true, phoneRegionCode: "US" }}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="address">
-                  Address
-                </Label>
-                <Input
-                  id="address"
-                  name="address"
-                  placeholder="12, Business Park"
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="accountState">
-                  State
-                </Label>
-                <Input
-                  id="accountState"
-                  name="state"
-                  placeholder="California"
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="zipCode">
-                  Zip Code
-                </Label>
-                <Input
-                  id="zipCode"
-                  name="zipCode"
-                  placeholder="123456"
-                  maxLength="6"
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="country">
-                  Country
-                </Label>
-                <Select
-                  id="country"
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                  options={countryOptions}
-                  theme={selectThemeColors}
-                  defaultValue={countryOptions[0]}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="language">
-                  Language
-                </Label>
-                <Select
-                  id="language"
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                  options={languageOptions}
-                  theme={selectThemeColors}
-                  defaultValue={languageOptions[0]}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="timeZone">
-                  Timezone
-                </Label>
-                <Select
-                  id="timeZone"
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                  options={timeZoneOptions}
-                  theme={selectThemeColors}
-                  defaultValue={timeZoneOptions[0]}
-                />
-              </Col>
-              <Col sm="6" className="mb-1">
-                <Label className="form-label" for="currency">
-                  Currency
-                </Label>
-                <Select
-                  id="currency"
-                  isClearable={false}
-                  className="react-select"
-                  classNamePrefix="select"
-                  options={currencyOptions}
-                  theme={selectThemeColors}
-                  defaultValue={currencyOptions[0]}
-                />
-              </Col>
-              <Col className="mt-2" sm="12">
-                <Button type="submit" className="me-1" color="primary">
-                  Save changes
+
+              {/* Buttons */}
+              <Col sm="12" className="mt-2">
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={loading}
+                  className="me-1"
+                >
+                  {loading ? (
+                    <>
+                      <Spinner size={"sm"} /> Updating...{" "}
+                    </>
+                  ) : (
+                    "Save changes"
+                  )}
                 </Button>
-                <Button color="secondary" outline>
+                <Button type="reset" outline color="secondary">
                   Discard
                 </Button>
               </Col>
@@ -381,7 +323,7 @@ const AccountTabs = ({ data }) => {
           </Form>
         </CardBody>
       </Card>
-      <DeleteAccount />
+      {/* <DeleteAccount /> */}
     </Fragment>
   );
 };

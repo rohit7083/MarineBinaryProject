@@ -17,8 +17,16 @@ const MarinaStatistics = ({ summeryData }) => {
     potentialFullRevenue = 0,
     deposite = 0,
     totalRevenue: totalRevenueFromSummery = 0,
-
+    lostRevenueVacant,
+    nonRevenueSlips = 0,
+    discountImpact = 0,
+    marketPriceRentGap = 0,
+    lostRevenueNonRevenue = 0,
+    totalPotentialRevenue = 0,
+    revenueEfficiencyRatio = 0,
+    totalLostPotentialRevenue = 0,
     // deposite=0,
+    expectedAnnualizedRevenue = 0,
   } = summeryData;
 
   const { totalRevenue = 0 } = summeryData?.slips?.[0] || {};
@@ -40,22 +48,49 @@ const MarinaStatistics = ({ summeryData }) => {
     { label: "Vacant Slips", value: vacantSlips },
   ];
 
-//   const slipInformationData = [
-//     { label: "Grand Total", value: actualRevenueCollected },
-//     {
-//       label: "Total Deposit",
-//       value: deposite,
-//     },
-//     // { label: "", value: totalslip },
+  const revenuDetails1 = [
+    { label: "Vacant Slips", value: vacantSlips },
+    { label: "Lost Revenue (Vacant)", value: lostRevenueVacant },
+    {
+      label: "Unpaid Slips",
+      value: deposite,
+    },
 
-//     { label: "Total Slips", value: totalslip },
-//     { label: "Occupied Slips (Physical)", value: occupied },
-//     { label: "Paid Slips (Financial)", value: paidSlips },
-//     { label: "Vacant Slips", value: vacantSlips },
-//     { label: "Actual Revenue Collected", value: totalRevenue },
-//     { label: "Occupancy Rate (Physical)", value: vacantSlips },
-//     { label: "Occupancy Rate (Financial)", value: financialOccupancyRate },
-//   ];
+    { label: "Non-Revenue Slips ", value: nonRevenueSlips },
+    { label: "Lost Revenue (Non-Revenue) ", value: lostRevenueNonRevenue },
+    { label: "Discount Impact", value: discountImpact },
+    { label: "Market Price Rent Gap", value: marketPriceRentGap },
+    { label: "TOTAL LOST POTENTIAL REVENUE", value: totalLostPotentialRevenue },
+  ];
+
+  const revenuDetails2 = [
+    { label: "Vacant Slips", value: vacantSlips },
+
+    { label: "Lost Revenue (Vacant)", value: lostRevenueVacant },
+    {
+      label: "Unpaid Slips",
+      value: deposite,
+    },
+
+    { label: "Non-Revenue Slips ", value: nonRevenueSlips },
+    { label: "Lost Revenue (Non-Revenue) ", value: lostRevenueNonRevenue },
+    { label: "Discount Impact ", value: discountImpact },
+    { label: "Market Price Rent Gap", value: marketPriceRentGap },
+    {
+      label: "TOTAL LOST POTENTIAL REVENUE (Market Price)",
+      value: totalLostPotentialRevenue,
+    },
+  ];
+
+  const revenueEfficiencySnapshot = [
+    { label: "Total Potential Revenue", value: totalPotentialRevenue },
+    {
+      label: "Expected Annualized Revenue",
+      value: expectedAnnualizedRevenue,
+    },
+
+    { label: "Revenue Efficiency Ratio ", value: revenueEfficiencyRatio },
+  ];
 
   return (
     <div className="p-0">
@@ -104,16 +139,9 @@ const MarinaStatistics = ({ summeryData }) => {
             
           </Row> */}
 
-          <Row>
-            {/* Row 1: Revenue + Occupancy */}
+          {/* <Row>
             <Col md={6}>
               <Table striped bordered hover responsive>
-                {/* <thead className="table-dark">
-        <tr>
-          <th>Metric</th>
-          <th className="text-end">Value</th>
-        </tr>
-      </thead> */}
                 <tbody>
                   <tr className="table-success">
                     <td colSpan="2">
@@ -139,7 +167,7 @@ const MarinaStatistics = ({ summeryData }) => {
           <th className="text-end">Value</th>
         </tr>
       </thead> */}
-                <tbody>
+                {/* <tbody>
                   <tr className="table-info">
                     <td colSpan="2">
                       <strong>OCCUPANCY RATES</strong>
@@ -155,21 +183,20 @@ const MarinaStatistics = ({ summeryData }) => {
                 </tbody>
               </Table>
             </Col>
-          </Row>
+          </Row> */}
 
           {/* Row 2: Slip Information */}
-          {/* <Row className={"mt-2"}>
-            <Col md={12}>
+          <Row className={"mt-2"}>
+            <Col md={6}>
               <Table striped bordered hover responsive>
-       
                 <tbody>
                   <tr className="table-primary">
                     <td colSpan="2">
-                      <strong>SLIP INFORMATION</strong>
+                      <strong>Revenue Details</strong>
                     </td>
                   </tr>
 
-                  {slipInformationData.map((item, idx) => (
+                  {revenuDetails1.map((item, idx) => (
                     <tr key={idx}>
                       <td>{item.label}</td>
                       <td className="text-end">{item.value}</td>
@@ -178,7 +205,46 @@ const MarinaStatistics = ({ summeryData }) => {
                 </tbody>
               </Table>
             </Col>
-          </Row> */}
+            <Col md={6}>
+              <Table striped bordered hover responsive>
+                <tbody>
+                  <tr className="table-primary">
+                    <td colSpan="2">
+                      <strong>Revenue Details</strong>
+                    </td>
+                  </tr>
+
+                  {revenuDetails2.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.label}</td>
+                      <td className="text-end">{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Col>
+          </Row>
+
+          <Row className={"mt-2"}>
+            <Col md={12}>
+              <Table striped bordered hover responsive>
+                <tbody>
+                  <tr className="table-primary">
+                    <td colSpan="2">
+                      <strong>Revenue Efficiency Snapshot</strong>
+                    </td>
+                  </tr>
+
+                  {revenueEfficiencySnapshot.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.label}</td>
+                      <td className="text-end">{item.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Col>
+          </Row>
         </CardBody>
       </Card>
     </div>
@@ -186,4 +252,3 @@ const MarinaStatistics = ({ summeryData }) => {
 };
 
 export default MarinaStatistics;
-

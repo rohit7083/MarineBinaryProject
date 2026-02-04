@@ -1268,6 +1268,12 @@ export default class JwtService {
       skipBranch: true,
     });
   }
+
+  updateProfile(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateProfile}${uid}`, ...args, {
+      skipBranch: true,
+    });
+  }
   getDyanimicInfoOFSubscription(moduleName) {
     return axios.get(
       `${this.jwtConfig.getDyanimicInfoOFSubscription}${moduleName}`,

@@ -7,15 +7,15 @@ import { ChevronDown, Plus } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link } from "react-router-dom";
 import {
-    Button,
-    Card,
-    CardHeader,
-    CardTitle,
-    Col,
-    Input,
-    Label,
-    Row,
-    Spinner,
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  Col,
+  Input,
+  Label,
+  Row,
+  Spinner,
 } from "reactstrap";
 import { serverSideColumns } from "../../../dashboard/Ship/SlipDetailList/data";
 
@@ -34,10 +34,8 @@ const DataTableServerSide = () => {
       setLoading(true);
       try {
         const { data } = await useJwt.getslip();
-         ("API Response:", data); // Log here
 
         const result = data?.content?.result || []; // Adjust depending on structure
-         ("Parsed Result:", result); // Log here
 
         setData(result);
         setFilteredData(result);
@@ -126,7 +124,7 @@ const DataTableServerSide = () => {
           <CardTitle tag="h4">Slip Details</CardTitle>
        {ability.can("create", "slip management") ?    <Link to="/dashboard/slip-details">
             <Button.Ripple color="primary" size="sm">
-              <Plus size={14} /> Add Slip Details
+              <Plus size={14} /> Add Slip Details 
             </Button.Ripple>
           </Link> :null}
         </CardHeader>

@@ -2,13 +2,11 @@
 import { Fragment, useEffect, useState } from "react";
 
 // ** Third Party Components
-import axios from "axios";
 
 // ** Reactstrap Imports
-import { Col, Row, TabContent, TabPane } from "reactstrap";
+import { CardTitle, Col, Row, TabContent, TabPane } from "reactstrap";
 
 // ** Demo Components
-import Breadcrumbs from "@components/breadcrumbs";
 import AccountTabContent from "./AccountTabContent";
 import SecurityTabContent from "./SecurityTabContent";
 import Tabs from "./Tabs";
@@ -26,19 +24,24 @@ const AccountSettings = () => {
     setActiveTab(tab);
   };
 
-  useEffect(() => {
-    
-    axios
-      .get("/account-setting/data")
-      .then((response) => setData(response.data));
-  }, []);
+useEffect(() => {
+  try {
+    const stored = localStorage.getItem("userData");
+    if (!stored) return;
+
+    const userData = JSON.parse(stored);
+    setData(userData);
+  } catch (error) {
+    console.error("Invalid userData in localStorage", error);
+  }
+}, []);
+
 
   return (
     <Fragment>
-      <Breadcrumbs
-        title="Account Settings"
-        data={[{ title: "Pages" }, { title: "Account Settings" }]}
-      />
+      <CardTitle>
+        <h4 className="mt-1 mb-2">Accounting Settings</h4>
+      </CardTitle>
       {data !== null ? (
         <Row>
           <Col xs={12}>
@@ -50,7 +53,7 @@ const AccountSettings = () => {
 
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
-                <AccountTabContent data={data.general} />
+                <AccountTabContent data={data} />
               </TabPane>
               <TabPane tabId="2">
                 <SecurityTabContent />

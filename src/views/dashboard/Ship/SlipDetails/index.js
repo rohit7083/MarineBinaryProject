@@ -74,8 +74,8 @@ function ShipDetails() {
   });
 
   const uid = location.state?.uid || "";
-
-  const handleSelectTypeChange = (name, value) => {
+const allData=location.state?.allData || "";
+const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
       ...prev,
       [name]: value,
@@ -94,6 +94,7 @@ function ShipDetails() {
     // PREFILL userData amounts
     setUserData((prev) => ({
       ...prev,
+      marketRent:option?.marketRent,
       overDueAmountFor7Days: option?.overDueAmountFor7Days ?? "",
       overDueAmountFor15Days: option?.overDueAmountFor15Days ?? "",
       overDueAmountFor30Days: option?.overDueAmountFor30Days ?? "",
@@ -104,6 +105,7 @@ function ShipDetails() {
     // PREFILL selections for radios
     setSelections((prev) => ({
       ...prev,
+      marketRent:option?.marketRent,
       overDueChargesFor7Days: option?.overDueChargesFor7Days ?? "",
       overDueChargesFor15Days: option?.overDueChargesFor15Days ?? "",
       overDueChargesFor30Days: option?.overDueChargesFor30Days ?? "",
@@ -122,7 +124,7 @@ function ShipDetails() {
     // If it's a switch input (Electric or Water), update boolean state
 
     if (type === "checkbox") {
-       (`${name} ${checked}`);
+      `${name} ${checked}`;
       setUserData((prev) => ({ ...prev, [name]: checked }));
     } else {
       setUserData((prev) => ({ ...prev, [name]: value }));
@@ -136,7 +138,7 @@ function ShipDetails() {
   const handleSubmit = async (e, data) => {
     setMessage("");
     e.preventDefault();
-     ("dataform", data);
+    "dataform", data;
 
     const validationErrors = validate();
     setErrors(validationErrors);
@@ -246,7 +248,7 @@ function ShipDetails() {
         setLoading(false);
       }
     } else {
-       ("Validation failed. Please fix the errors.");
+      ("Validation failed. Please fix the errors.");
     }
   };
 
@@ -265,7 +267,7 @@ function ShipDetails() {
     } else {
       // If `uid` exists (update mode), exclude current slipName from uniqueness check
       const isDuplicate = slipNames.some(
-        (name) => name === userData.slipName && name !== currentSlipName // Ignore current slipName if updating
+        (name) => name === userData.slipName && name !== currentSlipName, // Ignore current slipName if updating
       );
 
       if (!uid && isDuplicate) {
@@ -422,6 +424,7 @@ function ShipDetails() {
 
   useEffect(() => {
     const fetchData = async () => {
+      
       try {
         const payload = {};
         const response = await useJwt.getslipCatogory(payload);
@@ -429,7 +432,7 @@ function ShipDetails() {
           value: item.uid,
           label: item.shipTypeName,
           dimensions: item.dimensions,
-
+          marketRent:item.marketRent,
           overDueChargesFor7Days: item.overDueChargesFor7Days,
           overDueAmountFor7Days: item.overDueAmountFor7Days,
 
@@ -447,38 +450,40 @@ function ShipDetails() {
         }));
 
         setShipTypeNames(options);
-         (options);
+        
       } catch (error) {
         console.error("Error fetching category:", error);
         const { response } = error;
         const { data, status } = response;
       }
 
-       ("Category", selectedCategory);
     };
     if (uid) {
       const fetchDetailsForUpdate = async () => {
+        
         try {
           setFetchLoader(true);
 
-          const resp = await useJwt.getslip(uid);
-          const raw = resp.data.content?.result;
-          const details = Array.isArray(raw) ? raw[0] : raw;
+          // const resp = await useJwt.getslip(uid);
+          // const raw = resp.data.content?.result;
+          // const details = Array.isArray(raw) ? raw[0] : raw;
 
-           ("details", details.isAssigned);
+          const details =allData;
 
           if (details?.isAssigned === true) {
             setView(true);
           } else {
             setView(false);
           }
+       
           if (details && details.uid === uid) {
             setUserData({
               slipName: details.slipName,
               electric: details.electric,
               water: details.water,
+              marketRent: details?.marketRent,
               addOn: details.addOn,
-              marketRent: details.marketRent,
+              marketRent: details?.category?.marketRent,
               marketAnnualPrice: details.marketAnnualPrice,
               marketMonthlyPrice: details.marketMonthlyPrice,
               amps: details.amps,
@@ -499,7 +504,7 @@ function ShipDetails() {
               value: details.category.uid,
               label: details.category.shipTypeName,
               dimensions: details.dimensions || [],
-
+              marketRent: details.marketRent,
               overDueChargesFor7Days:
                 details?.category?.overDueChargesFor7Days ?? "",
               overDueAmountFor7Days:
@@ -526,11 +531,12 @@ function ShipDetails() {
                 details?.category?.overDueAmountForAuction ?? "",
             });
 
-             ("details", details);
+            "details", details;
 
-             ("selectedCategory", {
-              dimensions: details.dimensions,
-            });
+            "selectedCategory",
+              {
+                dimensions: details.dimensions,
+              };
 
             setSelections({
               overDueChargesFor7Days: details.category?.overDueChargesFor7Days,
@@ -729,7 +735,7 @@ function ShipDetails() {
                       onChange={(e) => {
                         let validatedDimension = e.target.value.replace(
                           /[^0-9.]/g,
-                          ""
+                          "",
                         ); // Ensure only numbers and dots are allowed
                         setUserData((prev) => ({
                           ...prev,
@@ -890,7 +896,7 @@ function ShipDetails() {
                     name="marketRent"
                     id="marketRent"
                     placeholder="Enter Market Rent"
-                    disabled={view}
+                    disabled={true}
                     invalid={!!errors.marketRent}
                   />
                   <FormFeedback>{errors.marketRent}</FormFeedback>
@@ -898,7 +904,7 @@ function ShipDetails() {
               </Row>
               <Row className="mb-1">
                 <Label sm="3" for="marketAnnualPrice">
-                   Annual Price
+                  Annual Price
                   <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Col sm="9">
@@ -926,7 +932,7 @@ function ShipDetails() {
 
               <Row className="mb-1">
                 <Label sm="3" for="marketMonthlyPrice">
-                   Monthly Price
+                  Monthly Price
                   <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Col sm="9">
@@ -984,7 +990,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesFor7Days",
-                              "Percentage"
+                              "Percentage",
                             )
                           }
                           invalid={!!errors.overDueChargesFor7Days}
@@ -1002,7 +1008,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesFor7Days",
-                              "Flat"
+                              "Flat",
                             )
                           }
                           invalid={!!errors.overDueChargesFor7Days}
@@ -1051,7 +1057,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesFor15Days",
-                              "Percentage"
+                              "Percentage",
                             )
                           }
                           name="overDueChargesFor15Days"
@@ -1068,7 +1074,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesFor15Days",
-                              "Flat"
+                              "Flat",
                             )
                           }
                           name="overDueChargesFor15Days "
@@ -1118,7 +1124,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesFor30Days",
-                              "Percentage"
+                              "Percentage",
                             )
                           }
                           name="overDueChargesFor30Days"
@@ -1135,7 +1141,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesFor30Days",
-                              "Flat"
+                              "Flat",
                             )
                           }
                           name="overDueChargesFor30Days"
@@ -1184,7 +1190,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesForNotice",
-                              "Percentage"
+                              "Percentage",
                             )
                           }
                           name="overDueChargesForNotice"
@@ -1201,7 +1207,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesForNotice",
-                              "Flat"
+                              "Flat",
                             )
                           }
                           name="overDueChargesForNotice"
@@ -1251,7 +1257,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesForAuction",
-                              "Percentage"
+                              "Percentage",
                             )
                           }
                           name="overDueChargesForAuction"
@@ -1268,7 +1274,7 @@ function ShipDetails() {
                           onChange={() =>
                             handleSelectTypeChange(
                               "overDueChargesForAuction",
-                              "Flat"
+                              "Flat",
                             )
                           }
                           name="overDueChargesForAuction"

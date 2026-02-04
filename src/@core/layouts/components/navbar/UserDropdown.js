@@ -13,7 +13,7 @@ import { handleLogout } from "@store/authentication";
 import { useDispatch } from "react-redux";
 
 // ** Third Party Components
-import { GitBranch, Power } from "react-feather";
+import { GitBranch, Power, User } from "react-feather";
 
 // ** Reactstrap Imports
 import {
@@ -24,9 +24,8 @@ import {
 } from "reactstrap";
 
 // ** Default Avatar Image
-import { Settings2 } from "lucide-react";
 // import defaultAvatar from "../../../../assets/icons/profileIcon.png";
-import defaultAvatar from "../../../../assets/icons/image.png";
+import { Settings2 } from "lucide-react";
 
 const UserDropdown = () => {
   // ** Store Vars
@@ -34,16 +33,21 @@ const UserDropdown = () => {
 
   // ** State
   const [userData, setUserData] = useState(null);
-
+  const [avtarLogo, setLogo] = useState(null);
   //** ComponentDidMount
+  const isChnageLogo= localStorage.getItem("comapnyLogo");
+  const isUserChange=localStorage.getItem("userData");
   useEffect(() => {
     if (isUserLoggedIn() !== null) {
       setUserData(JSON.parse(localStorage.getItem("userData")));
+      setLogo(JSON.parse(localStorage.getItem("comapnyLogo")));
     }
-  }, []);
+  }, [isChnageLogo ,isUserChange]);
 
   //** Vars
-  const userAvatar = (userData && userData.avatar) || defaultAvatar;
+  // const userAvatar = (userData && userData.avatar) || defaultAvatar;
+
+  const userAvatar = avtarLogo;
 
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
@@ -58,23 +62,27 @@ const UserDropdown = () => {
             {(userData && userData["firstName"]) || "John Doe"}
           </span>
           <span className="user-status ">
-
             {/* {(userData?.(userData && userData.roleName) || "Admin"} */}
-            {(userData?.isSubUser === true ? userData.roleName :"")}
+            {userData?.isSubUser === true ? userData.roleName : ""}
           </span>
         </div>
         <Avatar img={userAvatar} imgHeight="40" imgWidth="40" status="online" />
       </DropdownToggle>
       <DropdownMenu end>
-         <DropdownItem tag={Link} to="/getbranch">
+        <DropdownItem tag={Link} to="/pages/account-settings">
+          <User size={14} className="me-75" />
+          <span className="align-middle">Account</span>
+        </DropdownItem>
+        <DropdownItem tag={Link} to="/getbranch">
           <GitBranch size={14} className="me-75" />
           <span className="align-middle">Branch</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to="/pages/setting">
+
+        {/* <DropdownItem tag={Link} to="/pages/setting">
           <Settings2 size={14} className="me-75" />
           <span className="align-middle">Settings</span>
-        </DropdownItem>
-          {/* <DropdownItem tag={Link} to="/pages/paymentSetting">
+        </DropdownItem> */}
+        {/* <DropdownItem tag={Link} to="/pages/paymentSetting">
           <Settings size={14} className="me-75" />
           <span className="align-middle">Payment Settings</span>
         </DropdownItem> */}
@@ -82,7 +90,7 @@ const UserDropdown = () => {
           <User size={14} className='me-75' />
           <span className='align-middle'>Profile</span>
         </DropdownItem> */}
-       
+
         {/* <DropdownItem tag={Link} to="/apps/email">
           <MailCheck size={14} className="me-75" />
           <span className="align-middle">Manual Email</span>
@@ -100,10 +108,10 @@ const UserDropdown = () => {
           <span className='align-middle'>Chats</span>
         </DropdownItem>*/}
         <DropdownItem divider />
-        {/* <DropdownItem tag={Link} to='/pages/account-settings'>
-          <Settings size={14} className='me-75' />
-          <span className='align-middle'>Settings</span>
-        </DropdownItem> */}
+        <DropdownItem tag={Link} to="/pages/setting">
+          <Settings2 size={14} className="me-75" />
+          <span className="align-middle">Settings</span>
+        </DropdownItem>
         {/* <DropdownItem tag={Link} to='/pages/pricing'>
           <CreditCard size={14} className='me-75' />
           <span className='align-middle'>Pricing</span>
@@ -112,7 +120,7 @@ const UserDropdown = () => {
           <HelpCircle size={14} className='me-75' />
           <span className='align-middle'>FAQ</span>
         </DropdownItem> */}
-        
+
         <DropdownItem
           tag={Link}
           to="/login"

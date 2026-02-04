@@ -35,6 +35,8 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
   const toast = useRef(null);
   const location = useLocation();
   const uid = location.state?.uid || "";
+// const resultAllData=location?.state?.allData || ""
+const dataFromView=location?.state?.slipData;
 
   const [tooltipOpen, setTooltipOpen] = useState({
     edit: false,
@@ -142,6 +144,7 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
     // PREFILL userData amounts
     setUserData((prev) => ({
       ...prev,
+      marketRent:option?.marketRent,
       overDueAmountFor7Days: option?.overDueAmountFor7Days ?? "",
       overDueAmountFor15Days: option?.overDueAmountFor15Days ?? "",
       overDueAmountFor30Days: option?.overDueAmountFor30Days ?? "",
@@ -152,6 +155,8 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
     // PREFILL selections for radios
     setSelections((prev) => ({
       ...prev,
+      marketRent:option?.marketRent,
+
       overDueChargesFor7Days: option?.overDueChargesFor7Days ?? "",
       overDueChargesFor15Days: option?.overDueChargesFor15Days ?? "",
       overDueChargesFor30Days: option?.overDueChargesFor30Days ?? "",
@@ -542,6 +547,7 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
         value: item.uid,
         label: item.shipTypeName,
         dimensions: item.dimensions,
+        marketRent:item?.marketRent,
         overDueChargesFor7Days: item.overDueChargesFor7Days,
         overDueAmountFor7Days: item.overDueAmountFor7Days,
 
@@ -578,13 +584,15 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
       setFetchLoader(true);
       const fetchDetailsForUpdate = async () => {
         try {
-          const resp = await useJwt.getslip(uid);
 
-          const raw = resp.data.content?.result;
-          const result = Array.isArray(raw) ? raw[0] : raw;
+          // const resp = await useJwt.getslip(uid);
+
+          // const raw = resp.data.content?.result;
+          // const result = Array.isArray(raw) ? raw[0] : raw;
+          const result=dataFromView;
 
           setSelectedSlip(result);
-          result;
+         
           if (result) {
             if (result && result.uid === uid) {
               setUserData({
@@ -592,7 +600,7 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
                 electric: result.electric,
                 water: result.water,
                 addOn: result.addOn,
-                marketRent: result.marketRent || 0,
+                marketRent: result.category?.marketRent || 0,
 
                 marketAnnualPrice: result.marketAnnualPrice,
                 marketMonthlyPrice: result.marketMonthlyPrice,
@@ -611,6 +619,7 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
               value: result.category.uid,
               label: result.category.shipTypeName,
               dimensions: result.dimensions,
+              marketRent:result.marketRent,
               overDueChargesFor7Days:
                 result?.category?.overDueChargesFor7Days ?? "",
               overDueAmountFor7Days:
@@ -1042,7 +1051,7 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
                   name="marketRent"
                   id="marketRent"
                   placeholder="Enter Market Rent"
-                  disabled={assigned ? true : View}
+                  disabled={true}
                   invalid={!!errors.marketRent}
                 />
                 <FormFeedback>{errors.marketRent}</FormFeedback>
