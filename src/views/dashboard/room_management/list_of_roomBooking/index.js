@@ -34,7 +34,7 @@ import CancleRooms from "../../event_management/cancleRooms/CancleRooms";
 
 const index = () => {
   const ability = useContext(AbilityContext);
-
+const[isdelete,setIsdelete]=useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [searchTerm, setSearchTerm] = useState("");
@@ -73,7 +73,7 @@ const index = () => {
 
   useEffect(() => {
     fetchTableData();
-  }, [currentPage, rowsPerPage]);
+  }, [currentPage, rowsPerPage, isdelete]);
 
   const handlePerPage = (e) => {
     const newLimit = parseInt(e.target.value);
@@ -134,8 +134,6 @@ const index = () => {
     pending: "light-warning",
   };
 
-
-  
   const handleRoomCancle = (row) => {
     // navigate("/addNew_room_booking", {
     //   state: {
@@ -146,7 +144,6 @@ const index = () => {
     setDatarow(row);
     setShow(true);
   };
-
 
   const columns = [
     {
@@ -235,12 +232,10 @@ const index = () => {
         const [data, setData] = useState([]);
 
         const MySwal = withReactContent(Swal);
-       
+
         const roomNo = row?.roomSearch?.roomSearchUnit?.map((x) => {
           return x?.roomUnit?.roomNumber;
         });
-
-        
 
         // const handleDelete = async (uid) => {
         //   // Show confirmation modal
@@ -481,8 +476,13 @@ const index = () => {
               />
             </div>
           )}
- <CancleRooms dataFrom={'room'} datarow={datarow} setShow={setShow} show={show} />
-
+          <CancleRooms
+            dataFrom={"room"}
+            datarow={datarow}
+            setShow={setShow}
+            show={show}
+            setIsdelete={setIsdelete}
+          />
         </CardBody>
       </Card>
     </>

@@ -17,7 +17,7 @@ const MarinaStatistics = ({ summeryData }) => {
     potentialFullRevenue = 0,
     deposite = 0,
     totalRevenue: totalRevenueFromSummery = 0,
-    lostRevenueVacant,
+    lostRevenueVacant = 0,
     nonRevenueSlips = 0,
     discountImpact = 0,
     marketPriceRentGap = 0,
@@ -27,6 +27,7 @@ const MarinaStatistics = ({ summeryData }) => {
     totalLostPotentialRevenue = 0,
     // deposite=0,
     expectedAnnualizedRevenue = 0,
+    vacantSlip = 0,
   } = summeryData;
 
   const { totalRevenue = 0 } = summeryData?.slips?.[0] || {};
@@ -49,7 +50,7 @@ const MarinaStatistics = ({ summeryData }) => {
   ];
 
   const revenuDetails1 = [
-    { label: "Vacant Slips", value: vacantSlips },
+    { label: "Vacant Slips", value: vacantSlip },
     { label: "Lost Revenue (Vacant)", value: lostRevenueVacant },
     {
       label: "Unpaid Slips",
@@ -60,11 +61,11 @@ const MarinaStatistics = ({ summeryData }) => {
     { label: "Lost Revenue (Non-Revenue) ", value: lostRevenueNonRevenue },
     { label: "Discount Impact", value: discountImpact },
     { label: "Market Price Rent Gap", value: marketPriceRentGap },
-    { label: "TOTAL LOST POTENTIAL REVENUE", value: totalLostPotentialRevenue },
+    { label: "Total lost potential revenue", value: totalLostPotentialRevenue },
   ];
 
   const revenuDetails2 = [
-    { label: "Vacant Slips", value: vacantSlips },
+    { label: "Vacant Slips", value: vacantSlip },
 
     { label: "Lost Revenue (Vacant)", value: lostRevenueVacant },
     {
@@ -77,7 +78,7 @@ const MarinaStatistics = ({ summeryData }) => {
     { label: "Discount Impact ", value: discountImpact },
     { label: "Market Price Rent Gap", value: marketPriceRentGap },
     {
-      label: "TOTAL LOST POTENTIAL REVENUE (Market Price)",
+      label: "Total lost potential revenue (Market Price)",
       value: totalLostPotentialRevenue,
     },
   ];
@@ -89,7 +90,10 @@ const MarinaStatistics = ({ summeryData }) => {
       value: expectedAnnualizedRevenue,
     },
 
-    { label: "Revenue Efficiency Ratio ", value: revenueEfficiencyRatio },
+    {
+      label: "Revenue Efficiency Ratio ",
+      value: revenueEfficiencyRatio.toFixed(2),
+    },
   ];
 
   return (
@@ -167,7 +171,7 @@ const MarinaStatistics = ({ summeryData }) => {
           <th className="text-end">Value</th>
         </tr>
       </thead> */}
-                {/* <tbody>
+          {/* <tbody>
                   <tr className="table-info">
                     <td colSpan="2">
                       <strong>OCCUPANCY RATES</strong>
@@ -186,8 +190,8 @@ const MarinaStatistics = ({ summeryData }) => {
           </Row> */}
 
           {/* Row 2: Slip Information */}
-          <Row className={"mt-2"}>
-            <Col md={6}>
+          <Row className={"mt-1"}>
+            <Col md={12}>
               <Table striped bordered hover responsive>
                 <tbody>
                   <tr className="table-primary">
@@ -205,7 +209,7 @@ const MarinaStatistics = ({ summeryData }) => {
                 </tbody>
               </Table>
             </Col>
-            <Col md={6}>
+            {/* <Col md={6}>
               <Table striped bordered hover responsive>
                 <tbody>
                   <tr className="table-primary">
@@ -222,7 +226,7 @@ const MarinaStatistics = ({ summeryData }) => {
                   ))}
                 </tbody>
               </Table>
-            </Col>
+            </Col> */}
           </Row>
 
           <Row className={"mt-2"}>

@@ -12,171 +12,173 @@ import ViewSlip from "../../views/dashboard/rentRoll/viewSlip/index";
 import SwitchSlipPaymentForm from "../../views/dashboard/slip-management/forms/SwitchSlipPaymentForm";
 
 const SlipManagementRoutes = lazy(() =>
-  import("../../views/dashboard/slip-management")
+  import("../../views/dashboard/slip-management"),
 );
 const AddProductCategory = lazy(() =>
-  import("../../views/dashboard/pos/product_management/addproductCategory")
+  import("../../views/dashboard/pos/product_management/addproductCategory"),
 );
 const DashboardIM = lazy(() =>
-  import("../../views/dashboard/invoice_management/invoice_setting")
+  import("../../views/dashboard/invoice_management/invoice_setting"),
 );
 const ManageInvoice = lazy(() =>
-  import("../../views/dashboard/invoice_management/manageInvoice")
+  import("../../views/dashboard/invoice_management/manageInvoice"),
 );
 const ProductManagement = lazy(() =>
-  import("../../views/dashboard/pos/product_management")
+  import("../../views/dashboard/pos/product_management"),
 );
 const AddProdCategory = lazy(() =>
   import(
     "../../views/dashboard/pos/product_management/addproductCategory/AddCategory"
-  )
+  ),
 );
 const AddProduct = lazy(() =>
-  import("../../views/dashboard/pos/product_management/addProduct/ProductAdd")
+  import("../../views/dashboard/pos/product_management/addProduct/ProductAdd"),
 );
 const InvoiceAdd = lazy(() =>
-  import("../../views/dashboard/invoice_management/invoice/add")
+  import("../../views/dashboard/invoice_management/invoice/add"),
 );
 const InvoiceList = lazy(() =>
-  import("../../views/dashboard/invoice_management/invoice/list")
+  import("../../views/dashboard/invoice_management/invoice/list"),
 );
 const InvoiceEdit = lazy(() =>
-  import("../../views/dashboard/invoice_management/invoice/edit")
+  import("../../views/dashboard/invoice_management/invoice/edit"),
 );
 const InvoicePrint = lazy(() =>
-  import("../../views/dashboard/invoice_management/invoice/print")
+  import("../../views/dashboard/invoice_management/invoice/print"),
 );
 const InvoicePreview = lazy(() =>
-  import("../../views/dashboard/invoice_management/invoice/preview")
+  import("../../views/dashboard/invoice_management/invoice/preview"),
 );
 const AddProductTax = lazy(() =>
-  import("../../views/dashboard/pos/product_management/addTaxes")
+  import("../../views/dashboard/pos/product_management/addTaxes"),
 );
 const ManageStocks = lazy(() =>
-  import("../../views/dashboard/pos/product_management/StockManage")
+  import("../../views/dashboard/pos/product_management/StockManage"),
 );
 const AddStocks = lazy(() =>
-  import("../../views/dashboard/pos/product_management/AddStocks")
+  import("../../views/dashboard/pos/product_management/AddStocks"),
 );
 const CustomerManagement = lazy(() =>
-  import("../../views/dashboard/pos/customer_management")
+  import("../../views/dashboard/pos/customer_management"),
 );
 const PointOfSale = lazy(() =>
-  import("../../views/dashboard/pos/point_of_sale/shop")
+  import("../../views/dashboard/pos/point_of_sale/shop"),
 );
 const Ecomm = lazy(() =>
-  import("../../views/dashboard/pos/point_of_sale/ecommerce/shop")
+  import("../../views/dashboard/pos/point_of_sale/ecommerce/shop"),
 );
 
 const VendorManage = lazy(() =>
-  import("../../views/dashboard/pos/vendorManagement")
+  import("../../views/dashboard/pos/vendorManagement"),
 );
 
 const VendorAdd = lazy(() =>
-  import("../../views/dashboard/pos/vendorManagement/AddVender")
+  import("../../views/dashboard/pos/vendorManagement/AddVender"),
 );
 const QrPaymentStepTwo = lazy(() =>
   import(
     "../../views/dashboard/Ship/SlipMemberForm/steps-with-validation/QrPaymentStepTwo"
-  )
+  ),
 );
 
 const MemberManagement = lazy(() =>
-  import("../../views/dashboard/member_management/Add_Member")
+  import("../../views/dashboard/member_management/Add_Member"),
 );
 
 const MemberManagement_List = lazy(() =>
-  import("../../views/dashboard/member_management")
+  import("../../views/dashboard/member_management"),
 );
 
 const AddCategory = lazy(() =>
   import(
     "../../views/dashboard/pos/product_management/addproductCategory/AddCategory"
-  )
+  ),
 );
 
 const CreatePass = lazy(() =>
-  import("../../views/dashboard/parking_pass/Park_Pass")
+  import("../../views/dashboard/parking_pass/Park_Pass"),
 );
 
 const SellPass = lazy(() =>
-  import("../../views/dashboard/parking_pass/SellPass")
+  import("../../views/dashboard/parking_pass/SellPass"),
 );
 
 const ViewRoomBooking = lazy(() =>
   import(
     "../../views/dashboard/room_management/list_of_roomBooking/view_bookingrooms/View"
-  )
+  ),
 );
 const Event_Info = lazy(() =>
-  import("../../views/dashboard/event_management/Event_info")
+  import("../../views/dashboard/event_management/Event_info"),
 );
 const venueLocation = lazy(() =>
-  import("../../views/dashboard/event_management/VenueLocation")
+  import("../../views/dashboard/event_management/VenueLocation"),
 );
 const ProductPayment = lazy(() => import("../../views/apps/pos"));
 const Client_info = lazy(() =>
-  import("../../views/dashboard/event_management/Client_info")
+  import("../../views/dashboard/event_management/Client_info"),
 );
 const Event_Type = lazy(() =>
-  import("../../views/dashboard/event_management/event_type")
+  import("../../views/dashboard/event_management/event_type"),
 );
 const Cretae_Event_Type = lazy(() =>
-  import("../../views/dashboard/event_management/event_type/AddEventTypes")
+  import("../../views/dashboard/event_management/event_type/AddEventTypes"),
 );
 
 const EventIndex = lazy(() => import("../../views/dashboard/event_management"));
 const CreateEvent = lazy(() =>
-  import("../../views/dashboard/event_management/CreateEvent")
+  import("../../views/dashboard/event_management/CreateEvent"),
 );
 
 const CreateVenue = lazy(() =>
-  import("../../views/dashboard/event_management/createVenue/CreateVenue")
+  import("../../views/dashboard/event_management/createVenue/CreateVenue"),
 );
 const VenueList = lazy(() =>
-  import("../../views/dashboard/event_management/createVenue")
+  import("../../views/dashboard/event_management/createVenue"),
 );
 const PaymentHistory = lazy(() =>
-  import("../../views/dashboard/event_management/PaymentHistory")
+  import("../../views/dashboard/event_management/PaymentHistory"),
 );
 const ClientDetails = lazy(() =>
-  import("../../views/dashboard/event_management/client_Information")
+  import("../../views/dashboard/event_management/client_Information"),
 );
 
 const ViewClient = lazy(() =>
-  import("../../views/dashboard/event_management/client_Information/ViewClient")
+  import(
+    "../../views/dashboard/event_management/client_Information/ViewClient"
+  ),
 );
 const Payment = lazy(() =>
-  import("../../views/dashboard/event_management/Payment")
+  import("../../views/dashboard/event_management/Payment"),
 );
 const Preview = lazy(() =>
-  import("../../views/dashboard/event_management/Preview")
+  import("../../views/dashboard/event_management/Preview"),
 );
 const GenerateDiscountOtp = lazy(() =>
-  import("../../views/dashboard/event_management/GenerateDiscountOtp")
+  import("../../views/dashboard/event_management/GenerateDiscountOtp"),
 );
 
 const VendorTypeList = lazy(() =>
-  import("../../views/dashboard/pos/vendorManagement/vendorTypes")
+  import("../../views/dashboard/pos/vendorManagement/vendorTypes"),
 );
 
 const ManageRoomType = lazy(() =>
-  import("../../views/dashboard/room_management/manage_roomType")
+  import("../../views/dashboard/room_management/manage_roomType"),
 );
 const AddRoomType = lazy(() =>
-  import("../../views/dashboard/room_management/manage_roomType/AddRoomType")
+  import("../../views/dashboard/room_management/manage_roomType/AddRoomType"),
 );
 const RoomDetails = lazy(() =>
-  import("../../views/dashboard/room_management/manage_room")
+  import("../../views/dashboard/room_management/manage_room"),
 );
 const AddRoomDetails = lazy(() =>
-  import("../../views/dashboard/room_management/manage_room/Add_RoomDetails")
+  import("../../views/dashboard/room_management/manage_room/Add_RoomDetails"),
 );
 
 const RoomPayment = lazy(() =>
   import(
     "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/payment/RoomPayment"
-  )
+  ),
 );
 
 const RoomBooking = lazy(() => import("../../views/apps/booked-events"));
@@ -184,104 +186,103 @@ const RoomBooking = lazy(() => import("../../views/apps/booked-events"));
 const AddRoomBooking = lazy(() =>
   import(
     "../../views/dashboard/room_management/manage_roomBooking/addNewBooking"
-  )
+  ),
 );
 
 const BookingListing = lazy(() =>
-  import("../../views/dashboard/room_management/list_of_roomBooking")
+  import("../../views/dashboard/room_management/list_of_roomBooking"),
 );
 
 const SearchRoom = lazy(() =>
   import(
     "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/SearchRooms"
-  )
+  ),
 );
 
 const Checkout = lazy(() =>
   import(
     "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/Checkout"
-  )
+  ),
 );
 
 const CheckInDetails = lazy(() =>
   import(
     "../../views/dashboard/room_management/manage_roomBooking/addNewBooking/CheckInDetails"
-  )
+  ),
 );
 
 const UpdateEvent = lazy(() =>
-  import("../../views/dashboard/event_management/event_update/UpdateEvent")
+  import("../../views/dashboard/event_management/event_update/UpdateEvent"),
 );
 
 const AddProductIndex = lazy(() =>
-  import("../../views/dashboard/pos/product_management/addProduct")
+  import("../../views/dashboard/pos/product_management/addProduct"),
 );
 const SaleSummery = lazy(() => import("../../views/dashboard/sales/index"));
 
 const SalesTrends = lazy(() =>
-  import("../../views/dashboard/sales/sales_trends/index")
+  import("../../views/dashboard/sales/sales_trends/index"),
 );
 const Report = lazy(() => import("../../views/dashboard/accounting/index"));
 
 const Sales = lazy(() =>
-  import("../../views/dashboard/accounting/sales/index")
+  import("../../views/dashboard/accounting/sales/index"),
 );
 const Ledger = lazy(() =>
-  import("../../views/dashboard/accounting/ledger/index")
+  import("../../views/dashboard/accounting/ledger/index"),
 );
 
 const Purchase = lazy(() =>
-  import("../../views/dashboard/accounting/purchase/index")
+  import("../../views/dashboard/accounting/purchase/index"),
 );
 
 const WaitingSlip = lazy(() =>
-  import("../../views/dashboard/slip-management/waiting_slip")
+  import("../../views/dashboard/slip-management/waiting_slip"),
 );
 
 const ViewCustomer = lazy(() =>
-  import("../../views/dashboard/pos/customer_management/view/index")
+  import("../../views/dashboard/pos/customer_management/view/index"),
 );
 
 const EnterWaitingSlipDetails = lazy(() =>
-  import("../../views/dashboard/slip-management/waiting_slip/EnterDetails")
+  import("../../views/dashboard/slip-management/waiting_slip/EnterDetails"),
 );
 const EmailSMSIndex = lazy(() =>
-  import("../../views/dashboard/crm_setting/emailSetting/index")
+  import("../../views/dashboard/crm_setting/emailSetting/index"),
 );
 const EmailSMSsetting = lazy(() =>
-  import("../../views/dashboard/crm_setting/emailSetting/AddEmailSMS")
+  import("../../views/dashboard/crm_setting/emailSetting/AddEmailSMS"),
 );
 const Template = lazy(() =>
-  import("../../views/dashboard/crm_setting/template/index")
+  import("../../views/dashboard/crm_setting/template/index"),
 );
 
 const EmailSmsTemplate = lazy(() =>
-  import("../../views/dashboard/crm_setting/template/EmailSmsTemplate")
+  import("../../views/dashboard/crm_setting/template/EmailSmsTemplate"),
 );
 
 const AddBranch = lazy(() =>
-  import("../../views/dashboard/branch_management/AddBranch")
+  import("../../views/dashboard/branch_management/AddBranch"),
 );
 
 const BranchIndex = lazy(() =>
-  import("../../views/dashboard/branch_management/index")
+  import("../../views/dashboard/branch_management/index"),
 );
 const AutoPay = lazy(() =>
-  import("../../views/dashboard/slip-management/autopaymentlist/index")
+  import("../../views/dashboard/slip-management/autopaymentlist/index"),
 );
 
-
 const UpgradeModule = lazy(() =>
-  import("../../views/dashboard/upgrade/LockModal")
+  import("../../views/dashboard/upgrade/LockModal"),
 );
 
 const SubscriptionPage = lazy(() =>
-  import("../../views/dashboard/upgrade/SubscriptionPage")
+  import("../../views/dashboard/upgrade/SubscriptionPage"),
 );
 
 const SubscriptionPayment = lazy(() =>
-  import("../../views/dashboard/upgrade/PaymentSubscription")
-);  
+  import("../../views/dashboard/upgrade/PaymentSubscription"),
+);
 
 export default [
   {
@@ -310,13 +311,13 @@ export default [
   //   path: '/dashboard/invoice_management/invoice',
   //   element: <AddActions />
   // },
- {
+  {
     path: "/upgradeModules",
     element: <UpgradeModule />,
     // meta:{
     //   layout: "blank",
     //   publicRoute: false,
-      
+
     // }
   },
   {
@@ -578,7 +579,7 @@ export default [
   {
     element: <CreateVenue />,
     path: "/venue",
-     meta: {
+    meta: {
       resource: "event management",
       action: "view",
     },
@@ -587,7 +588,7 @@ export default [
   {
     element: <VenueList />,
     path: "/VenueList",
-     meta: {
+    meta: {
       resource: "event management",
       action: "view",
     },
@@ -787,7 +788,8 @@ export default [
     path: "/dashboard/rentroll/view_slip",
 
     meta: {
-      resource: "rent roll",
+      // resource: "rent roll",
+      resource: "slip management",
       action: "view",
     },
   },
@@ -795,7 +797,9 @@ export default [
     element: <InverSlip />,
     path: "/dashboard/rentroll/inverse_slip",
     meta: {
-      resource: "rent roll",
+      resource: "inverse rent roll",
+      // resource: "slip management",
+
       action: "view",
     },
   },
@@ -813,7 +817,7 @@ export default [
   {
     element: <QrList />,
     path: "/dashboard/qr-code/qr-list",
-     meta: {
+    meta: {
       resource: "qr code generator",
       action: "view",
     },
@@ -883,7 +887,9 @@ export default [
     element: <Ledger />,
     path: "/accounting/ledger",
     meta: {
-      resource: "accounting",
+      resource: "ledger",
+      // resource: "slip management",
+
       action: "view",
     },
   },
@@ -975,7 +981,7 @@ export default [
       action: "view",
     },
   },
-   {
+  {
     element: <BranchIndex />,
     path: "/branch",
     meta: {
@@ -983,7 +989,6 @@ export default [
       action: "view",
     },
   },
-
 
   {
     element: <AutoPay />,
@@ -994,7 +999,7 @@ export default [
     },
   },
 
-   {
+  {
     element: <SubscriptionPage />,
     path: "/upgrade/subscription",
     // meta: {

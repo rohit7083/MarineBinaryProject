@@ -379,29 +379,19 @@ export default [
     id: "Rent Roll",
     title: "Rent Roll",
     icon: <BookCopy size={12} />,
-    navLink: "/rent_roll",
+    navLink: "/dashboard/rentroll/view_slip",
     badge: "light-warning",
     action: "view",
     resource: "rent roll",
-    children: [
-      {
-        id: "View Slip",
-        title: "View  Rent Roll",
-        icon: <Circle size={12} />,
-        navLink: "/dashboard/rentroll/view_slip",
-        action: "view",
-        resource: "rent roll",
-      },
-      // {
-      //   id: "Inverse Slip",
-      //   title: "Inverse Rent Roll",
-      //   icon: <Circle size={12} />,
-      //   navLink: "/dashboard/rentroll/inverse_slip",
-      //   action: "view",
-      //   resource: "rent roll",
-      // },
-    ],
   },
+  // {
+  //   id: "Inverse Slip",
+  //   title: "Inverse Rent Roll",
+  //   icon: <Circle size={12} />,
+  //   navLink: "/dashboard/rentroll/inverse_slip",
+  //   action: "view",
+  //   resource: "rent roll",
+  // },
 
   {
     id: "Inverse Slip",
@@ -497,7 +487,7 @@ export default [
         action: "view",
         resource: "accounting",
       },
-      
+
       // {
       //   id: "Purchase ",
       //   title: "Purchase ",
@@ -509,15 +499,14 @@ export default [
     ],
   },
 
-
   {
-        id: "Ledger",
-        title: "Ledger",
-        icon: <Circle size={12} />,
-        navLink: "/accounting/Ledger",
-        action: "view",
-        resource: "ledger",
-      },
+    id: "Ledger",
+    title: "Ledger",
+    icon: <Circle size={12} />,
+    navLink: "/accounting/Ledger",
+    action: "view",
+    resource: "ledger",
+  },
 
   {
     id: "CRM Setting",

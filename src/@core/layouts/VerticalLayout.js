@@ -133,11 +133,17 @@ const VerticalLayout = (props) => {
         match.parent == "event" ||
         match.parent == "pos" ||
         match.parent == "slip" || 
-        match.parent == "branch" 
+        match.parent == "branch"  
 
       ) {
         localStorage.setItem("parentMenuId", match.parent);
       } else if (match.id == "parkingpass") {
+        localStorage.setItem("parentMenuId", match.id);
+      }
+      else if (match.id == "inverse rent roll") {
+        localStorage.setItem("parentMenuId", match.id);
+      }
+      else if (match.id == "rent roll") {
         localStorage.setItem("parentMenuId", match.id);
       } else if (match.id == "branch") {
         localStorage.setItem("parentMenuId", match.id);

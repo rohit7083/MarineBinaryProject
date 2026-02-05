@@ -22,16 +22,14 @@ import {
 import successAnimation from "../../../../assets/images/celebrate.json";
 import successAnimations from "../../../../assets/images/Congratulations.json";
 
-function CancelRooms({ show, setShow, datarow, dataFrom }) {
+function CancelRooms({ show, setShow, datarow, dataFrom ,setIsdelete}) {
   const { handleSubmit, register, watch, setValue, control } = useForm();
   const [loading, setLoading] = useState(false);
   const [selectedData, setSelectedData] = useState([]);
   const [refundModal, setRefundModal] = useState(false);
   const [errorMessage, setErrorMsz] = useState("");
   const toggle = () => setRefundModal(!refundModal);
-  const [roomDataForCancleFiltered, setRoomDataForCancleFiltered] = useState(
-    [],
-  );
+  const [roomDataForCancleFiltered, setRoomDataForCancleFiltered] = useState();
   const toast = useRef(null);
 
 
@@ -69,10 +67,12 @@ function CancelRooms({ show, setShow, datarow, dataFrom }) {
           },
         })) || [],
     );
-    let filterData = roomDataForCancle?.filter(
-      (room) => room?.available === false,
-    );
-    setRoomDataForCancleFiltered(filterData);
+    // debugger;
+    // let filterData = roomDataForCancle?.filter(
+    //   (room) => room?.available === false,
+    // );
+
+    setRoomDataForCancleFiltered(roomDataForCancle);
   }, [datarow]);
 
   const singleRooms = watch("room");
@@ -144,6 +144,7 @@ function CancelRooms({ show, setShow, datarow, dataFrom }) {
 
   const buid = selectedBranch?.uid;
   const onSubmit = async (data) => {
+    // debugger;
     setErrorMsz("");
     if (cancellationRequests.length > 0) {
       setLoading(true);
@@ -167,6 +168,7 @@ function CancelRooms({ show, setShow, datarow, dataFrom }) {
           setRefundModal(true);
           setShow(false);
           setSelectedData([]);
+         
         } else {
           setShow(false);
           setSelectedData([]);
@@ -178,6 +180,10 @@ function CancelRooms({ show, setShow, datarow, dataFrom }) {
             life: 2000,
           });
         }
+
+         if (res?.status === 201 || res?.status === 200) {
+            setIsdelete(true);
+          }
       } catch (error) {
         error;
         const errMsz =
