@@ -52,9 +52,18 @@ export default function PosUpgradePage() {
           (item) => item?.is_addon === "1",
         );
 
-        const subscriptionIds = JSON.parse(
-          localStorage.getItem("subscriptionId") || "[]",
-        );
+        let subscriptionIds;
+
+        try {
+          const raw = localStorage.getItem("subscriptionId");
+          subscriptionIds = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(subscriptionIds)) {
+            throw new Error("Not an array");
+          }
+        } catch {
+          // subscriptionIds = [];
+          // localStorage.setItem("subscriptionId", JSON.stringify([]));
+        }
         const addOnfilterData = addOndata.filter(
           (item) =>
             subscriptionIds.includes(item.subscriptionId) ||

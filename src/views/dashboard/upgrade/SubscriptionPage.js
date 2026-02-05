@@ -233,7 +233,7 @@ disabled={status}
                         <>
                           Loading... <Spinner color="white" size="sm" />
                         </>
-                      ) : plan.is_addon == 0 && subID?.includes(plan.id) ? (
+                      ) : plan.is_addon == 0 && isIncluded ? (
                         "Current active plan "
                       ) : (
                         "Choose Plan"
