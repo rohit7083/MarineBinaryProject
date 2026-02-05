@@ -19,13 +19,13 @@ import WatchNew from "../../../../../src/assets/images/updatedWatchnew.jpg";
 import MARinLogo from "../../../../assets/images/logo/product-logo.png";
 
 import {
-    Button,
-    Card,
-    CardBody,
-    CardText,
-    CardTitle,
-    Input,
-    Label,
+  Button,
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Input,
+  Label,
 } from "reactstrap";
 
 // ** Custom Components
@@ -149,9 +149,14 @@ const ResetPasswordBasic = () => {
   const sendOtp = async () => {
     try {
       const otpRes = await useJwt.sendOtp(token);
+      if (otpRes?.status == 200) {
+        toast.success("OTP sent successfully via SMS.")
+      }
     } catch (error) {
       console.error(error);
        ("failed to get otp");
+         toast.error("Failed to send OTP. Please try again.");
+
     }
   };
 
@@ -180,7 +185,7 @@ const ResetPasswordBasic = () => {
 
     setAttempt(0);
     setCountdownEndTime(0);
-     ("Form Data:", data);
+     
     // const otpString = data.otp.join("");
     // const otp = parseInt(otpString, 10);
 

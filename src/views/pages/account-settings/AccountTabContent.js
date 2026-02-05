@@ -56,7 +56,6 @@ const AccountTabs = ({ data }) => {
   };
 
   const onSubmit = async (onSubmitData) => {
-    console.log("Submitted Data:", onSubmitData);
     setLoading(true);
   
     const formData = new FormData();
@@ -67,7 +66,7 @@ const AccountTabs = ({ data }) => {
 
     try {
       const res = await useJwt.updateProfile(data?.uid, formData);
-      console.log(res);
+      
       if (res?.status == 201) {
         const updatedData = {
           ...data,

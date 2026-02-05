@@ -443,8 +443,8 @@ export const serverSideColumns = (currentPage, rowsPerPage) => [
           </Link>
           
            ): null}
-          {console.log(row)
-          }
+        
+        
           {ability.can("delete", "slip management") ? (
             <Link style={{ margin: "0.5rem" }}>
               {" "}

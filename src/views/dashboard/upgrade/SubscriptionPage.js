@@ -126,12 +126,15 @@ const PricingCards = () => {
               ? plan.addonModuleJson
               : [];
             // const isCurrentPlan = subID?.includes(plan.id);
+            const subIds = JSON.parse(subID || "[]"); // [1,2,22,7,13]
+
+const isIncluded = subIds.includes(Number(plan.id));
             let status;
-            if (plan.is_addon == 0 && subID?.includes(plan.id)) {
+            if (plan.is_addon == 0 && isIncluded) {
               status = true;
             } else if (
               plan.is_addon == 1 &&
-              subID?.includes(plan.id) &&
+              isIncluded &&
               plan?.subscriptionId == 0
             ) {
               status = true;
@@ -200,9 +203,9 @@ const PricingCards = () => {
                     </div>
                     <Button
                       color={
-                        (plan.is_addon == 0 && subID?.includes(plan.id)) ||
+                        (plan.is_addon == 0 && isIncluded) ||
                         (plan.is_addon == 1 &&
-                          subID?.includes(plan.id) &&
+                          isIncluded &&
                           plan?.subscriptionId == 0)
                           ? "secondary"
                           : "primary"
