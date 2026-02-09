@@ -89,6 +89,7 @@ export default function PosUpgradePage() {
   useEffect(() => {
     const handleInfo = async () => {
       try {
+        
         const parentMenuId = localStorage.getItem("parentMenuId");
 
         const res = await useJwt.getDyanimicInfoOFSubscription(parentMenuId);

@@ -78,9 +78,9 @@ const CreateNewPass = () => {
 
         setResendcount(true);
       }
-       ("resentOTP", res.status);
+      "resentOTP", res.status;
     } catch (error) {
-       (error.response);
+      error.response;
     } finally {
       //   setTimeout(() => {
       //     setResendcount(false);
@@ -97,9 +97,9 @@ const CreateNewPass = () => {
 
         setResendcallCount(true);
       }
-       ("resentCall", res);
+      "resentCall", res;
     } catch (error) {
-       (error.response);
+      error.response;
     } finally {
       // setTimeout(() => {
       //   setResendcallLoading(false);
@@ -160,43 +160,32 @@ const CreateNewPass = () => {
   const confirmPassword = watch("confirmPassword");
   const previousPassword = watch("previousPassword");
 
-  useEffect(() => {
-    if (onchnagePass && handleOtp && confirmPassword && previousPassword) {
-      const encryptedotp = encryptAES(handleOtp);
-      const encryptPass = encryptAES(onchnagePass);
-
-      const encryptedConfirm = encryptAES(confirmPassword);
-      const encryptPreivous = encryptAES(previousPassword);
-
-      setEncrypt({
-        otp: encryptedotp,
-        password: encryptPass,
-        confirmPassword: encryptedConfirm,
-        previousPassword: encryptPreivous,
-      });
-    }
-  }, [handleOtp, onchnagePass, confirmPassword, previousPassword]);
-
   const onSubmit = async (data) => {
-
+   
     setCountdownEndTime(0);
     setAttempt(0);
     setErrorMsz("");
 
-     
     const otpString = data.otp.join("");
     const otp = parseInt(otpString, 10);
 
     try {
       setLoading(true);
-      const res = await useJwt.chnagePassword(token, {
-        previousPassword: encryptedPasss?.previousPassword,
-        otp: encryptedPasss?.otp,
-        password: encryptedPasss?.password,
-        confirmPassword: encryptedPasss?.confirmPassword,
-      });
 
-       (res);
+      const otp = data.otp.join("");
+      const password = data.password;
+      const confirmPassword = data.confirmPassword;
+      const previousPassword = data.previousPassword;
+
+      const payload = {
+        otp: encryptAES(otp),
+        password: encryptAES(password),
+        confirmPassword: encryptAES(confirmPassword),
+        previousPassword: encryptAES(previousPassword),
+      };
+
+      const res = await useJwt.chnagePassword(token, payload);
+
       if (res.status == 200 || res.status == 201) {
         toast.current.show({
           severity: "success",
@@ -217,7 +206,7 @@ const CreateNewPass = () => {
         const otpAttempt = data.otpAttempts;
         const code = data?.code;
 
-         ("errormsx", errorMessage);
+        "errormsx", errorMessage;
         setErrorMsz(errorMessage);
 
         setAttempt(otpAttempt);
@@ -326,7 +315,7 @@ const CreateNewPass = () => {
                             // If value is entered, focus on the next input
                             if (value && index < 5) {
                               const nextInput = document.getElementById(
-                                `otp-input-${index + 1}`
+                                `otp-input-${index + 1}`,
                               );
                               if (nextInput) {
                                 nextInput.focus();
@@ -341,7 +330,7 @@ const CreateNewPass = () => {
                               index > 0
                             ) {
                               const prevInput = document.getElementById(
-                                `otp-input-${index - 1}`
+                                `otp-input-${index - 1}`,
                               );
                               if (prevInput) {
                                 prevInput.focus();
