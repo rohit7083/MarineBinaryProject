@@ -132,22 +132,24 @@ const VerticalLayout = (props) => {
         match.parent == "roombooking" ||
         match.parent == "event" ||
         match.parent == "pos" ||
-        match.parent == "slip" || 
-        match.parent == "branch"  
-
+        match.parent == "slip" ||
+        match.parent == "branch"
       ) {
         localStorage.setItem("parentMenuId", match.parent);
       } else if (match.id == "parkingpass") {
         localStorage.setItem("parentMenuId", match.id);
-      }
-      else if (match.id == "inverse rent roll") {
+      } 
+      else if (match.id == "inverserentroll") {
         localStorage.setItem("parentMenuId", match.id);
       }
-      else if (match.id == "rent roll") {
+       else if (match.id == "rent roll") {
         localStorage.setItem("parentMenuId", match.id);
       } else if (match.id == "branch") {
         localStorage.setItem("parentMenuId", match.id);
       }
+       else if (match.id == "ledger") {
+        localStorage.setItem("parentMenuId", match.id);
+      } 
       else {
         localStorage.removeItem("parentMenuId");
       }
@@ -198,7 +200,7 @@ const VerticalLayout = (props) => {
           "vertical-overlay-menu": windowWidth < 1200,
           "menu-hide": !menuVisibility && windowWidth < 1200,
           "menu-open": menuVisibility && windowWidth < 1200,
-        }
+        },
       )}
       {...(isHidden ? { "data-col": "1-column" } : {})}
     >
@@ -223,7 +225,7 @@ const VerticalLayout = (props) => {
         className={classnames(
           `header-navbar navbar align-items-center ${
             navbarClasses[navbarType] || "floating-nav"
-          } navbar-shadow`
+          } navbar-shadow`,
         )}
       >
         <div className="navbar-container d-flex content">
@@ -278,7 +280,7 @@ const VerticalLayout = (props) => {
           `footer footer-light ${footerClasses[footerType] || "footer-static"}`,
           {
             "d-none": footerType === "hidden",
-          }
+          },
         )}
       >
         {footer ? (

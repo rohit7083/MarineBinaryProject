@@ -394,7 +394,7 @@ export default [
   // },
 
   {
-    id: "Inverse Slip",
+    id: "inverserentroll",
     title: "Inverse Rent Roll",
     icon: <Circle size={12} />,
     navLink: "/dashboard/rentroll/inverse_slip",
@@ -500,7 +500,7 @@ export default [
   },
 
   {
-    id: "Ledger",
+    id: "ledger",
     title: "Ledger",
     icon: <Circle size={12} />,
     navLink: "/accounting/Ledger",

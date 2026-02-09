@@ -135,6 +135,7 @@ export default function PosUpgradePage() {
           "Secure transactions & records",
           "Integrated client experience",
         ];
+  const parentMenuId = localStorage.getItem("parentMenuId");
 
   return (
     // <Container className="">
@@ -254,26 +255,30 @@ export default function PosUpgradePage() {
                               Apply for Merchant Account
                             </Button>
                           </Col>
-                          <Col
-                            sm={
-                              localStorage.getItem("parentMenuId") !== "branch"
-                                ? "6"
-                                : "12"
-                            }
-                          >
-                            <Button
-                              color="secondary"
-                              onClick={handlePurchaseAddon}
-                              outline
-                              className="w-100"
+                          {parentMenuId === "inverserentroll" ||
+                          parentMenuId === "ledger" ? null : (
+                            <>
+                              <Col sm={parentMenuId !== "branch" ? "6" : "12"}>
+                                <Button
+                                  color="secondary"
+                                  onClick={handlePurchaseAddon}
+                                  outline
+                                  className="w-100"
+                                >
+                                  Purchase Add-On
+                                </Button>
+                              </Col>
+                            </>
+                          )}
+                          {parentMenuId !== "branch" && (
+                            <Col
+                              sm={
+                                parentMenuId == "ledger" ||
+                                parentMenuId == "inverserentroll"
+                                  ? "12"
+                                  : "6"
+                              }
                             >
-                              Purchase Add-On
-                            </Button>
-                          </Col>
-
-                          {localStorage.getItem("parentMenuId") !==
-                            "branch" && (
-                            <Col sm="6">
                               <Button
                                 color="success"
                                 onClick={handleUpgrade}
