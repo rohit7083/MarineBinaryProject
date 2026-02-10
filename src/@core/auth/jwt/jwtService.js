@@ -2,7 +2,7 @@ import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
 // axios.defaults.baseURL = "http://192.168.1.9:8000"; // locktrust
-axios.defaults.baseURL = "http://marinaone.locktrust.com/api"; 
+axios.defaults.baseURL = "https://marinaone.locktrust.com/api"; 
 // axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000/"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.9:8000"; //airtel saga
