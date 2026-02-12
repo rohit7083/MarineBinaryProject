@@ -11,19 +11,19 @@ import { CheckSquare, CreditCard } from "react-feather";
 import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Container,
-    Form,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Container,
+  Form,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import TokenExpire from "../../../../pages/authentication/slip/TokenExpire";
 
@@ -224,6 +224,7 @@ const CardPayment = () => {
         finalPayment: Number(memberDetail?.amount),
         slipId: memberDetail?.slipId,
         memberId: memberDetail?.memberId,
+        RoomId:memberDetail?.roomId,
         paymentMode: selectedOption === "ach" ? 5 : 1,
       };
     } else {
@@ -231,6 +232,8 @@ const CardPayment = () => {
         finalPayment: Number(memberDetail?.amount),
         eventId: memberDetail?.eventId,
         memberId: memberDetail?.memberId,
+                roomId:memberDetail?.roomId,
+
         paymentMode: selectedOption === "ach" ? 5 : 1,
       };
     }
@@ -255,7 +258,7 @@ const CardPayment = () => {
     try {
       setLoadPayment(true);
       const res = await useJwt.totalPayment(token, payload);
-       (res);
+      
 
       if (res?.data?.status === "success") {
         return MySwal.fire({
