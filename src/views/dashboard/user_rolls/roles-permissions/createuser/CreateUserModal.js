@@ -8,22 +8,22 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { useNavigate } from "react-router-dom";
 import {
-    Button,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ListGroupItem,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Label,
+  ListGroupItem,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Swal from "sweetalert2";
 import { countries } from "../../../slip-management/CountryCode";
@@ -51,6 +51,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   } = useForm();
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const toast = useRef(null);
+  const [branchesList, setBranches] = useState([]);
 
   const [allRoleName, setallRoleName] = useState(null);
   const [Errmessage, setMessage] = useState("");
@@ -142,10 +143,18 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
     setPassword(newPwd);
     validatePassword(newPwd);
   };
+
+  const watchselectBranch = watch("selectBranch");
+
   const onSubmit = async (data) => {
     const pinArray = data.pin || [];
+    let encrptedPin;
+    // if (pinArray[0] !== undefined) {
 
-    const encrptedPin = encryptAES(pinArray.join(""));
+    encrptedPin = encryptAES(pinArray.join(""));
+    //     }else{
+    // encrptedPin=pinArray;
+    //     }
 
     const transformedData = {
       firstName: data.firstName,
@@ -159,14 +168,16 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       userRoles: {
         uid: data.userRoles,
       },
+      branches: watchselectBranch?.map((x) => ({
+        uid: x?.value,
+      })),
     };
-     ("Transformed Data:", transformedData);
 
     try {
       if (uid) {
         setLoading(true);
         const res = await useJwt.updateSubuser(uid, transformedData);
-         ("Add role res:", res);
+
         // MySwal.fire({
         //   title: "Successfully Updated",
         //   text: "User Updated Successfully",
@@ -194,8 +205,8 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       } else {
         setLoading(true);
         const res2 = await useJwt.createUser(transformedData);
-         ("updated res:", res2);
-         ("data is created", data);
+        "updated res:", res2;
+        "data is created", data;
 
         MySwal.fire({
           title: "Successfully Added",
@@ -236,6 +247,22 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         //   ("roles",roles);
 
         setallRoleName(roles);
+
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        const Useruid = userData?.uid;
+
+        if (!Useruid) {
+          console.error("UID not found in userData");
+          return;
+        }
+        const res = await useJwt.getBranchForuser(Useruid);
+        let getBranch = res?.data?.branches;
+
+        const allBranch = getBranch.map((b) => ({
+          value: b.uid,
+          label: b.branchName,
+        }));
+        setBranches(allBranch);
       } catch (error) {
         console.error(error);
       } finally {
@@ -249,7 +276,6 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
   };
   useEffect(() => {
     if (uid && row) {
-      // {{ }}
       const {
         firstName,
         lastName,
@@ -259,6 +285,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         countryCode,
         dialCodeCountry,
         password,
+        branches,
       } = row;
 
       const backendCode = row.dialCodeCountry;
@@ -266,6 +293,10 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
       // Find the country object from countryOptions
       const selectedCountry =
         countryOptions.find((c) => c.code === backendCode) || null;
+      const branchList = (row?.branches || []).map((branch) => ({
+        value: branch.uid,
+        label: branch.branchName,
+      }));
 
       reset({
         firstName,
@@ -275,6 +306,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         mobileNumber,
         userRoles: userRoles?.uid || null,
         password,
+        selectBranch: branchList || [],
       });
 
       setModalType("Edit");
@@ -288,6 +320,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         countryCode: "",
         userRoles: null,
         password: "",
+        selectBranch: null,
       });
       setModalType("Add New");
     }
@@ -295,7 +328,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
 
   useEffect(() => {
     setShow(propShow);
-     (row);
+    row;
   }, [propShow]);
 
   const countryOptions = React.useMemo(
@@ -315,9 +348,9 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
         code: country.code,
         dial_code: country.dial_code,
       })),
-    [countries]
+    [countries],
   );
-   (row);
+  row;
 
   return (
     <Fragment>
@@ -368,12 +401,12 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                       isClearable
                       value={
                         (allRoleName || []).find(
-                          (option) => option.value === field.value
+                          (option) => option.value === field.value,
                         ) || null
                       }
                       onChange={(selectedOption) =>
                         field.onChange(
-                          selectedOption ? selectedOption.value : null
+                          selectedOption ? selectedOption.value : null,
                         )
                       }
                     />
@@ -381,7 +414,36 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                 />
               </Col>
             </Row>
+            <Row className="mb-2">
+              <Label sm="3" for="roleName">
+                Select Branch
+              </Label>
 
+              <Col sm="9">
+                <Controller
+                  name="selectBranch"
+                  control={control}
+                  rules={{
+                    required: "Select at least one branch",
+                  }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      isMulti
+                      theme={selectThemeColors}
+                      className="react-select"
+                      classNamePrefix="select"
+                      options={branchesList}
+                      isClearable
+                      value={field.value || []}
+                      onChange={(selectedOptions) =>
+                        field.onChange(selectedOptions)
+                      }
+                    />
+                  )}
+                />
+              </Col>
+            </Row>
             <Row className="mb-2">
               {" "}
               {/* Reduced margin */}
@@ -406,7 +468,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z\s]/g, // \s allows spaces
-                            ""
+                            "",
                           );
                           field.onChange(onlyAlphabets);
                         }}
@@ -446,7 +508,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z\s]/g, // \s allows spaces
-                            ""
+                            "",
                           );
                           field.onChange(onlyAlphabets);
                         }}
@@ -493,7 +555,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                           // allow only letters, numbers, @ and dot
                           const onlyValid = e.target.value.replace(
                             /[^a-zA-Z0-9@.]/g,
-                            ""
+                            "",
                           );
                           field.onChange(onlyValid);
                         }}
@@ -554,7 +616,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                       onChange={(e) => {
                         const onlyNumbers = e.target.value.replace(
                           /[^0-9]/g,
-                          ""
+                          "",
                         ); // remove non-digits
                         field.onChange(onlyNumbers.slice(0, 13)); // keep max 13 digits
                       }}
@@ -602,7 +664,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /[^0-9]/g,
-                                  ""
+                                  "",
                                 ); // ✅ only digits allowed
 
                                 field.onChange(value); // pass the cleaned value instead of event
@@ -610,7 +672,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                                 if (value && index < 3) {
                                   // since 4 inputs, last index = 3
                                   const nextInput = document.getElementById(
-                                    `pin-input-${index + 1}`
+                                    `pin-input-${index + 1}`,
                                   );
                                   nextInput?.focus();
                                 }
@@ -622,7 +684,7 @@ const CreateuserModal = ({ show: propShow, row, uid, ...props }) => {
                                   index > 0
                                 ) {
                                   const prevInput = document.getElementById(
-                                    `pin-input-${index - 1}`
+                                    `pin-input-${index - 1}`,
                                   );
                                   prevInput?.focus();
                                 }

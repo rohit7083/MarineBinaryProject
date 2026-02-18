@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-// axios.defaults.baseURL = "http://192.168.1.9:8000"; // locktrust
+// axios.defaults.baseURL = "http://192.168.1.4:8000"; // locktrust
 axios.defaults.baseURL = "https://marinaone.locktrust.com/api"; 
 // axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000/"; // locktrust jio 5g
@@ -33,12 +33,16 @@ export default class JwtService {
         const location = await this.getLocation();
 
         // ** Get IP
-        const ipResponse = await fetch("https://api64.ipify.org?format=json");
-        const ipData = await ipResponse.json();
-        const userIp = ipData.ip;
+        // const ipResponse = await fetch("https://api64.ipify.org?format=json");
+        // const ipData = await ipResponse.json();
+        // const userIp = ipData.ip;
 
-        if (location && userIp) {
-          config.headers["X-IP"] = userIp;
+        // if (location && userIp) {
+        //   config.headers["X-IP"] = userIp;
+        //   config.headers["X-Location"] = Object.values(location).join(",");
+        // }
+
+         if (location) {
           config.headers["X-Location"] = Object.values(location).join(",");
         }
 
@@ -499,7 +503,9 @@ export default class JwtService {
   }
 
   getSingleDocuments(slipId) {
-    return axios.get(`${this.jwtConfig.getSingleDocuments}${slipId}`);
+    return axios.get(`${this.jwtConfig.getSingleDocuments}${slipId}`,{
+      appendBranchUid: true,
+    });
   }
 
   updateDoc(uid, ...args) {

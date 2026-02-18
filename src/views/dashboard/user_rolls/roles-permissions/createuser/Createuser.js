@@ -8,11 +8,11 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
 import React, {
-    Fragment,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { Mail, Plus, User } from "react-feather";
@@ -21,22 +21,22 @@ import "react-phone-input-2/lib/bootstrap.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-    Button,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ListGroupItem,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  InputGroup,
+  InputGroupText,
+  Label,
+  ListGroupItem,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 import Swal from "sweetalert2";
@@ -147,16 +147,14 @@ const RoleCards = () => {
     };
 
     // const payload = encryptAES(JSON.stringify(transformedData));
-     ("branchesList:", branchesList);
 
     try {
-      
       setloading(true);
       const res = await useJwt.createUser(transformedData);
-       ("data is created ", data);
-       (res);
+      "data is created ", data;
+      res;
 
-       (res);
+      res;
       if (res.status === 201) {
         // MySwal.fire({
         //   title: "Successfully Created",
@@ -205,7 +203,7 @@ const RoleCards = () => {
     } catch (error) {
       console.error(
         "Login Error Details:",
-        error.response || error.message || error
+        error.response || error.message || error,
       );
 
       if (error.response) {
@@ -239,8 +237,6 @@ const RoleCards = () => {
       }
       const res = await useJwt.getBranchForuser(Useruid);
       let getBranch = res?.data?.branches;
-
-       ("getBranch", getBranch);
 
       const allBranch = getBranch.map((b) => ({
         value: b.uid,
@@ -291,7 +287,7 @@ const RoleCards = () => {
 
   const handleChange = (e) => {
     const newPwd = e.target.value;
-     (newPwd);
+    newPwd;
 
     setPassword(newPwd);
     validatePassword(newPwd);
@@ -320,12 +316,10 @@ const RoleCards = () => {
         code: country.code,
         dial_code: country.dial_code,
       })),
-    [countries]
+    [countries],
   );
 
-const watchselectBranch=watch("selectBranch");
- ("selectBranch",watchselectBranch);
-
+  const watchselectBranch = watch("selectBranch");
 
   return (
     <Fragment>
@@ -396,12 +390,12 @@ const watchselectBranch=watch("selectBranch");
 
                       value={
                         (allRoleName || []).find(
-                          (option) => option.value === field.value
+                          (option) => option.value === field.value,
                         ) || null
                       }
                       onChange={(selectedOption) =>
                         field.onChange(
-                          selectedOption ? selectedOption.value : null
+                          selectedOption ? selectedOption.value : null,
                         )
                       }
                     />
@@ -464,7 +458,7 @@ const watchselectBranch=watch("selectBranch");
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z\s]/g, // \s allows spaces
-                            ""
+                            "",
                           );
                           field.onChange(onlyAlphabets);
                         }}
@@ -504,7 +498,7 @@ const watchselectBranch=watch("selectBranch");
                         onChange={(e) => {
                           const onlyAlphabets = e.target.value.replace(
                             /[^a-zA-Z\s]/g, // \s allows spaces
-                            ""
+                            "",
                           );
                           field.onChange(onlyAlphabets);
                         }}
@@ -552,7 +546,7 @@ const watchselectBranch=watch("selectBranch");
                           // allow only letters, numbers, @ and dot
                           const onlyValid = e.target.value.replace(
                             /[^a-zA-Z0-9@.]/g,
-                            ""
+                            "",
                           );
                           field.onChange(onlyValid);
                         }}
@@ -620,7 +614,7 @@ const watchselectBranch=watch("selectBranch");
                       onChange={(e) => {
                         const onlyNumbers = e.target.value.replace(
                           /[^0-9]/g,
-                          ""
+                          "",
                         ); // remove non-digits
                         field.onChange(onlyNumbers.slice(0, 13)); // keep max 13 digits
                       }}
@@ -671,7 +665,7 @@ const watchselectBranch=watch("selectBranch");
                             if (value && index < 3) {
                               // since 4 inputs, last index = 3
                               const nextInput = document.getElementById(
-                                `pin-input-${index + 1}`
+                                `pin-input-${index + 1}`,
                               );
                               nextInput?.focus();
                             }
@@ -683,7 +677,7 @@ const watchselectBranch=watch("selectBranch");
                               index > 0
                             ) {
                               const prevInput = document.getElementById(
-                                `pin-input-${index - 1}`
+                                `pin-input-${index - 1}`,
                               );
                               prevInput?.focus();
                             }
