@@ -10,20 +10,20 @@ import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 import Qr_Payment from "../../../../event_management/Qr_Payment";
 import SuccessPayment from "../../../../SuccessPayment";
@@ -107,7 +107,7 @@ function Payment({ stepper }) {
       padding: 0,
     }),
   };
-  // {{ }}
+  
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },

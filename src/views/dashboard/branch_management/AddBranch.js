@@ -36,7 +36,6 @@ const defaultValues = {
   email: "",
 };
 
-
 // Removes all special characters except spaces
 const cleanText = (value) => value.replace(/[^a-zA-Z0-9\s]/g, "");
 // ===== Sanitizers =====
@@ -64,9 +63,10 @@ export default function BranchForm({ isFirst }) {
   const navigate = useNavigate();
   const location = useLocation();
   const branchData = location?.state?.row;
-  const [hideCompnayName,setHideCompanyName ]=useState(false);   
-  
+  const [hideCompnayName, setHideCompanyName] = useState(false);
+
   useEffect(() => {
+
     if (branchData?.uid) {
       const backendCode = branchData?.dialCountry;
 
@@ -77,9 +77,21 @@ export default function BranchForm({ isFirst }) {
         ...branchData,
         countryCode: selectedCountry,
       });
+    }else{
+          const stored = localStorage.getItem("selectedBranch");
+ if (!stored) return;
+
+    try {
+      const { companyName = "" } = JSON.parse(stored);
+
+      reset({ companyName });
+      setHideCompanyName(Boolean(companyName));
+    } catch (error) {
+      console.error("Invalid selectedBranch in localStorage", error);
     }
-    setLoadingReset(false);
-  }, [reset]);
+    }
+    // setLoadingReset(false);
+  }, [reset ,branchData ,setHideCompanyName]);
 
   const countryOptions = React.useMemo(
     () =>
@@ -161,22 +173,19 @@ export default function BranchForm({ isFirst }) {
     }
   };
 
+  // useEffect(() => {
+  //   const stored = localStorage.getItem("selectedBranch");
+  //   if (!stored) return;
 
-useEffect(() => {
-  const stored = localStorage.getItem("selectedBranch");
-  if (!stored) return;
+  //   try {
+  //     const { companyName = "" } = JSON.parse(stored);
 
-  try {
-    const { companyName = "" } = JSON.parse(stored);
-
-    reset({ companyName });
-    setHideCompanyName(Boolean(companyName));
-  } catch (error) {
-    console.error("Invalid selectedBranch in localStorage", error);
-  }
-}, [reset, setHideCompanyName]);
-
-
+  //     reset({ companyName });
+  //     setHideCompanyName(Boolean(companyName));
+  //   } catch (error) {
+  //     console.error("Invalid selectedBranch in localStorage", error);
+  //   }
+  // }, [reset, setHideCompanyName]);
 
   return (
     <Card style={{ border: "1px solid #ddd" }}>
@@ -221,10 +230,10 @@ useEffect(() => {
                   }}
                   render={({ field }) => (
                     <Input
-                    {...field}
-                    type="text"
-                    disabled={hideCompnayName}
-                    placeholder="Enter Company Name"
+                      {...field}
+                      type="text"
+                      disabled={hideCompnayName}
+                      placeholder="Enter Company Name"
                       onChange={(e) =>
                         field.onChange(
                           sanitizeAlphaNumericSpace(e.target.value),
@@ -258,9 +267,9 @@ useEffect(() => {
                   }}
                   render={({ field }) => (
                     <Input
-                    {...field}
-                    type="text"
-                    placeholder="Enter Branch Name"
+                      {...field}
+                      type="text"
+                      placeholder="Enter Branch Name"
                       onChange={(e) =>
                         field.onChange(
                           sanitizeAlphaNumericSpace(e.target.value),
@@ -325,10 +334,10 @@ useEffect(() => {
                     }}
                     render={({ field }) => (
                       <Input
-                      {...field}
-                      type="text"
-                      placeholder="Enter Phone Number"
-                      maxLength={13} // UI-level restriction
+                        {...field}
+                        type="text"
+                        placeholder="Enter Phone Number"
+                        maxLength={13} // UI-level restriction
                         onChange={(e) =>
                           field.onChange(
                             sanitizeNumeric(e.target.value).slice(0, 13),
@@ -360,9 +369,9 @@ useEffect(() => {
                 }}
                 render={({ field }) => (
                   <Input
-                  {...field}
-                  type="email"
-                  placeholder="Enter Email"
+                    {...field}
+                    type="email"
+                    placeholder="Enter Email"
                     // allow email characters only
                     onChange={(e) =>
                       field.onChange(sanitizeEmail(e.target.value))
@@ -388,15 +397,15 @@ useEffect(() => {
                   pattern: {
                     value: /^[a-zA-Z0-9\s.,\-()']*$/,
                     message:
-                    "Only letters, numbers, spaces and basic punctuation are allowed",
+                      "Only letters, numbers, spaces and basic punctuation are allowed",
                   },
                 }}
                 control={control}
                 render={({ field }) => (
                   <Input
-                  {...field}
-                  type="textarea"
-                  placeholder="Enter Description"
+                    {...field}
+                    type="textarea"
+                    placeholder="Enter Description"
                     rows="2"
                     onChange={(e) =>
                       field.onChange(sanitizeDescription(e.target.value))
@@ -437,8 +446,7 @@ useEffect(() => {
                   <Input
                     {...field}
                     type="text"
-                                        placeholder="Enter Address"
-
+                    placeholder="Enter Address"
                     onChange={(e) =>
                       field.onChange(sanitizeAddress(e.target.value))
                     }
@@ -466,9 +474,9 @@ useEffect(() => {
                     }}
                     render={({ field }) => (
                       <Input
-                      {...field}
-                      type="text"
-                      placeholder="Enter City"
+                        {...field}
+                        type="text"
+                        placeholder="Enter City"
                         onChange={(e) =>
                           field.onChange(sanitizeAlphaSpace(e.target.value))
                         }
@@ -496,9 +504,9 @@ useEffect(() => {
                     }}
                     render={({ field }) => (
                       <Input
-                      {...field}
-                      type="text"
-                      placeholder="Enter State"
+                        {...field}
+                        type="text"
+                        placeholder="Enter State"
                         onChange={(e) =>
                           field.onChange(sanitizeAlphaSpace(e.target.value))
                         }
@@ -527,9 +535,9 @@ useEffect(() => {
                   }}
                   render={({ field }) => (
                     <Input
-                    {...field}
-                    type="text"
-                    placeholder="Enter Country"
+                      {...field}
+                      type="text"
+                      placeholder="Enter Country"
                       onChange={(e) =>
                         field.onChange(sanitizeAlphaSpace(e.target.value))
                       }
@@ -559,9 +567,9 @@ useEffect(() => {
                     control={control}
                     render={({ field }) => (
                       <Input
-                      {...field}
-                      type="text"
-                      placeholder="Enter Postal Code"
+                        {...field}
+                        type="text"
+                        placeholder="Enter Postal Code"
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, ""); // allow digits only
                           field.onChange(value.slice(0, 5)); // hard cap at 5 max

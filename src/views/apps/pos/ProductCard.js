@@ -54,10 +54,13 @@ const ProductCard = ({ productDetails }) => {
     }
   };
 
+  
   return (
     <>
+{!productDetails && (
+  <p className="text-danger">Product not available</p>
+)}
       <Toast ref={toast} />
-
       <Card
         className="ecommerce-card shadow-sm"
         style={{

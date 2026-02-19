@@ -6,11 +6,7 @@ import useJwt from "@src/auth/jwt/useJwt";
 import { AbilityContext } from "@src/utility/context/Can";
 import { debounce } from "lodash";
 import { Edit, Plus } from "lucide-react";
-import {
-  ChevronDown,
-  MoreVertical,
-  Shield
-} from "react-feather";
+import { ChevronDown, MoreVertical, Shield } from "react-feather";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -52,10 +48,10 @@ const index = () => {
   async function fetchTableData() {
     try {
       setLoading(true);
-     
+
       const { data } = await useJwt.getAllBranch();
       const { content } = data;
-       ("branch", content);
+      "branch", content;
 
       setTableData({ count: content.count, results: content?.result });
     } catch (error) {
@@ -99,8 +95,7 @@ const index = () => {
           row.city?.toLowerCase().includes(normalizedValue) ||
           row.email?.toLowerCase().includes(normalizedValue) ||
           row.branchName?.toString().toLowerCase().includes(normalizedValue) ||
-          row.phoneNumber?.toString().toLowerCase().includes(normalizedValue) 
-        
+          row.phoneNumber?.toString().toLowerCase().includes(normalizedValue)
         );
       });
 
@@ -120,7 +115,6 @@ const index = () => {
   const handleAssignedToChange = (value) => {
     setRole(value);
   };
-
 
   const columns = [
     {
@@ -148,7 +142,7 @@ const index = () => {
       name: "city",
       sortable: true,
       // minWidth: "150px",
-      selector: (row) => row.city+ " " +'('+ row.state +')',
+      selector: (row) => row.city + " " + "(" + row.state + ")",
     },
 
     {
@@ -187,7 +181,7 @@ const index = () => {
                 if (response?.status === 204) {
                   setTableData((prevData) => {
                     const newData = prevData.results.filter(
-                      (item) => item.uid !== uid
+                      (item) => item.uid !== uid,
                     );
                     return {
                       ...prevData,
@@ -230,14 +224,12 @@ const index = () => {
               >
                 <MoreVertical size={15} />
               </DropdownToggle>
-              <DropdownMenu  end container="body">
-               
-                
-                  <DropdownItem onClick={() => handleEdit(row)}>
-                    <Edit className="me-50" size={15} />{" "}
-                    <span className="align-middle">Edit</span>
-                  </DropdownItem>
-             
+              <DropdownMenu end container="body">
+                <DropdownItem onClick={() => handleEdit(row)}>
+                  <Edit className="me-50" size={15} />{" "}
+                  <span className="align-middle">Edit</span>
+                </DropdownItem>
+
                 {/* <DropdownItem onClick={() => handleDelete(row.uid)}>
                     <Trash className="me-50" size={15} />{" "}
                     <span className="align-middle">Delete</span>
@@ -315,7 +307,6 @@ const index = () => {
                       size="sm"
                       className="text-nowrap mx-0 mb-1"
                     >
-                      
                       <Shield size={14} /> Upgrade
                     </Button>
                   </Link>

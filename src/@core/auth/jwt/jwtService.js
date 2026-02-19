@@ -1285,4 +1285,8 @@ export default class JwtService {
       `${this.jwtConfig.getDyanimicInfoOFSubscription}${moduleName}`,
     );
   }
+
+  documentStatus(uid) {
+    return axios.post(`${this.jwtConfig.documentStatus}${uid}`);
+  }
 }
