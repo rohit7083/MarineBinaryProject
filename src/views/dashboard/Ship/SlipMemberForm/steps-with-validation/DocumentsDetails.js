@@ -496,7 +496,7 @@ const handleSkip=()=>{
       let text = `All ${totalFailed} document(s) failed to upload. Please try again.`;
 
       if (totalSuccess === totalAttempted) {
-        await useJwt.documentStatus(sId?.id);
+        await useJwt.documentStatus(sId?.id || slipIID);
 
         icon = "success";
         title = "Success!";
