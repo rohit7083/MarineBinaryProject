@@ -4,16 +4,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
-    Button,
-    CardTitle,
-    Col,
-    Form,
-    FormFeedback,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    UncontrolledAlert,
+  Button,
+  CardTitle,
+  Col,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  UncontrolledAlert,
 } from "reactstrap";
 
 const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
@@ -97,7 +97,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
           attributeKeysUid:
             category?.attributeKeys?.map((attr) => attr?.uid) || [],
           attributeRequired: category?.attributeKeys?.map(
-            (attr) => attr?.isRequired
+            (attr) => attr?.isRequired,
           ),
         })) || [];
 
@@ -142,10 +142,10 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
   const categoryWatch = watch("category");
 
   const catObject = fetchData?.categories?.filter(
-    (x, _) => x?.value === categoryWatch
+    (x, _) => x?.value === categoryWatch,
   );
   const category = Array.isArray(catObject) ? catObject[0] : catObject;
-   (category);
+  category;
 
   const trueAttributes = category?.attributeKeys
     ?.map((label, i) =>
@@ -155,11 +155,11 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             uid: category.attributeKeysUid?.[i],
             required: true,
           }
-        : null
+        : null,
     )
     .filter(Boolean);
 
-   (trueAttributes);
+  trueAttributes;
 
   const watchCategory = watch("category");
   const watchTaxes = watch("taxes");
@@ -170,11 +170,11 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
       setErr("");
 
       findCategoryData = fetchData.categories?.find(
-        (cat) => cat?.value === watchCategory
+        (cat) => cat?.value === watchCategory,
       );
 
       selectedTaxData = fetchData.taxes?.find(
-        (tax) => tax?.value === watchTaxes
+        (tax) => tax?.value === watchTaxes,
       );
 
       if (UpdateData) {
@@ -220,7 +220,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             });
           }
         } catch (error) {
-           (error);
+          error;
           if (error.response) {
             const errMsz =
               error?.response?.data?.content ||
@@ -289,7 +289,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
                     // Allow only letters and spaces
                     const onlyLettersAndSpaces = e.target.value.replace(
                       /[^A-Za-z\s]/g,
-                      ""
+                      "",
                     );
                     field.onChange(onlyLettersAndSpaces);
                   }}
@@ -445,6 +445,7 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
             control={control}
             defaultValue=""
             rules={{
+              required: "Description is required",
               maxLength: {
                 value: 500,
                 message: "Description cannot exceed 500 characters",
@@ -457,20 +458,20 @@ const ProductAdd = ({ stepper, type, UpdateData, setProductData }) => {
                   rows="3"
                   id="description"
                   placeholder="Description"
+                  invalid={!!errors.description} // 👈 THIS WAS MISSING
                   {...field}
                   onChange={(e) => {
                     const cleanValue = e.target.value
-                      // allow letters, numbers, dot, comma, dash, space
                       .replace(/[^a-zA-Z0-9.,\- ]/g, "")
-                      // collapse multiple spaces into one
                       .replace(/\s+/g, " ")
-                      // enforce max length
                       .slice(0, 500);
 
                     field.onChange(cleanValue.trimStart());
                   }}
                 />
-                {/* Character counter */}
+
+                <FormFeedback>{errors.description?.message}</FormFeedback>
+
                 <p
                   style={{
                     color: "red",
