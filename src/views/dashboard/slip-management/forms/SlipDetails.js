@@ -1051,7 +1051,7 @@ const dataFromView=location?.state?.slipData;
                   name="marketRent"
                   id="marketRent"
                   placeholder="Enter Market Rent"
-                  disabled={true}
+                  disabled={dataFromView?.isAssigned == true ? true : false}
                   invalid={!!errors.marketRent}
                 />
                 <FormFeedback>{errors.marketRent}</FormFeedback>

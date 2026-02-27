@@ -894,7 +894,7 @@ function ShipDetails() {
                     name="marketRent"
                     id="marketRent"
                     placeholder="Enter Market Rent"
-                    disabled={allData?.isAssigned == true ? true : false} // Disable if category is selected
+                    disabled={allData?.isAssigned == true ? true : false} 
                     invalid={!!errors.marketRent}
                   />
                   <FormFeedback>{errors.marketRent}</FormFeedback>
