@@ -73,9 +73,10 @@ function ShipDetails() {
     overDueChargesForAuction: "",
   });
 
+  
   const uid = location.state?.uid || "";
-const allData=location.state?.allData || "";
-const handleSelectTypeChange = (name, value) => {
+  const allData = location.state?.allData || "";
+  const handleSelectTypeChange = (name, value) => {
     setSelections((prev) => ({
       ...prev,
       [name]: value,
@@ -94,7 +95,7 @@ const handleSelectTypeChange = (name, value) => {
     // PREFILL userData amounts
     setUserData((prev) => ({
       ...prev,
-      marketRent:option?.marketRent,
+      marketRent: option?.marketRent,
       overDueAmountFor7Days: option?.overDueAmountFor7Days ?? "",
       overDueAmountFor15Days: option?.overDueAmountFor15Days ?? "",
       overDueAmountFor30Days: option?.overDueAmountFor30Days ?? "",
@@ -105,7 +106,7 @@ const handleSelectTypeChange = (name, value) => {
     // PREFILL selections for radios
     setSelections((prev) => ({
       ...prev,
-      marketRent:option?.marketRent,
+      marketRent: option?.marketRent,
       overDueChargesFor7Days: option?.overDueChargesFor7Days ?? "",
       overDueChargesFor15Days: option?.overDueChargesFor15Days ?? "",
       overDueChargesFor30Days: option?.overDueChargesFor30Days ?? "",
@@ -424,7 +425,6 @@ const handleSelectTypeChange = (name, value) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      
       try {
         const payload = {};
         const response = await useJwt.getslipCatogory(payload);
@@ -432,7 +432,7 @@ const handleSelectTypeChange = (name, value) => {
           value: item.uid,
           label: item.shipTypeName,
           dimensions: item.dimensions,
-          marketRent:item.marketRent,
+          marketRent: item.marketRent,
           overDueChargesFor7Days: item.overDueChargesFor7Days,
           overDueAmountFor7Days: item.overDueAmountFor7Days,
 
@@ -450,17 +450,14 @@ const handleSelectTypeChange = (name, value) => {
         }));
 
         setShipTypeNames(options);
-        
       } catch (error) {
         console.error("Error fetching category:", error);
         const { response } = error;
         const { data, status } = response;
       }
-
     };
     if (uid) {
       const fetchDetailsForUpdate = async () => {
-        
         try {
           setFetchLoader(true);
 
@@ -468,14 +465,14 @@ const handleSelectTypeChange = (name, value) => {
           // const raw = resp.data.content?.result;
           // const details = Array.isArray(raw) ? raw[0] : raw;
 
-          const details =allData;
+          const details = allData;
 
           if (details?.isAssigned === true) {
             setView(true);
           } else {
             setView(false);
           }
-       
+
           if (details && details.uid === uid) {
             setUserData({
               slipName: details.slipName,
@@ -625,6 +622,7 @@ const handleSelectTypeChange = (name, value) => {
         </CardHeader>
 
         <CardBody>
+          {/* <Button onClick={() => sendIntoBulk()}>Upload Slip Details</Button> */}
           <p>
             <strong>Note : </strong> If the slip is <strong>Assigned</strong> ,
             you can only update <strong>Electric </strong> ,
@@ -896,7 +894,7 @@ const handleSelectTypeChange = (name, value) => {
                     name="marketRent"
                     id="marketRent"
                     placeholder="Enter Market Rent"
-                    disabled={true}
+                    disabled={allData?.isAssigned == true ? true : false} // Disable if category is selected
                     invalid={!!errors.marketRent}
                   />
                   <FormFeedback>{errors.marketRent}</FormFeedback>
