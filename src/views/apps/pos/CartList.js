@@ -68,7 +68,7 @@ const CartList = () => {
   return (
     <Row>
       <Col>
-        <CardTitle tag="h4">Cart Summery</CardTitle>
+        <CardTitle tag="h4">Cart Summary</CardTitle>
         <CardText className="small ">Selected Product</CardText>
         <Table bordered hover responsive size="sm" className="mb-0">
           <thead className="small">
