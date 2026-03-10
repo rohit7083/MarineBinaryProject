@@ -4,7 +4,7 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css"; // or any other theme
 import { Toast } from "primereact/toast";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import Select from "react-select";
 
 import { ArrowLeft, ArrowRight } from "react-feather";
@@ -30,11 +30,13 @@ const AccountDetails = ({
   slipNameFromDashboard,
   waitingSlipData,
   dataFrom,
+
+  setSlipdetails,
 }) => {
   const MySwal = withReactContent(Swal);
   const toast = useRef(null);
-
   const [slipNames, setSlipNames] = useState([]);
+
   const [dimensions, setDimensions] = useState({});
   const [errMsz, seterrMsz] = useState("");
   const [loadinng, setLoading] = useState(false);
@@ -51,7 +53,6 @@ const AccountDetails = ({
   async function fetchForm() {
     try {
       const response = await useJwt.getslip();
-
       const { result } = response.data.content;
 
       const NotAssigned = result
@@ -61,6 +62,7 @@ const AccountDetails = ({
           label: item.slipName,
           value: item.id,
           dimensions: item.dimensions,
+          uid: item.uid,
         }));
 
       setSlipNames(NotAssigned);
@@ -93,7 +95,6 @@ const AccountDetails = ({
       });
     }
   }, [reset, formData, slipNameFromDashboard]);
-
   useEffect(() => {
     fetchForm();
   }, []);
@@ -115,7 +116,6 @@ const AccountDetails = ({
     finaleData.uid = data.uid ? data.uid : "";
 
     try {
-
       if (
         (slipId && dataFrom === "list") ||
         (slipId &&
@@ -235,6 +235,19 @@ const AccountDetails = ({
     ));
   };
 
+  const watchSlipnames = useWatch({
+    control,
+    name: "slipName",
+  });
+  useEffect(() => {
+    setSlipdetails((prev) => {
+      if (JSON.stringify(prev) === JSON.stringify(watchSlipnames)) {
+        return prev;
+      }
+      return watchSlipnames;
+    });
+  }, [watchSlipnames]);
+
   if (fetchLoader)
     return (
       <div
@@ -304,6 +317,10 @@ const AccountDetails = ({
                   options={slipNames}
                   isClearable
                   placeholder="Select Slip Name"
+                  onChange={(value) => {
+                    field.onChange(value);
+                    setSlipdetails(value);
+                  }}
                 />
               )}
             />

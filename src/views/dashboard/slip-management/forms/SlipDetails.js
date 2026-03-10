@@ -37,7 +37,6 @@ function SlipDetailsForm({ assigned, dataFromDashboard, fromData }) {
   const uid = location.state?.uid || "";
 // const resultAllData=location?.state?.allData || ""
 const dataFromView=location?.state?.slipData;
-
   const [tooltipOpen, setTooltipOpen] = useState({
     edit: false,
     switchSlip: false,

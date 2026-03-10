@@ -1,9 +1,9 @@
 import axios from "axios";
 import jwtDefaultConfig from "./jwtDefaultConfig";
 
-// axios.defaults.baseURL = "http://192.168.1.4:8000"; // locktrust
-axios.defaults.baseURL = "https://marinaone.locktrust.com/api"; 
-// axios.defaults.baseURL = "https://locktrustdev.com:8443";
+// axios.defaults.baseURL = "http://192.168.1.3:8000"; // locktrust
+// axios.defaults.baseURL = "https://marinaone.locktrust.com/api"; 
+axios.defaults.baseURL = "https://locktrustdev.com:8443";
 // axios.defaults.baseURL = "http://192.168.29.190:8000/"; // locktrust jio 5g
 // axios.defaults.baseURL = "http://192.168.1.9:8000"; //airtel saga
 
@@ -1288,5 +1288,39 @@ export default class JwtService {
 
   documentStatus(uid) {
     return axios.post(`${this.jwtConfig.documentStatus}${uid}`);
+  }
+
+  longtermContract(uid , ...args) {
+    return axios.post(`${this.jwtConfig.longtermContract}${uid}`, ...args);
+  }
+
+     discountOnContractslip( ...args) {
+    return axios.post(`${this.jwtConfig.discountOnContractslip}`, ...args);
+  }
+
+  verifyDiscountOtp(token, ...args) {
+    return axios.post(`${this.jwtConfig.verifyDiscountOtp}${token}`, ...args);
+  }
+
+  getAllCoupons() {
+    return axios.get(`${this.jwtConfig.getAllCoupons}`);
+  }
+ 
+  createCoupon(...args) {
+    return axios.post(`${this.jwtConfig.createCoupon}`, ...args);
+  }
+
+     updateCoupan(uid, ...args) {
+    return axios.put(`${this.jwtConfig.updateCoupan}${uid}`, ...args, {
+      skipBranch: true,
+    });
+  }
+
+    deleteCoupon(uid) {
+    return axios.delete(`${this.jwtConfig.deleteCoupon}${uid}`);
+  }
+
+  applyCoupon(uid, ...args) {
+    return axios.post(`${this.jwtConfig.applyCoupon}${uid}`, ...args);
   }
 }

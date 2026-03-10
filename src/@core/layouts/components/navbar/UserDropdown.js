@@ -78,10 +78,11 @@ const UserDropdown = () => {
           <span className="align-middle">Branch</span>
         </DropdownItem>
 
-        {/* <DropdownItem tag={Link} to="/pages/setting">
-          <Settings2 size={14} className="me-75" />
-          <span className="align-middle">Settings</span>
+        {/* <DropdownItem tag={Link} to="/coupon">
+          <DiscAlbumIcon size={14} className="me-75" />
+          <span className="align-middle">Coupon</span>
         </DropdownItem> */}
+
         {/* <DropdownItem tag={Link} to="/pages/paymentSetting">
           <Settings size={14} className="me-75" />
           <span className="align-middle">Payment Settings</span>

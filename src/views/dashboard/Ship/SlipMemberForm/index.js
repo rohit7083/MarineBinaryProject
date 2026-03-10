@@ -16,6 +16,7 @@ import { CreditCard, File, FileText, User } from "react-feather";
 const WizardModern = () => {
   // ** RefselectedSlipname
   const ref = useRef(null);
+  const [slipDetails,setSlipdetails]=useState();
   const [stepper, setStepper] = useState(null);
   const [slipIID, setSlipIID] = useState("");
   const [memberID, setMemberID] = useState(null);
@@ -27,16 +28,19 @@ const WizardModern = () => {
     payment: {},
     documents: {},
   });
-  // ** Hooks
+
   // const { uid } = useParams();
-  const location = useLocation();
+ const location = useLocation();
   const dataFrom = location?.state?.from;
   const waitingSlipData = location?.state?.row;
   const slipNameFromDashboard = location?.state?.formDataFromDashboard;
   const uid = location.state?.uid || slipNameFromDashboard?.uid;
   const isAssigned = location.state?.isAssigned;
   const isRevenu = location.state?.isRevenu;
+
+ 
   const [isAssignedStatus, setIsAssignedStatus] = useState(isAssigned);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -77,12 +81,8 @@ const WizardModern = () => {
     if (uid) fetchData();
   }, [uid, isAssignedStatus]);
 
-  useEffect(() => {
-     (formData);
-     ("memeber id from index", memberID);
-  }, [formData]);
 
-   ("sui", sId);
+ 
 
   const steps = [
     {
@@ -98,6 +98,7 @@ const WizardModern = () => {
           type="wizard-modern"
           formData={{ ...formData.vessel }}
           slipId={uid}
+          setSlipdetails={setSlipdetails}
           setSlipIID={setSlipIID}
           fetchLoader={fetchLoader}
           dataFrom={dataFrom}
@@ -140,6 +141,7 @@ const WizardModern = () => {
           slipIID={slipIID}
           memberID={memberID}
           type="wizard-modern"
+          slipDetails={slipDetails}
           fetchLoader={fetchLoader}
           isAssigned={sId}
           sId={sId?.id}

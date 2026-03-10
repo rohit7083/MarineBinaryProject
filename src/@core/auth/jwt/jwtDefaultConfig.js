@@ -320,5 +320,14 @@ export default {
 
   documentStatus:"/sDocuments/updateStepStaus/",
 
+  longtermContract:"/slip/cal/",
+
+  discountOnContractslip:"/sPayment/generate/discount",
+  verifyDiscountOtp:"/sPayment/discount/",
+  getAllCoupons:"/discountCoupon",
+  createCoupon:"/discountCoupon/",
+  updateCoupan:"/discountCoupon/",
+  deleteCoupon:"/discountCoupon/",
+  applyCoupon:"/slip/verify/"
 };
   

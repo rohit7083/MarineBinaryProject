@@ -5,7 +5,8 @@ import {
   HomeIcon,
   QrCode,
   Settings,
-  UserRoundSearch,
+  Ticket,
+  UserRoundSearch
 } from "lucide-react";
 import { BarChart2, Calendar, Circle, FileText, Square } from "react-feather";
 
@@ -99,6 +100,20 @@ export default [
       },
     ],
   },
+
+
+    {
+    id: "coupon",
+    title: "Discount Coupon",
+    icon: <Ticket size={12} />,
+    navLink: "/coupon",
+    badge: "light-warning",
+    action: "view",
+    resource: "slip management",
+    
+  },
+
+
   {
     id: "Users Management",
     title: "Users Management",

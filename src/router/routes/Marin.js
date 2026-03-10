@@ -284,6 +284,13 @@ const SubscriptionPayment = lazy(() =>
   import("../../views/dashboard/upgrade/PaymentSubscription"),
 );
 
+const Coupon = lazy(() =>
+  import("../../views/dashboard/Ship/SlipMemberForm/steps-with-validation/coupon/index"),
+);
+const CreateCoupon = lazy(() =>
+  import("../../views/dashboard/Ship/SlipMemberForm/steps-with-validation/coupon/CreateCoupon"),
+);
+
 export default [
   {
     path: "/marin/slip-management/:uid",
@@ -1015,4 +1022,22 @@ export default [
     //   action: "view",
     // },
   },
+
+   {
+    element: <Coupon />,
+    path: "/coupon",
+    // meta: {
+    //   resource: "sales",
+    //   action: "view",
+    // },
+  },
+   {
+    element: <CreateCoupon />,
+    path: "/create-coupon",
+    // meta: {
+    //   resource: "sales",
+    //   action: "view",
+    // },
+  },
+
 ];

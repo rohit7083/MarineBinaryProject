@@ -1,10 +1,12 @@
 import useJwt from "@src/auth/jwt/useJwt";
+import "@styles/react/libs/flatpickr/flatpickr.scss";
 import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft } from "react-feather";
+import { ArrowLeft, Trash2 } from "react-feather";
+import Flatpickr from "react-flatpickr";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,7 +26,7 @@ import {
   UncontrolledAlert,
 } from "reactstrap";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 function Index() {
   const navigate = useNavigate();
@@ -56,11 +58,21 @@ function Index() {
       overDueAmountForNotice: "",
       overDueChargesForAuction: "",
       overDueAmountForAuction: "",
+      specialDays: [
+        {
+          date: "",
+          price: "",
+          description: "",
+        },
+      ],
     },
   });
 
   const watchShipType = watch("shipTypeName");
-
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "specialDays",
+  });
   // ─────────────────────────────────────────────
   // LOAD DATA INTO HOOK FORM
   // ─────────────────────────────────────────────
@@ -73,11 +85,19 @@ function Index() {
         const { data } = await useJwt.getslipCatogory(uid);
         const details = data.content.result.find((d) => d.uid === uid);
 
-        if (!details) return;
 
+        if (!details) return;
         reset({
+          // debugger;
           shipTypeName: details.shipTypeName || "",
           marketRent: details?.marketRent,
+          weekDaysPrice: details?.weekDaysPrice,
+          weekEndPrice: details?.weekEndPrice,
+          specialDays:
+            details.specialDays?.map((day) => ({
+              ...day,
+              date: new Date(day.date),
+            })) || [],
 
           dimensions: details.dimensions || [],
 
@@ -116,11 +136,13 @@ function Index() {
   // ─────────────────────────────────────────────
   const onSubmit = async (form) => {
     setErrorMessage("");
-
     const payload = {
       ...form,
       dimensions: form.dimensions,
       marketRent: form?.marketRent,
+      weekDaysPrice: form?.weekDaysPrice,
+      weekEndPrice: form?.weekEndPrice,
+
       overDueAmountFor7Days: Number(form.overDueAmountFor7Days),
       overDueAmountFor15Days: Number(form.overDueAmountFor15Days),
       overDueAmountFor30Days: Number(form.overDueAmountFor30Days),
@@ -210,7 +232,6 @@ function Index() {
                 )}
               </Col>
             </Row>
-
             {/* DIMENSIONS CHECKBOXES */}
             <Row className="mb-1">
               <Label sm="3">Dimensions</Label>
@@ -278,7 +299,212 @@ function Index() {
                 )}
               </Col>
             </Row>
+            <Row className="mb-1">
+              <Label sm="3" for="weekDaysPrice">
+                Week Day Price <span style={{ color: "red" }}>*</span>
+              </Label>
 
+              <Col sm="9">
+                <Controller
+                  name="weekDaysPrice"
+                  control={control}
+                  rules={{
+                    required: "WeekDay price is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      id="weekDaysPrice"
+                      placeholder="Enter WeekDay Price"
+                      // disabled={}
+                      invalid={!!errors.weekDaysPrice}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/[^0-9.]/g, "");
+                        field.onChange(value);
+                      }}
+                    />
+                  )}
+                />
+                {errors.weekDaysPrice && (
+                  <FormFeedback>{errors.weekDaysPrice.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>{" "}
+            <Row className="mb-1">
+              <Label sm="3" for="weekEndPrice">
+                Weekend Price <span style={{ color: "red" }}>*</span>
+              </Label>
+
+              <Col sm="9">
+                <Controller
+                  name="weekEndPrice"
+                  control={control}
+                  rules={{
+                    required: "weekEnd Price is required",
+                  }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="text"
+                      id="weekEndPrice"
+                      placeholder="Enter weekEnd Price"
+                      // disabled={}
+                      invalid={!!errors.weekEndPrice}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/[^0-9.]/g, "");
+                        field.onChange(value);
+                      }}
+                    />
+                  )}
+                />
+                {errors.weekEndPrice && (
+                  <FormFeedback>{errors.weekEndPrice.message}</FormFeedback>
+                )}
+              </Col>
+            </Row>
+            <Row>
+              <CardTitle className="mt-3 mb-2" tag="h4">
+                Special Days
+              </CardTitle>
+              <Card className="card-company-table">
+                <Table responsive>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Price</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {fields.map((item, index) => (
+                      <tr key={item.id}>
+                        <td>
+                          <Controller
+                            name={`specialDays.${index}.date`}
+                            control={control}
+                            rules={{
+                              required: "Start Date & Time is required",
+                            }}
+                            render={({ field }) => {
+                              const { ref, ...rest } = field;
+                              return (
+                                <Flatpickr
+                                  {...rest}
+                                  className={`form-control ${
+                                    errors?.specialDays?.[index]?.date
+                                      ? "is-invalid"
+                                      : ""
+                                  }`}
+                                  onChange={(date) =>
+                                    field.onChange(
+                                      date?.[0]?.toISOString().split("T")[0],
+                                    )
+                                  }
+                                  options={{ dateFormat: "Y-m-d" }}
+                                />
+                              );
+                            }}
+                          />
+                          {errors?.specialDays?.[index]?.date && (
+                            <FormFeedback>
+                              {errors.specialDays[index].date.message}
+                            </FormFeedback>
+                          )}
+                        </td>
+                        <td>
+                          <Controller
+                            name={`specialDays.${index}.price`}
+                            control={control}
+                            rules={{
+                              required: "Price is required",
+                              pattern: {
+                                value: /^\d+$/,
+                                message: "Only numeric values are allowed",
+                              },
+                            }}
+                            render={({ field }) => (
+                              <Input
+                                type="text"
+                                placeholder="Enter Price"
+                                {...field}
+                                onChange={(e) => {
+                                  // Remove non-numeric characters
+                                  let val = e.target.value.replace(
+                                    /[^0-9]/g,
+                                    "",
+                                  );
+
+                                  field.onChange(val);
+                                }}
+                              />
+                            )}
+                          />
+                          {errors.specialDays?.[index]?.price && (
+                            <span className="text-danger">
+                              {errors.specialDays[index].price.message}
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <Controller
+                            name={`specialDays.${index}.description`}
+                            control={control}
+                            rules={{
+                              required: "Description is required",
+                              // pattern: {
+                              //   value: /^[A-Za-z\s]+$/,
+                              //   message:
+                              //     "Only alphabetic characters (A–Z) are allowed",
+                              // },
+                            }}
+                            render={({ field }) => (
+                              <Input
+                                type="text"
+                                placeholder="Description"
+                                {...field}
+                                onChange={(e) => {
+                                  // Allow letters, numbers, dot, space, dash, and comma
+                                  const onlyValid = e.target.value.replace(
+                                    /[^A-Za-z0-9 .,-]/g,
+                                    "",
+                                  );
+                                  field.onChange(onlyValid);
+                                }}
+                              />
+                            )}
+                          />
+                          {errors.specialDays?.[index]?.description && (
+                            <span className="text-danger">
+                              {errors.specialDays[index].description.message}
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <Trash2
+                            style={{ cursor: "pointer" }}
+                            onClick={() => remove(index)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                <div className="d-flex justify-content-start ms-2 mt-2 mb-1">
+                  <Button
+                    color="primary"
+                    size={"sm"}
+                    type="button"
+                    onClick={() =>
+                      append({ date: "", price: "", description: "" })
+                    }
+                  >
+                    Add New
+                  </Button>
+                </div>
+              </Card>
+            </Row>
             {/* CHARGES TABLE */}
             <Table responsive>
               <thead>
@@ -365,7 +591,6 @@ function Index() {
                 ))}
               </tbody>
             </Table>
-
             {/* BUTTONS */}
             <Row>
               <Col
